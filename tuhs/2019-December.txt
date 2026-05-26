@@ -1,0 +1,3625 @@
+From finnoleary at inventati.org  Sun Dec  1 03:45:28 2019
+From: finnoleary at inventati.org (Finn O'Leary)
+Date: Sat, 30 Nov 2019 17:45:28 +0000
+Subject: [TUHS] In Memoriam: J.F.Ossanna
+In-Reply-To: <20191128034353.GG18200@mcvoy.com>
+References: <alpine.BSF.2.21.9999.1911280752310.33542@aneurin.horsfall.org>
+ <20191128034353.GG18200@mcvoy.com>
+Message-ID: <09c826fa928f4f2cdb170eedd586c5c6@inventati.org>
+
+On 2019-11-28 03:43, Larry McVoy wrote:
+> I think troff is genius, you can ask me why and I'll tell
+> you, don't want to bore the list with a ton of arcane,
+> but useful if you care about it, stuff.
+
+Wait, is that not what the list is for? :)
+
+I think I speak for more than a few people here when I say
+that I would love to hear what you have to say about troff
+
+thanks
+
+-- 
+- Finn
+
+From rly1 at embarqmail.com  Sun Dec  1 03:42:22 2019
+From: rly1 at embarqmail.com (Ron Young)
+Date: Sat, 30 Nov 2019 09:42:22 -0800
+Subject: [TUHS] Looking for Maitre'd tarball
+Message-ID: <087068da-86b5-c886-2273-81538a731a41@embarqmail.com>
+
+Hi All:
+
+     I looking for the source code to the Maitre'd load balancer. It is 
+used to run jobs on lightly used machines. It was developed by Brian 
+Berhard at Berkeley's Computer Systems Support Group. I have the 
+technical report for it (dated 17-dec-1985). But haven't run across the 
+tarball.
+
+
+thanks
+
+-ron
+
+
+
+From woods at robohack.ca  Sun Dec  1 11:25:22 2019
+From: woods at robohack.ca (Greg A. Woods)
+Date: Sat, 30 Nov 2019 17:25:22 -0800
+Subject: [TUHS] another conversion of the CSRG BSD SCCS archives to Git
+In-Reply-To: <20191129215258.Vgu-C%steffen@sdaoden.eu>
+References: <m1iVoBV-0036tPC@more.local>
+ <20191129215258.Vgu-C%steffen@sdaoden.eu>
+Message-ID: <m1ibDzG-0036tPC@more.local>
+
+At Fri, 29 Nov 2019 22:52:58 +0100, Steffen Nurpmeso <steffen at sdaoden.eu> wrote:
+Subject: Re: [TUHS] another conversion of the CSRG BSD SCCS archives to Git
+>
+> Greg A. Woods wrote in <m1iVoBV-0036tPC at more.local>:
+>  |I've been fixing and enhancing James Youngman's git-sccsimport to use
+>  |with some of my SCCS archives, and I thought it might be the ultimate
+>  |stress test of it to convert the CSRG BSD SCCS archives.
+>  |
+>  |The conversion takes about an hour to run on my old-ish Dell server.
+>  |
+>  |This conversion is unlike others -- there is some mechanical compression
+>  |of related deltas into a single Git commit.
+>  |
+>  |https://github.com/robohack/ucb-csrg-bsd
+>
+> Thanks for taking the time to produce a CSRG repo that seems to
+> mimic changesets as they really happened.  As i never made it
+> there on my own, i have switched to yours some weeks ago.  (Mind
+> you, after doing "gc --aggressive --prune=all" the repository size
+> has more than halved, it was the final reason to prepare new
+> repositories on a vhost with good internet connection before
+> getting this through my flaky wifi here.  Storage and internet
+> bandwidth and their cost really do not seem to bother anyone
+> anymore.  I have no offense in mind, i only recognized it (the
+> hard way).)
+
+Ah!  I did indeed forget the "git gc" step that many conversion guides
+recommend.  I might change the import script to do that automatically,
+particularly if it has also initialised the repository in the same run.
+
+Apparently github themselves run it regularly:
+
+	https://stackoverflow.com/a/56020315/816536
+
+Probably they do this by configuring "gc.auto" in each repository,
+though I've not found any reference to what they might configure it to.
+
+However it seems that without the "--aggressive" option, nothing will be
+done in this repository.  With it though I go from 316M down to just 71M.
+
+I don't see any way to force/tell/ask github to run "git gc --aggressive".
+
+Perhaps I can just delete it from github and immediately re-create it
+with the re-packed repository, and in theory all the hashes should stay
+the same and any existing clones should be unaffected.  What do you think?
+
+Note I have some thoughts of re-doing the whole conversion anyway, with
+with more ideas on to dealing with "removed" files (SCCS files renamed
+to the likes of "S.foo") and also including the many files that were
+never checked into SCCS, perhaps even on a per-release basis, thus being
+able to create release tags that can be checked out to match the actual
+releases on the CDs.  But this will not happen quite so soon.
+
+--
+					Greg A. Woods <gwoods at acm.org>
+
+Kelowna, BC     +1 250 762-7675           RoboHack <woods at robohack.ca>
+Planix, Inc. <woods at planix.com>     Avoncote Farms <woods at avoncote.ca>
+
+From steffen at sdaoden.eu  Tue Dec  3 04:36:36 2019
+From: steffen at sdaoden.eu (Steffen Nurpmeso)
+Date: Mon, 02 Dec 2019 19:36:36 +0100
+Subject: [TUHS] another conversion of the CSRG BSD SCCS archives to Git
+In-Reply-To: <m1ibDzG-0036tPC@more.local>
+References: <m1iVoBV-0036tPC@more.local>
+ <20191129215258.Vgu-C%steffen@sdaoden.eu> <m1ibDzG-0036tPC@more.local>
+Message-ID: <20191202183636.KlLB9%steffen@sdaoden.eu>
+
+Hello.
+
+Please excuse the late reply.
+
+Greg A. Woods wrote in <m1ibDzG-0036tPC at more.local>:
+ |At Fri, 29 Nov 2019 22:52:58 +0100, Steffen Nurpmeso <steffen at sdaoden.eu> \
+ |wrote:
+ |Subject: Re: [TUHS] another conversion of the CSRG BSD SCCS archives to Git
+ |> Greg A. Woods wrote in <m1iVoBV-0036tPC at more.local>:
+ |>|I've been fixing and enhancing James Youngman's git-sccsimport to use
+ |>|with some of my SCCS archives, and I thought it might be the ultimate
+ |>|stress test of it to convert the CSRG BSD SCCS archives.
+ |>|
+ |>|The conversion takes about an hour to run on my old-ish Dell server.
+ |>|
+ |>|This conversion is unlike others -- there is some mechanical compression
+ |>|of related deltas into a single Git commit.
+ |>|
+ |>|https://github.com/robohack/ucb-csrg-bsd
+ |>
+ |> Thanks for taking the time to produce a CSRG repo that seems to
+ |> mimic changesets as they really happened.  As i never made it
+ |> there on my own, i have switched to yours some weeks ago.  (Mind
+ |> you, after doing "gc --aggressive --prune=all" the repository size
+ ...
+ |Ah!  I did indeed forget the "git gc" step that many conversion guides
+ |recommend.  I might change the import script to do that automatically,
+ |particularly if it has also initialised the repository in the same run.
+ |
+ |Apparently github themselves run it regularly:
+ |
+ | https://stackoverflow.com/a/56020315/816536
+ |
+ |Probably they do this by configuring "gc.auto" in each repository,
+ |though I've not found any reference to what they might configure it to.
+
+I do not know either, but i have the impression they work with
+individual repositories, possibly doing deduplication on the
+filesystem level, if at all.  (Some repositories shrink notably,
+while others do not.  And i say that because i think bitbucket,
+once they added git support, seemed to have used common storage
+for the individual git objects, at least i remember a post
+pointing to some git object <-> python <-> mercurial library
+layer.)
+
+ |However it seems that without the "--aggressive" option, nothing will be
+ |done in this repository.  With it though I go from 316M down to just 71M.
+
+It throws away intermediate full data and keeps only the deltas.
+It can also throw away reflog info (which i never have used).
+I always use it.  Now with my new machine i can even use it for
+the BSD repositories etc., whereas before each update added its
+own pack, and the normal gc only combined the packs, but did not
+resolve the intermediate deltas.  (Note however i have learned git
+almost a decade ago, and have not reread the documentation or
+technical papers ever since, let alone in full.)
+
+ |I don't see any way to force/tell/ask github to run "git gc --aggressive".
+
+Very computing intensive task.  Back when i was subscribed to the
+git ML around 2011 i was witness of Hamano asking and Jeff King
+(from Github by then) responding something like "[it is ok but] gc
+aggressive is a pain".  They must have changed the algorithm until
+then, now going much more over main memory and requiring much more
+of it, too, not truly honouring the provided pack.windowMemory /
+pack.threads options (once i tried last).  It has no recovery path
+too, for example my old machine could not garbage collect the
+FreeBSD repository, i even let it work almost over night (5+
+hours), and it did not made it, whereas my new one can do it in
+a few minutes, despite the CPUs not being that much faster, it is
+only about the memory (8GB instead of 2GB).
+
+I sometimes think about the fact that a lot of software seems to
+loose its capability to run in restricted environments.  Providing
+alternative runtime solutions is coding etc. intensive, of course,
+and in the way of a rapid development process, too.
+
+ |Perhaps I can just delete it from github and immediately re-create it
+ |with the re-packed repository, and in theory all the hashes should stay
+ |the same and any existing clones should be unaffected.  What do you think?
+
+From the technical point i think this should simply work.  But No
+need to delete the repository, simply deleting the branch should
+be enough.  (Or fooling around with the update-ref that i often
+use, as in "update-ref newmaster master" "checkout newmaster",
+"branch -D master" (or "update-ref -d master"), then pushing, then
+re-renaming newmaster to master, and pushing again, etc.)
+
+Would be interesting to know how github does deduplication.  The
+real great ones of Bell Labs/Plan9 developed this venti / fossil
+storage with the blockhash-based permanent storage, and despite
+all the multimedia the curve of new allocation flattened after
+some time.  I would assume github would benefit dramatically from
+deduplication.
+
+ |Note I have some thoughts of re-doing the whole conversion anyway, with
+ |with more ideas on to dealing with "removed" files (SCCS files renamed
+ |to the likes of "S.foo") and also including the many files that were
+ |never checked into SCCS, perhaps even on a per-release basis, thus being
+ |able to create release tags that can be checked out to match the actual
+ |releases on the CDs.  But this will not happen quite so soon.
+
+That would be nice; having the real changesets is a real
+improvement already and however!  And even Spinellis Unix history
+repository seems not to be perfect even after years, i heard on
+some FreeBSD ML list.
+Ciao,
+
+ |     Greg A. Woods <gwoods at acm.org>
+ |
+ |Kelowna, BC     +1 250 762-7675           RoboHack <woods at robohack.ca>
+ |Planix, Inc. <woods at planix.com>     Avoncote Farms <woods at avoncote.ca>
+ --End of <m1ibDzG-0036tPC at more.local>
+
+--steffen
+|
+|Der Kragenbaer,                The moon bear,
+|der holt sich munter           he cheerfully and one by one
+|einen nach dem anderen runter  wa.ks himself off
+|(By Robert Gernhardt)
+
+From wkt at tuhs.org  Wed Dec  4 05:26:00 2019
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 4 Dec 2019 05:26:00 +1000
+Subject: [TUHS] Two BSD Additions to the Unix Archive
+Message-ID: <20191203192600.GA27838@minnie.tuhs.org>
+
+All, we have a couple of new BSD-related additions to the Unix Archive.
+
+Steven Schulz has made an installation tape of 2.11BSD which includes
+all the patches up to patch level 457. It's available at:
+https://www.tuhs.org/Archive/Distributions/UCB/2.11BSD_patch457/
+
+Mike Haertel has done a great job of reconstructing the September 1, 1981
+release of 4.1BSD. His work is now available at:
+https://www.tuhs.org/Archive/Distributions/UCB/4.1BSD-19810901-reconstructed/
+
+Cheers & thanks to both Steven and Mike,
+	Warren
+
+From henry.r.bent at gmail.com  Wed Dec  4 05:52:45 2019
+From: henry.r.bent at gmail.com (Henry Bent)
+Date: Tue, 3 Dec 2019 14:52:45 -0500
+Subject: [TUHS] Two BSD Additions to the Unix Archive
+In-Reply-To: <20191203192600.GA27838@minnie.tuhs.org>
+References: <20191203192600.GA27838@minnie.tuhs.org>
+Message-ID: <CAEdTPBeR8CS4J2WLHHcabrB-h0qoueHjLZbgZ4SgE4FQkwX_=A@mail.gmail.com>
+
+On Tue, 3 Dec 2019 at 14:26, Warren Toomey <wkt at tuhs.org> wrote:
+
+> All, we have a couple of new BSD-related additions to the Unix Archive.
+>
+> Steven Schulz has made an installation tape of 2.11BSD which includes
+> all the patches up to patch level 457. It's available at:
+> https://www.tuhs.org/Archive/Distributions/UCB/2.11BSD_patch457/
+>
+> Mike Haertel has done a great job of reconstructing the September 1, 1981
+> release of 4.1BSD. His work is now available at:
+>
+> https://www.tuhs.org/Archive/Distributions/UCB/4.1BSD-19810901-reconstructed/
+>
+> Cheers & thanks to both Steven and Mike,
+>         Warren
+>
+
+This is really great work, and I'm so glad that it's being done.  The
+4.1BSD reconstruction especially is very well documented.
+
+-Henry
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191203/7e92b5b8/attachment.html>
+
+From clemc at ccc.com  Wed Dec  4 07:42:53 2019
+From: clemc at ccc.com (Clem Cole)
+Date: Tue, 3 Dec 2019 16:42:53 -0500
+Subject: [TUHS] Two BSD Additions to the Unix Archive
+In-Reply-To: <CAEdTPBeR8CS4J2WLHHcabrB-h0qoueHjLZbgZ4SgE4FQkwX_=A@mail.gmail.com>
+References: <20191203192600.GA27838@minnie.tuhs.org>
+ <CAEdTPBeR8CS4J2WLHHcabrB-h0qoueHjLZbgZ4SgE4FQkwX_=A@mail.gmail.com>
+Message-ID: <CAC20D2OcC4XTeh5K=9wEeK0bZmYY3_ujLsW1iEb4itTSdeZajA@mail.gmail.com>
+
+Indeed --  excellent work.
+
+On Tue, Dec 3, 2019 at 2:53 PM Henry Bent <henry.r.bent at gmail.com> wrote:
+
+> On Tue, 3 Dec 2019 at 14:26, Warren Toomey <wkt at tuhs.org> wrote:
+>
+>> All, we have a couple of new BSD-related additions to the Unix Archive.
+>>
+>> Steven Schulz has made an installation tape of 2.11BSD which includes
+>> all the patches up to patch level 457. It's available at:
+>> https://www.tuhs.org/Archive/Distributions/UCB/2.11BSD_patch457/
+>>
+>> Mike Haertel has done a great job of reconstructing the September 1, 1981
+>> release of 4.1BSD. His work is now available at:
+>>
+>> https://www.tuhs.org/Archive/Distributions/UCB/4.1BSD-19810901-reconstructed/
+>>
+>> Cheers & thanks to both Steven and Mike,
+>>         Warren
+>>
+>
+> This is really great work, and I'm so glad that it's being done.  The
+> 4.1BSD reconstruction especially is very well documented.
+>
+> -Henry
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191203/6717303e/attachment.html>
+
+From dave at horsfall.org  Thu Dec  5 09:58:42 2019
+From: dave at horsfall.org (Dave Horsfall)
+Date: Thu, 5 Dec 2019 10:58:42 +1100 (EST)
+Subject: [TUHS] In Memoriam: John Lions
+Message-ID: <alpine.BSF.2.21.9999.1912051057480.99521@aneurin.horsfall.org>
+
+We lost Dr. John Lions on this day in 1998; he was one of my Comp Sci 
+lecturers (yes, I helped him write The Book, and yes, you'll find my name 
+in the back).
+
+-- Dave
+
+From lm at mcvoy.com  Thu Dec  5 14:16:53 2019
+From: lm at mcvoy.com (Larry McVoy)
+Date: Wed, 4 Dec 2019 20:16:53 -0800
+Subject: [TUHS] In Memoriam: John Lions
+In-Reply-To: <alpine.BSF.2.21.9999.1912051057480.99521@aneurin.horsfall.org>
+References: <alpine.BSF.2.21.9999.1912051057480.99521@aneurin.horsfall.org>
+Message-ID: <20191205041653.GO32688@mcvoy.com>
+
+He is a hero.  His notes on early Unix made it understandable to me.
+
+Though I have to say that Doug Comer did an equally good job with his XINU
+books.  Do you guys know of Doug?  XINU stands for Xinu is not Unix but
+he wrote, by himself, an OS and documented it in his books.  I give him
+credit for my desire to have code be really simple and self explanatory.
+
+I'd kinda like to invite him to join us, what do you think?
+
+On Thu, Dec 05, 2019 at 10:58:42AM +1100, Dave Horsfall wrote:
+> We lost Dr. John Lions on this day in 1998; he was one of my Comp Sci
+> lecturers (yes, I helped him write The Book, and yes, you'll find my name in
+> the back).
+> 
+> -- Dave
+
+-- 
+---
+Larry McVoy            	     lm at mcvoy.com             http://www.mcvoy.com/lm 
+
+From grog at lemis.com  Thu Dec  5 14:31:59 2019
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Thu, 5 Dec 2019 15:31:59 +1100
+Subject: [TUHS] Xinu (was: In Memoriam: John Lions)
+In-Reply-To: <20191205041653.GO32688@mcvoy.com>
+References: <alpine.BSF.2.21.9999.1912051057480.99521@aneurin.horsfall.org>
+ <20191205041653.GO32688@mcvoy.com>
+Message-ID: <20191205043159.GA42246@eureka.lemis.com>
+
+Hopefully this still fits the TUHS charter.  I'd be happy to see
+followups move to COFF.
+
+On Wednesday,  4 December 2019 at 20:16:53 -0800, Larry McVoy wrote:
+> Though I have to say that Doug Comer did an equally good job with
+> his XINU books.  Do you guys know of Doug?  XINU stands for Xinu is
+> not Unix but he wrote, by himself, an OS and documented it in his
+> books.  I give him credit for my desire to have code be really
+> simple and self explanatory.
+
+Agreed, modulo (for argument's sake) "equally".  Xinu was the first
+book I read on âUnixâ internals, and it greatly inspired me.
+
+> I'd kinda like to invite him to join us, what do you think?
+
+Go for it!
+
+Greg
+--
+Sent from my desktop computer.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft mail program
+reports problems, please read http://lemis.com/broken-MUA
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 163 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191205/4291f85b/attachment.sig>
+
+From wobblygong at gmail.com  Thu Dec  5 16:26:38 2019
+From: wobblygong at gmail.com (Wesley Parish)
+Date: Thu, 5 Dec 2019 19:26:38 +1300
+Subject: [TUHS] In Memoriam: John Lions
+In-Reply-To: <20191205041653.GO32688@mcvoy.com>
+References: <alpine.BSF.2.21.9999.1912051057480.99521@aneurin.horsfall.org>
+ <20191205041653.GO32688@mcvoy.com>
+Message-ID: <CACNPpebTxiK5Nxap-jCtdTkHGviQ14DgPC+i5udxmiS2nGPYTQ@mail.gmail.com>
+
+I would second that. His Xinu book was one of the two that helped
+demystify operating systems for me.
+
+Wesley Parish
+
+On 12/5/19, Larry McVoy <lm at mcvoy.com> wrote:
+> He is a hero.  His notes on early Unix made it understandable to me.
+>
+> Though I have to say that Doug Comer did an equally good job with his XINU
+> books.  Do you guys know of Doug?  XINU stands for Xinu is not Unix but
+> he wrote, by himself, an OS and documented it in his books.  I give him
+> credit for my desire to have code be really simple and self explanatory.
+>
+> I'd kinda like to invite him to join us, what do you think?
+>
+> On Thu, Dec 05, 2019 at 10:58:42AM +1100, Dave Horsfall wrote:
+>> We lost Dr. John Lions on this day in 1998; he was one of my Comp Sci
+>> lecturers (yes, I helped him write The Book, and yes, you'll find my name
+>> in
+>> the back).
+>>
+>> -- Dave
+>
+> --
+> ---
+> Larry McVoy            	     lm at mcvoy.com
+> http://www.mcvoy.com/lm
+>
+
+From thomas.paulsen at firemail.de  Thu Dec  5 16:53:48 2019
+From: thomas.paulsen at firemail.de (Thomas Paulsen)
+Date: Thu, 05 Dec 2019 07:53:48 +0100
+Subject: [TUHS] In Memoriam: John Lions
+In-Reply-To: <20191205041653.GO32688@mcvoy.com>
+References: <alpine.BSF.2.21.9999.1912051057480.99521@aneurin.horsfall.org>
+ <20191205041653.GO32688@mcvoy.com>
+Message-ID: <d4265c591928615de054fabd57ab1f57@firemail.de>
+
+
+>I'd kinda like to invite him to join us, what do you think?
+Thanks a lot. Do it!
+
+
+
+
+From pnr at planet.nl  Thu Dec  5 20:34:48 2019
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Thu, 5 Dec 2019 11:34:48 +0100
+Subject: [TUHS] Origins of PPP
+Message-ID: <698E9378-80A6-48F2-8B46-389B4A90ECD9@planet.nl>
+
+I’m looking for the origins of SLIP and PPP on Unix. Both seem to have been developed long before their RFC’s appeared.
+
+As far as I can tell, SLIP originally appeared in 3COM’s UNET for the PDP11, around 1980. From the TUHS Unix tree, first appearance in BSD seems to be 4.3 (1986).
+
+Not sure when PPP first appeared, but the linux man page for pppd has a credit that goes back to Carnegie Mellon 1984. First appearance in BSD seems to be FreeBSD 5.3 (2004), which seems improbably late (same source).
+
+Paul
+
+From michael at kjorling.se  Thu Dec  5 20:58:38 2019
+From: michael at kjorling.se (Michael =?utf-8?B?S2rDtnJsaW5n?=)
+Date: Thu, 5 Dec 2019 10:58:38 +0000
+Subject: [TUHS] Origins of PPP
+In-Reply-To: <698E9378-80A6-48F2-8B46-389B4A90ECD9@planet.nl>
+References: <698E9378-80A6-48F2-8B46-389B4A90ECD9@planet.nl>
+Message-ID: <wckspzwzq37dgjjgz9vfjgfz@localhost>
+
+On 5 Dec 2019 11:34 +0100, from pnr at planet.nl (Paul Ruizendaal):
+> Not sure when PPP first appeared, but the linux man page for pppd
+> has a credit that goes back to Carnegie Mellon 1984. First
+> appearance in BSD seems to be FreeBSD 5.3 (2004), which seems
+> improbably late (same source).
+
+The FreeBSD man page archive indicates that client-side (user) PPP
+goes back at least to 2.0.5-RELEASE.
+
+It's there in 2.0.5-RELEASE at
+<https://www.freebsd.org/cgi/man.cgi?query=ppp&apropos=0&sektion=8&manpath=FreeBSD+2.0.5-RELEASE&arch=default&format=html>
+
+It isn't there in 2.0-RELEASE at
+<https://www.freebsd.org/cgi/man.cgi?query=ppp&apropos=0&sektion=8&manpath=FreeBSD+2.0-RELEASE&arch=default&format=html>
+
+However, 2.0-RELEASE has pppd at
+<https://www.freebsd.org/cgi/man.cgi?query=pppd&sektion=8&apropos=0&manpath=FreeBSD+2.0-RELEASE>
+
+Even FreeBSD 1.0-RELEASE has pppd at
+<https://www.freebsd.org/cgi/man.cgi?query=pppd&apropos=0&sektion=8&manpath=FreeBSD+1.0-RELEASE&arch=default&format=html>
+
+The 1.0-RELEASE man page for pppd references documents as recent as
+May 1992, which agrees fairly well with Wikipedia which gives the
+release date for FreeBSD 1 as November 1993.
+
+Certainly a lot earlier than 2004.
+
+-- 
+Michael Kjörling • https://michael.kjorling.se • michael at kjorling.se
+ “Remember when, on the Internet, nobody cared that you were a dog?”
+
+
+From a.phillip.garcia at gmail.com  Fri Dec  6 00:16:25 2019
+From: a.phillip.garcia at gmail.com (A. P. Garcia)
+Date: Thu, 5 Dec 2019 09:16:25 -0500
+Subject: [TUHS] In Memoriam: John Lions
+In-Reply-To: <20191205041653.GO32688@mcvoy.com>
+References: <alpine.BSF.2.21.9999.1912051057480.99521@aneurin.horsfall.org>
+ <20191205041653.GO32688@mcvoy.com>
+Message-ID: <CAFCBnZvL7B2iFGzBqu=+ERdr5+pGnsMmbaeAtPfjgg_SmSUx+A@mail.gmail.com>
+
+On Wed, Dec 4, 2019 at 11:17 PM Larry McVoy <lm at mcvoy.com> wrote:
+>
+> He is a hero.  His notes on early Unix made it understandable to me.
+>
+> Though I have to say that Doug Comer did an equally good job with his XINU
+> books.  Do you guys know of Doug?  XINU stands for Xinu is not Unix but
+> he wrote, by himself, an OS and documented it in his books.  I give him
+> credit for my desire to have code be really simple and self explanatory.
+>
+> <snip>
+
+A group at Marquette University ported Xinu to run on Linksys/Cisco
+home routers. One of the later editions covers it. Pretty sweet.
+
+From rich.salz at gmail.com  Fri Dec  6 01:50:53 2019
+From: rich.salz at gmail.com (Richard Salz)
+Date: Thu, 5 Dec 2019 10:50:53 -0500
+Subject: [TUHS] Origins of PPP
+In-Reply-To: <wckspzwzq37dgjjgz9vfjgfz@localhost>
+References: <698E9378-80A6-48F2-8B46-389B4A90ECD9@planet.nl>
+ <wckspzwzq37dgjjgz9vfjgfz@localhost>
+Message-ID: <CAFH29trgrvAms02z6rzZhiS1A7Qr=i1_W6atrUM_sPJZjqM=EQ@mail.gmail.com>
+
+Rick Adams reverse-engineered the 3Com protocol, gave the code to CSRG and
+named it SLIP; see "Creation of SLIP" at
+https://en.wikipedia.org/wiki/Rick_Adams_(Internet_pioneer) .
+
+The IETF started work on PPP to address some of its deficiencies.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191205/c4b33df7/attachment.html>
+
+From clemc at ccc.com  Fri Dec  6 02:39:48 2019
+From: clemc at ccc.com (Clem Cole)
+Date: Thu, 5 Dec 2019 11:39:48 -0500
+Subject: [TUHS] Origins of PPP
+In-Reply-To: <698E9378-80A6-48F2-8B46-389B4A90ECD9@planet.nl>
+References: <698E9378-80A6-48F2-8B46-389B4A90ECD9@planet.nl>
+Message-ID: <CAC20D2OBuTOWucRze=xhAEmgGeKu4wQxgtdab1EWLwo=8fHNcQ@mail.gmail.com>
+
+below...
+
+On Thu, Dec 5, 2019 at 5:42 AM Paul Ruizendaal <pnr at planet.nl> wrote:
+
+> I’m looking for the origins of SLIP and PPP on Unix. Both seem to have
+> been developed long before their RFC’s appeared.
+>
+This is true...
+
+
+>
+> As far as I can tell, SLIP originally appeared in 3COM’s UNET for the
+> PDP11, around 1980.
+
+Sort of....   As the first customer for UNET I can verify that there was a
+serial interface that had been used to for debugging the SW until the 3C100
+became stable.   But it was not what we would later call SLIP.  It was
+really not usable for much other than to debug the protocol.  It did not
+have a 'chatting' and was for dedicated (hardwired) serial lines.  As I
+remember it, the code mostly was used as a loopback between two TTY ports
+and IIRC it only worked on the DH11.   I think Greg Shaw wrote it, but it
+might have been Bruce Borden (I can ask Bruce).   Glaser and I set it up in
+lookback mode as we used it to A/B test the Hyperchannel code we wrote.
+
+My first experience with a real 'SLIP' as we later knew it was a
+distribution from Harvard/MIT in early the 1980s (83/84 IIRC but dates
+could be off).  The code base took some major rework to the TTY driver,
+that I thought had originated at MIT.  IIRC I got the sources from someone
+like Jack Test or somebody else working in Steve Ward's real-time lab (i.e.
+Terry Hayes/tjt may have brought the src with them); but we could have just
+has likely gotten them sob @ harvard.   It ran on DH's as DZ'd were an
+issue because of interrupts as I remember (DZ's always were an issue when
+you pushed them).  But, it must have originally worked on BSD 4.1 not
+4/1C/4.2, which tells me it was hack off the original BBN code which did
+not use sockets, but rather the same open("/dev/tcp", ...) stuff that
+chaosnet used.   But the times are fuzzy in my mind, so it's possible by
+the time we got it, worked with the UCB code sockets code base.   I do
+remember that it ran on sockets by the time Steve Zimmerman hacked SLIP
+into RTU when he redid our TTY driver.
+
+The important thing is that the early version lacked PPPD, as we were later
+know it.
+
+
+> From the TUHS Unix tree, first appearance in BSD seems to be 4.3 (1986).
+>
+That's make sense.
+
+
+>
+> Not sure when PPP first appeared, but the linux man page for pppd has a
+> credit that goes back to Carnegie Mellon 1984. First appearance in BSD
+> seems to be FreeBSD 5.3 (2004), which seems improbably late (same source).
+>
+There were two or three different PPP schemes in the beginning.  What was
+common was the SLIP line discipline code under the covers, but how the line
+got set up to start running it was different.  The original SLIP 'kit' from
+Harvard/MIT lacked anything like PPPD to start and was sort of ad hoc. I
+think originally it used a program called 'chat' that had been pulled out
+uucico that set things up then exec'ed the SLIP stuff; but chat(1) may have
+been round 2 or 3.   I've forgotten the name of the original daemon, I bet
+it you look in the Usenet archives from 82-84 and look for 'SLIP' you find
+a couple of things.     The more modern pppd(1) coming from CMU is as
+likely as anywhere else.   I did eventually run it at home on a FreeBSD
+box, but it was at least the second or third way I set up my dial-ip ISP
+connection.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191205/971fb3b4/attachment.html>
+
+From jnc at mercury.lcs.mit.edu  Fri Dec  6 05:05:46 2019
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Thu,  5 Dec 2019 14:05:46 -0500 (EST)
+Subject: [TUHS] Origins of PPP
+Message-ID: <20191205190546.AE4E418C089@mercury.lcs.mit.edu>
+
+    > From: Paul Ruizendaal
+
+    > I'm looking for the origins of SLIP and PPP on Unix. Both seem to have
+    > been developed long before their RFC's appeared.
+
+You're dealing with an epoch when the IETF motto - "rough consensus and
+running code" - really meant something. Formal RFC's way lagged protocol
+development; they're the last step in the process, pretty much.
+
+If you want to study the history, you'd need to look at Internet Drafts (if
+they're still online). Failing that, look at the IETF Proceedings; I think
+all the ones from this period have been scanned in. They won't have the
+detail that the I-D's would have, but they should give the rough outlines
+of the history.
+
+	Noel
+
+From ron at ronnatalie.com  Fri Dec  6 05:21:13 2019
+From: ron at ronnatalie.com (ron at ronnatalie.com)
+Date: Thu, 5 Dec 2019 14:21:13 -0500
+Subject: [TUHS] Origins of PPP
+In-Reply-To: <20191205190546.AE4E418C089@mercury.lcs.mit.edu>
+References: <20191205190546.AE4E418C089@mercury.lcs.mit.edu>
+Message-ID: <0e2901d5aba1$2932ff30$7b98fd90$@ronnatalie.com>
+
+I still remember the laughter at the IETC when someone asked if PPP stood
+for "Philip Pindeville's Protocol."
+
+
+> -----Original Message-----
+> From: TUHS <tuhs-bounces at minnie.tuhs.org> On Behalf Of Noel Chiappa
+> Sent: Thursday, December 5, 2019 2:06 PM
+> To: tuhs at minnie.tuhs.org
+> Cc: jnc at mercury.lcs.mit.edu
+> Subject: Re: [TUHS] Origins of PPP
+> 
+>     > From: Paul Ruizendaal
+> 
+>     > I'm looking for the origins of SLIP and PPP on Unix. Both seem to
+have
+>     > been developed long before their RFC's appeared.
+> 
+> You're dealing with an epoch when the IETF motto - "rough consensus and
+> running code" - really meant something. Formal RFC's way lagged protocol
+> development; they're the last step in the process, pretty much.
+> 
+> If you want to study the history, you'd need to look at Internet Drafts
+(if
+> they're still online). Failing that, look at the IETF Proceedings; I think
+all the
+> ones from this period have been scanned in. They won't have the detail
+that
+> the I-D's would have, but they should give the rough outlines of the
+history.
+> 
+> 	Noel
+
+
+From imp at bsdimp.com  Fri Dec  6 05:37:50 2019
+From: imp at bsdimp.com (Warner Losh)
+Date: Thu, 5 Dec 2019 12:37:50 -0700
+Subject: [TUHS] Origins of PPP
+In-Reply-To: <0e2901d5aba1$2932ff30$7b98fd90$@ronnatalie.com>
+References: <20191205190546.AE4E418C089@mercury.lcs.mit.edu>
+ <0e2901d5aba1$2932ff30$7b98fd90$@ronnatalie.com>
+Message-ID: <CANCZdfpU8=3zrGmpTtU-tsUP+FNhd80YByT39-mkNf-2iQuqkA@mail.gmail.com>
+
+FreeBSD 1.0 shipped if_ppp.c, the kernel version of PPP which predated the
+userland version ppd, with the following headers:
+
+/*
+ * if_ppp.c - Point-to-Point Protocol (PPP) Asynchronous driver.
+ *
+ * Copyright (c) 1989 Carnegie Mellon University.
+ * All rights reserved.
+
+and later
+/*
+ *      $Id: if_ppp.c,v 1.4 1993/10/07 02:19:37 rgrimes Exp $
+ *      From: if_ppp.c,v 1.22 1993/08/31 23:20:40 paulus Exp
+ *      From: if_ppp.c,v 1.21 1993/08/29 11:22:37 paulus Exp
+ *      From: if_sl.c,v 1.11 84/10/04 12:54:47 rick Exp
+ */
+
+the $id line is FreeBSD's modification of this file in 1993. I'm unsure
+where the paulus files came from, but maybe netbsd, which has the earliest
+two ppp revs as:
+
+commit 2db2cc6845660ec5ce837a05838fb49f999903c6
+Author: paulus <paulus at netbsd.org>
+Date:   Tue Aug 31 00:05:31 1993 +0000
+
+    Modified if_ppp.c and if_ppp.h to add priority queueing for
+"interactive"
+    traffic (done in a similar fashion to if_sl.c), and BPF support.
+
+commit 0e20c036228474457205bae6fd791d9029dc85eb
+Author: deraadt <deraadt at netbsd.org>
+Date:   Sat Aug 14 06:38:50 1993 +0000
+
+    ppp from paul mackerras
+
+But it's not in NET/2. I've not checked 386BSD to see if it was in there,
+or not (since both FreeBSD 1.0 and NetBSD started from the tainted first
+4.4 BSD release). It's not in the 4.4 alpha BSD archive in the tuhs
+archive. Looks like it's from CMU, but I can't find earlier versions that
+Paul distributed with my quick google search, maybe others can find it?
+
+FreeBSD removed if_ppp.c in around FreeBSD 5 because it wasn't working due
+to the sorry state of the SMPification of the tty code interacting poorly
+with the slightyly less sorry state of the SMPification of the networks
+stack at the time and reconciling the differences was too hard. userland
+pppd worked just as well and had none of the thorny locking issues of a
+kernel bit of code that was trying to bridge two different domains.
+
+Warner
+
+On Thu, Dec 5, 2019 at 12:21 PM <ron at ronnatalie.com> wrote:
+
+> I still remember the laughter at the IETC when someone asked if PPP stood
+> for "Philip Pindeville's Protocol."
+>
+>
+> > -----Original Message-----
+> > From: TUHS <tuhs-bounces at minnie.tuhs.org> On Behalf Of Noel Chiappa
+> > Sent: Thursday, December 5, 2019 2:06 PM
+> > To: tuhs at minnie.tuhs.org
+> > Cc: jnc at mercury.lcs.mit.edu
+> > Subject: Re: [TUHS] Origins of PPP
+> >
+> >     > From: Paul Ruizendaal
+> >
+> >     > I'm looking for the origins of SLIP and PPP on Unix. Both seem to
+> have
+> >     > been developed long before their RFC's appeared.
+> >
+> > You're dealing with an epoch when the IETF motto - "rough consensus and
+> > running code" - really meant something. Formal RFC's way lagged protocol
+> > development; they're the last step in the process, pretty much.
+> >
+> > If you want to study the history, you'd need to look at Internet Drafts
+> (if
+> > they're still online). Failing that, look at the IETF Proceedings; I
+> think
+> all the
+> > ones from this period have been scanned in. They won't have the detail
+> that
+> > the I-D's would have, but they should give the rough outlines of the
+> history.
+> >
+> >       Noel
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191205/16392a90/attachment.html>
+
+From imp at bsdimp.com  Fri Dec  6 05:41:02 2019
+From: imp at bsdimp.com (Warner Losh)
+Date: Thu, 5 Dec 2019 12:41:02 -0700
+Subject: [TUHS] Origins of PPP
+In-Reply-To: <CAC20D2OBuTOWucRze=xhAEmgGeKu4wQxgtdab1EWLwo=8fHNcQ@mail.gmail.com>
+References: <698E9378-80A6-48F2-8B46-389B4A90ECD9@planet.nl>
+ <CAC20D2OBuTOWucRze=xhAEmgGeKu4wQxgtdab1EWLwo=8fHNcQ@mail.gmail.com>
+Message-ID: <CANCZdfo0BZODmF8fZFJ1=UGw2a2OEF=Y7Fu9unR6XbQGXnnG7g@mail.gmail.com>
+
+On Thu, Dec 5, 2019 at 9:40 AM Clem Cole <clemc at ccc.com> wrote:
+
+>  What was common was the SLIP line discipline code under the covers, but
+> how the line got set up to start running it was different.  The original
+> SLIP 'kit' from Harvard/MIT lacked anything like PPPD to start and was sort
+> of ad hoc. I think originally it used a program called 'chat' that had been
+> pulled out uucico that set things up then exec'ed the SLIP stuff; but
+> chat(1) may have been round 2 or 3.   I've forgotten the name of the
+> original daemon, I bet it you look in the Usenet archives from 82-84 and
+> look for 'SLIP' you find a couple of things.
+>
+
+There never was a slipd, at least in this time frame. The chat program
+would login to the remote system, start SLIP on the remote end, then run a
+program that effectively put the slip line discipline into place and then
+maybe did an ifconfig. It was hit dinosaur over head with club level of
+sophistication, if it was that advanced...
+
+Warner
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191205/2344fb6b/attachment.html>
+
+From clemc at ccc.com  Fri Dec  6 07:03:20 2019
+From: clemc at ccc.com (Clem Cole)
+Date: Thu, 5 Dec 2019 16:03:20 -0500
+Subject: [TUHS] Origins of PPP
+In-Reply-To: <CANCZdfo0BZODmF8fZFJ1=UGw2a2OEF=Y7Fu9unR6XbQGXnnG7g@mail.gmail.com>
+References: <698E9378-80A6-48F2-8B46-389B4A90ECD9@planet.nl>
+ <CAC20D2OBuTOWucRze=xhAEmgGeKu4wQxgtdab1EWLwo=8fHNcQ@mail.gmail.com>
+ <CANCZdfo0BZODmF8fZFJ1=UGw2a2OEF=Y7Fu9unR6XbQGXnnG7g@mail.gmail.com>
+Message-ID: <CAC20D2MZZYxKx+gMavG-TiA8q_a0S5_kExnVo3vdfLRdVuw43A@mail.gmail.com>
+
+On Thu, Dec 5, 2019 at 2:41 PM Warner Losh <imp at bsdimp.com> wrote:
+
+>
+>
+> On Thu, Dec 5, 2019 at 9:40 AM Clem Cole <clemc at ccc.com> wrote:
+>
+>> The original SLIP 'kit' from Harvard/MIT lacked anything like PPPD to
+>> start and was sort of ad hoc.
+>>
+>
+> ...
+
+> It was hit dinosaur over head with club level of sophistication, if it was
+> that advanced...
+>
+Right, as I said -- pretty ad hoc.
+
+I note the CMU code, has an if_sl.c edit tag.  Which makes sense that it
+goes back to the original SLIP code.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191205/de20d51e/attachment.html>
+
+From merlyn at geeks.org  Fri Dec  6 09:09:16 2019
+From: merlyn at geeks.org (Doug McIntyre)
+Date: Thu, 5 Dec 2019 17:09:16 -0600
+Subject: [TUHS] Origins of PPP
+In-Reply-To: <698E9378-80A6-48F2-8B46-389B4A90ECD9@planet.nl>
+References: <698E9378-80A6-48F2-8B46-389B4A90ECD9@planet.nl>
+Message-ID: <20191205230916.GA9063@geeks.org>
+
+On Thu, Dec 05, 2019 at 11:34:48AM +0100, Paul Ruizendaal wrote:
+> I’m looking for the origins of SLIP and PPP on Unix. Both seem to have been developed long before their RFC’s appeared.
+> 
+> As far as I can tell, SLIP originally appeared in 3COM’s UNET for the PDP11, around 1980. From the TUHS Unix tree, first appearance in BSD seems to be 4.3 (1986).
+> 
+> Not sure when PPP first appeared, but the linux man page for pppd has a credit that goes back to Carnegie Mellon 1984. First appearance in BSD seems to be FreeBSD 5.3 (2004), which seems improbably late (same source).
+
+
+Yes, I remember doing CMU pppd v1.4 or so on SunOS v4.x in the
+1991-1994 time period. SL/IP was more prevelent because it was easier to find devices doing it.
+
+Version 2.x of the package started adding support into Linux/*BSD when they started appearing.
+
+I don't think the current repo (https://ppp.samba.org/) has much of the earlier v1.x history.
+
+
+From stewart at serissa.com  Fri Dec  6 12:05:37 2019
+From: stewart at serissa.com (Lawrence Stewart)
+Date: Thu, 5 Dec 2019 21:05:37 -0500
+Subject: [TUHS] Origins of PPP
+In-Reply-To: <698E9378-80A6-48F2-8B46-389B4A90ECD9@planet.nl>
+References: <698E9378-80A6-48F2-8B46-389B4A90ECD9@planet.nl>
+Message-ID: <74614869-B858-40B0-B5CB-F806FD5CAEAE@serissa.com>
+
+At the other end of PPP history, I’ve always felt that the best part of IP is that it will run, more or less, over a piece of wet string.
+
+In 2006 at SiCortex we were building a modest supercomputer with 972 six-core MIPS-64 chips connected by a rather nice high speed interconnect.  The chips were booted over JTAG, which is another story, but in addition the chip had a “communications register” that could be written and read in I/O space from the kernel and over JTAG from the module level coldfire microcontroller.
+
+This was at first used for the console, and all 972 console streams were collected on a front end machine.  However, it was a small step from there to multiplexing the comm register to provide two serial ports.  We used the second one for PPP using a standard driver on the MIPS end and a somewhat strange JTAG driver on the coldfire end.  This scheme let us SSH into the machine nodes when the high speed interconnect needed debugging.  In spite of the bit-banging JTAG-ness of it all, it was usably fast at 100 Kbps or so.
+
+It was much easier to spin up PPP than to write a new network driver for this low-speed application.
+
+-Larry
+
+
+From arnold at skeeve.com  Fri Dec  6 15:58:17 2019
+From: arnold at skeeve.com (Arnold Robbins)
+Date: Fri, 06 Dec 2019 07:58:17 +0200
+Subject: [TUHS] v10spell updated
+Message-ID: <201912060558.xB65wHWn003767@skeeve.com>
+
+Hello All.
+
+Anyone who pulled the code for v10spell that I made available a few
+months ago should 'make clean', 'git pull', and 'make'.
+
+A critical bug has been fixed for 64 bit systems, and the code has
+had some additional cleanups and the doc updated some as well.
+
+The repos is at git://github.com/arnoldrobbins/v10spell.
+
+Enjoy,
+
+Arnold
+
+From gdiaz at qswarm.com  Fri Dec  6 20:45:39 2019
+From: gdiaz at qswarm.com (Gabriel Diaz)
+Date: Fri, 06 Dec 2019 10:45:39 +0000
+Subject: [TUHS] Gaming on early Unix
+Message-ID: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+
+Hello,
+
+
+
+
+
+
+
+Source code has been published of some early games.
+
+
+
+
+Were those games playable on Unix machines at the time? What was your favourite game?
+
+
+
+
+
+
+
+https://kryptonradio.com/2019/04/18/zork-source-code-presumed-lost-forever-has-been-uploaded-to-github/
+
+
+
+
+
+
+
+Gabi
+
+
+
+
+
+
+
+
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191206/c0b0969c/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 839 bytes
+Desc: OpenPGP digital signature
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191206/c0b0969c/attachment.sig>
+
+From usotsuki at buric.co  Fri Dec  6 21:01:00 2019
+From: usotsuki at buric.co (Steve Nickolas)
+Date: Fri, 6 Dec 2019 06:01:00 -0500 (EST)
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+References: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+Message-ID: <alpine.BSF.2.02.1912060558250.88656@frieza.hoshinet.org>
+
+On Fri, 6 Dec 2019, Gabriel Diaz wrote:
+
+> Hello,
+>
+> Source code has been published of some early games.
+>
+> Were those games playable on Unix machines at the time? What was your favourite game?
+>
+> https://kryptonradio.com/2019/04/18/zork-source-code-presumed-lost-forever-has-been-uploaded-to-github/
+>
+> Gabi
+
+I've been following this for several months.
+
+I don't think there was a Z-machine for any Unix at that time.  Nowadays 
+there's Frotz, I think there's also JZip and a bunch of others too, but 
+I'm not sure even one as primitive as InfoTaskForce would run on V7 or 
+earlier.
+
+-uso.
+
+From a.phillip.garcia at gmail.com  Sat Dec  7 00:23:01 2019
+From: a.phillip.garcia at gmail.com (A. P. Garcia)
+Date: Fri, 6 Dec 2019 09:23:01 -0500
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+References: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+Message-ID: <CAFCBnZv3R7N-i-Wj1hc29WBp49r2ny_RucjTYNODwgqdFy5Zew@mail.gmail.com>
+
+On Fri, Dec 6, 2019 at 5:52 AM Gabriel Diaz <gdiaz at qswarm.com> wrote:
+>
+> Hello,
+>
+>
+> Source code has been published of some early games.
+>
+> Were those games playable on Unix machines at the time? What was your favourite game?
+>
+>
+> https://kryptonradio.com/2019/04/18/zork-source-code-presumed-lost-forever-has-been-uploaded-to-github/
+>
+>
+> Gabi
+
+Ken Thompson has made a number of significant contributions to
+computer chess, but I'm not familiar with chess programs that ran on
+early Unix. The earliest and most influential game that originated on
+Unix was probably rogue, which was included in 4.2 BSD. Another early
+and influential game was Colossal Cave Adventure, but that didn't run
+on Unix, AFAIK.
+
+From a.phillip.garcia at gmail.com  Sat Dec  7 00:48:08 2019
+From: a.phillip.garcia at gmail.com (A. P. Garcia)
+Date: Fri, 6 Dec 2019 09:48:08 -0500
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <CAFCBnZv3R7N-i-Wj1hc29WBp49r2ny_RucjTYNODwgqdFy5Zew@mail.gmail.com>
+References: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+ <CAFCBnZv3R7N-i-Wj1hc29WBp49r2ny_RucjTYNODwgqdFy5Zew@mail.gmail.com>
+Message-ID: <CAFCBnZt8Nay9KTf_eWKzv68HmX1MoXc2v5Tz_BkvJoef4vQcLQ@mail.gmail.com>
+
+On Fri, Dec 6, 2019 at 9:23 AM A. P. Garcia <a.phillip.garcia at gmail.com> wrote:
+>
+> On Fri, Dec 6, 2019 at 5:52 AM Gabriel Diaz <gdiaz at qswarm.com> wrote:
+> >
+> > Hello,
+> >
+> >
+> > Source code has been published of some early games.
+> >
+> > Were those games playable on Unix machines at the time? What was your favourite game?
+> >
+> >
+> > https://kryptonradio.com/2019/04/18/zork-source-code-presumed-lost-forever-has-been-uploaded-to-github/
+> >
+> >
+> > Gabi
+>
+> Ken Thompson has made a number of significant contributions to
+> computer chess, but I'm not familiar with chess programs that ran on
+> early Unix. The earliest and most influential game that originated on
+> Unix was probably rogue, which was included in 4.2 BSD. Another early
+> and influential game was Colossal Cave Adventure, but that didn't run
+> on Unix, AFAIK.
+
+I just remembered another one called Hunt the Wumpus. From Wikipedia:
+"A version in C, written in November 1973 by Ken Thompson, creator of
+the Unix operating system, was released in 1974; a later C version can
+still be found in the bsdgames package on modern BSD and Linux
+operating systems."
+[https://en.wikipedia.org/wiki/Hunt_the_Wumpus]
+
+From ron at ronnatalie.com  Sat Dec  7 02:19:12 2019
+From: ron at ronnatalie.com (ron at ronnatalie.com)
+Date: Fri, 6 Dec 2019 11:19:12 -0500
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+References: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+Message-ID: <22df01d5ac50$eca8e330$c5faa990$@ronnatalie.com>
+
+We were big into “Adventure” when I first started on UNIX.    It wasn’t until someone handed me the Fortran source code did I find we had missed a few things in it (like the rusty rods with black stars).
+
+ 
+
+Rogue was a popular one later.   
+
+ 
+
+Later at BRL we got a copy of “Empire” from PSL.   The good thing about that game was that your amount of activity was limited to one hour a day and however many BTUs (Bureaucratic Time Units) your capital generated.    However, people would print maps near the end of their session and then spend hours planning the next day’s activity.   Finally, the lab management had us shutdown.
+
+ 
+
+There was another multiplayer game called “Search” that would result around 4:30 in the afternoon someone yelling “Search Up” which was everybody’s cue to join in the game.
+
+ 
+
+Then we got SGI workstations.   The flight simulator had a dogfight feature but it used some networking that didn’t work on our network (I think it was XNS broadcasts).   Fortunately, the source code was available so I hacked it to communicate via TCP/IP to a central server (which had its own “air traffic control” display for my own benefit).    At 4:30 everybody would head off to an SGI workstation and we’d have many people flying.
+
+We had the problem of people hanging out around the runway (where new players appeared) and nailing people as soon as they showed up.   I wrote an automated “anti-aircraft gun” that shot at people who hung out around the airfield.
+
+ 
+
+I was at a meeting (probably IETF) and the NASA AMES guys (who had tons of these workstations as well) found out about my work and made me FTP it to them right then and there.    There went NASA productivity.
+
+ 
+
+BRL had a vector graphics system in the early days called a Vector General.   They were left over from a project with the Cyber mainframe that never worked.   The labs had three or four of these things, each a PDP-11/34 with the Vector General, a card reader, a printer, a DQ-11, and a 50K modem.   At a loss for what to do with them, we put UNIX on them.   Mike used the system to develop the BRL CAD package.    The printers got used for other purposes.   The card readers pretty much were trashed but we kept one to convert old COMGEOM decks.   We actually used the DQ-11/50K modem things to extend the BRLNet (and ultimately the BRL gateways).
+
+One evening, Mike and I decided to write a game for the thing.    We decided to simulate the “Asterioids” arcade game.   Mike did the graphics work and I wrote the game logic.    We spent all night writing it and then went home in the morning leaving it running.     By the time we came in later in the day, several of the BRL researchers (physicists and aerodynamics guys) had hacked on the game logic to make it more realistic (conservation of momentum and all that).
+
+ 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191206/5124d44e/attachment.html>
+
+From rich.salz at gmail.com  Sat Dec  7 02:39:42 2019
+From: rich.salz at gmail.com (Richard Salz)
+Date: Fri, 6 Dec 2019 11:39:42 -0500
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <22df01d5ac50$eca8e330$c5faa990$@ronnatalie.com>
+References: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+ <22df01d5ac50$eca8e330$c5faa990$@ronnatalie.com>
+Message-ID: <CAFH29tohn3iEAUpssnE_ddtkhGkV=W=_nGqJnZcw8H6CF7=thQ@mail.gmail.com>
+
+>
+> There was another multiplayer game called “Search” that would result
+> around 4:30 in the afternoon someone yelling “Search Up” which was
+> everybody’s cue to join in the game.
+>
+>
+> Was that "hunt" that came with BSD 4-something?
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191206/c19495c8/attachment.html>
+
+From crossd at gmail.com  Sat Dec  7 02:54:13 2019
+From: crossd at gmail.com (Dan Cross)
+Date: Fri, 6 Dec 2019 11:54:13 -0500
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <CAFH29tohn3iEAUpssnE_ddtkhGkV=W=_nGqJnZcw8H6CF7=thQ@mail.gmail.com>
+References: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+ <22df01d5ac50$eca8e330$c5faa990$@ronnatalie.com>
+ <CAFH29tohn3iEAUpssnE_ddtkhGkV=W=_nGqJnZcw8H6CF7=thQ@mail.gmail.com>
+Message-ID: <CAEoi9W5PEFn7VzO+5yfLKG9NfSpT6tKteoLnnfeckk5Udx_bXA@mail.gmail.com>
+
+On Fri, Dec 6, 2019 at 11:40 AM Richard Salz <rich.salz at gmail.com> wrote:
+
+> There was another multiplayer game called “Search” that would result
+>> around 4:30 in the afternoon someone yelling “Search Up” which was
+>> everybody’s cue to join in the game.
+>>
+>
+
+Was that "hunt" that came with BSD 4-something?
+>
+
+I remember playing hunt. It used some kind of UDP-based protocol, if I
+recall correctly. There was a `huntd` you could run out of inetd that
+people connected to.
+
+For some reason, I'd thought that one player ran `hunt` in some special
+"server" mode, but I guess I'm misremembering. But that led me to wonder
+whether the person running in "server" mode had an advantage due to
+(network) locality. IF there were similar games that behaved in such a
+fashion, it would be a valid concern.
+
+I'm surprised that no one has mentioned Space Travel.
+
+        - Dan C.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191206/373b95fa/attachment.html>
+
+From krewat at kilonet.net  Sat Dec  7 03:24:08 2019
+From: krewat at kilonet.net (Arthur Krewat)
+Date: Fri, 6 Dec 2019 12:24:08 -0500
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <22df01d5ac50$eca8e330$c5faa990$@ronnatalie.com>
+References: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+ <22df01d5ac50$eca8e330$c5faa990$@ronnatalie.com>
+Message-ID: <d61939de-7584-d59b-00d2-bda55dcaecd3@kilonet.net>
+
+On 12/6/2019 11:19 AM, ron at ronnatalie.com wrote:
+>
+> Later at BRL we got a copy of “Empire” from PSL.   The good thing 
+> about that game was that your amount of activity was limited to one 
+> hour a day and however many BTUs (Bureaucratic Time Units) your 
+> capital generated.    However, people would print maps near the end of 
+> their session and then spend hours planning the next day’s activity.   
+> Finally, the lab management had us shutdown.
+>
+
+I once took the EMPIRE source code for VAX, and translated it to MSDOS 
+using IBM Personal Computer FORTRAN version 2.00. And even added color. 
+I broke EMPIRE.FOR into 9 different chunks, I think there was some 
+limitation of the compiler, but I'm not sure.
+
+The original EMPIRE.FOR:
+
+         PROGRAM EMPIRE
+C
+C This program is a war game simulation for video terminals.
+C The game was originally written outside of Digital, probably a university.
+C This version of the game was made runnable on Digital Equipment VAX/VMS
+C FORTRAN by conversion from the TOPS-10/20 sources available around 
+fall 1979.
+C After debugging it, numerous changes have been made.
+C
+C Now that you are the proud owner of the source and you are all gung ho
+C to do things right, there are a few things you should be aware of.
+C Unfortunately, there are many magic numbers controlling how many different
+C kinds of units can exist and how many of each, so think well before you
+C attempt to add another unit type. Also, "slight changes" to the way 
+the units
+C work will typically have a fairly devastating affect on the computers
+C strategy.  If you are interested in really hacking this, there is a plenty
+C of room for enhanced computer strategy.  As you'll see, there are some
+C very good debugging tools tucked inside, and you will soon discover weak
+C points and bugs, that up until you, have remained problems (all the 
+previous
+C programmers got lazy or lost interest).  Finally, please be careful with
+C the version number and identification at start up to avoid confusion of
+C ongoing versions with private copies.  If you make a change don't remove
+C the major version id, but rather add something like (V4.0 site.1 
+20-JUL-80).
+C
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191206/59624133/attachment.html>
+
+From iain at csp-partnership.co.uk  Sat Dec  7 03:58:25 2019
+From: iain at csp-partnership.co.uk (Dr Iain Maoileoin)
+Date: Fri, 6 Dec 2019 17:58:25 +0000
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <22df01d5ac50$eca8e330$c5faa990$@ronnatalie.com>
+References: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+ <22df01d5ac50$eca8e330$c5faa990$@ronnatalie.com>
+Message-ID: <87E4C572-A87C-40A0-9BCF-E3C268BDE98C@csp-partnership.co.uk>
+
+
+> On 6 Dec 2019, at 16:19, <ron at ronnatalie.com> <ron at ronnatalie.com> wrote:
+> 
+> 
+> There was another multiplayer game called “Search” that would result around 4:30 in the afternoon someone yelling “Search Up” which was everybody’s cue to join in the game.
+>  
+
+Ron (all) I have been trying to track down search for years.  We ran a modified copy at the Universirt of Strathclyde Computer Department - it would be good to get a copy for the next reunion.
+
+I have been totally unsuccessful over a decade trying to locate the source.  (try a google search for search! [and a million other attempts]) 
+
+Any ideas if it still exists?
+Iain
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191206/036bf74b/attachment.html>
+
+From imp at bsdimp.com  Sat Dec  7 04:31:11 2019
+From: imp at bsdimp.com (Warner Losh)
+Date: Fri, 6 Dec 2019 11:31:11 -0700
+Subject: [TUHS] Origins of PPP
+In-Reply-To: <74614869-B858-40B0-B5CB-F806FD5CAEAE@serissa.com>
+References: <698E9378-80A6-48F2-8B46-389B4A90ECD9@planet.nl>
+ <74614869-B858-40B0-B5CB-F806FD5CAEAE@serissa.com>
+Message-ID: <CANCZdfpxJ5FN2r=vOkKHzPBEzm9qTjHW4BhmAf6PmOW2BuBqeg@mail.gmail.com>
+
+On Thu, Dec 5, 2019 at 7:06 PM Lawrence Stewart <stewart at serissa.com> wrote:
+
+> At the other end of PPP history, I’ve always felt that the best part of IP
+> is that it will run, more or less, over a piece of wet string.
+>
+> In 2006 at SiCortex we were building a modest supercomputer with 972
+> six-core MIPS-64 chips connected by a rather nice high speed interconnect.
+> The chips were booted over JTAG, which is another story, but in addition
+> the chip had a “communications register” that could be written and read in
+> I/O space from the kernel and over JTAG from the module level coldfire
+> microcontroller.
+>
+> This was at first used for the console, and all 972 console streams were
+> collected on a front end machine.  However, it was a small step from there
+> to multiplexing the comm register to provide two serial ports.  We used the
+> second one for PPP using a standard driver on the MIPS end and a somewhat
+> strange JTAG driver on the coldfire end.  This scheme let us SSH into the
+> machine nodes when the high speed interconnect needed debugging.  In spite
+> of the bit-banging JTAG-ness of it all, it was usably fast at 100 Kbps or
+> so.
+>
+> It was much easier to spin up PPP than to write a new network driver for
+> this low-speed application.
+>
+
+Seconded... At a past life, we had a SONET circuit that we were using for
+timing signals, but needed some way to do networking... The timing signals
+and driver chips we were using precluded using the front door, so we used
+the 1-byte service field per frame to do PPP, which we did have access to
+(and was the only data field we had access to).
+
+Warner
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191206/57eede69/attachment.html>
+
+From ron at ronnatalie.com  Sat Dec  7 08:12:01 2019
+From: ron at ronnatalie.com (ron at ronnatalie.com)
+Date: Fri, 6 Dec 2019 17:12:01 -0500
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <87E4C572-A87C-40A0-9BCF-E3C268BDE98C@csp-partnership.co.uk>
+References: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+ <22df01d5ac50$eca8e330$c5faa990$@ronnatalie.com>
+ <87E4C572-A87C-40A0-9BCF-E3C268BDE98C@csp-partnership.co.uk>
+Message-ID: <00a001d5ac82$302bf210$9083d630$@ronnatalie.com>
+
+It might be in a BRL archive somewhere (alas I do not have it).  You might ask if Doug Gwyn has one squirrelled away.
+
+ 
+
+ 
+
+From: Dr Iain Maoileoin <iain at csp-partnership.co.uk> 
+Sent: Friday, December 6, 2019 12:58 PM
+To: ron at ronnatalie.com
+Cc: tuhs at minnie.tuhs.org
+Subject: Re: [TUHS] Gaming on early Unix
+
+ 
+
+ 
+
+On 6 Dec 2019, at 16:19, <ron at ronnatalie.com <mailto:ron at ronnatalie.com> > <ron at ronnatalie.com <mailto:ron at ronnatalie.com> > wrote:
+
+ 
+
+ 
+
+There was another multiplayer game called “Search” that would result around 4:30 in the afternoon someone yelling “Search Up” which was everybody’s cue to join in the game.
+
+ 
+
+ 
+
+Ron (all) I have been trying to track down search for years.  We ran a modified copy at the Universirt of Strathclyde Computer Department - it would be good to get a copy for the next reunion.
+
+ 
+
+I have been totally unsuccessful over a decade trying to locate the source.  (try a google search for search! [and a million other attempts]) 
+
+ 
+
+Any ideas if it still exists?
+
+Iain
+
+ 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191206/ca36b35c/attachment.html>
+
+From robpike at gmail.com  Sat Dec  7 10:04:50 2019
+From: robpike at gmail.com (Rob Pike)
+Date: Sat, 7 Dec 2019 11:04:50 +1100
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <00a001d5ac82$302bf210$9083d630$@ronnatalie.com>
+References: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+ <22df01d5ac50$eca8e330$c5faa990$@ronnatalie.com>
+ <87E4C572-A87C-40A0-9BCF-E3C268BDE98C@csp-partnership.co.uk>
+ <00a001d5ac82$302bf210$9083d630$@ronnatalie.com>
+Message-ID: <CAKzdPgyJGhPDwnh-6eUJ311wPxfoBB=63312+WwBJejmf60k0g@mail.gmail.com>
+
+And then there was Nuke the Smileys.
+
+-rob
+
+
+On Sat, Dec 7, 2019 at 9:13 AM <ron at ronnatalie.com> wrote:
+
+> It might be in a BRL archive somewhere (alas I do not have it).  You might
+> ask if Doug Gwyn has one squirrelled away.
+>
+>
+>
+>
+>
+> *From:* Dr Iain Maoileoin <iain at csp-partnership.co.uk>
+> *Sent:* Friday, December 6, 2019 12:58 PM
+> *To:* ron at ronnatalie.com
+> *Cc:* tuhs at minnie.tuhs.org
+> *Subject:* Re: [TUHS] Gaming on early Unix
+>
+>
+>
+>
+>
+> On 6 Dec 2019, at 16:19, <ron at ronnatalie.com> <ron at ronnatalie.com> wrote:
+>
+>
+>
+>
+>
+> There was another multiplayer game called “Search” that would result
+> around 4:30 in the afternoon someone yelling “Search Up” which was
+> everybody’s cue to join in the game.
+>
+>
+>
+>
+>
+> Ron (all) I have been trying to track down search for years.  We ran a
+> modified copy at the Universirt of Strathclyde Computer Department - it
+> would be good to get a copy for the next reunion.
+>
+>
+>
+> I have been totally unsuccessful over a decade trying to locate the
+> source.  (try a google search for search! [and a million other attempts])
+>
+>
+>
+> Any ideas if it still exists?
+>
+> Iain
+>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191207/4d3cc37a/attachment.html>
+
+From athornton at gmail.com  Sat Dec  7 11:22:47 2019
+From: athornton at gmail.com (Adam Thornton)
+Date: Fri, 6 Dec 2019 18:22:47 -0700
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+References: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+Message-ID: <CAP2nic0S-rP4kq=sAyut-Qr5M5kyoHcCj=PZL07Xis=rv1uB3Q@mail.gmail.com>
+
+There was not a Z-Machine interpreter for Unix machines, as far as I know,
+until the release of the ITF interpreter in the early 90s.
+
+However....
+
+Zork was developed under ITS (when it was "mainframe Zork" and an MIT
+student project), and the later Infocom games were developed under TOPS-20.
+
+As it happens, I've fairly recently ported the "Frotz" Z-Machine
+interpreter to TOPS-20.  https://github.com/athornton/tops20-frotz and
+https://github.com/athornton/gnusto-frotz-tops20
+
+This was not all _that_ hard.  KCC on TOPS-20 is an ANSI C compiler, so
+there were basically two classes of problems to solve.
+
+The first one is that the linker requires all symbols that are linked
+between modules to be six characters or shorter (and case is folded), so I
+wrote a transmogrifier (gnusto-frotz) to extract those symbols and create a
+mapping for them so that the object code would link.
+
+The second problem was that the Frotz source assumes 8-bit bytes and that
+your word length is a multiple of 8 bits.  Since the Z-machine is a 16-bit
+virtual machine, that meant there was a whole lot of bit masking necessary
+in the opcodes and memory references in order to represent the Z-machine
+memory correctly within the TOPS-20 address space.  That's done with stuff
+like:
+
+https://github.com/athornton/tops20-frotz/blob/0130a67fc44e0c7de1faa8f882cbc28faee76756/frotz.h#L488
+
+So the idea is, gnusto-frotz-tops20 is semantically equivalent to regular
+Frotz, but with macros changed so if you build it with -DWEIRD_WORDSIZE it
+would build on a 36-bit system.  Then once you've modified the source, you
+run it through the transmogrifier (which really just generates a sed
+script) to get something that will _link_ on a 36-bit system.
+
+I have vague plans to port Frotz to ITS but the problem there is that the C
+compiler is pre-K&R rather than ANSI, so there's a lot of deprotoization
+work to be done, and _then_ I need to fix the things like += being =+ and
+so forth, and I think I have to chop another character off the symbols,
+which may mean I need smarter collision detection.  So it's nontrivial.
+
+Maybe a good first step would be unprotoizing Frotz and getting it to build
+on v7 or so...
+
+Adam
+
+On Fri, Dec 6, 2019 at 3:52 AM Gabriel Diaz <gdiaz at qswarm.com> wrote:
+
+> Hello,
+>
+>
+> Source code has been published of some early games.
+>
+> Were those games playable on Unix machines at the time? What was your
+> favourite game?
+>
+>
+>
+> https://kryptonradio.com/2019/04/18/zork-source-code-presumed-lost-forever-has-been-uploaded-to-github/
+>
+>
+> Gabi
+>
+>
+>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191206/7d66c257/attachment.html>
+
+From athornton at gmail.com  Sat Dec  7 11:28:57 2019
+From: athornton at gmail.com (Adam Thornton)
+Date: Fri, 6 Dec 2019 18:28:57 -0700
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <CAP2nic0S-rP4kq=sAyut-Qr5M5kyoHcCj=PZL07Xis=rv1uB3Q@mail.gmail.com>
+References: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+ <CAP2nic0S-rP4kq=sAyut-Qr5M5kyoHcCj=PZL07Xis=rv1uB3Q@mail.gmail.com>
+Message-ID: <CAP2nic0uj6e37RMUfHqZJDc3PveBAFARPNpx81xQtJNYFT7Q=Q@mail.gmail.com>
+
+Well, OK, there's one other wrinkle.  Building Frotz on 4.3BSD (or
+whatever) on a VAX would be easy, because you have a 32-bit address space.
+But the Z-machine can address 64Kwords (plus some trickiness for access
+strings in high memory) so you'd have to actually implement a segmented
+memory model or overlays or something to squeeze it into a PDP-11.  Which
+is obviously doable--after all, the Z-machine was designed to be
+implemented on 8-bit micros!--but means that porting Frotz might be more
+work than just writing a new interpreter, and supporting the later, larger
+games (Infocom used the v5 format, which doubled the size and required 128K
+even on 8-bit systems, and a lot of the post-Infocom community work--before
+the community went to Glulx, which is a
+32-bit-inspired-by-the-z-machine-virtual-machine-for-text-adventures--used
+z8, which doubled the size again) is going to be harder.
+
+Jimmy Maher has just been talking about the evolution of the Z-machine over
+on filfre.net.  It's well worth reading.
+
+Adam
+
+On Fri, Dec 6, 2019 at 6:22 PM Adam Thornton <athornton at gmail.com> wrote:
+
+> There was not a Z-Machine interpreter for Unix machines, as far as I know,
+> until the release of the ITF interpreter in the early 90s.
+>
+> However....
+>
+> Zork was developed under ITS (when it was "mainframe Zork" and an MIT
+> student project), and the later Infocom games were developed under TOPS-20.
+>
+> As it happens, I've fairly recently ported the "Frotz" Z-Machine
+> interpreter to TOPS-20.  https://github.com/athornton/tops20-frotz and
+> https://github.com/athornton/gnusto-frotz-tops20
+>
+> This was not all _that_ hard.  KCC on TOPS-20 is an ANSI C compiler, so
+> there were basically two classes of problems to solve.
+>
+> The first one is that the linker requires all symbols that are linked
+> between modules to be six characters or shorter (and case is folded), so I
+> wrote a transmogrifier (gnusto-frotz) to extract those symbols and create a
+> mapping for them so that the object code would link.
+>
+> The second problem was that the Frotz source assumes 8-bit bytes and that
+> your word length is a multiple of 8 bits.  Since the Z-machine is a 16-bit
+> virtual machine, that meant there was a whole lot of bit masking necessary
+> in the opcodes and memory references in order to represent the Z-machine
+> memory correctly within the TOPS-20 address space.  That's done with stuff
+> like:
+>
+>
+> https://github.com/athornton/tops20-frotz/blob/0130a67fc44e0c7de1faa8f882cbc28faee76756/frotz.h#L488
+>
+> So the idea is, gnusto-frotz-tops20 is semantically equivalent to regular
+> Frotz, but with macros changed so if you build it with -DWEIRD_WORDSIZE it
+> would build on a 36-bit system.  Then once you've modified the source, you
+> run it through the transmogrifier (which really just generates a sed
+> script) to get something that will _link_ on a 36-bit system.
+>
+> I have vague plans to port Frotz to ITS but the problem there is that the
+> C compiler is pre-K&R rather than ANSI, so there's a lot of deprotoization
+> work to be done, and _then_ I need to fix the things like += being =+ and
+> so forth, and I think I have to chop another character off the symbols,
+> which may mean I need smarter collision detection.  So it's nontrivial.
+>
+> Maybe a good first step would be unprotoizing Frotz and getting it to
+> build on v7 or so...
+>
+> Adam
+>
+> On Fri, Dec 6, 2019 at 3:52 AM Gabriel Diaz <gdiaz at qswarm.com> wrote:
+>
+>> Hello,
+>>
+>>
+>> Source code has been published of some early games.
+>>
+>> Were those games playable on Unix machines at the time? What was your
+>> favourite game?
+>>
+>>
+>>
+>> https://kryptonradio.com/2019/04/18/zork-source-code-presumed-lost-forever-has-been-uploaded-to-github/
+>>
+>>
+>> Gabi
+>>
+>>
+>>
+>>
+>>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191206/53d9b680/attachment-0001.html>
+
+From arnold at skeeve.com  Sun Dec  8 17:48:39 2019
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Sun, 08 Dec 2019 00:48:39 -0700
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <CAFCBnZv3R7N-i-Wj1hc29WBp49r2ny_RucjTYNODwgqdFy5Zew@mail.gmail.com>
+References: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+ <CAFCBnZv3R7N-i-Wj1hc29WBp49r2ny_RucjTYNODwgqdFy5Zew@mail.gmail.com>
+Message-ID: <201912080748.xB87mdfV026038@freefriends.org>
+
+"A. P. Garcia" <a.phillip.garcia at gmail.com> wrote:
+
+> The earliest and most influential game that originated on
+> Unix was probably rogue, which was included in 4.2 BSD.
+
+I'm pretty sure it was in 4.1.  It shipped as a binary only, IIRC.
+
+Arnold
+
+From tuhs at t.lastninja.net  Sun Dec  8 20:56:27 2019
+From: tuhs at t.lastninja.net (Naveen Nathan)
+Date: Sun, 08 Dec 2019 21:56:27 +1100
+Subject: [TUHS] Xinu (was: In Memoriam: John Lions)
+In-Reply-To: <20191205043159.GA42246@eureka.lemis.com>
+References: <alpine.BSF.2.21.9999.1912051057480.99521@aneurin.horsfall.org>
+ <20191205041653.GO32688@mcvoy.com> <20191205043159.GA42246@eureka.lemis.com>
+Message-ID: <59faf3cc-d196-4023-b847-952d9114d5ff@www.fastmail.com>
+
+ > On Wednesday,  4 December 2019 at 20:16:53 -0800, Larry McVoy wrote:
+> > Though I have to say that Doug Comer did an equally good job with
+> > his XINU books.  Do you guys know of Doug? [...]
+
+I first heard of Doug Comer on one of my favourite podcasts History of Networking.
+
+He covers his personal history in the development of TCP/IP in the early days
+and I think he does touch on a little bit about Xinu, but I may be misremembering.
+
+Definitely worth listening to: https://rule11.tech/history-of-tcp-ip-with-doug-comer/ .
+
+- Naveen
+
+From clemc at ccc.com  Mon Dec  9 05:54:34 2019
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 8 Dec 2019 14:54:34 -0500
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <201912080748.xB87mdfV026038@freefriends.org>
+References: <ltHJoDDEOs5-xEO89I41fL1EtqGSVAQBplC23ejqb4QSevDcIaP-Iu-SEf66ZXYoTZfwcHe_CF9JwJ_Ypdj_qpazTGhqo7feaGau_POndD4=@qswarm.com>
+ <CAFCBnZv3R7N-i-Wj1hc29WBp49r2ny_RucjTYNODwgqdFy5Zew@mail.gmail.com>
+ <201912080748.xB87mdfV026038@freefriends.org>
+Message-ID: <CAC20D2MPBP3dD8vVXacSVVb4r96bO8rXk0kKSE8x4k5Kc1BcPQ@mail.gmail.com>
+
+On Sun, Dec 8, 2019 at 2:49 AM <arnold at skeeve.com> wrote:
+
+> I'm pretty sure it was in 4.1.  It shipped as a binary only, IIRC.
+>
+That might be right.   At Tektronix, we had it one V7 on a PDP-11 in
+the late 1970s (before we were running 4.1), and I know we had sources but
+I have no memory of the provenance.   It was likely they came from a UCB
+person working there in the summer (Mark Bales, Jim Kleckner or one of the
+CAD folks would be the prime suspects).
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191208/d95b1be0/attachment.html>
+
+From scj at yaccman.com  Mon Dec  9 10:05:50 2019
+From: scj at yaccman.com (Steve Johnson)
+Date: Sun, 08 Dec 2019 16:05:50 -0800
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <CAFH29tohn3iEAUpssnE_ddtkhGkV=W=_nGqJnZcw8H6CF7=thQ@mail.gmail.com>
+Message-ID: <3d1053b0debfc5a79267860e058b1d07e7686811@webmail.yaccman.com>
+
+I wrote a very simple game for my son -- go fish.   It was one of my
+first C programs (that is evident by the fact that it contains several
+goto's).  There is the source code in one of the BSD distributions,
+dated 1980 (with a UCB copyright...).
+
+The original game simply played cards at random from its hand, and was
+pretty easy to beat.  Then I realized that there was a simple
+strategy -- if the player asked the program for, e.g., a 5, the
+program remembered that the player had a 5.   If it later drew a 5
+it immediately asked for it.   This "pro" version was very hard to
+beat, to the extent that nobody wanted to play it.  So I made the pro
+version an option--the default was the dumb mode.
+
+It didn't get a lot of hype, but I did face an irate user once at a
+Usenix meeting who publicly accused me of cheating (since the program
+did, in fact, know what the player's had was).  The pro option was
+that good, but, unless somebody changed a copy of it, the user's hand
+wasn't part of the strategy...
+
+Looking at the code a couple of months ago, I found at least one bug
+and one logical error.  The bug would have been caught by Lint, but
+that program was many years in the future.
+
+Steve 
+
+----- Original Message -----
+From:
+ "Richard Salz" <rich.salz at gmail.com>
+
+To:
+<ron at ronnatalie.com>
+Cc:
+"TUHS main list" <tuhs at minnie.tuhs.org>
+Sent:
+Fri, 6 Dec 2019 11:39:42 -0500
+Subject:
+Re: [TUHS] Gaming on early Unix
+
+	There was another multiplayer game called “Search” that would
+result around 4:30 in the afternoon someone yelling “Search Up”
+which was everybody’s cue to join in the game.
+
+Was that "hunt" that came with BSD 4-something? 
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191208/5846ded6/attachment.html>
+
+From ken at google.com  Mon Dec  9 10:35:25 2019
+From: ken at google.com (Ken Thompson)
+Date: Sun, 8 Dec 2019 16:35:25 -0800
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <3d1053b0debfc5a79267860e058b1d07e7686811@webmail.yaccman.com>
+References: <CAFH29tohn3iEAUpssnE_ddtkhGkV=W=_nGqJnZcw8H6CF7=thQ@mail.gmail.com>
+ <3d1053b0debfc5a79267860e058b1d07e7686811@webmail.yaccman.com>
+Message-ID: <CAG=a+riKQr1ohYMjt3=XE5CkFypoH-+u1H51Q3EVMWJFtZkkPQ@mail.gmail.com>
+
+in the early 70s, noone had seen a computer.
+i had a terminal at home and we were giving
+a dinner party. i wrote several games for the
+party from the back of an off-the-shelf puzzle
+book.
+
+the ones i remember:
+
+moo (bulls + cows)
+hunt the wumpus (move or shoot)
+learning tic-tac-toe
+i can guess your number (divide and conquer)
+jealous husbands (similar to fox hen corn)
+nim
+
+i think there were more. they went over
+pretty well at the party.
+
+i think this was 1969 or 1970.
+
+On Sun, Dec 8, 2019 at 4:14 PM Steve Johnson <scj at yaccman.com> wrote:
+>
+> I wrote a very simple game for my son -- go fish.   It was one of my first C programs (that is evident by the fact that it contains several goto's).  There is the source code in one of the BSD distributions, dated 1980 (with a UCB copyright...).
+>
+> The original game simply played cards at random from its hand, and was pretty easy to beat.  Then I realized that there was a simple strategy -- if the player asked the program for, e.g., a 5, the program remembered that the player had a 5.   If it later drew a 5 it immediately asked for it.   This "pro" version was very hard to beat, to the extent that nobody wanted to play it.  So I made the pro version an option--the default was the dumb mode.
+>
+> It didn't get a lot of hype, but I did face an irate user once at a Usenix meeting who publicly accused me of cheating (since the program did, in fact, know what the player's had was).  The pro option was that good, but, unless somebody changed a copy of it, the user's hand wasn't part of the strategy...
+>
+> Looking at the code a couple of months ago, I found at least one bug and one logical error.  The bug would have been caught by Lint, but that program was many years in the future.
+>
+> Steve
+>
+>
+>
+> ----- Original Message -----
+> From: "Richard Salz" <rich.salz at gmail.com>
+> To:<ron at ronnatalie.com>
+> Cc:"TUHS main list" <tuhs at minnie.tuhs.org>
+> Sent:Fri, 6 Dec 2019 11:39:42 -0500
+> Subject:Re: [TUHS] Gaming on early Unix
+>
+>
+>> There was another multiplayer game called “Search” that would result around 4:30 in the afternoon someone yelling “Search Up” which was everybody’s cue to join in the game.
+>>
+>>
+> Was that "hunt" that came with BSD 4-something?
+
+From athornton at gmail.com  Mon Dec  9 10:46:38 2019
+From: athornton at gmail.com (Adam Thornton)
+Date: Sun, 8 Dec 2019 17:46:38 -0700
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <CAG=a+riKQr1ohYMjt3=XE5CkFypoH-+u1H51Q3EVMWJFtZkkPQ@mail.gmail.com>
+References: <CAFH29tohn3iEAUpssnE_ddtkhGkV=W=_nGqJnZcw8H6CF7=thQ@mail.gmail.com>
+ <3d1053b0debfc5a79267860e058b1d07e7686811@webmail.yaccman.com>
+ <CAG=a+riKQr1ohYMjt3=XE5CkFypoH-+u1H51Q3EVMWJFtZkkPQ@mail.gmail.com>
+Message-ID: <25D66740-7832-4BE9-877E-7F4C905B4195@gmail.com>
+
+
+
+> On Dec 8, 2019, at 5:35 PM, Ken Thompson via TUHS <tuhs at minnie.tuhs.org> wrote:
+> 
+> in the early 70s, noone had seen a computer.
+> i had a terminal at home and we were giving
+> a dinner party. i wrote several games for the
+> party from the back of an off-the-shelf puzzle
+> book.
+> 
+> the ones i remember:
+> 
+> moo (bulls + cows)
+> hunt the wumpus (move or shoot)
+> learning tic-tac-toe
+> i can guess your number (divide and conquer)
+> jealous husbands (similar to fox hen corn)
+> nim
+> 
+> i think there were more. they went over
+> pretty well at the party.
+> 
+> i think this was 1969 or 1970.
+
+
+Clarification, please.
+
+Was “Hunt the Wumpus” from the back of an off-the-shelf puzzle book?  I thought it was by Gregory Yob (per the Creative Computing BASIC Computer Games book—Wumpus may have been in More BASIC Computer Games), and, well, it’s about dodecahedronal geometry, which seems as if it would only have been found in a rather rarefied puzzle book, but does seem like the sort of Platonic solid a computer-programming nerd in the early 1970s would have known about.
+
+Adam
+
+From robpike at gmail.com  Mon Dec  9 12:03:18 2019
+From: robpike at gmail.com (Rob Pike)
+Date: Mon, 9 Dec 2019 13:03:18 +1100
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <25D66740-7832-4BE9-877E-7F4C905B4195@gmail.com>
+References: <CAFH29tohn3iEAUpssnE_ddtkhGkV=W=_nGqJnZcw8H6CF7=thQ@mail.gmail.com>
+ <3d1053b0debfc5a79267860e058b1d07e7686811@webmail.yaccman.com>
+ <CAG=a+riKQr1ohYMjt3=XE5CkFypoH-+u1H51Q3EVMWJFtZkkPQ@mail.gmail.com>
+ <25D66740-7832-4BE9-877E-7F4C905B4195@gmail.com>
+Message-ID: <CAKzdPgwWjveRTWjEbbeFjJTfjZXU69GAX8Jm0EFGJYnerwsDwA@mail.gmail.com>
+
+My favorite (other than Nuke the Smileys) was written at the UofT by Hugh
+Redelmeier. It was a version of tic-tac-toe that played only a single line,
+and would always win. If it didn't like your move, it changed it. If your
+move was a good one, it would change its previous move. And it did this
+with lovely little messages. It was fun watching people get upset at it.
+
+I don't know where the source is nowadays. I may have it somewhere, or it
+might be ferric dust long since swept up from a cupboard of failed 9-track
+tapes.
+
+-rob
+
+
+On Mon, Dec 9, 2019 at 11:47 AM Adam Thornton <athornton at gmail.com> wrote:
+
+>
+>
+> > On Dec 8, 2019, at 5:35 PM, Ken Thompson via TUHS <tuhs at minnie.tuhs.org>
+> wrote:
+> >
+> > in the early 70s, noone had seen a computer.
+> > i had a terminal at home and we were giving
+> > a dinner party. i wrote several games for the
+> > party from the back of an off-the-shelf puzzle
+> > book.
+> >
+> > the ones i remember:
+> >
+> > moo (bulls + cows)
+> > hunt the wumpus (move or shoot)
+> > learning tic-tac-toe
+> > i can guess your number (divide and conquer)
+> > jealous husbands (similar to fox hen corn)
+> > nim
+> >
+> > i think there were more. they went over
+> > pretty well at the party.
+> >
+> > i think this was 1969 or 1970.
+>
+>
+> Clarification, please.
+>
+> Was “Hunt the Wumpus” from the back of an off-the-shelf puzzle book?  I
+> thought it was by Gregory Yob (per the Creative Computing BASIC Computer
+> Games book—Wumpus may have been in More BASIC Computer Games), and, well,
+> it’s about dodecahedronal geometry, which seems as if it would only have
+> been found in a rather rarefied puzzle book, but does seem like the sort of
+> Platonic solid a computer-programming nerd in the early 1970s would have
+> known about.
+>
+> Adam
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191209/9fc685bd/attachment.html>
+
+From ken at google.com  Mon Dec  9 12:10:51 2019
+From: ken at google.com (Ken Thompson)
+Date: Sun, 8 Dec 2019 18:10:51 -0800
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <CAKzdPgwWjveRTWjEbbeFjJTfjZXU69GAX8Jm0EFGJYnerwsDwA@mail.gmail.com>
+References: <CAFH29tohn3iEAUpssnE_ddtkhGkV=W=_nGqJnZcw8H6CF7=thQ@mail.gmail.com>
+ <3d1053b0debfc5a79267860e058b1d07e7686811@webmail.yaccman.com>
+ <CAG=a+riKQr1ohYMjt3=XE5CkFypoH-+u1H51Q3EVMWJFtZkkPQ@mail.gmail.com>
+ <25D66740-7832-4BE9-877E-7F4C905B4195@gmail.com>
+ <CAKzdPgwWjveRTWjEbbeFjJTfjZXU69GAX8Jm0EFGJYnerwsDwA@mail.gmail.com>
+Message-ID: <CAG=a+rgcZ6X2Hc_=089gzcdt9oR2Z203OnyRm4gUpnvJVojY5A@mail.gmail.com>
+
+my favorite is the original star wars on the pdp-1.
+i think it came from lincoln labs, but i played it
+in 1965-1966 at stanford.
+a very good replica was done on unix by dmr.
+
+On Sun, Dec 8, 2019 at 6:03 PM Rob Pike <robpike at gmail.com> wrote:
+>
+> My favorite (other than Nuke the Smileys) was written at the UofT by Hugh Redelmeier. It was a version of tic-tac-toe that played only a single line, and would always win. If it didn't like your move, it changed it. If your move was a good one, it would change its previous move. And it did this with lovely little messages. It was fun watching people get upset at it.
+>
+> I don't know where the source is nowadays. I may have it somewhere, or it might be ferric dust long since swept up from a cupboard of failed 9-track tapes.
+>
+> -rob
+>
+>
+> On Mon, Dec 9, 2019 at 11:47 AM Adam Thornton <athornton at gmail.com> wrote:
+>>
+>>
+>>
+>> > On Dec 8, 2019, at 5:35 PM, Ken Thompson via TUHS <tuhs at minnie.tuhs.org> wrote:
+>> >
+>> > in the early 70s, noone had seen a computer.
+>> > i had a terminal at home and we were giving
+>> > a dinner party. i wrote several games for the
+>> > party from the back of an off-the-shelf puzzle
+>> > book.
+>> >
+>> > the ones i remember:
+>> >
+>> > moo (bulls + cows)
+>> > hunt the wumpus (move or shoot)
+>> > learning tic-tac-toe
+>> > i can guess your number (divide and conquer)
+>> > jealous husbands (similar to fox hen corn)
+>> > nim
+>> >
+>> > i think there were more. they went over
+>> > pretty well at the party.
+>> >
+>> > i think this was 1969 or 1970.
+>>
+>>
+>> Clarification, please.
+>>
+>> Was “Hunt the Wumpus” from the back of an off-the-shelf puzzle book?  I thought it was by Gregory Yob (per the Creative Computing BASIC Computer Games book—Wumpus may have been in More BASIC Computer Games), and, well, it’s about dodecahedronal geometry, which seems as if it would only have been found in a rather rarefied puzzle book, but does seem like the sort of Platonic solid a computer-programming nerd in the early 1970s would have known about.
+>>
+>> Adam
+
+From robpike at gmail.com  Mon Dec  9 12:15:39 2019
+From: robpike at gmail.com (Rob Pike)
+Date: Mon, 9 Dec 2019 13:15:39 +1100
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <CAG=a+rgcZ6X2Hc_=089gzcdt9oR2Z203OnyRm4gUpnvJVojY5A@mail.gmail.com>
+References: <CAFH29tohn3iEAUpssnE_ddtkhGkV=W=_nGqJnZcw8H6CF7=thQ@mail.gmail.com>
+ <3d1053b0debfc5a79267860e058b1d07e7686811@webmail.yaccman.com>
+ <CAG=a+riKQr1ohYMjt3=XE5CkFypoH-+u1H51Q3EVMWJFtZkkPQ@mail.gmail.com>
+ <25D66740-7832-4BE9-877E-7F4C905B4195@gmail.com>
+ <CAKzdPgwWjveRTWjEbbeFjJTfjZXU69GAX8Jm0EFGJYnerwsDwA@mail.gmail.com>
+ <CAG=a+rgcZ6X2Hc_=089gzcdt9oR2Z203OnyRm4gUpnvJVojY5A@mail.gmail.com>
+Message-ID: <CAKzdPgzmZhxY86RSS=cCvDLU37Uk-wj239PKMo7epbvV3cg+-w@mail.gmail.com>
+
+Space war?
+
+-rob
+
+
+On Mon, Dec 9, 2019 at 1:11 PM Ken Thompson <ken at google.com> wrote:
+
+> my favorite is the original star wars on the pdp-1.
+> i think it came from lincoln labs, but i played it
+> in 1965-1966 at stanford.
+> a very good replica was done on unix by dmr.
+>
+> On Sun, Dec 8, 2019 at 6:03 PM Rob Pike <robpike at gmail.com> wrote:
+> >
+> > My favorite (other than Nuke the Smileys) was written at the UofT by
+> Hugh Redelmeier. It was a version of tic-tac-toe that played only a single
+> line, and would always win. If it didn't like your move, it changed it. If
+> your move was a good one, it would change its previous move. And it did
+> this with lovely little messages. It was fun watching people get upset at
+> it.
+> >
+> > I don't know where the source is nowadays. I may have it somewhere, or
+> it might be ferric dust long since swept up from a cupboard of failed
+> 9-track tapes.
+> >
+> > -rob
+> >
+> >
+> > On Mon, Dec 9, 2019 at 11:47 AM Adam Thornton <athornton at gmail.com>
+> wrote:
+> >>
+> >>
+> >>
+> >> > On Dec 8, 2019, at 5:35 PM, Ken Thompson via TUHS <
+> tuhs at minnie.tuhs.org> wrote:
+> >> >
+> >> > in the early 70s, noone had seen a computer.
+> >> > i had a terminal at home and we were giving
+> >> > a dinner party. i wrote several games for the
+> >> > party from the back of an off-the-shelf puzzle
+> >> > book.
+> >> >
+> >> > the ones i remember:
+> >> >
+> >> > moo (bulls + cows)
+> >> > hunt the wumpus (move or shoot)
+> >> > learning tic-tac-toe
+> >> > i can guess your number (divide and conquer)
+> >> > jealous husbands (similar to fox hen corn)
+> >> > nim
+> >> >
+> >> > i think there were more. they went over
+> >> > pretty well at the party.
+> >> >
+> >> > i think this was 1969 or 1970.
+> >>
+> >>
+> >> Clarification, please.
+> >>
+> >> Was “Hunt the Wumpus” from the back of an off-the-shelf puzzle book?  I
+> thought it was by Gregory Yob (per the Creative Computing BASIC Computer
+> Games book—Wumpus may have been in More BASIC Computer Games), and, well,
+> it’s about dodecahedronal geometry, which seems as if it would only have
+> been found in a rather rarefied puzzle book, but does seem like the sort of
+> Platonic solid a computer-programming nerd in the early 1970s would have
+> known about.
+> >>
+> >> Adam
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191209/e2928bea/attachment.html>
+
+From ken at google.com  Mon Dec  9 12:19:44 2019
+From: ken at google.com (Ken Thompson)
+Date: Sun, 8 Dec 2019 18:19:44 -0800
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <CAKzdPgzmZhxY86RSS=cCvDLU37Uk-wj239PKMo7epbvV3cg+-w@mail.gmail.com>
+References: <CAFH29tohn3iEAUpssnE_ddtkhGkV=W=_nGqJnZcw8H6CF7=thQ@mail.gmail.com>
+ <3d1053b0debfc5a79267860e058b1d07e7686811@webmail.yaccman.com>
+ <CAG=a+riKQr1ohYMjt3=XE5CkFypoH-+u1H51Q3EVMWJFtZkkPQ@mail.gmail.com>
+ <25D66740-7832-4BE9-877E-7F4C905B4195@gmail.com>
+ <CAKzdPgwWjveRTWjEbbeFjJTfjZXU69GAX8Jm0EFGJYnerwsDwA@mail.gmail.com>
+ <CAG=a+rgcZ6X2Hc_=089gzcdt9oR2Z203OnyRm4gUpnvJVojY5A@mail.gmail.com>
+ <CAKzdPgzmZhxY86RSS=cCvDLU37Uk-wj239PKMo7epbvV3cg+-w@mail.gmail.com>
+Message-ID: <CAG=a+rhJt8_WtJFRpmjx_q5FpUkhgiSc+6aqPKgBrnNnhU10WA@mail.gmail.com>
+
+space war. (old age)
+
+On Sun, Dec 8, 2019 at 6:15 PM Rob Pike <robpike at gmail.com> wrote:
+>
+> Space war?
+>
+> -rob
+>
+>
+> On Mon, Dec 9, 2019 at 1:11 PM Ken Thompson <ken at google.com> wrote:
+>>
+>> my favorite is the original star wars on the pdp-1.
+>> i think it came from lincoln labs, but i played it
+>> in 1965-1966 at stanford.
+>> a very good replica was done on unix by dmr.
+>>
+>> On Sun, Dec 8, 2019 at 6:03 PM Rob Pike <robpike at gmail.com> wrote:
+>> >
+>> > My favorite (other than Nuke the Smileys) was written at the UofT by Hugh Redelmeier. It was a version of tic-tac-toe that played only a single line, and would always win. If it didn't like your move, it changed it. If your move was a good one, it would change its previous move. And it did this with lovely little messages. It was fun watching people get upset at it.
+>> >
+>> > I don't know where the source is nowadays. I may have it somewhere, or it might be ferric dust long since swept up from a cupboard of failed 9-track tapes.
+>> >
+>> > -rob
+>> >
+>> >
+>> > On Mon, Dec 9, 2019 at 11:47 AM Adam Thornton <athornton at gmail.com> wrote:
+>> >>
+>> >>
+>> >>
+>> >> > On Dec 8, 2019, at 5:35 PM, Ken Thompson via TUHS <tuhs at minnie.tuhs.org> wrote:
+>> >> >
+>> >> > in the early 70s, noone had seen a computer.
+>> >> > i had a terminal at home and we were giving
+>> >> > a dinner party. i wrote several games for the
+>> >> > party from the back of an off-the-shelf puzzle
+>> >> > book.
+>> >> >
+>> >> > the ones i remember:
+>> >> >
+>> >> > moo (bulls + cows)
+>> >> > hunt the wumpus (move or shoot)
+>> >> > learning tic-tac-toe
+>> >> > i can guess your number (divide and conquer)
+>> >> > jealous husbands (similar to fox hen corn)
+>> >> > nim
+>> >> >
+>> >> > i think there were more. they went over
+>> >> > pretty well at the party.
+>> >> >
+>> >> > i think this was 1969 or 1970.
+>> >>
+>> >>
+>> >> Clarification, please.
+>> >>
+>> >> Was “Hunt the Wumpus” from the back of an off-the-shelf puzzle book?  I thought it was by Gregory Yob (per the Creative Computing BASIC Computer Games book—Wumpus may have been in More BASIC Computer Games), and, well, it’s about dodecahedronal geometry, which seems as if it would only have been found in a rather rarefied puzzle book, but does seem like the sort of Platonic solid a computer-programming nerd in the early 1970s would have known about.
+>> >>
+>> >> Adam
+
+From tuhs at t.lastninja.net  Mon Dec  9 18:40:31 2019
+From: tuhs at t.lastninja.net (Naveen Nathan)
+Date: Mon, 09 Dec 2019 19:40:31 +1100
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <CAG=a+riKQr1ohYMjt3=XE5CkFypoH-+u1H51Q3EVMWJFtZkkPQ@mail.gmail.com>
+References: <CAFH29tohn3iEAUpssnE_ddtkhGkV=W=_nGqJnZcw8H6CF7=thQ@mail.gmail.com>
+ <3d1053b0debfc5a79267860e058b1d07e7686811@webmail.yaccman.com>
+ <CAG=a+riKQr1ohYMjt3=XE5CkFypoH-+u1H51Q3EVMWJFtZkkPQ@mail.gmail.com>
+Message-ID: <ee06e52e-5b06-4a72-9842-3805143e4540@www.fastmail.com>
+
+On Mon, 9 Dec 2019, at 11:35 AM, Ken Thompson via TUHS wrote:
+> in the early 70s, noone had seen a computer.
+> i had a terminal at home and we were giving
+> a dinner party. i wrote several games for the
+> party from the back of an off-the-shelf puzzle
+> book.
+
+Hi Ken,
+
+I might be too young to understand the communication
+technologies that existed in the 70s.
+
+How did the terminal connect back to the main computer?
+
+Did you have a fixed line or did you dial-in over POTS (plain old telephone service)?
+
+Thanks,
+Naveen
+
+From gdiaz at qswarm.com  Mon Dec  9 18:41:02 2019
+From: gdiaz at qswarm.com (Gabriel Diaz)
+Date: Mon, 09 Dec 2019 08:41:02 +0000
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <CAG=a+rhJt8_WtJFRpmjx_q5FpUkhgiSc+6aqPKgBrnNnhU10WA@mail.gmail.com>
+References: <CAFH29tohn3iEAUpssnE_ddtkhGkV=W=_nGqJnZcw8H6CF7=thQ@mail.gmail.com>
+ <3d1053b0debfc5a79267860e058b1d07e7686811@webmail.yaccman.com>
+ <CAG=a+riKQr1ohYMjt3=XE5CkFypoH-+u1H51Q3EVMWJFtZkkPQ@mail.gmail.com>
+ <25D66740-7832-4BE9-877E-7F4C905B4195@gmail.com>
+ <CAKzdPgwWjveRTWjEbbeFjJTfjZXU69GAX8Jm0EFGJYnerwsDwA@mail.gmail.com>
+ <CAG=a+rgcZ6X2Hc_=089gzcdt9oR2Z203OnyRm4gUpnvJVojY5A@mail.gmail.com>
+ <CAKzdPgzmZhxY86RSS=cCvDLU37Uk-wj239PKMo7epbvV3cg+-w@mail.gmail.com>
+ <CAG=a+rhJt8_WtJFRpmjx_q5FpUkhgiSc+6aqPKgBrnNnhU10WA@mail.gmail.com>
+Message-ID: <Uv-6dsru_huS6NvWVOa4LHqXFEtyCH1m9knAWrBJr-14kU0GmWiuwLb1SeF-nCDGNTLUkqhlM3q4YKhKVuySCkvGOQxHYry0H1le1w51W7M=@qswarm.com>
+
+Than you all!
+
+I've found a game demo on youtube on a working PDP-1 at the computer history museum. 
+
+
+Spacewars demo https://youtu.be/1EWQYAfuMYw?t=838
+Video from the start https://youtu.be/1EWQYAfuMYw
+
+The whole video show a music program, the display adapter, the spacewars demo and the light-pen.
+Pretty amazing machine.
+
+Gabi
+
+
+
+‐‐‐‐‐‐‐ Original Message ‐‐‐‐‐‐‐
+El lunes, diciembre 9, 2019 3:19 AM, Ken Thompson via TUHS <tuhs at minnie.tuhs.org> escribió:
+
+> space war. (old age)
+> 
+
+> On Sun, Dec 8, 2019 at 6:15 PM Rob Pike robpike at gmail.com wrote:
+> 
+
+> > Space war?
+> > -rob
+> > On Mon, Dec 9, 2019 at 1:11 PM Ken Thompson ken at google.com wrote:
+> > 
+
+> > > my favorite is the original star wars on the pdp-1.
+> > > i think it came from lincoln labs, but i played it
+> > > in 1965-1966 at stanford.
+> > > a very good replica was done on unix by dmr.
+> > > On Sun, Dec 8, 2019 at 6:03 PM Rob Pike robpike at gmail.com wrote:
+> > > 
+
+> > > > My favorite (other than Nuke the Smileys) was written at the UofT by Hugh Redelmeier. It was a version of tic-tac-toe that played only a single line, and would always win. If it didn't like your move, it changed it. If your move was a good one, it would change its previous move. And it did this with lovely little messages. It was fun watching people get upset at it.
+> > > > I don't know where the source is nowadays. I may have it somewhere, or it might be ferric dust long since swept up from a cupboard of failed 9-track tapes.
+> > > > -rob
+> > > > On Mon, Dec 9, 2019 at 11:47 AM Adam Thornton athornton at gmail.com wrote:
+> > > > 
+
+> > > > > > On Dec 8, 2019, at 5:35 PM, Ken Thompson via TUHS tuhs at minnie.tuhs.org wrote:
+> > > > > > in the early 70s, noone had seen a computer.
+> > > > > > i had a terminal at home and we were giving
+> > > > > > a dinner party. i wrote several games for the
+> > > > > > party from the back of an off-the-shelf puzzle
+> > > > > > book.
+> > > > > > the ones i remember:
+> > > > > > moo (bulls + cows)
+> > > > > > hunt the wumpus (move or shoot)
+> > > > > > learning tic-tac-toe
+> > > > > > i can guess your number (divide and conquer)
+> > > > > > jealous husbands (similar to fox hen corn)
+> > > > > > nim
+> > > > > > i think there were more. they went over
+> > > > > > pretty well at the party.
+> > > > > > i think this was 1969 or 1970.
+> > > > > 
+
+> > > > > Clarification, please.
+> > > > > Was “Hunt the Wumpus” from the back of an off-the-shelf puzzle book? I thought it was by Gregory Yob (per the Creative Computing BASIC Computer Games book—Wumpus may have been in More BASIC Computer Games), and, well, it’s about dodecahedronal geometry, which seems as if it would only have been found in a rather rarefied puzzle book, but does seem like the sort of Platonic solid a computer-programming nerd in the early 1970s would have known about.
+> > > > > Adam
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 823 bytes
+Desc: OpenPGP digital signature
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191209/46fed0cc/attachment.sig>
+
+From aap at papnet.eu  Mon Dec  9 21:17:05 2019
+From: aap at papnet.eu (Angelo Papenhoff)
+Date: Mon, 9 Dec 2019 12:17:05 +0100
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <CAG=a+rgcZ6X2Hc_=089gzcdt9oR2Z203OnyRm4gUpnvJVojY5A@mail.gmail.com>
+References: <CAFH29tohn3iEAUpssnE_ddtkhGkV=W=_nGqJnZcw8H6CF7=thQ@mail.gmail.com>
+ <3d1053b0debfc5a79267860e058b1d07e7686811@webmail.yaccman.com>
+ <CAG=a+riKQr1ohYMjt3=XE5CkFypoH-+u1H51Q3EVMWJFtZkkPQ@mail.gmail.com>
+ <25D66740-7832-4BE9-877E-7F4C905B4195@gmail.com>
+ <CAKzdPgwWjveRTWjEbbeFjJTfjZXU69GAX8Jm0EFGJYnerwsDwA@mail.gmail.com>
+ <CAG=a+rgcZ6X2Hc_=089gzcdt9oR2Z203OnyRm4gUpnvJVojY5A@mail.gmail.com>
+Message-ID: <20191209111705.GA17095@indra.papnet.eu>
+
+On 08/12/19, Ken Thompson via TUHS wrote:
+> my favorite is the original star wars on the pdp-1.
+> i think it came from lincoln labs, but i played it
+> in 1965-1966 at stanford.
+> a very good replica was done on unix by dmr.
+
+I wonder if this unix spacewar is still around. What was used as the
+display?
+
+Last month I got spacewar to run on my FPGA PDP-6 and PDP-10. There's
+still some work needed on the CRT simulation, but it's already looking
+quite good.
+
+The PDP-1 version can be played here (from where i stole the CRT
+simulation): https://www.masswerk.at/spacewar/
+
+aap
+
+From dave at horsfall.org  Tue Dec 10 06:50:38 2019
+From: dave at horsfall.org (Dave Horsfall)
+Date: Tue, 10 Dec 2019 07:50:38 +1100 (EST)
+Subject: [TUHS] Happy birthday, Ada Lovelace and JFO!
+Message-ID: <alpine.BSF.2.21.9999.1912100744220.963@aneurin.horsfall.org>
+
+Bit hard to classify this one; separate posts since COFF was created?
+
+Augusta Ada King-Noel, Countess of Lovelace (and daughter of Lord Byron), was 
+born on this day in 1815; arguably the world's first computer programmer and a 
+highly independent woman, she saw the potential in Charles Babbage's 
+new-fangled invention.
+
+J.F.Ossanna was given unto us on this day in 1928; a prolific programmer, he 
+not only had a hand in developing Unix but also gave us the ROFF series.
+
+Who'ld've thought that two computer greats would share the same birthday?
+
+-- Dave
+
+From g.branden.robinson at gmail.com  Tue Dec 10 08:40:24 2019
+From: g.branden.robinson at gmail.com (G. Branden Robinson)
+Date: Tue, 10 Dec 2019 09:40:24 +1100
+Subject: [TUHS] Happy birthday, Ada Lovelace and JFO!
+In-Reply-To: <alpine.BSF.2.21.9999.1912100744220.963@aneurin.horsfall.org>
+References: <alpine.BSF.2.21.9999.1912100744220.963@aneurin.horsfall.org>
+Message-ID: <20191209224022.swlqk4pkkjsheb6d@localhost.localdomain>
+
+At 2019-12-10T07:50:38+1100, Dave Horsfall wrote:
+> Who'ld've thought that two computer greats would share the same
+> birthday?
+
+Anyone who thinks there are at least 23 greats would bet that way. ;-)
+
+Regards,
+Branden
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 833 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191210/d3b24000/attachment.sig>
+
+From doug at cs.dartmouth.edu  Tue Dec 10 10:30:23 2019
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Mon, 09 Dec 2019 19:30:23 -0500
+Subject: [TUHS] Gaming on early Unix
+Message-ID: <201912100030.xBA0UNwL106373@tahoe.cs.Dartmouth.EDU>
+
+Moo and hunt-the-wumpus got quite a lot of play
+both in the lab and at home. Wump was an instant
+hit with my son who was 4 or 5 years old at the
+time.
+
+Amusingly, I speculated on how to generate degree-3
+graphs for wump, but obviously not very deeply. It
+was only much later that I realized the graph
+always had the same topology--a dodecahedron.
+
+Doug\
+
+From athornton at gmail.com  Tue Dec 10 14:03:50 2019
+From: athornton at gmail.com (Adam Thornton)
+Date: Mon, 9 Dec 2019 21:03:50 -0700
+Subject: [TUHS] Happy birthday, Ada Lovelace and JFO!
+In-Reply-To: <alpine.BSF.2.21.9999.1912100744220.963@aneurin.horsfall.org>
+References: <alpine.BSF.2.21.9999.1912100744220.963@aneurin.horsfall.org>
+Message-ID: <D94493C0-1783-4634-9A79-8B273EDC2F6D@gmail.com>
+
+
+
+> On Dec 9, 2019, at 1:50 PM, Dave Horsfall <dave at horsfall.org> wrote:
+> Who'ld've thought that two computer greats would share the same birthday?
+
+
+Well, are there more than 19 of them?
+
+Adam
+
+
+From athornton at gmail.com  Tue Dec 10 15:08:51 2019
+From: athornton at gmail.com (Adam Thornton)
+Date: Mon, 9 Dec 2019 22:08:51 -0700
+Subject: [TUHS] Gaming on early Unix
+In-Reply-To: <201912100030.xBA0UNwL106373@tahoe.cs.Dartmouth.EDU>
+References: <201912100030.xBA0UNwL106373@tahoe.cs.Dartmouth.EDU>
+Message-ID: <7FD6DB85-8A17-4FB9-BD54-306069C56F34@gmail.com>
+
+
+
+> On Dec 9, 2019, at 5:30 PM, Doug McIlroy <doug at cs.dartmouth.edu> wrote:
+> 
+> Moo and hunt-the-wumpus got quite a lot of play
+> both in the lab and at home. Wump was an instant
+> hit with my son who was 4 or 5 years old at the
+> time.
+> 
+> Amusingly, I speculated on how to generate degree-3
+> graphs for wump, but obviously not very deeply. It
+> was only much later that I realized the graph
+> always had the same topology--a dodecahedron.
+
+
+You know, maybe we’ve been looking at this wrong the whole time (I blame Yob).
+
+Maybe the caves aren’t the vertices of a dodecahedron.  Maybe they’re the faces of an icosahedron.
+
+Adam
+
+From dave at horsfall.org  Fri Dec 13 11:34:51 2019
+From: dave at horsfall.org (Dave Horsfall)
+Date: Fri, 13 Dec 2019 12:34:51 +1100 (EST)
+Subject: [TUHS] Happy birthday, Ada Lovelace and JFO!
+In-Reply-To: <20191209224022.swlqk4pkkjsheb6d@localhost.localdomain>
+References: <alpine.BSF.2.21.9999.1912100744220.963@aneurin.horsfall.org>
+ <20191209224022.swlqk4pkkjsheb6d@localhost.localdomain>
+Message-ID: <alpine.BSF.2.21.9999.1912131233010.963@aneurin.horsfall.org>
+
+On Tue, 10 Dec 2019, G. Branden Robinson wrote:
+
+>> Who'ld've thought that two computer greats would share the same
+>> birthday?
+>
+> Anyone who thinks there are at least 23 greats would bet that way. ;-)
+
+Yeah, I know; I'd temporarily forgotten the Birthday Paradox :-(
+
+-- Dave
+
+From jacob.ritorto at gmail.com  Mon Dec 16 01:54:57 2019
+From: jacob.ritorto at gmail.com (Jacob Ritorto)
+Date: Sun, 15 Dec 2019 10:54:57 -0500
+Subject: [TUHS] Two BSD Additions to the Unix Archive
+In-Reply-To: <20191203192600.GA27838@minnie.tuhs.org>
+References: <20191203192600.GA27838@minnie.tuhs.org>
+Message-ID: <CAHYQbfDHfbyNQZ8TNooZKiMBMHwEU=xbXtLz7O+g1thOJ4=vGQ@mail.gmail.com>
+
+Many thanks for putting this together,  Steven and Mike!
+
+Since I'm still running real hardware, do you think you could also
+post the actual 2.11bsd files to the archive? -- i.e. boot, disklabel,
+mkfs, restor, icheck, root.dump, and the three tarballs?
+
+I'm having quite an expenditure here trying to disassemble the .tap file..
+
+thx
+jake
+
+From henry.r.bent at gmail.com  Mon Dec 16 02:35:49 2019
+From: henry.r.bent at gmail.com (Henry Bent)
+Date: Sun, 15 Dec 2019 11:35:49 -0500
+Subject: [TUHS] Two BSD Additions to the Unix Archive
+In-Reply-To: <CAHYQbfDHfbyNQZ8TNooZKiMBMHwEU=xbXtLz7O+g1thOJ4=vGQ@mail.gmail.com>
+References: <20191203192600.GA27838@minnie.tuhs.org>
+ <CAHYQbfDHfbyNQZ8TNooZKiMBMHwEU=xbXtLz7O+g1thOJ4=vGQ@mail.gmail.com>
+Message-ID: <CAEdTPBedQwizKUCv3351SmA-PDYMLOe1-mLYTn_fi-F7fAkUFA@mail.gmail.com>
+
+On Sun, 15 Dec 2019 at 10:56, Jacob Ritorto <jacob.ritorto at gmail.com> wrote:
+
+> Many thanks for putting this together,  Steven and Mike!
+>
+> Since I'm still running real hardware, do you think you could also
+> post the actual 2.11bsd files to the archive? -- i.e. boot, disklabel,
+> mkfs, restor, icheck, root.dump, and the three tarballs?
+>
+> I'm having quite an expenditure here trying to disassemble the .tap file..
+>
+
+I agree that it makes sense to post the source files.  In the meantime,
+rawtap ( https://github.com/simh/simtools/tree/master/extracters/rawtap )
+does what you want; "rawtap -e tape0" will extract the individual files
+from that 2.11BSD tape image.
+
+-Henry
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191215/d1262849/attachment.html>
+
+From jacob.ritorto at gmail.com  Mon Dec 16 02:55:05 2019
+From: jacob.ritorto at gmail.com (Jacob Ritorto)
+Date: Sun, 15 Dec 2019 11:55:05 -0500
+Subject: [TUHS] Two BSD Additions to the Unix Archive
+In-Reply-To: <CAEdTPBedQwizKUCv3351SmA-PDYMLOe1-mLYTn_fi-F7fAkUFA@mail.gmail.com>
+References: <20191203192600.GA27838@minnie.tuhs.org>
+ <CAHYQbfDHfbyNQZ8TNooZKiMBMHwEU=xbXtLz7O+g1thOJ4=vGQ@mail.gmail.com>
+ <CAEdTPBedQwizKUCv3351SmA-PDYMLOe1-mLYTn_fi-F7fAkUFA@mail.gmail.com>
+Message-ID: <CAHYQbfDDXBeQh0HuEiWfnY5YfEMVAOfhVX5j3Dp9HESSjM58fA@mail.gmail.com>
+
+Henry Bent, you saved our weekend!  rawtap works like a charm!  Thanks so much!
+
+On Sun, Dec 15, 2019 at 11:36 AM Henry Bent <henry.r.bent at gmail.com> wrote:
+>
+> On Sun, 15 Dec 2019 at 10:56, Jacob Ritorto <jacob.ritorto at gmail.com> wrote:
+>>
+>> Many thanks for putting this together,  Steven and Mike!
+>>
+>> Since I'm still running real hardware, do you think you could also
+>> post the actual 2.11bsd files to the archive? -- i.e. boot, disklabel,
+>> mkfs, restor, icheck, root.dump, and the three tarballs?
+>>
+>> I'm having quite an expenditure here trying to disassemble the .tap file..
+>
+>
+> I agree that it makes sense to post the source files.  In the meantime, rawtap ( https://github.com/simh/simtools/tree/master/extracters/rawtap ) does what you want; "rawtap -e tape0" will extract the individual files from that 2.11BSD tape image.
+>
+> -Henry
+
+From pnr at planet.nl  Mon Dec 16 06:45:30 2019
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Sun, 15 Dec 2019 21:45:30 +0100
+Subject: [TUHS] Blit source
+Message-ID: <D27BDF93-38A2-4C82-ADAB-4847F95D67A0@planet.nl>
+
+I’m looking for source code of the original Blit as described here:
+http://doc.cat-v.org/bell_labs/blit/blit.pdf <http://doc.cat-v.org/bell_labs/blit/blit.pdf>
+
+It does not seem to be on the v8 tape. I found the following on the web:
+http://www.brouhaha.com/~eric/retrocomputing/att/5620/software/ <http://www.brouhaha.com/~eric/retrocomputing/att/5620/software/>
+but that seems to be from much later and for the 5620.
+
+Then there is this, which seems to be the Blit's graphics routines or a derivtive thereof:
+https://stuff.mit.edu/afs/athena/astaff/project/Sdev/S/src/fun/blit/ <https://stuff.mit.edu/afs/athena/astaff/project/Sdev/S/src/fun/blit/>
+(although it seems larger than the 8KB mentioned in the paper).
+
+I’m aware of this emulator:
+https://github.com/aap/blit <https://github.com/aap/blit>
+which uses a rom dump; it appears a good base for h/w documentation.
+
+Did the sources of these rom contents survive?
+
+
+
+
+
+
+
+
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191215/39ff3d49/attachment.html>
+
+From aap at papnet.eu  Mon Dec 16 07:17:53 2019
+From: aap at papnet.eu (Angelo Papenhoff)
+Date: Sun, 15 Dec 2019 22:17:53 +0100
+Subject: [TUHS] Blit source
+In-Reply-To: <D27BDF93-38A2-4C82-ADAB-4847F95D67A0@planet.nl>
+References: <D27BDF93-38A2-4C82-ADAB-4847F95D67A0@planet.nl>
+Message-ID: <20191215211752.GA4098@indra.papnet.eu>
+
+On 15/12/19, Paul Ruizendaal wrote:
+> I’m aware of this emulator:
+> https://github.com/aap/blit <https://github.com/aap/blit>
+
+This is only a port to unix I did. The original one was written by aiju.
+The upstream version (which is in fact more up to date) is part of the 9front repo:
+https://code.9front.org/hg/plan9front/file/5003ea45cc4d/sys/src/games/blit
+Aiju reverse engineered the hardware from the source code on the second tape:
+https://www.tuhs.org/Archive/Distributions/Research/Dan_Cross_v8/v8jerq.tar.bz2
+
+I don't know how complete it is and I think the compiler is also not
+included, but I'm not too sure how it all worked.
+
+aap
+
+From emu at e-bbes.com  Mon Dec 16 16:25:58 2019
+From: emu at e-bbes.com (emanuel stiebler)
+Date: Mon, 16 Dec 2019 07:25:58 +0100
+Subject: [TUHS] Blit source
+In-Reply-To: <D27BDF93-38A2-4C82-ADAB-4847F95D67A0@planet.nl>
+References: <D27BDF93-38A2-4C82-ADAB-4847F95D67A0@planet.nl>
+Message-ID: <6be1d013-2323-9850-03fd-c4014c4a69e7@e-bbes.com>
+
+On 2019-12-15 21:45, Paul Ruizendaal wrote:
+> I’m looking for source code of the original Blit as described here:
+> http://doc.cat-v.org/bell_labs/blit/blit.pdf
+
+Thanks for trying again. It pops up on this list every few years, but
+still no schematics (2002, 2012) ...
+
+Cheers
+
+From pnr at planet.nl  Mon Dec 16 21:06:12 2019
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Mon, 16 Dec 2019 12:06:12 +0100
+Subject: [TUHS] Blit source
+In-Reply-To: <6be1d013-2323-9850-03fd-c4014c4a69e7@e-bbes.com>
+References: <D27BDF93-38A2-4C82-ADAB-4847F95D67A0@planet.nl>
+ <6be1d013-2323-9850-03fd-c4014c4a69e7@e-bbes.com>
+Message-ID: <E98B9D8E-FD64-40A8-BE95-404DD3AE6868@planet.nl>
+
+
+> Date: Sun, 15 Dec 2019 22:17:53 +0100
+> From: Angelo Papenhoff <aap at papnet.eu>
+> 
+> On 15/12/19, Paul Ruizendaal wrote:
+>> I’m aware of this emulator:
+>> https://github.com/aap/blit <https://github.com/aap/blit>
+> 
+> This is only a port to unix I did. The original one was written by aiju.
+> The upstream version (which is in fact more up to date) is part of the 9front repo:
+> https://code.9front.org/hg/plan9front/file/5003ea45cc4d/sys/src/games/blit
+> Aiju reverse engineered the hardware from the source code on the second tape:
+> https://www.tuhs.org/Archive/Distributions/Research/Dan_Cross_v8/v8jerq.tar.bz2
+
+Thanks! The “blit” directory in that archive indeed appears to be what I’m looking for. Hopefully it has enough to enable rebuilding from source.
+> 
+> I don't know how complete it is and I think the compiler is also not
+> included, but I'm not too sure how it all worked.
+
+From a quick inspection there appears to be a subdirectory “m” with motorola tools. It appears to have a M68K pcc-based compiler. It also has this README file:
+
+===
+the source for /usr/blit/lib/ccom has been lost.
+the source here (Mip and Mcc) is for a compiler that does not generate
+the correct symbol tables for joff and pi.
+we wish we had the source, but we don't, so the binary is precious.
+please handle it with care.
+
+if you decide you need to recompile ccom, contact us.
+we may have found a solution by then...
+===
+
+The “bin” directory has that ccom binary. It suggests that there once was a M68K compiler that derived from the Ritchie PDP11 compiler. I assume that the source for that has stayed missing ever since 1985.
+
+> On 16 Dec 2019, at 07:25, emanuel stiebler <emu at e-bbes.com> wrote:
+> 
+> On 2019-12-15 21:45, Paul Ruizendaal wrote:
+>> I’m looking for source code of the original Blit as described here:
+>> http://doc.cat-v.org/bell_labs/blit/blit.pdf
+> 
+> Thanks for trying again. It pops up on this list every few years, but
+> still no schematics (2002, 2012) …
+
+It would seem that the circuit was intentionally simple and straightforward: a M68K cpu, ram, rom, two 6850 UARTS and the circuit to drive the display. The key aspects of the video circuitry (and mouse circuitry) are discussed in this paper:
+https://9p.io/cm/cs/doc/87/archtr.ps.gz ("Hardware/Software Tradeoffs for Bitmap Graphics on the Blit”).
+
+It would seem to me that doing a version of the Blit that runs on a FPGA board and generates 720p HDMI output would not be impossible to do, if the software can be configured to deal with a different geometry (e.g. 1024x720 instead of 800x1024). Whether that would be much different from running the emulator on a PC remains unclear, of course.
+
+
+
+
+
+
+From emu at e-bbes.com  Tue Dec 17 16:04:42 2019
+From: emu at e-bbes.com (emanuel stiebler)
+Date: Tue, 17 Dec 2019 07:04:42 +0100
+Subject: [TUHS] Blit source
+In-Reply-To: <E98B9D8E-FD64-40A8-BE95-404DD3AE6868@planet.nl>
+References: <D27BDF93-38A2-4C82-ADAB-4847F95D67A0@planet.nl>
+ <6be1d013-2323-9850-03fd-c4014c4a69e7@e-bbes.com>
+ <E98B9D8E-FD64-40A8-BE95-404DD3AE6868@planet.nl>
+Message-ID: <d288dee4-6a0e-8c84-44e6-b0f6aa3afef4@e-bbes.com>
+
+On 2019-12-16 12:06, Paul Ruizendaal wrote:
+
+> It would seem that the circuit was intentionally simple and straightforward: a M68K cpu, ram, rom, two 6850 UARTS and the circuit to drive the display. The key aspects of the video circuitry (and mouse circuitry) are discussed in this paper:
+> https://9p.io/cm/cs/doc/87/archtr.ps.gz ("Hardware/Software Tradeoffs for Bitmap Graphics on the Blit”).
+Thanks!
+> It would seem to me that doing a version of the Blit that runs on a FPGA board and generates 720p HDMI output would not be impossible to do, 
+It actually pretty simple, all this stuff is avalable on AMIGA emulators
+for FPGAs ...
+
+> if the software can be configured to deal with a different geometry (e.g. 1024x720 instead of 800x1024). Whether that would be much different from running the emulator on a PC remains unclear, of course.
+
+It is on my list of things to do, but not on the first page ;-)
+Still waiting, that schematics & sources show up ...
+
+From pnr at planet.nl  Wed Dec 18 13:53:53 2019
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Wed, 18 Dec 2019 04:53:53 +0100
+Subject: [TUHS] Blit source
+In-Reply-To: <6be1d013-2323-9850-03fd-c4014c4a69e7@e-bbes.com>
+References: <D27BDF93-38A2-4C82-ADAB-4847F95D67A0@planet.nl>
+ <6be1d013-2323-9850-03fd-c4014c4a69e7@e-bbes.com>
+Message-ID: <766B1E87-501A-4675-91A5-DCDA35FFEB98@planet.nl>
+
+Further to the below, I’ve now tried to build the Blit toolchain (on a contemporary OS). Other than the usual little issues, it does not take too much effort to get running.
+
+Rebuilding the rom contents using the pre-existing libraries builds the exact same bits, however here is also where the good stuff ends: this only assembles two files, compiles vitty.c and the rest is library; rebuilding the libraries is different.
+
+The roms rely on four libaries (libsys, libj, liblayer and libc) and none of the four rebuild to the exact same bytes or size. In several cases the archives do not even have the exact same files in them. In general, the regenerated object files often appear to be a little smaller (even when compiled with optimization off). So far I cannot tell whether this is because the compiler is different, or because the underlying source code is different. Probably a bit of both.
+
+So, it would seem that an adapted rom can be compiled, but how functional it would be remains to be seen.
+
+The note about the missing compiler remains intriguing. First a correction: I associate “ccom” with the DMR compiler, as it lives in a directory by that name; I had not realized that pcc also names its main binary ccom. Beyond that it would seem that two different versions of this 68K compiler were floating around and maybe the surviving one puts different debug info in the symbol table.
+
+
+
+>> Date: Sun, 15 Dec 2019 22:17:53 +0100
+>> From: Angelo Papenhoff <aap at papnet.eu>
+>> 
+>> On 15/12/19, Paul Ruizendaal wrote:
+>>> I’m aware of this emulator:
+>>> https://github.com/aap/blit <https://github.com/aap/blit>
+>> 
+>> This is only a port to unix I did. The original one was written by aiju.
+>> The upstream version (which is in fact more up to date) is part of the 9front repo:
+>> https://code.9front.org/hg/plan9front/file/5003ea45cc4d/sys/src/games/blit
+>> Aiju reverse engineered the hardware from the source code on the second tape:
+>> https://www.tuhs.org/Archive/Distributions/Research/Dan_Cross_v8/v8jerq.tar.bz2
+> 
+> Thanks! The “blit” directory in that archive indeed appears to be what I’m looking for. Hopefully it has enough to enable rebuilding from source.
+>> 
+>> I don't know how complete it is and I think the compiler is also not
+>> included, but I'm not too sure how it all worked.
+> 
+> From a quick inspection there appears to be a subdirectory “m” with motorola tools. It appears to have a M68K pcc-based compiler. It also has this README file:
+> 
+> ===
+> the source for /usr/blit/lib/ccom has been lost.
+> the source here (Mip and Mcc) is for a compiler that does not generate
+> the correct symbol tables for joff and pi.
+> we wish we had the source, but we don't, so the binary is precious.
+> please handle it with care.
+> 
+> if you decide you need to recompile ccom, contact us.
+> we may have found a solution by then...
+> ===
+> 
+> The “bin” directory has that ccom binary. It suggests that there once was a M68K compiler that derived from the Ritchie PDP11 compiler. I assume that the source for that has stayed missing ever since 1985.
+> 
+>> On 16 Dec 2019, at 07:25, emanuel stiebler <emu at e-bbes.com> wrote:
+>> 
+>> On 2019-12-15 21:45, Paul Ruizendaal wrote:
+>>> I’m looking for source code of the original Blit as described here:
+>>> http://doc.cat-v.org/bell_labs/blit/blit.pdf
+>> 
+>> Thanks for trying again. It pops up on this list every few years, but
+>> still no schematics (2002, 2012) …
+> 
+> It would seem that the circuit was intentionally simple and straightforward: a M68K cpu, ram, rom, two 6850 UARTS and the circuit to drive the display. The key aspects of the video circuitry (and mouse circuitry) are discussed in this paper:
+> https://9p.io/cm/cs/doc/87/archtr.ps.gz ("Hardware/Software Tradeoffs for Bitmap Graphics on the Blit”).
+> 
+> It would seem to me that doing a version of the Blit that runs on a FPGA board and generates 720p HDMI output would not be impossible to do, if the software can be configured to deal with a different geometry (e.g. 1024x720 instead of 800x1024). Whether that would be much different from running the emulator on a PC remains unclear, of course.
+
+
+
+
+
+From robpike at gmail.com  Wed Dec 18 14:30:36 2019
+From: robpike at gmail.com (Rob Pike)
+Date: Wed, 18 Dec 2019 15:30:36 +1100
+Subject: [TUHS] Blit source
+In-Reply-To: <766B1E87-501A-4675-91A5-DCDA35FFEB98@planet.nl>
+References: <D27BDF93-38A2-4C82-ADAB-4847F95D67A0@planet.nl>
+ <6be1d013-2323-9850-03fd-c4014c4a69e7@e-bbes.com>
+ <766B1E87-501A-4675-91A5-DCDA35FFEB98@planet.nl>
+Message-ID: <CAKzdPgzNDi=LXZzPp=dcRDHuDXYdL3GP7+v64RczsdROK49u3w@mail.gmail.com>
+
+The 68000 compiler was pcc and was under fairly continuous development
+during this project. So there may be no "missing version" of the compiler
+but just version skew between source and existing artifacts.
+
+-rob
+
+
+On Wed, Dec 18, 2019 at 2:55 PM Paul Ruizendaal <pnr at planet.nl> wrote:
+
+> Further to the below, I’ve now tried to build the Blit toolchain (on a
+> contemporary OS). Other than the usual little issues, it does not take too
+> much effort to get running.
+>
+> Rebuilding the rom contents using the pre-existing libraries builds the
+> exact same bits, however here is also where the good stuff ends: this only
+> assembles two files, compiles vitty.c and the rest is library; rebuilding
+> the libraries is different.
+>
+> The roms rely on four libaries (libsys, libj, liblayer and libc) and none
+> of the four rebuild to the exact same bytes or size. In several cases the
+> archives do not even have the exact same files in them. In general, the
+> regenerated object files often appear to be a little smaller (even when
+> compiled with optimization off). So far I cannot tell whether this is
+> because the compiler is different, or because the underlying source code is
+> different. Probably a bit of both.
+>
+> So, it would seem that an adapted rom can be compiled, but how functional
+> it would be remains to be seen.
+>
+> The note about the missing compiler remains intriguing. First a
+> correction: I associate “ccom” with the DMR compiler, as it lives in a
+> directory by that name; I had not realized that pcc also names its main
+> binary ccom. Beyond that it would seem that two different versions of this
+> 68K compiler were floating around and maybe the surviving one puts
+> different debug info in the symbol table.
+>
+>
+>
+> >> Date: Sun, 15 Dec 2019 22:17:53 +0100
+> >> From: Angelo Papenhoff <aap at papnet.eu>
+> >>
+> >> On 15/12/19, Paul Ruizendaal wrote:
+> >>> I’m aware of this emulator:
+> >>> https://github.com/aap/blit <https://github.com/aap/blit>
+> >>
+> >> This is only a port to unix I did. The original one was written by aiju.
+> >> The upstream version (which is in fact more up to date) is part of the
+> 9front repo:
+> >>
+> https://code.9front.org/hg/plan9front/file/5003ea45cc4d/sys/src/games/blit
+> >> Aiju reverse engineered the hardware from the source code on the second
+> tape:
+> >>
+> https://www.tuhs.org/Archive/Distributions/Research/Dan_Cross_v8/v8jerq.tar.bz2
+> >
+> > Thanks! The “blit” directory in that archive indeed appears to be what
+> I’m looking for. Hopefully it has enough to enable rebuilding from source.
+> >>
+> >> I don't know how complete it is and I think the compiler is also not
+> >> included, but I'm not too sure how it all worked.
+> >
+> > From a quick inspection there appears to be a subdirectory “m” with
+> motorola tools. It appears to have a M68K pcc-based compiler. It also has
+> this README file:
+> >
+> > ===
+> > the source for /usr/blit/lib/ccom has been lost.
+> > the source here (Mip and Mcc) is for a compiler that does not generate
+> > the correct symbol tables for joff and pi.
+> > we wish we had the source, but we don't, so the binary is precious.
+> > please handle it with care.
+> >
+> > if you decide you need to recompile ccom, contact us.
+> > we may have found a solution by then...
+> > ===
+> >
+> > The “bin” directory has that ccom binary. It suggests that there once
+> was a M68K compiler that derived from the Ritchie PDP11 compiler. I assume
+> that the source for that has stayed missing ever since 1985.
+> >
+> >> On 16 Dec 2019, at 07:25, emanuel stiebler <emu at e-bbes.com> wrote:
+> >>
+> >> On 2019-12-15 21:45, Paul Ruizendaal wrote:
+> >>> I’m looking for source code of the original Blit as described here:
+> >>> http://doc.cat-v.org/bell_labs/blit/blit.pdf
+> >>
+> >> Thanks for trying again. It pops up on this list every few years, but
+> >> still no schematics (2002, 2012) …
+> >
+> > It would seem that the circuit was intentionally simple and
+> straightforward: a M68K cpu, ram, rom, two 6850 UARTS and the circuit to
+> drive the display. The key aspects of the video circuitry (and mouse
+> circuitry) are discussed in this paper:
+> > https://9p.io/cm/cs/doc/87/archtr.ps.gz ("Hardware/Software Tradeoffs
+> for Bitmap Graphics on the Blit”).
+> >
+> > It would seem to me that doing a version of the Blit that runs on a FPGA
+> board and generates 720p HDMI output would not be impossible to do, if the
+> software can be configured to deal with a different geometry (e.g. 1024x720
+> instead of 800x1024). Whether that would be much different from running the
+> emulator on a PC remains unclear, of course.
+>
+>
+>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191218/07f6cdc4/attachment.html>
+
+From aiju at phicode.de  Wed Dec 18 20:43:05 2019
+From: aiju at phicode.de (Julius Schmidt)
+Date: Wed, 18 Dec 2019 11:43:05 +0100 (CET)
+Subject: [TUHS] Blit source
+In-Reply-To: <766B1E87-501A-4675-91A5-DCDA35FFEB98@planet.nl>
+References: <D27BDF93-38A2-4C82-ADAB-4847F95D67A0@planet.nl>
+ <6be1d013-2323-9850-03fd-c4014c4a69e7@e-bbes.com>
+ <766B1E87-501A-4675-91A5-DCDA35FFEB98@planet.nl>
+Message-ID: <alpine.LNX.2.00.1912181137020.7981@phi>
+
+I also noticed that the ROM binaries differed from the source code, when I 
+was writing the Blit emulator, by comparing disassembled binaries with the 
+source. In particular, the compiled code makes reference to I/O registers 
+025 and 027 that are not referenced in the source any more. (I think there 
+were some more differences I didn't bother to write down)
+
+Julius Schmidt (aiju)
+
+On Wed, 18 Dec 2019, Paul Ruizendaal wrote:
+
+> Further to the below, I’ve now tried to build the Blit toolchain (on a contemporary OS). Other than the usual little issues, it does not take too much effort to get running.
+>
+> Rebuilding the rom contents using the pre-existing libraries builds the exact same bits, however here is also where the good stuff ends: this only assembles two files, compiles vitty.c and the rest is library; rebuilding the libraries is different.
+>
+> The roms rely on four libaries (libsys, libj, liblayer and libc) and none of the four rebuild to the exact same bytes or size. In several cases the archives do not even have the exact same files in them. In general, the regenerated object files often appear to be a little smaller (even when compiled with optimization off). So far I cannot tell whether this is because the compiler is different, or because the underlying source code is different. Probably a bit of both.
+>
+> So, it would seem that an adapted rom can be compiled, but how functional it would be remains to be seen.
+>
+> The note about the missing compiler remains intriguing. First a correction: I associate “ccom” with the DMR compiler, as it lives in a directory by that name; I had not realized that pcc also names its main binary ccom. Beyond that it would seem that two different versions of this 68K compiler were floating around and maybe the surviving one puts different debug info in the symbol table.
+>
+>
+>
+>>> Date: Sun, 15 Dec 2019 22:17:53 +0100
+>>> From: Angelo Papenhoff <aap at papnet.eu>
+>>>
+>>> On 15/12/19, Paul Ruizendaal wrote:
+>>>> I’m aware of this emulator:
+>>>> https://github.com/aap/blit <https://github.com/aap/blit>
+>>>
+>>> This is only a port to unix I did. The original one was written by aiju.
+>>> The upstream version (which is in fact more up to date) is part of the 9front repo:
+>>> https://code.9front.org/hg/plan9front/file/5003ea45cc4d/sys/src/games/blit
+>>> Aiju reverse engineered the hardware from the source code on the second tape:
+>>> https://www.tuhs.org/Archive/Distributions/Research/Dan_Cross_v8/v8jerq.tar.bz2
+>>
+>> Thanks! The “blit” directory in that archive indeed appears to be what I’m looking for. Hopefully it has enough to enable rebuilding from source.
+>>>
+>>> I don't know how complete it is and I think the compiler is also not
+>>> included, but I'm not too sure how it all worked.
+>>
+>> From a quick inspection there appears to be a subdirectory “m” with motorola tools. It appears to have a M68K pcc-based compiler. It also has this README file:
+>>
+>> ===
+>> the source for /usr/blit/lib/ccom has been lost.
+>> the source here (Mip and Mcc) is for a compiler that does not generate
+>> the correct symbol tables for joff and pi.
+>> we wish we had the source, but we don't, so the binary is precious.
+>> please handle it with care.
+>>
+>> if you decide you need to recompile ccom, contact us.
+>> we may have found a solution by then...
+>> ===
+>>
+>> The “bin” directory has that ccom binary. It suggests that there once was a M68K compiler that derived from the Ritchie PDP11 compiler. I assume that the source for that has stayed missing ever since 1985.
+>>
+>>> On 16 Dec 2019, at 07:25, emanuel stiebler <emu at e-bbes.com> wrote:
+>>>
+>>> On 2019-12-15 21:45, Paul Ruizendaal wrote:
+>>>> I’m looking for source code of the original Blit as described here:
+>>>> http://doc.cat-v.org/bell_labs/blit/blit.pdf
+>>>
+>>> Thanks for trying again. It pops up on this list every few years, but
+>>> still no schematics (2002, 2012) …
+>>
+>> It would seem that the circuit was intentionally simple and straightforward: a M68K cpu, ram, rom, two 6850 UARTS and the circuit to drive the display. The key aspects of the video circuitry (and mouse circuitry) are discussed in this paper:
+>> https://9p.io/cm/cs/doc/87/archtr.ps.gz ("Hardware/Software Tradeoffs for Bitmap Graphics on the Blit”).
+>>
+>> It would seem to me that doing a version of the Blit that runs on a FPGA board and generates 720p HDMI output would not be impossible to do, if the software can be configured to deal with a different geometry (e.g. 1024x720 instead of 800x1024). Whether that would be much different from running the emulator on a PC remains unclear, of course.
+>
+>
+>
+>
+>
+
+From aap at papnet.eu  Wed Dec 18 22:11:32 2019
+From: aap at papnet.eu (Angelo Papenhoff)
+Date: Wed, 18 Dec 2019 13:11:32 +0100
+Subject: [TUHS] Blit source
+In-Reply-To: <alpine.LNX.2.00.1912181137020.7981@phi>
+References: <D27BDF93-38A2-4C82-ADAB-4847F95D67A0@planet.nl>
+ <6be1d013-2323-9850-03fd-c4014c4a69e7@e-bbes.com>
+ <766B1E87-501A-4675-91A5-DCDA35FFEB98@planet.nl>
+ <alpine.LNX.2.00.1912181137020.7981@phi>
+Message-ID: <20191218121132.GA47711@indra.papnet.eu>
+
+On the topic of ROMs: It seems like there are different ROM versions for
+the 5620, one working with the blit code in v8 (I had a real one
+hooked up to my laptop running v8 under simh) and the other not.
+Unfortunately it seems that the compatible ROMs have not been dumped yet
+so the simh-based 5620 emulator that has been around for a while now
+does not work with the v8 blit stuff.
+
+It would be cool if a 5620 owner could dump their ROM or the existing
+version could be patched.
+
+aap
+
+From pnr at planet.nl  Wed Dec 18 22:19:33 2019
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Wed, 18 Dec 2019 13:19:33 +0100
+Subject: [TUHS] Blit source
+In-Reply-To: <alpine.LNX.2.00.1912181137020.7981@phi>
+References: <D27BDF93-38A2-4C82-ADAB-4847F95D67A0@planet.nl>
+ <6be1d013-2323-9850-03fd-c4014c4a69e7@e-bbes.com>
+ <766B1E87-501A-4675-91A5-DCDA35FFEB98@planet.nl>
+ <alpine.LNX.2.00.1912181137020.7981@phi>
+Message-ID: <CAA5223E-7DE4-42D3-B5AA-E6D8E2C92389@planet.nl>
+
+The “hardware / software tradeoffs” paper I linked yesterday has an interesting discussion about the mouse, including many details of how it worked. It says that the Blit originally used a tablet but was later redesigned to use a mouse. You may be seeing a few remains of the the tablet interface.
+
+I noticed that the rom images are dated Dec 1982. The build process' output file “romterm” is dated Nov 1983. Some of the libraries have source files with dates into 1984. It would seem that the surviving rom images are for a fairly early iteration of the system.
+
+
+> On Dec 18, 2019, at 11:43 AM, Julius Schmidt <aiju at phicode.de> wrote:
+> 
+> I also noticed that the ROM binaries differed from the source code, when I was writing the Blit emulator, by comparing disassembled binaries with the source. In particular, the compiled code makes reference to I/O registers 025 and 027 that are not referenced in the source any more. (I think there were some more differences I didn't bother to write down)
+> 
+> Julius Schmidt (aiju)
+> 
+> On Wed, 18 Dec 2019, Paul Ruizendaal wrote:
+> 
+>> Further to the below, I’ve now tried to build the Blit toolchain (on a contemporary OS). Other than the usual little issues, it does not take too much effort to get running.
+>> 
+>> Rebuilding the rom contents using the pre-existing libraries builds the exact same bits, however here is also where the good stuff ends: this only assembles two files, compiles vitty.c and the rest is library; rebuilding the libraries is different.
+>> 
+>> The roms rely on four libaries (libsys, libj, liblayer and libc) and none of the four rebuild to the exact same bytes or size. In several cases the archives do not even have the exact same files in them. In general, the regenerated object files often appear to be a little smaller (even when compiled with optimization off). So far I cannot tell whether this is because the compiler is different, or because the underlying source code is different. Probably a bit of both.
+>> 
+>> So, it would seem that an adapted rom can be compiled, but how functional it would be remains to be seen.
+>> 
+>> The note about the missing compiler remains intriguing. First a correction: I associate “ccom” with the DMR compiler, as it lives in a directory by that name; I had not realized that pcc also names its main binary ccom. Beyond that it would seem that two different versions of this 68K compiler were floating around and maybe the surviving one puts different debug info in the symbol table.
+>> 
+>> 
+>> 
+>>>> Date: Sun, 15 Dec 2019 22:17:53 +0100
+>>>> From: Angelo Papenhoff <aap at papnet.eu>
+>>>> 
+>>>> On 15/12/19, Paul Ruizendaal wrote:
+>>>>> I’m aware of this emulator:
+>>>>> https://github.com/aap/blit <https://github.com/aap/blit>
+>>>> 
+>>>> This is only a port to unix I did. The original one was written by aiju.
+>>>> The upstream version (which is in fact more up to date) is part of the 9front repo:
+>>>> https://code.9front.org/hg/plan9front/file/5003ea45cc4d/sys/src/games/blit
+>>>> Aiju reverse engineered the hardware from the source code on the second tape:
+>>>> https://www.tuhs.org/Archive/Distributions/Research/Dan_Cross_v8/v8jerq.tar.bz2
+>>> 
+>>> Thanks! The “blit” directory in that archive indeed appears to be what I’m looking for. Hopefully it has enough to enable rebuilding from source.
+>>>> 
+>>>> I don't know how complete it is and I think the compiler is also not
+>>>> included, but I'm not too sure how it all worked.
+>>> 
+>>> From a quick inspection there appears to be a subdirectory “m” with motorola tools. It appears to have a M68K pcc-based compiler. It also has this README file:
+>>> 
+>>> ===
+>>> the source for /usr/blit/lib/ccom has been lost.
+>>> the source here (Mip and Mcc) is for a compiler that does not generate
+>>> the correct symbol tables for joff and pi.
+>>> we wish we had the source, but we don't, so the binary is precious.
+>>> please handle it with care.
+>>> 
+>>> if you decide you need to recompile ccom, contact us.
+>>> we may have found a solution by then...
+>>> ===
+>>> 
+>>> The “bin” directory has that ccom binary. It suggests that there once was a M68K compiler that derived from the Ritchie PDP11 compiler. I assume that the source for that has stayed missing ever since 1985.
+>>> 
+>>>> On 16 Dec 2019, at 07:25, emanuel stiebler <emu at e-bbes.com> wrote:
+>>>> 
+>>>> On 2019-12-15 21:45, Paul Ruizendaal wrote:
+>>>>> I’m looking for source code of the original Blit as described here:
+>>>>> http://doc.cat-v.org/bell_labs/blit/blit.pdf
+>>>> 
+>>>> Thanks for trying again. It pops up on this list every few years, but
+>>>> still no schematics (2002, 2012) …
+>>> 
+>>> It would seem that the circuit was intentionally simple and straightforward: a M68K cpu, ram, rom, two 6850 UARTS and the circuit to drive the display. The key aspects of the video circuitry (and mouse circuitry) are discussed in this paper:
+>>> https://9p.io/cm/cs/doc/87/archtr.ps.gz ("Hardware/Software Tradeoffs for Bitmap Graphics on the Blit”).
+>>> 
+>>> It would seem to me that doing a version of the Blit that runs on a FPGA board and generates 720p HDMI output would not be impossible to do, if the software can be configured to deal with a different geometry (e.g. 1024x720 instead of 800x1024). Whether that would be much different from running the emulator on a PC remains unclear, of course.
+>> 
+>> 
+>> 
+>> 
+
+
+From crossd at gmail.com  Thu Dec 19 01:53:14 2019
+From: crossd at gmail.com (Dan Cross)
+Date: Wed, 18 Dec 2019 21:23:14 +0530
+Subject: [TUHS] Blit source
+In-Reply-To: <20191218121132.GA47711@indra.papnet.eu>
+References: <D27BDF93-38A2-4C82-ADAB-4847F95D67A0@planet.nl>
+ <6be1d013-2323-9850-03fd-c4014c4a69e7@e-bbes.com>
+ <766B1E87-501A-4675-91A5-DCDA35FFEB98@planet.nl>
+ <alpine.LNX.2.00.1912181137020.7981@phi>
+ <20191218121132.GA47711@indra.papnet.eu>
+Message-ID: <CAEoi9W7qjmFoKrLta9fGB6zJ2JOGZFmLJ4J5x24xFA2SMWsZoQ@mail.gmail.com>
+
+It may be worth getting in touch with the folks at LCM+L. I believe they
+have a working 5620.
+
+        - Dan C.
+
+
+On Wed, Dec 18, 2019, 5:42 PM Angelo Papenhoff <aap at papnet.eu> wrote:
+
+> On the topic of ROMs: It seems like there are different ROM versions for
+> the 5620, one working with the blit code in v8 (I had a real one
+> hooked up to my laptop running v8 under simh) and the other not.
+> Unfortunately it seems that the compatible ROMs have not been dumped yet
+> so the simh-based 5620 emulator that has been around for a while now
+> does not work with the v8 blit stuff.
+>
+> It would be cool if a 5620 owner could dump their ROM or the existing
+> version could be patched.
+>
+> aap
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191218/d8e63cdc/attachment.html>
+
+From paul at mcjones.org  Thu Dec 19 04:43:55 2019
+From: paul at mcjones.org (Paul McJones)
+Date: Wed, 18 Dec 2019 10:43:55 -0800
+Subject: [TUHS] AP-3 minicomputer
+References: <0FCF3C9F0F6C2441BC6C13C6E49BAEF101DC35B21D@EX-MB1.hq.computerhistory.org>
+Message-ID: <4C8A6FE1-3A6E-4F28-AABE-793AABD3F4C4@mcjones.org>
+
+Computer History Museum curator Dag Spicer passed along a question from former CHM curator Alex Bochannek that I thought someone on this list might be able to answer. The paper "The M4 Macro Processor” by Kernighan and Ritchie says:
+
+> The M4 macro processor is an extension of a macro processor called M3 which was written by D. M. Ritchie for the AP-3 minicomputer; M3 was in turn based on a macro processor implemented for [B. W. Kernighan and P. J. Plauger, Software Tools, Addison-Wesley, Inc., 1976]. 
+
+Alex and Dag would like to learn more about this AP-3 minicomputer — can anyone help?
+
+From norman at oclsc.org  Thu Dec 19 10:16:56 2019
+From: norman at oclsc.org (Norman Wilson)
+Date: Wed, 18 Dec 2019 19:16:56 -0500
+Subject: [TUHS] Blit source
+Message-ID: <1576714621.27293.for-standards-violators@oclsc.org>
+
+I sense a hint of confusion in some of the messages
+here.  To lay that to rest if necessary (and maybe
+others are interested in the history anyway):
+
+As I understand it, the Blit was the original terminal,
+hardware done by Bart Locanthi (et al?), software by
+Rob Pike (et al?).  It used an MC68000 CPU.  Western
+Electric made a small production run of these terminals
+for use within AT&T.  I don't think it was sold to the
+general public.
+
+By the time I arrived at Bell Labs in late 1984, the
+Standard Terminal of 1127 was the AT&T 5620, locally
+called the Jerq.  This was a makeover with hardware
+redesigned by a product group to use a Bellmac 32 CPU,
+and software heavily reworked by a product group.
+This is the terminal that was manufactured for general
+sale.
+
+I'm not sure, but I think the Blit's ROM was very basic,
+just enough to be some sort of simple glass-tty or
+perhaps smartass-terminal* plus an escape sequence to
+let you load in new code.  The Jerq had a fancier ROM,
+which was a somewhat-flaky ANSI-ish terminal by default,
+but an escape sequence put it into graphics-window-manager
+mode, more or less like what had run a few years earlier
+on the Blit.
+
+By then the code used in Research had evolved considerably,
+in particular allowing the tty driver to be exported to
+the terminal (those familiar with 9term should know what
+I mean).  In 1127 we used a different escape sequence to
+download a standalone program into the terminal and
+replace the ROM window manager entirely, so we could run
+our newer and (to my taste anyway) appreciably better code.
+The downloaded code lived in RAM; you had to reload it
+whenever the terminal was power-cycled or lost its connection
+or whatnot.  (It took a minute or so at 9600bps, rather
+longer at 1200.  This is not the only reason we jumped at
+the chance to upgrade our home-computing scheme to use
+9600bps over leased lines, but it was an important one.)
+
+The V8 tape was made in late 1984 (I know that for sure
+because I helped make it).  It is unlikely to have anything
+for the MC68000 Blit, only stuff for the Mac-32 Jerq.
+Likewise for the not-really-a-release snapshots from the
+9/e and 10/e eras.  The 5620 ROM code is very unlikely to
+be there anywhere, but the replacement stuff we used should
+be somewhere.
+
+Norman Wilson
+Toronto ON
+
+From pnr at planet.nl  Thu Dec 19 10:20:18 2019
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Thu, 19 Dec 2019 01:20:18 +0100
+Subject: [TUHS] Blit source
+In-Reply-To: <6be1d013-2323-9850-03fd-c4014c4a69e7@e-bbes.com>
+References: <D27BDF93-38A2-4C82-ADAB-4847F95D67A0@planet.nl>
+ <6be1d013-2323-9850-03fd-c4014c4a69e7@e-bbes.com>
+Message-ID: <744AB73C-9970-450E-8B1A-5BACF9FE3E11@planet.nl>
+
+
+> On Dec 16, 2019, at 7:25 AM, emanuel stiebler <emu at e-bbes.com> wrote:
+> 
+> On 2019-12-15 21:45, Paul Ruizendaal wrote:
+>> I’m looking for source code of the original Blit as described here:
+>> http://doc.cat-v.org/bell_labs/blit/blit.pdf
+> 
+> Thanks for trying again. It pops up on this list every few years, but
+> still no schematics (2002, 2012) ...
+> 
+> Cheers
+
+Have you seen the 5620 schematics on bitsavers?
+
+http://bitsavers.org/pdf/att/5620/schematic/5620_logic.pdf <http://bitsavers.org/pdf/att/5620/schematic/5620_logic.pdf>
+
+Of course it is not the Blit schematics, but it looks like a close derivative. When comparing the Hardware & Software Tradeoffs paper with the schematics and the theory of operation notes at the back, it would seem to me that much of it is (near) identical to the 68K Blit.
+
+- The video timing circuit was probably identical (also see the figures at the back with exact timing specifications).
+- The memory grid was probably (near) identical - maybe changed slightly for the option to use 256Kx1 drams.
+- The arbitration circuit may have been redesigned, but it looks like the bus arbitration of the M68K was not all that different from the Bellmac. A memory cycle takes 11 ticks of the 32.7 MHz pixel clock, or about 335ns. This is consistent with the numbers mentioned in the Blit papers (e.g. the display using about 30% of memory bandwidth, etc.).
+- The mouse movement circuit appears unchanged from the Blit paper, with a two-phase motion signal counted for the first 4 bits in a PAL and the rest in a TTL counter
+
+Some things are of course different (beyond the different CPU). The 5620 has an I/O expansion port and a bit of non-volatile memory, neither of which is mentioned in the Blit papers. The memory map is totally different and the protection for null pointer dereference appears gone.
+
+The 2x 6850 UART appears to be replaced by a single 2681 programmable DUART. The button signals are routed through the additional parallel I/O bits that this chip provides, which also takes care of interrupt generation. According to the Blit papers there were several other versions of the Blit before the final design was arrived upon. Maybe earlier designs used a 2681 DUART as well, or its close cousin SCN68681. Maybe the earlier version of button.c could work with both. If this is true, it would stand to reason that the various features of the 2681/68681 were replicated with the two 6850’s and some supporting circuitry. This hypothesis seems to fit with some of aiju’s observations in the “mmap” information file included with the Blit emulator (e.g. accessing register 25 and 27, the timer/counter and its use for sound generation).
+
+The Blit promotional video that AT&T put on youtube in 2012 has a brief shot (at 0:45) of the logic board. This appears to show two 24 pin packages in the bottom center of the board, which are in all likelihood the 6850’s. There is no 40 pin package (i.e. no 2681/68681 chip) on that board.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191219/67450329/attachment.html>
+
+From robpike at gmail.com  Thu Dec 19 10:26:47 2019
+From: robpike at gmail.com (Rob Pike)
+Date: Thu, 19 Dec 2019 11:26:47 +1100
+Subject: [TUHS] Blit source
+In-Reply-To: <1576714621.27293.for-standards-violators@oclsc.org>
+References: <1576714621.27293.for-standards-violators@oclsc.org>
+Message-ID: <CAKzdPgz37wwYfmHJ_7kZx_T=-zwNJ50PhS7r0kCpuf_F1mDkww@mail.gmail.com>
+
+Your naming isn't right, although the story otherwise is accurate.
+
+The Jerq was the original name for the 68K machines hand-made by Bart. The
+name, originally coined for a fun demo of the Three Rivers Perq by folks at
+Lucasfilm, was borrowed with permission by us but was considered unsuitable
+by Sam Morgan as we reached out to make some industrially, by a company
+(something Atlantic) on Long Island. So "Blit" was coined. The Blit name
+later stuck unofficially to the DMD-5620, which was made by Teletype and,
+after some upheavals, had a Western Electric BellMac 32000 CPU.
+
+If 5620s were called Jerqs, it was an accident. All the software with that
+name would be for the original, Locanthi-built and -designed 68K machines.
+
+The sequence is thus Jerq, Blit, DMD-5620. DMD stood for dot-mapped rather
+than bit-mapped, but I never understood why. It seemed a category error to
+me.
+
+-rob
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191219/ddc196f4/attachment.html>
+
+From tuhs at ducky.net  Thu Dec 19 13:47:02 2019
+From: tuhs at ducky.net (Mike Haertel)
+Date: Wed, 18 Dec 2019 19:47:02 -0800
+Subject: [TUHS] Blit source
+In-Reply-To: <CAKzdPgz37wwYfmHJ_7kZx_T=-zwNJ50PhS7r0kCpuf_F1mDkww@mail.gmail.com>
+References: <1576714621.27293.for-standards-violators@oclsc.org>
+ <CAKzdPgz37wwYfmHJ_7kZx_T=-zwNJ50PhS7r0kCpuf_F1mDkww@mail.gmail.com>
+Message-ID: <201912190347.xBJ3l2sF064230@ducky.net>
+
+Norman wrote:
+> The V8 tape was made in late 1984 (I know that for sure
+> because I helped make it).  It is unlikely to have anything
+> for the MC68000 Blit, only stuff for the Mac-32 Jerq.
+
+The V8 tape has the Blit stuff in /usr/blit, and the 5620 stuff
+in /usr/jerq.  The Blit stuff looks somewhat older, and doesn't
+have exactly the same graphics library functions as the 5620.
+
+It would be interesting to see a chronology of the evolution of
+these window systems.
+
+Rob wrote:
+> If 5620s were called Jerqs, it was an accident. All the software with that
+> name would be for the original, Locanthi-built and -designed 68K machines.
+
+That's amusing, considering that the 5620 stuff was in /usr/jerq on
+Research systems!  Apparently the accident became institutionalized.
+
+	Mike
+
+From crossd at gmail.com  Thu Dec 19 15:12:28 2019
+From: crossd at gmail.com (Dan Cross)
+Date: Thu, 19 Dec 2019 00:12:28 -0500
+Subject: [TUHS] Blit source
+In-Reply-To: <CAKzdPgz37wwYfmHJ_7kZx_T=-zwNJ50PhS7r0kCpuf_F1mDkww@mail.gmail.com>
+References: <1576714621.27293.for-standards-violators@oclsc.org>
+ <CAKzdPgz37wwYfmHJ_7kZx_T=-zwNJ50PhS7r0kCpuf_F1mDkww@mail.gmail.com>
+Message-ID: <CAEoi9W65VT-+nXPQtt6iiEPoKtZdxNjnzgxwiW9_ODgJYzbUMw@mail.gmail.com>
+
+On Wed, Dec 18, 2019 at 7:27 PM Rob Pike <robpike at gmail.com> wrote:
+
+> [snip]
+>
+The sequence is thus Jerq, Blit, DMD-5620. DMD stood for dot-mapped rather
+> than bit-mapped, but I never understood why. It seemed a category error to
+> me.
+>
+
+The first time I saw a terminal of that lineage, it was a gnot (Gnot?
+GNOT?) running Plan 9; this would likely have been 1993 or 1994; I was in
+high school and visited a college-student friend of mine who was interning
+at the labs and Dennis Ritchie had one on his desk. As an aside, he kindly
+spared me a few minutes; I confess I was too star-struck and embarrassed to
+ask him to autograph my copy of K&R that I had brought along. Dennis was a
+kind, humble person and I was always quite struck by that in comparison to
+some other academic and industry super-stars I've met.
+
+Anyway, my question is what was the evolutionary story of the gnot? I
+recall being told that it had a 68020, a datakit interface, and some amount
+of RAM that was small but non-trivial; perhaps 4MB? It seemed clearly
+evolved from the series of earlier terminals presently under discussion.
+
+And the next step in the evolution was a MIPS-based terminal; I can't
+recall the name, though.
+
+        - Dan C.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191219/2ff124a6/attachment.html>
+
+From robpike at gmail.com  Thu Dec 19 16:54:09 2019
+From: robpike at gmail.com (Rob Pike)
+Date: Thu, 19 Dec 2019 17:54:09 +1100
+Subject: [TUHS] Blit source
+In-Reply-To: <CAEoi9W65VT-+nXPQtt6iiEPoKtZdxNjnzgxwiW9_ODgJYzbUMw@mail.gmail.com>
+References: <1576714621.27293.for-standards-violators@oclsc.org>
+ <CAKzdPgz37wwYfmHJ_7kZx_T=-zwNJ50PhS7r0kCpuf_F1mDkww@mail.gmail.com>
+ <CAEoi9W65VT-+nXPQtt6iiEPoKtZdxNjnzgxwiW9_ODgJYzbUMw@mail.gmail.com>
+Message-ID: <CAKzdPgznw+fzOdZTJwVv3Vb0a3MnEBoJfjtWz2fayPjrg3UKYg@mail.gmail.com>
+
+The Gnot had a 68040 (which had an MMU that paged properly) and an INCON
+interface, which was a kind of Datakit for the home. Twisted pair. Half a
+megabit if I remember right, but I probably don't.
+
+Two bits per pixel. The "render extension" in X Windows originated there,
+after an epiphany I had while watching Hoop Dreams. True story.
+
+The MIPS machine you refer to was called a Magnum, made by somebody for
+Microsoft as a porting engine for Windows to non-Intel.
+
+-rob
+
+
+On Thu, Dec 19, 2019 at 4:13 PM Dan Cross <crossd at gmail.com> wrote:
+
+> On Wed, Dec 18, 2019 at 7:27 PM Rob Pike <robpike at gmail.com> wrote:
+>
+>> [snip]
+>>
+> The sequence is thus Jerq, Blit, DMD-5620. DMD stood for dot-mapped rather
+>> than bit-mapped, but I never understood why. It seemed a category error to
+>> me.
+>>
+>
+> The first time I saw a terminal of that lineage, it was a gnot (Gnot?
+> GNOT?) running Plan 9; this would likely have been 1993 or 1994; I was in
+> high school and visited a college-student friend of mine who was interning
+> at the labs and Dennis Ritchie had one on his desk. As an aside, he kindly
+> spared me a few minutes; I confess I was too star-struck and embarrassed to
+> ask him to autograph my copy of K&R that I had brought along. Dennis was a
+> kind, humble person and I was always quite struck by that in comparison to
+> some other academic and industry super-stars I've met.
+>
+> Anyway, my question is what was the evolutionary story of the gnot? I
+> recall being told that it had a 68020, a datakit interface, and some amount
+> of RAM that was small but non-trivial; perhaps 4MB? It seemed clearly
+> evolved from the series of earlier terminals presently under discussion.
+>
+> And the next step in the evolution was a MIPS-based terminal; I can't
+> recall the name, though.
+>
+>         - Dan C.
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191219/9245cbb5/attachment.html>
+
+From aap at papnet.eu  Thu Dec 19 16:49:14 2019
+From: aap at papnet.eu (Angelo Papenhoff)
+Date: Thu, 19 Dec 2019 07:49:14 +0100
+Subject: [TUHS] Blit source
+In-Reply-To: <201912190347.xBJ3l2sF064230@ducky.net>
+References: <1576714621.27293.for-standards-violators@oclsc.org>
+ <CAKzdPgz37wwYfmHJ_7kZx_T=-zwNJ50PhS7r0kCpuf_F1mDkww@mail.gmail.com>
+ <201912190347.xBJ3l2sF064230@ducky.net>
+Message-ID: <20191219064914.GA91793@indra.papnet.eu>
+
+On 18/12/19, Mike Haertel wrote:
+> The V8 tape has the Blit stuff in /usr/blit, and the 5620 stuff
+> in /usr/jerq.  The Blit stuff looks somewhat older, and doesn't
+> have exactly the same graphics library functions as the 5620.
+
+My theory on that is that the up-to-date version of the code was kept in
+/usr/jerq. When the 68k implementation became legacy, the code was
+copied to /usr/blit and /usr/jerq became the directory for the new
+development. And just to make it more interesting V10 has a 630
+directory presumably for the 68k based 630 MTG.
+
+Anyway, both the 68k and 32000 blit stuff is on the v8 tape (at least
+binaries) and both work. 68k is running fine under emulation, 32000 is
+running fine on real hardware (if you have the right ROM).
+
+aap
+
+From arnold at skeeve.com  Thu Dec 19 18:03:24 2019
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Thu, 19 Dec 2019 01:03:24 -0700
+Subject: [TUHS] Blit source
+In-Reply-To: <CAKzdPgznw+fzOdZTJwVv3Vb0a3MnEBoJfjtWz2fayPjrg3UKYg@mail.gmail.com>
+References: <1576714621.27293.for-standards-violators@oclsc.org>
+ <CAKzdPgz37wwYfmHJ_7kZx_T=-zwNJ50PhS7r0kCpuf_F1mDkww@mail.gmail.com>
+ <CAEoi9W65VT-+nXPQtt6iiEPoKtZdxNjnzgxwiW9_ODgJYzbUMw@mail.gmail.com>
+ <CAKzdPgznw+fzOdZTJwVv3Vb0a3MnEBoJfjtWz2fayPjrg3UKYg@mail.gmail.com>
+Message-ID: <201912190803.xBJ83OjU019669@freefriends.org>
+
+Rob Pike <robpike at gmail.com> wrote:
+
+> The Gnot had a 68040 (which had an MMU that paged properly) and an INCON
+> interface, which was a kind of Datakit for the home. Twisted pair. Half a
+> megabit if I remember right, but I probably don't.
+>
+> Two bits per pixel. The "render extension" in X Windows originated there,
+> after an epiphany I had while watching Hoop Dreams. True story.
+
+I'd like to hear this story in full, please.
+
+Thanks!
+
+Arnold
+
+From pnr at planet.nl  Thu Dec 19 19:09:52 2019
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Thu, 19 Dec 2019 10:09:52 +0100
+Subject: [TUHS] Blit source
+Message-ID: <AC1798F2-2248-4751-93D2-73C2166D4A44@planet.nl>
+
+
+> If 5620s were called Jerqs, it was an accident. All the software with that
+> name would be for the original, Locanthi-built and -designed 68K machines.
+> 
+> The sequence is thus Jerq, Blit, DMD-5620
+
+Maybe the “Jerq” name had a revival. If the processor switch came with some upheaval it is not hard to see how that revival could have happened.
+
+The Dan Cross tar archive with the source code has two top level directories, one named “blit" with the 68K based source and another one named “jerq" with the Bellmac based source. The tar archive seems to have been made in the summer of 1985, or at least those dates are on the top level directories.
+
+I am of course not disputing that the original name was Jerq. There are many clues in the source supporting that, among which this funny comment in mcc.c:
+
+int	jflag, mflag=1;	/* Used for jerq. Rob Pike (read comment as you will) */
+
+
+
+
+
+From chet.ramey at case.edu  Fri Dec 20 01:32:37 2019
+From: chet.ramey at case.edu (Chet Ramey)
+Date: Thu, 19 Dec 2019 10:32:37 -0500
+Subject: [TUHS] Blit source
+In-Reply-To: <CAKzdPgznw+fzOdZTJwVv3Vb0a3MnEBoJfjtWz2fayPjrg3UKYg@mail.gmail.com>
+References: <1576714621.27293.for-standards-violators@oclsc.org>
+ <CAKzdPgz37wwYfmHJ_7kZx_T=-zwNJ50PhS7r0kCpuf_F1mDkww@mail.gmail.com>
+ <CAEoi9W65VT-+nXPQtt6iiEPoKtZdxNjnzgxwiW9_ODgJYzbUMw@mail.gmail.com>
+ <CAKzdPgznw+fzOdZTJwVv3Vb0a3MnEBoJfjtWz2fayPjrg3UKYg@mail.gmail.com>
+Message-ID: <4a2542f0-e0d4-9acd-71eb-dc413e157b06@case.edu>
+
+On 12/19/19 1:54 AM, Rob Pike wrote:
+
+> Two bits per pixel. The "render extension" in X Windows originated there, 
+> after an epiphany I had while watching Hoop Dreams. True story.
+
+That's a great movie. I would be very interested in hearing the story of
+how it sparked that epiphany.
+
+(And if you liked Hoop Dreams, you might be interested in "Benji", an ESPN
+30 for 30 documentary about another Chicago high school basketball player
+but from a very different angle. Unless, of course, you've already seen
+it.)
+
+Chet
+
+-- 
+``The lyf so short, the craft so long to lerne.'' - Chaucer
+		 ``Ars longa, vita brevis'' - Hippocrates
+Chet Ramey, UTech, CWRU    chet at case.edu    http://tiswww.cwru.edu/~chet/
+
+From crossd at gmail.com  Fri Dec 20 18:49:49 2019
+From: crossd at gmail.com (Dan Cross)
+Date: Fri, 20 Dec 2019 03:49:49 -0500
+Subject: [TUHS] AP-3 minicomputer
+In-Reply-To: <4C8A6FE1-3A6E-4F28-AABE-793AABD3F4C4@mcjones.org>
+References: <0FCF3C9F0F6C2441BC6C13C6E49BAEF101DC35B21D@EX-MB1.hq.computerhistory.org>
+ <4C8A6FE1-3A6E-4F28-AABE-793AABD3F4C4@mcjones.org>
+Message-ID: <CAEoi9W7faOgFNxW-NtXtLjGys8ThGwbVKM7Kvqv+qG8PeEquZg@mail.gmail.com>
+
+On Wed, Dec 18, 2019 at 1:52 PM Paul McJones <paul at mcjones.org> wrote:
+
+> Computer History Museum curator Dag Spicer passed along a question from
+> former CHM curator Alex Bochannek that I thought someone on this list might
+> be able to answer. The paper "The M4 Macro Processor” by Kernighan and
+> Ritchie says:
+>
+> > The M4 macro processor is an extension of a macro processor called M3
+> which was written by D. M. Ritchie for the AP-3 minicomputer; M3 was in
+> turn based on a macro processor implemented for [B. W. Kernighan and P. J.
+> Plauger, Software Tools, Addison-Wesley, Inc., 1976].
+>
+> Alex and Dag would like to learn more about this AP-3 minicomputer — can
+> anyone help?
+
+
+[I recommend that follow-ups go to coff, which is Cc'ed here]
+
+I took a short stab at this, but can find little beyond references in the
+aforementioned M4 paper.
+
+I did, however, run across this:
+https://www.cia.gov/library/readingroom/document/cia-rdp78b04770a000100110018-1
+
+This appears to be a declassified letter written to the US Air Force at
+Bowling Green Air Force Base in regards to spare parts fo the AP-3
+computer; dated October 19, 1966. The list of parts seem reasonable for a
+minicomputer, and it further seems reasonable to believe that this may be
+related to the same type of computer referenced in the M4 paper. However,
+details of the sending party have been redacted, and there is nothing
+pointing to the identity of the manufacturer.
+
+Sadly, that's all that seems available. I wonder if, perhaps, Doug McIlroy
+(Cc'ed directly to float this to the top of his stack) can shed more light
+on the topic?
+
+        - Dan C.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191220/a48c54b6/attachment.html>
+
+From wkt at tuhs.org  Sun Dec 22 16:43:31 2019
+From: wkt at tuhs.org (Warren Toomey)
+Date: Sun, 22 Dec 2019 16:43:31 +1000
+Subject: [TUHS] Unix Review Magazine Scans
+Message-ID: <20191222064331.GA3485@minnie.tuhs.org>
+
+All, I got a new printer with a better duplex scanner. I've just scanned
+all the Unix Review magazines that I've got (1984-85 period) and uploaded
+them to www.archive.org:
+
+https://archive.org/search.php?query=title%3A%28Unix%20Review%29%20AND%20mediatype%3A%28texts%29
+
+Merry festive-season-of-your-choice,
+	Warren
+
+P.S I have a bunch of Unix/World magazines, just waiting for a stronger
+guillotine to arrive.
+
+From thomas.paulsen at firemail.de  Sun Dec 22 18:35:09 2019
+From: thomas.paulsen at firemail.de (Thomas Paulsen)
+Date: Sun, 22 Dec 2019 09:35:09 +0100
+Subject: [TUHS] Unix Review Magazine Scans
+In-Reply-To: <20191222064331.GA3485@minnie.tuhs.org>
+References: <20191222064331.GA3485@minnie.tuhs.org>
+Message-ID: <23baa0e7e52f7de76d5ec312b69cecd5@firemail.de>
+
+Thanks a lot!
+
+
+
+From hpyle at cabezal.com  Sat Dec 28 11:34:17 2019
+From: hpyle at cabezal.com (Hugh Pyle)
+Date: Fri, 27 Dec 2019 20:34:17 -0500
+Subject: [TUHS] Linux kernel support for uppercase terminals
+Message-ID: <CALvn94+asEZEzRFyhXh9LjQwQknV3qWdtv2HUttbxnW9QQn+bQ@mail.gmail.com>
+
+The linux kernel never implemented support for a few features of obsolete
+terminals.  I find myself wanting to use Raspberry Pi-style linux machines
+with old hardware, so this became quite frustrating.
+So, I've put together a patch to the n_tty line discipline that adds some
+things needed for using a Teletype model 33 or similar natively:
+- XCASE, escaping uppercase (and a few special characters) for input and
+display,
+- CRDLY, delay to allow time for the carriage-return function;
+- NLDLY, delay to allow time for the newline function.
+
+With XCASE and ICANON, the terminal outputs a backslash before uppercase
+characters; and accepts a backslash escape to set input to uppercase.  The
+usual way to use this is `stty lcase`, which also down-cases all input by
+default.  The special character escapes are:
+  \^  to  ~
+  \!  to  |
+  \(  to  {
+  \)  to  }
+  \'  to  `
+
+With CRDLY there are three options, CR0 through CR2; and with NLDLY there
+are options NL0 (no delay) and NL1 (one delay).  This patch uses fill
+characters for delay, not timing, so these flags only take effect when
+OFILL is also set.
+
+Note: this doesn't change `agetty`, which I don't think implements
+uppercase login detection right now.  I have a Teletype running with
+auto-login; and then `stty 110 icanon lcase ofill cr1 nl1`.
+
+Code changes and some brief build instructions are here:
+https://github.com/hughpyle/ASR33/tree/master/rpi/kernel
+Compare with the raspberrypi tree, here,
+https://github.com/raspberrypi/linux/compare/rpi-4.19.y...hughpyle:teletype
+
+Not yet submitted upstream - the changes are in quite a high-traffic code
+path, and also I just don't know how :)  Feedback is very welcome!
+
+
+-Hugh
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20191227/7f3c5631/attachment.html>
+
+From doug at cs.dartmouth.edu  Tue Dec 31 14:12:44 2019
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Mon, 30 Dec 2019 23:12:44 -0500
+Subject: [TUHS] pic anomalies
+Message-ID: <201912310412.xBV4Ci4P015155@tahoe.cs.Dartmouth.EDU>
+
+According to K&R the behavior of % followed by something
+unexpected is undefined. So the behavior of Ralph's example
+is officially an accident. (It's uncharacteristic of Dennis
+to have defined printf so that there was no guaranteed way
+to get a literal % into a format.)
+
+Doug
+
+------------------------------------------------
+
+Ralph Corderoy wrote:
+
+    $ printf '%s\n' \
+        .PS 'print sprintf("%.17g %.0f% % %%", 3.14, 42, 99)' .PE |
+    > pic >/dev/null
+    3.1400000000000001 42% % %%
+
+Though that may seem odd to our modern C-standardised eyes, it's
+understandable in that if it isn't a valid %f, etc., format specifier
+then it's a literal percent sign.
+
+From doug at cs.dartmouth.edu  Tue Dec 31 14:24:02 2019
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Mon, 30 Dec 2019 23:24:02 -0500
+Subject: [TUHS] pic anomalies
+Message-ID: <201912310424.xBV4O2Cr016640@tahoe.cs.Dartmouth.EDU>
+
+The use of %% to designate a literal % in printf is not
+a recent convention. It was defined in K&R, first edition.
+
+Doug
+
+Ralph Cordery wrote:
+
+Though that may seem odd to our modern C-standardised eyes, it's
+understandable in that if it isn't a valid %f, etc., format specifier
+then it's a literal percent sign.
+
+

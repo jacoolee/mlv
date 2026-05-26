@@ -1,0 +1,2300 @@
+From iking at killthewabbit.org  Wed May  3 03:40:49 2006
+From: iking at killthewabbit.org (Ian King)
+Date: Tue, 02 May 2006 10:40:49 -0700
+Subject: [pups] gcc-.3.4.6 for pdp11
+In-Reply-To: <000501c66b93$a91184e0$1901a8c0@myhome.westell.com>
+References: <000501c66b93$a91184e0$1901a8c0@myhome.westell.com>
+Message-ID: <445799A1.9080805@killthewabbit.org>
+
+Bill Cunningham wrote:
+
+>    Does anyone know how to compile gcc-3.4.6 for the pdp11? I use
+>the --target=pdp11 switch and the compiler runs for awhile then breaks. The
+>output says it's bulding for a pdp11-unknown something so there maybe
+>something I'm not using.
+>
+>  
+>
+[snip]
+
+And there's another issue: *which* PDP11?  I have a MINC-11 that was 
+upgraded with an 11/23 CPU, as many were.  I managed to get my hands on 
+the original MINC software, and it would not run.  It's been a while 
+since I did that so I don't remember the exact instruction on which it 
+choked (with an illegal instruction trap).  But I dropped in an 11/03 
+CPU and all ran fine.  I found a helpful matrix in one of the DEC 
+handbooks that outlines just which instructions were changed between 
+several of the Qbus processors, anyway. 
+
+Imagine the number of compiler switches....  -- Ian
+
+
+From nick at holland-consulting.net  Wed May  3 12:14:38 2006
+From: nick at holland-consulting.net (Nick Holland)
+Date: Tue, 02 May 2006 22:14:38 -0400
+Subject: [pups] gcc-.3.4.6 for pdp11
+In-Reply-To: <50956.70.16.123.154.1146326439.squirrel@www.cs.scranton.edu>
+References: <000501c66b93$a91184e0$1901a8c0@myhome.westell.com>	<008101c66b9e$cc98ab40$6501a8c0@who7>
+	<50956.70.16.123.154.1146326439.squirrel@www.cs.scranton.edu>
+Message-ID: <44581225.8050403@holland-consulting.net>
+
+Bill Gunshannon wrote:
+> Before people devote too much effort to flogging a dead horse, I,
+> too, have recently tried to build a gcc cross-compiler for the
+> PDP-11 with no success.  I have not seen a version that worked
+> since GCC 2.something.  It is possible that changes to GCC have
+> broken the PDP-11 code and that no one is keeping it up.  I would
+> love to hear otherwise if anyone has successfully built a pdp-11
+> cross compiler using anything vaguely current.
+> 
+> bill
+
+The GCC team has dropped a lot of older and "less interesting"
+(in their minds) platforms from active support (and made the thing
+too slow for anything but modern processors, but that's another
+rant).
+
+http://gcc.gnu.org/install/specific.html#older
+
+What would be wrong with using gcc 2.95 or older?
+
+Nick.
+
+
+
+From toby at smartgames.ca  Wed May 24 03:28:17 2006
+From: toby at smartgames.ca (Toby Thain)
+Date: Tue, 23 May 2006 13:28:17 -0400
+Subject: [pups] gcc-.3.4.6 for pdp11
+In-Reply-To: <50956.70.16.123.154.1146326439.squirrel@www.cs.scranton.edu>
+References: <000501c66b93$a91184e0$1901a8c0@myhome.westell.com>
+	<008101c66b9e$cc98ab40$6501a8c0@who7>
+	<50956.70.16.123.154.1146326439.squirrel@www.cs.scranton.edu>
+Message-ID: <BAYC1-PASMTP110D7F841AEF32A5EBC9CFBF9B0@CEZ.ICE>
+
+
+On 29-Apr-06, at 12:00 PM, Bill Gunshannon wrote:
+
+>
+> Before people devote too much effort to flogging a dead horse, I,
+> too, have recently tried to build a gcc cross-compiler for the
+> PDP-11 with no success.  I have not seen a version that worked
+> since GCC 2.something.  It is possible that changes to GCC have
+> broken the PDP-11 code and that no one is keeping it up.  I would
+> love to hear otherwise if anyone has successfully built a pdp-11
+> cross compiler using anything vaguely current.
+
+
+Long ago I saved this post by Michael Gschwind relating to patching  
+gcc 2.1:
+http://groups.google.com/group/vmsnet.pdp-11/msg/4c7df7591ea87dbe
+
+--Toby
+
+>
+> bill
+>
+>> Hello!
+>> Bill? What are you building this on? If it's a Linux host, then check
+>> your sources. They are required to provide them. I should also add
+>> that the embedded tool providers should have notes on those steps. Oh
+>> and while your at it, you could show us the complete listing of your
+>> attempts.
+>> ---
+>> Gregg C Levine hansolofalcon at worldnet.att.net
+>> ---
+>> "Remember the Force will be with you. Always." Obi-Wan Kenobi
+>>
+>>> -----Original Message-----
+>>> From: pups-bounces at minnie.tuhs.org
+>> [mailto:pups-bounces at minnie.tuhs.org] On
+>>> Behalf Of Bill Cunningham
+>>> Sent: Saturday, April 29, 2006 9:49 AM
+>>> To: pups at minnie.tuhs.org
+>>> Subject: [pups] gcc-.3.4.6 for pdp11
+>>>
+>>>     Does anyone know how to compile gcc-3.4.6 for the pdp11? I use
+>>> the --target=pdp11 switch and the compiler runs for awhile then
+>> breaks. The
+>>> output says it's bulding for a pdp11-unknown something so there
+>> maybe
+>>> something I'm not using.
+>>>
+>>> Bill
+>>>
+>>> _______________________________________________
+>>> PUPS mailing list
+>>> PUPS at minnie.tuhs.org
+>>> https://minnie.tuhs.org/mailman/listinfo/pups
+>>
+>> _______________________________________________
+>> PUPS mailing list
+>> PUPS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/pups
+>>
+>
+>
+> -- 
+> Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three  
+> wolves
+> bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+> University of Scranton   |
+> Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+>
+>
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From lars at nocrew.org  Wed May 24 19:27:30 2006
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: Wed, 24 May 2006 11:27:30 +0200
+Subject: [pups] gcc-.3.4.6 for pdp11
+In-Reply-To: <BAYC1-PASMTP110D7F841AEF32A5EBC9CFBF9B0@CEZ.ICE> (Toby Thain's
+	message of "Tue, 23 May 2006 13:28:17 -0400")
+References: <000501c66b93$a91184e0$1901a8c0@myhome.westell.com>
+	<008101c66b9e$cc98ab40$6501a8c0@who7>
+	<50956.70.16.123.154.1146326439.squirrel@www.cs.scranton.edu>
+	<BAYC1-PASMTP110D7F841AEF32A5EBC9CFBF9B0@CEZ.ICE>
+Message-ID: <85irnvzsal.fsf@junk.nocrew.org>
+
+Bill Gunshannon wrote:
+> Before people devote too much effort to flogging a dead horse, I,
+> too, have recently tried to build a gcc cross-compiler for the
+> PDP-11 with no success.  I have not seen a version that worked
+> since GCC 2.something.  It is possible that changes to GCC have
+> broken the PDP-11 code and that no one is keeping it up.  I would
+> love to hear otherwise if anyone has successfully built a pdp-11
+> cross compiler using anything vaguely current.
+
+I may be able to offer help with the PDP-11 target in GCC and/or
+binutils.  Email me for details.
+
+
+From slawmaster at gmail.com  Wed May 24 15:46:00 2006
+From: slawmaster at gmail.com (John Floren)
+Date: Wed, 24 May 2006 01:46:00 -0400
+Subject: [pups] simh and 2.11BSD
+Message-ID: <7d3530220605232246q7ef9823cyae4d146b21c3d8fb@mail.gmail.com>
+
+Hello everyone, I'm just trying to get into PDP-11 Unix.
+I have a couple older machines lying around not doing much (a SPARCstation 4
+and an Ultra 1), and I've been fiddling around with the simh pdp11 and
+2.11BSD on the Ultra 1. I can get the system to boot using the
+211bsd.simhconfig file from the tarball here:
+http://ftp.gcu-squad.org/tuhs/PDP-11/Boot_Images/2.11_on_Simh/
+I can boot into what appears to be a workable system, but I'd like to have
+networking and a larger hard drive. Can somebody help me out with getting
+this set up? If anybody else out there has done the same thing, I'd like to
+hear exactly what you did.
+Thank you very much
+
+John F.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20060524/a54d0561/attachment.html>
+
+From luvisi at andru.sonoma.edu  Thu May 25 02:47:19 2006
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Wed, 24 May 2006 09:47:19 -0700 (PDT)
+Subject: [pups] simh and 2.11BSD
+In-Reply-To: <7d3530220605232246q7ef9823cyae4d146b21c3d8fb@mail.gmail.com>
+References: <7d3530220605232246q7ef9823cyae4d146b21c3d8fb@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0605240925570.12968@localhost.localdomain>
+
+On Wed, 24 May 2006, John Floren wrote:
+[snip]
+> I can boot into what appears to be a workable system, but I'd like to have
+> networking and a larger hard drive. Can somebody help me out with getting
+> this set up? If anybody else out there has done the same thing, I'd like to
+> hear exactly what you did.
+> Thank you very much
+
+For networking, you need to:
+   compile simh with networking support
+   edit 211bsd.simh to
+     attach to the correct network device
+     use the hardware address that you want
+   Inside the system, you will need to edit /etc/hosts and /etc/netstart
+   to configure your hostname and networking options.
+   Reboot
+
+As for getting a bigger disk, you've got two options.  Reinstall on a 
+larger disk image, or just mount a larger disk image onto the file system.
+
+To reinstall, read the directions in README.networked.211BSD and 
+docs/2.11bsd_setup.txt .  If you do a fresh reinstall, you will need to 
+recompile the kernel (as described in docs/2.11bsd_setup.txt) to get 
+networking support.
+
+Or you can create a second, larger, disk image with dd, attach it, and 
+label, format, and mount it from within the emulator.
+
+Best of luck,
+Andru
+-- 
+Andru Luvisi
+
+Quote Of The Moment:
+  Quidquid latine dictum sit, altum viditur.
+  ( Whatever is said in Latin sounds profound. )
+
+
+From slawmaster at gmail.com  Thu May 25 05:25:53 2006
+From: slawmaster at gmail.com (John Floren)
+Date: Wed, 24 May 2006 15:25:53 -0400
+Subject: [pups] simh and 2.11BSD
+In-Reply-To: <Pine.LNX.4.64.0605240925570.12968@localhost.localdomain>
+References: <7d3530220605232246q7ef9823cyae4d146b21c3d8fb@mail.gmail.com>
+	<Pine.LNX.4.64.0605240925570.12968@localhost.localdomain>
+Message-ID: <7d3530220605241225s76114e0ay227ef387a9c86699@mail.gmail.com>
+
+On 5/24/06, Andru Luvisi <luvisi at andru.sonoma.edu> wrote:
+>
+> On Wed, 24 May 2006, John Floren wrote:
+> [snip]
+> > I can boot into what appears to be a workable system, but I'd like to
+> have
+> > networking and a larger hard drive. Can somebody help me out with
+> getting
+> > this set up? If anybody else out there has done the same thing, I'd like
+> to
+> > hear exactly what you did.
+> > Thank you very much
+>
+> For networking, you need to:
+>    compile simh with networking support
+>    edit 211bsd.simh to
+>      attach to the correct network device
+>      use the hardware address that you want
+>    Inside the system, you will need to edit /etc/hosts and /etc/netstart
+>    to configure your hostname and networking options.
+>    Reboot
+>
+> As for getting a bigger disk, you've got two options.  Reinstall on a
+> larger disk image, or just mount a larger disk image onto the file system.
+>
+> To reinstall, read the directions in README.networked.211BSD and
+> docs/2.11bsd_setup.txt .  If you do a fresh reinstall, you will need to
+> recompile the kernel (as described in docs/2.11bsd_setup.txt) to get
+> networking support.
+>
+> Or you can create a second, larger, disk image with dd, attach it, and
+> label, format, and mount it from within the emulator.
+>
+> Best of luck,
+> Andru
+> --
+> Andru Luvisi
+
+
+When you say "use the hardware address you want", do you mean set it to the
+host machine's MAC, or to something I make up?
+
+John
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20060524/45a06647/attachment.html>
+
+From luvisi at andru.sonoma.edu  Thu May 25 05:31:38 2006
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Wed, 24 May 2006 12:31:38 -0700 (PDT)
+Subject: [pups] simh and 2.11BSD
+In-Reply-To: <7d3530220605241225s76114e0ay227ef387a9c86699@mail.gmail.com>
+References: <7d3530220605232246q7ef9823cyae4d146b21c3d8fb@mail.gmail.com> 
+	<Pine.LNX.4.64.0605240925570.12968@localhost.localdomain>
+	<7d3530220605241225s76114e0ay227ef387a9c86699@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0605241231230.12968@localhost.localdomain>
+
+On Wed, 24 May 2006, John Floren wrote:
+[snip]
+> When you say "use the hardware address you want", do you mean set it to the
+> host machine's MAC, or to something I make up?
+[snip]
+
+Something you make up.
+
+Andru
+-- 
+Andru Luvisi
+
+Quote Of The Moment:
+  Quidquid latine dictum sit, altum viditur.
+  ( Whatever is said in Latin sounds profound. )
+
+
+From slawmaster at gmail.com  Thu May 25 05:42:56 2006
+From: slawmaster at gmail.com (John Floren)
+Date: Wed, 24 May 2006 15:42:56 -0400
+Subject: [pups] simh and 2.11BSD
+In-Reply-To: <Pine.LNX.4.64.0605241231230.12968@localhost.localdomain>
+References: <7d3530220605232246q7ef9823cyae4d146b21c3d8fb@mail.gmail.com>
+	<Pine.LNX.4.64.0605240925570.12968@localhost.localdomain>
+	<7d3530220605241225s76114e0ay227ef387a9c86699@mail.gmail.com>
+	<Pine.LNX.4.64.0605241231230.12968@localhost.localdomain>
+Message-ID: <7d3530220605241242x2f23e3fse70658b46e50c26d@mail.gmail.com>
+
+On 5/24/06, Andru Luvisi <luvisi at andru.sonoma.edu> wrote:
+>
+> On Wed, 24 May 2006, John Floren wrote:
+> [snip]
+> > When you say "use the hardware address you want", do you mean set it to
+> the
+> > host machine's MAC, or to something I make up?
+> [snip]
+>
+> Something you make up.
+
+
+<snipped>
+Okay, done that, but when I try to "attach xq eth0" I get the error "Command
+not allowed". This occurs even when running as root. I believe I have
+correctly built libpcap and simh, but the problem remains. Suggestions?
+
+
+John
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20060524/50be935c/attachment.html>
+
+From luvisi at andru.sonoma.edu  Thu May 25 06:19:15 2006
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Wed, 24 May 2006 13:19:15 -0700 (PDT)
+Subject: [pups] simh and 2.11BSD
+In-Reply-To: <7d3530220605241242x2f23e3fse70658b46e50c26d@mail.gmail.com>
+References: <7d3530220605232246q7ef9823cyae4d146b21c3d8fb@mail.gmail.com>
+	<Pine.LNX.4.64.0605240925570.12968@localhost.localdomain>
+	<7d3530220605241225s76114e0ay227ef387a9c86699@mail.gmail.com>
+	<Pine.LNX.4.64.0605241231230.12968@localhost.localdomain>
+	<7d3530220605241242x2f23e3fse70658b46e50c26d@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0605241300540.12968@localhost.localdomain>
+
+On Wed, 24 May 2006, John Floren wrote:
+[snip]
+> Okay, done that, but when I try to "attach xq eth0" I get the error "Command
+> not allowed". This occurs even when running as root. I believe I have
+> correctly built libpcap and simh, but the problem remains. Suggestions?
+[snip]
+
+I'm not very familiar with the libpcap magic.  I suggest asking on the 
+simh mailing list (information at 
+http://simh.trailing-edge.com/help.html).
+
+Andru
+-- 
+Andru Luvisi
+
+Quote Of The Moment:
+  Great spirits have always encountered violent opposition from
+  mediocre minds.
+                  -- Albert Einstein
+  
+  They laughed at Einstein.  They laughed at the Wright Brothers.
+  But they also laughed at Bozo the Clown.
+                  -- Carl Sagan
+
+
+From billcu1 at verizon.net  Fri May 26 14:52:26 2006
+From: billcu1 at verizon.net (Bill Cunningham)
+Date: Fri, 26 May 2006 00:52:26 -0400
+Subject: [pups] Unix V7
+Message-ID: <000701c68080$3028fe80$2f01a8c0@myhome.westell.com>
+
+    I have I V7 system Warren that runs on PDP-11 that was created from some
+of Keith Bostics's fileblock fragments. I can get this system up and running
+but the C compiler seems to be broke. I get ***error 8 which I don't know
+what that means but it's probably a pdp11 error code. I'm still trying to
+learn about the pdps but do you know how I might regenerate this C compiler
+from v7 that will fix c0? When I try to add floating point number emulation
+to the C compiler and regen things I always get an error at c0. How could I
+regenerate the c0 pass file? That seems to be the only thing that's stopping
+me from going further. I don't know if the compiler can be rebuilt from
+scratch if something like lib/c0 is broken.
+
+Bill
+
+
+
+From jkunz at unixag-kl.fh-kl.de  Tue May  2 08:08:53 2006
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Tue, 2 May 2006 00:08:53 +0200
+Subject: [TUHS] Tektronix Unix Variants
+In-Reply-To: <5B5246CE-8D25-4545-B7DA-32990CC5382A@bitsavers.org>
+References: <mailman.3.1146362401.55725.tuhs@minnie.tuhs.org>
+	<5B5246CE-8D25-4545-B7DA-32990CC5382A@bitsavers.org>
+Message-ID: <20060502000853.372e013c@SirToby.dinner41.de>
+
+On Sat, 29 Apr 2006 20:01:40 -0700
+Al Kossow <aek at bitsavers.org> wrote:
+
+> It was the Tek 8560 multi-user development system.
+> Different models had either an 11/23 or 11/73 processor
+> with their own peripheral interfaces.
+I own one of the 11/23 based models together with a 6800 and 68000 in
+circuit emulator. It is complete, I have manuals, it runs some sort of
+UNIX V7 caled TENIX. I have a spare 11/73 CPU board that I can plug into
+it in exchange to the 11/23 CPU.
+
+I need the instalation media or at least the stand alone tools for this
+machine. It needs a fsck(8) but fsck(8) is a stand alone tool...
+It would be really great if someone could help with this.
+
+Hmmm. That machine would be a great exhibition at the next the Vintage
+Computing Festival Europa.
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+
+From aw at aw.gs  Wed May  3 03:09:21 2006
+From: aw at aw.gs (A. Wik)
+Date: Tue, 2 May 2006 17:09:21 +0000 (GMT)
+Subject: [TUHS] gcc-3.4.6 and old unix
+In-Reply-To: <20060424180143.41943.qmail@web26107.mail.ukl.yahoo.com>
+References: <20060424180143.41943.qmail@web26107.mail.ukl.yahoo.com>
+Message-ID: <20060502170530.S78098@dynamite.narpes.com>
+
+On Mon, 24 Apr 2006, Jose R Valverde wrote:
+
+> Gasp! I think you have a number of things wrong that
+> need correction.
+> 
+> First, now what LINUX stands for? Linux Is Not UniX.
+> Yep, that's it!
+
+I'm not sure whether you're kidding about that,
+but Linux is not an acronym - it's a pun on Unix
+and on Linus (the first name of the author).
+
+-aw
+
+
+From imp at bsdimp.com  Wed May  3 03:57:47 2006
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Tue, 02 May 2006 11:57:47 -0600 (MDT)
+Subject: [TUHS] gcc-3.4.6 and old unix
+In-Reply-To: <20060502170530.S78098@dynamite.narpes.com>
+References: <20060424180143.41943.qmail@web26107.mail.ukl.yahoo.com>
+	<20060502170530.S78098@dynamite.narpes.com>
+Message-ID: <20060502.115747.07017068.imp@bsdimp.com>
+
+In message: <20060502170530.S78098 at dynamite.narpes.com>
+            "A. Wik" <aw at aw.gs> writes:
+: On Mon, 24 Apr 2006, Jose R Valverde wrote:
+: 
+: > Gasp! I think you have a number of things wrong that
+: > need correction.
+: > 
+: > First, now what LINUX stands for? Linux Is Not UniX.
+: > Yep, that's it!
+: 
+: I'm not sure whether you're kidding about that,
+: but Linux is not an acronym - it's a pun on Unix
+: and on Linus (the first name of the author).
+
+"Linux is Not UniX" is a corruption of Gnu: Gnu is Not Unix...
+
+Warner
+
+
+From patv at monmouth.com  Wed May  3 11:17:33 2006
+From: patv at monmouth.com (Pat Villani)
+Date: Tue, 02 May 2006 21:17:33 -0400
+Subject: [TUHS] [pups]  gcc-3.4.6 and old unix
+In-Reply-To: <20060502114434.B78098@dynamite.narpes.com>
+References: <200604251253.k3PCrR0f005871@wwws.monmouth.com>
+	<20060502114434.B78098@dynamite.narpes.com>
+Message-ID: <445804AD.3040605@monmouth.com>
+
+
+It's actually a GNU port, with small changes to the actual sources.  
+Mainly configure and make file changes so that it properly builds on 
+cygwin and linux.  Creates minix binaries.
+
+Pat
+
+
+Charlie ROOT wrote:
+>
+> Did you make other improvements than XP cross-compilation?
+>
+> -aw
+>   
+
+
+
+
+
+From root at dynamite.narpes.com  Wed May  3 02:52:22 2006
+From: root at dynamite.narpes.com (Charlie ROOT)
+Date: Tue, 2 May 2006 16:52:22 +0000 (GMT)
+Subject: [TUHS] [pups]  gcc-3.4.6 and old unix
+In-Reply-To: <200604251253.k3PCrR0f005871@wwws.monmouth.com>
+References: <200604251253.k3PCrR0f005871@wwws.monmouth.com>
+Message-ID: <20060502114434.B78098@dynamite.narpes.com>
+
+
+On Tue, 25 Apr 2006 patv at monmouth.com wrote:
+
+> If this helps at all, I've been working (very, very slowly) on a port of
+> v32 to Intel platforms.  At first I used gcc for some kernel work, but
+> quickly realized that it would be overwhelming to the final v7 system. 
+
+If you're interested in running V7 on x86, you should check out
+the 286-port on the TUHS FTP site, as it was fully operational 
+until the author, according to his report, messed up the file 
+system code.
+
+For a 32-bit Unix, the Quasijarus project would be better
+starting point, as it is more seasoned as a 32-bit operating
+system.  The project project was started by Michael Sokolov, with
+the primary goal of extending 4.3BSD-Tahoe to run on newer VAX
+hardware.  You can find the source, as well as the mailing list,
+from the web page at:  http://ifctfvax.harhan.org/Quasijarus/
+
+Because NetBSD and especially GCC have long since outgrown all
+but the most powerful VAX hardware, including my VAXstation
+4000-60, I've been looking into the possibility of getting
+Quasijarus to run on the machine - very slowly, of course.
+I've only managed to hack the NetBSD kernel into running the
+binaries properly - it should support 32V-ones as well, for
+that matter.
+
+I'm also interested in 386-ports of the classical Unix utilities,
+but my kernel-side focus is on a brand new, non-portable kernel
+written in assembly language for compactness and flexibility of
+running, examining and debugging code that excessively picky
+operating systems choke at - e.g. real- and kernel-mode code.
+
+> Since I don't want to do the work twice, I looked for a different compiler
+> suite.  I switched to the ACK compiler suite and just finished the WinXP
+> cross compiler work.  It has a pdp11 back end, which I have yet to try,
+> that may be useful.
+> 
+> It isn't gcc, but ir does do ANSI C and the i386 assembler seems to be
+> pretty complete.  Let me know if there's any interest and I'll put it up
+> on my site for download.
+
+Did you make other improvements than XP cross-compilation?
+
+-aw
+
+
+
+From aw at aw.gs  Mon May 15 05:32:33 2006
+From: aw at aw.gs (A. Wik)
+Date: Sun, 14 May 2006 19:32:33 +0000 (GMT)
+Subject: [TUHS] RFS (Remote? File System)
+Message-ID: <20060514191901.Y6729@dynamite.narpes.com>
+
+
+In the context of non-local file systems - Sun's NFS
+in particular - I've seen RFS be mentioned.  This was
+AT&T's implementattion of transparent real-time (for
+contrast with UUCP, FTP, etc.) remote file access.
+
+But that's all I know.  Does anyone know of useful
+sources of information (or just anecdotes, for that
+matter)?
+
+-aw
+
+
+From lm at bitmover.com  Mon May 15 14:22:38 2006
+From: lm at bitmover.com (Larry McVoy)
+Date: Sun, 14 May 2006 21:22:38 -0700
+Subject: [TUHS] TUHS Digest, Vol 31, Issue 5
+In-Reply-To: <mailman.3.1147658400.31029.tuhs@minnie.tuhs.org>
+References: <mailman.3.1147658400.31029.tuhs@minnie.tuhs.org>
+Message-ID: <20060515042238.GA25047@bitmover.com>
+
+> in particular - I've seen RFS be mentioned.  This was
+> AT&T's implementattion of transparent real-time (for
+> contrast with UUCP, FTP, etc.) remote file access.
+
+It wasn't real time, it was "remote file system" == RFS.
+
+It was different than NFS in that it was stateful and that it knew that the
+other side knew what it knew (think ioctls, yuck).  
+
+My officemate worked on it, it was problematic.  Don't go there.  NFS is
+bad enough, but it works.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From asbesto at freaknet.org  Mon May 15 17:05:55 2006
+From: asbesto at freaknet.org (asbesto)
+Date: Mon, 15 May 2006 07:05:55 +0000
+Subject: [TUHS] PDP11/23 and microPDP (11/23?)
+Message-ID: <20060515070555.GB11843@freaknet.org>
+
+
+Hi,
+
+in the end of May i'm going to recover a PDP11/23, a
+MicroPDP11/23 (maybe? i've not seen it) and some other stuff for
+our computer museum. 
+
+Does someone have an idea about what flavour of Unix can be run,
+if this is possible, on 11/23? :)
+
+greets from sicilia, italy!
+
+-- 
+[ asbesto : IW9HGS : freaknet medialab : radiocybernet : poetry ]
+[ http://freaknet.org/asbesto http://papuasia.org/radiocybernet ]
+[ NON SCRIVERMI USANDO LETTERE ACCENTATE, NON MANDARMI ALLEGATI ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC, SPAM ]
+
+
+
+From tfb at tfeb.org  Mon May 15 17:46:33 2006
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Mon, 15 May 2006 08:46:33 +0100
+Subject: [TUHS] TUHS Digest, Vol 31, Issue 5
+In-Reply-To: <20060515042238.GA25047@bitmover.com>
+References: <mailman.3.1147658400.31029.tuhs@minnie.tuhs.org>
+	<20060515042238.GA25047@bitmover.com>
+Message-ID: <C5D6F2D0-E9DF-41AC-B33F-C85177F64E0F@tfeb.org>
+
+On 15 May 2006, at 05:22, Larry McVoy wrote:
+>
+> It wasn't real time, it was "remote file system" == RFS.
+>
+> It was different than NFS in that it was stateful and that it knew  
+> that the
+> other side knew what it knew (think ioctls, yuck).
+
+My memory, which may be wrong, is that some SunOS 4s had support for  
+it (may be all did), so there are probably manuals and so forth which  
+can still be found there.
+
+--tim
+
+
+From lm at bitmover.com  Tue May 16 00:02:42 2006
+From: lm at bitmover.com (Larry McVoy)
+Date: Mon, 15 May 2006 07:02:42 -0700
+Subject: [TUHS] TUHS Digest, Vol 31, Issue 5
+In-Reply-To: <C5D6F2D0-E9DF-41AC-B33F-C85177F64E0F@tfeb.org>
+References: <mailman.3.1147658400.31029.tuhs@minnie.tuhs.org>
+	<20060515042238.GA25047@bitmover.com>
+	<C5D6F2D0-E9DF-41AC-B33F-C85177F64E0F@tfeb.org>
+Message-ID: <20060515140242.GA27749@bitmover.com>
+
+On Mon, May 15, 2006 at 08:46:33AM +0100, Tim Bradshaw wrote:
+> On 15 May 2006, at 05:22, Larry McVoy wrote:
+> >
+> >It wasn't real time, it was "remote file system" == RFS.
+> >
+> >It was different than NFS in that it was stateful and that it knew  
+> >that the
+> >other side knew what it knew (think ioctls, yuck).
+> 
+> My memory, which may be wrong, is that some SunOS 4s had support for  
+> it (may be all did), so there are probably manuals and so forth which  
+> can still be found there.
+
+That's correct and I have those manuals somewhere (anyone want a full
+set of 4.x manuals?)
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From berny.goodheart at myrealbox.com  Mon May 15 20:57:47 2006
+From: berny.goodheart at myrealbox.com (Berny 'Scouser' Goodheart)
+Date: Mon, 15 May 2006 11:57:47 +0100
+Subject: [TUHS] RFS (Remote? File System) (A. Wik)
+In-Reply-To: <mailman.3.1147658400.31029.tuhs@minnie.tuhs.org>
+Message-ID: <003501c6780e$6be0aec0$4405a6c0@FERRARI>
+
+From: "A. Wik" <aw at aw.gs>
+>
+> In the context of non-local file systems - Sun's NFS
+> in particular - I've seen RFS be mentioned.  This was
+> AT&T's implementattion of transparent real-time (for
+> contrast with UUCP, FTP, etc.) remote file access.
+> 
+> But that's all I know.  Does anyone know of useful
+> sources of information (or just anecdotes, for that
+> matter)?
+> 
+> -aw
+
+There's an entire section devoted to RFS in the USL SVR4 Network
+User's And Administrator's Guide. What is it you after
+Exactly?
+
+-Berny
+
+
+
+
+From tuhs at entropy.homeip.net  Thu May 18 01:29:45 2006
+From: tuhs at entropy.homeip.net (tuhs at entropy.homeip.net)
+Date: Wed, 17 May 2006 11:29:45 -0400
+Subject: [TUHS] Bell Labs Holmdel site coming down
+Message-ID: <446B4169.8010007@entropy.homeip.net>
+
+
+http://app.com/apps/pbcs.dll/article?AID=/20060430/BUSINESS/604300358/1003
+
+Coming down
+
+The developer buying Lucent Technologies' 472-acre campus in Holmdel 
+plans to tear down the massive 2-million-square-foot research center 
+that has been home to Bell Labs for the past 44 years.
+Posted by the Asbury Park Press on 04/30/06
+BY DAVID P. WILLIS
+BUSINESS WRITER
+
+As the sale of Lucent Technologies' behemoth Bell Labs research center 
+on Crawfords Corner Road in Holmdel moves forward, one thing seems certain.
+
+Preferred Real Estate Investments Inc., a developer that specializes in 
+redeveloping obsolete buildings and properties, will knock down the 2 
+million-square-foot structure, one of the largest office buildings in 
+New Jersey.
+
+"I have walked through that building a dozen times. It is a crime that 
+we can't figure out a way to reuse this building," said Michael G. 
+O'Neill, founder and chief executive officer of Preferred Real Estate 
+Investments. "There is just no way. It is just absolutely and utterly 
+unusable."
+
+The way the building was designed, using concrete structural walls and 
+hallways that run along the outside of the building, makes it impossible 
+to redevelop, O'Neill said. "It was built for a single purpose that no 
+longer exists," he said.
+
+The company has not yet determined how it will take down the building. 
+The large ponds on the property, as well as its road system, will be 
+used by the developer.
+
+Lucent is selling the six-story building to Preferred for an undisclosed 
+price. On Thursday, Lucent spokesman John Skalko said a closing on the 
+deal is "imminent."
+
+The original building opened in 1962 and was expanded in 1964 and 1982. 
+It was once home to as many as 5,600 employees. But only 1,054 work 
+there now as Lucent has cut jobs and spun off businesses. The company 
+plans to move the remaining workers to offices in Murray Hill and 
+Whippany by the end of August 2007 as it seeks to make the most use of 
+its real estate holdings.
+
+Meanwhile, Preferred Real Estate Investments, a developer based in 
+Conshohocken, Pa., said it will involve township officials and residents 
+to come up with a plan for the 472-acre property.
+
+Neighbor Barbara Daly said she would like to see any future development 
+limited to the building's current location on the large property.
+
+She also worried about traffic. Even at its height, Lucent's staggered 
+work hours kept traffic down, said Daly, who has lived in Holmdel for 14 
+years.
+
+"Part of the charm of Holmdel is the rural feeling," said Daly. "I don't 
+think we need structures visible from Crawfords Corner Road or Roberts 
+Road."
+
+Holmdel resident Teresa M. Graw said the property should continue to be 
+used for office and laboratory space by high-tech companies.
+
+"Any new construction should go forward with an understanding and 
+respect for the beautiful open spaces, panoramic views and high 
+environmental quality that the property offers, for these attributes are 
+truly what will continue to bring the most added value to the property 
+in the long run," Graw said in an e-mail.
+
+The design of the new buildings could take into account the 
+architectural significance of the original, she said. It was designed by 
+Finnish architect Eero Saarinen, the designer of the Gateway Arch in St. 
+Louis, and is encased in a shell of reflective glass.
+
+"It seems to me that they have to somehow capture that, the history, the 
+flavor of the property's past," Graw said.
+
+O'Neill said there is no formal plan yet for the property. The company 
+does not contemplate any industrial, retail or high-density residential 
+housing development there.
+
+"This property is a magnificent setting for corporate users," O'Neill 
+said. "While the buildings are antiquated, the site should be very, very 
+attractive."
+
+Preferred also would keep the property's water tower, designed by 
+Saarinen, which people say looks like a giant transistor.
+
+"We think that is really neat," O'Neill said. "The significance of 
+telecommunications shouldn't be forgotten."
+
+He believes any design for the property would include several buildings, 
+which would total less than 2 million square feet of office space.
+
+He also said they will have to try to explore some other "low density 
+use," such as age-restricted housing, that may be appropriate for the 
+site. The property is currently zoned for office and laboratory use. Any 
+other type of development may require a zoning change, said Christopher 
+Shultz, the township administrator.
+
+"We know the sensitivity of the open space along the road and the view," 
+O'Neill said. "The challenge we have on this site is to maintain that 
+bucolic feeling, but create something that is economic."
+
+Founded in 1992, Preferred specializes in buying closed properties, such 
+as manufacturing plants and corporate offices or headquarters, which 
+were central locations in a town. The company owns properties from 
+Connecticut to Georgia worth more than $1.5 billion.
+
+"We go in and look at these things that have clearly become antiquated 
+from what they were," O'Neill said. "We figure out how to design and 
+envision a new life for those sites."
+
+In Hamilton in Mercer County, Preferred is redeveloping an old toilet 
+factory formerly owned by American Standard Cos., converting the 
+World-War-I-era building into 450,000 square feet of office space.
+
+Hamilton Mayor Glen Gilmore said Preferred worked with the township, 
+creating a building that is filling with tenants.
+
+"They are people who keep their word and are able to take a challenging 
+project and do something unique with it," Gilmore said of the developer.
+
+In Holmdel, Preferred executives have already introduced themselves to 
+officials and plan on having a public meeting with residents as well.
+
+Mayor Serena DiMaso said the town is looking forward to working with 
+Preferred.
+
+The township wants to protect its tax base, DiMaso said. Lucent, the 
+township's largest taxpayer, paid $3.19 million in taxes last year on 
+the property, which is assessed at $98.5 million.
+
+"We made them understand that we need the ratable base to remain as 
+constant as it can be," DiMaso said. "They (residents) understand that 
+it cannot be Lucent anymore. They are willing to make the compromise for 
+something else."
+
+The mayor said she would like to see it continue to be a development 
+with office or laboratory space. Preferred is aware of the township's 
+commitment to open space, she said.
+
+Township Committeeman Terence Wall said he envisions a corporate campus 
+that does not include housing. The property also could include space for 
+a library and offices for the board of education, which are now located 
+in town hall, he said.
+
+"They can achieve the return on the investment that they require without 
+a housing component," Wall said.
+
+Before the sale was announced last month, Holdmel's elected officials 
+had asked the township's planner to look at the best uses for the 
+property, including those that may require a zoning change, said 
+Schultz. The planner also will look at whether the state's redevelopment 
+law applies to the property.
+
+
+
+
+From patv at monmouth.com  Thu May 18 05:56:08 2006
+From: patv at monmouth.com (patv at monmouth.com)
+Date: Wed, 17 May 2006 14:56:08 EST
+Subject: [TUHS] Bell Labs Holmdel site coming down
+Message-ID: <200605171956.k4HJu7Ct028200@wwws.monmouth.com>
+
+Just a personal commentary on that article from the local newspaper.
+
+I live in Freehold, a few miles from the Holmdel facility, and I used to
+work in Holmdel some time back.  I worked on several 68K based boards used
+in a product called DACS.  I worked on both hardware and firmware,
+maintained UNIX for several groups, struggled with nmake and software
+manufacturing for several products (bugging both Glenn Fowler and David
+Korn when new nmake releases broke builds), supported the pcc compiler as
+a cross compiler, etc., for DACS and other products.  I was also
+responsible for the architecture of something called the Line Monitoring
+Equipment (LME), used in some undersea cable systems, well before
+Submarine Systems was sold off to Tyco.  I can't tell you how many hours I
+spent in that building.  It was fun.
+
+Another loss to the UNIX community that I can personally report was the
+closing, one year ago this month, of the old DEC Manalpan facility (UNX).
+ This was the home of VAX System V, a large portion of Ultrix, and
+everything that made up OSF1/Digital UNIX/Tru64 UNIX except for kernel,
+drivers, and several other components (although I personally did some
+kernel work on occasion).  We did shell and utilities, about 1/2 of X,
+Motif, CDE, installation, mail, and other parts of the OS that made it
+useful.  If you look at old uucp headers anywhere on usenet, any of the
+traffic with headers that included systems with "unx" in the name was
+routed through this facility.  I was there from when it was Digital
+through Compaq and finally HP, almost all the way through to the closing.
+
+In general, the whole area is undergoing a massive transition.  If I had
+to guess, I'd say it is mostly due to the downswing in telecom, followed
+closely by the closing of Fort Monmouth.  The latter, I think, is the
+death blow for technology in this region.
+
+For hardware developers, not much left at all around the area, and
+software people have to either go financial in NYC, or work for a
+pharmaceutical or insurance company.  Not much room left for innovation
+here.  Sad.
+
+Pat
+
+
+> 
+> http://app.com/apps/pbcs.dll/article?AID=/20060430/BUSINESS/604300358/1003
+> 
+> Coming down
+> 
+> The developer buying Lucent Technologies' 472-acre campus in Holmdel 
+> plans to tear down the massive 2-million-square-foot research center 
+> that has been home to Bell Labs for the past 44 years.
+> Posted by the Asbury Park Press on 04/30/06
+> BY DAVID P. WILLIS
+> BUSINESS WRITER
+
+
+---------------------------------------------
+This message was sent using Monmouth Internet MI-Webmail.
+http://www.monmouth.com/
+
+
+
+
+From lyricalnanoha at dosius.ath.cx  Thu May 18 06:48:10 2006
+From: lyricalnanoha at dosius.ath.cx (Lyrical Nanoha)
+Date: Wed, 17 May 2006 16:48:10 -0400 (EDT)
+Subject: [TUHS] Bell Labs Holmdel site coming down
+In-Reply-To: <200605171956.k4HJu7Ct028200@wwws.monmouth.com>
+References: <200605171956.k4HJu7Ct028200@wwws.monmouth.com>
+Message-ID: <Pine.LNX.4.64.0605171647140.15127@localhost.localdomain>
+
+On Wed, 17 May 2006, patv at monmouth.com wrote:
+
+> Another loss to the UNIX community that I can personally report was the
+> closing, one year ago this month, of the old DEC Manalpan facility (UNX).
+> This was the home of VAX System V, a large portion of Ultrix, and
+> everything that made up OSF1/Digital UNIX/Tru64 UNIX except for kernel,
+> drivers, and several other components (although I personally did some
+> kernel work on occasion).  We did shell and utilities, about 1/2 of X,
+> Motif, CDE, installation, mail, and other parts of the OS that made it
+> useful.  If you look at old uucp headers anywhere on usenet, any of the
+> traffic with headers that included systems with "unx" in the name was
+> routed through this facility.  I was there from when it was Digital
+> through Compaq and finally HP, almost all the way through to the closing.
+
+It would be nice if CDE were free, the rest is either part of the Heirloom 
+project or cloned in some open-source system (e.g., Lesstif). --;
+
+-uso.
+
+
+From patv at monmouth.com  Thu May 18 07:39:31 2006
+From: patv at monmouth.com (patv at monmouth.com)
+Date: Wed, 17 May 2006 16:39:31 EST
+Subject: [TUHS] Bell Labs Holmdel site coming down
+Message-ID: <200605172139.k4HLdVx5001770@wwws.monmouth.com>
+
+I have heard some grumblings of TOG possibly releasing CDE as open source,
+but have no idea of where that stands.  To be perfectly frank, it had a
+lot of problems, especially in a 64-bit world.  There were too many word
+size assumptions, and a very good friend struggled for many, many hours
+fixing those problems before it went to DEIL in India for support.  It
+could probably still benefit from a good �many eyes� developer review and
+bug fix session in the hands of open source developers.  However, IMHO, it
+no longer has any advantage over KDE or Gnome, but, as I said, that is my
+opinion.
+
+Personally, I�d love to see OSF1 released open source.  There were
+experimental x86 and two Itanium versions in various states of completion
+floating around DEC/Compaq/HP.  I was part of the last Itanium effort
+before the HP merger.  That one booted to single user before the project
+was killed.
+
+OSF1/Digital UNIX/Tru64 UNIX was already branded as UNIX, and it would be
+fun to see what would happen to the landscape if a branded UNIX was free.
+ Unfortunately, too many proprietary licensed pieces of code in the HP
+version, especially in System V support, for that to ever happen. Oh well,
+we can all dream �
+
+Pat
+
+ 
+
+> On Wed, 17 May 2006, patv at monmouth.com wrote:
+> 
+> > Another loss to the UNIX community that I can personally report was the
+> > closing, one year ago this month, of the old DEC Manalpan facility (UNX).
+> > This was the home of VAX System V, a large portion of Ultrix, and
+> > everything that made up OSF1/Digital UNIX/Tru64 UNIX except for kernel,
+> > drivers, and several other components (although I personally did some
+> > kernel work on occasion).  We did shell and utilities, about 1/2 of X,
+> > Motif, CDE, installation, mail, and other parts of the OS that made it
+> > useful.  If you look at old uucp headers anywhere on usenet, any of the
+> > traffic with headers that included systems with "unx" in the name was
+> > routed through this facility.  I was there from when it was Digital
+> > through Compaq and finally HP, almost all the way through to the closing.
+> 
+> It would be nice if CDE were free, the rest is either part of the Heirloom 
+> project or cloned in some open-source system (e.g., Lesstif). --;
+> 
+> -uso.
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+> 
+
+
+---------------------------------------------
+This message was sent using Monmouth Internet MI-Webmail.
+http://www.monmouth.com/
+
+
+
+
+From msokolov at ivan.Harhan.ORG  Thu May 18 08:40:19 2006
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Wed, 17 May 2006 22:40:19 GMT
+Subject: [TUHS] Bell Labs Holmdel site coming down
+Message-ID: <0605172240.AA02650@ivan.Harhan.ORG>
+
+patv at monmouth.com wrote:
+
+> Personally, I^Rd love to see OSF1 released open source.
+
+Then why don't YOU release it as open source?  Yes, you personally.
+Pull out your personal copy of the source (I sure hope you've had enough
+brains to smuggle one home with you when you left HP/Comfuq), put it on
+a bunch of Free Software FTP sites (IFCTF would gladly host it), and
+announce it to the world.  And while you are at it, shoot a few cops and
+hang their heads on a wall as war trophys (in the humanity's war for
+liberation of all software, of course).
+
+You've also mentioned in another post about good jobs in your area going
+away.  Why don't you offer your technical skills and expertise to Iran?
+I'm sure your engineering expertise would be useful to their nuclear
+weapons program, and you could thus put your skills to serve a good
+cause, helping make missiles to annihilate evil copyrighting nations.
+
+Space Falcon,
+Programletarian Freedom Fighter,
+Interplanetary Internationale
+
+
+From Jon.Stuart at pegs.com  Thu May 18 08:30:47 2006
+From: Jon.Stuart at pegs.com (Stuart, Jon)
+Date: Wed, 17 May 2006 15:30:47 -0700
+Subject: [TUHS] Bell Labs Holmdel site coming down
+Message-ID: <ABD5F0691C83424997EBEBF369ED9D92062AF8F4@PHXEXHVRT01.americas.ad.pegs.com>
+
+Perhaps an OSF1-"lite", on par with 4.4BSD-Lite which had the
+copyrighted code removed, would be possible to get released.  Of course,
+HP would have to have a motive in doing so.
+
+All of this, the closing of UNX, the loss of the VAX and now the dying
+of the Alpha chip, is very disheartening.  Although I'm lucky enough to
+have access to 5 VAXen (running 4.3 BSD UNIX and one running Ultrix4),
+it's tough for anyone to learn and play with this stuff, because they
+are becoming so scarce (you can by a VaxStation/MicroVax on eBay, but
+these will only run Ultrix and not 4.3 BSD, unfortunately).
+
+I also am very disappointed about the abandoning of the Alpha chip.
+>From it's start I was very impressed with it.  It was a very good RISC
+architecture, and the first to really do 64-bit computing, and do it
+well.  Before they decided to kill it, it was still the best
+architecture for 64-bit computing on the market.  
+
+Even though I'm pro-open-source, I also can't help but lament losing
+many of the commercial Unices over the past few years.  The next version
+of HP-UX will apparently be the last, PA-RISC is dying along with Alpha,
+so presumably OSF1/Digital UNIX/Tru64 is either dead or end-of-lifed as
+well, IRIX has moved to x86 (the platform I tend to loathe the most,
+probably because I know it best and learned it first),  AIX is still
+around but IBM is focussing strongly on Linux, and Solaris is still
+around (but they did kill SunOS 4.1.4 -- personally one of my favorite
+Unices of all time, basically 4.3 BSD + Sun stuff such as OpenWindows +
+nice improvements such as loadable kernel modules + pcc ported to
+SPARC).
+
+Not to mention all the mid-to-late 80's versions of UNIX -- Interactive,
+AT&T System V (actually branded as that, uname -a returned
+UNIX_System_V), as well as a ton of others I'm forgetting.
+
+I guess I'm somewhat nostoglic about old UNIX, and I enjoy seeing it's
+evolution.  That's why whenever I'm able to view the source code of some
+closed-source UNIX, it's very enjoyable to me.  Old UNIX has a rustic
+appeal to me.
+
+It's unfortunate that it seems we must resign ourselves to a future of
+x86-based OSs, such as Linux, or even Open/Free/NetBSD, which aren't
+really UNIX (Linux definitely isn't, and the modern BSDs have changed
+enough that they also aren't IMO).
+
+It seems there's no diversity anymore, both in software and hardware.
+It's amazing how x86 (an inferior architecture) could win the war of
+architectures when it was basically a bastardized version of the VAX
+(the best CISC chip ever, IMO).  There were so many superior
+architectures out there, such as SPARC, MIPS, Alpha, PA-RISC, POWER,
+PowerPC, and VAX.  For x86 to win, really shows that the quality of
+technology in a product really has no bearing on how it will do in the
+market.  It's not about quality, it's about profitability, and they are
+very often not the same.
+
+While IA-64 is based on the PA-RISC, it's still Intel, and the choice of
+operating systems for it is still going to be limited to the handful
+previously mentioned.  Apple's move away from a RISC architecture
+(PowerPC) to x86 is just as disheartening. 
+
+Oh well.  I guess we are nearing the finish-line of this "race to the
+bottom", because of the capitalistic influence on the computer industry.
+ 
+My advice to anyone interested in UNIX (and computer architecture)
+history is to stock up on machines now, while you can still find them on
+places like eBay.  Some of the newer-but-still-dead architectures such
+as SGI/MIPS are numerous on eBay.  Although, be careful when buying on
+eBay, because many times you'll get a banged up, stripped of components,
+unworking shell of one of the slower models of a system.  This is
+particularly true when trying to acquire a SparcStation on eBay.  Good
+luck trying to find a 2way SparcStation 20 with a nice size hard drive
+and lots of RAM (the fastest machine SunOS 4.1.4 could run on -- and
+I've heard that 4.1.4 did have very alpha SMP support, similar to what
+Linux and the modern BSDs used for a long time, that being a "big giant
+lock" [mutex] around the kernel).
+
+...Jon
+
+-----Original Message-----
+From: tuhs-bounces at minnie.tuhs.org [mailto:tuhs-bounces at minnie.tuhs.org]
+On Behalf Of patv at monmouth.com
+Sent: Wednesday, May 17, 2006 2:40 PM
+To: Lyrical Nanoha; tuhs at minnie.tuhs.org
+Subject: Re: [TUHS] Bell Labs Holmdel site coming down
+
+I have heard some grumblings of TOG possibly releasing CDE as open
+source, but have no idea of where that stands.  To be perfectly frank,
+it had a lot of problems, especially in a 64-bit world.  There were too
+many word size assumptions, and a very good friend struggled for many,
+many hours fixing those problems before it went to DEIL in India for
+support.  It could probably still benefit from a good "many eyes"
+developer review and bug fix session in the hands of open source
+developers.  However, IMHO, it no longer has any advantage over KDE or
+Gnome, but, as I said, that is my opinion.
+
+Personally, I'd love to see OSF1 released open source.  There were
+experimental x86 and two Itanium versions in various states of
+completion floating around DEC/Compaq/HP.  I was part of the last
+Itanium effort before the HP merger.  That one booted to single user
+before the project was killed.
+
+OSF1/Digital UNIX/Tru64 UNIX was already branded as UNIX, and it would
+be fun to see what would happen to the landscape if a branded UNIX was
+free.
+ Unfortunately, too many proprietary licensed pieces of code in the HP
+version, especially in System V support, for that to ever happen. Oh
+well, we can all dream ...
+
+Pat
+
+ 
+
+> On Wed, 17 May 2006, patv at monmouth.com wrote:
+> 
+> > Another loss to the UNIX community that I can personally report was 
+> > the closing, one year ago this month, of the old DEC Manalpan
+facility (UNX).
+> > This was the home of VAX System V, a large portion of Ultrix, and 
+> > everything that made up OSF1/Digital UNIX/Tru64 UNIX except for 
+> > kernel, drivers, and several other components (although I personally
+
+> > did some kernel work on occasion).  We did shell and utilities, 
+> > about 1/2 of X, Motif, CDE, installation, mail, and other parts of 
+> > the OS that made it useful.  If you look at old uucp headers 
+> > anywhere on usenet, any of the traffic with headers that included 
+> > systems with "unx" in the name was routed through this facility.  I 
+> > was there from when it was Digital through Compaq and finally HP,
+almost all the way through to the closing.
+> 
+> It would be nice if CDE were free, the rest is either part of the 
+> Heirloom project or cloned in some open-source system (e.g., Lesstif).
+
+> --;
+> 
+> -uso.
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+> 
+
+
+---------------------------------------------
+This message was sent using Monmouth Internet MI-Webmail.
+http://www.monmouth.com/
+
+
+
+
+From cowan at ccil.org  Thu May 18 09:13:29 2006
+From: cowan at ccil.org (John Cowan)
+Date: Wed, 17 May 2006 19:13:29 -0400
+Subject: [TUHS] Bell Labs Holmdel site coming down
+In-Reply-To: <ABD5F0691C83424997EBEBF369ED9D92062AF8F4@PHXEXHVRT01.americas.ad.pegs.com>
+References: <ABD5F0691C83424997EBEBF369ED9D92062AF8F4@PHXEXHVRT01.americas.ad.pegs.com>
+Message-ID: <20060517231329.GF13940@ccil.org>
+
+Stuart, Jon scripsit:
+
+> Perhaps an OSF1-"lite", on par with 4.4BSD-Lite which had the
+> copyrighted code removed, would be possible to get released.  
+
+That was only possible because of the massive effort to rewrite all things
+AT&T out of the BSD source.
+
+> All of this, the closing of UNX, the loss of the VAX and now the dying
+> of the Alpha chip, is very disheartening.  Although I'm lucky enough to
+> have access to 5 VAXen (running 4.3 BSD UNIX and one running Ultrix4),
+> it's tough for anyone to learn and play with this stuff, because they
+> are becoming so scarce (you can by a VaxStation/MicroVax on eBay, but
+> these will only run Ultrix and not 4.3 BSD, unfortunately).
+
+On come the emulators.
+
+> I guess I'm somewhat nostoglic about old UNIX, and I enjoy seeing it's
+> evolution.  That's why whenever I'm able to view the source code of some
+> closed-source UNIX, it's very enjoyable to me.  Old UNIX has a rustic
+> appeal to me.
+
+It's really "middle Unix" you are talking about.  Old Unix and new Unix
+(and I don't agree that Linux/*BSD are not Unix) are both now open source.
+
+> It's unfortunate that it seems we must resign ourselves to a future of
+> x86-based OSs, such as Linux, or even Open/Free/NetBSD, which aren't
+> really UNIX (Linux definitely isn't, and the modern BSDs have changed
+> enough that they also aren't IMO).
+
+Unix is a local minimum in the design space.  It can be reimplemented
+over and over.
+
+-- 
+John Cowan  cowan at ccil.org  http://ccil.org/~cowan
+If he has seen farther than others,
+        it is because he is standing on a stack of dwarves.
+                --Mike Champion, describing Tim Berners-Lee (adapted)
+
+
+From lyricalnanoha at dosius.ath.cx  Thu May 18 09:27:00 2006
+From: lyricalnanoha at dosius.ath.cx (Lyrical Nanoha)
+Date: Wed, 17 May 2006 19:27:00 -0400 (EDT)
+Subject: [TUHS] Bell Labs Holmdel site coming down
+In-Reply-To: <200605172139.k4HLdVx5001770@wwws.monmouth.com>
+References: <200605172139.k4HLdVx5001770@wwws.monmouth.com>
+Message-ID: <Pine.LNX.4.64.0605171924250.19459@localhost.localdomain>
+
+On Wed, 17 May 2006, patv at monmouth.com wrote:
+
+> I have heard some grumblings of TOG possibly releasing CDE as open source,
+> but have no idea of where that stands.  To be perfectly frank, it had a
+> lot of problems, especially in a 64-bit world.  There were too many word
+> size assumptions, and a very good friend struggled for many, many hours
+> fixing those problems before it went to DEIL in India for support.  It
+> could probably still benefit from a good �many eyes� developer review and
+> bug fix session in the hands of open source developers.  However, IMHO, it
+> no longer has any advantage over KDE or Gnome, but, as I said, that is my
+> opinion.
+
+It's not a matter of advantage so much as it's been a de-facto standard 
+for so long and I'd just like to work with it even if it's just a clone 
+like Lesstif.
+
+> OSF1/Digital UNIX/Tru64 UNIX was already branded as UNIX, and it would be
+> fun to see what would happen to the landscape if a branded UNIX was free.
+> Unfortunately, too many proprietary licensed pieces of code in the HP
+> version, especially in System V support, for that to ever happen. Oh well,
+> we can all dream �
+
+Well, there is the Solaris stuff, and some of it's gone into Heirloom, 
+which I believe is an attempt to bring together the existing open-sourced 
+Unix code, and bring it up to date.  And I think Lesstif is a good enough 
+clone of Motif for the majority of programs, in the way that Linux is of 
+Unix, or am I wrong?
+
+-uso.
+
+From wes.parish at paradise.net.nz  Thu May 18 11:42:06 2006
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Thu, 18 May 2006 13:42:06 +1200 (NZST)
+Subject: [TUHS] Bell Labs Holmdel site coming down
+In-Reply-To: <20060517231329.GF13940@ccil.org>
+References: <ABD5F0691C83424997EBEBF369ED9D92062AF8F4@PHXEXHVRT01.americas.ad.pegs.com>
+	<20060517231329.GF13940@ccil.org>
+Message-ID: <1147916526.446bd0ee65cc6@www.paradise.net.nz>
+
+Quoting John Cowan <cowan at ccil.org>:
+
+> Stuart, Jon scripsit:
+> 
+> > Perhaps an OSF1-"lite", on par with 4.4BSD-Lite which had the
+> > copyrighted code removed, would be possible to get released. 
+> 
+> That was only possible because of the massive effort to rewrite all
+> things
+> AT&T out of the BSD source.
+
+I'm wondering if it wouldn't be possible to talk Novell into releasing the Unix
+SysVr* source code under some form of BSD/MIT X license following the coming
+evaporation of Societe Commerciel du Ondit - the SCOGroup Rumourmonging Machine.
+
+Then get OSF1-"lite" released following that.  Eating an elephant - one bite at
+a time.
+
+Wesley Parish
+<snip>
+> 
+> -- 
+> John Cowan cowan at ccil.org http://ccil.org/~cowan
+> If he has seen farther than others,
+>  it is because he is standing on a stack of dwarves.
+>  --Mike Champion, describing Tim Berners-Lee (adapted)
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuh s
+>  
+
+
+
+"Sharpened hands are happy hands.
+"Brim the tinfall with mirthful bands" 
+- A Deepness in the Sky, Vernor Vinge
+
+"I me.  Shape middled me.  I would come out into hot!" 
+I from the spicy that day was overcasked mockingly - it's a symbol of the 
+other horizon. - emacs : meta x dissociated-press
+
+
+From norman at nose.cs.utoronto.ca  Thu May 18 12:48:58 2006
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Wed, 17 May 2006 22:48:58 -0400
+Subject: [TUHS] Bell Labs Holmdel site coming down
+Message-ID: <20060518024931.4140A7A@minnie.tuhs.org>
+
+Michael Sokolov, it was, that writted:
+
+  Then why don't YOU release it as open source?  Yes, you personally.
+  Pull out your personal copy of the source (I sure hope you've had enough
+  brains to smuggle one home with you when you left HP/Comfuq), put it on
+  a bunch of Free Software FTP sites (IFCTF would gladly host it), and
+  announce it to the world.  And while you are at it, shoot a few cops and
+  hang their heads on a wall as war trophys (in the humanity's war for
+  liberation of all software, of course).
+
+====
+
+You silly, twisted boy, you.
+
+Norman Wilson
+Toronto ON
+Idiot Connoisseur
+
+
+From tfb at tfeb.org  Thu May 18 18:36:08 2006
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Thu, 18 May 2006 09:36:08 +0100 (BST)
+Subject: [TUHS] Bell Labs Holmdel site coming down
+In-Reply-To: <1147916526.446bd0ee65cc6@www.paradise.net.nz>
+References: <ABD5F0691C83424997EBEBF369ED9D92062AF8F4@PHXEXHVRT01.americas.ad.pegs.com>
+	<20060517231329.GF13940@ccil.org>
+	<1147916526.446bd0ee65cc6@www.paradise.net.nz>
+Message-ID: <5980.80.75.66.29.1147941368.squirrel@www.gradwell.com>
+
+On Thu, May 18, 2006 2:42 am, Wesley Parish wrote:
+
+>
+> I'm wondering if it wouldn't be possible to talk Novell into releasing
+> the Unix SysVr* source code under some form of BSD/MIT X license following
+> the coming evaporation of Societe Commerciel du Ondit - the SCOGroup
+> Rumourmonging Machine.
+>
+>
+> Then get OSF1-"lite" released following that.  Eating an elephant - one
+> bite at a time.
+
+I think the problem with all these `just open source it' schemes is that
+they're simpler in theory than in practice.  In particular, in practice
+someone has to go through the source of the system checking for everything
+that might have been licensed from someone else and whose license
+agreements might prohibit its release.  Few of those things will
+(probably) have been kept track of, and the penalty for failure is that
+some nasty residual company which now owns the stuff you licensed comes
+down your throat.
+
+For orphaned systems this is a lot of work for no obvious gain (it
+wouldn't be orphaned if the organization that created it thought it had
+much value to them).
+
+A good example would probably be SunOS 4 - we already know that Sun are
+quite interested in open sourcing stuff given OpenSolaris, but SunOS 4
+hasn't been, presumably because it is full of stuff-they-don't-own and has
+no commercial value at all.
+
+--tim
+
+
+
+From peterjeremy at optushome.com.au  Thu May 18 18:50:52 2006
+From: peterjeremy at optushome.com.au (Peter Jeremy)
+Date: Thu, 18 May 2006 18:50:52 +1000
+Subject: [TUHS] Bell Labs Holmdel site coming down
+In-Reply-To: <ABD5F0691C83424997EBEBF369ED9D92062AF8F4@PHXEXHVRT01.americas.ad.pegs.com>
+References: <ABD5F0691C83424997EBEBF369ED9D92062AF8F4@PHXEXHVRT01.americas.ad.pegs.com>
+Message-ID: <20060518085052.GA799@turion.vk2pj.dyndns.org>
+
+On Wed, 2006-May-17 15:30:47 -0700, Stuart, Jon wrote:
+>I also am very disappointed about the abandoning of the Alpha chip.
+
+Likewise.  And on a related subject, FreeBSD dropped its Alpha support
+(from the development branch) earlier this week - it had fallen below
+critical mass - and a lot of this would have been the death of the
+underlying chip.
+
+>From it's start I was very impressed with it.  It was a very good RISC
+>architecture, and the first to really do 64-bit computing, and do it
+>well.  Before they decided to kill it, it was still the best
+>architecture for 64-bit computing on the market.  
+
+I can't think of any other architecture where the designers considered
+what they needed to do to make the architecture future-proof.  The
+normal architectural design criteria are a mixture of the number of
+transistors they can fit on a chip today and backward compatibility.
+
+>so presumably OSF1/Digital UNIX/Tru64 is either dead or end-of-lifed as
+
+It's effectively end-of-life.  There will be no future releases, though
+HP will support it until about 2011.
+
+>It's unfortunate that it seems we must resign ourselves to a future of
+>x86-based OSs, such as Linux, or even Open/Free/NetBSD, which aren't
+>really UNIX (Linux definitely isn't, and the modern BSDs have changed
+>enough that they also aren't IMO).
+
+If Linux and *BSD aren't Unix, how do you define Unix?  (Other than
+having paid TOG the trademark licensing fees).
+
+>PowerPC, and VAX.  For x86 to win, really shows that the quality of
+>technology in a product really has no bearing on how it will do in the
+>market.
+
+That is a surprise to you?
+
+>  It's not about quality, it's about profitability, and they are
+>very often not the same.
+
+There's a bit of a feedback loop: Starting with the IBM-PC, x86 sold
+in large volumes, so there were lots of profits and design costs could
+be amortised over a larger volume, allowing more man-hours to be
+invested in the next generation whilst still returning a profit.  This
+makes the next generation of x86 outperform the competition at a lower
+price - encouraging more people to use x86.
+
+>While IA-64 is based on the PA-RISC, it's still Intel,
+
+I suspect the IA-64 will quietly fade away.  It hasn't lived up to the
+hype and even Intel seem to acknowledge this by licensing the amd64.
+
+>and lots of RAM (the fastest machine SunOS 4.1.4 could run on -- and
+>I've heard that 4.1.4 did have very alpha SMP support, similar to what
+
+SMP support started earlier than 4.1.4.  The sun4m machines (SS470,
+SS670) were the first SMP machines and ISTR they were supported in
+the last 4.0.x or early 4.1.x releases.  (I was using them at the
+time but the details have faded a bit after 15 years).
+
+>Linux and the modern BSDs used for a long time, that being a "big giant
+>lock" [mutex] around the kernel).
+
+Most early SMP systems worked this way - it's relatively easy to
+implement and gives good CPU utilisation on CPU-intensive tasks (that
+don't need the kernel much).
+
+-- 
+Peter Jeremy
+
+
+From wb at freebie.xs4all.nl  Thu May 18 19:42:03 2006
+From: wb at freebie.xs4all.nl (Wilko Bulte)
+Date: Thu, 18 May 2006 11:42:03 +0200
+Subject: [TUHS] Bell Labs Holmdel site coming down
+In-Reply-To: <20060518085052.GA799@turion.vk2pj.dyndns.org>
+References: <ABD5F0691C83424997EBEBF369ED9D92062AF8F4@PHXEXHVRT01.americas.ad.pegs.com>
+	<20060518085052.GA799@turion.vk2pj.dyndns.org>
+Message-ID: <20060518094203.GA4190@freebie.xs4all.nl>
+
+On Thu, May 18, 2006 at 06:50:52PM +1000, Peter Jeremy wrote..
+> On Wed, 2006-May-17 15:30:47 -0700, Stuart, Jon wrote:
+
+> >and lots of RAM (the fastest machine SunOS 4.1.4 could run on -- and
+> >I've heard that 4.1.4 did have very alpha SMP support, similar to what
+> 
+> SMP support started earlier than 4.1.4.  The sun4m machines (SS470,
+> SS670) were the first SMP machines and ISTR they were supported in
+> the last 4.0.x or early 4.1.x releases.  (I was using them at the
+> time but the details have faded a bit after 15 years).
+
+I ran a SS670MP for a while.  ISTR 4.1.1 or somesuch was the first SunOS 
+to run on it.
+
+Wilko
+
+
+From lm at bitmover.com  Fri May 19 12:35:29 2006
+From: lm at bitmover.com (Larry McVoy)
+Date: Thu, 18 May 2006 19:35:29 -0700
+Subject: [TUHS] TUHS Digest, Vol 31, Issue 9
+In-Reply-To: <mailman.3.1148004001.45222.tuhs@minnie.tuhs.org>
+References: <mailman.3.1148004001.45222.tuhs@minnie.tuhs.org>
+Message-ID: <20060519023529.GD17801@bitmover.com>
+
+> Michael Sokolov, it was, that writted:
+>  [stuff]
+> 
+> ====
+> 
+> You silly, twisted boy, you.
+
+Indeed.  Michael does not seem to have been taking his meds.  Nice guy but
+a bit out there.
+
+Tim wrote:
+> A good example would probably be SunOS 4 - we already know that Sun are
+> quite interested in open sourcing stuff given OpenSolaris, but SunOS 4
+> hasn't been, presumably because it is full of stuff-they-don't-own and has
+> no commercial value at all.
+
+I'm the guy who took SunOS 4.1.3 and removed all the non-free stuff from it
+(which was 90% STREAMS) and demo-ed it to McNealy in effort to set it free.
+A lot went into this: http://www.bitmover.com/lm/papers/srcos.html
+
+There isn't much chance they'll release it and at this point it is so far
+behind I'm not sure I see the point.  Even though that is the one kernel
+that I really loved.
+
+> From: Peter Jeremy <peterjeremy at optushome.com.au>
+> SMP support started earlier than 4.1.4.  The sun4m machines (SS470,
+> SS670) were the first SMP machines and ISTR they were supported in
+
+Um, search google groups for lm at slovax - that was a 470.  It was most
+definitely not an SMP box though it was my favorite Sun machine.  Great
+machine, my home machine is still named slovax in honor of that box (which
+was named slovax in honor of a Wisconsin 11/750 that held the 4.x BSD source
+which taught me more than anything else).
+
+And for those who care, slovax/470 now belongs to Theo Deraadt, I'm
+ashamed to say that I sold it to him so I could buy some parts for my
+VW van at the time.  At the time I didn't have any money, if I could do
+it over again I would have given it to him.
+
+The 670 was an SMP, that's Chuck Narad's box.  Pretty nice except that
+bcopy performance was really bad.
+
+-----
+
+But the bigger point I wanted to make was to react to all the stuff about
+OSF/1 or Ultrix or Tru64 or AIX or whatever.  Most of you probably have
+no idea who I am or what we do.  I run a company that makes a software
+product which runs on all those old Unix platforms.  We have all the
+boxen with all the various Unix versions.
+
+Other than SunOS 4.x, if they all fell off the face of the earth tomorrow
+I couldn't be happier.  They suck.  And even SunOS sucks in some ways, it's
+way behind Linux.  I'm a file system guy, I'm the last guy who did anything
+significant to UFS (ask Kirk), and I have to admit that the Linux guys are
+in some ways running circles around the old school Unix guys.  The one 
+exception (that I know of) is ZFS.  That's pretty cool, the Linux guys
+are unlikely to do anything that good, it's too complex.
+
+But my point is that the love for the old unix versions is mostly
+misplaced.  V7, you bet.  That teaches you "small" (as does Comer's
+Xinu work).  But all of the vendor Unices, even my beloved SunOS, pale in
+comparison to Linux.  Sad but true, I've spent a lot of time in the code.
+
+And in some ways it isn't sad at all, it's cool.  Linux is free.
+
+The only sad part that I still see is maybe personal.  I loved SunOS
+because working in it, as a young kid, I didn't know shit.  But there
+I was, hacking away.  When I started, wandering through the code made
+me feel like I was in a fog, I couldn't see the next step.  But as time
+went on the fog cleared and I saw this very clear and clean architecture.
+It became something that you could really see and see why it was that
+way and see how you could extend it and see how you shouldn't extend it.
+
+The generic kernel source (take away drivers and file system
+implementations, but keep the VFS layer) is very small.  I've lived for
+many years in SunOS, I've lived in IRIX, I've lived in SCO (which is
+more true to V7 than anything else), I've lived in Linux, I've read the
+HP-UX code, I haven't read Ultrix, OSF/1 or AIX, but the ones I know,
+they are all pretty simple.  The only one that ever cleared the fog for
+me was SunOS, all the other ones looked like a mess which is why I don't
+share the sentiment that we should be crying over the loss of all the
+vendor Unices.
+
+I don't want to go back.  Linux is pretty nice.  Maybe they'll fuck it
+up, that seems to be a Unix OS tradition, but so far so good.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From lyricalnanoha at dosius.ath.cx  Fri May 19 14:28:54 2006
+From: lyricalnanoha at dosius.ath.cx (Lyrical Nanoha)
+Date: Fri, 19 May 2006 00:28:54 -0400 (EDT)
+Subject: [TUHS] TUHS Digest, Vol 31, Issue 9
+In-Reply-To: <20060519023529.GD17801@bitmover.com>
+References: <mailman.3.1148004001.45222.tuhs@minnie.tuhs.org>
+	<20060519023529.GD17801@bitmover.com>
+Message-ID: <Pine.LNX.4.64.0605190024550.19301@localhost.localdomain>
+
+On Thu, 18 May 2006, Larry McVoy wrote:
+
+> Tim wrote:
+>> A good example would probably be SunOS 4 - we already know that Sun are
+>> quite interested in open sourcing stuff given OpenSolaris, but SunOS 4
+>> hasn't been, presumably because it is full of stuff-they-don't-own and has
+>> no commercial value at all.
+>
+> I'm the guy who took SunOS 4.1.3 and removed all the non-free stuff from it
+> (which was 90% STREAMS) and demo-ed it to McNealy in effort to set it free.
+> A lot went into this: http://www.bitmover.com/lm/papers/srcos.html
+
+The idea is not unlike what I am hoping to be able to do, that is, make a 
+system as close to "real" Unix as possible, and fully open-source / 
+copyleft, where Linux really isn't "it", BSD is closer to this goal, and 
+indeed NetBSD + Heirloom Toolchest is where I would start.  I'd like to 
+see a system, and hell, if I could I'd implement it myself.  One that felt 
+so like commercial Unix that you couldn't tell the difference unless you 
+ran uname.  And had needed functionality without being uber-bloated like 
+GNU.
+
+-uso.
+
+
+From wes.parish at paradise.net.nz  Fri May 19 18:16:25 2006
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Fri, 19 May 2006 20:16:25 +1200
+Subject: [TUHS] Bell Labs Holmdel site coming down
+In-Reply-To: <5980.80.75.66.29.1147941368.squirrel@www.gradwell.com>
+References: <ABD5F0691C83424997EBEBF369ED9D92062AF8F4@PHXEXHVRT01.americas.ad.pegs.com>
+	<1147916526.446bd0ee65cc6@www.paradise.net.nz>
+	<5980.80.75.66.29.1147941368.squirrel@www.gradwell.com>
+Message-ID: <200605192016.25862.wes.parish@paradise.net.nz>
+
+Several comments spring to mind:
+One - closed-source proprietary software development is a minefield waiting 
+for the unwary;
+Two - open-source development is self-administering as far as "contributions" 
+goes, and we generally don't need people to go through on a similar "find the 
+haystack -in-the-needle" search;
+Three - there is usually a group of people willing to do this sort of work - 
+voluntarily - as the Groklaw example shows us, so it's often more an inertia 
+thingee than anything more serious.
+
+And last but hardly least, given the rise of the law-suit residual company, 
+etc, opening the source of such orphaned systems may become a necessity, 
+because law-suits such as the SCO example, will succeed if the law in general 
+is kept ignorant of computer history, etc.  In that case, opening the OSF1 
+source tree would pay dividends in peace of mind.
+
+Just some thoughts.
+
+Wesley Parish
+
+On Thu, 18 May 2006 20:36, Tim Bradshaw wrote:
+> On Thu, May 18, 2006 2:42 am, Wesley Parish wrote:
+> > I'm wondering if it wouldn't be possible to talk Novell into releasing
+> > the Unix SysVr* source code under some form of BSD/MIT X license
+> > following the coming evaporation of Societe Commerciel du Ondit - the
+> > SCOGroup Rumourmonging Machine.
+> >
+> >
+> > Then get OSF1-"lite" released following that.  Eating an elephant - one
+> > bite at a time.
+>
+> I think the problem with all these `just open source it' schemes is that
+> they're simpler in theory than in practice.  In particular, in practice
+> someone has to go through the source of the system checking for everything
+> that might have been licensed from someone else and whose license
+> agreements might prohibit its release.  Few of those things will
+> (probably) have been kept track of, and the penalty for failure is that
+> some nasty residual company which now owns the stuff you licensed comes
+> down your throat.
+>
+> For orphaned systems this is a lot of work for no obvious gain (it
+> wouldn't be orphaned if the organization that created it thought it had
+> much value to them).
+>
+> A good example would probably be SunOS 4 - we already know that Sun are
+> quite interested in open sourcing stuff given OpenSolaris, but SunOS 4
+> hasn't been, presumably because it is full of stuff-they-don't-own and has
+> no commercial value at all.
+>
+> --tim
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+Clinersterton beademung, with all of love - RIP James Blish
+-------------
+Mau ki ana, he aha te mea nui?
+You ask, "What is the most important thing?"
+Maku ki ana, he tangata, he tangata, he tangata.
+I reply, "It is people, it is people, it is people."
+
+
+From patv at monmouth.com  Sat May 20 00:33:55 2006
+From: patv at monmouth.com (patv at monmouth.com)
+Date: Fri, 19 May 2006 09:33:55 EST
+Subject: [TUHS] TUHS Digest, Vol 31, Issue 9
+Message-ID: <200605191432.k4JEW48K025015@wwws.monmouth.com>
+
+
+> 
+> I don't want to go back.  Linux is pretty nice.  Maybe they'll fuck it
+> up, that seems to be a Unix OS tradition, but so far so good.
+> -- 
+> ---
+> Larry McVoy                lm at bitmover.com           
+
+I hate when these discussions become religious.  What I initially said was
+I'd love to see what would happen if a TOG branded UNIX were open source.
+ As for which one, I don't really care.  It doesn't matter which.  The
+hypothetical scenario is if suddenly there was a "Open Source UNIX" out
+there, what would happen to all the FUD and other marketing spin? 
+
+This hypothetical OS could easily be a Linux based GNU distribution,
+almost any BSD, or some other OS out there. I just mentioned OSF/1 because
+it already has been branded UNIX.
+
+Pat
+
+
+---------------------------------------------
+This message was sent using Monmouth Internet MI-Webmail.
+http://www.monmouth.com/
+
+
+
+
+From lm at bitmover.com  Sat May 20 00:42:06 2006
+From: lm at bitmover.com (Larry McVoy)
+Date: Fri, 19 May 2006 07:42:06 -0700
+Subject: [TUHS] TUHS Digest, Vol 31, Issue 9
+In-Reply-To: <200605191432.k4JEW48K025015@wwws.monmouth.com>
+References: <200605191432.k4JEW48K025015@wwws.monmouth.com>
+Message-ID: <20060519144206.GA18956@bitmover.com>
+
+On Fri, May 19, 2006 at 09:33:55AM -0500, patv at monmouth.com wrote:
+> > I don't want to go back.  Linux is pretty nice.  Maybe they'll fuck it
+> > up, that seems to be a Unix OS tradition, but so far so good.
+> > -- 
+> > ---
+> > Larry McVoy                lm at bitmover.com           
+> 
+> I hate when these discussions become religious.  What I initially said was
+> I'd love to see what would happen if a TOG branded UNIX were open source.
+
+Isn't Solaris what you want then?
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From cowan at ccil.org  Sat May 20 00:44:36 2006
+From: cowan at ccil.org (John Cowan)
+Date: Fri, 19 May 2006 10:44:36 -0400
+Subject: [TUHS] TUHS Digest, Vol 31, Issue 9
+In-Reply-To: <200605191432.k4JEW48K025015@wwws.monmouth.com>
+References: <200605191432.k4JEW48K025015@wwws.monmouth.com>
+Message-ID: <20060519144435.GD18907@ccil.org>
+
+patv at monmouth.com scripsit:
+
+> I hate when these discussions become religious.  What I initially said was
+> I'd love to see what would happen if a TOG branded UNIX were open source.
+
+Ah, I missed that point (and I think some others did too).  The text
+below strikes me as relevant; it was written by me, edited by Eric
+Raymond with my consent, and published in his name in TAOUP:
+
+                Master Foo Discourses on the Unix-Nature
+
+A student said to Master Foo: ``We are told that the firm called SCO
+holds true dominion over Unix.''
+
+Master Foo nodded.
+
+The student continued, Yet we are also told that the firm called
+OpenGroup also holds true dominion over Unix.''
+
+Master Foo nodded.
+
+``How can this be?'' asked the student.
+
+Master Foo replied:
+
+``SCO indeed has dominion over the code of Unix, but the code of
+Unix is not Unix. OpenGroup indeed has dominion over the name of Unix,
+but the name of Unix is not Unix.''
+
+``What, then, is the Unix-nature?'' asked the student.
+
+Master Foo replied:
+
+``Not code. Not name. Not mind. Not things. Always changing, yet
+never changing.
+
+``The Unix-nature is simple and empty. Because it is simple and empty,
+it is more powerful than a typhoon.
+
+``Moving in accordance with the law of nature, it unfolds inexorably
+in the minds of programmers, assimilating designs to its own nature. All
+software that would compete with it must become like to it; empty, empty,
+profoundly empty, perfectly void, hail!''
+
+Upon hearing this, the student was enlightened.
+
+
+-- 
+John Cowan  cowan at ccil.org   ccil.org/~cowan
+Dievas dave dantis; Dievas duos duonos          --Lithuanian proverb
+Deus dedit dentes; deus dabit panem             --Latin version thereof
+Deity donated dentition;
+  deity'll donate doughnuts                     --English version by Muke Tever
+God gave gums; God'll give granary              --Version by Mat McVeagh
+
+
+From tfb at tfeb.org  Sat May 20 06:41:50 2006
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Fri, 19 May 2006 21:41:50 +0100
+Subject: [TUHS] Bell Labs Holmdel site coming down
+In-Reply-To: <200605192016.25862.wes.parish@paradise.net.nz>
+References: <ABD5F0691C83424997EBEBF369ED9D92062AF8F4@PHXEXHVRT01.americas.ad.pegs.com>
+	<1147916526.446bd0ee65cc6@www.paradise.net.nz>
+	<5980.80.75.66.29.1147941368.squirrel@www.gradwell.com>
+	<200605192016.25862.wes.parish@paradise.net.nz>
+Message-ID: <C195F4F7-95E5-4B74-9696-92CACC751928@tfeb.org>
+
+
+On 19 May 2006, at 09:16, Wesley Parish wrote:
+> Three - there is usually a group of people willing to do this sort  
+> of work -
+> voluntarily - as the Groklaw example shows us, so it's often more  
+> an inertia
+> thingee than anything more serious.
+>
+
+I think this is off topic now, but the issue is that the company that  
+signed the license agreements is the entity that is liable to be  
+sued.  So it is their responsibility to ensure that they are safe  
+from that.  That pretty much means it will cost them money, because  
+*their* engineers and legal people will have to check things, and  
+demonstrate to the satisfaction of the officers of the company (who  
+carry the can if they get sued) that it's OK.
+
+This doesn't mean it can't happen (as said in another branch of this,  
+people within Sun have tried it before) but it does mean it's  
+competing with other stuff for resource.  Would Sun (say) improve  
+their chances of survival by  to open source SunOS 4 (which, although  
+people romanticise it now, actually sucked, even at the time - it was  
+only being better than early SunOS 5 and being a long time ago that  
+make it seem nice) or to open source Java?  Or by doing neither?
+
+Sorry for the rant, I'll shut up now.
+
+--tim
+
+
+
+
+From msokolov at ivan.Harhan.ORG  Fri May 19 00:34:53 2006
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Thu, 18 May 2006 14:34:53 GMT
+Subject: [TUHS] Bell Labs Holmdel site coming down
+Message-ID: <0605181434.AA03566@ivan.Harhan.ORG>
+
+Tim Bradshaw <tfb at tfeb.org> wrote:
+
+> A good example would probably be SunOS 4 - we already know that Sun are
+> quite interested in open sourcing stuff given OpenSolaris, but SunOS 4
+> hasn't been [...]
+
+Yes it has been open sourced, albeit by force since they refused to do
+it voluntarily:
+
+ifctfvax.Harhan.ORG:/pub/UNIX/thirdparty/SunOS/sunos-414-source.tar.gz
+
+SF
+
+
+From lm at bitmover.com  Sun May 21 13:32:01 2006
+From: lm at bitmover.com (Larry McVoy)
+Date: Sat, 20 May 2006 20:32:01 -0700
+Subject: [TUHS] TUHS Digest, Vol 31, Issue 10
+In-Reply-To: <mailman.3.1148090400.69531.tuhs@minnie.tuhs.org>
+References: <mailman.3.1148090400.69531.tuhs@minnie.tuhs.org>
+Message-ID: <20060521033201.GA12282@bitmover.com>
+
+> I couldn't be happier.  They suck.  And even SunOS sucks in some ways, it's
+> way behind Linux.  I'm a file system guy, I'm the last guy who did anything
+> significant to UFS (ask Kirk), and I have to admit that the Linux guys are
+
+As Mike H pointed out, Kirk has been more busy than I remembered and has been
+busy in UFS, so I retract that.
+
+That point made, I think the general point that I was making, which is that 
+the Linux guys seem to be moving faster, is still valid.  I'm very fond of 
+UFS and have a lot of respect for Kirk, so it's not about that, it's just 
+that the energy seems to be elsewhere.  For better or worse.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From grog at lemis.com  Tue May 23 12:26:54 2006
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Tue, 23 May 2006 11:56:54 +0930
+Subject: [TUHS] TUHS Digest, Vol 31, Issue 9
+In-Reply-To: <20060519023529.GD17801@bitmover.com>
+References: <mailman.3.1148004001.45222.tuhs@minnie.tuhs.org>
+	<20060519023529.GD17801@bitmover.com>
+Message-ID: <20060523022654.GF48088@wantadilla.lemis.com>
+
+On Thursday, 18 May 2006 at 19:35:29 -0700, Larry McVoy wrote:
+>
+> Most of you probably have no idea who I am or what we do.
+
+But of course!  Your reputation precedes you.
+
+> I'm a file system guy, I'm the last guy who did anything significant
+> to UFS (ask Kirk),
+
+Hmm.  You know about the UFS2 work that Kirk did in FreeBSD over the
+last few years, right?  Here's part of the last commit he did.
+
+mckusick    2005-05-18 22:18:21 UTC
+
+  FreeBSD src repository
+
+  Modified files:
+    sys/ufs/ufs          ufs_vnops.c
+  Log:
+  Allow removal of empty directories with high link counts.  ...
+
+If you've been doing something in this time frame, I'd be very
+interested in hearing about it.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20060523/0aa283fd/attachment.sig>
+
+From lm at bitmover.com  Tue May 23 12:38:21 2006
+From: lm at bitmover.com (Larry McVoy)
+Date: Mon, 22 May 2006 19:38:21 -0700
+Subject: [TUHS] TUHS Digest, Vol 31, Issue 9
+In-Reply-To: <20060523022654.GF48088@wantadilla.lemis.com>
+References: <mailman.3.1148004001.45222.tuhs@minnie.tuhs.org>
+	<20060519023529.GD17801@bitmover.com>
+	<20060523022654.GF48088@wantadilla.lemis.com>
+Message-ID: <20060523023821.GE20079@bitmover.com>
+
+On Tue, May 23, 2006 at 11:56:54AM +0930, Greg 'groggy' Lehey wrote:
+> Hmm.  You know about the UFS2 work that Kirk did in FreeBSD over the
+> last few years, right?  Here's part of the last commit he did.
+
+You're right but I already sent out mail correcting that statement.
+
+But the point I was really trying to make had little to do with UFS,
+I was simply trying to establish my credentials as a kernel hack (once
+upon a time).  Because without being one, making comments on all the
+various Unices out there is pretty lame.
+
+I'm perfectly happy to say Kirk is still kicking butt on UFS, in fact,
+I'm ecstatic about that, I'm the guy who beat him up when he didn't
+defend UFS at the LFS presentation (UFS is a much much nicer file system
+and it's all about the allocation policy.  LFS doesn't really have one.
+Works great for writing, sucks for reading.  Which do you do more?).
+So go Kirk!
+
+But the point being made was that I've been around the block, I've worked on
+and/or looked hard at many different Unix variants and I'm not at all sad
+to see them go.  Once upon a time it would have been great if SunOS 4.x 
+had been open source, it was a much (and I mean MUCH) nicer place to start
+than *BSD or Linux.  Much nicer.  But time has marched on and these days
+I think that SunOS wouldn't be as viable.  And it's the only one that I
+think would have had a chance and I work daily on all of them, we support
+our product on 
+
+	AIX
+	IRIX
+	Tru/64
+	HP-UX
+	Solaris
+	SCO
+	MacOS X
+
+as well as all the free Unix variants.  Our build cluster is 35 platforms and
+we get to deal with all the issues associated with all of them.  If I could
+reduce that down to Linux, Windows, MacOS and Solaris I'd be happier.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From berny.goodheart at myrealbox.com  Thu May 25 07:35:35 2006
+From: berny.goodheart at myrealbox.com (Berny 'Scouser' Goodheart)
+Date: Wed, 24 May 2006 22:35:35 +0100
+Subject: [TUHS] TUHS Digest, Vol 31, Issue 9
+Message-ID: <011001c67f79$fef5f4a0$4205a6c0@FERRARI>
+
+On Mon, 22 May 2006, 19:38:21 -0700, Larry McVoy wrote:
+
+>But the point being made was that I've been around the block, I've worked
+on and/or looked hard at many different Unix variants and I'm not at all sad
+to see them go.
+
+ 
+
+Why are you here then?
+
+ 
+
+It's a fact that many of the big-gun Unix vendors have moved on but Unix
+
+development continues to persist, so don't put it down yet. Unix is still
+
+very much alive and kicking. Unix has been around forever and the Unicies
+
+that remain still offer enough diversions to mix up the market and make
+
+things interesting for us all. If Linux was the only Unix like system out
+
+there then what would happen if Linux went belly-up. It could easily
+
+happen if the big Linux vendors Redhat, Suse etc went to the dogs. Having
+
+other Unix systems out their competing with each other as well as Linux is
+
+healthy.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20060524/34b0a330/attachment.html>
+
+From lm at bitmover.com  Thu May 25 12:38:42 2006
+From: lm at bitmover.com (Larry McVoy)
+Date: Wed, 24 May 2006 19:38:42 -0700
+Subject: [TUHS] TUHS Digest, Vol 31, Issue 14
+In-Reply-To: <mailman.3.1148522401.17245.tuhs@minnie.tuhs.org>
+References: <mailman.3.1148522401.17245.tuhs@minnie.tuhs.org>
+Message-ID: <20060525023842.GC14330@bitmover.com>
+
+> >But the point being made was that I've been around the block, I've worked
+> >on and/or looked hard at many different Unix variants and I'm not at all sad
+> >to see them go.
+> 
+> Why are you here then?
+
+Good question.  I like it here, I like old Unix.  I have little fondness
+for all the commercial unices, see http://www.bitmover.com/lm/papers/srcos.html
+for my reasons.
+
+I think you may be confusing my dislike for commercial unix with a dislike
+for unix.  If so, that's mistake because I love Unix.  I've dedicated a
+huge portion of my life to helping unix as best I can.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From billcu1 at verizon.net  Thu May 25 13:39:33 2006
+From: billcu1 at verizon.net (Bill Cunningham)
+Date: Wed, 24 May 2006 23:39:33 -0400
+Subject: [TUHS] unix v7 c compiler
+Message-ID: <000a01c67fac$d7333e40$2f01a8c0@myhome.westell.com>
+
+    I have a copy of a unix v7 c compiler that doesn't work for some reason
+c0 the first pass doesn't work. How can I rebuild and repair c0.
+
+Bill
+
+
+
+
+From arnold at skeeve.com  Fri May 26 05:10:27 2006
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Thu, 25 May 2006 22:10:27 +0300
+Subject: [TUHS] papers on the -mm macros?
+Message-ID: <200605251910.k4PJARBV004210@skeeve.com>
+
+OK, so I'm wwwwwaaaaaaayyyyyyy behind on reading TUHS.
+
+I just wanted to say that if you can find a copy of the third edition
+of "Unix In A Nutshell" (NOT the current fourth edition) you'll find
+a chapter on the MM macros. It should be enough to make use of them,
+as I did buy one of the SysIII licenses and I have a copy of this paper
+that I referred to when writing that chapter.
+
+And groff did do a good enough job formatting it that I was able
+to print it out and it looked reasonable if not perfect. (Of course,
+that was circa 1999...)
+
+If I ever Get A Round Tuit I want to take the troff material from that
+edition and do it as an ebook for O'Reilly. But I don't know when or
+even if that'll ever happen.
+
+Arnold
+
+> Date: Sat, 11 Mar 2006 15:25:49 +0100
+> From: Gunnar Ritter <gunnarr at acm.org>
+> Subject: Re: [TUHS] papers on the -mm macros?
+> To: tuhs at minnie.tuhs.org, "A. Wik" <aw at aw.gs>
+>
+> "A. Wik" <aw at aw.gs> wrote:
+>
+> > I've found the documentation for most of the major
+> > troff preprocessors and macros packages, but I can't
+> > seem to find anything but occasional references to a
+> > paper on the "Programmer's Memorandum Macros" (troff -mm)
+> > by Smith and Mashey.
+>
+> The source code for this paper had been available as part
+> of the System III distribution under the old (unfree) SCO
+> license.
+>
+> In case you had applied for that license, and you still
+> have an old PUPS archive CD at hand, you can find it in
+> Distributions/usdl/SysIII/sys3.tar.gz.
+>
+> You will not be able to recover the original layout since
+> PostScript font metrics are quite different from CAT ones,
+> but Heirloom troff produces readable output at least.
+>
+> 	Gunnar
+
+
+From billcu1 at verizon.net  Sat May 27 07:18:25 2006
+From: billcu1 at verizon.net (Bill Cunningham)
+Date: Fri, 26 May 2006 17:18:25 -0400
+Subject: [TUHS] V7 unix
+Message-ID: <000301c68109$edd3b040$2f01a8c0@myhome.westell.com>
+
+        Greetings Hellwig
+
+Mine Brooder in Unix Dast ist!
+
+I have noticed something about your v7 creation. When I try to use the C
+compiler to compile fp support or any system structures(not structs but
+components) I get an error /lib/c0 so there's something wrong with the c0
+pass in libc. It was probably that way when the tapes were recovered. I have
+managed to compile and assemble all the c source in the /usr/src/cmd/c
+directory into object files so the assembler works. What should I do
+manually with all these .o files? I need a working compiler.
+
+Bill
+
+
+
+
+From vasco at icpnet.pl  Sat May 27 18:07:40 2006
+From: vasco at icpnet.pl (Andrzej Popielewicz)
+Date: Sat, 27 May 2006 10:07:40 +0200
+Subject: [TUHS] V7 unix
+In-Reply-To: <000301c68109$edd3b040$2f01a8c0@myhome.westell.com>
+References: <000301c68109$edd3b040$2f01a8c0@myhome.westell.com>
+Message-ID: <447808CC.50701@icpnet.pl>
+
+Bill Cunningham napisał(a):
+
+>        Greetings Hellwig
+>
+>Mine Brooder in Unix Dast ist!
+>
+>I have noticed something about your v7 creation. When I try to use the C
+>compiler to compile fp support or any system structures(not structs but
+>components) I get an error /lib/c0 so there's something wrong with the c0
+>pass in libc. It was probably that way when the tapes were recovered. I have
+>managed to compile and assemble all the c source in the /usr/src/cmd/c
+>directory into object files so the assembler works. What should I do
+>manually with all these .o files? I need a working compiler.
+>
+>Bill
+>
+>
+>_______________________________________________
+>TUHS mailing list
+>TUHS at minnie.tuhs.org
+>https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>  
+>
+What about using portable pcc ?
+
+Andrzej
+
+
+From Hellwig.Geisse at mni.fh-giessen.de  Sat May 27 19:23:25 2006
+From: Hellwig.Geisse at mni.fh-giessen.de (Hellwig.Geisse at mni.fh-giessen.de)
+Date: Sat, 27 May 2006 11:23:25 +0200 (CEST)
+Subject: [TUHS] V7 unix
+In-Reply-To: <000301c68109$edd3b040$2f01a8c0@myhome.westell.com>
+Message-ID: <XFMail.20060527112325.Hellwig.Geisse@mni.fh-giessen.de>
+
+Hi Bill,
+
+On 26-May-2006 Bill Cunningham wrote:
+> I have noticed something about your v7 creation. When I try to use the C
+> compiler to compile fp support or any system structures(not structs but
+> components) I get an error /lib/c0 so there's something wrong with the c0
+> pass in libc. It was probably that way when the tapes were recovered. I have
+> managed to compile and assemble all the c source in the /usr/src/cmd/c
+> directory into object files so the assembler works. What should I do
+> manually with all these .o files? I need a working compiler.
+
+in principle, the .o files have to be bound (together with
+the libraries) by the linker, which produces the executable.
+But this is tedious to do manually, so you better use the
+makefile (and the "make" utility) to run the necessary
+commands automatically.
+
+I can reproduce your problem with the c0 pass. I don't
+know the exact cause but I guess it has nothing to do
+with the compiler itself. I found a workaround: reset
+the sticky bit for cc, i.e., do a "chmod 755 cc" in /bin.
+At least on my machine I then can run the makefile for
+building cc without errors.
+
+Hellwig
+
+
+

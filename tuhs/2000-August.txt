@@ -1,0 +1,690 @@
+From sms at moe.2bsd.com  Tue Aug  1 01:58:00 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Mon, 31 Jul 2000 08:58:00 -0700 (PDT)
+Subject: [pups] Overlays?
+Message-ID: <200007311558.IAA01672@moe.2bsd.com>
+
+HI!
+
+> From: Jorgen Pehrson <jp at spektr.eu.org>
+> I've just installed 2.11BSD on one of my PDPs, from a TK50 tape I just
+> re-discovered in the trunk of my car. And now I'm in the process of
+
+	Wow - those TK50s are quite robust to survive being stored in the
+	truck of a car.  I've had audio tapes that did not survive ;)
+
+> applying patches. When I installed patch 412 and started to rebuild the
+> kernel, ld complains with a "ld: too big for type 431". 
+> Does this means that I have to rearrange stuff between the BASE and the
+> various OV entries?
+
+	Indeed it does mean exactly that.
+
+> How can I find out which overlay is too big? I've tried to do a:
+> 138% root--> size unix.o
+
+	Yep - that is the correct method.
+
+> text    data    bss     dec     hex
+> 52352   6928    37622   96902   17a86   total text: 115520
+>         overlays: 7680,7232,7808,7744,4864,8576,4736,6848,7680
+> 
+> How big is too big? And also if none of the overlays above are too big, I
+> guess it must be the BASE that is too big? 
+
+	I thought I wrote this up at one time but I may have only thought
+	about it ;)
+
+> Is there some sort of documentation anywhere that describe this voodoo
+> stuff and black magic a bit? 
+
+	Is it in one an Appendix to the "Setup&Installation" document?   
+
+	In the case above it is OV6 (overlays are numbered from 1) that is
+	too big.
+
+	The rules are:
+
+		1) BASE can be 56kb (57344) max
+
+		2) OVerlays can be 8kb (8192) max
+
+		3) There can be no 0 length overlays (except for the very
+		    last one).
+
+> Any suggestions on what .o file I should move to what overlay?
+
+	Look at the Makefile - you should see a line that starts "OV6=".  Do
+	a "size" on the .o files listed for OV6.   Pick one that will fix
+	elsewhere - I'd suggest OV5 since it is only 4864 bytes and has lots
+	of room.  You could also move a .o file to the BASE since it has
+	adequate room also.
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id JAA20356
+	for pups-liszt; Tue, 1 Aug 2000 09:31:49 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Tue Aug  1 03:12:43 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Mon, 31 Jul 2000 10:12:43 -0700 (PDT)
+Subject: [pups] makesimtape.c
+Message-ID: <200007311712.KAA02116@moe.2bsd.com>
+
+Hi!
+
+> From: "Ryan Blair" <rblair at webteksdesign.com>
+> 
+> While reading back through the mailing list messages, trying to find out why
+> my tape images never seem to work, I came across a program that I cannot
+> seem to find. It was mentioned lately as "makesimtape.c" but I cannot find
+> it anywhere in the archives. Anybody have a lead on this?
+
+	Yep - I have a lead (not too surprising since I wrote the program :))
+
+	I think the program's present in the PUPS archive in the top of
+	the 2.11 tree area but it may have been relocated or whatever over
+	time.
+
+	Here's the program - it should compile on just about anything that
+	has the 'mtio' ioctl functions.   It is very similar to 'maketape'
+	(intentional since makesimtape.c started out as a copy of maketape.c).
+
+	Steven Schultz
+	moe.2bsd.com
+
+
+--------------------------
+/*
+ *	@(#)makesimtape.c	2.1 (2.11BSD) 1998/12/31
+ *		Hacked 'maketape.c' to write a file in a format suitable for
+ *		use with Bob Supnik's PDP-11 simulator (V2.3) emulated tape 
+ *		driver.
+ *
+ * 	NOTE: a PDP-11 has to flip the shorts within the long when writing out
+ *	      the record size.  Seems a PDP-11 is neither a little-endian
+ *	      machine nor a big-endian one.
+ */
+
+#include <stdio.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/uio.h>
+
+#define MAXB 30
+
+	char	buf[MAXB * 512];
+	char	name[50];
+	long	recsz, flipped, trl();
+	int	blksz;
+	int	mt, fd, cnt;
+	struct	iovec	iovec[3];
+	struct	iovec	tmark[2];
+	void	usage();
+
+main(argc, argv)
+	int argc;
+	char *argv[];
+	{
+	int i, j = 0, k = 0;
+	long zero = 0;
+	register char	*outfile = NULL, *infile = NULL;
+	FILE *mf;
+	struct	stat	st;
+
+	while	((i = getopt(argc, argv, "i:o:")) != EOF)
+		{
+		switch	(i)
+			{
+			case	'o':
+				outfile = optarg;
+				break;
+			case	'i':
+				infile = optarg;
+				break;
+			default:
+				usage();
+				/* NOTREACHED */
+			}
+		}
+	if	(!outfile || !infile)
+		usage();
+		/* NOTREACHED */
+/*
+ * Stat the outfile and make sure it either 1) Does not exist, or
+ * 2) Exists but is a regular file.
+*/
+	if	(stat(outfile, &st) != -1 && !(S_ISREG(st.st_mode)))
+		errx(1, "outfile must either not exist or be a regular file");
+		/* NOTREACHED */
+
+	mt = open(outfile, O_WRONLY|O_CREAT|O_TRUNC, 0600);
+	if	(mt < 0)
+		err(1, "Can not create %s", outfile);
+		/* NOTREACHED */
+
+	mf = fopen(infile, "r");
+	if	(!mf)
+		err(1, "Can not open %s", infile);
+		/* NOTREACHED*/
+
+	tmark[0].iov_len = sizeof (long);
+	tmark[0].iov_base = (char *)&zero;
+
+	while	(1)
+		{
+		if	((i = fscanf(mf, "%s %d", name, &blksz))== EOF)
+			exit(0);
+		if	(i != 2) {
+			fprintf(stderr,"Help! Scanf didn't read 2 things (%d)\n", i);
+			exit(1);
+			}
+		if	(blksz <= 0 || blksz > MAXB)
+			{
+			fprintf(stderr, "Block size %u is invalid\n", blksz);
+			exit(1);
+			}
+		recsz = blksz * 512;	/* convert to bytes */
+		iovec[0].iov_len = sizeof (recsz);
+#ifdef	pdp11
+		iovec[0].iov_base = (char *)&flipped;
+#else
+		iovec[0].iov_base = (char *)&recsz;
+#endif
+		iovec[1].iov_len = (int)recsz;
+		iovec[1].iov_base = buf;
+		iovec[2].iov_len =  iovec[0].iov_len;
+		iovec[2].iov_base = iovec[0].iov_base;
+
+		if	(strcmp(name, "*") == 0)
+			{
+			if	(writev(mt, tmark, 1) < 0)
+				warn(1, "writev of pseudo tapemark failed");
+			k++;
+			continue;
+			}
+		fd = open(name, 0);
+		if	(fd < 0)
+			err(1, "Can't open %s for reading", name);
+			/* NOTREACHED */
+		printf("%s: block %d, file %d\n", name, j, k);
+
+		/*
+		 * we pad the last record with nulls
+		 * (instead of the bell std. of padding with trash).
+		 * this allows you to access text files on the
+		 * tape without garbage at the end of the file.
+		 * (note that there is no record length associated
+		 *  with tape files)
+		 */
+
+		while	((cnt=read(fd, buf, (int)recsz)) == (int)recsz)
+			{
+			j++;
+#ifdef	pdp11
+			flipped = trl(recsz);
+#endif
+			if	(writev(mt, iovec, 3) < 0)
+				err(1, "writev #1");
+				/* NOTREACHED */
+			}
+		if	(cnt > 0)
+			{
+			j++;
+			bzero(buf + cnt, (int)recsz - cnt);
+#ifdef	pdp11
+			flipped = trl(recsz);
+#endif
+			if	(writev(mt, iovec, 3) < 0)
+				err(1, "writev #2");
+				/* NOTREACHED */
+			}
+		close(fd);
+		}
+/*
+ * Write two tape marks to simulate EOT
+*/
+	writev(mt, tmark, 1);
+	writev(mt, tmark, 1);
+	}
+
+long
+trl(l)
+	long	l;
+	{
+	union	{
+		long	l;
+		short	s[2];
+		} foo;
+	register short	x;
+
+	foo.l = l;
+	x = foo.s[0];
+	foo.s[0] = foo.s[1];
+	foo.s[1] = x;
+	return(foo.l);
+	}
+
+void
+usage()
+	{
+	fprintf(stderr, "usage: makesimtape -o outfilefile -i inputfile\n");
+	exit(1);
+	}
+
+
+From greg at ciswired.com  Mon Aug 14 07:22:13 2000
+From: greg at ciswired.com (Gregory R. Travis)
+Date: Sun, 13 Aug 2000 16:22:13 -0500 (EST)
+Subject: [pups] Needed 2.11BSD 9-track boot tapes
+Message-ID: <Pine.LNX.4.10.10008131617460.30443-100000@weasel.ciswired.com>
+
+What I have:
+
+	11/83, QBUS, 2MB, DH11, running RT-11 5.04 plus TSX
+		- Kermit is installed on the machine
+	2x CDC 384MB SMD disks attached to Emulex Controller emulating MSCP
+	1 DigiData 800/1600 BPI 9-track drive attached to TM-11 emulating
+	controller
+
+What I need:
+
+	Way to get 2.11BSD onto one of the CDC drives (preferably not
+	to one with RT-11).
+
+How I can do that:
+	1.  Kermit transfer of 2.11BSD images to RT-11
+		q1.  Is there a way to then transfer from RT-11 to one
+		of the CDC disks?
+		q2.  Is there a way to then transfer from RT-11 to tape
+		images on the DigiData?
+
+	2.  A kind soul sends me a set of 9-track 2.11BSD tapes with
+	boot images.
+
+	3.  Other?
+
+Any takers?
+
+Thanks!
+
+greg
+
+Gregory Travis
+Cornerstone Information Systems ATS
+greg at ciswired.com
+812 330 4361 ext. 18
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA56396
+	for pups-liszt; Mon, 14 Aug 2000 11:34:57 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Mon Aug 14 11:30:40 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Sun, 13 Aug 2000 18:30:40 -0700 (PDT)
+Subject: [pups] Needed 2.11BSD 9-track boot tapes
+Message-ID: <200008140130.SAA18988@moe.2bsd.com>
+
+> From: "Gregory R. Travis" <greg at ciswired.com>
+> What I have:
+> 
+> 	11/83, QBUS, 2MB, DH11, running RT-11 5.04 plus TSX
+> 		- Kermit is installed on the machine
+> 	2x CDC 384MB SMD disks attached to Emulex Controller emulating MSCP
+> 	1 DigiData 800/1600 BPI 9-track drive attached to TM-11 emulating
+> 	controller
+
+	It wouldn't happen to be an Emulex UC07 or UC08 would it?   If so
+	there are a couple possibilities that open up.
+
+> How I can do that:
+> 	1.  Kermit transfer of 2.11BSD images to RT-11
+
+	Slow but sure - the sum total of data to move is close to 80mb
+
+> 		q1.  Is there a way to then transfer from RT-11 to one
+> 		of the CDC disks?
+
+	I don't think RT-11 understands the 2.11BSD filesystem so I don't think
+	this approach can be made to work.
+
+> 		q2.  Is there a way to then transfer from RT-11 to tape
+> 		images on the DigiData?
+
+	This can be made to work but it depends on having a program that can
+	transfer the the files "bytes as bytes" (no record format 
+	interpretation, etc) _and_ handle multiple blocking factors on the
+	first tape.
+
+	If you have the PDP-11 volume of the archives you should see in the
+	PDP-11/Distributions/ucb/2.11BSD directory two files called 'maketape.c'
+	and 'maketape.data'.  It's a small program and if a counterpart to
+	that could be created for RT-11 you'd be all set to go.
+
+	The layout of the first tape normally is:
+
+		mtboot+mtboot+boot  (512 byte blocking factor)
+		<tapemark>
+		disklabel  (1024 byte blocking factor)
+		<tapemark>
+		mkfs       (1024 byte blocking factor)
+		<tapemark>
+		restor     (1024 byte blocking factor)
+		<tapemark>
+		icheck     (1024 byte blocking factor)
+		<tapemark>
+		root.dump  (10240 byte blocking factor)
+		<tapemark>
+		file6.tar  (10240 byte blocking factor)
+		<tapemark>
+		file7.tar  (10240 byte blocking factor)
+		<tapemark>
+		<tapemark>
+
+	The 2nd tape contains file8.tar blocked at 10240 bytes.
+
+	The "boot" tape really only need to have the first few files, up to
+	and including 'root.dump'.   Those are enough to boot the tape,
+	run the standalone utilties to label the disk, create the filesystem
+	and restor the root filesystem.   The tar archives can be (with
+	suitable interpolation of the installation instructions) be placed
+	on individual tapes.  This may be necessary because file7.tar may or
+	may not fit any longer on the first tape.
+	
+	Why three blocking factors?   Well, partly historical and partly
+	hardware reasons.   The first "file" contains the 'bootblock' and that
+	needs to be 512 bytes since that's all the hardware will read.   The
+	standalone i/o system uses 1024 byte blocks so the next few files
+	use 1k records.  After the standalone utilities are done and the
+	system is loaded 'tar' can use its default 20 sector (10kb) record
+	size.
+
+> 	2.  A kind soul sends me a set of 9-track 2.11BSD tapes with
+> 	boot images.
+
+	My tape drive may or may not work - it's been ages since it was
+	last powered up and I fear the rubber parts may have disintegrated
+	(or the capacitors dried out, etc).
+
+> 	3.  Other?
+
+	If you could find a TK70+TQK70 drive+controller that would be awesome.
+	They're pretty cheap (less than $100 I believe - I didn't pay much
+	for mine).   Or even a TK50 drive (almost free) attached to a TQK70
+	would be fine. The TQK70 is a vastly better controller than the TQK50
+	because the former has a buffer cache that makes a huge difference
+	is how often the tape stops moving.
+
+	If the Emulex controller you have is SCSI based (UC07 or 08) then
+	someone could stage and make available a 2.11BSD Zip disk image 
+	with all the stuff needed to boot and run the installation proceedure
+	(I've a Zip disk attached to my UC08 - works great).
+	Alternatively a 2.11 formatted CDROM could be created and a CDrom
+	drive (that knew about 512 byte blocks instead of 2048 byte blocks)
+	could be used.
+
+	Good Luck!
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id OAA57080
+	for pups-liszt; Mon, 14 Aug 2000 14:12:09 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From greg at ciswired.com  Mon Aug 14 13:25:30 2000
+From: greg at ciswired.com (Gregory R. Travis)
+Date: Sun, 13 Aug 2000 22:25:30 -0500 (EST)
+Subject: [pups] Needed 2.11BSD 9-track boot tapes
+In-Reply-To: <200008140130.SAA18988@moe.2bsd.com>
+Message-ID: <Pine.LNX.4.10.10008132221010.30812-100000@weasel.ciswired.com>
+
+On Sun, 13 Aug 2000, Steven M. Schultz wrote:
+
+> > From: "Gregory R. Travis" <greg at ciswired.com>
+> > What I have:
+> > 
+> > 	11/83, QBUS, 2MB, DH11, running RT-11 5.04 plus TSX
+> > 		- Kermit is installed on the machine
+> > 	2x CDC 384MB SMD disks attached to Emulex Controller emulating MSCP
+> > 	1 DigiData 800/1600 BPI 9-track drive attached to TM-11 emulating
+> > 	controller
+> 
+> 	It wouldn't happen to be an Emulex UC07 or UC08 would it?   If so
+> 	there are a couple possibilities that open up.
+
+No, it's a DigiData board.  Single QBUS board.  Two 40-pin connectors.
+
+> 
+> > How I can do that:
+> > 	1.  Kermit transfer of 2.11BSD images to RT-11
+> 
+> 	Slow but sure - the sum total of data to move is close to 80mb
+
+I've already been waiting a few weeks :-)
+
+> 	This can be made to work but it depends on having a program that can
+> 	transfer the the files "bytes as bytes" (no record format 
+> 	interpretation, etc) _and_ handle multiple blocking factors on the
+> 	first tape.
+> 
+> 	If you have the PDP-11 volume of the archives you should see in the
+> 	PDP-11/Distributions/ucb/2.11BSD directory two files called 'maketape.c'
+> 	and 'maketape.data'.  It's a small program and if a counterpart to
+> 	that could be created for RT-11 you'd be all set to go.
+
+Yeah, it's the RT-11 part that I don't know.  It's a little hard to believe
+that in 20+ years no-one has come up with an RT-11 program to build
+UNIX distribution tapes!  :-)   (again)
+
+> > 	2.  A kind soul sends me a set of 9-track 2.11BSD tapes with
+> > 	boot images.
+> 
+> 	My tape drive may or may not work - it's been ages since it was
+> 	last powered up and I fear the rubber parts may have disintegrated
+> 	(or the capacitors dried out, etc).
+
+The Windex and electrical tape are on me.  Did I mention that I would
+happiliy provide 9-track boot service in the future?  That is.
+once I can get a system running!
+
+> 	If the Emulex controller you have is SCSI based (UC07 or 08) then
+> 	someone could stage and make available a 2.11BSD Zip disk image 
+> 	with all the stuff needed to boot and run the installation proceedure
+> 	(I've a Zip disk attached to my UC08 - works great).
+> 	Alternatively a 2.11 formatted CDROM could be created and a CDrom
+> 	drive (that knew about 512 byte blocks instead of 2048 byte blocks)
+> 	could be used.
+
+Not SCSI, SMD/MSCP/Pertec formatted unfortunately
+
+greg
+
+Gregory Travis
+Cornerstone Information Systems ATS
+greg at ciswired.com
+812 330 4361 ext. 18
+
+
+From agrier at poofygoof.com  Mon Aug 21 06:30:09 2000
+From: agrier at poofygoof.com (Aaron J. Grier)
+Date: Sun, 20 Aug 2000 13:30:09 -0700
+Subject: [pups] mystery LSI-11 heath H11 board
+Message-ID: <20000820133009.G12503@goldberry.poofy.goof.com>
+
+an electrician came in to my place of employment last week and installed
+some new lighting in the "engineering junkyard" which was previously a
+very dark place.  The new light prompted me to do some exploring, and in
+doing so, I spotted a heath H11!
+
+unfortunately, it looks like the case has been stripped, as only one
+half-height board remains in the cardcage.  The handle is labeled "Heath
+Serial I/O." I threw it on a flatbed scanner and the pictures are here:
+
+http://www.poofygoof.com/~agrier/lsi11f.jpg
+http://www.poofygoof.com/~agrier/lsi11b.jpg
+
+Is this one of heathkit's almost-like-DEC-but-not-quite boards?
+
+-- 
+  Aaron J. Grier | "Not your ordinary poofy goof." | agrier at poofygoof.com
+
+
+From allisonp at world.std.com  Mon Aug 21 23:53:19 2000
+From: allisonp at world.std.com (allisonp at world.std.com)
+Date: Mon, 21 Aug 2000 09:53:19 -0400 (EDT)
+Subject: [pups] mystery LSI-11 heath H11 board
+In-Reply-To: <20000820133009.G12503@goldberry.poofy.goof.com>
+Message-ID: <Pine.SGI.3.95.1000821095157.29260B-100000@world.std.com>
+
+
+Yep it's a replacement for the DEC DLV-11E and programatically the same.
+It's not nearly as rugged however but worth ahving for any PDP11.
+
+Allison
+
+
+On Sun, 20 Aug 2000, Aaron J. Grier wrote:
+
+> an electrician came in to my place of employment last week and installed
+> some new lighting in the "engineering junkyard" which was previously a
+> very dark place.  The new light prompted me to do some exploring, and in
+> doing so, I spotted a heath H11!
+> 
+> unfortunately, it looks like the case has been stripped, as only one
+> half-height board remains in the cardcage.  The handle is labeled "Heath
+> Serial I/O." I threw it on a flatbed scanner and the pictures are here:
+> 
+> http://www.poofygoof.com/~agrier/lsi11f.jpg
+> http://www.poofygoof.com/~agrier/lsi11b.jpg
+> 
+> Is this one of heathkit's almost-like-DEC-but-not-quite boards?
+> 
+> -- 
+>   Aaron J. Grier | "Not your ordinary poofy goof." | agrier at poofygoof.com
+> 
+
+
+From grog at lemis.com  Wed Aug 30 12:24:28 2000
+From: grog at lemis.com (Greg Lehey)
+Date: Wed, 30 Aug 2000 11:54:28 +0930
+Subject: [pups] Identifying old computers (was: [no subject])
+In-Reply-To: <4120008518183739203@yeayea.com>; from spoof@yeayea.com on Fri, Aug 18, 2000 at 01:37:39PM -0500
+References: <4120008518183739203@yeayea.com>
+Message-ID: <20000830115428.D32302@wantadilla.lemis.com>
+
+On Friday, 18 August 2000 at 13:37:39 -0500, Spoof wrote:
+> Hello!
+
+Sorry, this languished in my inbox for a while because it didn't have
+a recognizable subject.  I don't recognize the machines, either, but
+maybe somebody on the PUPS list does.
+
+Greg
+
+> If you are receiving this email, it is because I found your name during a
+> websearch about 'classic computing'.  At any rate, I have obtained two
+> computers and I'd like to find out what they are.  if you could help me
+> identfy them i would greatly appreciate it.  I was told by the source of
+> these computers (who seemed very convinvced) that they were PDP-4
+> computers.  Every site I've seen that covers the pdp-4 says that there were
+> only about 50 of them ever sold. However, Digital's own site does mention
+> that some were sold for nuclear applications, and the computers I got were
+> indeed from a nuclear lab.
+>
+> The thing is, there doesnt seem to be any mention of "Digital" or the PDP
+> name anywhere.
+>
+> I'll describe the computers:
+>
+> One looks newer, it says "Tracor Northern TN-1610" on the faceplate.  It
+> has 18 ligts across the face and 18 switches directly below, in a bank
+> labeled "Switch Register".  There is another bank of 6 ligts labeled "RUN,
+> CPU BUS, VIRT, PWR, BUS, USER"
+> There is a small bank of 3 switches labeled ADDR/DATA, PHYS/VIRT, and INTR.
+> There is a last bank of 6 switches  labelled LOAD ADDR, EXAM, CONT,
+> ENAB/HALT, START, LOAD DATA.  There is also a power switch.
+>  On the bottom of the faceplate is a logo raised in plastic which I didn't
+> understand until I looked inside the case and found a circuit board which
+> said "California Data Procesors" (the logo said "CDP" in a funky '60s
+> style),  I've never heard of CDP- perhaps I heard "PDP4" when he actually
+> said "CDP-4"?
+>
+> The second computer looks older. (1960's vs. 1970s).
+> It's faceplate says "ND812" and "Nuclear Data Inc".  There is a rotating
+> switch labelled "Select Register" with the following positions: Status, S,
+> R, K, J, Address, PC, External.
+> There is a keyswitch with three postions: Power off, Power on, Control off.
+> There is a bank of 12 lights, labelled "Selected Register", the lights are
+> labelled 0-11 and an extra (13th) light labeled "Overflow".
+>
+> There is another bank of 12 lights,  labeled "memory Register", again
+> labeled 0-11. Next to it is a pair of lights labeled "Memory Field" 0 or 1.
+> next to that is another pair of lights labeled "Run" and "Interrupt.
+>
+> Under the lights is a bank of 12 switches labeled "Switch Register".
+>
+> There are two switches simply labeled 0 and 1.
+>
+> There are two switches labeled Start and Stop
+>
+> Another two switches labeled Load AR and Load MR
+>
+> Another two labeled Next Word and Cont
+>
+> And another two labeled Step and Instr
+>
+>
+> The older computer seems put together in a complicated sort of way (stacked
+> PCB's wired together) whereas the newer one is more modular (I.E. large
+> cards that are simply slide in and out of sockets.)
+>
+> Both seem to have core memory but it's arranged in such a way that I can't
+> actually see it with out breaking some paper seals which I dont want to do
+> unless necessary.  The parts of the boards that I can see have intricate
+> patterns that seem to indicate core memory (plus the guy told me that they
+> both used core mem).
+>
+> I have a (kind of lousy) digital camera and i can take pictures of the
+> faceplates if you think this might help in your identification.
+>
+> As I said, both were in use in a lab.  The older one has a set of two tape
+> drives (they look to be regular audio cassette size) and the newer one has
+> one tape drive.  However I was supplied with piles of punched tape programs
+> (i guess there was a tape reader with these computers at some point?) i was
+> given a lot of documentation but most of it has "NDI" written on it and it
+> is about taking nuclear data measurements.
+> Both are in large rackmount cases (which I don't have) and were mounted
+> with other equipment.
+>
+>
+> I'm interested to know what these computers are, how much they cost when
+> new, and what their capabilities are.  Supposedly they were replaced by a
+> single $4000 MCI interface card in a PC.
+>
+> If you have no idea but you think you know someone who might, please do not
+> hesitate to suggest that person to me.
+>
+> Thank you for taking the time to read this email.
+>
+> -Kev
+>
+>
+> _____________________________________________
+> Free email with personality! Over 200 domains!
+> http://www.MyOwnEmail.com
+>
+
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+

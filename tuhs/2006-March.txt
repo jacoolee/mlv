@@ -1,0 +1,909 @@
+From robinb at ruffnready.co.uk  Sat Mar  4 03:43:51 2006
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Fri, 3 Mar 2006 17:43:51 +0000
+Subject: [pups] Getting P11 up on redhat
+In-Reply-To: <20051103161014.GA21054@bcr10.uwaterloo.ca>
+References: <005901c5e08f$6aa153f0$0401010a@jfcl.com>
+	<20051103161014.GA21054@bcr10.uwaterloo.ca>
+Message-ID: <$rU4vzEXBICEFwfp@falstaf.demon.co.uk>
+
+Hi Everyone,
+I'm having a bit of fun getting P11 up on redhat.  Has anyone got a copy 
+of AS11 that they could send me as I want to rebuild everything 
+including the boot rom to make sure that I've got it as right as I can.
+
+Cheers
+
+Robin
+-- 
+Robin Birch
+
+
+
+From robinb at ruffnready.co.uk  Sat Mar  4 04:40:09 2006
+From: robinb at ruffnready.co.uk (Robin)
+Date: Fri, 3 Mar 2006 18:40:09 -0000
+Subject: [pups] Getting P11 up on redhat
+Message-ID: <000001c63ef1$e6d3d2c0$0202a8c0@robinslaptop>
+
+
+Hi Everyone,
+I'm having a bit of fun getting P11 up on redhat.  Has anyone got a copy 
+of AS11 that they could send me as I want to rebuild everything 
+including the boot rom to make sure that I've got it as right as I can.
+
+Cheers
+
+Robin
+-- 
+Robin Birch
+
+
+
+
+
+From kelli217 at gmail.com  Thu Mar  9 06:27:52 2006
+From: kelli217 at gmail.com (Kelli Halliburton)
+Date: Wed, 8 Mar 2006 14:27:52 -0600
+Subject: [pups] Figured some things out.
+Message-ID: <200603081427.53544.kelli217@gmail.com>
+
+I feel just a little bit stupid for not figuring them out sooner, but smart in 
+being able to figure them out on my own.
+
+Some of you may remember a post I wrote some time ago, dealing with E11 
+(Ersatz-11) and the RL02 v7 image. I mentioned not being able to get out of 
+single-user mode, and being unable to view man pages.
+
+Well, as it turns out, I stumbled across the method of getting to multi-user 
+mode. ^D, imagine that. Dropping out of single-user mode starts multi-user 
+mode. That's not something I would have been able to use logic to figure out.
+
+And, well, I happened to notice that there was no temp directory, so no wonder 
+man couldn't create its temp file. A quick little 'mkdir tmp' and that 
+problem was fixed. Now, that was something I was able to figure out 
+logically.
+
+Of course, now my problem is that the console is presumed to be a TTY and not 
+a CRT terminal. And so, man pages just scroll right up and off the screen. Oh 
+well. I'm sure I'll figure out something. Eventually.
+
+
+From wkt at tuhs.org  Thu Mar  9 08:15:41 2006
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 9 Mar 2006 08:15:41 +1000
+Subject: [pups] Figured some things out.
+In-Reply-To: <200603081427.53544.kelli217@gmail.com>
+References: <200603081427.53544.kelli217@gmail.com>
+Message-ID: <20060308221541.GA49574@minnie.tuhs.org>
+
+On Wed, Mar 08, 2006 at 02:27:52PM -0600, Kelli Halliburton wrote:
+> Well, as it turns out, I stumbled across the method of getting to multi-user 
+> mode. ^D, imagine that. Dropping out of single-user mode starts multi-user 
+> mode. That's not something I would have been able to use logic to figure out.
+
+It's documented in the original V7 installation instructions. Effectively,
+you start in single-user mode with a shell attached to the keyboard.
+You have to disconnect the keyboard with ctrl-D, which then kills the shell
+and starts running /etc/rc.
+> 
+> Of course, now my problem is that the console is presumed to be a TTY and not 
+> a CRT terminal. And so, man pages just scroll right up and off the screen. Oh 
+> well. I'm sure I'll figure out something. Eventually.
+
+In V7, everything was a dumb terminal: termcap and curses did not exist yet.
+And you were expected to have a paper-based terminal too :)
+
+Cheers,
+	Warren
+
+
+From kelli217 at gmail.com  Thu Mar  9 08:59:35 2006
+From: kelli217 at gmail.com (Kelli Halliburton)
+Date: Wed, 8 Mar 2006 16:59:35 -0600
+Subject: [pups] Figured some things out.
+In-Reply-To: <20060308221541.GA49574@minnie.tuhs.org>
+References: <200603081427.53544.kelli217@gmail.com>
+	<20060308221541.GA49574@minnie.tuhs.org>
+Message-ID: <200603081659.36885.kelli217@gmail.com>
+
+On Wednesday 08 March 2006 04:15 pm, Warren Toomey wrote:
+> On Wed, Mar 08, 2006 at 02:27:52PM -0600, Kelli Halliburton wrote:
+> > Well, as it turns out, I stumbled across the method of getting to
+> > multi-user mode. ^D, imagine that. Dropping out of single-user mode
+> > starts multi-user mode. That's not something I would have been able to
+> > use logic to figure out.
+>
+> It's documented in the original V7 installation instructions. Effectively,
+> you start in single-user mode with a shell attached to the keyboard.
+> You have to disconnect the keyboard with ctrl-D, which then kills the shell
+> and starts running /etc/rc.
+
+The site where I got the v7 image was a bit short on instructions. It just had 
+the RL image. I was stuck trying to read man pages from within the booted 
+system. However, your message has prompted me to try to dig up the manual. I 
+have found a set of 3 PDF files, and I have been poking around in them.
+
+> > Of course, now my problem is that the console is presumed to be a TTY and
+> > not a CRT terminal. And so, man pages just scroll right up and off the
+> > screen. Oh well. I'm sure I'll figure out something. Eventually.
+>
+> In V7, everything was a dumb terminal: termcap and curses did not exist
+> yet. And you were expected to have a paper-based terminal too :)
+
+I was not expecting termcap or curses; I was... *hoping* (still not expecting) 
+that perhaps v7 was new enough that the 'simple' type of CRT terminals, the 
+ones that were basically just glass TTYs, were in common use. That it would 
+be possible to use stty to set the number of rows to n, and that just maybe 
+there would be a 'more' command that would only printout the next n lines. 
+You know, simple stuff. Nothing about cursor addressable displays, no special 
+codes for clearing the screen, or text attributes, just screen paging. At any 
+rate, I may sit down at some point and write a 'more' utility of my own. Not 
+that I need it for man pages now that I have the offline version of the 
+manual, but there are still things like long directory listings that it would 
+be useful for.
+
+
+From ggs at shiresoft.com  Thu Mar  9 09:01:19 2006
+From: ggs at shiresoft.com (Guy Sotomayor)
+Date: Wed, 08 Mar 2006 15:01:19 -0800
+Subject: [pups] Figured some things out.
+In-Reply-To: <200603081659.36885.kelli217@gmail.com>
+References: <200603081427.53544.kelli217@gmail.com>
+	<20060308221541.GA49574@minnie.tuhs.org>
+	<200603081659.36885.kelli217@gmail.com>
+Message-ID: <1141858879.7776.28.camel@r003519>
+
+On Wed, 2006-03-08 at 16:59 -0600, Kelli Halliburton wrote:
+
+> 
+> The site where I got the v7 image was a bit short on instructions. It just had 
+> the RL image. I was stuck trying to read man pages from within the booted 
+> system. However, your message has prompted me to try to dig up the manual. I 
+> have found a set of 3 PDF files, and I have been poking around in them.
+
+Those will get you a long way.
+
+> 
+> > > Of course, now my problem is that the console is presumed to be a TTY and
+> > > not a CRT terminal. And so, man pages just scroll right up and off the
+> > > screen. Oh well. I'm sure I'll figure out something. Eventually.
+> >
+> > In V7, everything was a dumb terminal: termcap and curses did not exist
+> > yet. And you were expected to have a paper-based terminal too :)
+> 
+> I was not expecting termcap or curses; I was... *hoping* (still not expecting) 
+> that perhaps v7 was new enough that the 'simple' type of CRT terminals, the 
+> ones that were basically just glass TTYs, were in common use. That it would 
+> be possible to use stty to set the number of rows to n, and that just maybe 
+> there would be a 'more' command that would only printout the next n lines. 
+> You know, simple stuff. Nothing about cursor addressable displays, no special 
+> codes for clearing the screen, or text attributes, just screen paging. At any 
+> rate, I may sit down at some point and write a 'more' utility of my own. Not 
+> that I need it for man pages now that I have the offline version of the 
+> manual, but there are still things like long directory listings that it would 
+> be useful for.
+
+Of course, you could get the BSD package (1 or 2 ... not 2.x) and
+install it.  That's how BSD started BTW, things like vi, termcap, more,
+etc. were add-ons to v7.
+
+-- 
+
+TTFN - Guy
+
+
+
+From Hellwig.Geisse at mni.fh-giessen.de  Thu Mar  9 09:22:24 2006
+From: Hellwig.Geisse at mni.fh-giessen.de (Hellwig.Geisse at mni.fh-giessen.de)
+Date: Thu, 09 Mar 2006 00:22:24 +0100 (CET)
+Subject: [pups] Figured some things out.
+In-Reply-To: <200603081659.36885.kelli217@gmail.com>
+Message-ID: <XFMail.20060309002224.Hellwig.Geisse@mni.fh-giessen.de>
+
+
+On 08-Mar-2006 Kelli Halliburton wrote:
+> I was not expecting termcap or curses; I was... *hoping* (still not
+> expecting) 
+> that perhaps v7 was new enough that the 'simple' type of CRT terminals, the 
+> ones that were basically just glass TTYs, were in common use. That it would 
+> be possible to use stty to set the number of rows to n, and that just maybe 
+> there would be a 'more' command that would only printout the next n lines. 
+> You know, simple stuff. Nothing about cursor addressable displays, no special
+> codes for clearing the screen, or text attributes, just screen paging. At any
+> rate, I may sit down at some point and write a 'more' utility of my own. Not 
+> that I need it for man pages now that I have the offline version of the 
+> manual, but there are still things like long directory listings that it would
+> be useful for.
+
+Depending on the speed of your simulator, you
+could perhaps try to stop the output temporarily
+with ^S (and restart it with ^Q). Together with
+the ability to scroll backwards within the output
+window you should be able to read what is coming
+out of your simulated system... ;-)
+
+Good luck,
+Hellwig
+
+
+From johnh at psych.usyd.edu.au  Thu Mar  9 10:01:09 2006
+From: johnh at psych.usyd.edu.au (John Holden)
+Date: Thu, 9 Mar 2006 11:01:09 +1100 (EST)
+Subject: [pups] Figured some things out.
+Message-ID: <200603090001.k29019ob184155@psychwarp.psych.usyd.edu.au>
+
+> 
+> I was not expecting termcap or curses; I was.. *hoping* (still not expecting) 
+> that perhaps v7 was new enough that the 'simple' type of CRT terminals, the 
+> ones that were basically just glass TTYs, were in common use. That it would 
+> be possible to use stty to set the number of rows to n, and that just maybe 
+> there would be a 'more' command that would only printout the next n lines. 
+> You know, simple stuff. Nothing about cursor addressable displays, no special 
+> codes for clearing the screen, or text attributes, just screen paging. At any 
+> rate, I may sit down at some point and write a 'more' utility of my own. Not 
+> that I need it for man pages now that I have the offline version of the 
+> manual, but there are still things like long directory listings that it would 
+> be useful for.
+
+Actually, termcap and vi was ported back to V7 very early in the piece,
+though you needed an ID space processor (aka PDP11/45/50/55/70) to run vi.
+There were several paging programs about, some using termcap. From memory
+there was dis, pg and more. The man command didn't do any pagination
+
+Cheers
+John
+
+
+
+From kelli217 at gmail.com  Thu Mar  9 10:02:21 2006
+From: kelli217 at gmail.com (Kelli Halliburton)
+Date: Wed, 8 Mar 2006 18:02:21 -0600
+Subject: [pups] Figured some things out.
+In-Reply-To: <XFMail.20060309002224.Hellwig.Geisse@mni.fh-giessen.de>
+References: <XFMail.20060309002224.Hellwig.Geisse@mni.fh-giessen.de>
+Message-ID: <200603081802.23083.kelli217@gmail.com>
+
+On Wednesday 08 March 2006 05:22 pm, Hellwig.Geisse at mni.fh-giessen.de wrote:
+> Depending on the speed of your simulator, you
+> could perhaps try to stop the output temporarily
+> with ^S (and restart it with ^Q). Together with
+> the ability to scroll backwards within the output
+> window you should be able to read what is coming
+> out of your simulated system... ;-)
+
+E11 starts from a DOS box, which would be fine, since you can set the length 
+of the screen buffer in a DOS box, but it takes over the screen. So the 
+buffer disappears and the screen becomes only 25 lines long. So the scrolling 
+backwards trick doesn't work.
+
+As far as speed goes... under Windows 2000, E11's speed is highly variable. I 
+think, from reading the E11 manual, that it has something to do with disk 
+caching. I imagine that it's probably much more consistent under DOS, or the 
+DOS-based versions of Windows.
+
+
+From efton.collins at gmail.com  Thu Mar  9 15:15:54 2006
+From: efton.collins at gmail.com (Efton Collins)
+Date: Wed, 8 Mar 2006 23:15:54 -0600
+Subject: [pups] Figured some things out.
+In-Reply-To: <200603081802.23083.kelli217@gmail.com>
+References: <XFMail.20060309002224.Hellwig.Geisse@mni.fh-giessen.de>
+	<200603081802.23083.kelli217@gmail.com>
+Message-ID: <a4d94b170603082115r5eb0901fq264cf94ad8ff2f44@mail.gmail.com>
+
+I have a 7th Edition installation that includes the Berkeley package.  The
+USB package includes over 60 commands, 'vi' and 'more' are among them.
+There's also a new 'man'  that knows about more, so viewing man pages is
+done a page at a time.  Other than installing the Berkeley bits, adding the
+RL02 driver to the kernel and rebuilding df,  it should be a fairly close
+match to the original distribution tape.
+
+I usually use Bob Supnik's PDP11 emulator. The vanilla emulator works very
+well but it's a bit of a CPU hog. On Linux I've been able to tone that down
+by adding a nanosleep in the main processing loop.
+
+The distribution is on two 10 megabyte RL02 images. If you would like a copy
+of them, let me know and I'll make arrangements to make them available.
+
+Efton
+
+
+On 3/8/06, Kelli Halliburton <kelli217 at gmail.com> wrote:
+>
+> On Wednesday 08 March 2006 05:22 pm, Hellwig.Geisse at mni.fh-giessen.dewrote:
+> > Depending on the speed of your simulator, you
+> > could perhaps try to stop the output temporarily
+> > with ^S (and restart it with ^Q). Together with
+> > the ability to scroll backwards within the output
+> > window you should be able to read what is coming
+> > out of your simulated system... ;-)
+>
+> E11 starts from a DOS box, which would be fine, since you can set the
+> length
+> of the screen buffer in a DOS box, but it takes over the screen. So the
+> buffer disappears and the screen becomes only 25 lines long. So the
+> scrolling
+> backwards trick doesn't work.
+>
+> As far as speed goes... under Windows 2000, E11's speed is highly
+> variable. I
+> think, from reading the E11 manual, that it has something to do with disk
+> caching. I imagine that it's probably much more consistent under DOS, or
+> the
+> DOS-based versions of Windows.
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20060308/3bc226e2/attachment.html>
+
+From brantley at coraid.com  Thu Mar  9 21:54:43 2006
+From: brantley at coraid.com (Brantley Coile)
+Date: Thu, 9 Mar 2006 06:54:43 -0500
+Subject: [pups] Figured some things out.
+In-Reply-To: <1141858879.7776.28.camel@r003519>
+Message-ID: <7792a193e99547370983908c7011db7c@coraid.com>
+
+>> > > Of course, now my problem is that the console is presumed to be a TTY and
+>> > > not a CRT terminal. And so, man pages just scroll right up and off the
+>> > > screen. Oh well. I'm sure I'll figure out something. Eventually.
+
+Kernighan and Pike's book `The Unix Programming Environment' has a
+program called `p' that was used in the labs when screens became
+faster.
+
+>> > In V7, everything was a dumb terminal: termcap and curses did not exist
+>> > yet. And you were expected to have a paper-based terminal too :)
+
+By 1978 glass ttys were very much in use.  The advent of the
+microprocessor made smart terminals affordable.
+
+I would suggest that you play with V7 without the Berkeley stuff.  It
+will add to your experience.  You'll be surprised by the productivity
+and usefulness of a system that doesn't move the cursor.  From 1982
+until 1992 I used ed(1) almost exclusively.  In the Seventh Edition
+you can see the true beauty of the tools approach without them being
+obscured by foreign influences.  
+
+The whole idea of running these systems, seems to me, id getting the
+real experience of living with them.  The V7 experience is a wonderful
+one.  As you explore the system, you'll see ways to do things
+elegantly where other systems have added lots of ornimates that
+obscure.  To get a real feel, run it as most did.
+
+If you want to expericne BSD, then load BSD.
+
+
+
+From Hellwig.Geisse at mni.fh-giessen.de  Thu Mar  9 22:10:29 2006
+From: Hellwig.Geisse at mni.fh-giessen.de (Hellwig.Geisse at mni.fh-giessen.de)
+Date: Thu, 09 Mar 2006 13:10:29 +0100 (CET)
+Subject: [pups] Figured some things out.
+In-Reply-To: <a4d94b170603082115r5eb0901fq264cf94ad8ff2f44@mail.gmail.com>
+Message-ID: <XFMail.20060309131029.Hellwig.Geisse@mni.fh-giessen.de>
+
+Hi Efton,
+
+On 09-Mar-2006 Efton Collins wrote:
+> I have a 7th Edition installation that includes the Berkeley package.
+> [..]
+> The distribution is on two 10 megabyte RL02 images. If you would like a copy
+> of them, let me know and I'll make arrangements to make them available.
+
+I'm definitely interested. It would be very
+kind of you if you could make them available.
+
+Hellwig
+
+
+From robinb at ruffnready.co.uk  Tue Mar 21 04:54:13 2006
+From: robinb at ruffnready.co.uk (Robin)
+Date: Mon, 20 Mar 2006 18:54:13 -0000
+Subject: [pups] Supnik Emulator on Redhat Linux
+Message-ID: <000901c64c4f$ae9a4130$0202a8c0@robinslaptop>
+
+Hi,
+
+I have successfully got the supnik emulator up and running on redhat but
+have hit a problem, which is probably configuration and serves to show how
+little I know about more recent unices.
+
+ 
+
+To allow computer to emulator comms I have installed a second card and
+enabled it under linux.  It is enabled with a different address to the first
+one 192.168.1.10 and 192.168.1.11.  The emulator can see both of the devices
+and I have attached device 1 (eth1) as xq0.
+
+ 
+
+I run up BSD2.11 on the emulator and it attaches to the ether device at
+start up.  
+
+ 
+
+I can ftp from the emulator to the host and back again if I start ftp on the
+emulator.
+
+ 
+
+I can't telnet to the host.
+
+ 
+
+I can't telnet from the host to the emulator.
+
+ 
+
+I can't ftp from the host to the emulator.
+
+ 
+
+I also can't telnet in from a telnet session to the listening socket set up
+for a DZ11 (I could before I started trying to get the networking up).
+
+ 
+
+Ideas anyone?
+
+ 
+
+Robin
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20060320/00eec3dc/attachment.html>
+
+From toby at smartgames.ca  Fri Mar 24 08:43:20 2006
+From: toby at smartgames.ca (Toby Thain)
+Date: Thu, 23 Mar 2006 17:43:20 -0500
+Subject: [pups] Supnik Emulator on Redhat Linux
+In-Reply-To: <001c01c64eb4$0c07dec0$0202a8c0@robinslaptop>
+References: <001c01c64eb4$0c07dec0$0202a8c0@robinslaptop>
+Message-ID: <240321E8-83E3-499A-80BB-DC628E545BEB@smartgames.ca>
+
+
+On 23-Mar-06, at 2:57 PM, Robin wrote:
+
+> Ah,
+>
+> That’s a good suggestion.  I’ll dig my way round the redhat config  
+> stuff and see if I can find one to switch off.
+>
+>
+
+Look at "iptables".
+
+--Toby
+
+
+>
+>
+> Robin
+>
+>
+>
+> From: Toby Thain [mailto:toby at smartgames.ca]
+> Sent: 23 March 2006 06:37
+> To: robinb at ruffnready.co.uk
+> Subject: Re: [pups] Supnik Emulator on Redhat Linux
+>
+>
+>
+>
+>
+> On 20-Mar-06, at 1:54 PM, Robin wrote:
+>
+>
+>
+>
+> Hi,
+>
+> I have successfully got the supnik emulator up and running on  
+> redhat but have hit a problem, which is probably configuration and  
+> serves to show how little I know about more recent unices.
+>
+>
+>
+> To allow computer to emulator comms I have installed a second card  
+> and enabled it under linux.  It is enabled with a different address  
+> to the first one 192.168.1.10 and 192.168.1.11.  The emulator can  
+> see both of the devices and I have attached device 1 (eth1) as xq0.
+>
+>
+>
+> I run up BSD2.11 on the emulator and it attaches to the ether  
+> device at start up.
+>
+>
+>
+> I can ftp from the emulator to the host and back again if I start  
+> ftp on the emulator.
+>
+>
+>
+> I can’t telnet to the host.
+>
+>
+>
+> I can’t telnet from the host to the emulator.
+>
+>
+>
+> I can’t ftp from the host to the emulator.
+>
+>
+>
+> I also can’t telnet in from a telnet session to the listening  
+> socket set up for a DZ11 (I could before I started trying to get  
+> the networking up).
+>
+>
+>
+> Ideas anyone?
+>
+>
+>
+>
+>
+> Sounds like firewall to me.
+>
+>
+>
+> --Toby
+>
+>
+>
+>
+>
+>
+> Robin
+>
+> _______________________________________________
+>
+> PUPS mailing list
+>
+> PUPS at minnie.tuhs.org
+>
+> http://minnie.tuhs.org/mailman/listinfo/pups
+>
+>
+>
+>
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20060323/0b493886/attachment.html>
+
+From j at cnb.uam.es  Wed Mar  1 00:45:07 2006
+From: j at cnb.uam.es (J. R. Valverde)
+Date: Tue, 28 Feb 2006 15:45:07 +0100
+Subject: [TUHS] Tape images of 2.9BSD for SIMH?
+In-Reply-To: <Pine.LNX.4.64.0602240900250.12968@localhost.localdomain>
+References: <8dd2d95c0602231353j53ece473kac6def1f728f9fc7@mail.gmail.com>
+	<Pine.LNX.4.64.0602240900250.12968@localhost.localdomain>
+Message-ID: <20060228154507.0a341c3c.j@cnb.uam.es>
+
+Or you can try a pre-built one ;-)
+
+I have made a fair number of virtual machines myself. May it's time to set them
+free. Look into
+
+	ftp://ftp.es.embnet.org/pub/misc/emul/images/
+
+for some of them.
+				j
+
+On Fri, 24 Feb 2006 09:03:13 -0800 (PST)
+Andru Luvisi <luvisi at andru.sonoma.edu> wrote:
+> On Thu, 23 Feb 2006, Madcrow Maxwell wrote:
+> > I was wondering how I can turn the provided TAR files of 2.9BSD into a
+> > proper tape image for use with an emulator? Is a premade emu-friendly
+> > install tape available? I don't have either a real '11 or a physical
+> > tape drive on my computer?
+> 
+> This 2.11 image in:
+> http://www.tribug.org/pub/tuhs/PDP-11/Boot_Images/2.11_on_Simh/
+> 
+> contains a perl script which creates a bootable tape image from the tape 
+> files for 2.11BSD.  It shouldn't be too hard to modify it to do the same 
+> for 2.9BSD.
+> 
+> Andru
+> -- 
+> Andru Luvisi
+> 
+> Quote Of The Moment:
+>   "If you give someone Fortran, he has Fortran. 
+>    If you give someone Lisp,    he has any language he pleases." 
+>   		-- Guy Steele
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From sztrprszkolwia at gmail.com  Wed Mar  1 02:42:59 2006
+From: sztrprszkolwia at gmail.com (Z Sztrprszkolwia)
+Date: Tue, 28 Feb 2006 16:42:59 +0000
+Subject: [TUHS] Tape images of 2.9BSD for SIMH?
+In-Reply-To: <20060228154507.0a341c3c.j@cnb.uam.es>
+References: <8dd2d95c0602231353j53ece473kac6def1f728f9fc7@mail.gmail.com>	<Pine.LNX.4.64.0602240900250.12968@localhost.localdomain>
+	<20060228154507.0a341c3c.j@cnb.uam.es>
+Message-ID: <44047D93.9030309@gmail.com>
+
+J. R. Valverde wrote:
+
+>I have made a fair number of virtual machines myself. May it's time to set them
+>free. Look into
+>
+>	ftp://ftp.es.embnet.org/pub/misc/emul/images/
+>
+>for some of them.
+>  
+>
+Check permissions: I can't read the directories as 'anonymous' :(
+
+Thanks! :)
+
+Z.
+
+
+From kees.stravers at iae.nl  Fri Mar  3 02:03:29 2006
+From: kees.stravers at iae.nl (Kees Stravers)
+Date: Thu, 02 Mar 2006 17:03:29 +0100
+Subject: [TUHS] ATT 3b2
+In-Reply-To: <ABD5F0691C83424997EBEBF369ED9D9205C2E2DF@PHXEXHVRT01.americas.ad.pegs.com>
+Message-ID: <44072561.19971.9511DD1@kees.stravers.iae.nl>
+
+On 20 Feb 2006 at 10:43, Stuart, Jon wrote:
+
+> Hello,
+> 
+> I'm interested in acquring an AT&T 3b2 computer.  One of these
+> systems
+> used to run a famous public UNIX system "killer".  They also run
+> #5ess
+> telephone switches, however the OS is different in that case
+> (DMERT/UNIX-RTR instead of whatever the consumer-level 3b2 runs). 
+
+Where are you located? I have an Olivetti-rebranded AT&T 3B2/400 
+machine over here, but I live in The Netherlands and I have decided 
+long ago never to lift that machine again and leave it where it 
+stands now in the house. It may not be that big but it is very 
+strongly built and it has two heavy full height 70 MB 5.25 hard disk 
+drives in it. 
+
+You see, the last time I carried this machine, more than 10 years 
+ago, I hurt my back because of it and had to have six weeks of 
+therapy. It bothers me to this day. The perils of collecting old 
+computers, I guess.
+
+What impressed me most when I got the machine, apart from my back 
+problems, whas the impressive manuals that came with it, a row of red 
+binders in grey sleeves with excellent documentation. Also I was 
+surprised by the on/off switch, which does not blindly power off the 
+machine but initates a proper shut down sequence, so you can shut it 
+down properly without knowing any passwords. All *nix machines should 
+have a power switch like that.
+
+Also, the serial ports had RJ45 connectors already, and that is a lot 
+easier if you have to put the plug in while fumbling about on the 
+side, you can put them in without looking.
+
+I'm not doing much with it now since my main interest in old 
+computers still is the VAX.
+
+Regards,
+Kees Stravers
+http://www.vaxarchive.org/
+
+
+
+From aw at aw.gs  Thu Mar  9 13:15:34 2006
+From: aw at aw.gs (A. Wik)
+Date: Thu, 9 Mar 2006 03:15:34 +0000 (GMT)
+Subject: [TUHS] papers on the -mm macros?
+Message-ID: <20060309022832.F98411@dynamite.narpes.com>
+
+
+Hi,
+
+I've found the documentation for most of the major
+troff preprocessors and macros packages, but I can't
+seem to find anything but occasional references to a
+paper on the "Programmer's Memorandum Macros" (troff -mm)
+by Smith and Mashey.
+
+I'm hoping some of you may have better insight into
+the matter...
+
+-aw
+
+
+From lm at bitmover.com  Sat Mar 11 01:41:16 2006
+From: lm at bitmover.com (Larry McVoy)
+Date: Fri, 10 Mar 2006 07:41:16 -0800
+Subject: [TUHS] TUHS Digest, Vol 29, Issue 3
+In-Reply-To: <mailman.3.1141956001.52770.tuhs@minnie.tuhs.org>
+References: <mailman.3.1141956001.52770.tuhs@minnie.tuhs.org>
+Message-ID: <20060310154115.GA24047@bitmover.com>
+
+> I've found the documentation for most of the major
+> troff preprocessors and macros packages, but I can't
+> seem to find anything but occasional references to a
+> paper on the "Programmer's Memorandum Macros" (troff -mm)
+> by Smith and Mashey.
+
+Try asking on the groff mailing list, they have been very active lately,
+built a new macro package even.
+
+groff at gnu.org
+
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From jrvalverde at cnb.uam.es  Sat Mar 11 08:58:55 2006
+From: jrvalverde at cnb.uam.es (Jose R. Valverde)
+Date: Fri, 10 Mar 2006 23:58:55 +0100
+Subject: [TUHS] Tape images of 2.9BSD for SIMH?
+In-Reply-To: <44106FF2.3000401@gmail.com>
+References: <8dd2d95c0602231353j53ece473kac6def1f728f9fc7@mail.gmail.com>
+	<Pine.LNX.4.64.0602240900250.12968@localhost.localdomain>
+	<20060228154507.0a341c3c.j@cnb.uam.es> <44106FF2.3000401@gmail.com>
+Message-ID: <20060310235855.3409a699.jrvalverde@cnb.uam.es>
+
+Please, forgive me. I profusely apologize for all the inconveniences. It's
+been fixed now.
+
+I am sorry, I have been busy with lectures and travels and had forgotten the
+issue until I finally found time tonight to re-check TUHS on this account.
+Be assured I blushed when I saw my mistake and it has been the first thing 
+I've done.
+
+I'll try not to leave TUHS for so long again. Promise.
+
+					j
+
+
+
+On Thu, 09 Mar 2006 18:12:02 +0000
+Z Sztrprszkolwia <sztrprszkolwia at gmail.com> wrote:
+> Hi!
+> 
+> A couple of weeks ago you gave this address in the TUHS list, for tape 
+> images of BSD:
+> 
+> J. R. Valverde wrote:
+> 
+> >I have made a fair number of virtual machines myself. May it's time to set them
+> >free. Look into
+> >
+> >	ftp://ftp.es.embnet.org/pub/misc/emul/images/
+> >
+> >for some of them.
+> >
+> 
+> Unfortunately, when I log in as anonymous the directories are listed as 
+> drwxrwx--- (no permision whatsoever for 'others') and I can't download 
+> your simhs :((
+> I'm quite interested in playing with them, could you give others r-x 
+> permisions? Thanks :))
+
+
+From jrvalverde at cnb.uam.es  Sat Mar 11 08:59:59 2006
+From: jrvalverde at cnb.uam.es (Jose R. Valverde)
+Date: Fri, 10 Mar 2006 23:59:59 +0100
+Subject: [TUHS] Tape images of 2.9BSD for SIMH?
+In-Reply-To: <44106FF2.3000401@gmail.com>
+References: <8dd2d95c0602231353j53ece473kac6def1f728f9fc7@mail.gmail.com>
+	<Pine.LNX.4.64.0602240900250.12968@localhost.localdomain>
+	<20060228154507.0a341c3c.j@cnb.uam.es> <44106FF2.3000401@gmail.com>
+Message-ID: <20060310235959.2c905cd5.jrvalverde@cnb.uam.es>
+
+Please, forgive me. I profusely apologize for all the inconveniences. It's
+been fixed now.
+
+I am sorry, I have been busy with lectures and travels and had forgotten the
+issue until I finally found time tonight to re-check TUHS on this account. To
+top it off my home computer broke and I only bought a new one yesterday.
+Be assured I blushed when I saw my mistake and it has been the first thing 
+I've done.
+
+I'll try not to leave TUHS for so long again. Promise.
+
+					j
+
+
+
+On Thu, 09 Mar 2006 18:12:02 +0000
+Z Sztrprszkolwia <sztrprszkolwia at gmail.com> wrote:
+> Hi!
+> 
+> A couple of weeks ago you gave this address in the TUHS list, for tape 
+> images of BSD:
+> 
+> J. R. Valverde wrote:
+> 
+> >I have made a fair number of virtual machines myself. May it's time to set them
+> >free. Look into
+> >
+> >	ftp://ftp.es.embnet.org/pub/misc/emul/images/
+> >
+> >for some of them.
+> >
+> 
+> Unfortunately, when I log in as anonymous the directories are listed as 
+> drwxrwx--- (no permision whatsoever for 'others') and I can't download 
+> your simhs :((
+> I'm quite interested in playing with them, could you give others r-x 
+> permisions? Thanks :))
+
+
+From aw at aw.gs  Sat Mar 11 15:16:04 2006
+From: aw at aw.gs (A. Wik)
+Date: Sat, 11 Mar 2006 05:16:04 +0000 (GMT)
+Subject: [TUHS] TUHS Digest, Vol 29, Issue 3
+In-Reply-To: <20060310154115.GA24047@bitmover.com>
+References: <mailman.3.1141956001.52770.tuhs@minnie.tuhs.org>
+	<20060310154115.GA24047@bitmover.com>
+Message-ID: <20060311025149.C98411@dynamite.narpes.com>
+
+On Fri, 10 Mar 2006, Larry McVoy wrote:
+
+> > I've found the documentation for most of the major
+> > troff preprocessors and macros packages, but I can't
+> > seem to find anything but occasional references to a
+> > paper on the "Programmer's Memorandum Macros" (troff -mm)
+> > by Smith and Mashey.
+> 
+> Try asking on the groff mailing list, they have been very active lately,
+> built a new macro package even.
+
+As a matter of fact, I did come across the groff list archives -
+one of the members suggested adding a placeholder to the troff.org
+web site for a link to the -mm document I mentioned:
+
+http://www.troff.org/papers.html
+
+-aw
+
+
+
+From gunnarr at acm.org  Sun Mar 12 00:25:49 2006
+From: gunnarr at acm.org (Gunnar Ritter)
+Date: Sat, 11 Mar 2006 15:25:49 +0100
+Subject: [TUHS] papers on the -mm macros?
+In-Reply-To: <20060309022832.F98411@dynamite.narpes.com>
+References: <20060309022832.F98411@dynamite.narpes.com>
+Message-ID: <4412dded.NzKo0mGuM23J//Yf%gunnarr@acm.org>
+
+"A. Wik" <aw at aw.gs> wrote:
+
+> I've found the documentation for most of the major
+> troff preprocessors and macros packages, but I can't
+> seem to find anything but occasional references to a
+> paper on the "Programmer's Memorandum Macros" (troff -mm)
+> by Smith and Mashey.
+
+The source code for this paper had been available as part
+of the System III distribution under the old (unfree) SCO
+license.
+
+In case you had applied for that license, and you still
+have an old PUPS archive CD at hand, you can find it in
+Distributions/usdl/SysIII/sys3.tar.gz.
+
+You will not be able to recover the original layout since
+PostScript font metrics are quite different from CAT ones,
+but Heirloom troff produces readable output at least.
+
+	Gunnar
+
+

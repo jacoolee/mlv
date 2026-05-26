@@ -1,0 +1,4359 @@
+From david at kdbarto.org  Fri Sep 11 05:52:45 2015
+From: david at kdbarto.org (David)
+Date: Thu, 10 Sep 2015 12:52:45 -0700
+Subject: [TUHS] Did realloc ever zero the new memory?
+Message-ID: <E798E102-2C50-4AB2-92CC-188D05AA951F@kdbarto.org>
+
+I’ve just had a discussion with my boss about this and he claimed that it did at one point and I said it hasn’t in all the unix versions I’ve ever played with (v6, v7, sys III, V, BSD 2, 3, 4, SunOS and Solaris).
+
+My question to this illustrious group is: Did any Unix or Unix like OS ever zero fill on realloc?
+
+	David
+
+
+
+From jcapp at anteil.com  Fri Sep 11 06:10:41 2015
+From: jcapp at anteil.com (Jim Capp)
+Date: Thu, 10 Sep 2015 16:10:41 -0400 (EDT)
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <E798E102-2C50-4AB2-92CC-188D05AA951F@kdbarto.org>
+Message-ID: <5962857.12872.1441915841364.JavaMail.root@zimbraanteil>
+
+On every system that I've ever used, I believe that realloc did not do a zero fill. There might have been a time when malloc did a zero fill, but I never counted on it. I always performed a memset or bzero after a malloc. I'm pretty sure that I counted on realloc to NOT perform a zero fill. 
+
+
+$.02 
+
+
+
+From: "David" <david at kdbarto.org> 
+To: tuhs at minnie.tuhs.org 
+Sent: Thursday, September 10, 2015 3:52:45 PM 
+Subject: [TUHS] Did realloc ever zero the new memory? 
+
+I’ve just had a discussion with my boss about this and he claimed that it did at one point and I said it hasn’t in all the unix versions I’ve ever played with (v6, v7, sys III, V, BSD 2, 3, 4, SunOS and Solaris). 
+
+My question to this illustrious group is: Did any Unix or Unix like OS ever zero fill on realloc? 
+
+David 
+
+_______________________________________________ 
+TUHS mailing list 
+TUHS at minnie.tuhs.org 
+https://minnie.tuhs.org/mailman/listinfo/tuhs 
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150910/f4857c45/attachment.html>
+
+From david at kdbarto.org  Fri Sep 11 06:22:33 2015
+From: david at kdbarto.org (David)
+Date: Thu, 10 Sep 2015 13:22:33 -0700
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <20150910202115.GH8154@mcvoy.com>
+References: <E798E102-2C50-4AB2-92CC-188D05AA951F@kdbarto.org>
+ <5962857.12872.1441915841364.JavaMail.root@zimbraanteil>
+ <20150910202115.GH8154@mcvoy.com>
+Message-ID: <395F25EB-77F3-4830-A1AF-C27E43550C04@kdbarto.org>
+
+Buggy, sure.
+
+Zero (less) filling, that is the question.
+
+Realloc has had a difficult history, and I try to avoid it if at all possible.
+
+	David
+
+> On Sep 10, 2015, at 1:21 PM, Larry McVoy <lm at mcvoy.com> wrote:
+> 
+> Am I the only one that remembers realloc() being buggy on some systems?
+
+
+
+From lm at mcvoy.com  Fri Sep 11 06:27:23 2015
+From: lm at mcvoy.com (Larry McVoy)
+Date: Thu, 10 Sep 2015 13:27:23 -0700
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <395F25EB-77F3-4830-A1AF-C27E43550C04@kdbarto.org>
+References: <E798E102-2C50-4AB2-92CC-188D05AA951F@kdbarto.org>
+ <5962857.12872.1441915841364.JavaMail.root@zimbraanteil>
+ <20150910202115.GH8154@mcvoy.com>
+ <395F25EB-77F3-4830-A1AF-C27E43550C04@kdbarto.org>
+Message-ID: <20150910202723.GI8154@mcvoy.com>
+
+Good, glad to know it wasn't just me.  I've finally let my team use it
+but we avoided it when we supported more odd ball platforms.
+
+On zero fill, I doubt many did that.  Many really early on when memory
+was small.
+
+What you might be thinking of is modern systems implement malloc()
+as an mmap of /dev/zero and the initial data comes through as zeroed.
+But counting on that would be a mistake.
+
+On Thu, Sep 10, 2015 at 01:22:33PM -0700, David wrote:
+> Buggy, sure.
+> 
+> Zero (less) filling, that is the question.
+> 
+> Realloc has had a difficult history, and I try to avoid it if at all possible.
+> 
+> 	David
+> 
+> > On Sep 10, 2015, at 1:21 PM, Larry McVoy <lm at mcvoy.com> wrote:
+> > 
+> > Am I the only one that remembers realloc() being buggy on some systems?
+
+-- 
+---
+Larry McVoy            	     lm at mcvoy.com             http://www.mcvoy.com/lm 
+
+
+From david at kdbarto.org  Fri Sep 11 06:29:16 2015
+From: david at kdbarto.org (David)
+Date: Thu, 10 Sep 2015 13:29:16 -0700
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <20150910202723.GI8154@mcvoy.com>
+References: <E798E102-2C50-4AB2-92CC-188D05AA951F@kdbarto.org>
+ <5962857.12872.1441915841364.JavaMail.root@zimbraanteil>
+ <20150910202115.GH8154@mcvoy.com>
+ <395F25EB-77F3-4830-A1AF-C27E43550C04@kdbarto.org>
+ <20150910202723.GI8154@mcvoy.com>
+Message-ID: <FF64BDD6-C57E-4959-B0D1-2F97FF909EA9@kdbarto.org>
+
+I mentioned the /dev/zero malloc and, no, he was quite sure that it was realloc doing the zero fills.
+
+Glad to know that I’m sitting on the right side of history on this one.
+
+	David
+
+> On Sep 10, 2015, at 1:27 PM, Larry McVoy <lm at mcvoy.com> wrote:
+> 
+> Good, glad to know it wasn't just me.  I've finally let my team use it
+> but we avoided it when we supported more odd ball platforms.
+> 
+> On zero fill, I doubt many did that.  Many really early on when memory
+> was small.
+> 
+> What you might be thinking of is modern systems implement malloc()
+> as an mmap of /dev/zero and the initial data comes through as zeroed.
+> But counting on that would be a mistake.
+> 
+> On Thu, Sep 10, 2015 at 01:22:33PM -0700, David wrote:
+>> Buggy, sure.
+>> 
+>> Zero (less) filling, that is the question.
+>> 
+>> Realloc has had a difficult history, and I try to avoid it if at all possible.
+>> 
+>> 	David
+>> 
+>>> On Sep 10, 2015, at 1:21 PM, Larry McVoy <lm at mcvoy.com> wrote:
+>>> 
+>>> Am I the only one that remembers realloc() being buggy on some systems?
+> 
+> -- 
+> ---
+> Larry McVoy            	     lm at mcvoy.com             http://www.mcvoy.com/lm 
+
+
+
+From lm at mcvoy.com  Fri Sep 11 06:21:15 2015
+From: lm at mcvoy.com (Larry McVoy)
+Date: Thu, 10 Sep 2015 13:21:15 -0700
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <5962857.12872.1441915841364.JavaMail.root@zimbraanteil>
+References: <E798E102-2C50-4AB2-92CC-188D05AA951F@kdbarto.org>
+ <5962857.12872.1441915841364.JavaMail.root@zimbraanteil>
+Message-ID: <20150910202115.GH8154@mcvoy.com>
+
+Am I the only one that remembers realloc() being buggy on some systems?
+
+
+From clemc at ccc.com  Fri Sep 11 06:41:26 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Thu, 10 Sep 2015 16:41:26 -0400
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <20150910202115.GH8154@mcvoy.com>
+References: <E798E102-2C50-4AB2-92CC-188D05AA951F@kdbarto.org>
+ <5962857.12872.1441915841364.JavaMail.root@zimbraanteil>
+ <20150910202115.GH8154@mcvoy.com>
+Message-ID: <CAC20D2P_Gw-YKP8EHASFToTe_W0nfdcJabQ6_aJYnX0BhnPvng@mail.gmail.com>
+
+below
+
+On Thu, Sep 10, 2015 at 4:21 PM, Larry McVoy <lm at mcvoy.com> wrote:
+
+> Am I the only one that remembers realloc() being buggy on some systems?
+>
+>
+​Amen...   it was rarely useful.   I always found realloc to one of the
+part I could never trust.  I do remember  what you got back from any of the
+malloc calls could vary widely.  Particularly pre-ANSI C and working on
+non-UNIX systems.
+
+
+Malloc in general was always a tarbaby because there were (are) so many
+implementations "in the wild."   I used to advise our application people to
+create something that was application specific and then call the local
+malloc under the covers, but the chances that a general malloc
+implementation would be optimal for your code was low.​
+
+Clem
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150910/25a3e14c/attachment.html>
+
+From dave at horsfall.org  Fri Sep 11 10:13:41 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Fri, 11 Sep 2015 10:13:41 +1000 (EST)
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <E798E102-2C50-4AB2-92CC-188D05AA951F@kdbarto.org>
+References: <E798E102-2C50-4AB2-92CC-188D05AA951F@kdbarto.org>
+Message-ID: <alpine.BSF.2.11.1509111005190.42450@aneurin.horsfall.org>
+
+On Thu, 10 Sep 2015, David wrote:
+
+> I’ve just had a discussion with my boss about this and he claimed that 
+> it did at one point and I said it hasn’t in all the unix versions I’ve 
+> ever played with (v6, v7, sys III, V, BSD 2, 3, 4, SunOS and Solaris).
+
+Only V6?  I did V5...  Tell that to the young kids of today, and they 
+won't believe you.
+
+> My question to this illustrious group is: Did any Unix or Unix like OS 
+> ever zero fill on realloc?
+
+Never in my lifetime, which meant that you got inspect someone's private 
+messages and there's someone knocking at my door and
+
+#$%^&*\{{{
+
+NO CARRIER
+
+From rudi.j.blom at gmail.com  Fri Sep 11 16:21:28 2015
+From: rudi.j.blom at gmail.com (Rudi Blom)
+Date: Fri, 11 Sep 2015 13:21:28 +0700
+Subject: [TUHS] TUHS Digest, Vol 128, Issue 1
+In-Reply-To: <mailman.1.1441936807.9984.tuhs@minnie.tuhs.org>
+References: <mailman.1.1441936807.9984.tuhs@minnie.tuhs.org>
+Message-ID: <CAMYpm87tBZ_P=W10O72sgoPNtK53M1SL+P_EfS=Dfy9NB7ZVcQ@mail.gmail.com>
+
+I never used realloc(), only malloc() and calloc().
+
+Checking a few unixes I have access to all reallocs() seem to state
+either nothing on contents of memory added or state explicitly
+'undefined'.
+
+The only function which zeroes allocated memory is calloc() it seems.
+Unixes checks: SCO UNIX 3.2V4.2, Digital Unix 4.0G, Tru64 Unix V5.1B,
+HP-UX 11.23, HP-UX 11.31
+
+Cheers
+
+On 9/11/15, tuhs-request at minnie.tuhs.org <tuhs-request at minnie.tuhs.org> wrote:
+> Send TUHS mailing list submissions to
+> 	tuhs at minnie.tuhs.org
+>
+> To subscribe or unsubscribe via the World Wide Web, visit
+> 	https://minnie.tuhs.org/mailman/listinfo/tuhs
+> or, via email, send a message with subject or body 'help' to
+> 	tuhs-request at minnie.tuhs.org
+>
+> You can reach the person managing the list at
+> 	tuhs-owner at minnie.tuhs.org
+>
+> When replying, please edit your Subject line so it is more specific
+> than "Re: Contents of TUHS digest..."
+>
+>
+> Today's Topics:
+>
+>    1. Did realloc ever zero the new memory? (David)
+>    2. Re: Did realloc ever zero the new memory? (Jim Capp)
+>    3. Re: Did realloc ever zero the new memory? (David)
+>    4. Re: Did realloc ever zero the new memory? (Larry McVoy)
+>    5. Re: Did realloc ever zero the new memory? (David)
+>    6. Re: Did realloc ever zero the new memory? (Larry McVoy)
+>    7. Re: Did realloc ever zero the new memory? (Clem Cole)
+>    8. Re: Did realloc ever zero the new memory? (Dave Horsfall)
+>
+>
+> ----------------------------------------------------------------------
+>
+> Message: 1
+> Date: Thu, 10 Sep 2015 12:52:45 -0700
+> From: David <david at kdbarto.org>
+> To: tuhs at minnie.tuhs.org
+> Subject: [TUHS] Did realloc ever zero the new memory?
+> Message-ID: <E798E102-2C50-4AB2-92CC-188D05AA951F at kdbarto.org>
+> Content-Type: text/plain; charset=utf-8
+>
+> I?ve just had a discussion with my boss about this and he claimed that it
+> did at one point and I said it hasn?t in all the unix versions I?ve ever
+> played with (v6, v7, sys III, V, BSD 2, 3, 4, SunOS and Solaris).
+>
+> My question to this illustrious group is: Did any Unix or Unix like OS ever
+> zero fill on realloc?
+>
+> 	David
+>
+>
+>
+> ------------------------------
+>
+> Message: 2
+> Date: Thu, 10 Sep 2015 16:10:41 -0400 (EDT)
+> From: Jim Capp <jcapp at anteil.com>
+> To: david at kdbarto.org
+> Cc: tuhs at minnie.tuhs.org
+> Subject: Re: [TUHS] Did realloc ever zero the new memory?
+> Message-ID: <5962857.12872.1441915841364.JavaMail.root at zimbraanteil>
+> Content-Type: text/plain; charset="utf-8"
+>
+> On every system that I've ever used, I believe that realloc did not do a
+> zero fill. There might have been a time when malloc did a zero fill, but I
+> never counted on it. I always performed a memset or bzero after a malloc.
+> I'm pretty sure that I counted on realloc to NOT perform a zero fill.
+>
+>
+> $.02
+>
+>
+>
+> From: "David" <david at kdbarto.org>
+> To: tuhs at minnie.tuhs.org
+> Sent: Thursday, September 10, 2015 3:52:45 PM
+> Subject: [TUHS] Did realloc ever zero the new memory?
+>
+> I?ve just had a discussion with my boss about this and he claimed that it
+> did at one point and I said it hasn?t in all the unix versions I?ve ever
+> played with (v6, v7, sys III, V, BSD 2, 3, 4, SunOS and Solaris).
+>
+> My question to this illustrious group is: Did any Unix or Unix like OS ever
+> zero fill on realloc?
+>
+> David
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+> -------------- next part --------------
+> An HTML attachment was scrubbed...
+> URL:
+> <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150910/f4857c45/attachment-0001.html>
+>
+> ------------------------------
+>
+> Message: 3
+> Date: Thu, 10 Sep 2015 13:22:33 -0700
+> From: David <david at kdbarto.org>
+> To: Larry McVoy <lm at mcvoy.com>
+> Cc: tuhs at minnie.tuhs.org
+> Subject: Re: [TUHS] Did realloc ever zero the new memory?
+> Message-ID: <395F25EB-77F3-4830-A1AF-C27E43550C04 at kdbarto.org>
+> Content-Type: text/plain; charset=us-ascii
+>
+> Buggy, sure.
+>
+> Zero (less) filling, that is the question.
+>
+> Realloc has had a difficult history, and I try to avoid it if at all
+> possible.
+>
+> 	David
+>
+>> On Sep 10, 2015, at 1:21 PM, Larry McVoy <lm at mcvoy.com> wrote:
+>>
+>> Am I the only one that remembers realloc() being buggy on some systems?
+>
+>
+>
+> ------------------------------
+>
+> Message: 4
+> Date: Thu, 10 Sep 2015 13:27:23 -0700
+> From: Larry McVoy <lm at mcvoy.com>
+> To: David <david at kdbarto.org>
+> Cc: tuhs at minnie.tuhs.org
+> Subject: Re: [TUHS] Did realloc ever zero the new memory?
+> Message-ID: <20150910202723.GI8154 at mcvoy.com>
+> Content-Type: text/plain; charset=us-ascii
+>
+> Good, glad to know it wasn't just me.  I've finally let my team use it
+> but we avoided it when we supported more odd ball platforms.
+>
+> On zero fill, I doubt many did that.  Many really early on when memory
+> was small.
+>
+> What you might be thinking of is modern systems implement malloc()
+> as an mmap of /dev/zero and the initial data comes through as zeroed.
+> But counting on that would be a mistake.
+>
+> On Thu, Sep 10, 2015 at 01:22:33PM -0700, David wrote:
+>> Buggy, sure.
+>>
+>> Zero (less) filling, that is the question.
+>>
+>> Realloc has had a difficult history, and I try to avoid it if at all
+>> possible.
+>>
+>> 	David
+>>
+>> > On Sep 10, 2015, at 1:21 PM, Larry McVoy <lm at mcvoy.com> wrote:
+>> >
+>> > Am I the only one that remembers realloc() being buggy on some systems?
+>
+> --
+> ---
+> Larry McVoy            	     lm at mcvoy.com
+> http://www.mcvoy.com/lm
+>
+>
+> ------------------------------
+>
+> Message: 5
+> Date: Thu, 10 Sep 2015 13:29:16 -0700
+> From: David <david at kdbarto.org>
+> To: Larry McVoy <lm at mcvoy.com>
+> Cc: tuhs at minnie.tuhs.org
+> Subject: Re: [TUHS] Did realloc ever zero the new memory?
+> Message-ID: <FF64BDD6-C57E-4959-B0D1-2F97FF909EA9 at kdbarto.org>
+> Content-Type: text/plain; charset=utf-8
+>
+> I mentioned the /dev/zero malloc and, no, he was quite sure that it was
+> realloc doing the zero fills.
+>
+> Glad to know that I?m sitting on the right side of history on this one.
+>
+> 	David
+>
+>> On Sep 10, 2015, at 1:27 PM, Larry McVoy <lm at mcvoy.com> wrote:
+>>
+>> Good, glad to know it wasn't just me.  I've finally let my team use it
+>> but we avoided it when we supported more odd ball platforms.
+>>
+>> On zero fill, I doubt many did that.  Many really early on when memory
+>> was small.
+>>
+>> What you might be thinking of is modern systems implement malloc()
+>> as an mmap of /dev/zero and the initial data comes through as zeroed.
+>> But counting on that would be a mistake.
+>>
+>> On Thu, Sep 10, 2015 at 01:22:33PM -0700, David wrote:
+>>> Buggy, sure.
+>>>
+>>> Zero (less) filling, that is the question.
+>>>
+>>> Realloc has had a difficult history, and I try to avoid it if at all
+>>> possible.
+>>>
+>>> 	David
+>>>
+>>>> On Sep 10, 2015, at 1:21 PM, Larry McVoy <lm at mcvoy.com> wrote:
+>>>>
+>>>> Am I the only one that remembers realloc() being buggy on some systems?
+>>
+>> --
+>> ---
+>> Larry McVoy            	     lm at mcvoy.com
+>> http://www.mcvoy.com/lm
+>
+>
+>
+> ------------------------------
+>
+> Message: 6
+> Date: Thu, 10 Sep 2015 13:21:15 -0700
+> From: Larry McVoy <lm at mcvoy.com>
+> To: Jim Capp <jcapp at anteil.com>
+> Cc: tuhs at minnie.tuhs.org, david at kdbarto.org
+> Subject: Re: [TUHS] Did realloc ever zero the new memory?
+> Message-ID: <20150910202115.GH8154 at mcvoy.com>
+> Content-Type: text/plain; charset=us-ascii
+>
+> Am I the only one that remembers realloc() being buggy on some systems?
+>
+>
+> ------------------------------
+>
+> Message: 7
+> Date: Thu, 10 Sep 2015 16:41:26 -0400
+> From: Clem Cole <clemc at ccc.com>
+> To: Larry McVoy <lm at mcvoy.com>
+> Cc: david at kdbarto.org, TUHS main list <tuhs at minnie.tuhs.org>
+> Subject: Re: [TUHS] Did realloc ever zero the new memory?
+> Message-ID:
+> 	<CAC20D2P_Gw-YKP8EHASFToTe_W0nfdcJabQ6_aJYnX0BhnPvng at mail.gmail.com>
+> Content-Type: text/plain; charset="utf-8"
+>
+> below
+>
+> On Thu, Sep 10, 2015 at 4:21 PM, Larry McVoy <lm at mcvoy.com> wrote:
+>
+>> Am I the only one that remembers realloc() being buggy on some systems?
+>>
+>>
+> ?Amen...   it was rarely useful.   I always found realloc to one of the
+> part I could never trust.  I do remember  what you got back from any of the
+> malloc calls could vary widely.  Particularly pre-ANSI C and working on
+> non-UNIX systems.
+>
+>
+> Malloc in general was always a tarbaby because there were (are) so many
+> implementations "in the wild."   I used to advise our application people to
+> create something that was application specific and then call the local
+> malloc under the covers, but the chances that a general malloc
+> implementation would be optimal for your code was low.?
+>
+> Clem
+> -------------- next part --------------
+> An HTML attachment was scrubbed...
+> URL:
+> <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150910/25a3e14c/attachment-0001.html>
+>
+> ------------------------------
+>
+> Message: 8
+> Date: Fri, 11 Sep 2015 10:13:41 +1000 (EST)
+> From: Dave Horsfall <dave at horsfall.org>
+> To: The Eunuchs Hysterical Society <tuhs at tuhs.org>
+> Subject: Re: [TUHS] Did realloc ever zero the new memory?
+> Message-ID: <alpine.BSF.2.11.1509111005190.42450 at aneurin.horsfall.org>
+> Content-Type: text/plain; charset="utf-8"
+>
+> On Thu, 10 Sep 2015, David wrote:
+>
+>> I?ve just had a discussion with my boss about this and he claimed that
+>> it did at one point and I said it hasn?t in all the unix versions I?ve
+>> ever played with (v6, v7, sys III, V, BSD 2, 3, 4, SunOS and Solaris).
+>
+> Only V6?  I did V5...  Tell that to the young kids of today, and they
+> won't believe you.
+>
+>> My question to this illustrious group is: Did any Unix or Unix like OS
+>> ever zero fill on realloc?
+>
+> Never in my lifetime, which meant that you got inspect someone's private
+> messages and there's someone knocking at my door and
+>
+> #$%^&*\{{{
+>
+> NO CARRIER
+>
+> ------------------------------
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+> End of TUHS Digest, Vol 128, Issue 1
+> ************************************
+>
+
+
+From arnold at skeeve.com  Fri Sep 11 16:30:36 2015
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Fri, 11 Sep 2015 00:30:36 -0600
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <CAC20D2P_Gw-YKP8EHASFToTe_W0nfdcJabQ6_aJYnX0BhnPvng@mail.gmail.com>
+References: <E798E102-2C50-4AB2-92CC-188D05AA951F@kdbarto.org>
+ <5962857.12872.1441915841364.JavaMail.root@zimbraanteil>
+ <20150910202115.GH8154@mcvoy.com>
+ <CAC20D2P_Gw-YKP8EHASFToTe_W0nfdcJabQ6_aJYnX0BhnPvng@mail.gmail.com>
+Message-ID: <201509110630.t8B6UaYF010131@freefriends.org>
+
+
+> On Thu, Sep 10, 2015 at 4:21 PM, Larry McVoy <lm at mcvoy.com> wrote:
+>
+> > Am I the only one that remembers realloc() being buggy on some systems?
+
+Clem Cole <clemc at ccc.com> wrote:
+
+> Amen...   it was rarely useful.   I always found realloc to one of the
+> part I could never trust.  I do remember  what you got back from any of the
+> malloc calls could vary widely.  Particularly pre-ANSI C and working on
+> non-UNIX systems.
+
+I would not say this applies today. The GLIBC realloc is very effective.
+The place where I see this is in gawk, which special cases
+
+	a = a b	# concatenate string b onto the end of string a
+
+By using realloc to grow the contents of a and copying b's contents
+onto the end I see a huge speedup over the dance of
+
+	char *p malloc(length(a) + length(b))
+	copy in a
+	copy in b
+	free old a
+	make a point at new storage
+
+Arnold
+
+
+From cym224 at gmail.com  Fri Sep 11 22:21:17 2015
+From: cym224 at gmail.com (Nemo)
+Date: Fri, 11 Sep 2015 08:21:17 -0400
+Subject: [TUHS] TUHS Digest, Vol 128, Issue 1
+In-Reply-To: <CAMYpm87tBZ_P=W10O72sgoPNtK53M1SL+P_EfS=Dfy9NB7ZVcQ@mail.gmail.com>
+References: <mailman.1.1441936807.9984.tuhs@minnie.tuhs.org>
+ <CAMYpm87tBZ_P=W10O72sgoPNtK53M1SL+P_EfS=Dfy9NB7ZVcQ@mail.gmail.com>
+Message-ID: <CAJfiPzwZWT8h5Cn75eNHs_vOVnGyu+5CpQjn4oVAatfgjd=XMw@mail.gmail.com>
+
+On 11 September 2015 at 02:21, Rudi Blom <rudi.j.blom at gmail.com> wrote
+(in part):
+> I never used realloc(), only malloc() and calloc().
+>
+> Checking a few unixes I have access to all reallocs() seem to state
+> either nothing on contents of memory added or state explicitly
+> 'undefined'.
+
+To be pedantic, if it's POSIX then:
+(from http://pubs.opengroup.org/onlinepubs/9699919799/)
+The contents of the new object shall be the same as that of the old
+object prior to deallocation, up to the lesser of the new and old
+sizes. Any bytes in the new object beyond the size of the old object
+have indeterminate values.
+
+N.
+
+
+From imp at bsdimp.com  Fri Sep 11 23:17:09 2015
+From: imp at bsdimp.com (Warner Losh)
+Date: Fri, 11 Sep 2015 07:17:09 -0600
+Subject: [TUHS] TUHS Digest, Vol 128, Issue 1
+In-Reply-To: <CAMYpm87tBZ_P=W10O72sgoPNtK53M1SL+P_EfS=Dfy9NB7ZVcQ@mail.gmail.com>
+References: <mailman.1.1441936807.9984.tuhs@minnie.tuhs.org>
+ <CAMYpm87tBZ_P=W10O72sgoPNtK53M1SL+P_EfS=Dfy9NB7ZVcQ@mail.gmail.com>
+Message-ID: <CANCZdfpKNVCXfDStqboj5eF8jJ1yidnbrnPe7qmn4YDmswh1_Q@mail.gmail.com>
+
+When I ported OI to a few dozen OSes back in the early 1990s,
+realloc behaved correctly. We used it in the pre-template / STL
+days of C++ to implement variable length arrays. Any misbehavior
+predated this.
+
+The systems were HP/UX, AIX, AUX, OSF/1 (Digital Unix), SunOS 4,
+Solaris, Linux, FreeBSD, IRIX, and Apollo's Unix.
+
+Warner
+
+On Fri, Sep 11, 2015 at 12:21 AM, Rudi Blom <rudi.j.blom at gmail.com> wrote:
+
+> I never used realloc(), only malloc() and calloc().
+>
+> Checking a few unixes I have access to all reallocs() seem to state
+> either nothing on contents of memory added or state explicitly
+> 'undefined'.
+>
+> The only function which zeroes allocated memory is calloc() it seems.
+> Unixes checks: SCO UNIX 3.2V4.2, Digital Unix 4.0G, Tru64 Unix V5.1B,
+> HP-UX 11.23, HP-UX 11.31
+>
+> Cheers
+>
+> On 9/11/15, tuhs-request at minnie.tuhs.org <tuhs-request at minnie.tuhs.org>
+> wrote:
+> > Send TUHS mailing list submissions to
+> >       tuhs at minnie.tuhs.org
+> >
+> > To subscribe or unsubscribe via the World Wide Web, visit
+> >       https://minnie.tuhs.org/mailman/listinfo/tuhs
+> > or, via email, send a message with subject or body 'help' to
+> >       tuhs-request at minnie.tuhs.org
+> >
+> > You can reach the person managing the list at
+> >       tuhs-owner at minnie.tuhs.org
+> >
+> > When replying, please edit your Subject line so it is more specific
+> > than "Re: Contents of TUHS digest..."
+> >
+> >
+> > Today's Topics:
+> >
+> >    1. Did realloc ever zero the new memory? (David)
+> >    2. Re: Did realloc ever zero the new memory? (Jim Capp)
+> >    3. Re: Did realloc ever zero the new memory? (David)
+> >    4. Re: Did realloc ever zero the new memory? (Larry McVoy)
+> >    5. Re: Did realloc ever zero the new memory? (David)
+> >    6. Re: Did realloc ever zero the new memory? (Larry McVoy)
+> >    7. Re: Did realloc ever zero the new memory? (Clem Cole)
+> >    8. Re: Did realloc ever zero the new memory? (Dave Horsfall)
+> >
+> >
+> > ----------------------------------------------------------------------
+> >
+> > Message: 1
+> > Date: Thu, 10 Sep 2015 12:52:45 -0700
+> > From: David <david at kdbarto.org>
+> > To: tuhs at minnie.tuhs.org
+> > Subject: [TUHS] Did realloc ever zero the new memory?
+> > Message-ID: <E798E102-2C50-4AB2-92CC-188D05AA951F at kdbarto.org>
+> > Content-Type: text/plain; charset=utf-8
+> >
+> > I?ve just had a discussion with my boss about this and he claimed that it
+> > did at one point and I said it hasn?t in all the unix versions I?ve ever
+> > played with (v6, v7, sys III, V, BSD 2, 3, 4, SunOS and Solaris).
+> >
+> > My question to this illustrious group is: Did any Unix or Unix like OS
+> ever
+> > zero fill on realloc?
+> >
+> >       David
+> >
+> >
+> >
+> > ------------------------------
+> >
+> > Message: 2
+> > Date: Thu, 10 Sep 2015 16:10:41 -0400 (EDT)
+> > From: Jim Capp <jcapp at anteil.com>
+> > To: david at kdbarto.org
+> > Cc: tuhs at minnie.tuhs.org
+> > Subject: Re: [TUHS] Did realloc ever zero the new memory?
+> > Message-ID: <5962857.12872.1441915841364.JavaMail.root at zimbraanteil>
+> > Content-Type: text/plain; charset="utf-8"
+> >
+> > On every system that I've ever used, I believe that realloc did not do a
+> > zero fill. There might have been a time when malloc did a zero fill, but
+> I
+> > never counted on it. I always performed a memset or bzero after a malloc.
+> > I'm pretty sure that I counted on realloc to NOT perform a zero fill.
+> >
+> >
+> > $.02
+> >
+> >
+> >
+> > From: "David" <david at kdbarto.org>
+> > To: tuhs at minnie.tuhs.org
+> > Sent: Thursday, September 10, 2015 3:52:45 PM
+> > Subject: [TUHS] Did realloc ever zero the new memory?
+> >
+> > I?ve just had a discussion with my boss about this and he claimed that it
+> > did at one point and I said it hasn?t in all the unix versions I?ve ever
+> > played with (v6, v7, sys III, V, BSD 2, 3, 4, SunOS and Solaris).
+> >
+> > My question to this illustrious group is: Did any Unix or Unix like OS
+> ever
+> > zero fill on realloc?
+> >
+> > David
+> >
+> > _______________________________________________
+> > TUHS mailing list
+> > TUHS at minnie.tuhs.org
+> > https://minnie.tuhs.org/mailman/listinfo/tuhs
+> > -------------- next part --------------
+> > An HTML attachment was scrubbed...
+> > URL:
+> > <
+> http://minnie.tuhs.org/pipermail/tuhs/attachments/20150910/f4857c45/attachment-0001.html
+> >
+> >
+> > ------------------------------
+> >
+> > Message: 3
+> > Date: Thu, 10 Sep 2015 13:22:33 -0700
+> > From: David <david at kdbarto.org>
+> > To: Larry McVoy <lm at mcvoy.com>
+> > Cc: tuhs at minnie.tuhs.org
+> > Subject: Re: [TUHS] Did realloc ever zero the new memory?
+> > Message-ID: <395F25EB-77F3-4830-A1AF-C27E43550C04 at kdbarto.org>
+> > Content-Type: text/plain; charset=us-ascii
+> >
+> > Buggy, sure.
+> >
+> > Zero (less) filling, that is the question.
+> >
+> > Realloc has had a difficult history, and I try to avoid it if at all
+> > possible.
+> >
+> >       David
+> >
+> >> On Sep 10, 2015, at 1:21 PM, Larry McVoy <lm at mcvoy.com> wrote:
+> >>
+> >> Am I the only one that remembers realloc() being buggy on some systems?
+> >
+> >
+> >
+> > ------------------------------
+> >
+> > Message: 4
+> > Date: Thu, 10 Sep 2015 13:27:23 -0700
+> > From: Larry McVoy <lm at mcvoy.com>
+> > To: David <david at kdbarto.org>
+> > Cc: tuhs at minnie.tuhs.org
+> > Subject: Re: [TUHS] Did realloc ever zero the new memory?
+> > Message-ID: <20150910202723.GI8154 at mcvoy.com>
+> > Content-Type: text/plain; charset=us-ascii
+> >
+> > Good, glad to know it wasn't just me.  I've finally let my team use it
+> > but we avoided it when we supported more odd ball platforms.
+> >
+> > On zero fill, I doubt many did that.  Many really early on when memory
+> > was small.
+> >
+> > What you might be thinking of is modern systems implement malloc()
+> > as an mmap of /dev/zero and the initial data comes through as zeroed.
+> > But counting on that would be a mistake.
+> >
+> > On Thu, Sep 10, 2015 at 01:22:33PM -0700, David wrote:
+> >> Buggy, sure.
+> >>
+> >> Zero (less) filling, that is the question.
+> >>
+> >> Realloc has had a difficult history, and I try to avoid it if at all
+> >> possible.
+> >>
+> >>      David
+> >>
+> >> > On Sep 10, 2015, at 1:21 PM, Larry McVoy <lm at mcvoy.com> wrote:
+> >> >
+> >> > Am I the only one that remembers realloc() being buggy on some
+> systems?
+> >
+> > --
+> > ---
+> > Larry McVoy                        lm at mcvoy.com
+> > http://www.mcvoy.com/lm
+> >
+> >
+> > ------------------------------
+> >
+> > Message: 5
+> > Date: Thu, 10 Sep 2015 13:29:16 -0700
+> > From: David <david at kdbarto.org>
+> > To: Larry McVoy <lm at mcvoy.com>
+> > Cc: tuhs at minnie.tuhs.org
+> > Subject: Re: [TUHS] Did realloc ever zero the new memory?
+> > Message-ID: <FF64BDD6-C57E-4959-B0D1-2F97FF909EA9 at kdbarto.org>
+> > Content-Type: text/plain; charset=utf-8
+> >
+> > I mentioned the /dev/zero malloc and, no, he was quite sure that it was
+> > realloc doing the zero fills.
+> >
+> > Glad to know that I?m sitting on the right side of history on this one.
+> >
+> >       David
+> >
+> >> On Sep 10, 2015, at 1:27 PM, Larry McVoy <lm at mcvoy.com> wrote:
+> >>
+> >> Good, glad to know it wasn't just me.  I've finally let my team use it
+> >> but we avoided it when we supported more odd ball platforms.
+> >>
+> >> On zero fill, I doubt many did that.  Many really early on when memory
+> >> was small.
+> >>
+> >> What you might be thinking of is modern systems implement malloc()
+> >> as an mmap of /dev/zero and the initial data comes through as zeroed.
+> >> But counting on that would be a mistake.
+> >>
+> >> On Thu, Sep 10, 2015 at 01:22:33PM -0700, David wrote:
+> >>> Buggy, sure.
+> >>>
+> >>> Zero (less) filling, that is the question.
+> >>>
+> >>> Realloc has had a difficult history, and I try to avoid it if at all
+> >>> possible.
+> >>>
+> >>>     David
+> >>>
+> >>>> On Sep 10, 2015, at 1:21 PM, Larry McVoy <lm at mcvoy.com> wrote:
+> >>>>
+> >>>> Am I the only one that remembers realloc() being buggy on some
+> systems?
+> >>
+> >> --
+> >> ---
+> >> Larry McVoy                       lm at mcvoy.com
+> >> http://www.mcvoy.com/lm
+> >
+> >
+> >
+> > ------------------------------
+> >
+> > Message: 6
+> > Date: Thu, 10 Sep 2015 13:21:15 -0700
+> > From: Larry McVoy <lm at mcvoy.com>
+> > To: Jim Capp <jcapp at anteil.com>
+> > Cc: tuhs at minnie.tuhs.org, david at kdbarto.org
+> > Subject: Re: [TUHS] Did realloc ever zero the new memory?
+> > Message-ID: <20150910202115.GH8154 at mcvoy.com>
+> > Content-Type: text/plain; charset=us-ascii
+> >
+> > Am I the only one that remembers realloc() being buggy on some systems?
+> >
+> >
+> > ------------------------------
+> >
+> > Message: 7
+> > Date: Thu, 10 Sep 2015 16:41:26 -0400
+> > From: Clem Cole <clemc at ccc.com>
+> > To: Larry McVoy <lm at mcvoy.com>
+> > Cc: david at kdbarto.org, TUHS main list <tuhs at minnie.tuhs.org>
+> > Subject: Re: [TUHS] Did realloc ever zero the new memory?
+> > Message-ID:
+> >       <
+> CAC20D2P_Gw-YKP8EHASFToTe_W0nfdcJabQ6_aJYnX0BhnPvng at mail.gmail.com>
+> > Content-Type: text/plain; charset="utf-8"
+> >
+> > below
+> >
+> > On Thu, Sep 10, 2015 at 4:21 PM, Larry McVoy <lm at mcvoy.com> wrote:
+> >
+> >> Am I the only one that remembers realloc() being buggy on some systems?
+> >>
+> >>
+> > ?Amen...   it was rarely useful.   I always found realloc to one of the
+> > part I could never trust.  I do remember  what you got back from any of
+> the
+> > malloc calls could vary widely.  Particularly pre-ANSI C and working on
+> > non-UNIX systems.
+> >
+> >
+> > Malloc in general was always a tarbaby because there were (are) so many
+> > implementations "in the wild."   I used to advise our application people
+> to
+> > create something that was application specific and then call the local
+> > malloc under the covers, but the chances that a general malloc
+> > implementation would be optimal for your code was low.?
+> >
+> > Clem
+> > -------------- next part --------------
+> > An HTML attachment was scrubbed...
+> > URL:
+> > <
+> http://minnie.tuhs.org/pipermail/tuhs/attachments/20150910/25a3e14c/attachment-0001.html
+> >
+> >
+> > ------------------------------
+> >
+> > Message: 8
+> > Date: Fri, 11 Sep 2015 10:13:41 +1000 (EST)
+> > From: Dave Horsfall <dave at horsfall.org>
+> > To: The Eunuchs Hysterical Society <tuhs at tuhs.org>
+> > Subject: Re: [TUHS] Did realloc ever zero the new memory?
+> > Message-ID: <alpine.BSF.2.11.1509111005190.42450 at aneurin.horsfall.org>
+> > Content-Type: text/plain; charset="utf-8"
+> >
+> > On Thu, 10 Sep 2015, David wrote:
+> >
+> >> I?ve just had a discussion with my boss about this and he claimed that
+> >> it did at one point and I said it hasn?t in all the unix versions I?ve
+> >> ever played with (v6, v7, sys III, V, BSD 2, 3, 4, SunOS and Solaris).
+> >
+> > Only V6?  I did V5...  Tell that to the young kids of today, and they
+> > won't believe you.
+> >
+> >> My question to this illustrious group is: Did any Unix or Unix like OS
+> >> ever zero fill on realloc?
+> >
+> > Never in my lifetime, which meant that you got inspect someone's private
+> > messages and there's someone knocking at my door and
+> >
+> > #$%^&*\{{{
+> >
+> > NO CARRIER
+> >
+> > ------------------------------
+> >
+> > _______________________________________________
+> > TUHS mailing list
+> > TUHS at minnie.tuhs.org
+> > https://minnie.tuhs.org/mailman/listinfo/tuhs
+> >
+> >
+> > End of TUHS Digest, Vol 128, Issue 1
+> > ************************************
+> >
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150911/d8a7541f/attachment.html>
+
+From clemc at ccc.com  Sat Sep 12 00:36:07 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Fri, 11 Sep 2015 10:36:07 -0400
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <201509110630.t8B6UaYF010131@freefriends.org>
+References: <E798E102-2C50-4AB2-92CC-188D05AA951F@kdbarto.org>
+ <5962857.12872.1441915841364.JavaMail.root@zimbraanteil>
+ <20150910202115.GH8154@mcvoy.com>
+ <CAC20D2P_Gw-YKP8EHASFToTe_W0nfdcJabQ6_aJYnX0BhnPvng@mail.gmail.com>
+ <201509110630.t8B6UaYF010131@freefriends.org>
+Message-ID: <CAC20D2NncT+gcT_Xai6xkVCJ0XRD4d+FxjMM_MvmiZBrab_eXQ@mail.gmail.com>
+
+On Fri, Sep 11, 2015 at 2:30 AM, <arnold at skeeve.com> wrote:
+
+> I would not say this applies today. The GLIBC realloc is very effective.
+
+
+​Fair enough​
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150911/e849f4e1/attachment.html>
+
+From norman at oclsc.org  Sat Sep 12 01:41:23 2015
+From: norman at oclsc.org (Norman Wilson)
+Date: Fri, 11 Sep 2015 11:41:23 -0400
+Subject: [TUHS] Did realloc ever zero the new memory?
+Message-ID: <1441986088.9291.for-standards-violators@oclsc.org>
+
+I've used realloc a lot, and never run into bugs.  Maybe I've just
+been lucky, or maybe it's that I probably didn't use it that much
+until the latter 1980s, and then more with pukka Doug malloc code
+than with the stuff floating around elsewhere.
+
+Never mind that sometime around 1995 I found a subtle bug in the
+pukka Doug malloc (not realloc): arena blew up badly when presented
+with a certain pattern of alternating small and large allocs and frees,
+produced by a pukka Brian awk regression test.  I had a lot of (genuine)
+fun tracking that down, writing some low-level tools to extract the
+malloc and free calls and sizes and then a simulator in (what else?)
+awk to test different fixes.  Oh, for the days when UNIX was that
+simple.
+
+I've never heard before of a belief that the new memory belonging
+to realloc is always cleared, except in conjunction with the utterly-
+mistaken belief that that's true of malloc as well.  I don't think it
+was ever promised to be true, though it was probably true by accident
+just often enough (just as often as with malloc) to fool the careless.
+
+Norman Wilson
+Toronto ON
+
+
+From scj at yaccman.com  Sat Sep 12 02:44:56 2015
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Fri, 11 Sep 2015 09:44:56 -0700
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <1441986088.9291.for-standards-violators@oclsc.org>
+References: <1441986088.9291.for-standards-violators@oclsc.org>
+Message-ID: <72b8190786e0faf1ecb7bd11c94cff87.squirrel@webmail.yaccman.com>
+
+Maybe I can clear up some of the confusion.  I too believe that malloc and
+realloc never zeroed the newly added memory.  However, at some point
+someone realized that when Unix added a page to the memory available to a
+process, it didn't clear that page.  Somebody wrote a small program that
+would, from time to time, malloc a chunk of memory and look for
+interesting things in it (e.g., ASCII strings).  It was rather effective,
+and soon Unix was changed so that any new pages were cleared before they
+were added to the process.
+
+Many mallocs tried to allocate a page if you asked for that size memory
+(it depended on whether the control info was in the same arena as the
+memory blocks or not).  So if your program used such a malloc and you
+allocated full pages at a time, you might have silently seen malloc turn
+into calloc, albeit in a completely non-portable way.  I suspect realloc
+worked similarly.
+
+Steve
+
+
+> I've never heard before of a belief that the new memory belonging
+> to realloc is always cleared, except in conjunction with the utterly-
+> mistaken belief that that's true of malloc as well.  I don't think it
+> was ever promised to be true, though it was probably true by accident
+> just often enough (just as often as with malloc) to fool the careless.
+>
+> Norman Wilson
+> Toronto ON
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+
+
+From dave at horsfall.org  Sat Sep 12 15:16:51 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sat, 12 Sep 2015 15:16:51 +1000 (EST)
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <1441931343.25526.for-standards-violators@oclsc.org>
+References: <1441931343.25526.for-standards-violators@oclsc.org>
+Message-ID: <alpine.BSF.2.11.1509121505010.61390@aneurin.horsfall.org>
+
+On Thu, 10 Sep 2015, Norman Wilson wrote:
+
+>   #$%^&*\{{{
+> 
+>   NO CARRIER
+> 
+> +++
+> ATH
+
+My favourite would be:
+
++++
+(pause - this was necessary)
+ATZ
+
+I.e. a reset.
+
+I think there were even worse ones in the Hayes codes, like ATH3 or 
+something.  Dammit, but mental bit-rot is setting in.
+
+Of course, I never did such an evil thing, your honour...  Honest!  Never!
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+ I'll support shark-culling when they have been observed walking on dry land.
+
+
+From grog at lemis.com  Sat Sep 12 16:47:34 2015
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Sat, 12 Sep 2015 16:47:34 +1000
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <alpine.BSF.2.11.1509121505010.61390@aneurin.horsfall.org>
+References: <1441931343.25526.for-standards-violators@oclsc.org>
+ <alpine.BSF.2.11.1509121505010.61390@aneurin.horsfall.org>
+Message-ID: <20150912064734.GL3796@eureka.lemis.com>
+
+On Saturday, 12 September 2015 at 15:16:51 +1000, Dave Horsfall wrote:
+> On Thu, 10 Sep 2015, Norman Wilson wrote:
+>
+>>   #$%^&*\{{{
+>>
+>>   NO CARRIER
+>>
+>> +++
+>> ATH
+>
+> My favourite would be:
+>
+> +++
+> (pause - this was necessary)
+> ATZ
+>
+> I.e. a reset.
+>
+> I think there were even worse ones in the Hayes codes, like ATH3 or
+> something.  Dammit, but mental bit-rot is setting in.
+
+Of course, you haven't forgotten:
+
+  UNIX is a registered trade mark of AT&T
+  AT&T is a modem test command.
+
+Greg
+--
+Sent from my desktop computer.
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft MUA reports
+problems, please read http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 196 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150912/6b999604/attachment.sig>
+
+From dave at horsfall.org  Sun Sep 13 07:26:52 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sun, 13 Sep 2015 07:26:52 +1000 (EST)
+Subject: [TUHS] Happy Programmers' Day!
+Message-ID: <alpine.BSF.2.11.1509130719370.72249@aneurin.horsfall.org>
+
+Today is The Day of the Programmer, being the 0x100'th day of the year.  
+Take a bow, all programmers...
+
+Did you know that it's an official professional holiday in Russia?
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+ I'll support shark-culling when they have been observed walking on dry land.
+
+
+From norman at oclsc.org  Sun Sep 13 07:49:23 2015
+From: norman at oclsc.org (Norman Wilson)
+Date: Sat, 12 Sep 2015 17:49:23 -0400
+Subject: [TUHS]  Happy Programmers' Day!
+Message-ID: <1442094566.302.for-standards-violators@oclsc.org>
+
+Dave Horsfall:
+
+  Today is The Day of the Programmer, being the 0x100'th day of the year.  
+
+===
+
+Are you sure you want to use that radix as your standard?
+You risk putting a hex on our profession.
+
+Norman Wilson
+Toronto ON
+
+
+From doug at cs.dartmouth.edu  Sun Sep 13 10:32:57 2015
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Sat, 12 Sep 2015 20:32:57 -0400
+Subject: [TUHS] Did realloc ever zero the new memory?
+Message-ID: <201509130032.t8D0WvPl024634@tahoe.cs.Dartmouth.EDU>
+
+> Did any Unix or Unix like OS ever zero fill on realloc?
+
+> On zero fill, I doubt many did that.  Many really early on when memory
+> was small.
+
+This sparks rminiscence. When I wrote an allocation strategy somewhat
+more sophisticated than the original alloc(), I introduced realloc() and
+changed the error return from -1 to the honest pointer value 0. The
+latter change compelled a new name; "malloc" has been with us ever since.
+
+To keep the per-byte cost of allocation low, malloc stuck with alloc's
+nonzeroing policy. The minimal extra code to handle calls that triggered
+sbrk had the startling property that five passes through the arena might
+be required in some cases--not exactly scalable to giant virtual address
+spaces!
+
+It's odd that the later introduction of calloc() as a zeroing malloc()
+has never been complemented by a similar variant of realloc().
+
+> Am I the only one that remembers realloc() being buggy on some systems?
+
+I've never met a particular realloc() bug, but realloc does inherit the
+portability bug that Posix baked into malloc(). Rob Pike and I
+requested that malloc(0) be required to return a pointer distinct from
+any live pointer. Posix instead allowed an undefined choice between
+that behavior and an error return, confounding it with the out-of-memory
+indication. Maybe it's time to right the wrong and retire "malloc".
+The name "alloc" might be recycled for it. It could also clear memory
+and obsolete calloc().
+
+Doug
+
+
+From lm at mcvoy.com  Sun Sep 13 11:15:01 2015
+From: lm at mcvoy.com (Larry McVoy)
+Date: Sat, 12 Sep 2015 18:15:01 -0700
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <201509130032.t8D0WvPl024634@tahoe.cs.Dartmouth.EDU>
+References: <201509130032.t8D0WvPl024634@tahoe.cs.Dartmouth.EDU>
+Message-ID: <20150913011501.GF2103@mcvoy.com>
+
+On Sat, Sep 12, 2015 at 08:32:57PM -0400, Doug McIlroy wrote:
+> It's odd that the later introduction of calloc() as a zeroing malloc()
+> has never been complemented by a similar variant of realloc().
+
+That's a really good point.  Anyone like these?
+
+void *alloc(size_t bytes);
+void *realloc(void *old, size_t want);
+
+void *zalloc(size_t bytes);
+void *zealloc(void *old, size_t want);
+
+So alloc is new, we can have that.  Realloc() is OK?  Or not?  Does the
+current one have weird semantics?
+
+zalloc/zealloc are new, we can have those.
+
+If you guys like these I can push on Linus and the glibc people.
+
+
+From random832 at fastmail.com  Sun Sep 13 11:30:36 2015
+From: random832 at fastmail.com (Random832)
+Date: Sat, 12 Sep 2015 21:30:36 -0400
+Subject: [TUHS] Did realloc ever zero the new memory?
+References: <201509130032.t8D0WvPl024634@tahoe.cs.Dartmouth.EDU>
+Message-ID: <m2twqzp0lf.fsf@fastmail.com>
+
+Doug McIlroy <doug at cs.dartmouth.edu> writes:
+> It's odd that the later introduction of calloc() as a zeroing malloc()
+> has never been complemented by a similar variant of realloc().
+
+Speaking of calloc, was it ever envisioned that any implementation would
+do anything more sophisticated with the two arguments than multiply them
+together (and detect overflow)? Has any such implementation ever
+existed? It seems like one of the great mysteries of the C library
+design, especially since early implementations didn't do overflow
+checking.
+
+The existence of cfree also suggests an intention to eventually have it
+use a separate arena from malloc.
+
+
+
+From charles.unix.pro at gmail.com  Sun Sep 13 12:29:34 2015
+From: charles.unix.pro at gmail.com (Charles Anthony)
+Date: Sat, 12 Sep 2015 19:29:34 -0700
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <m2twqzp0lf.fsf@fastmail.com>
+References: <201509130032.t8D0WvPl024634@tahoe.cs.Dartmouth.EDU>
+ <m2twqzp0lf.fsf@fastmail.com>
+Message-ID: <CANV78LQe0JLt_DeWx-dQGoeLekP1yX1qkQ1bOS6kzoC8e7zwoA@mail.gmail.com>
+
+On Sat, Sep 12, 2015 at 6:30 PM, Random832 <random832 at fastmail.com> wrote:
+
+> Doug McIlroy <doug at cs.dartmouth.edu> writes:
+> > It's odd that the later introduction of calloc() as a zeroing malloc()
+> > has never been complemented by a similar variant of realloc().
+>
+> Speaking of calloc, was it ever envisioned that any implementation would
+> do anything more sophisticated with the two arguments than multiply them
+> together (and detect overflow)? Has any such implementation ever
+> existed? It seems like one of the great mysteries of the C library
+> design, especially since early implementations didn't do overflow
+> checking.
+>
+>
+Alignment perhaps?
+
+-- Charles
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150912/3942e5af/attachment.html>
+
+From dave at horsfall.org  Sun Sep 13 16:09:55 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sun, 13 Sep 2015 16:09:55 +1000 (EST)
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <20150913011501.GF2103@mcvoy.com>
+References: <201509130032.t8D0WvPl024634@tahoe.cs.Dartmouth.EDU>
+ <20150913011501.GF2103@mcvoy.com>
+Message-ID: <alpine.BSF.2.11.1509131559390.72879@aneurin.horsfall.org>
+
+On Sat, 12 Sep 2015, Larry McVoy wrote:
+
+> That's a really good point.  Anyone like these?
+> 
+> void *alloc(size_t bytes);
+> void *realloc(void *old, size_t want);
+> 
+> void *zalloc(size_t bytes);
+> void *zealloc(void *old, size_t want);
+> 
+> So alloc is new, we can have that.  Realloc() is OK?  Or not?  Does the
+> current one have weird semantics?
+> 
+> zalloc/zealloc are new, we can have those.
+> 
+> If you guys like these I can push on Linus and the glibc people.
+
+I'll vote for those, although my dev days are pretty much over.  I've 
+never liked malloc() etc not clearing memory, although it has been, ahem, 
+useful, in the past...
+
+And I vaguely recall alloc() from Ed5 days (it was an improvement upon 
+"sys brk", after all), so it's not new.
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+ I'll support shark-culling when they have been observed walking on dry land.
+
+
+From meillo at marmaro.de  Sun Sep 13 17:06:48 2015
+From: meillo at marmaro.de (markus schnalke)
+Date: Sun, 13 Sep 2015 09:06:48 +0200
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <20150913011501.GF2103@mcvoy.com>
+References: <201509130032.t8D0WvPl024634@tahoe.cs.Dartmouth.EDU>
+ <20150913011501.GF2103@mcvoy.com>
+Message-ID: <1Zb1NA-5he-00@marmaro.de>
+
+[2015-09-12 18:15] Larry McVoy <lm at mcvoy.com>
+> 
+> That's a really good point.  Anyone like these?
+> 
+> void *alloc(size_t bytes);
+> void *realloc(void *old, size_t want);
+> 
+> void *zalloc(size_t bytes);
+> void *zealloc(void *old, size_t want);
+
+Please note, that identifiers are usually remembered by sound
+not by letter sequence. `zalloc' and `zealloc' are likely to
+be pronounced similar and thus there is a good chance that
+this leads to confusion and errors. Furthermore, `calloc' and
+`zalloc' are prone to be pronounced equally or understood
+equally, especially by non-native speakers.
+
+Choosing good identifiers is a tough task.
+
+
+meillo
+
+
+From asbesto at freaknet.org  Sun Sep 13 19:39:50 2015
+From: asbesto at freaknet.org (asbesto)
+Date: Sun, 13 Sep 2015 09:39:50 +0000
+Subject: [TUHS] PDP-11/23+ just restored :)
+Message-ID: <20150913093950.GA20038@freaknet.org>
+
+
+Hi there, 
+
+we just restored our PDP-11/23+ rebulding a new PSU around a
+normal PC PSU and creating the real time clock needed for some
+OS.
+
+we're wondering about what UNIX can eventually run on it :)
+
+http://museo.freaknet.org/en/restauro-pdp1123plus/
+
+
+bye, 
+Gabriele
+
+
+-- 
+[ ::::::::: 73 de IW9HGS : http://freaknet.org/asbesto ::::::::::: ]
+[ Freaknet Medialab :: Poetry Hacklab : Dyne.Org :: Radio Cybernet ]
+[ NON SCRIVERMI USANDO LETTERE ACCENTATE  -  NON MANDARMI ALLEGATI ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC and SPAM ]
+
+
+
+From dave at horsfall.org  Sun Sep 13 20:23:14 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sun, 13 Sep 2015 20:23:14 +1000 (EST)
+Subject: [TUHS] PDP-11/23+ just restored :)
+In-Reply-To: <20150913093950.GA20038@freaknet.org>
+References: <20150913093950.GA20038@freaknet.org>
+Message-ID: <alpine.BSF.2.11.1509132014200.72879@aneurin.horsfall.org>
+
+On Sun, 13 Sep 2015, asbesto wrote:
+
+> we just restored our PDP-11/23+ rebulding a new PSU around a normal PC 
+> PSU and creating the real time clock needed for some OS.
+> 
+> we're wondering about what UNIX can eventually run on it :)
+> 
+> http://museo.freaknet.org/en/restauro-pdp1123plus/
+
+11/23?  Should be able to run V6, but not V7 (no sep/id space).  Does it 
+have the FPU?  Those variants were damned rare (here in Oz, at least).
+
+The AUUG archives ought to have stuff on it (cough, cough; I ported Unix 
+to the thing).
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+ I'll support shark-culling when they have been observed walking on dry land.
+
+
+From dave at horsfall.org  Sun Sep 13 20:32:14 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sun, 13 Sep 2015 20:32:14 +1000 (EST)
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <1Zb1NA-5he-00@marmaro.de>
+References: <201509130032.t8D0WvPl024634@tahoe.cs.Dartmouth.EDU>
+ <20150913011501.GF2103@mcvoy.com> <1Zb1NA-5he-00@marmaro.de>
+Message-ID: <alpine.BSF.2.11.1509132024500.72879@aneurin.horsfall.org>
+
+On Sun, 13 Sep 2015, markus schnalke wrote:
+
+> > void *alloc(size_t bytes);
+> > void *realloc(void *old, size_t want);
+> > 
+> > void *zalloc(size_t bytes);
+> > void *zealloc(void *old, size_t want);
+> 
+> Please note, that identifiers are usually remembered by sound not by 
+> letter sequence. `zalloc' and `zealloc' are likely to be pronounced 
+> similar and thus there is a good chance that this leads to confusion and 
+> errors. Furthermore, `calloc' and `zalloc' are prone to be pronounced 
+> equally or understood equally, especially by non-native speakers.
+
+That, of course, depends upon how you pronounce "z".  In this part of the 
+world, it's "zed".  No confusion with "see" here down-under...
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+ I'll support shark-culling when they have been observed walking on dry land.
+
+
+From pete at dunnington.plus.com  Sun Sep 13 20:23:35 2015
+From: pete at dunnington.plus.com (Pete Turnbull)
+Date: Sun, 13 Sep 2015 11:23:35 +0100
+Subject: [TUHS] PDP-11/23+ just restored :)
+In-Reply-To: <20150913093950.GA20038@freaknet.org>
+References: <20150913093950.GA20038@freaknet.org>
+Message-ID: <55F54EA7.8050000@dunnington.plus.com>
+
+On 13/09/2015 10:39, asbesto wrote:
+> we just restored our PDP-11/23+ rebulding a new PSU around a
+> normal PC PSU and creating the real time clock needed for some
+> OS.
+>
+> we're wondering about what UNIX can eventually run on it :)
+
+You could run 7th Edition; I run that on my 11/23+.  You'd need an 11/73 
+or another processor with split I&D space for anything later.
+
+I'm curious as to why you needed a 60Hz clock when your line frequency 
+is 50Hz?  All the DEC O/S can run with a 50Hz, as can UNIX.
+
+-- 
+Pete
+
+Pete Turnbull
+
+
+From pete at dunnington.plus.com  Sun Sep 13 20:31:31 2015
+From: pete at dunnington.plus.com (Pete Turnbull)
+Date: Sun, 13 Sep 2015 11:31:31 +0100
+Subject: [TUHS] PDP-11/23+ just restored :)
+In-Reply-To: <alpine.BSF.2.11.1509132014200.72879@aneurin.horsfall.org>
+References: <20150913093950.GA20038@freaknet.org>
+ <alpine.BSF.2.11.1509132014200.72879@aneurin.horsfall.org>
+Message-ID: <55F55083.2050402@dunnington.plus.com>
+
+On 13/09/2015 11:23, Dave Horsfall wrote:
+
+> 11/23?  Should be able to run V6, but not V7 (no sep/id space).  Does it
+> have the FPU?  Those variants were damned rare (here in Oz, at least).
+
+No, you don't need split I&D for 7th Edition, which runs just fine on 
+mine.  As demonstrated at the DEC Legacy Event in Windermere a few 
+months ago.
+
+http://www.wickensonline.co.uk/declegacy/
+
+See, specifically, the second and third pictures in the 2015 gallery
+http://wickensonline.co.uk/declegacy/image/tid/13 and
+http://wickensonline.co.uk/declegacy/node/267
+
+-- 
+Pete
+
+Pete Turnbull
+
+
+From meillo at marmaro.de  Sun Sep 13 21:06:18 2015
+From: meillo at marmaro.de (markus schnalke)
+Date: Sun, 13 Sep 2015 13:06:18 +0200
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <alpine.BSF.2.11.1509132024500.72879@aneurin.horsfall.org>
+References: <201509130032.t8D0WvPl024634@tahoe.cs.Dartmouth.EDU>
+ <20150913011501.GF2103@mcvoy.com> <1Zb1NA-5he-00@marmaro.de>
+ <alpine.BSF.2.11.1509132024500.72879@aneurin.horsfall.org>
+Message-ID: <1Zb56w-7Ty-00@marmaro.de>
+
+[2015-09-13 20:32] Dave Horsfall <dave at horsfall.org>
+> On Sun, 13 Sep 2015, markus schnalke wrote:
+> 
+> > > void *alloc(size_t bytes);
+> > > void *realloc(void *old, size_t want);
+> > > 
+> > > void *zalloc(size_t bytes);
+> > > void *zealloc(void *old, size_t want);
+> > 
+> > Please note, that identifiers are usually remembered by sound not by 
+> > letter sequence. `zalloc' and `zealloc' are likely to be pronounced 
+> > similar and thus there is a good chance that this leads to confusion and 
+> > errors. Furthermore, `calloc' and `zalloc' are prone to be pronounced 
+> > equally or understood equally, especially by non-native speakers.
+> 
+> That, of course, depends upon how you pronounce "z".  In this part of the 
+> world, it's "zed".  No confusion with "see" here down-under...
+
+So, if these function will never be available to American English
+speaking folks, then I'm all fine with the names. ;-)
+
+
+meillo
+
+
+From dave at horsfall.org  Sun Sep 13 21:25:27 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sun, 13 Sep 2015 21:25:27 +1000 (EST)
+Subject: [TUHS] PDP-11/23+ just restored :)
+In-Reply-To: <55F55083.2050402@dunnington.plus.com>
+References: <20150913093950.GA20038@freaknet.org>
+ <alpine.BSF.2.11.1509132014200.72879@aneurin.horsfall.org>
+ <55F55083.2050402@dunnington.plus.com>
+Message-ID: <alpine.BSF.2.11.1509132121140.72879@aneurin.horsfall.org>
+
+On Sun, 13 Sep 2015, Pete Turnbull wrote:
+
+> > 11/23?  Should be able to run V6, but not V7 (no sep/id space).  Does 
+> > it have the FPU?  Those variants were damned rare (here in Oz, at 
+> > least).
+> 
+> No, you don't need split I&D for 7th Edition, which runs just fine on 
+> mine. As demonstrated at the DEC Legacy Event in Windermere a few months 
+> ago.
+
+Ah; I only saw the 18-bit version, not the 22-bit version...
+
+Thanks.
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+ I'll support shark-culling when they have been observed walking on dry land.
+
+
+From dfawcus+lists-tuhs at employees.org  Sun Sep 13 22:13:59 2015
+From: dfawcus+lists-tuhs at employees.org (Derek Fawcus)
+Date: Sun, 13 Sep 2015 13:13:59 +0100
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <1Zb1NA-5he-00@marmaro.de>
+References: <201509130032.t8D0WvPl024634@tahoe.cs.Dartmouth.EDU>
+ <20150913011501.GF2103@mcvoy.com> <1Zb1NA-5he-00@marmaro.de>
+Message-ID: <20150913121359.GA96351@cowbell.employees.org>
+
+On Sun, Sep 13, 2015 at 09:06:48AM +0200, markus schnalke wrote:
+> Please note, that identifiers are usually remembered by sound
+> not by letter sequence. `zalloc' and `zealloc' are likely to
+> be pronounced similar
+
+While I'd pronounce zealloc as Zee-alloc;  I'd not be inclined
+to pronounce zalloc that way,  nor as Zed-alloc, but as Zal-loc
+(rhymes with Sal-loc).  Maybe Larry had this pronounciation
+in mind?
+
+Similarly,  I pronounce 'calloc' as Kal-loc not, See-alloc.
+
+So other folk from England should have no trouble :-)
+
+DF
+
+
+From cowan at mercury.ccil.org  Sun Sep 13 23:45:39 2015
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sun, 13 Sep 2015 09:45:39 -0400
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <20150913121359.GA96351@cowbell.employees.org>
+References: <201509130032.t8D0WvPl024634@tahoe.cs.Dartmouth.EDU>
+ <20150913011501.GF2103@mcvoy.com> <1Zb1NA-5he-00@marmaro.de>
+ <20150913121359.GA96351@cowbell.employees.org>
+Message-ID: <20150913134539.GA25883@mercury.ccil.org>
+
+Derek Fawcus scripsit:
+
+> While I'd pronounce zealloc as Zee-alloc;  I'd not be inclined
+> to pronounce zalloc that way,  nor as Zed-alloc, but as Zal-loc
+> (rhymes with Sal-loc).  Maybe Larry had this pronounciation
+> in mind?
+> 
+> Similarly,  I pronounce 'calloc' as Kal-loc not, See-alloc.
+
++1
+
+> So other folk from England should have no trouble :-)
+
+Nor other Yanks.  :-)
+
+That, of course, leads directly to the vexed question of how to pronounce
+"char".  For me, it is "tcharr", for others "care".
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Overhead, without any fuss, the stars were going out.
+        --Arthur C. Clarke, "The Nine Billion Names of God"
+
+
+From cowan at mercury.ccil.org  Sun Sep 13 23:53:06 2015
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sun, 13 Sep 2015 09:53:06 -0400
+Subject: [TUHS] PDP-11/23+ just restored :)
+In-Reply-To: <alpine.BSF.2.11.1509132014200.72879@aneurin.horsfall.org>
+References: <20150913093950.GA20038@freaknet.org>
+ <alpine.BSF.2.11.1509132014200.72879@aneurin.horsfall.org>
+Message-ID: <20150913135306.GB25883@mercury.ccil.org>
+
+Dave Horsfall scripsit:
+
+> 11/23?  Should be able to run V6, but not V7 (no sep/id space).   
+
+More precisely, it won't be able to run executables with a magic number
+of 0411, which demands split I/D.  I don't know offhand which those were.
+But split I/D support goes back to V5, according to a.out.h.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Does anybody want any flotsam? / I've gotsam.
+Does anybody want any jetsam? / I can getsam.
+        --Ogden Nash, No Doctors Today, Thank You
+
+
+From grog at lemis.com  Mon Sep 14 13:20:45 2015
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Mon, 14 Sep 2015 13:20:45 +1000
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <alpine.BSF.2.11.1509131559390.72879@aneurin.horsfall.org>
+References: <201509130032.t8D0WvPl024634@tahoe.cs.Dartmouth.EDU>
+ <20150913011501.GF2103@mcvoy.com>
+ <alpine.BSF.2.11.1509131559390.72879@aneurin.horsfall.org>
+Message-ID: <20150914032045.GM3796@eureka.lemis.com>
+
+On Sunday, 13 September 2015 at 16:09:55 +1000, Dave Horsfall wrote:
+> On Sat, 12 Sep 2015, Larry McVoy wrote:
+>
+>> That's a really good point.  Anyone like these?
+>>
+>> void *alloc(size_t bytes);
+>> void *realloc(void *old, size_t want);
+>>
+>> void *zalloc(size_t bytes);
+>> void *zealloc(void *old, size_t want);
+>>
+>> So alloc is new, we can have that.  Realloc() is OK?  Or not?  Does the
+>> current one have weird semantics?
+>>
+>> zalloc/zealloc are new, we can have those.
+>>
+>> If you guys like these I can push on Linus and the glibc people.
+>
+> I'll vote for those, although my dev days are pretty much over.  I've
+> never liked malloc() etc not clearing memory, although it has been, ahem,
+> useful, in the past...
+
+http://xkcd.com/927/
+
+Greg
+--
+Sent from my desktop computer.
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft MUA reports
+problems, please read http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 196 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150914/57cb0dda/attachment.sig>
+
+From david at kdbarto.org  Tue Sep 15 13:30:53 2015
+From: david at kdbarto.org (David)
+Date: Mon, 14 Sep 2015 20:30:53 -0700
+Subject: [TUHS] TUHS Digest, Vol 128, Issue 7
+In-Reply-To: <mailman.1.1442282402.15664.tuhs@minnie.tuhs.org>
+References: <mailman.1.1442282402.15664.tuhs@minnie.tuhs.org>
+Message-ID: <ED52B182-FBFA-46DA-A9A8-D169744D845B@kdbarto.org>
+
+> http://xkcd.com/927/
+> 
+> Greg
+
+And as the original asker of this question, I declare it completely solved.
+
+	David
+
+
+
+From asbesto at freaknet.org  Tue Sep 15 19:33:11 2015
+From: asbesto at freaknet.org (asbesto)
+Date: Tue, 15 Sep 2015 09:33:11 +0000
+Subject: [TUHS] PDP-11/23+ just restored :)
+In-Reply-To: <55F54EA7.8050000@dunnington.plus.com>
+References: <20150913093950.GA20038@freaknet.org>
+ <55F54EA7.8050000@dunnington.plus.com>
+Message-ID: <20150915093311.GA23107@freaknet.org>
+
+Sun, Sep 13, 2015 at 11:23:35AM +0100, Pete Turnbull wrote:
+
+> I'm curious as to why you needed a 60Hz clock when your line
+> frequency is 50Hz?  All the DEC O/S can run with a 50Hz, as can
+> UNIX.
+
+oh well, it was just a choice :)
+
+-- 
+[ ::::::::: 73 de IW9HGS : http://freaknet.org/asbesto ::::::::::: ]
+[ Freaknet Medialab :: Poetry Hacklab : Dyne.Org :: Radio Cybernet ]
+[ NON SCRIVERMI USANDO LETTERE ACCENTATE  -  NON MANDARMI ALLEGATI ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC and SPAM ]
+
+
+
+From dave at horsfall.org  Wed Sep 16 00:10:14 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Wed, 16 Sep 2015 00:10:14 +1000 (EST)
+Subject: [TUHS] Happy Programmers' Day!
+In-Reply-To: <1442094566.302.for-standards-violators@oclsc.org>
+References: <1442094566.302.for-standards-violators@oclsc.org>
+Message-ID: <alpine.BSF.2.11.1509152351110.99112@aneurin.horsfall.org>
+
+On Sat, 12 Sep 2015, Norman Wilson wrote:
+
+>   Today is The Day of the Programmer, being the 0x100'th day of the year.  
+> 
+> ===
+> 
+> Are you sure you want to use that radix as your standard?
+> You risk putting a hex on our profession.
+
+Guilty as charged, m'lud...  First computer I programmed was a PDP-8 i.e. 
+octal, but that would've been in FOCAL or BASIC.  My first hex was the 
+mighty IBM-360/50 (and I loathed EBCDIC ever since).
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+ I'll support shark-culling when they have been observed walking on dry land.
+
+
+From scj at yaccman.com  Wed Sep 16 01:27:54 2015
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Tue, 15 Sep 2015 08:27:54 -0700
+Subject: [TUHS] Happy Programmers' Day!
+In-Reply-To: <alpine.BSF.2.11.1509152351110.99112@aneurin.horsfall.org>
+References: <1442094566.302.for-standards-violators@oclsc.org>
+ <alpine.BSF.2.11.1509152351110.99112@aneurin.horsfall.org>
+Message-ID: <1e69b028f0bba306576914ab0a37de42.squirrel@webmail.yaccman.com>
+
+>>
+>> Are you sure you want to use that radix as your standard?
+>> You risk putting a hex on our profession.
+>
+
+Ah, memories.  One of the biggest challenges we faced in porting Unix to
+the Interdata 8/32 was starting to do everything in hex.  I can truly say
+that I learned it by single-stepping through bootstrap code and reading
+the panel lights...
+
+As a friend of mine once said to a young programmer "I've written boot
+loaders with fewer bytes than you use for variable names!"
+
+
+
+
+
+From doug at cs.dartmouth.edu  Wed Sep 16 12:13:23 2015
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Tue, 15 Sep 2015 22:13:23 -0400
+Subject: [TUHS] Happy Programmers' Day!
+Message-ID: <201509160213.t8G2DN4F018687@tahoe.cs.Dartmouth.EDU>
+
+>   Today is The Day of the Programmer, being the 0x100'th day of the year.
+
+Still further off topic, but it reminds me of a Y2K incident circa 1960.
+Our IBM 7090 had been fitted with a homegrown time-of-day clock (no, big
+blue did not build such into their machines back then). The most significant
+bits of the clock registered the day of the year. On day 0x100 the clock
+went negative and the system went wild.
+
+Doug
+
+
+From grog at lemis.com  Wed Sep 16 13:10:30 2015
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Wed, 16 Sep 2015 13:10:30 +1000
+Subject: [TUHS] Happy Programmers' Day!
+In-Reply-To: <1e69b028f0bba306576914ab0a37de42.squirrel@webmail.yaccman.com>
+References: <1442094566.302.for-standards-violators@oclsc.org>
+ <alpine.BSF.2.11.1509152351110.99112@aneurin.horsfall.org>
+ <1e69b028f0bba306576914ab0a37de42.squirrel@webmail.yaccman.com>
+Message-ID: <20150916031030.GH81320@eureka.lemis.com>
+
+On Tuesday, 15 September 2015 at  8:27:54 -0700, scj at yaccman.com wrote:
+>
+> As a friend of mine once said to a young programmer "I've written
+> boot loaders with fewer bytes than you use for variable names!"
+
+Clearly a reference to Dave H's PDP-8 with its 16 word (24 byte) RIM
+loader.
+
+Greg
+--
+Sent from my desktop computer.
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft MUA reports
+problems, please read http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 196 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150916/21a042f1/attachment.sig>
+
+From cowan at mercury.ccil.org  Wed Sep 16 22:54:25 2015
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Wed, 16 Sep 2015 08:54:25 -0400
+Subject: [TUHS] Happy Programmers' Day!
+In-Reply-To: <20150916031030.GH81320@eureka.lemis.com>
+References: <1442094566.302.for-standards-violators@oclsc.org>
+ <alpine.BSF.2.11.1509152351110.99112@aneurin.horsfall.org>
+ <1e69b028f0bba306576914ab0a37de42.squirrel@webmail.yaccman.com>
+ <20150916031030.GH81320@eureka.lemis.com>
+Message-ID: <20150916125424.GA3771@mercury.ccil.org>
+
+Greg 'groggy' Lehey scripsit:
+
+> Clearly a reference to Dave H's PDP-8 with its 16 word (24 byte) RIM
+> loader.
+
+The RK8E bootstrap for OS/8 was even shorter: just two instructions.
+The first loaded a block from the disk (you forced it to be block 0 loaded
+at address 0 of field 0 by using the CLEAR key on the front panel first),
+and the second was jump-to-self, which executed until the disk overwrote
+it with code that waited until the block had been loaded and then continued
+executing the newly loaded code.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Uneasy lies the head that wears the Editor's hat! --Eddie Foirbeis Climo
+
+
+From wkt at tuhs.org  Thu Sep 17 05:50:39 2015
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 17 Sep 2015 05:50:39 +1000
+Subject: [TUHS] Why root user name?
+Message-ID: <20150916195039.GA27635@www.oztivo.net>
+
+As I was dropping off to sleep last night, I wondered why the superuser
+account on Unix is called root.
+
+There's a hierarchy of directories and files beginning at the tree root /.
+There's a hierarchy of processes rooted with init. But there's no hierarchy
+of users, so why the moniker "root"?
+
+Any ideas?
+
+Cheers, Warren
+
+
+From cowan at mercury.ccil.org  Thu Sep 17 06:11:45 2015
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Wed, 16 Sep 2015 16:11:45 -0400
+Subject: [TUHS] Why root user name?
+In-Reply-To: <20150916195039.GA27635@www.oztivo.net>
+References: <20150916195039.GA27635@www.oztivo.net>
+Message-ID: <20150916201145.GA12717@mercury.ccil.org>
+
+Warren Toomey scripsit:
+
+> There's a hierarchy of directories and files beginning at the tree root /.
+> There's a hierarchy of processes rooted with init. But there's no hierarchy
+> of users, so why the moniker "root"?
+
+Either because / was root's home directory (until /root was invented),
+or because only root could typically write /.  If anybody remembers otherwise,
+they are not talking.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Andrew Watt on Microsoft:  Never in the field of human computing has so
+much been paid by so many to so few! (pace Winston Churchill)
+
+
+From jgevaryahu at hotmail.com  Thu Sep 17 14:42:17 2015
+From: jgevaryahu at hotmail.com (Jonathan Gevaryahu)
+Date: Thu, 17 Sep 2015 00:42:17 -0400
+Subject: [TUHS] Did realloc ever zero the new memory?
+In-Reply-To: <20150914032045.GM3796@eureka.lemis.com>
+References: <201509130032.t8D0WvPl024634@tahoe.cs.Dartmouth.EDU>
+ <20150913011501.GF2103@mcvoy.com>
+ <alpine.BSF.2.11.1509131559390.72879@aneurin.horsfall.org>
+ <20150914032045.GM3796@eureka.lemis.com>
+Message-ID: <BLU436-SMTP10A7EC9CEEA31EF2963B7CC75A0@phx.gbl>
+
+On 9/13/2015 11:20 PM, Greg 'groggy' Lehey wrote:
+> On Sunday, 13 September 2015 at 16:09:55 +1000, Dave Horsfall wrote:
+>> On Sat, 12 Sep 2015, Larry McVoy wrote:
+>>
+>>> That's a really good point.  Anyone like these?
+>>>
+>>> void *alloc(size_t bytes);
+>>> void *realloc(void *old, size_t want);
+>>>
+>>> void *zalloc(size_t bytes);
+>>> void *zealloc(void *old, size_t want);
+>>>
+>>> So alloc is new, we can have that.  Realloc() is OK?  Or not?  Does the
+>>> current one have weird semantics?
+>>>
+>>> zalloc/zealloc are new, we can have those.
+>>>
+>>> If you guys like these I can push on Linus and the glibc people.
+>> I'll vote for those, although my dev days are pretty much over.  I've
+>> never liked malloc() etc not clearing memory, although it has been, ahem,
+>> useful, in the past...
+> http://xkcd.com/927/
+>
+> Greg
+Why not crealloc? pronounced 'cereal-oc'? it would behave the same as 
+realloc, but explicitly zeroes the area upon allocating it (and maybe 
+also upon reducing the size of the area, it zeroes the area freed, or 
+zeroes the area the memory structure was previously located at, if the 
+whole memory structure has to be moved.)
+
+Borrowing from 
+http://pubs.opengroup.org/onlinepubs/009695399/functions/realloc.html :
+
+The /crealloc/() function shall change the size of the memory object 
+pointed to by /ptr/ to the size specified by /size/. The contents of the 
+object shall remain unchanged up to the lesser of the new and old sizes. 
+If the new size of the memory object would require movement of the 
+object, the space for the previous instantiation of the object is 
+zeroed, then freed. If the new size is larger, the contents of the newly 
+allocated portion of the object are explicitly set to the value of 0. If 
+/size/ is 0 and /ptr/ is not a null pointer, the object pointed to is 
+zeroed, then freed. If the space cannot be allocated, the object shall 
+remain unchanged.
+
+If /ptr/ is a null pointer, /crealloc/() shall be equivalent to 
+/calloc/() 
+<http://pubs.opengroup.org/onlinepubs/009695399/functions/malloc.html> 
+for the specified size.
+
+If /ptr/ does not match a pointer returned earlier by /calloc/() 
+<http://pubs.opengroup.org/onlinepubs/009695399/functions/calloc.html>, 
+/malloc/() 
+<http://pubs.opengroup.org/onlinepubs/009695399/functions/malloc.html>, 
+/realloc/() or /crealloc/() or if the space has previously been 
+deallocated by a call to /free/() 
+<http://pubs.opengroup.org/onlinepubs/009695399/functions/free.html>, 
+/realloc/() or /crealloc/(), the behavior is undefined.
+
+The order and contiguity of storage allocated by successive calls to 
+/crealloc/() is unspecified. The pointer returned if the allocation 
+succeeds shall be suitably aligned so that it may be assigned to a 
+pointer to any type of object and then used to access such an object in 
+the space allocated (until the space is explicitly freed or 
+reallocated). Each such allocation shall yield a pointer to an object 
+disjoint from any other object. The pointer returned shall point to the 
+start (lowest byte address) of the allocated space. If the space cannot 
+be allocated, a null pointer shall be returned.
+
+
+-- 
+Jonathan Gevaryahu AKA Lord Nightmare
+jgevaryahu at gmail.com
+jgevaryahu at hotmail.com
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150917/3ae728f5/attachment.html>
+
+From arnold at skeeve.com  Thu Sep 17 21:14:53 2015
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Thu, 17 Sep 2015 05:14:53 -0600
+Subject: [TUHS] Why root user name?
+In-Reply-To: <20150916195039.GA27635@www.oztivo.net>
+References: <20150916195039.GA27635@www.oztivo.net>
+Message-ID: <201509171114.t8HBErU4027961@freefriends.org>
+
+Warren Toomey <wkt at tuhs.org> wrote:
+
+> As I was dropping off to sleep last night, I wondered why the superuser
+> account on Unix is called root.
+>
+> There's a hierarchy of directories and files beginning at the tree root /.
+> There's a hierarchy of processes rooted with init. But there's no hierarchy
+> of users, so why the moniker "root"?
+>
+> Any ideas?
+
+>From BWK:
+
+> Date: Thu, 17 Sep 2015 05:35:30 -0400 (EDT)
+> From: Brian Kernighan <bwk at CS.Princeton.EDU>
+> To: arnold at skeeve.com
+> Subject: Re: why the name "root" for userid 0?
+>
+> I will speculate, without knowledge, that it's because the
+> super user can access the files in the root directory.
+>
+> Ken would know, though perhaps not answer...
+>
+> Brian
+
+Maybe some of the former BTLers could ask him? :-)
+
+Thans,
+
+Arnold
+
+
+From peter at rulingia.com  Sun Sep 20 14:38:58 2015
+From: peter at rulingia.com (Peter Jeremy)
+Date: Sun, 20 Sep 2015 14:38:58 +1000
+Subject: [TUHS] Synchronous vs Asynchronous IO in Unix
+Message-ID: <20150920043858.GA71754@server.rulingia.com>
+
+Why were the original read(2) and write(2) system calls written to offer
+synchronous I/O only?  It's relatively easy to create synchronous I/O
+functions given asynchronous I/O primitives but it's impossible to do the
+opposite.
+
+Multics (at least) supported asynchronous I/O so the concept wasn't novel.
+And any multi-tasking kernel has to support asynchronous I/O internally so
+suitable code exists in the kernel.
+
+-- 
+Peter Jeremy
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 949 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150920/ac6337df/attachment.sig>
+
+From jnc at mercury.lcs.mit.edu  Sun Sep 20 22:39:33 2015
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Sun, 20 Sep 2015 08:39:33 -0400 (EDT)
+Subject: [TUHS] Synchronous vs Asynchronous IO in Unix
+Message-ID: <20150920123933.8869D18C0EB@mercury.lcs.mit.edu>
+
+    > From: Peter Jeremy <peter at rulingia.com>
+
+    > Why were the original read(2) and write(2) system calls written to
+    > offer synchronous I/O only?
+
+A very interesting question (to me, particularly, see below). I don't think
+any of the Unix papers answer this question?
+
+    > It's relatively easy to create synchronous I/O functions given
+    > asynchronous I/O primitives but it's impossible to do the opposite.
+
+Indeed, and I've seen operating systems (e.g. a real-time PDP-11 OS I worked
+with a lot called MOS) that did that.
+
+I actually did add asynchronous I/O to V6 UNIX, for use with very early
+Internet networking software being done at MIT (in a user process). Actually,
+it wasn't just asynchronous, it was _raw_ asynchronous I/O! (The networking
+device was DMA, and the s/w did DMA directly into the user process' memory.)
+The code also allowed more than one outstanding I/O request, too. (So the
+input could be re-enabled on the device ASAP, without having to wake up a
+process, have it run, do a new read call, etc.)
+
+We didn't redo the whole Unix I/O system, to support/use asyn I/O throughout,
+though; I just kind of warted it onto the side. (IIRC, it notified the user
+process via a signal that the I/O had completed; the user software then had
+to do an sgtty() call to get the transfer status, size, etc.)
+
+
+Anyway, back to the original topic: I don't want to speculate (although I
+could :-); perhaps someone who was around 'back then' can offer some insight?
+If not, time for speculation! :-)
+
+	Noel
+
+
+From lm at mcvoy.com  Mon Sep 21 00:32:22 2015
+From: lm at mcvoy.com (Larry McVoy)
+Date: Sun, 20 Sep 2015 07:32:22 -0700
+Subject: [TUHS] Synchronous vs Asynchronous IO in Unix
+In-Reply-To: <20150920123933.8869D18C0EB@mercury.lcs.mit.edu>
+References: <20150920123933.8869D18C0EB@mercury.lcs.mit.edu>
+Message-ID: <20150920143222.GA11889@mcvoy.com>
+
+On Sun, Sep 20, 2015 at 08:39:33AM -0400, Noel Chiappa wrote:
+> Anyway, back to the original topic: I don't want to speculate (although I
+> could :-); perhaps someone who was around 'back then' can offer some insight?
+> If not, time for speculation! :-)
+
+I don't have the answer but I noodled around with one quite a while ago:
+
+http://www.mcvoy.com/lm/p/bitmover/lm/papers/splice.pdf
+
+
+From lm at mcvoy.com  Mon Sep 21 00:41:52 2015
+From: lm at mcvoy.com (Larry McVoy)
+Date: Sun, 20 Sep 2015 07:41:52 -0700
+Subject: [TUHS] Synchronous vs Asynchronous IO in Unix
+In-Reply-To: <20150920143222.GA11889@mcvoy.com>
+References: <20150920123933.8869D18C0EB@mercury.lcs.mit.edu>
+ <20150920143222.GA11889@mcvoy.com>
+Message-ID: <20150920144152.GA8054@mcvoy.com>
+
+On Sun, Sep 20, 2015 at 07:32:22AM -0700, Larry McVoy wrote:
+> On Sun, Sep 20, 2015 at 08:39:33AM -0400, Noel Chiappa wrote:
+> > Anyway, back to the original topic: I don't want to speculate (although I
+> > could :-); perhaps someone who was around 'back then' can offer some insight?
+> > If not, time for speculation! :-)
+> 
+> I don't have the answer but I noodled around with one quite a while ago:
+> 
+> http://www.mcvoy.com/lm/p/bitmover/lm/papers/splice.pdf
+
+Whoops, wrng url, try this:
+
+http://www.mcvoy.com/lm/bitmover/lm/papers/splice.pdf
+
+Thanks to Charles Anthony for pointing that out to me.
+
+
+From dds at aueb.gr  Thu Sep 24 19:27:03 2015
+From: dds at aueb.gr (Diomidis Spinellis)
+Date: Thu, 24 Sep 2015 12:27:03 +0300
+Subject: [TUHS] Questions regarding early Unix contributors
+Message-ID: <5603C1E7.3090200@aueb.gr>
+
+I found out that the book "Life with Unix" by Don Libes and Sandy
+Ressler has a seven page listing of Unix notables, and I'm using that to
+fill gaps in the contributors of the Unix history repository [1,2].
+Working through the list, the following questions came up.
+
+- Lorinda Cherry is credited with diction.  But diction.c first appears
+in 4BSD and 2.10BSD.  Did Lorinda Cherry implement it at Berkeley?
+
+- Is Chuck Haley listed in the book as the author of tar the same as
+Charles B. Haley who co-authored V7 usr/doc/{regen,security,setup}?  He
+appears to have worked both at Bell labs (tar, usr/doc/*) and at
+Berkeley (ex, Pascal).  Is this correct?
+
+- Andrew Koenig is credited with varargs.  This is a four-line header
+file in V7. Did he actually write it?
+
+- Ted Dolotta is credited with the mm macros, but the document "Typing
+Documents with MM is written by by D. W. Smith and E. M. Piskorik.  Did
+its authors only write the documentation?  Did Ted Dolotta also write
+mmcheck?
+
+
+Also, I'm missing the login identifiers for the following people.  If
+anyone remembers them, please send me a note.
+
+Bell Labs, PWB, USG, USDL:
+Andrew Koenig
+Charles B. Haley
+Dick Haight
+Greg Chesson
+Herb Gellis
+Mark Rochkind
+Ted Dolotta
+
+BSD:
+Bill Reeves
+Charles B. Haley
+Colin L. Mc Master
+Chris Van Wyk
+Douglas Lanam
+David Willcox
+Eric Schienbrood
+Earl T. Cohen
+Herb Gellis
+Ivan Maltz
+Juan Porcar
+Len Edmondson
+Mark Rochkind
+Mike Tilson
+Olivier Roubine
+Peter Honeyman
+R. Dowell
+Ross Harvey
+Robert Toxen
+Tom Duff
+Ted Dolotta
+T. J. Kowalski
+
+Finally, I've summarized all contributions allocated through file path
+regular expressions [3] into two tables ordered by author [4].  (The
+summary is auto-generated by taking the last significant part of each
+path regex.) If you want, please have a look at them and point out
+omissions and mistakes.
+
+I will try to commit all responses I receive with appropriate credit to
+the repository.  (You can also submit a GitHub pull-request, if you prefer.)
+
+[1] https://github.com/dspinellis/unix-history-repo
+[2]
+http://www.dmst.aueb.gr/dds/pubs/conf/2015-MSR-Unix-History/html/Spi15c.pdf
+[3]
+https://github.com/dspinellis/unix-history-make/tree/master/src/author-path
+[4] http://istlab.dmst.aueb.gr/~dds/contributions.pdf
+
+Diomidis
+
+
+From wkt at tuhs.org  Thu Sep 24 19:52:26 2015
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 24 Sep 2015 19:52:26 +1000
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <5603C1E7.3090200@aueb.gr>
+References: <5603C1E7.3090200@aueb.gr>
+Message-ID: <20150924095226.GA11130@www.oztivo.net>
+
+On Thu, Sep 24, 2015 at 12:27:03PM +0300, Diomidis Spinellis wrote:
+> I found out that the book "Life with Unix" by Don Libes and Sandy
+> Ressler has a seven page listing of Unix notables, and I'm using that to
+> fill gaps in the contributors of the Unix history repository [1,2].
+> Working through the list, the following questions came up.
+
+Wow, Diomidis, I'm reading the Spi15c.pdf paper, great work! Have you
+mined the v6.bugs and v7.bugs Usenet postings, as they contain a whole
+bunch of patches to these systems and will have names of authors too.
+
+Cheers, Warren
+
+
+From clemc at ccc.com  Thu Sep 24 22:59:00 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Thu, 24 Sep 2015 08:59:00 -0400
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <5603C1E7.3090200@aueb.gr>
+References: <5603C1E7.3090200@aueb.gr>
+Message-ID: <CAC20D2NQKV+rETqi6Tmrrme6Q6StyLESE43KMqgTACaikneVMg@mail.gmail.com>
+
+​Do you want to know their email addresses for whence they did the work.
+Here are some of them​
+
+On Thu, Sep 24, 2015 at 5:27 AM, Diomidis Spinellis <dds at aueb.gr> wrote:
+
+>
+> Eric Schienbrood
+> ​             -- "erics"   was @ ucbvax.berkeley.edu , although Noel
+> might remember his MIT moniker
+>
+>
+> Mike Tilson
+> ​                     -- "mike" was an HRS in Toronto but I think he was
+> at Unvi. of Toronto or ​Waterloo before he started his company.  Henry
+> Spencer probably knows for sure.
+>
+>
+> Peter Honeyman
+> ​            -- "honey" was all over.  I suspect the work is most remember
+> ​was at AT&T but he was at Princeton.  honey at usenix.org will find him
+>
+>
+> T. J. Kowalski
+> ​                 -- "tjk"​ was at CMU and AT&T Summit when he wrote
+> fsck.  BTW for those that don't know died two years ago.
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150924/1acbd122/attachment.html>
+
+From arnold at skeeve.com  Thu Sep 24 23:27:18 2015
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Thu, 24 Sep 2015 07:27:18 -0600
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <5603C1E7.3090200@aueb.gr>
+References: <5603C1E7.3090200@aueb.gr>
+Message-ID: <201509241327.t8ODRJOB014654@freefriends.org>
+
+I've asked BWK to shed some light.
+
+> - Lorinda Cherry is credited with diction.  But diction.c first appears
+> in 4BSD and 2.10BSD.  Did Lorinda Cherry implement it at Berkeley?
+
+She was at Bell Labs; I think the Berkeley guys had an underground
+pipeline to Bell labs and some stuff got out that way. :-)
+(Mary Ann? Care to shed some light?)
+
+> BSD:
+> Chris Van Wyk
+
+Chris Van Wyk definitely was at Bell Labs at some point. He did Ideal,
+a preprocessor similar to pic and also wrote an algorithms with C book.
+I don't think he was ever at UCB but I don't know.
+
+> Mark Rochkind
+
+Here too I think stuff written at ATT got out through Berkeley. (SCCS)
+
+> Peter Honeyman
+
+I don't think he was ever at UCB; he was at Bell Labs for a short
+time (cf HoneyDanBer UUCP and the V8 /mail file system).
+
+> Tom Duff
+
+I believe he was 'td'; I also don't think he was at UCB. He
+pingponged a bit between Bell Labs and LucasFilm, I think. Cf the
+Plan 9 'rc' shell and the infamous "Duff's Device".
+
+> Ted Dolotta
+> T. J. Kowalski
+
+Also, methinks, a case of UCB releasing stuff written by ATT.
+
+Feel free to take all this with a grain of salt. I was around USENET
+in those days, but didn't know any of these people personally; I just
+read their documents and USENET postings.
+
+HTH,
+
+Arnold
+
+
+From clemc at ccc.com  Fri Sep 25 00:08:01 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Thu, 24 Sep 2015 10:08:01 -0400
+Subject: [TUHS] Questions regarding early Unix contributors
+Message-ID: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+
+On Thu, Sep 24, 2015 at 9:27 AM, <arnold at skeeve.com> wrote:
+
+> I think the Berkeley guys had an underground
+> pipeline to Bell labs and some stuff got out that way. :-)
+>
+
+​It was not underground at all.    Tools packaged in BSD came from all over
+the community.   style and diction were released into the wild by
+themselves before the were packaged into an AT&T USG UNIX or Research UNIX
+release.  It got them personally directly and had them installed at
+Tektronix soon after first publishing and a talk about them at USENIX (IIRC
+that was the Boulder conference in the "Black Hole" movie theatre.
+
+Since I had a minor stake in it (as my first C program) fsck is another
+good example of the path to UCB .  Ted started the predecessor program
+​when he was at UMich (with Bill Joy).   He did his OYOC year and later a
+full PhD at CMU.   He was one of my lab partners in his OYOC year.   fsck
+was a we know it now was done during that time ( and I helped him a bit).
+He was bring the sources back and forth from Summit to CMU (at the time in
+an RK05 or sometimes a bootable DOS tape image of one - I may still have
+one of these).    I believe he gave a copy of the sources very early to wnj
+-- which is how it ended up in 4.1BSD.  I don't think it was in the
+original 3.0 or 4.0 packages as it was not in V5, V6 or V7 either.  I
+believe it was released in PWB 2.0 - not sure and Minnie does not seem to
+have them.
+
+I'm pretty the SCCS and cpio sources came through one of the PWB releases
+(1 or 2)  that UCB got from AT&T.
+
+​Clem​
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150924/5e2a4788/attachment.html>
+
+From jnc at mercury.lcs.mit.edu  Thu Sep 24 23:56:42 2015
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Thu, 24 Sep 2015 09:56:42 -0400 (EDT)
+Subject: [TUHS] Questions regarding early Unix contributors
+Message-ID: <20150924135642.8235118C0CB@mercury.lcs.mit.edu>
+
+    > From: Clem Cole 
+
+    > Eric Schienbrood
+    > .. Noel might remember his MIT moniker
+
+No, alas; and I tried 'finger Schienbrood at lcs.mit.edu' and got no result.
+Maybe he was in some other part of MIT, not Tech Sq?
+
+    > From: Arnold Skeeve
+
+    > Here too I think stuff written at ATT got out through Berkeley. (SCCS)
+
+That happened at MIT, too - we had SCCS quite early (my MIT V6 manual has
+it), plus all sorts of other stuff (e.g. TROFF).
+
+I think some of it may have come through Jon Sieber, who, while he was in high
+school, had been part of (IIRC) a Scout troop which had some association with
+Bell Labs, and continued to have contacts there after he became an MIT
+undergrad.
+
+	Noel
+
+
+From stewart at serissa.com  Fri Sep 25 00:38:37 2015
+From: stewart at serissa.com (Lawrence Stewart)
+Date: Thu, 24 Sep 2015 10:38:37 -0400
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <20150924135642.8235118C0CB@mercury.lcs.mit.edu>
+References: <20150924135642.8235118C0CB@mercury.lcs.mit.edu>
+Message-ID: <337A414B-7091-4BF6-9C61-69C5935A95A8@serissa.com>
+
+
+> On 2015, Sep 24, at 9:56 AM, Noel Chiappa <jnc at mercury.lcs.mit.edu> wrote:
+> 
+>> From: Clem Cole 
+> 
+>> Eric Schienbrood
+>> .. Noel might remember his MIT moniker
+> 
+> No, alas; and I tried 'finger Schienbrood at lcs.mit.edu' and got no result.
+> Maybe he was in some other part of MIT, not Tech Sq?
+> 
+
+I can’t speak to then-year id’s, but Eric Schienbrook
+is in the MIT alumni directory as ers at alum.mit.edu  (class of ’78) last 
+updated 2009.
+
+Jon Sieber is listed as jonsieber at alum.mit.edu (class of ’78) but it was last
+updated in 2004.
+
+
+-L
+
+From cowan at mercury.ccil.org  Fri Sep 25 02:12:33 2015
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Thu, 24 Sep 2015 12:12:33 -0400
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <5603C1E7.3090200@aueb.gr>
+References: <5603C1E7.3090200@aueb.gr>
+Message-ID: <20150924161232.GA21614@mercury.ccil.org>
+
+Diomidis Spinellis scripsit:
+
+> - Lorinda Cherry is credited with diction.  But diction.c first appears
+> in 4BSD and 2.10BSD.  Did Lorinda Cherry implement it at Berkeley?
+
+Diction and style were part of Writer's Workbench, a sort of analogue of
+PWB for technical writers rather than GE programmers.  There were apparently
+quite a few others as well.  There is now a commercial product called
+WWB based on the old software, but running as plugins to MS Word.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+The known is finite, the unknown infinite; intellectually we stand
+on an islet in the midst of an illimitable ocean of inexplicability.
+Our business in every generation is to reclaim a little more land,
+to add something to the extent and the solidity of our possessions.
+        --Thomas Henry Huxley
+
+
+From mah at mhorton.net  Fri Sep 25 01:20:08 2015
+From: mah at mhorton.net (Mary Ann Horton)
+Date: Thu, 24 Sep 2015 08:20:08 -0700
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+References: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+Message-ID: <560414A8.2080002@mhorton.net>
+
+I defer to Clem on these.
+
+As I heard it, Lorinda wrote the Writers Workbench, a name pun on PWB, 
+of which style and diction were the cornerstones.  I thought she was at 
+Bell Labs at the time.  I recall a Bell Labs written summary booklet of 
+DWB, although I can't find it in my museum.
+
+I also heard that Ted K (aka "frodo") got fsck released to Berkeley by 
+swearing (somehow with a straight face) to the Bell Labs lawyers that it 
+had no commercial value.
+
+     Mary Ann
+
+On 09/24/2015 07:08 AM, Clem Cole wrote:
+>
+> On Thu, Sep 24, 2015 at 9:27 AM, <arnold at skeeve.com 
+> <mailto:arnold at skeeve.com>> wrote:
+>
+>     I think the Berkeley guys had an underground
+>     pipeline to Bell labs and some stuff got out that way. :-)
+>
+>
+> ​It was not underground at all.    Tools packaged in BSD came from all 
+> over the community.   style and diction were released into the wild by 
+> themselves before the were packaged into an AT&T USG UNIX or Research 
+> UNIX release.  It got them personally directly and had them installed 
+> at Tektronix soon after first publishing and a talk about them at 
+> USENIX (IIRC that was the Boulder conference in the "Black Hole" movie 
+> theatre.
+>
+> Since I had a minor stake in it (as my first C program) fsck is 
+> another good example of the path to UCB .  Ted started the predecessor 
+> program ​when he was at UMich (with Bill Joy). He did his OYOC year 
+> and later a full PhD at CMU.   He was one of my lab partners in his 
+> OYOC year.   fsck was a we know it now was done during that time ( and 
+> I helped him a bit).   He was bring the sources back and forth from 
+> Summit to CMU (at the time in an RK05 or sometimes a bootable DOS tape 
+> image of one - I may still have one of these).    I believe he gave a 
+> copy of the sources very early to wnj -- which is how it ended up in 
+> 4.1BSD.  I don't think it was in the original 3.0 or 4.0 packages as 
+> it was not in V5, V6 or V7 either.  I believe it was released in PWB 
+> 2.0 - not sure and Minnie does not seem to have them.
+>
+> I'm pretty the SCCS and cpio sources came through one of the PWB 
+> releases (1 or 2)  that UCB got from AT&T.
+>
+> ​Clem​
+>
+>
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150924/3b5d8412/attachment.html>
+
+From norman at oclsc.org  Fri Sep 25 03:12:23 2015
+From: norman at oclsc.org (Norman Wilson)
+Date: Thu, 24 Sep 2015 13:12:23 -0400
+Subject: [TUHS]  Questions regarding early Unix contributors
+Message-ID: <1443114746.28442.for-standards-violators@oclsc.org>
+
+A few scattered answers, some redundant with those of others:
+
+-- Lorinda Cherry (llc) worked at Bell Labs.  She wrote diction (and
+the rest of the Writer's Workbench tools) there, in the early
+1980s; if some people saw it first in BSD releases that is just
+an accident of timing (too late for V7) and exposure (I'm pretty
+sure it was available in the USG systems, which weren't generally
+accessible until a year or two later).
+
+Lorinda is one of the less-known members of the original Computer
+Science Research Center who nevertheless wrote or co-wrote a lot
+of things we now take for granted, like dc and bc and eqn and
+libplot.
+
+Checking some of this on the web, I came across an interesting
+tidbit apparently derived from an interview with Lorinda:
+
+http://www.princeton.edu/~hos/frs122/precis/cherry2.htm
+
+I wholly endorse what she says about UNIX and the group it came from.
+One fumble in the text: `Bob Ross' who liked to break programs is
+surely really Bob Morris.
+
+-- So far as I know, Tom Duff (td) was never at Berkeley.  He's
+originally from Toronto; attended U of T; was at Lucasfilm for a
+while (he has a particular interest in graphics, though he is a
+very sharp and subtle programmer in general); started at Bell Labs
+in 1984, not long before I did.  He left sometime in the 1990s,
+lives in Berkeley CA, but works neither at UCB nor at Google but
+at Pixar.
+
+-- T. J. Kowalski (frodo) was at Bell Labs; when I was there he
+worked in the research group down the hall (Acoustics, I think), with
+whom Computer Science shared a lot of UNIX-releasted stuff.  Ted is
+well-known for his work on fsck, but did a lot of other stuff, including
+being the first to get Research UNIX to work on the MicroVAX II.  He
+also had a high-quality mustache.
+
+-- Andrew Koenig (ark) was part of the Computer Science group when
+I was there in the latter 1980s.  He was a early adopter of C++.
+asd, the automatic-software distributor we used to keep the software
+in sync on the 20-or-so systems that ran Research UNIX, was his work.
+
+-- Mike Tilson was, I think, one of the founders of HCR (Human Computing
+Resources), a UNIX-oriented software company based in Toronto in the
+early 1980s.  The company was later acquired by SCO, in the days when
+SCO was still a technical company rather than a den of lawyers.
+
+-- Peter Honeyman (honey) was never, I think, at Berkeley, though
+he is certainly of the right character.  In the 1980s he was variously
+(sometimes concurrently?) working for some part of AT&T and at Princeton.
+For many years now he has been in Ann Arbor MI at the University of
+Michigan, where his still-crusty manner appears not to interfere with
+his being a respected researcher and much-liked teacher.
+
+Norman Wilson
+Toronto ON
+(Bell Labs Computing Science Research, 1984-1990)
+
+
+From reed at reedmedia.net  Fri Sep 25 03:08:47 2015
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Thu, 24 Sep 2015 12:08:47 -0500 (CDT)
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <560414A8.2080002@mhorton.net>
+References: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+ <560414A8.2080002@mhorton.net>
+Message-ID: <alpine.NEB.2.11.1509241207020.27255@t1.m.reedmedia.net>
+
+Have a look in your repo for this commit comment in diction/dprog.c.
+(Committed by Robert R. Henry I think.)
+
+D 4.2 82/11/06 14:32:50 rrh 2 1 00181/00044/00354
+MRs:
+COMMENTS:
+Bill Jolitz @ Berkeley received this version from Lorindia Cherry
+around September 1981, as the ``most recent version''.  Deltas 
+seem to be progressive, rather than regressive, although the BTL sid for
+deroff.c is retrograde; this is probably a case of parallel development
+
+
+
+
+From clemc at ccc.com  Fri Sep 25 03:28:31 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Thu, 24 Sep 2015 13:28:31 -0400
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <560414A8.2080002@mhorton.net>
+References: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+ <560414A8.2080002@mhorton.net>
+Message-ID: <CAC20D2N-SUqiXuY9=T9HBrhsXLX_XQo5nNro9Uq1N9tHM543PQ@mail.gmail.com>
+
+On Thu, Sep 24, 2015 at 11:20 AM, Mary Ann Horton <mah at mhorton.net> wrote:
+
+> I also heard that Ted K (aka "frodo") got fsck released to Berkeley by
+> swearing (somehow with a straight face) to the Bell Labs lawyers that it
+> had no commercial value.
+
+
+​That would have so much like Ted.   I never heard that story, but I would
+believe it.  I do believe that he told them (rightfully) that it was
+primarily developed at CMU using CMU computing resources (the 11/34A for
+the Digital Lab in the EE Dept that Ted and I ran).  IIRC: the primary
+feature hat he did to it at Summit besides support for the changes in the
+V7 filesystems, was support for large disks (aka RP06) when attached to a
+small address space (11/40 class) systems, of which CMU had a number as I
+believe the Labs did also.   Armando's I believe you two were office mates
+in those days, do you have memory?
+
+
+    We had it at Tektronix because I brought it from CMU.
+
+Clem​
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150924/0bc06d72/attachment.html>
+
+From reed at reedmedia.net  Fri Sep 25 03:58:12 2015
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Thu, 24 Sep 2015 12:58:12 -0500 (CDT)
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <5603C1E7.3090200@aueb.gr>
+References: <5603C1E7.3090200@aueb.gr>
+Message-ID: <alpine.NEB.2.11.1509241216310.27255@t1.m.reedmedia.net>
+
+On Thu, 24 Sep 2015, Diomidis Spinellis wrote:
+
+> - Is Chuck Haley listed in the book as the author of tar the same as
+> Charles B. Haley who co-authored V7 usr/doc/{regen,security,setup}?  He
+> appears to have worked both at Bell labs (tar, usr/doc/*) and at
+> Berkeley (ex, Pascal).  Is this correct?
+
+Yes, same. Also see note from Ritchie: "tar was done by C. B. Haley 
+while he was here at BTL in the research group.  This is my memory, and 
+is confirmed by his web page."
+https://groups.google.com/forum/#!search/haley$20tar/alt.folklore.computers/K2gh19Qcv8Q/j8TZXSyFBoMJ
+(I don't see on his webpage though. and the old page isn't on the 
+wayback machine.)
+
+(I really need to finish my first version of my book. Of the 80+ old BSD 
+contributors I interviewed, I think he is the only one to tell me he 
+wasn't interested in participating.)
+
+> BSD:
+
+I looked in every passwd related file in my entire archive of all old 
+BSD releases and don't see any of these. (I have heard from some of them 
+though.)
+
+> Charles B. Haley
+
+The old winfo database (which includes "a miniature
+/etc/passwd to speed up user name searches) and its manual has "chuck".
+But I see you already have him in the following:
+
+> https://github.com/dspinellis/unix-history-make/tree/master/src/author-path
+
+This is awesome.
+
+By the way, a list of the people I contacted from around 4.0 and 
+earlier is at 
+http://reedmedia.net/books/bsd-history/tmp-pre-mid-1980-people
+
+If you are curious ...
+
+t1:bsd-history$ wc -l PEOPLE # notes and contact details
+    8004 PEOPLE
+t1:bsd-history$ grep ^== PEOPLE | wc -l                                        
+     452
+t1:bsd-history$ find interviews/ -type f | grep -v my-letters | wc -l
+      95
+t1:bsd-history$ grep bibitem generated/book.bbl | wc -l
+     221
+t1:bsd-history$ grep "\cite{" svn-bsd-history/*tex | wc -l 
+    1282
+t1:bsd-history$ grep CITE: svn-bsd-history/*tex | cut -d : -f 2- | sort | uniq | wc -l
+     190
+(left to add bibtex entries for)
+
+
+From reed at reedmedia.net  Fri Sep 25 05:04:03 2015
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Thu, 24 Sep 2015 14:04:03 -0500 (CDT)
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+References: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+Message-ID: <alpine.NEB.2.11.1509241333120.27255@t1.m.reedmedia.net>
+
+On Thu, 24 Sep 2015, Clem Cole wrote:
+
+>    I believe he gave a copy of the sources very early to wnj -- which is how
+> it ended up in 4.1BSD.  I don't think it was in the original 3.0 or 4.0
+> packages as it was not in V5, V6 or V7 either.  I believe it was released in
+> PWB 2.0 - not sure and Minnie does not seem to have them.
+
+Yes, it is in 4.0BSD (the copy I have has it documented in the setup.t 
+from Nov. 15, 1980, fsck.mm from Oct. 15, 1980). It appears to be the 
+same code as in 4.1 also.
+
+(But I cannot find 4.0 in Diomidis's git repo. I also don't have the 
+original SCCS data from the early fsck, probably because it got moved 
+and extended in different location.)
+
+By the way, I see the .8 manual for it got a Regents copyright placed on 
+it between 4.2 and 4.3 (even though contained lots of original text as 
+in 4.0BSD). The extensive rewrite to the fsck code happening between 4.1 
+and 4.3. fsck.c split up into main.c and others in August 1981, even 
+though 4.2 a later year still shipped fsck.c and not the new code.
+
+(Reminds me I need to listen to video from McKusick about history of 
+ffs again.)
+
+"the calm before the storm ... the storm ... the Coast Guard to the 
+rescue" (from the fsck document)
+
+From scj at yaccman.com  Fri Sep 25 06:07:27 2015
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Thu, 24 Sep 2015 13:07:27 -0700
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <1443114746.28442.for-standards-violators@oclsc.org>
+References: <1443114746.28442.for-standards-violators@oclsc.org>
+Message-ID: <19cc1d3a10e338d71de1a32d0a38d100.squirrel@webmail.yaccman.com>
+
+Writers' Workbench was unusual enough (word processing was
+very new in the outside world) that Lorinda and one of her co-authors were
+interviewed on the Today show.  She was asked if the program would suggest
+using Ms. instead of Miss (much under discussion at the time).  As I
+recall, she ducked the question gracefully.
+
+
+> -- Lorinda Cherry (llc) worked at Bell Labs.  She wrote diction (and
+> the rest of the Writer's Workbench tools) there, in the early
+> 1980s; if some people saw it first in BSD releases that is just
+> an accident of timing (too late for V7) and exposure (I'm pretty
+> sure it was available in the USG systems, which weren't generally
+> accessible until a year or two later).
+>
+> Lorinda is one of the less-known members of the original Computer
+> Science Research Center who nevertheless wrote or co-wrote a lot
+> of things we now take for granted, like dc and bc and eqn and
+> libplot.
+>
+> Checking some of this on the web, I came across an interesting
+> tidbit apparently derived from an interview with Lorinda:
+>
+> http://www.princeton.edu/~hos/frs122/precis/cherry2.htm
+>
+
+
+
+
+From clemc at ccc.com  Fri Sep 25 06:13:39 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Thu, 24 Sep 2015 16:13:39 -0400
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <alpine.NEB.2.11.1509241333120.27255@t1.m.reedmedia.net>
+References: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+ <alpine.NEB.2.11.1509241333120.27255@t1.m.reedmedia.net>
+Message-ID: <CAC20D2Mz=xi5_M66jxYiwBDBvZi1ZVx-ym4M58YDuKcXK4+43g@mail.gmail.com>
+
+On Thu, Sep 24, 2015 at 3:04 PM, Jeremy C. Reed <reed at reedmedia.net> wrote:
+
+> The extensive rewrite to the fsck code happening between 4.1
+> and 4.3. fsck.c split up into main.c and others in August 1981, even
+> though 4.2 a later year still shipped fsck.c and not the new code.
+>
+
+​IIRC - Kirk did that as part of the FFS work he started. ​
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150924/c2a05ac7/attachment.html>
+
+From clemc at ccc.com  Fri Sep 25 06:16:58 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Thu, 24 Sep 2015 16:16:58 -0400
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <CAC20D2Mz=xi5_M66jxYiwBDBvZi1ZVx-ym4M58YDuKcXK4+43g@mail.gmail.com>
+References: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+ <alpine.NEB.2.11.1509241333120.27255@t1.m.reedmedia.net>
+ <CAC20D2Mz=xi5_M66jxYiwBDBvZi1ZVx-ym4M58YDuKcXK4+43g@mail.gmail.com>
+Message-ID: <CAC20D2PXP37qvd9uN+NE85f_zxhqe_8-LyjVBBesO4HKj4Xyqw@mail.gmail.com>
+
+BTW:  If I can find one of my old CMU tapes and it is still readable - I
+should have a version from before it was released in PWB or elsewhere.  I
+know I >>had<< it in one of CMU EE directories but I do not have that
+online these days.
+
+BTW: Historical note, the reason the errors were in UPPER CASE was because
+Ted was a MTS hacker and I was a TSS hacker before Unix and that's how MTS
+and TSS signaled errors.
+
+Clem
+
+On Thu, Sep 24, 2015 at 4:13 PM, Clem Cole <clemc at ccc.com> wrote:
+
+>
+> On Thu, Sep 24, 2015 at 3:04 PM, Jeremy C. Reed <reed at reedmedia.net>
+> wrote:
+>
+>> The extensive rewrite to the fsck code happening between 4.1
+>> and 4.3. fsck.c split up into main.c and others in August 1981, even
+>> though 4.2 a later year still shipped fsck.c and not the new code.
+>>
+>
+> ​IIRC - Kirk did that as part of the FFS work he started. ​
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150924/179b9d70/attachment.html>
+
+From arnold at skeeve.com  Fri Sep 25 17:42:54 2015
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Fri, 25 Sep 2015 10:42:54 +0300
+Subject: [TUHS] From BWK on contributor names
+Message-ID: <201509250742.t8P7gsmE003471@skeeve.com>
+
+Hi All.
+
+Here is BWK's contribution.
+
+| Date: Thu, 24 Sep 2015 17:28:21 -0400 (EDT)
+| From: Brian Kernighan <bwk at cs.princeton.edu>
+| To: arnold at skeeve.com
+| Subject: Re: please get out your flash light...
+|
+| Some answers interpolated, but lots remain mysteries...
+|
+| On Thu, 24 Sep 2015, arnold at skeeve.com wrote:
+|
+| > Hi. Can you shed some light?
+| >
+| >> From: Diomidis Spinellis <dds at aueb.gr>
+| >> To: tuhs at minnie.tuhs.org
+| >> Date: Thu, 24 Sep 2015 12:27:03 +0300
+| >> Subject: [TUHS] Questions regarding early Unix contributors
+| >>
+| >> I found out that the book "Life with Unix" by Don Libes and Sandy
+| >> Ressler has a seven page listing of Unix notables, and I'm using that to
+| >> fill gaps in the contributors of the Unix history repository [1,2].
+| >> Working through the list, the following questions came up.
+| >>
+| >> - Lorinda Cherry is credited with diction.  But diction.c first appears
+| >> in 4BSD and 2.10BSD.  Did Lorinda Cherry implement it at Berkeley?
+|
+| Nina Macdonald, maybe?  Lorinda worked with people in that group.
+|
+| >> - Is Chuck Haley listed in the book as the author of tar the same as
+| >> Charles B. Haley who co-authored V7 usr/doc/{regen,security,setup}?  He
+| >> appears to have worked both at Bell labs (tar, usr/doc/*) and at
+| >> Berkeley (ex, Pascal).  Is this correct?
+|
+| I think so.
+|
+| >> - Andrew Koenig is credited with varargs.  This is a four-line header
+| >> file in V7. Did he actually write it?
+| >>
+| >> - Ted Dolotta is credited with the mm macros, but the document "Typing
+| >> Documents with MM is written by by D. W. Smith and E. M. Piskorik.  Did
+| >> its authors only write the documentation?  Did Ted Dolotta also write
+| >> mmcheck?
+|
+| I don't think Ted wrote -mm; he might have been the manager of that
+| group?  Ask him: ted at dolotta.org
+|
+| >> Also, I'm missing the login identifiers for the following people.  If
+| >> anyone remembers them, please send me a note.
+| >>
+| >> Bell Labs, PWB, USG, USDL:
+|
+| ark
+|
+| >> Andrew Koenig
+| >> Charles B. Haley
+| >> Dick Haight
+|
+| Maybe rhaight, but don't quote me.  Last address I have is from
+| long ago:  rhaight at jedi.accn.org
+|
+| >> Greg Chesson
+|
+| Can't remember whether it was grc or greg
+|
+| >> Herb Gellis
+| >> Mark Rochkind
+|
+| You probably mean Marc J Rochkind.  I think it was mmr, but
+| ask him: rochkind at basepath.com
+|
+| >> Ted Dolotta
+| >>
+| >> BSD:
+| >> Bill Reeves
+| >> Charles B. Haley
+| >> Colin L. Mc Master
+| >> Chris Van Wyk
+|
+| Was Chris ever part of BSD?  He was at Stanford, then Bell Labs,
+| where he was cvw.
+|
+| >> Douglas Lanam
+| >> David Willcox
+| >> Eric Schienbrood
+| >> Earl T. Cohen
+| >> Herb Gellis
+| >> Ivan Maltz
+| >> Juan Porcar
+| >> Len Edmondson
+| >> Mark Rochkind
+|
+| See above
+|
+| >> Mike Tilson
+| >> Olivier Roubine
+| >> Peter Honeyman
+|
+| honey  (remember honeydanber?
+|
+| >> R. Dowell
+| >> Ross Harvey
+| >> Robert Toxen
+| >> Tom Duff
+|
+| td
+|
+| >> Ted Dolotta
+| >> T. J. Kowalski
+|
+| frodo
+|
+| >> Finally, I've summarized all contributions allocated through file path
+| >> regular expressions [3] into two tables ordered by author [4].  (The
+| >> summary is auto-generated by taking the last significant part of each
+| >> path regex.) If you want, please have a look at them and point out
+| >> omissions and mistakes.
+| >>
+| >> I will try to commit all responses I receive with appropriate credit to
+| >> the repository.  (You can also submit a GitHub pull-request, if you prefer.)
+| >>
+| >> [1] https://github.com/dspinellis/unix-history-repo
+| >> [2]
+| >> http://www.dmst.aueb.gr/dds/pubs/conf/2015-MSR-Unix-History/html/Spi15c.pdf
+| >> [3]
+| >> https://github.com/dspinellis/unix-history-make/tree/master/src/author-path
+| >> [4] http://istlab.dmst.aueb.gr/~dds/contributions.pdf
+| >>
+| >> Diomidis
+| >> _______________________________________________
+| >> TUHS mailing list
+| >> TUHS at minnie.tuhs.org
+| >> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From dds at aueb.gr  Fri Sep 25 18:04:05 2015
+From: dds at aueb.gr (Diomidis Spinellis)
+Date: Fri, 25 Sep 2015 11:04:05 +0300
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <alpine.NEB.2.11.1509241333120.27255@t1.m.reedmedia.net>
+References: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+ <alpine.NEB.2.11.1509241333120.27255@t1.m.reedmedia.net>
+Message-ID: <5604FFF5.3060002@aueb.gr>
+
+On 24/09/2015 22:04, Jeremy C. Reed wrote:
+> On Thu, 24 Sep 2015, Clem Cole wrote:
+>>    I believe he gave a copy of the sources very early to wnj -- which is how
+>> it ended up in 4.1BSD.  I don't think it was in the original 3.0 or 4.0
+>> packages as it was not in V5, V6 or V7 either.  I believe it was released in
+>> PWB 2.0 - not sure and Minnie does not seem to have them.
+> 
+> Yes, [fsck] is in 4.0BSD (the copy I have has it documented in the setup.t 
+> from Nov. 15, 1980, fsck.mm from Oct. 15, 1980). It appears to be the 
+> same code as in 4.1 also.
+> 
+> (But I cannot find 4.0 in Diomidis's git repo. I also don't have the 
+> original SCCS data from the early fsck, probably because it got moved 
+> and extended in different location.)
+
+This is the link to the 4.0BSD fsck version in the history repo:
+
+https://github.com/dspinellis/unix-history-repo/blob/BSD-4/usr/src/cmd/fsck.c
+
+To navigate to the 4.0BSD release in the repo, the process is not the
+most intuitive.  Click on the top-right button labeled "Branch: master",
+click on the "Tags" tab, and select BSD-4.  This drives you to
+https://github.com/dspinellis/unix-history-repo/tree/BSD-4.
+
+
+
+
+From clemc at ccc.com  Fri Sep 25 22:04:58 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Fri, 25 Sep 2015 08:04:58 -0400
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <alpine.NEB.2.11.1509241333120.27255@t1.m.reedmedia.net>
+References: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+ <alpine.NEB.2.11.1509241333120.27255@t1.m.reedmedia.net>
+Message-ID: <CAC20D2OPd_+wTebXbeu17phaM=rDMkp+qKOUkqfkGbqssPK7ng@mail.gmail.com>
+
+On Thu, Sep 24, 2015 at 3:04 PM, Jeremy C. Reed <reed at reedmedia.net> wrote:
+
+> But I cannot find 4.0 in Diomidis's git repo. I also don't have the
+> original SCCS data from the early fsck, probably because it got moved
+> and extended in different location.
+>
+
+​FYI:  "Early" fsck was developed before SCCS and PWB 1.0.   Version
+control was what Ted has on his disk at the time.   At some point, I would
+have expected that he put it under control @ Summit and wnj is likely to
+have done the same at UCB.​  What is in the BSD repository is about 3-4
+years into development.
+
+As I said, Ted taught us all to use DOS-11 backup to make an image of his
+RK05 to small of reel 9-track tape [800 bpi IIRC].  As I said, at one point
+I had a couple of those tapes.  I looked for the box of them from CMU but I
+free I may have disposed of them when I lost access to an 800 bpi drive [I
+now have one, although it has an issue loading tapes I need to fix].
+
+Clem
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150925/2cb5b900/attachment.html>
+
+From clemc at ccc.com  Sat Sep 26 00:09:31 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Fri, 25 Sep 2015 10:09:31 -0400
+Subject: [TUHS] From BWK on contributor names
+In-Reply-To: <201509250742.t8P7gsmE003471@skeeve.com>
+References: <201509250742.t8P7gsmE003471@skeeve.com>
+Message-ID: <CAC20D2MbAgBQ=5U8B18Tr8CCstfm9afdmh3XNfGD2JHotQrtJA@mail.gmail.com>
+
+On Fri, Sep 25, 2015 at 3:42 AM, Aharon Robbins <arnold at skeeve.com> wrote:
+
+> | >> T. J. Kowalski
+> |
+> | frodo
+> |
+>
+​Be careful - he used both frodo and tjk.   IIRC someone in the CS Dept was
+using frodo when Ted first got to CMU.  He had the frodo login on the EE
+machines, but used tjk for alot.   ​
+
+I left before he did, so it's possible that when the Andrew project started
+(and CMU started to try to unify accounts a little), Ted may have gotten
+frodo across CMU.   But I was at UCB by then.  Anyway, if you look at
+kernel code or utilities, you'll see a lot of marking in said code as tjk -
+that is Ted and I was under impression Diomidis needs to list to attribute
+who did what.
+
+Clem
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150925/9cfa0157/attachment.html>
+
+From lm at mcvoy.com  Sat Sep 26 00:38:55 2015
+From: lm at mcvoy.com (Larry McVoy)
+Date: Fri, 25 Sep 2015 07:38:55 -0700
+Subject: [TUHS] From BWK on contributor names
+In-Reply-To: <201509250742.t8P7gsmE003471@skeeve.com>
+References: <201509250742.t8P7gsmE003471@skeeve.com>
+Message-ID: <20150925143855.GA28000@mcvoy.com>
+
+> | >> Greg Chesson
+> |
+> | Can't remember whether it was grc or greg
+
+For a long time he has been going by xtp@ and I'm positive he'd be happy
+to be remembered that way.
+
+
+From cowan at mercury.ccil.org  Sat Sep 26 00:52:04 2015
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Fri, 25 Sep 2015 10:52:04 -0400
+Subject: [TUHS] From BWK on contributor names
+In-Reply-To: <201509250742.t8P7gsmE003471@skeeve.com>
+References: <201509250742.t8P7gsmE003471@skeeve.com>
+Message-ID: <20150925145204.GC20828@mercury.ccil.org>
+
+Aharon Robbins scripsit:
+
+> | >> Greg Chesson
+> |
+> | Can't remember whether it was grc or greg
+
+He was greg at atheros.com, so probably greg.  Unfortunately, he died last
+January.  Google held a Greg Chesson Musical Memorial Celebration:
+video at <http://vimow.com/us/watch/x327h06_Greg+Chesson+Memorial+Musical+Celebration+ at Google+Coffee+Lab>
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+We do, doodley do, doodley do, doodley do,
+What we must, muddily must, muddily must, muddily must;
+Muddily do, muddily do, muddily do, muddily do,
+Until we bust, bodily bust, bodily bust, bodily bust.  --Bokonon
+
+
+From clemc at ccc.com  Sat Sep 26 00:56:46 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Fri, 25 Sep 2015 10:56:46 -0400
+Subject: [TUHS] From BWK on contributor names
+In-Reply-To: <20150925143855.GA28000@mcvoy.com>
+References: <201509250742.t8P7gsmE003471@skeeve.com>
+ <20150925143855.GA28000@mcvoy.com>
+Message-ID: <CAC20D2O1j3Ryj=bieW8ZkcNfhh1SWHW0+-nXQkun_YLwEA_T4Q@mail.gmail.com>
+
++1
+
+On Fri, Sep 25, 2015 at 10:38 AM, Larry McVoy <lm at mcvoy.com> wrote:
+
+> > | >> Greg Chesson
+> > |
+> > | Can't remember whether it was grc or greg
+>
+> For a long time he has been going by xtp@ and I'm positive he'd be happy
+> to be remembered that way.
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150925/730cf46a/attachment.html>
+
+From mah at mhorton.net  Sat Sep 26 01:02:12 2015
+From: mah at mhorton.net (Mary Ann Horton)
+Date: Fri, 25 Sep 2015 08:02:12 -0700
+Subject: [TUHS] From BWK on contributor names
+In-Reply-To: <20150925145204.GC20828@mercury.ccil.org>
+References: <201509250742.t8P7gsmE003471@skeeve.com>
+ <20150925145204.GC20828@mercury.ccil.org>
+Message-ID: <560561F4.1040406@mhorton.net>
+
+I recall him at a Usenix conference giving his email address as 
+research!greg at Berkeley, which made perfect sense to most people but was 
+actually ambiguous.
+
+On 09/25/2015 07:52 AM, John Cowan wrote:
+> Aharon Robbins scripsit:
+>
+>> | >> Greg Chesson
+>> |
+>> | Can't remember whether it was grc or greg
+> He was greg at atheros.com, so probably greg.  Unfortunately, he died last
+> January.  Google held a Greg Chesson Musical Memorial Celebration:
+> video at <http://vimow.com/us/watch/x327h06_Greg+Chesson+Memorial+Musical+Celebration+ at Google+Coffee+Lab>
+>
+
+
+
+From doug at cs.dartmouth.edu  Tue Sep 22 00:02:14 2015
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Mon, 21 Sep 2015 10:02:14 -0400
+Subject: [TUHS] Re {TUHS}  Synchronous vs Asynchronous IO in Unix
+Message-ID: <201509211402.t8LE2E4K016401@coolidge.cs.Dartmouth.EDU>
+
+Unix was what the authors wanted for a productive computing environment,
+not a bag of everything they thought somebody somewhere might want.
+One objective, perhaps subliminal originally, was to make program
+behavior easy to reason about. Thus pipes were accepted into research
+Unix, but more general (and unruly) IPC mechanisms such as messages
+and events never were.
+
+The infrastructure had to be asynchronous. The whole point was to
+surmount that difficult model and keep everyday programming simple.
+User visibility of asynchrony was held to a minimum: fork(), signal(),
+wait(). Signal() was there first and foremost to support SIGKILL; it
+did not purport to provide a sound basis for asynchronous IPC.
+The complexity of sigaction() is evidence that asynchrony remains
+untamed 40 years on.
+
+Doug
+
+
+From doug at cs.dartmouth.edu  Fri Sep 25 12:14:57 2015
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Thu, 24 Sep 2015 22:14:57 -0400
+Subject: [TUHS] Questions regarding early Unix contributors
+Message-ID: <201509250214.t8P2EvCu026479@coolidge.cs.Dartmouth.EDU>
+
+I can assure you that Lorinda Cherry wrote most of the important
+code in WWB, including style and diction. The idea for them
+came from Bill Vesterman at Rutgers. Lorinda already had parts,
+a real tour de force, which assigned parts of speech to words 
+in a text. Style was the killer app for parts and was running
+within days of his approach to the labs wondering whether 
+such a thing could be built. Lorinda also wrote deroff, which
+these tools of course needed. WWB per se was packaged by 
+USDL; I am sorry I can't remember the name of the guiding
+spirit. So Lorinda's code detoured through there on its
+way into research Unix.
+
+Chris van Wyk was cvw. He was at Bell Labs, not BSD.
+
+Chuck Haley is indeed Charles B. Haley.
+
+Andy Koenig was ark.
+
+
+From crossd at gmail.com  Sat Sep 26 03:08:05 2015
+From: crossd at gmail.com (Dan Cross)
+Date: Fri, 25 Sep 2015 13:08:05 -0400
+Subject: [TUHS] Re {TUHS} Synchronous vs Asynchronous IO in Unix
+In-Reply-To: <201509211402.t8LE2E4K016401@coolidge.cs.Dartmouth.EDU>
+References: <201509211402.t8LE2E4K016401@coolidge.cs.Dartmouth.EDU>
+Message-ID: <CAEoi9W6uwRjs7DFS7+07c8HuKzn2isLHMKYxT_PA8kv8X-oYSw@mail.gmail.com>
+
+On Mon, Sep 21, 2015 at 10:02 AM, Doug McIlroy <doug at cs.dartmouth.edu>
+wrote:
+
+> Unix was what the authors wanted for a productive computing environment,
+> not a bag of everything they thought somebody somewhere might want.
+> One objective, perhaps subliminal originally, was to make program
+> behavior easy to reason about. Thus pipes were accepted into research
+> Unix, but more general (and unruly) IPC mechanisms such as messages
+> and events never were.
+>
+> The infrastructure had to be asynchronous. The whole point was to
+> surmount that difficult model and keep everyday programming simple.
+> User visibility of asynchrony was held to a minimum: fork(), signal(),
+> wait(). Signal() was there first and foremost to support SIGKILL; it
+> did not purport to provide a sound basis for asynchronous IPC.
+> The complexity of sigaction() is evidence that asynchrony remains
+> untamed 40 years on.
+
+
+Point of order: Does it really say this, or rather does it say that trying
+to retrofit it into the Unix model, which was not designed with the sort of
+thing in mind, has proven to be difficult?
+
+        - Dan C.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150925/a5acba92/attachment.html>
+
+From dave at horsfall.org  Sat Sep 26 08:05:42 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sat, 26 Sep 2015 08:05:42 +1000 (EST)
+Subject: [TUHS] Re {TUHS}  Synchronous vs Asynchronous IO in Unix
+In-Reply-To: <201509211402.t8LE2E4K016401@coolidge.cs.Dartmouth.EDU>
+References: <201509211402.t8LE2E4K016401@coolidge.cs.Dartmouth.EDU>
+Message-ID: <alpine.BSF.2.11.1509260755080.44325@aneurin.horsfall.org>
+
+On Mon, 21 Sep 2015, Doug McIlroy wrote:
+
+> Signal() was there first and foremost to support SIGKILL; it did not 
+> purport to provide a sound basis for asynchronous IPC.
+
+Yeah, brother.  In a previous life, I got burned very badly when I relied 
+upon signals Doing the Right Thing [tm].
+
+I think it was dump/restor, on a BSDi box; the damned thing communicated 
+betwixt its child processes with signals, and I lost every backup tape 
+without realising it.
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+              Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn!
+
+
+
+From clemc at ccc.com  Sat Sep 26 09:16:41 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Fri, 25 Sep 2015 19:16:41 -0400
+Subject: [TUHS] Re {TUHS} Synchronous vs Asynchronous IO in Unix
+In-Reply-To: <alpine.BSF.2.11.1509260755080.44325@aneurin.horsfall.org>
+References: <201509211402.t8LE2E4K016401@coolidge.cs.Dartmouth.EDU>
+ <alpine.BSF.2.11.1509260755080.44325@aneurin.horsfall.org>
+Message-ID: <CAC20D2PmoVRU3g3uFUzAC-n=tmMrnFcj8Y5oahkBt=cd5m-DOw@mail.gmail.com>
+
+Sadly I have heard a number of stories/expereiences like this.   That's why
+the original Posix.4 specification had a new API: asynchronous system traps
+(AST) similar to what most other real time systems have had such as RSX,
+VMS or VxWorks for that matter and true async I/O calls. The idea was
+instead of trying to "fix" signals or read/write, put a new (optional) API
+in that had the proper semantics for a real IPC (like being queued, having
+priority etc...).    The AST call was later removed and z queued hacked was
+splitter into signals although async I/O did stay.   I was sad to see AST
+go.  I always felt it was better to not "fix" it, but rather offer and
+optional way that me the needs of people that wanted it.
+
+FWIW:  I've implemented AST a couple of times in my career into UNIX
+systems.   Very handy why you really want those semantics.
+
+Clem
+
+On Fri, Sep 25, 2015 at 6:05 PM, Dave Horsfall <dave at horsfall.org> wrote:
+
+> On Mon, 21 Sep 2015, Doug McIlroy wrote:
+>
+> > Signal() was there first and foremost to support SIGKILL; it did not
+> > purport to provide a sound basis for asynchronous IPC.
+>
+> Yeah, brother.  In a previous life, I got burned very badly when I relied
+> upon signals Doing the Right Thing [tm].
+>
+> I think it was dump/restor, on a BSDi box; the damned thing communicated
+> betwixt its child processes with signals, and I lost every backup tape
+> without realising it.
+>
+> --
+> Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will
+> suffer."
+>               Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn!
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150925/f8c1ae79/attachment.html>
+
+From lm at mcvoy.com  Sat Sep 26 09:23:49 2015
+From: lm at mcvoy.com (Larry McVoy)
+Date: Fri, 25 Sep 2015 16:23:49 -0700
+Subject: [TUHS] Re {TUHS} Synchronous vs Asynchronous IO in Unix
+In-Reply-To: <CAC20D2PmoVRU3g3uFUzAC-n=tmMrnFcj8Y5oahkBt=cd5m-DOw@mail.gmail.com>
+References: <201509211402.t8LE2E4K016401@coolidge.cs.Dartmouth.EDU>
+ <alpine.BSF.2.11.1509260755080.44325@aneurin.horsfall.org>
+ <CAC20D2PmoVRU3g3uFUzAC-n=tmMrnFcj8Y5oahkBt=cd5m-DOw@mail.gmail.com>
+Message-ID: <20150925232349.GA19979@mcvoy.com>
+
+On Fri, Sep 25, 2015 at 07:16:41PM -0400, Clem Cole wrote:
+> Sadly I have heard a number of stories/expereiences like this.   That's why
+> the original Posix.4 specification had a new API: asynchronous system traps
+> (AST) similar to what most other real time systems have had such as RSX,
+> VMS or VxWorks for that matter and true async I/O calls. 
+
+Tcl (really tk, but tcl implements it) has this.  You bind an event to 
+a subroutine and when the event happens it jumps into that subroutine,
+just like an AST (with similar rules about calling context etc).
+
+Mainly used for GUI programming where it fits nicely but one useful thing
+is you can post fake events.  That makes it possible to write regressions
+for gui code which is *awesome*.
+
+--larry "still using tcl/tk after all these years" mcvoy
+
+P.S.  We're not crazy, we implemented a C like language that compiles down
+to tcl byte codes so we don't have to deal with tcl very much.  Here's
+what that looks like, this is a little script that I use like
+
+tail -f access.log | awk { print $1, $7 } | bk tclsh dns.l
+
+It's like C with some perl goodness thrown in:
+
+void
+main(void)
+{
+        string  buf;
+        string  ip, file;
+
+        while (buf = <>) {
+                if (buf =~ /^\s*([0-9.]+)\s*$/) {
+                        ip = $1;
+                        buf = `host ${ip}`;
+                        if (buf =~ /not found/ || buf =~ /has no PTR record/) {
+                                printf("%s\n", ip);
+                        } else unless (skip(buf)) {
+                                buf =~ /([^ ]+$)/;
+                                printf("%s\n", $1);
+                        }
+                        continue;
+                }
+                buf =~ /([0-9.]+)\s+(.*)/;
+                ip = $1;
+                file = $2;
+                if (file =~ /assets/) continue;
+                if (file =~ /favicon/) continue;
+/*
+                unless (exists("/home/bk/homepage-live/public/${file}")) {
+                        file .= " (NOT FOUND)";
+                }
+*/
+                buf = `host ${ip}`;
+                if (buf =~ /not found/ || buf =~ /has no PTR record/) {
+                        printf("%s %s\n", ip, file);
+                        continue;
+                }
+                if (skip(buf)) continue;
+                buf =~ /([^ ]+$)/;
+                printf("%s %s\n", $1, file);
+        }
+}
+
+int
+skip(string host)
+{
+        switch (host) {
+            case /crawl/:
+            case /spider/:
+            case /msnbot/:
+                return (1);
+        }
+        return (0);
+}
+
+
+
+From dave at horsfall.org  Sat Sep 26 12:37:12 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sat, 26 Sep 2015 12:37:12 +1000 (EST)
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <CAC20D2N-SUqiXuY9=T9HBrhsXLX_XQo5nNro9Uq1N9tHM543PQ@mail.gmail.com>
+References: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+ <560414A8.2080002@mhorton.net>
+ <CAC20D2N-SUqiXuY9=T9HBrhsXLX_XQo5nNro9Uq1N9tHM543PQ@mail.gmail.com>
+Message-ID: <alpine.BSF.2.11.1509261225110.44325@aneurin.horsfall.org>
+
+On Thu, 24 Sep 2015, Clem Cole wrote:
+
+> the primary feature hat he did to it at Summit besides support for the 
+> changes in the V7 filesystems, was support for large disks (aka RP06) 
+> when attached to a small address space (11/40 class) systems, of which 
+> CMU had a number as I believe the Labs did also.   Armando's I believe 
+> you two were office mates in those days, do you have memory?
+
+You had an RP-06 on a li'l' old /40?  You jammy bastard :-)
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+              Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn!
+
+From dave at horsfall.org  Sat Sep 26 22:09:23 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sat, 26 Sep 2015 22:09:23 +1000 (EST)
+Subject: [TUHS] Re {TUHS} Synchronous vs Asynchronous IO in Unix
+In-Reply-To: <20150925232349.GA19979@mcvoy.com>
+References: <201509211402.t8LE2E4K016401@coolidge.cs.Dartmouth.EDU>
+ <alpine.BSF.2.11.1509260755080.44325@aneurin.horsfall.org>
+ <CAC20D2PmoVRU3g3uFUzAC-n=tmMrnFcj8Y5oahkBt=cd5m-DOw@mail.gmail.com>
+ <20150925232349.GA19979@mcvoy.com>
+Message-ID: <alpine.BSF.2.11.1509262200330.46878@aneurin.horsfall.org>
+
+On Fri, 25 Sep 2015, Larry McVoy wrote:
+
+> P.S.  We're not crazy, we implemented a C like language that compiles 
+> down to tcl byte codes so we don't have to deal with tcl very much.  
+> Here's what that looks like, this is a little script that I use like
+> 
+> tail -f access.log | awk { print $1, $7 } | bk tclsh dns.l
+> 
+> It's like C with some perl goodness thrown in:
+
+Dang it; you're making me learn a new language!
+
+I used to joke that I've used as many languages as I am old; I turn 63 
+next month, so you've just added one...
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+              Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn!
+
+
+
+From cowan at mercury.ccil.org  Sun Sep 27 02:39:34 2015
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sat, 26 Sep 2015 12:39:34 -0400
+Subject: [TUHS] Re {TUHS} Synchronous vs Asynchronous IO in Unix
+In-Reply-To: <alpine.BSF.2.11.1509262200330.46878@aneurin.horsfall.org>
+References: <201509211402.t8LE2E4K016401@coolidge.cs.Dartmouth.EDU>
+ <alpine.BSF.2.11.1509260755080.44325@aneurin.horsfall.org>
+ <CAC20D2PmoVRU3g3uFUzAC-n=tmMrnFcj8Y5oahkBt=cd5m-DOw@mail.gmail.com>
+ <20150925232349.GA19979@mcvoy.com>
+ <alpine.BSF.2.11.1509262200330.46878@aneurin.horsfall.org>
+Message-ID: <20150926163934.GB17745@mercury.ccil.org>
+
+Dave Horsfall scripsit:
+
+> Dang it; you're making me learn a new language!
+
+I read the paper when it was last mentioned on the list, and it's indeed
+impressive: more like awk than perl, except in a few particulars.
+
+>               Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn!
+
+Someone asked me once how I dared to use the .sig below.  I replied
+that I come from New Jersey, where the very hero sandwiches in kids'
+school lunches are made from shoggoth meat, and I now live in NYC,
+where the banks foreclosed on sunken R'lyeh.  They're probably going
+for a controlling interest in blue-litten K'nyan, red-litten Yoth, and
+Black N'kai even now.  Gotta diversify in these degenerate days, y'know.
+
+(About the name: Abdul al-Hazred is an ill-formed expression in Arabic,
+having two definite articles in a row.  Correcting it to Abdullah
+al-Hazred, which inserts the Divine Name between the articles, gives
+the reasonable Arabic name -- or more likely, alias -- "servant of God
+the Forbidden".  IRL it's an exoticized version of Hazard, the surname
+of some of Lovecraft's ancestors.)
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+La mayyitan ma qadirun yatabaqqa sarmadi
+Fa idha yaji' al-shudhdhadh fa-l-maut qad yantahi.
+                --Abdullah al-Hazred, Al-`Azif
+
+
+From clemc at ccc.com  Sun Sep 27 09:22:39 2015
+From: clemc at ccc.com (Clement T. Cole)
+Date: Sat, 26 Sep 2015 19:22:39 -0400
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <alpine.BSF.2.11.1509261225110.44325@aneurin.horsfall.org>
+References: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+ <560414A8.2080002@mhorton.net>
+ <CAC20D2N-SUqiXuY9=T9HBrhsXLX_XQo5nNro9Uq1N9tHM543PQ@mail.gmail.com>
+ <alpine.BSF.2.11.1509261225110.44325@aneurin.horsfall.org>
+Message-ID: <C1A3412B-B69A-47F5-9C9A-5F46512A37F2@ccc.com>
+
+If will make you feel better the CMU drives were CDC with aftermarket controllers. 
+
+Sent from my iPad
+
+> On Sep 25, 2015, at 10:37 PM, Dave Horsfall <dave at horsfall.org> wrote:
+> 
+>> On Thu, 24 Sep 2015, Clem Cole wrote:
+>> 
+>> the primary feature hat he did to it at Summit besides support for the 
+>> changes in the V7 filesystems, was support for large disks (aka RP06) 
+>> when attached to a small address space (11/40 class) systems, of which 
+>> CMU had a number as I believe the Labs did also.   Armando's I believe 
+>> you two were office mates in those days, do you have memory?
+> 
+> You had an RP-06 on a li'l' old /40?  You jammy bastard :-)
+> 
+> -- 
+> Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+>              Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn!
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From aps at ieee.org  Sun Sep 27 16:52:59 2015
+From: aps at ieee.org (Armando Stettner)
+Date: Sat, 26 Sep 2015 23:52:59 -0700
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <CAC20D2N-SUqiXuY9=T9HBrhsXLX_XQo5nNro9Uq1N9tHM543PQ@mail.gmail.com>
+References: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+ <560414A8.2080002@mhorton.net>
+ <CAC20D2N-SUqiXuY9=T9HBrhsXLX_XQo5nNro9Uq1N9tHM543PQ@mail.gmail.com>
+Message-ID: <D091DC75-9459-4973-A5FD-324D5D215D43@ieee.org>
+
+I actually recall him having done much of the work at CMU but can’t be sure.  I also seem to recall him finish up the paper.  I was lucky in my office mates: I had John Lions and tjk.  Some place, I have a few pics of USG’s computer room.  I only recall RP04s however.  :(
+
+   aps.
+
+
+
+> On Sep 24, 2015, at 10:28 AM, Clem Cole <clemc at ccc.com> wrote:
+> 
+> 
+> On Thu, Sep 24, 2015 at 11:20 AM, Mary Ann Horton <mah at mhorton.net <mailto:mah at mhorton.net>> wrote:
+> I also heard that Ted K (aka "frodo") got fsck released to Berkeley by swearing (somehow with a straight face) to the Bell Labs lawyers that it had no commercial value.
+> 
+> ​That would have so much like Ted.   I never heard that story, but I would believe it.  I do believe that he told them (rightfully) that it was primarily developed at CMU using CMU computing resources (the 11/34A for the Digital Lab in the EE Dept that Ted and I ran).  IIRC: the primary feature hat he did to it at Summit besides support for the changes in the V7 filesystems, was support for large disks (aka RP06) when attached to a small address space (11/40 class) systems, of which CMU had a number as I believe the Labs did also.   Armando's I believe you two were office mates in those days, do you have memory?
+> 
+> 
+>     We had it at Tektronix because I brought it from CMU.
+> 
+> Clem​
+> 
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150926/190ffda9/attachment.html>
+
+From vu3rdd at gmail.com  Sun Sep 27 17:19:27 2015
+From: vu3rdd at gmail.com (Ramakrishnan Muthukrishnan)
+Date: Sun, 27 Sep 2015 12:49:27 +0530
+Subject: [TUHS] Re {TUHS} Synchronous vs Asynchronous IO in Unix
+In-Reply-To: <20150925232349.GA19979@mcvoy.com>
+References: <201509211402.t8LE2E4K016401@coolidge.cs.Dartmouth.EDU>
+ <alpine.BSF.2.11.1509260755080.44325@aneurin.horsfall.org>
+ <CAC20D2PmoVRU3g3uFUzAC-n=tmMrnFcj8Y5oahkBt=cd5m-DOw@mail.gmail.com>
+ <20150925232349.GA19979@mcvoy.com>
+Message-ID: <CAA6Yd9ViWk7knCb25T1SY7o+PQQu6SH7YAoCjv0h96+Z1tjg8g@mail.gmail.com>
+
+On Sat, Sep 26, 2015 at 4:53 AM, Larry McVoy <lm at mcvoy.com> wrote:
+> On Fri, Sep 25, 2015 at 07:16:41PM -0400, Clem Cole wrote:
+>> Sadly I have heard a number of stories/expereiences like this.   That's why
+>> the original Posix.4 specification had a new API: asynchronous system traps
+>> (AST) similar to what most other real time systems have had such as RSX,
+>> VMS or VxWorks for that matter and true async I/O calls.
+>
+> Tcl (really tk, but tcl implements it) has this.  You bind an event to
+> a subroutine and when the event happens it jumps into that subroutine,
+> just like an AST (with similar rules about calling context etc).
+>
+> Mainly used for GUI programming where it fits nicely but one useful thing
+> is you can post fake events.  That makes it possible to write regressions
+> for gui code which is *awesome*.
+>
+> --larry "still using tcl/tk after all these years" mcvoy
+>
+> P.S.  We're not crazy, we implemented a C like language that compiles down
+
+Larry:
+
+This is really interesting. The C-like language you are referring to
+here is the "L" language?
+
+The introductory paper linked from here: <http://wiki.tcl.tk/17068> is
+giving 404. Would you mind fixing the link or pointing me to another
+copy of the paper? My google-fu failed to find a copy of the paper
+elsewhere.
+
+Ramakrishnan
+
+
+From cubexyz at gmail.com  Sun Sep 27 18:33:07 2015
+From: cubexyz at gmail.com (Mark Longridge)
+Date: Sun, 27 Sep 2015 04:33:07 -0400
+Subject: [TUHS] getting nroff to underline in v6,v5
+Message-ID: <CADxT5N70c5pTHYgn2J7fN7FnrgXSeP=h=ep2g7X0bkwsoSKt1Q@mail.gmail.com>
+
+It seems that nroff had the ability to show underlined text very early
+on, possibly as early as v3 according to the v3 manual.
+
+I haven't managed to get this to work right under simh but I was
+thinking maybe there's a way to do it. It needs an 'underline font'
+but the mechanism of how this worked in the old days is a bit of
+mystery to me. The output device would have to have the ability to
+either display or print underlined text. Maybe someone can remember
+which terminal devices supported this in the old days which worked
+"out of the box" in the v5,v6 era.
+
+Maybe there was the ability to use overstrike characters on the teletype?
+
+In bash I can use:
+
+echo -e "\e[4munderline\e[0m"
+
+Shouldn't be too hard to hack up something that works in emulated v5.
+
+Mark
+
+
+From cowan at mercury.ccil.org  Mon Sep 28 01:51:18 2015
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sun, 27 Sep 2015 11:51:18 -0400
+Subject: [TUHS] getting nroff to underline in v6,v5
+In-Reply-To: <CADxT5N70c5pTHYgn2J7fN7FnrgXSeP=h=ep2g7X0bkwsoSKt1Q@mail.gmail.com>
+References: <CADxT5N70c5pTHYgn2J7fN7FnrgXSeP=h=ep2g7X0bkwsoSKt1Q@mail.gmail.com>
+Message-ID: <20150927155118.GC21801@mercury.ccil.org>
+
+Mark Longridge scripsit:
+
+> Maybe there was the ability to use overstrike characters on the teletype?
+
+That's inherent in the nature of printing terminals: 'X', BS, '_' worked
+fine on all such terminals to produce an underlined X.  Later it was
+found to be better to use '_', BS, 'X', which looked the same on actual
+TTYs or equivalents (LA34/36) and was greatly superior on video terminals.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Any sufficiently-complicated C or Fortran program contains an ad-hoc,
+informally-specified bug-ridden slow implementation of half of Common Lisp.
+        --Greenspun's Tenth Rule of Programming (rules 1-9 are unknown)
+
+
+From ron at ronnatalie.com  Mon Sep 28 02:10:02 2015
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Sun, 27 Sep 2015 12:10:02 -0400
+Subject: [TUHS] getting nroff to underline in v6,v5
+In-Reply-To: <20150927155118.GC21801@mercury.ccil.org>
+References: <CADxT5N70c5pTHYgn2J7fN7FnrgXSeP=h=ep2g7X0bkwsoSKt1Q@mail.gmail.com>
+ <20150927155118.GC21801@mercury.ccil.org>
+Message-ID: <6179EB54-7939-4C8C-AB68-61A57FF2EB55@ronnatalie.com>
+
+And there were a whole slew of filters like nobsp that either stripped out the over(under?)struck characters or reformatted them so it worked on your lineprinter efficently.      I remember the lineprinter we had if you fed it line with a backspace it would print the line up to the backspace and then overstrike it going forward.   If you had multiple backspaces (like a whole sentene) the thing stuck there just doing the overstrike.   It was more efficient to write a filter that changed the _ BS X for each letter to one line of text, a CR (no LF), and then another line of overstrike.
+
+> On Sep 27, 2015, at 11:51 AM, John Cowan <cowan at mercury.ccil.org> wrote:
+> 
+> Mark Longridge scripsit:
+> 
+>> Maybe there was the ability to use overstrike characters on the teletype?
+> 
+> That's inherent in the nature of printing terminals: 'X', BS, '_' worked
+> fine on all such terminals to produce an underlined X.  Later it was
+> found to be better to use '_', BS, 'X', which looked the same on actual
+> TTYs or equivalents (LA34/36) and was greatly superior on video terminals.
+> 
+> -- 
+> John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+> Any sufficiently-complicated C or Fortran program contains an ad-hoc,
+> informally-specified bug-ridden slow implementation of half of Common Lisp.
+>        --Greenspun's Tenth Rule of Programming (rules 1-9 are unknown)
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From clemc at ccc.com  Mon Sep 28 03:31:03 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 27 Sep 2015 13:31:03 -0400
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <D091DC75-9459-4973-A5FD-324D5D215D43@ieee.org>
+References: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+ <560414A8.2080002@mhorton.net>
+ <CAC20D2N-SUqiXuY9=T9HBrhsXLX_XQo5nNro9Uq1N9tHM543PQ@mail.gmail.com>
+ <D091DC75-9459-4973-A5FD-324D5D215D43@ieee.org>
+Message-ID: <CAC20D2PsRHPma0k2ng7137He1iN+zSGWns2Jec446pXL2Rz_Sw@mail.gmail.com>
+
+4 5 or 6 - just a few megabytes ;-)
+
+Same RH11 interface.
+
+On Sun, Sep 27, 2015 at 2:52 AM, Armando Stettner <aps at ieee.org> wrote:
+
+> I actually recall him having done much of the work at CMU but can’t be
+> sure.  I also seem to recall him finish up the paper.  I was lucky in my
+> office mates: I had John Lions and tjk.  Some place, I have a few pics of
+> USG’s computer room.  I only recall RP04s however.  :(
+>
+>    aps.
+>
+>
+>
+> On Sep 24, 2015, at 10:28 AM, Clem Cole <clemc at ccc.com> wrote:
+>
+>
+> On Thu, Sep 24, 2015 at 11:20 AM, Mary Ann Horton <mah at mhorton.net> wrote:
+>
+>> I also heard that Ted K (aka "frodo") got fsck released to Berkeley by
+>> swearing (somehow with a straight face) to the Bell Labs lawyers that it
+>> had no commercial value.
+>
+>
+> ​That would have so much like Ted.   I never heard that story, but I would
+> believe it.  I do believe that he told them (rightfully) that it was
+> primarily developed at CMU using CMU computing resources (the 11/34A for
+> the Digital Lab in the EE Dept that Ted and I ran).  IIRC: the primary
+> feature hat he did to it at Summit besides support for the changes in the
+> V7 filesystems, was support for large disks (aka RP06) when attached to a
+> small address space (11/40 class) systems, of which CMU had a number as I
+> believe the Labs did also.   Armando's I believe you two were office mates
+> in those days, do you have memory?
+>
+>
+>     We had it at Tektronix because I brought it from CMU.
+>
+> Clem​
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150927/ab0f84b4/attachment.html>
+
+From clemc at ccc.com  Mon Sep 28 04:00:27 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 27 Sep 2015 14:00:27 -0400
+Subject: [TUHS] getting nroff to underline in v6,v5
+In-Reply-To: <CADxT5N70c5pTHYgn2J7fN7FnrgXSeP=h=ep2g7X0bkwsoSKt1Q@mail.gmail.com>
+References: <CADxT5N70c5pTHYgn2J7fN7FnrgXSeP=h=ep2g7X0bkwsoSKt1Q@mail.gmail.com>
+Message-ID: <CAC20D2PNR00gsY6zk7S76zmbfOj9-XSUN5N38=R0uBQaR1NuFQ@mail.gmail.com>
+
+​below​
+
+On Sun, Sep 27, 2015 at 4:33 AM, Mark Longridge <cubexyz at gmail.com> wrote:
+
+> It seems that nroff had the ability to show underlined text very early
+> on, possibly as early as v3 according to the v3 manual
+>
+​yes​
+
+
+
+
+>
+> Maybe there was the ability to use overstrike characters on the teletype?
+>
+Overprinting was a popular idea, particularly with line printers
+​ (i.e. devices that printed multiple characters at the same time on a
+single line), as well one character at a time devices modeled after the
+ttywrite.
+​
+
+​Remember, nroff's "native" terminal is a Teleptype Corp Model 37, which
+were fairly popular n the labs in those days.  The Teletype machines
+printed one character at a time, and needs command characters to move
+"platten" up or down and "carriage" back and forth.    The <CR><LF> idiom
+is left over from those days.
+
+As others have pointed out,  Char ^H NewChar was a standard way to print
+things on single chracter devices.     As was also point out that was not
+the best way to do over strike with a line printer, so there were Unix
+filters to take reorder the data written, and add spaces as needed so the
+line printer's output looked the same.
+
+Again, as other point out this trick did not work well with some early
+video terminals.
+
+
+
+
+>
+> In bash I can use:
+>
+> echo -e "\e[4munderline\e[0m"
+>
+​You are mixing times I'm afraid.   The \e[4m and \e[0m​ ideom is very late
+in the game.   Those are called ANSI screen sequences.   To being with,
+each manufacturer of "data terminating equipment (aka a DTE or a
+"terminal") define how it would interpret what codes.   As an industry we
+first had agree on a code set (US ASCII - heck by the early 1980's CDC's
+system could not agree on a character set - as another side bar, the #1
+first behind ASCII was IBM and the 360 was supposed to be an ASCII machine,
+but management made then ship it as EBCDIC machine for cost containment
+reasons when OS/360 was late).
+
+So by the 1970s, most systems were using 7-bit ASCII to print character
+glyfs, but what the DTE did with with other things be it screen
+manipulation, overprint, underline, cursor movement was all of the map.
+ Btw the late 1970, BSD would introduce "termcap" to solve the problem for
+programs, and manufactures got together and agreed on soem screen sequences
+(the ANSI sequences you refer).
+
+Again, as an interesting twist.   The VT-100 was not fully ANSI compliant -
+its similar but it's not ANSI.   The DEC terminal group took an earlier
+(draft) version of the spec and used that to create the VT-100  (I used to
+work with one of them in another life but that's another story).   They
+"embraced" and "extended" the ANSI terminal sequence (and VMS of course
+used the DEC version of the sequences).   By the time of publishing of the
+ANSI standard, the VT-100 had already become the most popular terminal on
+the market, so the "Vt-100" compatible terminal became de jigur - as
+manufacturers wanted sell terminal that could talk to VMS.   Eventually
+folks like Wyse (and even DEC in later versions of the VT series), had both
+VT-100 "broken" mode and pure "ANSI" mode.
+
+Clem
+
+
+
+
+
+>
+> Shouldn't be too hard to hack up something that works in emulated v5.
+>
+> Mark
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150927/50010e40/attachment.html>
+
+From random832 at fastmail.com  Mon Sep 28 04:12:14 2015
+From: random832 at fastmail.com (Random832)
+Date: Sun, 27 Sep 2015 14:12:14 -0400
+Subject: [TUHS] getting nroff to underline in v6,v5
+References: <CADxT5N70c5pTHYgn2J7fN7FnrgXSeP=h=ep2g7X0bkwsoSKt1Q@mail.gmail.com>
+Message-ID: <m21tdjivep.fsf@fastmail.com>
+
+Mark Longridge <cubexyz at gmail.com> writes:
+
+> It seems that nroff had the ability to show underlined text very early
+> on, possibly as early as v3 according to the v3 manual.
+>
+> I haven't managed to get this to work right under simh but I was
+> thinking maybe there's a way to do it. It needs an 'underline font'
+> but the mechanism of how this worked in the old days is a bit of
+> mystery to me. The output device would have to have the ability to
+> either display or print underlined text. Maybe someone can remember
+> which terminal devices supported this in the old days which worked
+> "out of the box" in the v5,v6 era.
+>
+> Maybe there was the ability to use overstrike characters on the teletype?
+>
+> In bash I can use:
+>
+> echo -e "\e[4munderline\e[0m"
+
+The proper escape sequence to end underline is technically \e[24m; using
+0 here ends all other formats (bold, color) as well.
+
+> Shouldn't be too hard to hack up something that works in emulated v5.
+
+The "ul" utility, which converts from overstrikes to termcap-based
+escape sequences, first appeared in 3.0BSD.
+
+The source code is here:
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=3BSD/usr/src/cmd/ul.c
+
+It'd probably be pretty easy to rip out the termcap dependency and have
+it just output ansi codes, though I don't know what dialect of C works
+on v5.
+
+1BSD to 3BSD also had an "iul" utility which just printed a row of
+dashes under characters to be underlined instead of using escape
+sequences. In 2.9BSD and 4BSD and later this functionality is provided
+by "ul -i".
+
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=1BSD/s6/iul.c
+
+It looks like this wouldn't be hard to modify to use escape sequences
+instead, and it uses the oldest C dialect of any of these versions.
+
+>From 4.1c BSD, ul also handles bold, which is represented by
+self-overstriking in the nroff output, and represents superscript and
+subscript (half-linefeed) with dim attributes. Any missing attributes
+are represented with standout. This is essentially the same
+functionality available in modern versions of ul.
+
+
+
+From doug at cs.dartmouth.edu  Mon Sep 28 09:48:12 2015
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Sun, 27 Sep 2015 19:48:12 -0400
+Subject: [TUHS] getting nroff to underline in v6,v5
+Message-ID: <201509272348.t8RNmC4o012695@tahoe.cs.Dartmouth.EDU>
+
+> It seems that nroff had the ability to show underlined text very early
+
+Pre-Unix roff had the .ul request. Thus I expect (but haven't checked)
+that it was in Unix roff. It would be very surprising if nroff, which was
+intended to be more capable that roff, didn't have some underlining
+facility right from the start.
+
+Doug
+
+
+From scj at yaccman.com  Mon Sep 28 09:55:59 2015
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Sun, 27 Sep 2015 16:55:59 -0700
+Subject: [TUHS] getting nroff to underline in v6,v5
+In-Reply-To: <6179EB54-7939-4C8C-AB68-61A57FF2EB55@ronnatalie.com>
+References: <CADxT5N70c5pTHYgn2J7fN7FnrgXSeP=h=ep2g7X0bkwsoSKt1Q@mail.gmail.com>
+ <20150927155118.GC21801@mercury.ccil.org>
+ <6179EB54-7939-4C8C-AB68-61A57FF2EB55@ronnatalie.com>
+Message-ID: <749b3792e872420e0e859730d736844d.squirrel@webmail.yaccman.com>
+
+Gad, that triggers memories.  There was a program on our GE mainframe that
+output LF/CR instead of CR/LF.  The terminal driver would do the linefeed
+and then laboriously space out until it was under the previous cursor
+position, and then do the CR.  Great for raising your blood pressure and
+stimulating streams of nasty invective against GE.
+
+
+
+From dave at horsfall.org  Tue Sep 29 00:59:21 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Tue, 29 Sep 2015 00:59:21 +1000 (EST)
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <D091DC75-9459-4973-A5FD-324D5D215D43@ieee.org>
+References: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+ <560414A8.2080002@mhorton.net>
+ <CAC20D2N-SUqiXuY9=T9HBrhsXLX_XQo5nNro9Uq1N9tHM543PQ@mail.gmail.com>
+ <D091DC75-9459-4973-A5FD-324D5D215D43@ieee.org>
+Message-ID: <alpine.BSF.2.11.1509290029030.70078@aneurin.horsfall.org>
+
+On Sat, 26 Sep 2015, Armando Stettner wrote:
+
+> I also seem to recall him finish up the paper.  I was lucky in my office 
+> mates: I had John Lions and tjk.  Some place, I have a few pics of USG’s 
+> computer room.  I only recall RP04s however.  :(    aps.
+
+Dr. John Lions?  He was one of my Comp.Sci lecturers, and a brilliant 
+bloke.
+
+It was a sad day when we lost him.
+
+I remember a USENET posting from long ago (yeah, I know), when someone 
+swore that it was Lyons.  Someone then replied along the lines of "Well, 
+I've just walked past his office door; it's Lions, as in the big cat."
+
+Of course, my memory could be a little flakey by now.
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+              Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn!
+
+From scj at yaccman.com  Tue Sep 29 02:55:47 2015
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Mon, 28 Sep 2015 09:55:47 -0700
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <alpine.BSF.2.11.1509290029030.70078@aneurin.horsfall.org>
+References: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+ <560414A8.2080002@mhorton.net>
+ <CAC20D2N-SUqiXuY9=T9HBrhsXLX_XQo5nNro9Uq1N9tHM543PQ@mail.gmail.com>
+ <D091DC75-9459-4973-A5FD-324D5D215D43@ieee.org>
+ <alpine.BSF.2.11.1509290029030.70078@aneurin.horsfall.org>
+Message-ID: <4186b45fab3f28605b55591d7d97fd2f.squirrel@webmail.yaccman.com>
+
+Lions' books on Unix and PCC were brilliant, although they had limited
+circulation.  I confess that the PCC book was sometimes difficult reading,
+as code that I cobbled together at 2AM was laid bare to the world.  I
+remember a particularly tangled mess of 10 or so lines that John displayed
+with the comment "advocates of structured programming might have preferred
+to see:" followed by 3 short, elegant lines of code...
+
+
+
+> On Sat, 26 Sep 2015, Armando Stettner wrote:
+>
+>> I also seem to recall him finish up the paper. Â I was lucky in my
+>> office
+>> mates: I had John Lions and tjk. Â Some place, I have a few pics of
+>> USGâs
+>> computer room. Â I only recall RP04s however. Â :( Â  Â aps.
+>
+> Dr. John Lions?  He was one of my Comp.Sci lecturers, and a brilliant
+> bloke.
+>
+> It was a sad day when we lost him.
+>
+> I remember a USENET posting from long ago (yeah, I know), when someone
+> swore that it was Lyons.  Someone then replied along the lines of "Well,
+> I've just walked past his office door; it's Lions, as in the big cat."
+>
+> Of course, my memory could be a little flakey by now.
+>
+> --
+> Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will
+> suffer."
+>               Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn!
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+
+
+From doug at cs.dartmouth.edu  Tue Sep 29 06:14:00 2015
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Mon, 28 Sep 2015 16:14:00 -0400
+Subject: [TUHS] where the docs have gone
+Message-ID: <201509282014.t8SKE0qq001737@coolidge.cs.Dartmouth.EDU>
+
+The disappearance of some troff-related documents that had
+been on line at Bell Labs was recently reported on this
+list. That turns out to have been a bureaucratic snafu.
+Plan 9 and v7 are back now. It is hoped that CSTRs will
+follow.
+
+Doug
+
+
+From grog at lemis.com  Tue Sep 29 09:23:14 2015
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Tue, 29 Sep 2015 09:23:14 +1000
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <4186b45fab3f28605b55591d7d97fd2f.squirrel@webmail.yaccman.com>
+References: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+ <560414A8.2080002@mhorton.net>
+ <CAC20D2N-SUqiXuY9=T9HBrhsXLX_XQo5nNro9Uq1N9tHM543PQ@mail.gmail.com>
+ <D091DC75-9459-4973-A5FD-324D5D215D43@ieee.org>
+ <alpine.BSF.2.11.1509290029030.70078@aneurin.horsfall.org>
+ <4186b45fab3f28605b55591d7d97fd2f.squirrel@webmail.yaccman.com>
+Message-ID: <20150928232314.GY81320@eureka.lemis.com>
+
+On Monday, 28 September 2015 at  9:55:47 -0700, scj at yaccman.com wrote:
+>> On Sat, 26 Sep 2015, Armando Stettner wrote:
+>>
+>>> I also seem to recall him finish up the paper. Â I was lucky in my
+>>> office
+>>> mates: I had John Lions and tjk. Â Some place, I have a few pics of
+>>> USGâs
+>>> computer room. Â I only recall RP04s however. Â :( Â  Â aps.
+>>
+>> Dr. John Lions?  He was one of my Comp.Sci lecturers, and a brilliant
+>> bloke.
+>>
+>> It was a sad day when we lost him.
+>>
+>> I remember a USENET posting from long ago (yeah, I know), when someone
+>> swore that it was Lyons.  Someone then replied along the lines of "Well,
+>> I've just walked past his office door; it's Lions, as in the big cat."
+>>
+>> Of course, my memory could be a little flakey by now.
+
+Possibly, but not in this case.
+
+> Lions' books on Unix and PCC were brilliant, although they had
+> limited circulation.
+
+I haven't seen the PCC book, though I'd like to, but Warren published
+a version of the Commentary on alt.folklore.computers in May 1994, and
+I've had it up on my web site for over 10 years:
+http://www.lemis.com/grog/Documentation/Lions/
+
+You'll note Dave Horsfall's name in the acknowledgements, along with a
+number of other (now) well-known names.
+
+Greg
+--
+Sent from my desktop computer.
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft MUA reports
+problems, please read http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 196 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150929/e1d7eac3/attachment.sig>
+
+From arnold at skeeve.com  Tue Sep 29 16:57:39 2015
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Tue, 29 Sep 2015 00:57:39 -0600
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <4186b45fab3f28605b55591d7d97fd2f.squirrel@webmail.yaccman.com>
+References: <CAC20D2N5dEQit0pz-X-rjUo-AA-j5Ef=4mRPYXssFH98J00hcw@mail.gmail.com>
+ <560414A8.2080002@mhorton.net>
+ <CAC20D2N-SUqiXuY9=T9HBrhsXLX_XQo5nNro9Uq1N9tHM543PQ@mail.gmail.com>
+ <D091DC75-9459-4973-A5FD-324D5D215D43@ieee.org>
+ <alpine.BSF.2.11.1509290029030.70078@aneurin.horsfall.org>
+ <4186b45fab3f28605b55591d7d97fd2f.squirrel@webmail.yaccman.com>
+Message-ID: <201509290657.t8T6vdJN016978@freefriends.org>
+
+Hi.
+
+This is the first I've heard that there was a book on PCC. I think
+many of us would like to see it.  Do you have a copy that can be
+scanned? Or does anyone have the source?
+
+Thanks,
+
+Arnold
+
+scj at yaccman.com wrote:
+
+> Lions' books on Unix and PCC were brilliant, although they had limited
+> circulation.  I confess that the PCC book was sometimes difficult reading,
+> as code that I cobbled together at 2AM was laid bare to the world.  I
+> remember a particularly tangled mess of 10 or so lines that John displayed
+> with the comment "advocates of structured programming might have preferred
+> to see:" followed by 3 short, elegant lines of code...
+>
+>
+>
+> > On Sat, 26 Sep 2015, Armando Stettner wrote:
+> >
+> >> I also seem to recall him finish up the paper. Â I was lucky in my
+> >> office
+> >> mates: I had John Lions and tjk. Â Some place, I have a few pics of
+> >> USGâ␦␦s
+> >> computer room. Â I only recall RP04s however. Â :( Â  Â aps.
+> >
+> > Dr. John Lions?  He was one of my Comp.Sci lecturers, and a brilliant
+> > bloke.
+> >
+> > It was a sad day when we lost him.
+> >
+> > I remember a USENET posting from long ago (yeah, I know), when someone
+> > swore that it was Lyons.  Someone then replied along the lines of "Well,
+> > I've just walked past his office door; it's Lions, as in the big cat."
+> >
+> > Of course, my memory could be a little flakey by now.
+> >
+> > --
+> > Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will
+> > suffer."
+> >               Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn!
+> > _______________________________________________
+> > TUHS mailing list
+> > TUHS at minnie.tuhs.org
+> > https://minnie.tuhs.org/mailman/listinfo/tuhs
+> >
+>
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From hellwig.geisse at mni.thm.de  Tue Sep 29 18:07:31 2015
+From: hellwig.geisse at mni.thm.de (Hellwig Geisse)
+Date: Tue, 29 Sep 2015 10:07:31 +0200
+Subject: [TUHS] Questions regarding early Unix contributors
+Message-ID: <1443514051.2142.5.camel@papa2>
+
+Hi,
+
+I don't know if John Lions ever wrote a full book about
+PCC, but there is a paper analyzing its second pass:
+
+https://github.com/eunuchs/unix-archive/blob/master/Documentation/Papers/lions_PCCpass2_jun1979.pdf
+
+Hellwig
+
+
+
+From beebe at math.utah.edu  Wed Sep 30 00:29:01 2015
+From: beebe at math.utah.edu (Nelson H. F. Beebe)
+Date: Tue, 29 Sep 2015 08:29:01 -0600
+Subject: [TUHS]  update on Bell System Technical Journal family archives
+Message-ID: <CMM.0.95.0.1443536941.beebe@gamma.math.utah.edu>
+
+In late 2010, I released decade-specific bibliographies of the Bell
+System Technical Journal (BSTJ) at
+
+        http://www.math.utah.edu/pub/tex/bib/bstj1920.bib
+        ...
+        http://www.math.utah.edu/pub/tex/bib/bstj2010.bib
+
+(change .bib to .html for versions with live hyperlinks).
+
+I get weekly status reports for the hundreds of bibliographies in the
+archives to which the bstj*.bib files belong, and until recently, I'd
+been puzzling about the apparent cessation of publication of the Bell
+Labs Technical Journal (its current name) in March 2014.
+
+I now understand why: according to the Wiley Web site for the journal,
+ownership and the archives have been transferred to IEEE, effective
+with volume 19 (2014).
+
+The bstj2010.bib file has accordingly been updated today with coverage
+of (so far, only four) articles published by IEEE in volume 19.  [The
+first of those is a 50-year retrospective on the discovery of the
+Cosmic Microware Background that provided some of the first solid
+evidence for the Big Bang theory of the origin and evolution of the
+universe, and led to the award of the 1978 Nobel Prize in Physics to
+Arno Penzias and Robert Wilson.  The article also includes a timeline
+of important Bell Labs developments, and Unix is listed there.]
+
+Older list readers may remember that a lot of the early research
+publications about Unix appeared in the BSTJ issues, so this journal
+should have considerable interest for TUHS list users, and the move of
+the archives from Wiley to IEEE may make the back issues somewhat more
+accessible outside those academic environments that have library
+subscriptions for Wiley journals in electronic form.
+
+-------------------------------------------------------------------------------
+- Nelson H. F. Beebe                    Tel: +1 801 581 5254                  -
+- University of Utah                    FAX: +1 801 581 4148                  -
+- Department of Mathematics, 110 LCB    Internet e-mail: beebe at math.utah.edu  -
+- 155 S 1400 E RM 233                       beebe at acm.org  beebe at computer.org -
+- Salt Lake City, UT 84112-0090, USA    URL: http://www.math.utah.edu/~beebe/ -
+-------------------------------------------------------------------------------
+
+
+From scj at yaccman.com  Wed Sep 30 01:35:02 2015
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Tue, 29 Sep 2015 08:35:02 -0700
+Subject: [TUHS] Questions regarding early Unix contributors
+In-Reply-To: <1443514051.2142.5.camel@papa2>
+References: <1443514051.2142.5.camel@papa2>
+Message-ID: <e5a552405a508680e972460abf6fca8a.squirrel@webmail.yaccman.com>
+
+That must be what I had remembered.  In truth, there was not much (IMHO)
+in the first pass worth writing about...
+
+Steve
+
+
+> Hi,
+>
+> I don't know if John Lions ever wrote a full book about
+> PCC, but there is a paper analyzing its second pass:
+>
+> https://github.com/eunuchs/unix-archive/blob/master/Documentation/Papers/lions_PCCpass2_jun1979.pdf
+>
+> Hellwig
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+
+

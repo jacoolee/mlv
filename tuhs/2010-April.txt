@@ -1,0 +1,2812 @@
+From reed at reedmedia.net  Thu Apr  8 23:25:29 2010
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Thu, 8 Apr 2010 08:25:29 -0500 (CDT)
+Subject: [pups] extract old archive format?
+Message-ID: <alpine.NEB.2.01.1004080812010.13963@t1.m.reedmedia.net>
+
+I want to look in some .a files identified by file(1) as "old PDP-11 
+archive".
+
+Anyone know what tool I can use on a modern *BSD or Linux system to 
+extract the files from an "old PDP-11" ar archive?
+
+GNU ar complains "File format not recognized". ar tells me:
+
+ ar: supported targets: elf64-x86-64 elf32-i386 a.out-i386-netbsd 
+ coff-i386 efi-app-ia32 elf64-little elf64-big elf32-little elf32-big 
+ srec symbolsrec tekhex binary ihex netbsd-core
+
+But I have no idea how to try different targets. The GNU ar manual page 
+doesn't tell me much.
+
+Or how can I use modern pcc or gcc to compile old pre-ansi ar.c?
+
+Any suggestions?
+
+Now I found a simtools.zip via http://simh.trailing-edge.com/ which is 
+"a collection of tools for manipulating simulator file formats and for 
+cross-assembling code for the PDP-1, PDP-7, PDP-8, and PDP-11." But I am 
+not sure if this is related. On that note, any ideas how to extract 
+files from a ".tap" file used by simh? (For now I use view or strings to 
+look at it.)
+
+Thanks,
+
+  Jeremy C. Reed
+
+echo 'EhZ[h ^jjf0%%h[[Zc[Z_W$d[j%Xeeai%ZW[ced#]dk#f[d]k_d%' | \
+  tr            '#-~'            '\-.-{'
+
+
+
+From tfb at tfeb.org  Fri Apr  9 00:49:25 2010
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Thu, 8 Apr 2010 15:49:25 +0100
+Subject: [pups] extract old archive format?
+In-Reply-To: <alpine.NEB.2.01.1004080812010.13963@t1.m.reedmedia.net>
+References: <alpine.NEB.2.01.1004080812010.13963@t1.m.reedmedia.net>
+Message-ID: <8CEF458D-BC4F-4E9C-BCCF-FAA7CED67D73@tfeb.org>
+
+On 8 Apr 2010, at 14:25, Jeremy C. Reed wrote:
+
+> Anyone know what tool I can use on a modern *BSD or Linux system to
+> extract the files from an "old PDP-11" ar archive?
+
+I think the politically correct approach to this would clearly be:  
+install a PDP-11 simulator on the host, and a suitable Unix on it, and  
+unpack the archives with ar.
+
+Actually, that's wrong: the politically correct thing to do would be  
+to *buy a PDP-11*.  But that seems to be fairly hard nowadays.
+
+The former approach might be fairly practical though.
+
+
+From brantley at coraid.com  Fri Apr  9 01:16:27 2010
+From: brantley at coraid.com (Brantley Coile)
+Date: Thu, 8 Apr 2010 11:16:27 -0400
+Subject: [pups] extract old archive format?
+In-Reply-To: <alpine.NEB.2.01.1004080812010.13963@t1.m.reedmedia.net>
+References: <alpine.NEB.2.01.1004080812010.13963@t1.m.reedmedia.net>
+Message-ID: <0468D39C-5EDA-4B03-9300-B61C95FD029E@coraid.com>
+
+read the ar(1) entry in the 7th edition manual, located at ...
+
+http://plan9.bell-labs.com/7thEdMan/index.html
+
+and write the tiny bit of C it takes to read the archive.
+
+Brantley
+
+On Apr 8, 2010, at 9:25 AM, Jeremy C. Reed wrote:
+
+> I want to look in some .a files identified by file(1) as "old PDP-11 
+> archive".
+> 
+> Anyone know what tool I can use on a modern *BSD or Linux system to 
+> extract the files from an "old PDP-11" ar archive?
+> 
+> GNU ar complains "File format not recognized". ar tells me:
+> 
+> ar: supported targets: elf64-x86-64 elf32-i386 a.out-i386-netbsd 
+> coff-i386 efi-app-ia32 elf64-little elf64-big elf32-little elf32-big 
+> srec symbolsrec tekhex binary ihex netbsd-core
+> 
+> But I have no idea how to try different targets. The GNU ar manual page 
+> doesn't tell me much.
+> 
+> Or how can I use modern pcc or gcc to compile old pre-ansi ar.c?
+> 
+> Any suggestions?
+> 
+> Now I found a simtools.zip via http://simh.trailing-edge.com/ which is 
+> "a collection of tools for manipulating simulator file formats and for 
+> cross-assembling code for the PDP-1, PDP-7, PDP-8, and PDP-11." But I am 
+> not sure if this is related. On that note, any ideas how to extract 
+> files from a ".tap" file used by simh? (For now I use view or strings to 
+> look at it.)
+> 
+> Thanks,
+> 
+>  Jeremy C. Reed
+> 
+> echo 'EhZ[h ^jjf0%%h[[Zc[Z_W$d[j%Xeeai%ZW[ced#]dk#f[d]k_d%' | \
+>  tr            '#-~'            '\-.-{'
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/pups
+> 
+> 
+> 
+
+
+
+From rde at tavi.co.uk  Fri Apr  9 03:09:03 2010
+From: rde at tavi.co.uk (Bob Eager)
+Date: Thu, 8 Apr 2010 18:09:03 +0100
+Subject: [pups] extract old archive format?
+In-Reply-To: <alpine.NEB.2.01.1004080812010.13963@t1.m.reedmedia.net>
+References: <alpine.NEB.2.01.1004080812010.13963@t1.m.reedmedia.net>
+Message-ID: <20100408180903.0a649504@raksha.tavi.co.uk>
+
+On Thu, 8 Apr 2010 08:25:29 -0500 (CDT)
+"Jeremy C. Reed" <reed at reedmedia.net> wrote:
+
+> Anyone know what tool I can use on a modern *BSD or Linux system to 
+> extract the files from an "old PDP-11" ar archive?
+> 
+> GNU ar complains "File format not recognized". ar tells me:
+> 
+>  ar: supported targets: elf64-x86-64 elf32-i386 a.out-i386-netbsd 
+>  coff-i386 efi-app-ia32 elf64-little elf64-big elf32-little elf32-big 
+>  srec symbolsrec tekhex binary ihex netbsd-core
+
+The 'ar' format of that vintage is trivial, and documentation easily
+found. I wrote programs to read it back in 1976!
+
+A simple C program, or even an awk script, should do it.
+-- 
+Bob
+
+
+
+From norman at oclsc.org  Fri Apr  9 11:13:55 2010
+From: norman at oclsc.org (Norman Wilson)
+Date: Thu, 08 Apr 2010 21:13:55 -0400 (EDT)
+Subject: [pups] extract old archive format?
+Message-ID: <1270775431.29470.for-standards-violators@oclsc.org>
+
+Bob Eager:
+
+  The 'ar' format of that vintage is trivial, and documentation easily
+  found. I wrote programs to read it back in 1976!
+
+======
+
+That's nothing.  Either Ken or Dennis wrote such a program
+years before that!
+
+Warren even has a binary somewhere to prove it!
+
+Seriously, it's a binary format, so I don't know that
+it would be easy to process in awk.  (At least not in
+awk-classic; stuff that works only in ghootandwaveawk
+is not all that interesting to me.)  But the format is
+simple, and any language new or old that can handle
+binary data without tears should do.
+
+If I didn't have an overfull plate already (and a
+visit to the Auto-Electrocution Consultant tomorrow,
+and one to the Canal Rooting Clinic Monday--proving
+that one should follow Father's advice and Stay Away
+>From The Canal, Neddie) it would be interesting to
+collect the different specifications for ar headers
+over the years, and write a small suite of programs
+to read them.  Perhaps in Python, just to be difficult.
+(Why isn't there a language called Goon, Warren?)
+
+Norman Wilson
+Toronto ON
+(owwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww)
+
+
+From reed at reedmedia.net  Fri Apr  9 12:11:33 2010
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Thu, 8 Apr 2010 21:11:33 -0500 (CDT)
+Subject: [pups] extract old archive format?
+In-Reply-To: <1270775431.29470.for-standards-violators@oclsc.org>
+References: <1270775431.29470.for-standards-violators@oclsc.org>
+Message-ID: <alpine.NEB.2.01.1004082057300.13963@t1.m.reedmedia.net>
+
+On Thu, 8 Apr 2010, Norman Wilson wrote:
+
+> Bob Eager:
+> 
+>   The 'ar' format of that vintage is trivial, and documentation easily
+>   found. I wrote programs to read it back in 1976!
+> 
+> ======
+> 
+> That's nothing.  Either Ken or Dennis wrote such a program
+> years before that!
+> 
+> Warren even has a binary somewhere to prove it!
+> 
+> Seriously, it's a binary format, so I don't know that
+> it would be easy to process in awk.  (At least not in
+> awk-classic; stuff that works only in ghootandwaveawk
+> is not all that interesting to me.)  But the format is
+> simple, and any language new or old that can handle
+> binary data without tears should do.
+
+I can't see how to do it in awk either.
+
+> If I didn't have an overfull plate already (and a
+> visit to the Auto-Electrocution Consultant tomorrow,
+> and one to the Canal Rooting Clinic Monday--proving
+> that one should follow Father's advice and Stay Away
+> >>From The Canal, Neddie) it would be interesting to
+> collect the different specifications for ar headers
+> over the years, and write a small suite of programs
+> to read them.  Perhaps in Python, just to be difficult.
+> (Why isn't there a language called Goon, Warren?)
+
+Well I found the ar specification (in ar.5 not ar.1).
+
+             struct ar_hdr {
+                     char      ar_name[14];
+                     long      ar_date;
+                     char      ar_uid;
+                     char      ar_gid;
+                     int       ar_mode;
+                     long      ar_size;
+             };
+
+This is same as the old ar.c source.
+
+(plus more in the manual page.)
+
+Now my problem is I don't know what "long" or "int" is on the old PDP-11 
+/ system 5 this was made on.
+
+And I read about PDP-11 "middle endianess" (first time I heard of 
+"middle").
+
+So I had (wrong but gets ar_name and ar_size correct for my few tests 
+for the first header but chops two characters into the data section).
+
+struct {
+        char    ar_name[14];
+        int32_t ar_date;
+        char    ar_uid;
+        char    ar_gid;
+        uint16_t        ar_mode;
+        uint16_t        ar_size;
+} ar_buf;
+
+Well I know above is wrong because ar_size and ar_date should be the 
+same. But I get ar_size correct each time. But it also loses the next 
+two bytes from the data. So I am guessing I have some endian issue where 
+I am getting some things reversed.
+
+Any ideas?
+
+Note I am not using any system 5 or PDP-11 system. I am using a modern 
+little endian (amd64) system to extract the files that were created in 
+1970s.
+
+Once I figure out the structure and endianness (if applicable) I will 
+share back my code so others can extract ...
+
+
+From johnh at psych.usyd.edu.au  Fri Apr  9 12:40:44 2010
+From: johnh at psych.usyd.edu.au (John Holden)
+Date: Fri, 9 Apr 2010 12:40:44 +1000 (EST)
+Subject: [pups] extract old archive format?
+Message-ID: <201004090240.o392eigZ402010@psychwarp.psych.usyd.edu.au>
+
+
+> Well I found the ar specification (in ar.5 not ar.1).
+>
+>              struct ar_hdr {
+>                      char      ar_name[14];
+>                      long      ar_date;
+>                      char      ar_uid;
+>                      char      ar_gid;
+>                      int       ar_mode;
+>                      long      ar_size;
+>              };
+
+Endian should not be a problem on a Intel/AMD processor. More likely your C
+compiler is padding out the array for alignment. Try a '-fpack-struct' or
+more safely, read the elements individually rather than a structure.
+
+PS
+
+To check, see what 'sizeof (struct ar_hdr_)' returns.
+
+John
+
+
+From carl.lowenstein at gmail.com  Fri Apr  9 14:39:04 2010
+From: carl.lowenstein at gmail.com (Carl Lowenstein)
+Date: Thu, 8 Apr 2010 21:39:04 -0700
+Subject: [pups]  extract old archive format?
+In-Reply-To: <n2m5904d5731004082137u5b054823wd4a9ce55113b1dee@mail.gmail.com>
+References: <201004090240.o392eigZ402010@psychwarp.psych.usyd.edu.au>
+	<n2m5904d5731004082137u5b054823wd4a9ce55113b1dee@mail.gmail.com>
+Message-ID: <z2o5904d5731004082139v1498ef52pd36fc318437e04e7@mail.gmail.com>
+
+On Thu, Apr 8, 2010 at 7:40 PM, John  Holden <johnh at psych.usyd.edu.au> wrote:
+>
+>> Well I found the ar specification (in ar.5 not ar.1).
+>>
+>>              struct ar_hdr {
+>>                      char      ar_name[14];
+>>                      long      ar_date;
+>>                      char      ar_uid;
+>>                      char      ar_gid;
+>>                      int       ar_mode;
+>>                      long      ar_size;
+>>              };
+>
+> Endian should not be a problem on a Intel/AMD processor. More likely your C
+> compiler is padding out the array for alignment. Try a '-fpack-struct' or
+> more safely, read the elements individually rather than a structure.
+>
+
+In the PDP-11 long is 32 bits, int 16 bits.   And the PDP-11 is
+determinedly little-endian if you stick to integers.
+
+They got floating-point software right in 1971, but somebody screwed
+up the word order when building FP hardware, which led to the
+middle-endian mess.
+
+   carl
+--
+   carl lowenstein         marine physical lab     u.c. san diego
+                                                clowenstein at ucsd.edu
+
+
+From wkt at tuhs.org  Fri Apr  9 15:11:54 2010
+From: wkt at tuhs.org (Warren Toomey)
+Date: Fri, 9 Apr 2010 15:11:54 +1000
+Subject: [pups] extract old archive format?
+In-Reply-To: <alpine.NEB.2.01.1004080812010.13963@t1.m.reedmedia.net>
+References: <alpine.NEB.2.01.1004080812010.13963@t1.m.reedmedia.net>
+Message-ID: <20100409051154.GA7323@minnie.tuhs.org>
+
+On Thu, Apr 08, 2010 at 08:25:29AM -0500, Jeremy C. Reed wrote:
+> I want to look in some .a files identified by file(1) as "old PDP-11 
+> archive".
+> 
+> Anyone know what tool I can use on a modern *BSD or Linux system to 
+> extract the files from an "old PDP-11" ar archive?
+
+As an alternative to doing it by hand, you can compile and install my
+Apout user-mode simulator, then run a PDP-11 ar inside Apout. This gives
+you direct access to your normal filesystem, which makes extraction easier.
+
+The latest Apout can be found in the svn snapshot here:
+http://code.google.com/p/unix-jun72/downloads/list
+
+You will also need to grab some V7 binaries, at least /bin/sh and /bin/ar,
+from http://minnie.tuhs.org/Archive/PDP-11/Distributions/research/Henry_Spencer_v7/v7.tar.gz
+
+Cheers,
+	Warren
+
+
+From reed at reedmedia.net  Fri Apr  9 15:35:38 2010
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Fri, 9 Apr 2010 00:35:38 -0500 (CDT)
+Subject: [pups] extract old archive format?
+In-Reply-To: <337550.74945.qm@web82407.mail.mud.yahoo.com>
+References: <337550.74945.qm@web82407.mail.mud.yahoo.com>
+Message-ID: <alpine.NEB.2.01.1004090033570.13963@t1.m.reedmedia.net>
+
+On Thu, 8 Apr 2010, Michael Davidson wrote:
+
+> Your modern compiler is almost certainly inserting two bytes of padding
+> after ar_name[]
+> so that the int32_t ar_date is aligned on a 4 byte boundary - that shifts
+> everything else
+> down by 2 bytes and means that ar_size lines up with the last 2 bytes of the
+> size in
+> the header which, as luck would have it, is the low order 16 bits of the
+> size as it would
+> have been stored in a 32 bit long.
+> 
+> Something like this should work on a modern little endian processor"
+> 
+> struct {
+>         char    ar_name[14];
+>         int16_t ar_date_16_31;
+>         int16_t ar_date_00_15;
+>         char    ar_uid;
+>         char    ar_gid;
+>         uint16_t        ar_mode;
+>         uint16_t        ar_size_16_31;
+>         uint16_t        ar_size_00_15;
+> } ar_buf;
+
+Thank you! That works for me! I can now get correct sizes, names, and 
+data. I will clean up my little ar extractor over the next few days and 
+share it.
+
+From rde at tavi.co.uk  Fri Apr  9 15:49:00 2010
+From: rde at tavi.co.uk (Bob Eager)
+Date: Fri, 9 Apr 2010 06:49:00 +0100
+Subject: [pups] extract old archive format?
+In-Reply-To: <1270775431.29470.for-standards-violators@oclsc.org>
+References: <1270775431.29470.for-standards-violators@oclsc.org>
+Message-ID: <20100409064900.0c070313@raksha.tavi.co.uk>
+
+On Thu, 08 Apr 2010 21:13:55 -0400 (EDT)
+Norman Wilson <norman at oclsc.org> wrote:
+
+>   The 'ar' format of that vintage is trivial, and documentation easily
+>   found. I wrote programs to read it back in 1976!
+> 
+> ======
+> 
+> That's nothing.  Either Ken or Dennis wrote such a program
+> years before that!
+
+I know...I used it, in July 1976!
+
+Mine was in PDP-11 assembler, for a different operating system.
+
+> Seriously, it's a binary format, so I don't know that
+> it would be easy to process in awk.
+
+I forgot that the first version was partially binary, but still easy in
+most modern languages.
+
+If I had more time, I'd have a go...again!
+
+-- 
+Bob
+
+
+
+From bqt at softjar.se  Fri Apr  9 20:21:23 2010
+From: bqt at softjar.se (Johnny Billquist)
+Date: Fri, 09 Apr 2010 12:21:23 +0200
+Subject: [pups] extract old archive format?
+In-Reply-To: <201004090240.o392eigZ402010@psychwarp.psych.usyd.edu.au>
+References: <201004090240.o392eigZ402010@psychwarp.psych.usyd.edu.au>
+Message-ID: <4BBEFFA3.4050005@softjar.se>
+
+John Holden wrote:
+>> Well I found the ar specification (in ar.5 not ar.1).
+>>
+>>              struct ar_hdr {
+>>                      char      ar_name[14];
+>>                      long      ar_date;
+>>                      char      ar_uid;
+>>                      char      ar_gid;
+>>                      int       ar_mode;
+>>                      long      ar_size;
+>>              };
+> 
+> Endian should not be a problem on a Intel/AMD processor. More likely your C
+> compiler is padding out the array for alignment. Try a '-fpack-struct' or
+> more safely, read the elements individually rather than a structure.
+> 
+> PS
+> 
+> To check, see what 'sizeof (struct ar_hdr_)' returns.
+
+Well, you are correct in that aligment is a part of the problem. 
+However, endianess is also a problem with longs, since they are not 
+little-endian on a PDP11. :-)
+
+	Johnny
+
+
+From bqt at softjar.se  Fri Apr  9 20:15:03 2010
+From: bqt at softjar.se (Johnny Billquist)
+Date: Fri, 09 Apr 2010 12:15:03 +0200
+Subject: [pups] extract old archive format?
+In-Reply-To: <alpine.NEB.2.01.1004082057300.13963@t1.m.reedmedia.net>
+References: <1270775431.29470.for-standards-violators@oclsc.org>
+	<alpine.NEB.2.01.1004082057300.13963@t1.m.reedmedia.net>
+Message-ID: <4BBEFE27.1080104@softjar.se>
+
+Jeremy C. Reed wrote:
+> Well I found the ar specification (in ar.5 not ar.1).
+> 
+>              struct ar_hdr {
+>                      char      ar_name[14];
+>                      long      ar_date;
+>                      char      ar_uid;
+>                      char      ar_gid;
+>                      int       ar_mode;
+>                      long      ar_size;
+>              };
+
+Simple enough... :-)
+
+> This is same as the old ar.c source.
+> 
+> (plus more in the manual page.)
+> 
+> Now my problem is I don't know what "long" or "int" is on the old PDP-11 
+> / system 5 this was made on.
+
+An int on the pdp11 is 16 bits, and a long is 32.
+Remember? int is whatever size is most convenient for the architecture? :-)
+
+> And I read about PDP-11 "middle endianess" (first time I heard of 
+> "middle").
+
+A mess, but we have to live with it.
+In short, the bytes of a long on a PDP11 is likely laid out like this:
+3412
+
+So, the 16-bit values are each little-endian, but the 16 bit values as 
+such, in the 32-bit view, is laid out as big-endian.
+Thus middle-endian... :-)
+
+> So I had (wrong but gets ar_name and ar_size correct for my few tests 
+> for the first header but chops two characters into the data section).
+> 
+> struct {
+>         char    ar_name[14];
+>         int32_t ar_date;
+>         char    ar_uid;
+>         char    ar_gid;
+>         uint16_t        ar_mode;
+>         uint16_t        ar_size;
+> } ar_buf;
+> 
+> Well I know above is wrong because ar_size and ar_date should be the 
+> same. But I get ar_size correct each time. But it also loses the next 
+> two bytes from the data. So I am guessing I have some endian issue where 
+> I am getting some things reversed.
+> 
+> Any ideas?
+
+As others already said, it's your compiler trying to optimize the 
+alignments.
+One solution (already presented) is to just play with 16-bit values.
+You could also explain to the compiler that it shouldn't try to optimize 
+the alignments, but since you have to deal with the middle-endianess 
+anyway, you are probably better off just looking at 16-bit values and 
+combine them into 32-bit values as needed yourself.
+
+	Johnny
+
+
+
+From bqt at softjar.se  Fri Apr  9 20:23:35 2010
+From: bqt at softjar.se (Johnny Billquist)
+Date: Fri, 09 Apr 2010 12:23:35 +0200
+Subject: [pups] extract old archive format?
+In-Reply-To: <z2o5904d5731004082139v1498ef52pd36fc318437e04e7@mail.gmail.com>
+References: <201004090240.o392eigZ402010@psychwarp.psych.usyd.edu.au>	<n2m5904d5731004082137u5b054823wd4a9ce55113b1dee@mail.gmail.com>
+	<z2o5904d5731004082139v1498ef52pd36fc318437e04e7@mail.gmail.com>
+Message-ID: <4BBF0027.6060406@softjar.se>
+
+Carl Lowenstein wrote:
+> On Thu, Apr 8, 2010 at 7:40 PM, John  Holden <johnh at psych.usyd.edu.au> wrote:
+>>> Well I found the ar specification (in ar.5 not ar.1).
+>>>
+>>>              struct ar_hdr {
+>>>                      char      ar_name[14];
+>>>                      long      ar_date;
+>>>                      char      ar_uid;
+>>>                      char      ar_gid;
+>>>                      int       ar_mode;
+>>>                      long      ar_size;
+>>>              };
+>> Endian should not be a problem on a Intel/AMD processor. More likely your C
+>> compiler is padding out the array for alignment. Try a '-fpack-struct' or
+>> more safely, read the elements individually rather than a structure.
+>>
+> 
+> In the PDP-11 long is 32 bits, int 16 bits.   And the PDP-11 is
+> determinedly little-endian if you stick to integers.
+
+Um? Longs are integers, and they are middle-endian...
+
+> They got floating-point software right in 1971, but somebody screwed
+> up the word order when building FP hardware, which led to the
+> middle-endian mess.
+
+...but yes. The middle-endian long issue appeared with the FPP, since 
+that is the only hardware that deals natively with long integers.
+
+	Johnny
+
+
+
+From wkt at tuhs.org  Thu Apr  1 08:20:02 2010
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 1 Apr 2010 08:20:02 +1000
+Subject: [TUHS] Origins of drand48()?
+Message-ID: <20100331222002.GA28694@minnie.tuhs.org>
+
+I was idly going through the 1999 Swartz memo
+(http://www.groklaw.net/pdf/Swartz.pdf), wherein the source code of
+RedHat 5.2 and UnixWare are compared for similarities. Most of those
+are either bogus (just some #includes) or BSD-derived code. There is
+one file which is concerning: drand48.c. The RedHat 5.2 file is very
+similar to the UnixWare file, including headers and #ifdef's e.g.
+
+/*      @(#)drand48.c   2.2     */
+/*LINTLIBRARY*/
+/*
+ *      drand48, etc. pseudo-random number generator
+ *      This implementation assumes unsigned short integers of at least
+ *      16 bits, long integers of at least 32 bits, and ignores
+ *      overflows on adding or multiplying two unsigned integers.
+ *      Two's-complement representation is assumed in a few places.
+ *      Some extra masking is done if unsigneds are exactly 16 bits
+ *      or longs are exactly 32 bits, but so what?
+ *      An assembly-language implementation would run significantly faster.
+ */
+
+#include <stdlib.h>
+
+#ifndef HAVEFP
+#define HAVEFP 1
+#endif
+
+As far as I can determine, drand48() arrived in SysVR1 and is defined
+in the first SVID. It doesn't appear in SysIII, nor in the early BSDs.
+Can anybody shed some light on drand48()? Could it have been written
+elsewhere and made available e.g on a Usenix tape or comp.sources.*,
+and included into SysV, or is SysV the origin of the code?
+
+I'm sure the algorithm comes from elsewhere, e.g. Knuth, but the
+strong code similarity is a worry.
+
+Thanks,
+	Warren
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From cowan at ccil.org  Thu Apr  1 11:23:00 2010
+From: cowan at ccil.org (John Cowan)
+Date: Wed, 31 Mar 2010 21:23:00 -0400
+Subject: [TUHS] Origins of drand48()?
+In-Reply-To: <20100331222002.GA28694@minnie.tuhs.org>
+References: <20100331222002.GA28694@minnie.tuhs.org>
+Message-ID: <20100401012300.GJ17405@mercury.ccil.org>
+
+Warren Toomey scripsit:
+
+> As far as I can determine, drand48() arrived in SysVR1 and is defined
+> in the first SVID. It doesn't appear in SysIII, nor in the early BSDs.
+> Can anybody shed some light on drand48()? Could it have been written
+> elsewhere and made available e.g on a Usenix tape or comp.sources.*,
+> and included into SysV, or is SysV the origin of the code?
+
+FWIW, the code appears in OpenSolaris with an AT&T 1988 copyright header.
+It's been generified and given a CDDL license and Sun Microsystems 2008
+copyright header.
+
+There are a bunch of other copies floating around *without* an AT&T
+copyright, e.g.
+http://cs.nyu.edu/~yap/classes/visual/data/ply/cygwin-version/ply/drand48.c .
+
+> I'm sure the algorithm comes from elsewhere, e.g. Knuth, but the
+> strong code similarity is a worry.
+
+It's a linear congruential generator with multiplier 25214903917,
+addend 11, and modulus 2^48, so there's nothing special about that.
+LCGs are indeed discussed in Knuth volume 2.
+
+-- 
+John Cowan  cowan at ccil.org    http://ccil.org/~cowan
+Big as a house, much bigger than a house, it looked to [Sam], a grey-clad
+moving hill.  Fear and wonder, maybe, enlarged him in the hobbit's eyes,
+but the Mumak of Harad was indeed a beast of vast bulk, and the like of him
+does not walk now in Middle-earth; his kin that live still in latter days are
+but memories of his girth and his majesty.  --"Of Herbs and Stewed Rabbit"
+
+
+From cowan at ccil.org  Thu Apr  1 11:23:00 2010
+From: cowan at ccil.org (John Cowan)
+Date: Wed, 31 Mar 2010 21:23:00 -0400
+Subject: [TUHS] Origins of drand48()?
+In-Reply-To: <20100331222002.GA28694@minnie.tuhs.org>
+References: <20100331222002.GA28694@minnie.tuhs.org>
+Message-ID: <20100401012300.GJ17405@mercury.ccil.org>
+
+Warren Toomey scripsit:
+
+> As far as I can determine, drand48() arrived in SysVR1 and is defined
+> in the first SVID. It doesn't appear in SysIII, nor in the early BSDs.
+> Can anybody shed some light on drand48()? Could it have been written
+> elsewhere and made available e.g on a Usenix tape or comp.sources.*,
+> and included into SysV, or is SysV the origin of the code?
+
+FWIW, the code appears in OpenSolaris with an AT&T 1988 copyright header.
+It's been generified and given a CDDL license and Sun Microsystems 2008
+copyright header.
+
+There are a bunch of other copies floating around *without* an AT&T
+copyright, e.g.
+http://cs.nyu.edu/~yap/classes/visual/data/ply/cygwin-version/ply/drand48.c .
+
+> I'm sure the algorithm comes from elsewhere, e.g. Knuth, but the
+> strong code similarity is a worry.
+
+It's a linear congruential generator with multiplier 25214903917,
+addend 11, and modulus 2^48, so there's nothing special about that.
+LCGs are indeed discussed in Knuth volume 2.
+
+-- 
+John Cowan  cowan at ccil.org    http://ccil.org/~cowan
+Big as a house, much bigger than a house, it looked to [Sam], a grey-clad
+moving hill.  Fear and wonder, maybe, enlarged him in the hobbit's eyes,
+but the Mumak of Harad was indeed a beast of vast bulk, and the like of him
+does not walk now in Middle-earth; his kin that live still in latter days are
+but memories of his girth and his majesty.  --"Of Herbs and Stewed Rabbit"
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From lm at bitmover.com  Thu Apr  1 12:01:55 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Wed, 31 Mar 2010 19:01:55 -0700
+Subject: [TUHS] Origins of drand48()?
+In-Reply-To: <20100401012300.GJ17405@mercury.ccil.org>
+References: <20100331222002.GA28694@minnie.tuhs.org> <20100401012300.GJ17405@mercury.ccil.org>
+Message-ID: <20100401020155.GG18965@bitmover.com>
+
+Hi John.
+
+I suspect it is really ATT source.  There is a lot more of that around
+than people admit.
+
+I also suspect it doesn't matter.  Your points about how it works are
+part of it, but the bigger part is that Unix, at this point, has very
+little IP value.  It's mostly there in Linux et al.
+
+--lm
+
+On Wed, Mar 31, 2010 at 09:23:00PM -0400, John Cowan wrote:
+> Warren Toomey scripsit:
+> 
+> > As far as I can determine, drand48() arrived in SysVR1 and is defined
+> > in the first SVID. It doesn't appear in SysIII, nor in the early BSDs.
+> > Can anybody shed some light on drand48()? Could it have been written
+> > elsewhere and made available e.g on a Usenix tape or comp.sources.*,
+> > and included into SysV, or is SysV the origin of the code?
+> 
+> FWIW, the code appears in OpenSolaris with an AT&T 1988 copyright header.
+> It's been generified and given a CDDL license and Sun Microsystems 2008
+> copyright header.
+> 
+> There are a bunch of other copies floating around *without* an AT&T
+> copyright, e.g.
+> http://cs.nyu.edu/~yap/classes/visual/data/ply/cygwin-version/ply/drand48.c .
+> 
+> > I'm sure the algorithm comes from elsewhere, e.g. Knuth, but the
+> > strong code similarity is a worry.
+> 
+> It's a linear congruential generator with multiplier 25214903917,
+> addend 11, and modulus 2^48, so there's nothing special about that.
+> LCGs are indeed discussed in Knuth volume 2.
+> 
+> -- 
+> John Cowan  cowan at ccil.org    http://ccil.org/~cowan
+> Big as a house, much bigger than a house, it looked to [Sam], a grey-clad
+> moving hill.  Fear and wonder, maybe, enlarged him in the hobbit's eyes,
+> but the Mumak of Harad was indeed a beast of vast bulk, and the like of him
+> does not walk now in Middle-earth; his kin that live still in latter days are
+> but memories of his girth and his majesty.  --"Of Herbs and Stewed Rabbit"
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From lm at bitmover.com  Thu Apr  1 12:01:55 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Wed, 31 Mar 2010 19:01:55 -0700
+Subject: [TUHS] Origins of drand48()?
+In-Reply-To: <20100401012300.GJ17405@mercury.ccil.org>
+References: <20100331222002.GA28694@minnie.tuhs.org>
+	<20100401012300.GJ17405@mercury.ccil.org>
+Message-ID: <20100401020155.GG18965@bitmover.com>
+
+Hi John.
+
+I suspect it is really ATT source.  There is a lot more of that around
+than people admit.
+
+I also suspect it doesn't matter.  Your points about how it works are
+part of it, but the bigger part is that Unix, at this point, has very
+little IP value.  It's mostly there in Linux et al.
+
+--lm
+
+On Wed, Mar 31, 2010 at 09:23:00PM -0400, John Cowan wrote:
+> Warren Toomey scripsit:
+> 
+> > As far as I can determine, drand48() arrived in SysVR1 and is defined
+> > in the first SVID. It doesn't appear in SysIII, nor in the early BSDs.
+> > Can anybody shed some light on drand48()? Could it have been written
+> > elsewhere and made available e.g on a Usenix tape or comp.sources.*,
+> > and included into SysV, or is SysV the origin of the code?
+> 
+> FWIW, the code appears in OpenSolaris with an AT&T 1988 copyright header.
+> It's been generified and given a CDDL license and Sun Microsystems 2008
+> copyright header.
+> 
+> There are a bunch of other copies floating around *without* an AT&T
+> copyright, e.g.
+> http://cs.nyu.edu/~yap/classes/visual/data/ply/cygwin-version/ply/drand48.c .
+> 
+> > I'm sure the algorithm comes from elsewhere, e.g. Knuth, but the
+> > strong code similarity is a worry.
+> 
+> It's a linear congruential generator with multiplier 25214903917,
+> addend 11, and modulus 2^48, so there's nothing special about that.
+> LCGs are indeed discussed in Knuth volume 2.
+> 
+> -- 
+> John Cowan  cowan at ccil.org    http://ccil.org/~cowan
+> Big as a house, much bigger than a house, it looked to [Sam], a grey-clad
+> moving hill.  Fear and wonder, maybe, enlarged him in the hobbit's eyes,
+> but the Mumak of Harad was indeed a beast of vast bulk, and the like of him
+> does not walk now in Middle-earth; his kin that live still in latter days are
+> but memories of his girth and his majesty.  --"Of Herbs and Stewed Rabbit"
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From imp at bsdimp.com  Thu Apr  1 12:23:31 2010
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Wed, 31 Mar 2010 20:23:31 -0600 (MDT)
+Subject: [TUHS] Origins of drand48()?
+In-Reply-To: <20100401020155.GG18965@bitmover.com>
+References: <20100331222002.GA28694@minnie.tuhs.org>
+	<20100401012300.GJ17405@mercury.ccil.org>
+	<20100401020155.GG18965@bitmover.com>
+Message-ID: <20100331.202331.777595655388716461.imp@bsdimp.com>
+
+In message: <20100401020155.GG18965 at bitmover.com>
+            Larry McVoy <lm at bitmover.com> writes:
+: I suspect it is really ATT source.  There is a lot more of that around
+: than people admit.
+
+Yea.  Lots of snippets make their way into all kinds of different
+systems.  Linux and BSD, although much of what's in the latter was
+been blessed by USL and has their copyright notice (and permission to
+copy).
+
+: I also suspect it doesn't matter.  Your points about how it works are
+: part of it, but the bigger part is that Unix, at this point, has very
+: little IP value.  It's mostly there in Linux et al.
+
+This is also true.  Part of the problem here too is that it isn't
+clear that this code is actually copyrighted or not.  This was part of
+the AT&T vs BSD case: due to lack of copyright notices, many works
+that AT&T thought they had a copyright on they don't.  This is one of
+the main reasons why they settled the suit with Berkeley....  Of
+course, in this instance, if Warren can't find it in the BSD archives,
+then it likely wasn't in 32V...
+
+Warner
+
+
+: --lm
+: 
+: On Wed, Mar 31, 2010 at 09:23:00PM -0400, John Cowan wrote:
+: > Warren Toomey scripsit:
+: > 
+: > > As far as I can determine, drand48() arrived in SysVR1 and is defined
+: > > in the first SVID. It doesn't appear in SysIII, nor in the early BSDs.
+: > > Can anybody shed some light on drand48()? Could it have been written
+: > > elsewhere and made available e.g on a Usenix tape or comp.sources.*,
+: > > and included into SysV, or is SysV the origin of the code?
+: > 
+: > FWIW, the code appears in OpenSolaris with an AT&T 1988 copyright header.
+: > It's been generified and given a CDDL license and Sun Microsystems 2008
+: > copyright header.
+: > 
+: > There are a bunch of other copies floating around *without* an AT&T
+: > copyright, e.g.
+: > http://cs.nyu.edu/~yap/classes/visual/data/ply/cygwin-version/ply/drand48.c .
+: > 
+: > > I'm sure the algorithm comes from elsewhere, e.g. Knuth, but the
+: > > strong code similarity is a worry.
+: > 
+: > It's a linear congruential generator with multiplier 25214903917,
+: > addend 11, and modulus 2^48, so there's nothing special about that.
+: > LCGs are indeed discussed in Knuth volume 2.
+: > 
+: > -- 
+: > John Cowan  cowan at ccil.org    http://ccil.org/~cowan
+: > Big as a house, much bigger than a house, it looked to [Sam], a grey-clad
+: > moving hill.  Fear and wonder, maybe, enlarged him in the hobbit's eyes,
+: > but the Mumak of Harad was indeed a beast of vast bulk, and the like of him
+: > does not walk now in Middle-earth; his kin that live still in latter days are
+: > but memories of his girth and his majesty.  --"Of Herbs and Stewed Rabbit"
+: > _______________________________________________
+: > TUHS mailing list
+: > TUHS at minnie.tuhs.org
+: > https://minnie.tuhs.org/mailman/listinfo/tuhs
+: 
+: -- 
+: ---
+: Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+: _______________________________________________
+: TUHS mailing list
+: TUHS at minnie.tuhs.org
+: https://minnie.tuhs.org/mailman/listinfo/tuhs
+: 
+: 
+
+
+From imp at bsdimp.com  Thu Apr  1 12:23:31 2010
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Wed, 31 Mar 2010 20:23:31 -0600 (MDT)
+Subject: [TUHS] Origins of drand48()?
+In-Reply-To: <20100401020155.GG18965@bitmover.com>
+References: <20100331222002.GA28694@minnie.tuhs.org>
+	<20100401012300.GJ17405@mercury.ccil.org>
+	<20100401020155.GG18965@bitmover.com>
+Message-ID: <20100331.202331.777595655388716461.imp@bsdimp.com>
+
+In message: <20100401020155.GG18965 at bitmover.com>
+            Larry McVoy <lm at bitmover.com> writes:
+: I suspect it is really ATT source.  There is a lot more of that around
+: than people admit.
+
+Yea.  Lots of snippets make their way into all kinds of different
+systems.  Linux and BSD, although much of what's in the latter was
+been blessed by USL and has their copyright notice (and permission to
+copy).
+
+: I also suspect it doesn't matter.  Your points about how it works are
+: part of it, but the bigger part is that Unix, at this point, has very
+: little IP value.  It's mostly there in Linux et al.
+
+This is also true.  Part of the problem here too is that it isn't
+clear that this code is actually copyrighted or not.  This was part of
+the AT&T vs BSD case: due to lack of copyright notices, many works
+that AT&T thought they had a copyright on they don't.  This is one of
+the main reasons why they settled the suit with Berkeley....  Of
+course, in this instance, if Warren can't find it in the BSD archives,
+then it likely wasn't in 32V...
+
+Warner
+
+
+: --lm
+: 
+: On Wed, Mar 31, 2010 at 09:23:00PM -0400, John Cowan wrote:
+: > Warren Toomey scripsit:
+: > 
+: > > As far as I can determine, drand48() arrived in SysVR1 and is defined
+: > > in the first SVID. It doesn't appear in SysIII, nor in the early BSDs.
+: > > Can anybody shed some light on drand48()? Could it have been written
+: > > elsewhere and made available e.g on a Usenix tape or comp.sources.*,
+: > > and included into SysV, or is SysV the origin of the code?
+: > 
+: > FWIW, the code appears in OpenSolaris with an AT&T 1988 copyright header.
+: > It's been generified and given a CDDL license and Sun Microsystems 2008
+: > copyright header.
+: > 
+: > There are a bunch of other copies floating around *without* an AT&T
+: > copyright, e.g.
+: > http://cs.nyu.edu/~yap/classes/visual/data/ply/cygwin-version/ply/drand48.c .
+: > 
+: > > I'm sure the algorithm comes from elsewhere, e.g. Knuth, but the
+: > > strong code similarity is a worry.
+: > 
+: > It's a linear congruential generator with multiplier 25214903917,
+: > addend 11, and modulus 2^48, so there's nothing special about that.
+: > LCGs are indeed discussed in Knuth volume 2.
+: > 
+: > -- 
+: > John Cowan  cowan at ccil.org    http://ccil.org/~cowan
+: > Big as a house, much bigger than a house, it looked to [Sam], a grey-clad
+: > moving hill.  Fear and wonder, maybe, enlarged him in the hobbit's eyes,
+: > but the Mumak of Harad was indeed a beast of vast bulk, and the like of him
+: > does not walk now in Middle-earth; his kin that live still in latter days are
+: > but memories of his girth and his majesty.  --"Of Herbs and Stewed Rabbit"
+: > _______________________________________________
+: > TUHS mailing list
+: > TUHS at minnie.tuhs.org
+: > https://minnie.tuhs.org/mailman/listinfo/tuhs
+: 
+: -- 
+: ---
+: Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+: _______________________________________________
+: TUHS mailing list
+: TUHS at minnie.tuhs.org
+: https://minnie.tuhs.org/mailman/listinfo/tuhs
+: 
+: 
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From m_d at pacbell.net  Thu Apr  1 17:06:37 2010
+From: m_d at pacbell.net (Michael Davidson)
+Date: Thu, 1 Apr 2010 00:06:37 -0700 (PDT)
+Subject: [TUHS] Origins of drand48()?
+In-Reply-To: <20100401020155.GG18965@bitmover.com>
+Message-ID: <926194.30039.qm@web82407.mail.mud.yahoo.com>
+
+I suspect that Larry is almost certainly correct and, as best I can recall I
+came to exactly the same conclusion when I looked at it some 12 years
+or so ago.
+
+The old SCO may have been hoping to find some evidence that Linux had
+in some way used some copyrighted UNIX source code, but management
+was neither completely clueless or insane and it was perfectly obvious to
+everyone that looked at Bob Swartz's report that there was simply nothing
+of any significance there. 
+
+md
+
+
+
+md
+
+--- On Wed, 3/31/10, Larry McVoy <lm at bitmover.com> wrote:
+
+From: Larry McVoy <lm at bitmover.com>
+Subject: Re: [TUHS] Origins of drand48()?
+To: "John Cowan" <cowan at ccil.org>
+Cc: tuhs at tuhs.org, "Warren Toomey" <wkt at tuhs.org>
+Date: Wednesday, March 31, 2010, 7:01 PM
+
+Hi John.
+
+I suspect it is really ATT source.  There is a lot more of that around
+than people admit.
+
+I also suspect it doesn't matter.  Your points about how it works are
+part of it, but the bigger part is that Unix, at this point, has very
+little IP value.  It's mostly there in Linux et al.
+
+--lm
+
+On Wed, Mar 31, 2010 at 09:23:00PM -0400, John Cowan wrote:
+> Warren Toomey scripsit:
+> 
+> > As far as I can determine, drand48() arrived in SysVR1 and is defined
+> > in the first SVID. It doesn't appear in SysIII, nor in the early BSDs.
+> > Can anybody shed some light on drand48()? Could it have been written
+> > elsewhere and made available e.g on a Usenix tape or comp.sources.*,
+> > and included into SysV, or is SysV the origin of the code?
+> 
+> FWIW, the code appears in OpenSolaris with an AT&T 1988 copyright header.
+> It's been generified and given a CDDL license and Sun Microsystems 2008
+> copyright header.
+> 
+> There are a bunch of other copies floating around *without* an AT&T
+> copyright, e.g.
+> http://cs.nyu.edu/~yap/classes/visual/data/ply/cygwin-version/ply/drand48.c .
+> 
+> > I'm sure the algorithm comes from elsewhere, e.g. Knuth, but the
+> > strong code similarity is a worry.
+> 
+> It's a linear congruential generator with multiplier 25214903917,
+> addend 11, and modulus 2^48, so there's nothing special about that.
+> LCGs are indeed discussed in Knuth volume 2.
+> 
+> -- 
+> John Cowan  cowan at ccil.org    http://ccil.org/~cowan
+> Big as a house, much bigger than a house, it looked to [Sam], a grey-clad
+> moving hill.  Fear and wonder, maybe, enlarged him in the hobbit's eyes,
+> but the Mumak of Harad was indeed a beast of vast bulk, and the like of him
+> does not walk now in Middle-earth; his kin that live still in latter days are
+> but memories of his girth and his majesty.  --"Of Herbs and Stewed Rabbit"
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100401/e2327b13/attachment.html>
+
+From cyrille.lefevre-lists at laposte.net  Fri Apr  2 09:39:19 2010
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Fri, 02 Apr 2010 01:39:19 +0200
+Subject: [TUHS] Origins of drand48()?
+In-Reply-To: <20100331222002.GA28694@minnie.tuhs.org>
+References: <20100331222002.GA28694@minnie.tuhs.org>
+Message-ID: <4BB52EA7.3000006@laposte.net>
+
+
+Warren Toomey a écrit :
+> I was idly going through the 1999 Swartz memo
+> (http://www.groklaw.net/pdf/Swartz.pdf), wherein the source code of
+> RedHat 5.2 and UnixWare are compared for similarities. Most of those
+> are either bogus (just some #includes) or BSD-derived code. There is
+> one file which is concerning: drand48.c. The RedHat 5.2 file is very
+> similar to the UnixWare file, including headers and #ifdef's e.g.
+> 
+> /*      @(#)drand48.c   2.2     */
+> /*LINTLIBRARY*/
+> /*
+>  *      drand48, etc. pseudo-random number generator
+>  *      This implementation assumes unsigned short integers of at least
+>  *      16 bits, long integers of at least 32 bits, and ignores
+>  *      overflows on adding or multiplying two unsigned integers.
+>  *      Two's-complement representation is assumed in a few places.
+>  *      Some extra masking is done if unsigneds are exactly 16 bits
+>  *      or longs are exactly 32 bits, but so what?
+>  *      An assembly-language implementation would run significantly faster.
+>  */
+> 
+> As far as I can determine, drand48() arrived in SysVR1 and is defined
+> in the first SVID. It doesn't appear in SysIII, nor in the early BSDs.
+> Can anybody shed some light on drand48()? Could it have been written
+> elsewhere and made available e.g on a Usenix tape or comp.sources.*,
+> and included into SysV, or is SysV the origin of the code?
+
+Hi Warern,
+
+the older (c) I found is 1984, but SVR1 seems to be born in 1983 !
+(http://en.wikipedia.org/wiki/UNIX_System_V say SVR2 is 1984)
+as far as I recall me, SVID1 is SVR2, not SVR1.
+(http://en.wikipedia.org/wiki/SVID say SVID1 is 1985)
+
+11231 1995-07-18 23:34 ./aix/4.1.3/bos/usr/ccs/lib/libc/drand48.c
+  * Copyright (c) 1984 AT&T
+  * All Rights Reserved
+...
+  * drand48.c    1.7  com/lib/c/gen,3.1,8943 10/11/89 13:47:39
+
+  4163 1989-09-21 22:59 ./irix/3.7/lib/libc/common/gen/drand48.c
+no cpyr
+
+  5627 1999-12-03 09:24 ./irix/6.5.5/f/irix/lib/libc/src/math/drand48.c
+  5627 1999-12-03 09:31 ./irix/6.5.5/m/irix/lib/libc/src/math/drand48.c
+/*      Copyright (c) 1990, 1991 UNIX System Laboratories, Inc. */
+/*      Copyright (c) 1988 AT&T */
+/*        All Rights Reserved   */
+...
+  * Copyright 1995, Silicon Graphics, Inc.
+  * All Rights Reserved.
+...
+  * Reimplementation of drand48 using 64-bit arithmetic.  Drand48 is
+  *  a 48-bit linear congruential random number generator,
+...
+
+12882 1994-03-02 17:46 
+./osf1/osf1src/usr/opt/OSC200/src/usr/ccs/lib/libc/drand48.c
+  * *    Copyright (c) Digital Equipment Corporation, 1991, 1994    *
+...
+  * (c) Copyright 1990, 1991, 1992, 1993 OPEN SOFTWARE FOUNDATION, INC.
+  * ALL RIGHTS RESERVED
+...
+  * (C) COPYRIGHT International Business Machines Corp. 1985, 1989
+  * All Rights Reserved
+...
+  * Copyright (c) 1984 AT&T
+  * All Rights Reserved
+...
+  * drand48.c    1.7  com/lib/c/gen,3.1,8943 10/11/89 13:47:39
+
+  3279 1997-01-10 18:05 
+./solaris/Solaris_2.6/os_net/src_ws/usr/src/lib/libbc/libc/gen/common/drand48.c
+no cpyr
+#pragma ident   "@(#)drand48.c  1.4     96/05/05 SMI" /* from S5R2 2.2 */
+
+  5101 1997-01-10 18:05 
+./solaris/Solaris_2.6/os_net/src_ws/usr/src/lib/libc/port/gen/drand48.c
+/*      Copyright (c) 1988 AT&T */
+/*        All Rights Reserved   */
+...
+#ident  "@(#)drand48.c  1.12    96/05/05 SMI"   /* SVr4.0 2.4.1.7       */
+
+  5281 2000-10-14 18:08 
+./solaris/Solaris_2.8/osnet_volume/usr/src/lib/libc/port/gen/drand48.c
+/*      Copyright (c) 1988 AT&T */
+/*        All Rights Reserved   */
+...
+  * Copyright(c) 1996, by Sun Microsystems, Inc.
+  * All rights reserved.
+...
+#pragma ident   "@(#)drand48.c  1.14    96/11/15 SMI"   /* SVr4.0 2.4.1.7 */
+
+  4247 1995-01-18 18:53 ./sunos/solaris_112/lib/libc/gen/common/drand48.c
+no cpyr
+static  char sccsid[] = "@(#)drand48.c 1.1 94/10/31 SMI"; /* from S5R2 
+2.2 */
+
+  4147 1992-07-22 17:26 ./ultrix/lib/libc/gen/drand48.c
+/*      @(#)drand48.c   2.2     */
+
+  4745 1994-01-23 00:02 ./usl/src/common/lib/libc/port/gen/drand48.c
+/*      Copyright (c) 1990, 1991, 1992 UNIX System Laboratories, Inc.   */
+/*      Copyright (c) 1988, 1990 AT&T   */
+/*        All Rights Reserved   */
+...
+#ident  "@(#)libc-port:gen/drand48.c    2.4.2.1"
+
+4514 Jan 23  1988 
+./PDP-11/Distributions/dec/Ultrix-3.1-src/ultrix11-src.tar.gz/src/libc/sysV/drand48.c
+  *   Copyright (c) Digital Equipment Corporation 1984, 1985, 1986.    *
+  *   All Rights Reserved.                                             *
+...
+/*      SCCSID: @(#)drand48.c   3.0     4/22/86 */
+/*      (System 5)      2.2     */
+
+Regards,
+
+Cyrille Lefevre
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From cowan at ccil.org  Fri Apr  2 10:17:14 2010
+From: cowan at ccil.org (John Cowan)
+Date: Thu, 1 Apr 2010 20:17:14 -0400
+Subject: [TUHS] Origins of drand48()?
+In-Reply-To: <4BB52EA7.3000006@laposte.net>
+References: <20100331222002.GA28694@minnie.tuhs.org>
+	<4BB52EA7.3000006@laposte.net>
+Message-ID: <20100402001714.GQ17405@mercury.ccil.org>
+
+Cyrille Lefevre scripsit:
+
+> the older (c) I found is 1984, but SVR1 seems to be born in 1983 !
+> (http://en.wikipedia.org/wiki/UNIX_System_V say SVR2 is 1984)
+> as far as I recall me, SVID1 is SVR2, not SVR1.
+> (http://en.wikipedia.org/wiki/SVID say SVID1 is 1985)
+
+In any case, the code is in a practical sense unencumbered due to the
+release of OpenSolaris, because it's embedded inside the OpenSolaris
+wrapper essentially unchanged.
+
+-- 
+Is a chair finely made tragic or comic? Is the          John Cowan
+portrait of Mona Lisa good if I desire to see           cowan at ccil.org
+it? Is the bust of Sir Philip Crampton lyrical,         http://ccil.org/~cowan
+epical or dramatic?  If a man hacking in fury
+at a block of wood make there an image of a cow,
+is that image a work of art? If not, why not?               --Stephen Dedalus
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From lm at bitmover.com  Fri Apr  2 10:39:35 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Thu, 1 Apr 2010 17:39:35 -0700
+Subject: [TUHS] Origins of drand48()?
+In-Reply-To: <20100402001714.GQ17405@mercury.ccil.org>
+References: <20100331222002.GA28694@minnie.tuhs.org>
+	<4BB52EA7.3000006@laposte.net>
+	<20100402001714.GQ17405@mercury.ccil.org>
+Message-ID: <20100402003935.GB18748@bitmover.com>
+
+For the record, I'd be a little careful with what you state here.
+I've been here for a while and there has been stuff flying by that 
+makes me cringe.
+
+I'd like Unix to be free too, see 
+
+	http://bitmover.com/lm/papers/srcos.html
+
+but I also respect copyright and other IP laws.
+
+I'm somewhat alarmed by what's flying by.  Not from you, John, but others.
+Like it or not, those companies have rights.  And also for the record,
+I looked over the code in the SCO thing, and they were right IMHO.
+Just too stupid to prove it.
+
+On Thu, Apr 01, 2010 at 08:17:14PM -0400, John Cowan wrote:
+> Cyrille Lefevre scripsit:
+> 
+> > the older (c) I found is 1984, but SVR1 seems to be born in 1983 !
+> > (http://en.wikipedia.org/wiki/UNIX_System_V say SVR2 is 1984)
+> > as far as I recall me, SVID1 is SVR2, not SVR1.
+> > (http://en.wikipedia.org/wiki/SVID say SVID1 is 1985)
+> 
+> In any case, the code is in a practical sense unencumbered due to the
+> release of OpenSolaris, because it's embedded inside the OpenSolaris
+> wrapper essentially unchanged.
+> 
+> -- 
+> Is a chair finely made tragic or comic? Is the          John Cowan
+> portrait of Mona Lisa good if I desire to see           cowan at ccil.org
+> it? Is the bust of Sir Philip Crampton lyrical,         http://ccil.org/~cowan
+> epical or dramatic?  If a man hacking in fury
+> at a block of wood make there an image of a cow,
+> is that image a work of art? If not, why not?               --Stephen Dedalus
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From neozeed at gmail.com  Fri Apr  2 11:10:46 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Thu, 1 Apr 2010 21:10:46 -0400
+Subject: [TUHS] Origins of drand48()?
+In-Reply-To: <20100402003935.GB18748@bitmover.com>
+Message-ID: <4bb5441d.2a7ae70a.0b03.ffffa66f@mx.google.com>
+
+A year ago I called novell asking for a sysv license... They had no idea what I was talking about...
+
+Do you think it's either worth regressing sol10 to it's older state by chopping stuff out, or calling novel again?
+
+I know I was lucky to get a hobbiest sysIII license back from old sco (lol is that even valid??????)
+
+Unix got fun when it got more open, but now it feels like the lawyers are going to lock it all up again...
+
+
+
+
+
+-- Sent from my Palm Prē
+On Apr 1, 2010 8:39 PM, Larry McVoy &lt;lm at bitmover.com&gt; wrote: 
+
+For the record, I'd be a little careful with what you state here.
+
+I've been here for a while and there has been stuff flying by that 
+
+makes me cringe.
+
+
+
+I'd like Unix to be free too, see 
+
+
+
+	http://bitmover.com/lm/papers/srcos.html
+
+
+
+but I also respect copyright and other IP laws.
+
+
+
+I'm somewhat alarmed by what's flying by.  Not from you, John, but others.
+
+Like it or not, those companies have rights.  And also for the record,
+
+I looked over the code in the SCO thing, and they were right IMHO.
+
+Just too stupid to prove it.
+
+
+
+On Thu, Apr 01, 2010 at 08:17:14PM -0400, John Cowan wrote:
+
+&gt; Cyrille Lefevre scripsit:
+
+&gt; 
+
+&gt; &gt; the older (c) I found is 1984, but SVR1 seems to be born in 1983 !
+
+&gt; &gt; (http://en.wikipedia.org/wiki/UNIX_System_V say SVR2 is 1984)
+
+&gt; &gt; as far as I recall me, SVID1 is SVR2, not SVR1.
+
+&gt; &gt; (http://en.wikipedia.org/wiki/SVID say SVID1 is 1985)
+
+&gt; 
+
+&gt; In any case, the code is in a practical sense unencumbered due to the
+
+&gt; release of OpenSolaris, because it's embedded inside the OpenSolaris
+
+&gt; wrapper essentially unchanged.
+
+&gt; 
+
+&gt; -- 
+
+&gt; Is a chair finely made tragic or comic? Is the          John Cowan
+
+&gt; portrait of Mona Lisa good if I desire to see           cowan at ccil.org
+
+&gt; it? Is the bust of Sir Philip Crampton lyrical,         http://ccil.org/~cowan
+
+&gt; epical or dramatic?  If a man hacking in fury
+
+&gt; at a block of wood make there an image of a cow,
+
+&gt; is that image a work of art? If not, why not?               --Stephen Dedalus
+
+&gt; _______________________________________________
+
+&gt; TUHS mailing list
+
+&gt; TUHS at minnie.tuhs.org
+
+&gt; https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+-- 
+
+---
+
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+_______________________________________________
+
+TUHS mailing list
+
+TUHS at minnie.tuhs.org
+
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100401/8be5244e/attachment.html>
+-------------- next part --------------
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+From madcrow.maxwell at gmail.com  Fri Apr  2 11:56:34 2010
+From: madcrow.maxwell at gmail.com (Michael Kerpan)
+Date: Thu, 1 Apr 2010 21:56:34 -0400
+Subject: [TUHS] Now that Novell officially owns Unix again...
+Message-ID: <u2x8dd2d95c1004011856q7bdde73bl6b44c15a49b54726@mail.gmail.com>
+
+Is anything likely to happen to the status of various historical
+Unices? Is Novell likely to keep the Ancient Unix license intact or
+are they likely to lock things back up? Is there any chance that
+SysIII and early SysV might finally get opened up? Does anybody have
+any ideas here?
+
+Mike
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From madcrow.maxwell at gmail.com  Fri Apr  2 11:58:38 2010
+From: madcrow.maxwell at gmail.com (Michael Kerpan)
+Date: Thu, 1 Apr 2010 21:58:38 -0400
+Subject: [TUHS] Now that Novell officially owns Unix again...
+Message-ID: <w2r8dd2d95c1004011858qec3ad89ai6b81f6f724e0ffb4@mail.gmail.com>
+
+Is anything likely to happen to the status of various historical
+Unices? Is Novell likely to keep the Ancient Unix license intact or
+are they likely to lock things back up? Is there any chance that
+SysIII and early SysV might finally get opened up? Does anybody have
+any ideas here?
+
+Mike
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From imp at bsdimp.com  Fri Apr  2 14:55:54 2010
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Thu, 01 Apr 2010 22:55:54 -0600 (MDT)
+Subject: [TUHS] Now that Novell officially owns Unix again...
+In-Reply-To: <u2x8dd2d95c1004011856q7bdde73bl6b44c15a49b54726@mail.gmail.com>
+References: <u2x8dd2d95c1004011856q7bdde73bl6b44c15a49b54726@mail.gmail.com>
+Message-ID: <20100401.225554.1000278277145502246.imp@bsdimp.com>
+
+In message: <u2x8dd2d95c1004011856q7bdde73bl6b44c15a49b54726 at mail.gmail.com>
+            Michael Kerpan <madcrow.maxwell at gmail.com> writes:
+: Is anything likely to happen to the status of various historical
+: Unices? Is Novell likely to keep the Ancient Unix license intact or
+: are they likely to lock things back up? Is there any chance that
+: SysIII and early SysV might finally get opened up? Does anybody have
+: any ideas here?
+
+It is unlikely anything will happen before the Novel/SCO case is
+completely over.  All that has happened is that a key verdict on one
+aspect of the case has been rendered.  In all likelihood, Novel will
+likely end up on top, but until the litigation is actually over, they
+are unlikely to do anything.
+
+Warner
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From wkt at tuhs.org  Fri Apr  2 21:22:11 2010
+From: wkt at tuhs.org (Warren Toomey)
+Date: Fri, 2 Apr 2010 21:22:11 +1000
+Subject: [TUHS] mailing list archive test, please ignore
+Message-ID: <20100402112211.GA20924@minnie.tuhs.org>
+
+Several people have noticed that the web archive for the TUHS mailing list
+had stopped at June 2009, which was when I migrated over to another box.
+Looks like I had a perms problem, which should be now fixed, but this e-mail
+is just to test that it is indeed fixed. Please ignore, and/or browse the
+old mail at http://minnie.tuhs.org/pipermail/tuhs/ :-)
+
+Cheers,
+	Warren
+
+
+From madcrow.maxwell at gmail.com  Sat Apr  3 02:19:28 2010
+From: madcrow.maxwell at gmail.com (Michael Kerpan)
+Date: Fri, 2 Apr 2010 12:19:28 -0400
+Subject: [TUHS] Now that Novell officially owns Unix again...
+In-Reply-To: <20100401.225554.1000278277145502246.imp@bsdimp.com>
+References: <u2x8dd2d95c1004011856q7bdde73bl6b44c15a49b54726@mail.gmail.com>
+	<20100401.225554.1000278277145502246.imp@bsdimp.com>
+Message-ID: <r2p8dd2d95c1004020919w9930b5ecn2e1f2ebe163f2108@mail.gmail.com>
+
+On Fri, Apr 2, 2010 at 12:55 AM, M. Warner Losh <imp at bsdimp.com> wrote:
+
+> It is unlikely anything will happen before the Novel/SCO case is
+> completely over.  All that has happened is that a key verdict on one
+> aspect of the case has been rendered.  In all likelihood, Novel will
+> likely end up on top, but until the litigation is actually over, they
+> are unlikely to do anything.
+>
+> Warner
+>
+
+I realize that until things go through appeals and all, none of this
+is final. I was just wondering whether we should be worried,
+optimistic or indifferent about what will happen to the status of
+historical Unix once the dust settles.
+
+Mike
+
+
+From jrvalverde at cnb.csic.es  Wed Apr  7 21:53:50 2010
+From: jrvalverde at cnb.csic.es (Jose R. Valverde)
+Date: Wed, 7 Apr 2010 13:53:50 +0200
+Subject: [TUHS] SYSIII
+In-Reply-To: <46b366131001121904x6285f755h834bf50c3c7bbce7@mail.gmail.com>
+References: <46b366131001121904x6285f755h834bf50c3c7bbce7@mail.gmail.com>
+Message-ID: <20100407135350.269d5d88@cnb.csic.es>
+
+Got you on that. I succeeded on running SysIII for PDP 11 on SIMH on 2008.
+
+I think I left a note here, but just in case, I kept all the instruction on
+how to do it. BTW, there is another, similar road described in betaarchive.co.uk
+forums for SysIII on Vax on SIMH.
+
+I can post the details if there is any interest. I used to host the virtual
+machine on my FTP server until one of its subsidiary NFS servers went toast
+on a heat pick in our computer room (sic). I'll restore the server contents
+ASAP to make it all available again.
+
+				j
+
+
+On Tue, 12 Jan 2010 22:04:00 -0500
+Jason Stevens <neozeed at gmail.com> wrote:
+> I forgot to mention that I had a friend help me out, and he got SYSIII
+> running on SIMH.......!
+> 
+> I don't know if there would be any interest in this... I don't have a good
+> layout of 'steps' as it was so... chained from 32v, and from within itself
+> as it can't boot from the tape..
+> 
+> But I can supply a working disk image to anyone that wants it... or should I
+> send it to Warren 1st, and he can send it to all the ancient/sysv licenses?
+> 
+> sorry if i'm not all that coherent.
+
+
+-- 
+			EMBnet/CNB
+		Scientific Computing Service
+	Solving all your computer needs for Scientific
+			Research.
+
+		http://bioportal.cnb.csic.es
+		  http://www.es.embnet.org
+
+
+From neozeed at gmail.com  Sat Apr 17 15:12:04 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sat, 17 Apr 2010 01:12:04 -0400
+Subject: [TUHS] 386BSD on Bochs & Qemu...
+Message-ID: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+
+I don't know if this is interesting to anyone, but I thought I'd share that
+386BSD will install on Bochs (although slowly, and it's prone to crashing),
+however once the first patchkit is installed, it'll then run on Qemu!
+(0.11.0, it seems the new bios layout of 0.12 is incompatible)
+
+If anyone is interested, here is a link to a hard disk image that I've
+prepared for Qemu:
+http://vpsland.superglobalmegacorp.com/install/386BSD/bsd386.qcow2.gz
+
+I run it like this:
+
+qemu.exe -L pc-bios -hda bsd386.qcow2 -M isapc -net nic -net user -no-reboot
+-m 256
+
+And I can run lynx/irc as a test of the TCP/IP.
+
+At any rate, I figure this kind of brings 386BSD back out of it's grave.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100417/ca0f33fe/attachment.html>
+
+From claunia at claunia.com  Sun Apr 18 05:10:31 2010
+From: claunia at claunia.com (Natalia Portillo)
+Date: Sat, 17 Apr 2010 20:10:31 +0100
+Subject: [TUHS] 386BSD on Bochs & Qemu...
+In-Reply-To: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+References: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+Message-ID: <DEA0355E-E7D5-4CEF-BB66-A9FF087EFB46@claunia.com>
+
+Hi,
+
+El 17/04/2010, a las 06:12, Jason Stevens escribió:
+
+> I don't know if this is interesting to anyone, but I thought I'd share that 386BSD will install on Bochs (although slowly, and it's prone to crashing), however once the first patchkit is installed, it'll then run on Qemu! (0.11.0, it seems the new bios layout of 0.12 is incompatible)
+Is it possible to install it in QEMU at all without using another emulator? (hardware machine is ok)
+
+Would you be able to contact in QEMU developer's list with SeaBIOS maintainer to find what makes it stop working on 0.12.x branch?
+
+Would you mind putting the information about how to make it running, how well it runs, so on, on QEMU's officlal OS support list (at http://www.claunia.com/qemu/ )?
+
+> If anyone is interested, here is a link to a hard disk image that I've prepared for Qemu:
+> http://vpsland.superglobalmegacorp.com/install/386BSD/bsd386.qcow2.gz
+
+Under what license is that operating system?
+
+> I run it like this:
+> 
+> qemu.exe -L pc-bios -hda bsd386.qcow2 -M isapc -net nic -net user -no-reboot -m 256
+> 
+> And I can run lynx/irc as a test of the TCP/IP.
+> 
+> At any rate, I figure this kind of brings 386BSD back out of it's grave.
+
+Regards,
+Natalia Portillo
+Claunia.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100417/225c0a8a/attachment.html>
+
+From neozeed at gmail.com  Sun Apr 18 11:12:58 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sat, 17 Apr 2010 21:12:58 -0400
+Subject: [TUHS] 386BSD on Bochs & Qemu...
+In-Reply-To: <DEA0355E-E7D5-4CEF-BB66-A9FF087EFB46@claunia.com>
+References: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+	<DEA0355E-E7D5-4CEF-BB66-A9FF087EFB46@claunia.com>
+Message-ID: <t2q46b366131004171812lb5de28f9r7c30a6bbabb31a82@mail.gmail.com>
+
+Hey there!
+
+On Sat, Apr 17, 2010 at 3:10 PM, Natalia Portillo <claunia at claunia.com>wrote:
+
+> Hi,
+>
+> El 17/04/2010, a las 06:12, Jason Stevens escribió:
+>
+> I don't know if this is interesting to anyone, but I thought I'd share that
+> 386BSD will install on Bochs (although slowly, and it's prone to crashing),
+> however once the first patchkit is installed, it'll then run on Qemu!
+> (0.11.0, it seems the new bios layout of 0.12 is incompatible)
+>
+> Is it possible to install it in QEMU at all without using another emulator?
+> (hardware machine is ok)
+>
+
+I *suppose* that if I transplanted a patched kernel on the install floppy
+it'd install.  The install is SUPER tedious doing it with diskettes so I'm
+not jumping at this at the moment.. .However this would have altered the
+install media... Does that matter?
+
+
+>
+> Would you be able to contact in QEMU developer's list with SeaBIOS
+> maintainer to find what makes it stop working on 0.12.x branch?
+>
+>
+I guess someone should the ISA machine in Qemu 0.12 doesn't work at ALL...
+So this also means no fun with Novell Netware 3.12 either...!
+
+
+> Would you mind putting the information about how to make it running, how
+> well it runs, so on, on QEMU's officlal OS support list (at
+> http://www.claunia.com/qemu/ )?
+>
+
+I've added a section there.. I think I did it right..?  Although I can't
+figure out how to send a screenshot.  I added one for Xenix a while ago but
+I forget.
+
+
+>
+> If anyone is interested, here is a link to a hard disk image that I've
+> prepared for Qemu:
+> http://vpsland.superglobalmegacorp.com/install/386BSD/bsd386.qcow2.gz
+>
+>
+> Under what license is that operating system?
+>
+
+It's my impression that 386BSD is under the BSD license, probably the old 4
+clause one where you had to give credit to the regents etc... although I
+think they retroactively changed that?
+
+I'm pretty sure it should be no different then Free/Net/Open BSD's.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100417/e183401b/attachment.html>
+
+From dugo at xs4all.nl  Sun Apr 25 00:28:41 2010
+From: dugo at xs4all.nl (Jacob Goense)
+Date: Sat, 24 Apr 2010 16:28:41 +0200
+Subject: [TUHS] 386BSD on Bochs & Qemu...
+In-Reply-To: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+References: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+Message-ID: <130de1e4e4162da466b3dc04bbc53c70.squirrel@webmail.xs4all.nl>
+
+> I don't know if this is interesting to anyone, but I thought I'd share that
+> 386BSD will install on Bochs (although slowly, and it's prone to crashing),
+> however once the first patchkit is installed, it'll then run on Qemu!
+> (0.11.0, it seems the new bios layout of 0.12 is incompatible)
+
+Yes, I think it is very interesting to see what BSD was like on an x86
+around the time of the forks into Net- and FreeBSD. You can feel the
+itch to roll your own xBSD when messing around with it.
+
+It got me curious about where 386BSD ended though. Did anyone save the
+386BSD Reference CD-ROM Release 1.0 from /dev/null?
+
+
+/Jacob
+
+
+
+From andyamsterdam2003 at gmail.com  Sun Apr 25 02:16:41 2010
+From: andyamsterdam2003 at gmail.com (Andrew Sealy-Bell)
+Date: Sun, 25 Apr 2010 02:16:41 +1000
+Subject: [TUHS] Unix V6 on SimH
+Message-ID: <l2hd8adcf861004240916t16fa5a57lebb142fbdbdc5cad@mail.gmail.com>
+
+Hi, doesn't anybody know if there is a disk size limit on Unix 6? I wrote a
+C program to create a file and it won't go above around 1.5Mb.  It doesn't
+crash or report any errors but the file size never exceeds around that size.
+ Maybe it's a disk size limitation?
+
+Also, is it possible to add other devices? like using an ISO file perhaps.
+
+Regards,
+
+Andrew.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100425/637ccd5c/attachment.html>
+
+From neozeed at gmail.com  Sun Apr 25 04:06:49 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sat, 24 Apr 2010 14:06:49 -0400
+Subject: [TUHS] 386BSD on Bochs & Qemu...
+In-Reply-To: <130de1e4e4162da466b3dc04bbc53c70.squirrel@webmail.xs4all.nl>
+References: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+	<130de1e4e4162da466b3dc04bbc53c70.squirrel@webmail.xs4all.nl>
+Message-ID: <v2v46b366131004241106y9562bd5cv37eb632040e1ff5f@mail.gmail.com>
+
+I don't have the 1.0 BSD cd... At the time I was too wrapped up in Linux,
+and I just
+didn't realize the linage of the BSD of the time... (well that and I was a
+BBS user
+and they had SLS Linux to download, no BSD for some reason.... And all the
+unix people on campus did their best to discourage people from getting
+BSD..)
+
+Anyways I have bought the 'basic kernel source secrets' book but it didn't
+come
+with a CD... I kind of recall it being expensive...?
+
+IMHO the linux thing just released so often, it was a lot of work to keep up
+with
+(which really hasn't changed) and the BSD stuff was so ivory tower, of we'll
+release
+when it's ready but the world just wouldn't wait.  Which is a shame, as
+seeing
+how even 386BSD 0.1 had full TCP/IP while us linux people were trying to get
+something like 32v running... Linux was so far behind back then but the
+constant
+releases made it feel far more alive....
+
+Ok, that's enough of a rant.. ;)
+
+After looking around at the various sites operated by the Jolitz's I found
+this one:
+
+http://collectables.jolix.com/
+
+<http://collectables.jolix.com/>This is the best one I could find, and they
+don't have any CD's for sale....
+
+I've been building some stuff for 386BSD but the one thing that seems to
+be lost to time is the old xfree86 1.X releases...
+
+On Sat, Apr 24, 2010 at 10:28 AM, Jacob Goense <dugo at xs4all.nl> wrote:
+
+> > I don't know if this is interesting to anyone, but I thought I'd share
+> that
+> > 386BSD will install on Bochs (although slowly, and it's prone to
+> crashing),
+> > however once the first patchkit is installed, it'll then run on Qemu!
+> > (0.11.0, it seems the new bios layout of 0.12 is incompatible)
+>
+> Yes, I think it is very interesting to see what BSD was like on an x86
+> around the time of the forks into Net- and FreeBSD. You can feel the
+> itch to roll your own xBSD when messing around with it.
+>
+> It got me curious about where 386BSD ended though. Did anyone save the
+> 386BSD Reference CD-ROM Release 1.0 from /dev/null?
+>
+>
+> /Jacob
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100424/060fb11f/attachment.html>
+
+From tih at hamartun.priv.no  Sun Apr 25 06:59:18 2010
+From: tih at hamartun.priv.no (Tom Ivar Helbekkmo)
+Date: Sat, 24 Apr 2010 22:59:18 +0200
+Subject: [TUHS] 386BSD on Bochs & Qemu...
+In-Reply-To: <v2v46b366131004241106y9562bd5cv37eb632040e1ff5f@mail.gmail.com>
+	(Jason Stevens's message of "Sat, 24 Apr 2010 14:06:49 -0400")
+References: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+	<130de1e4e4162da466b3dc04bbc53c70.squirrel@webmail.xs4all.nl>
+	<v2v46b366131004241106y9562bd5cv37eb632040e1ff5f@mail.gmail.com>
+Message-ID: <m2vdbg5zyx.fsf@athene.hamartun.priv.no>
+
+Jason Stevens <neozeed at gmail.com> writes:
+
+> IMHO the linux thing just released so often, it was a lot of work to
+> keep up with (which really hasn't changed) and the BSD stuff was so
+> ivory tower, of we'll release when it's ready but the world just
+> wouldn't wait.
+
+It was certainly that way with 386BSD.  Jolitz released 0.0, and a lot
+of us made improvements.  Then he released 0.1, with none of our
+improvements at all in it.  We pulled up all our fixes, and made more.
+Then he released 0.2, still with nothing from the net included.  That's
+when NetBSD was born.  (FreeBSD forked off later, due to disagreements
+over whether to concentrate on Intel processors (the FreeBSD crowd), or
+stick to the multi-platform approach (NetBSD).)
+
+-tih
+-- 
+Self documenting code isn't. User application constraints don't. --Ed Prochak
+
+
+From carl.lowenstein at gmail.com  Sun Apr 25 07:19:57 2010
+From: carl.lowenstein at gmail.com (Carl Lowenstein)
+Date: Sat, 24 Apr 2010 14:19:57 -0700
+Subject: [TUHS] Unix V6 on SimH
+In-Reply-To: <l2hd8adcf861004240916t16fa5a57lebb142fbdbdc5cad@mail.gmail.com>
+References: <l2hd8adcf861004240916t16fa5a57lebb142fbdbdc5cad@mail.gmail.com>
+Message-ID: <o2g5904d5731004241419scba6ef45m1c90e92094197941@mail.gmail.com>
+
+On Sat, Apr 24, 2010 at 9:16 AM, Andrew Sealy-Bell
+<andyamsterdam2003 at gmail.com> wrote:
+> Hi, doesn't anybody know if there is a disk size limit on Unix 6? I wrote a
+> C program to create a file and it won't go above around 1.5Mb.  It doesn't
+> crash or report any errors but the file size never exceeds around that size.
+>  Maybe it's a disk size limitation?
+
+According to my memory, reinforced by reading the manual section File
+System (V), there are several limits.
+
+The disk size (in 512-byte blocks) is kept in the super-block as a
+16-bit integer.  This implies at most a 32MB file system.  Since at
+that time there was only one file system per disk, that means a
+maximum 32MB disk.
+
+The file size (in bytes) is kept in an i-node as a 24-bit number,
+implying a maximum 16MB file.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenstein at ucsd.edu
+
+
+From grog at lemis.com  Sun Apr 25 12:29:42 2010
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Sun, 25 Apr 2010 12:29:42 +1000
+Subject: [TUHS] 386BSD on Bochs & Qemu...
+In-Reply-To: <130de1e4e4162da466b3dc04bbc53c70.squirrel@webmail.xs4all.nl>
+References: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+	<130de1e4e4162da466b3dc04bbc53c70.squirrel@webmail.xs4all.nl>
+Message-ID: <20100425022942.GA15137@dereel.lemis.com>
+
+On Saturday, 24 April 2010 at 16:28:41 +0200, Jacob Goense wrote:
+>> I don't know if this is interesting to anyone, but I thought I'd share that
+>> 386BSD will install on Bochs (although slowly, and it's prone to crashing),
+>> however once the first patchkit is installed, it'll then run on Qemu!
+>> (0.11.0, it seems the new bios layout of 0.12 is incompatible)
+>
+> Yes, I think it is very interesting to see what BSD was like on an x86
+> around the time of the forks into Net- and FreeBSD. You can feel the
+> itch to roll your own xBSD when messing around with it.
+>
+> It got me curious about where 386BSD ended though. Did anyone save
+> the 386BSD Reference CD-ROM Release 1.0 from /dev/null?
+
+Yes, I have a copy.  It was pretty much useless.  All the
+documentation was in some Microsoft format, and I couldn't read it.
+Unfortunately Dr Dobbs has a copyright on it, or I could upload it for
+the curious.
+
+Greg
+--
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  See
+http://www.lemis.com/grog/email/signed-mail.php for more details.
+If your Microsoft MUA reports problems, please read
+http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 195 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100425/6348056e/attachment.sig>
+
+From dugo at xs4all.nl  Sun Apr 25 19:28:29 2010
+From: dugo at xs4all.nl (Jacob Goense)
+Date: Sun, 25 Apr 2010 11:28:29 +0200
+Subject: [TUHS] 386BSD on Bochs & Qemu...
+In-Reply-To: <20100425022942.GA15137@dereel.lemis.com>
+References: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+	<130de1e4e4162da466b3dc04bbc53c70.squirrel@webmail.xs4all.nl>
+	<20100425022942.GA15137@dereel.lemis.com>
+Message-ID: <5a7c3451f8bbb8efaaa6b9c809214a55.squirrel@webmail.xs4all.nl>
+
+>> It got me curious about where 386BSD ended though. Did anyone save
+>> the 386BSD Reference CD-ROM Release 1.0 from /dev/null?
+>
+> Yes, I have a copy.  It was pretty much useless.  All the
+> documentation was in some Microsoft format, and I couldn't read it.
+> Unfortunately Dr Dobbs has a copyright on it, or I could upload it for
+> the curious.
+
+
+That's about what I understood from as well from reading this column
+at http://www.cfcl.com/rdm/tin/P/199503.shtml
+
+ "The 386BSD release CD-ROM includes a mixture of BSD and Jolitz code,
+ articles, and what have you. The files are hyperlinked with a global
+ glossary and index to illustrate the structure and interdependence in
+ the discussion of the system files.
+
+ Consequently, the CD-ROM release is not freeware, as a whole, though
+ many parts of it are freely redistributable. In particular, the system
+ itself will be available at certain "official" Internet sites,
+ still(unfortunately) to be determined at press time."
+
+and I have dug around long enough to assume that 15 years later it is
+still TBD where to get just the system.
+
+The stuff in WinHelp format being useless, ok, but what about the
+system on the CD, did you ever try booting and installing it?
+
+
+/Jacob
+
+
+
+From carl.lowenstein at gmail.com  Mon Apr 26 03:32:51 2010
+From: carl.lowenstein at gmail.com (Carl Lowenstein)
+Date: Sun, 25 Apr 2010 10:32:51 -0700
+Subject: [TUHS] 386BSD on Bochs & Qemu...
+In-Reply-To: <5a7c3451f8bbb8efaaa6b9c809214a55.squirrel@webmail.xs4all.nl>
+References: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+	<130de1e4e4162da466b3dc04bbc53c70.squirrel@webmail.xs4all.nl>
+	<20100425022942.GA15137@dereel.lemis.com>
+	<5a7c3451f8bbb8efaaa6b9c809214a55.squirrel@webmail.xs4all.nl>
+Message-ID: <z2o5904d5731004251032v132115b7w13c7236543009037@mail.gmail.com>
+
+On Sun, Apr 25, 2010 at 2:28 AM, Jacob Goense <dugo at xs4all.nl> wrote:
+>>> It got me curious about where 386BSD ended though. Did anyone save
+>>> the 386BSD Reference CD-ROM Release 1.0 from /dev/null?
+>>
+>> Yes, I have a copy.  It was pretty much useless.  All the
+>> documentation was in some Microsoft format, and I couldn't read it.
+>> Unfortunately Dr Dobbs has a copyright on it, or I could upload it for
+>> the curious.
+
+Using tools that were not available 15 years ago, Google search for
+"windows+help+file+reader" leads me to, among others:
+<http://helpexplorer.software.informer.com/> which looks promising.
+Of course I don't have anything to try exercising it on.
+
+> That's about what I understood from as well from reading this column
+> at http://www.cfcl.com/rdm/tin/P/199503.shtml
+>
+>  "The 386BSD release CD-ROM includes a mixture of BSD and Jolitz code,
+>  articles, and what have you. The files are hyperlinked with a global
+>  glossary and index to illustrate the structure and interdependence in
+>  the discussion of the system files.
+>
+> The stuff in WinHelp format being useless, ok, but what about the
+> system on the CD, did you ever try booting and installing it?
+
+Maybe WinHelp format has not changed over the decades.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenstein at ucsd.edu
+
+
+From neozeed at gmail.com  Mon Apr 26 03:36:05 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sun, 25 Apr 2010 13:36:05 -0400
+Subject: [TUHS] 386BSD on Bochs & Qemu...
+In-Reply-To: <z2o5904d5731004251032v132115b7w13c7236543009037@mail.gmail.com>
+References: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+	<130de1e4e4162da466b3dc04bbc53c70.squirrel@webmail.xs4all.nl>
+	<20100425022942.GA15137@dereel.lemis.com>
+	<5a7c3451f8bbb8efaaa6b9c809214a55.squirrel@webmail.xs4all.nl>
+	<z2o5904d5731004251032v132115b7w13c7236543009037@mail.gmail.com>
+Message-ID: <k2i46b366131004251036l5478c530icf56d5ea959821a8@mail.gmail.com>
+
+Well worst case, you can run windows under Qemu.... attach the generic text
+only printer, and 'print' out the help files too......
+
+Sadly the winhelp format has drifted between the windows 3.x , then 9x/NT
+3.51 releases, and the htmlhelp thing...
+MS never really documents it that well, as it's just such a hack... That
+when it works, it works well, otherwise...
+it's a nightmare to make documents for.
+
+
+
+On Sun, Apr 25, 2010 at 1:32 PM, Carl Lowenstein
+<carl.lowenstein at gmail.com>wrote:
+
+> On Sun, Apr 25, 2010 at 2:28 AM, Jacob Goense <dugo at xs4all.nl> wrote:
+> >>> It got me curious about where 386BSD ended though. Did anyone save
+> >>> the 386BSD Reference CD-ROM Release 1.0 from /dev/null?
+> >>
+> >> Yes, I have a copy.  It was pretty much useless.  All the
+> >> documentation was in some Microsoft format, and I couldn't read it.
+> >> Unfortunately Dr Dobbs has a copyright on it, or I could upload it for
+> >> the curious.
+>
+> Using tools that were not available 15 years ago, Google search for
+> "windows+help+file+reader" leads me to, among others:
+> <http://helpexplorer.software.informer.com/> which looks promising.
+> Of course I don't have anything to try exercising it on.
+>
+> > That's about what I understood from as well from reading this column
+> > at http://www.cfcl.com/rdm/tin/P/199503.shtml
+> >
+> >  "The 386BSD release CD-ROM includes a mixture of BSD and Jolitz code,
+> >  articles, and what have you. The files are hyperlinked with a global
+> >  glossary and index to illustrate the structure and interdependence in
+> >  the discussion of the system files.
+> >
+> > The stuff in WinHelp format being useless, ok, but what about the
+> > system on the CD, did you ever try booting and installing it?
+>
+> Maybe WinHelp format has not changed over the decades.
+>
+>    carl
+> --
+>    carl lowenstein         marine physical lab     u.c. san diego
+>                                                 clowenstein at ucsd.edu
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100425/8e9c0004/attachment.html>
+
+From grog at lemis.com  Mon Apr 26 13:23:03 2010
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Mon, 26 Apr 2010 13:23:03 +1000
+Subject: [TUHS] 386BSD on Bochs & Qemu...
+In-Reply-To: <5a7c3451f8bbb8efaaa6b9c809214a55.squirrel@webmail.xs4all.nl>
+References: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+	<130de1e4e4162da466b3dc04bbc53c70.squirrel@webmail.xs4all.nl>
+	<20100425022942.GA15137@dereel.lemis.com>
+	<5a7c3451f8bbb8efaaa6b9c809214a55.squirrel@webmail.xs4all.nl>
+Message-ID: <20100426032303.GC15137@dereel.lemis.com>
+
+On Sunday, 25 April 2010 at 11:28:29 +0200, Jacob Goense wrote:
+>>> It got me curious about where 386BSD ended though. Did anyone save
+>>> the 386BSD Reference CD-ROM Release 1.0 from /dev/null?
+>>
+>> Yes, I have a copy.  It was pretty much useless.  All the
+>> documentation was in some Microsoft format, and I couldn't read it.
+>> Unfortunately Dr Dobbs has a copyright on it, or I could upload it for
+>> the curious.
+>
+> That's about what I understood from as well from reading this column
+> at http://www.cfcl.com/rdm/tin/P/199503.shtml
+>
+>  "The 386BSD release CD-ROM includes a mixture of BSD and Jolitz code,
+>  articles, and what have you. The files are hyperlinked with a global
+>  glossary and index to illustrate the structure and interdependence in
+>  the discussion of the system files.
+>
+>  Consequently, the CD-ROM release is not freeware, as a whole, though
+>  many parts of it are freely redistributable. In particular, the system
+>  itself will be available at certain "official" Internet sites,
+>  still(unfortunately) to be determined at press time."
+>
+> and I have dug around long enough to assume that 15 years later it is
+> still TBD where to get just the system.
+
+OK,  I mounted the CD-ROM and looked for copyright statements.  The
+only one I found was /COPYRGHT.TXT, a modified 8 paragraph BSD license
+with \r\n line delimiters, attached.
+
+Arguably it only applies to the OS sources, but it's the only license
+I can see.  It probibits commercial distributions, but the important
+clause from our point of view is:
+
+   * 5. Non-commercial distribution of the complete source and/or binary
+   *	release at no charge to the user (such as from an official Internet
+   *	archive site) is permitted.
+
+I was going to take out just the source tree, but another clause
+states:
+
+   * 7. Non-commercial and/or commercial distribution of an incomplete,
+   *	altered, or otherwise modified source and/or binary release is not
+   *	permitted.
+
+Since this is the only copyright statement, I assume that this means I
+can put up the entire CD image, but not just part of it, so that's
+what I've done.  It's at http://www.lemis.com/grog/src/386BSD-1.0.bz2 .
+
+If anybody finds anything that indicates that it shouldn't be made
+available, please let me know and I'll pull it.
+
+Greg
+--
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  See
+http://www.lemis.com/grog/email/signed-mail.php for more details.
+If your Microsoft MUA reports problems, please read
+http://tinyurl.com/broken-mua
+-------------- next part --------------
+
+
+
+
+
+
+
+			       386BSD Release 1.0
+				   Copyright
+
+
+  /*
+   * Copyright (c) 1989-1994 William F. Jolitz, TeleMuse.
+   * All Rights Reserved.
+   *
+   * Redistribution and use in source and binary forms, with or without
+   * modification, are permitted provided that the following conditions
+   * are met:
+   * 1. Redistributions of source code must retain the above copyright
+   *	notice, this list of conditions and the following disclaimer.
+   * 2. Redistributions in binary form must reproduce the above copyright
+   *	notice, this list of conditions and the following disclaimer in the
+   *	documentation and/or other materials provided with the distribution.
+   * 3. All advertising materials mentioning features or use of this
+   *	software must display the following acknowledgement:
+   *	This software is a component of "386BSD" developed by
+   *	William F. Jolitz, TeleMuse.
+   * 4. Neither the name of the developer nor the name "386BSD"
+   *	may be used to endorse or promote products derived from this software
+   *	without specific prior written permission.
+   * 5. Non-commercial distribution of the complete source and/or binary
+   *	release at no charge to the user (such as from an official Internet
+   *	archive site) is permitted.
+   * 6. Commercial distribution and sale of the complete source and/or binary
+   *	release on any media, including that of floppies, tape, or CD-ROM, or
+   *	through a per-charge download such as that of a BBS, is not permitted
+   *	without specific prior written permission.
+   * 7. Non-commercial and/or commercial distribution of an incomplete,
+   *	altered, or otherwise modified source and/or binary release is not
+   *	permitted.
+   * 8. Non-commercial and/or commercial incorporation and distribution of
+   *	any components, programs, files, and other modules derived from the
+   *	source and/or binary release is not permitted without specific prior
+   *	written permission, except where stated by the author as in the
+   *	copyright disclaimer of the source code component, program, file, or
+   *	other module in question.
+   *
+   * 386BSD WAS DEVELOPED BY WILLIAM F. JOLITZ.
+   * 386BSD IS INTENDED FOR RESEARCH AND EDUCATIONAL PURPOSES.
+   * THIS SOFTWARE SHOULD NOT BE CONSIDERED TO BE A COMMERCIAL PRODUCT.
+   * THE DEVELOPER URGES THAT USERS WHO REQUIRE A COMMERCIAL PRODUCT
+   * NOT MAKE USE OF THIS WORK.
+   *
+   * FOR USERS WHO WISH TO UNDERSTAND THE 386BSD SYSTEM DEVELOPED
+   * BY WILLIAM F. JOLITZ, WE RECOMMEND THE USER STUDY WRITTEN
+   * REFERENCES SUCH AS THE  "PORTING UNIX TO THE 386" SERIES
+   * (BEGINNING JANUARY 1991 "DR. DOBBS JOURNAL", USA AND BEGINNING
+   * JUNE 1991 "IX MAGAZIN", FORMERLY "UNIX MAGAZIN", GERMANY) BY
+
+
+
+  386BSD Copyright		   1			August 1994
+
+
+
+
+
+
+
+
+
+
+
+   * WILLIAM AND LYNNE JOLITZ, THE "386BSD REFERENCE CD-ROM" KERNEL SOURCE
+   * ANNOTATIONS AND OTHER 386BSD MATERIALS AND WRITINGS BY WILLIAM & LYNNE
+   * JOLITZ, AS WELL AS OTHER BOOKS ON UNIX AND THE ON-LINE 386BSD
+   * USER MANUAL BEFORE USE. A BOOK DISCUSSING THE INTERNALS OF 386BSD
+   * RELEASE 1.0 ENTITLED "386BSD FROM THE INSIDE OUT" IS PENDING.
+   *
+   * THIS SOFTWARE IS PROVIDED BY THE DEVELOPER ``AS IS'' AND
+   * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+   * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+   * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE DEVELOPER BE LIABLE
+   * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+   * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+   * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+   * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+   * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+   * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+   * OF SUCH DAMAGE.
+   *
+   * Any questions regarding this copyright notice may be directed to:
+   *   Lynne Greer Jolitz
+   *   386BSD Release 1.0
+   *   c/o Dr. Dobbs Journal
+   *   411 Borel Avenue
+   *   San Mateo, California  94402  USA
+   *   +1-510-420-0174 (FAX)
+   *
+   */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  386BSD Copyright		   2			August 1994
+
+
+
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 195 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100426/5c77bf4c/attachment.sig>
+
+From neozeed at gmail.com  Mon Apr 26 15:22:04 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Mon, 26 Apr 2010 01:22:04 -0400
+Subject: [TUHS] 386BSD on Bochs & Qemu...
+In-Reply-To: <20100426032303.GC15137@dereel.lemis.com>
+References: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+	<130de1e4e4162da466b3dc04bbc53c70.squirrel@webmail.xs4all.nl>
+	<20100425022942.GA15137@dereel.lemis.com>
+	<5a7c3451f8bbb8efaaa6b9c809214a55.squirrel@webmail.xs4all.nl>
+	<20100426032303.GC15137@dereel.lemis.com>
+Message-ID: <n2o46b366131004252222r20610f3bk29ef343230347be0@mail.gmail.com>
+
+Well I've been able to find this much out...
+
+The CD has some kind of weird 'live' CD filesystem to it... It would seem
+that 386BSD 1.0 demanded you have an Adaptec 1542 controller hooked up, and
+with special roms & whatnot it could 'boot' from the CD...  Needless to say,
+this predates anything like IDE CDROM's or or what most emulators will
+emulate.
+
+That being said, they did include the 'boot' program which is touched on in
+the magazine series, as a MS-DOS bootloader.
+
+So I've just slapped together a MS-DOS floppy, with the boot & 386bsd kernel
+and tried it on on Qemu, to an early kernel panic.  Oddly enough, Virtual PC
+2007 can boot the kernel.  So I converted my 386BSD 0.1 install into a disk
+image that Virtual PC can run, and ran the floppy, and it was able to mount
+up the hard disk, run single user mode, and even go into multiuser...
+
+If it matters this is what the boot produces:
+
+A:\>boot 386bsd
+Text 466944
+Data 20480
+Start 0xfe000000
+can't open emm
+386BSD Release 1.0 by William & Lynne Jolitz. [1.0.22 10/27/94 15:32]
+Copyright (c) 1989-1994 William F. Jolitz. All rights reserved.
+clk:  irq0
+pc: pc0 <color> port 60 irq1
+aux:  port 310 irq12
+wd: wd0 <Virtual HD> wd1 port 1f0 irq14
+fd: fd0: 1.44M port 3f0 irq6 drq2
+com: com1: fifo port 3f8 irq4
+com: com2: fifo port 2f8 irq3
+lpt: lpt0  port 378 irq7
+npx: npx: irq13
+mcd:  port 300 irq10
+erase ^?, kill ^U, intr ^C
+#
+
+
+I'll have to test later if it can 'mount' an ISO image that's been 'dd''d to
+a hard disk.....
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100426/3e4b52b1/attachment.html>
+
+From wes.parish at paradise.net.nz  Mon Apr 26 17:03:33 2010
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Mon, 26 Apr 2010 19:03:33 +1200
+Subject: [TUHS] 386BSD on Bochs & Qemu...
+In-Reply-To: <20100425022942.GA15137@dereel.lemis.com>
+References: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+	<130de1e4e4162da466b3dc04bbc53c70.squirrel@webmail.xs4all.nl>
+	<20100425022942.GA15137@dereel.lemis.com>
+Message-ID: <201004261903.36146.wes.parish@paradise.net.nz>
+
+FWLIW, I also bought a copy, way back when, and I've just made an unencumbered 
+version, containing only the 386BSD binaries, the 386BSD source trees, and 
+the manuals.
+
+It contains only the BSD-copyright material; everything else appears to be Dr 
+Dobbs-copyrighted, thus off-limits; but I'll upload the tar.bz2 file (2MB) if 
+people feel it's needed.
+
+I did at one stage sanitize the MS .hlp file documentation, turning it into 
+ASCII with MS-DOS cr/lf, but I threw that away at some stage.
+
+Again, FWLIW, the CDROM wouldn't boot on my hardware when I bought it, and I 
+couldn't access the source - without putting some thought into it.  I 
+eventually did, and copied it to my Linux machine.
+
+Anyone interested?  Warren?  (I did think of attaching it to this email, but 
+figured out that was unfriendly and would lead to tears, so I didn't ... :)
+
+Wesley Parish
+
+On Sun, 25 Apr 2010, Greg 'groggy' Lehey wrote:
+> On Saturday, 24 April 2010 at 16:28:41 +0200, Jacob Goense wrote:
+> >> I don't know if this is interesting to anyone, but I thought I'd share
+> >> that 386BSD will install on Bochs (although slowly, and it's prone to
+> >> crashing), however once the first patchkit is installed, it'll then run
+> >> on Qemu! (0.11.0, it seems the new bios layout of 0.12 is incompatible)
+> >
+> > Yes, I think it is very interesting to see what BSD was like on an x86
+> > around the time of the forks into Net- and FreeBSD. You can feel the
+> > itch to roll your own xBSD when messing around with it.
+> >
+> > It got me curious about where 386BSD ended though. Did anyone save
+> > the 386BSD Reference CD-ROM Release 1.0 from /dev/null?
+>
+> Yes, I have a copy.  It was pretty much useless.  All the
+> documentation was in some Microsoft format, and I couldn't read it.
+> Unfortunately Dr Dobbs has a copyright on it, or I could upload it for
+> the curious.
+>
+> Greg
+> --
+> Finger grog at FreeBSD.org for PGP public key.
+> See complete headers for address and phone numbers.
+> This message is digitally signed.  See
+> http://www.lemis.com/grog/email/signed-mail.php for more details.
+> If your Microsoft MUA reports problems, please read
+> http://tinyurl.com/broken-mua
+
+
+
+-- 
+Clinersterton beademung, with all of love - RIP James Blish
+-----
+George Kelischek - "To impress those high-tech computer types, 
+tell them what an Ocarina really is: 
+an animal-activated-solid-state-multi-frequency-sound-synthesizer." 
+-----
+Mau e ki, he aha te mea nui?
+You ask, what is the most important thing?
+Maku e ki, he tangata, he tangata, he tangata.
+I reply, it is people, it is people, it is people.
+
+
+From grog at lemis.com  Mon Apr 26 18:07:00 2010
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Mon, 26 Apr 2010 18:07:00 +1000
+Subject: [TUHS] 386BSD on Bochs & Qemu...
+In-Reply-To: <201004261903.36146.wes.parish@paradise.net.nz>
+References: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+	<130de1e4e4162da466b3dc04bbc53c70.squirrel@webmail.xs4all.nl>
+	<20100425022942.GA15137@dereel.lemis.com>
+	<201004261903.36146.wes.parish@paradise.net.nz>
+Message-ID: <20100426080700.GD15137@dereel.lemis.com>
+
+[resequenced]
+
+On Monday, 26 April 2010 at 19:03:33 +1200, Wesley Parish wrote:
+> On Sun, 25 Apr 2010, Greg 'groggy' Lehey wrote:
+>> On Saturday, 24 April 2010 at 16:28:41 +0200, Jacob Goense wrote:
+>>>> I don't know if this is interesting to anyone, but I thought I'd share
+>>>> that 386BSD will install on Bochs (although slowly, and it's prone to
+>>>> crashing), however once the first patchkit is installed, it'll then run
+>>>> on Qemu! (0.11.0, it seems the new bios layout of 0.12 is incompatible)
+>>>
+>>> Yes, I think it is very interesting to see what BSD was like on an x86
+>>> around the time of the forks into Net- and FreeBSD. You can feel the
+>>> itch to roll your own xBSD when messing around with it.
+>>>
+>>> It got me curious about where 386BSD ended though. Did anyone save
+>>> the 386BSD Reference CD-ROM Release 1.0 from /dev/null?
+>>
+>> Yes, I have a copy.  It was pretty much useless.  All the
+>> documentation was in some Microsoft format, and I couldn't read it.
+>> Unfortunately Dr Dobbs has a copyright on it, or I could upload it for
+>> the curious.
+>
+> FWLIW, I also bought a copy, way back when, and I've just made an
+> unencumbered version, containing only the 386BSD binaries, the
+> 386BSD source trees, and the manuals.
+
+That was my first intention too.  But read the copyright.  You're not
+allowed to do distribute that.
+
+> It contains only the BSD-copyright material; everything else appears
+> to be Dr Dobbs-copyrighted, thus off-limits; but I'll upload the
+> tar.bz2 file (2MB) if people feel it's needed.
+
+Did you find a Dr Dobbs copyright notice anywhere on the CD?  Or
+elsewhere?  All I saw was a printed mention of Dr Dobbs along with the
+Jolitzes and UCB around the bottom of the CD.
+
+Greg
+--
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  See
+http://www.lemis.com/grog/email/signed-mail.php for more details.
+If your Microsoft MUA reports problems, please read
+http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 195 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100426/4738d7df/attachment.sig>
+
+From wes.parish at paradise.net.nz  Mon Apr 26 19:33:38 2010
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Mon, 26 Apr 2010 21:33:38 +1200 (NZST)
+Subject: [TUHS] 386BSD on Bochs & Qemu...
+In-Reply-To: <20100426080700.GD15137@dereel.lemis.com>
+References: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+	<130de1e4e4162da466b3dc04bbc53c70.squirrel@webmail.xs4all.nl>
+	<20100425022942.GA15137@dereel.lemis.com>
+	<201004261903.36146.wes.parish@paradise.net.nz>
+	<20100426080700.GD15137@dereel.lemis.com>
+Message-ID: <1272274418.4bd55df2c23b4@www.paradise.net.nz>
+
+It appears you're right about the Dr Dobbs copyright - no copyright notices.
+
+Quoting Greg 'groggy' Lehey <grog at lemis.com>:
+> [resequenced]
+> 
+> On Monday, 26 April 2010 at 19:03:33 +1200, Wesley Parish wrote:
+> > On Sun, 25 Apr 2010, Greg 'groggy' Lehey wrote:
+> >> On Saturday, 24 April 2010 at 16:28:41 +0200, Jacob Goense wrote:
+> >>>> I don't know if this is interesting to anyone, but I thought I'd
+> share
+> >>>> that 386BSD will install on Bochs (although slowly, and it's prone
+> to
+> >>>> crashing), however once the first patchkit is installed, it'll then
+> run
+> >>>> on Qemu! (0.11.0, it seems the new bios layout of 0.12 is
+> incompatible)
+> >>>
+> >>> Yes, I think it is very interesting to see what BSD was like on an
+> x86
+> >>> around the time of the forks into Net- and FreeBSD. You can feel
+> the
+> >>> itch to roll your own xBSD when messing around with it.
+> >>>
+> >>> It got me curious about where 386BSD ended though. Did anyone save
+> >>> the 386BSD Reference CD-ROM Release 1.0 from /dev/null?
+> >>
+> >> Yes, I have a copy. It was pretty much useless. All the
+> >> documentation was in some Microsoft format, and I couldn't read it.
+> >> Unfortunately Dr Dobbs has a copyright on it, or I could upload it
+> for
+> >> the curious.
+> >
+> > FWLIW, I also bought a copy, way back when, and I've just made an
+> > unencumbered version, containing only the 386BSD binaries, the
+> > 386BSD source trees, and the manuals.
+> 
+> That was my first intention too. But read the copyright. You're not
+> allowed to do distribute that.
+> 
+> > It contains only the BSD-copyright material; everything else appears
+> > to be Dr Dobbs-copyrighted, thus off-limits; but I'll upload the
+> > tar.bz2 file (2MB) if people feel it's needed.
+> 
+> Did you find a Dr Dobbs copyright notice anywhere on the CD? Or
+> elsewhere? All I saw was a printed mention of Dr Dobbs along with the
+> Jolitzes and UCB around the bottom of the CD.
+> 
+> Greg
+> --
+> Finger grog at FreeBSD.org for PGP public key.
+> See complete headers for address and phone numbers.
+> This message is digitally signed. See
+> http://www.lemis.com/grog/email/signed-mail.php for more details.
+> If your Microsoft MUA reports problems, please read
+> http://tinyurl.com/broken-mua
+>  
+
+
+
+"Sharpened hands are happy hands.
+"Brim the tinfall with mirthful bands" 
+- A Deepness in the Sky, Vernor Vinge
+
+"I me.  Shape middled me.  I would come out into hot!" 
+I from the spicy that day was overcasked mockingly - it's a symbol of the 
+other horizon. - emacs : meta x dissociated-press
+
+
+From neozeed at gmail.com  Tue Apr 27 03:52:41 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Mon, 26 Apr 2010 13:52:41 -0400
+Subject: [TUHS] 386BSD on Bochs & Qemu...
+In-Reply-To: <1272274418.4bd55df2c23b4@www.paradise.net.nz>
+References: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+	<130de1e4e4162da466b3dc04bbc53c70.squirrel@webmail.xs4all.nl>
+	<20100425022942.GA15137@dereel.lemis.com>
+	<201004261903.36146.wes.parish@paradise.net.nz>
+	<20100426080700.GD15137@dereel.lemis.com>
+	<1272274418.4bd55df2c23b4@www.paradise.net.nz>
+Message-ID: <k2v46b366131004261052pd86642cm2975037ba1b3fbc0@mail.gmail.com>
+
+For the benefit of those without Windows 3.1, I found this great program
+hlp2doc which allowed me to convert all the hlp files into MS Word 2.0
+documents...  So using MS Word 2.0 I then re-saved all the documents into
+plain text files.. "unzip -a" should then convert them to your native
+CR/LF..
+
+I've made it available here:
+
+http://vpsland.superglobalmegacorp.com/install/386bsd/386BSD%201.0%20txt.zip
+
+If anyone feels that this is a bad thing, let me know and I'll pull it.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100426/d2cb8e6f/attachment.html>
+
+From cyrille.lefevre-lists at laposte.net  Wed Apr 28 12:30:58 2010
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Wed, 28 Apr 2010 04:30:58 +0200
+Subject: [TUHS] 386BSD on Bochs & Qemu...
+In-Reply-To: <k2v46b366131004261052pd86642cm2975037ba1b3fbc0@mail.gmail.com>
+References: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>	<130de1e4e4162da466b3dc04bbc53c70.squirrel@webmail.xs4all.nl>	<20100425022942.GA15137@dereel.lemis.com>	<201004261903.36146.wes.parish@paradise.net.nz>	<20100426080700.GD15137@dereel.lemis.com>	<1272274418.4bd55df2c23b4@www.paradise.net.nz>
+	<k2v46b366131004261052pd86642cm2975037ba1b3fbc0@mail.gmail.com>
+Message-ID: <4BD79DE2.2010203@laposte.net>
+
+Le 26/04/2010 19:52, Jason Stevens a écrit :
+> For the benefit of those without Windows 3.1, I found this great program
+> hlp2doc which allowed me to convert all the hlp files into MS Word 2.0
+> documents...  So using MS Word 2.0 I then re-saved all the documents
+> into plain text files.. "unzip -a" should then convert them to your
+> native CR/LF..
+>
+> I've made it available here:
+>
+> http://vpsland.superglobalmegacorp.com/install/386bsd/386BSD%201.0%20txt.zip
+>
+> If anyone feels that this is a bad thing, let me know and I'll pull it.
+
+Hi,
+
+in attachment, an fast and really dirty awk script to convert TXT files 
+to HTML ones... :-)
+
+for i in *.TXT; do awk -f bsd.awk "$i" >| "${i%.TXT}.HTM"; done
+
+90% of the works should be good.
+
+PS : there is at least 2 typos :
+
+diff _/CPU.TXT ./CPU.TXT
+27c27
+< 386BSD cpu_tfork() Design Choices and Trade-Offs
+---
+ > 386BSD cpu_texit() Design Choices and Trade-Offs
+diff _/OBJECT.TXT ./OBJECT.TXT
+64c64
+< What is vm_object_remove()?
+---
+ > What is vm_object_pmap_remove()?
+
+
+Regards,
+
+Cyrille Lefevre
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: bsd.awk
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100428/d6a84f9e/attachment.ksh>
+
+From jrvalverde at cnb.csic.es  Fri Apr 30 17:30:44 2010
+From: jrvalverde at cnb.csic.es (Jose R. Valverde)
+Date: Fri, 30 Apr 2010 09:30:44 +0200
+Subject: [TUHS] UniFlex
+In-Reply-To: <r2p8dd2d95c1004020919w9930b5ecn2e1f2ebe163f2108@mail.gmail.com>
+References: <u2x8dd2d95c1004011856q7bdde73bl6b44c15a49b54726@mail.gmail.com>
+	<20100401.225554.1000278277145502246.imp@bsdimp.com>
+	<r2p8dd2d95c1004020919w9930b5ecn2e1f2ebe163f2108@mail.gmail.com>
+Message-ID: <20100430093044.1f781f23@cnb.csic.es>
+
+From Wikipedia:
+
+UniFLEX is a Unix-like operating system developed by Technical Systems
+Consultants (TSC) for the Motorola 6809 family which allowed
+multitasking and multiprocessing. It was released for DMA-capable 8"
+floppy, extended memory addressing hardware (software controlled 4KiB
+paging), Motorola 6809 based computers. 
+
+From
+	http://www.swtpcemu.com/Downloads.htm
+
+	A full distribution of UniFlex is available as tar.gz archives
+from this page.
+
+And the question is:
+
+	Would it make sense to add UniFlex to the UNIX archives in the
+other subdirectory?
+
+	And if so, wouldn't then also make sense to have Tropix as well?
+	http://allegro.nce.ufrj.br/tropix/index.html
+
+Just a suggestion. I know strictly speaking these are no proper UNIX 
+systems, but all the same they are independent implementations of the
+same basic philosophy much like Coherent, OMU, Xinu, Sprite, Minix and
+many others were.
+
+				j
+-- 
+			EMBnet/CNB
+		Scientific Computing Service
+	Solving all your computer needs for Scientific
+			Research.
+
+		http://bioportal.cnb.csic.es
+		  http://www.es.embnet.org
+
+
+From jrvalverde at cnb.csic.es  Fri Apr 30 17:58:23 2010
+From: jrvalverde at cnb.csic.es (Jose R. Valverde)
+Date: Fri, 30 Apr 2010 09:58:23 +0200
+Subject: [TUHS] UniFlex
+In-Reply-To: <4BD79DE2.2010203@laposte.net>
+References: <u2u46b366131004162212lf8852e25uf900b73b040410be@mail.gmail.com>
+	<130de1e4e4162da466b3dc04bbc53c70.squirrel@webmail.xs4all.nl>
+	<20100425022942.GA15137@dereel.lemis.com>
+	<201004261903.36146.wes.parish@paradise.net.nz>
+	<20100426080700.GD15137@dereel.lemis.com>
+	<1272274418.4bd55df2c23b4@www.paradise.net.nz>
+	<k2v46b366131004261052pd86642cm2975037ba1b3fbc0@mail.gmail.com>
+	<4BD79DE2.2010203@laposte.net>
+Message-ID: <20100430095823.78e5a8ac@cnb.csic.es>
+
+P.S. (sorry for following up to myself)
+
+	I had a look into the files, and the system comes with commented
+source code in assembler.
+
+	FWIW this is a full distribution, including development environment 
+(C, Cobol, Fortran-77,..), editors, kernel, VSAM database, etc... all of it 
+with source code and documentation,
+
+	From my first cursory look most of it is written in assemble, comes
+with sample test code and is documented enough to be understandable. The 
+pascal, cobol and fortran 77 compilers are written in pascal (!), the C
+compiler is written in assembler.
+
+	It looks like the environment must have been only vaguely UNIX-like
+but yet I find it mesmerizing enough considering where it ran and when. It
+adds another dimension to understand the impact UNIX had and how it spun off
+lookalikes and sprung the imagination of developers of the time expanding its
+heritage sideways.
+
+				j
+-- 
+			EMBnet/CNB
+		Scientific Computing Service
+	Solving all your computer needs for Scientific
+			Research.
+
+		http://bioportal.cnb.csic.es
+		  http://www.es.embnet.org
+
+

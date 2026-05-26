@@ -1,0 +1,1121 @@
+From random832 at fastmail.us  Fri Apr  1 09:41:13 2011
+From: random832 at fastmail.us (Random832)
+Date: Thu, 31 Mar 2011 19:41:13 -0400
+Subject: [TUHS] Tracing origins of errno names/numbers
+In-Reply-To: <20110324002401.GA15851@minnie.tuhs.org>
+References: <20110324002401.GA15851@minnie.tuhs.org>
+Message-ID: <op.vs8eqsibi7swck@r832laptop2>
+
+I spent some time tracing what version of Linux itself each one was added  
+in.
+
+Note: This doesn't necessarily show that they originated with linux (the
+opposite in some cases), but it should help get a good handle on dates
+(for where to look in other OSes' history). And, date/version added to
+linux might itself be an interesting column to include.
+
+V7 - this is where EFAULT changed from 106 to 14
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=V7/usr/include/errno.h
+Minix 1.1
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=Minix1.1/usr/include/errno.h
+Minix 1.5 - where 0.1 apparently took its numeric assignments from
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=Minix1.5/include/errno.h
+0.01 - first errno.h - interesting comment.
+http://lxr.linux.no/linux-old+v0.01/include/errno.h
+0.95 - adds ELOOP
+http://lxr.linux.no/linux-old+v0.95/include/errno.h
+0.96c - last errno.h
+http://lxr.linux.no/linux-old+v0.96c/include/errno.h
+0.97.0 has first linux/errno.h, and a whole pile of new error numbers
+http://lxr.linux.no/linux-old+v0.97.0/include/linux/errno.h
+0.99.0 - EWOULDBLOCK vaue changed
+http://lxr.linux.no/linux-old+v0.99.0/include/linux/errno.h
+0.99.14 - adds 122 EDQUOT
+http://lxr.linux.no/linux-old+v0.99.14/include/linux/errno.h
+2.1.34 - adds 123 and 124
+http://lxr.linux.no/linux-old+v2.1.34/include/asm-i386/errno.h
+2.6.10 - 125 through 129 added
+http://lxr.linux.no/linux-bk+v2.6.10/include/asm-generic/errno.h
+
+Still haven't spent the time to find:
+Where 45-47 went, 51, value change of EDEADLOCK
+
+2005-05-01 Addition of EOWNERDEAD and ENOTRECOVERABLE:
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=4750e2c0c59e0c84c6c036b3d96ebd88365ae7ee
+(This says it was done to support an external patch, so linux is
+probably not the originating system)
+
+2009-06-03 Addition of ERFKILL
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=1f87f7d3a3b42b20f34cb03f0fd1a41c3d0e27f3
+
+2011-03-17 EHWPOISON
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=69ebb83e13e514222b0ae4f8bd813a17679ed876
+
+EDOTDOT caught my eye for some reason - maybe because it's the only one
+you attributed to linux in a long list of SVr1 ones... what were 72
+through 76 in SVR1?
+
+
+From michael_davidson at pacbell.net  Fri Apr  1 12:23:23 2011
+From: michael_davidson at pacbell.net (Michael Davidson)
+Date: Thu, 31 Mar 2011 19:23:23 -0700 (PDT)
+Subject: [TUHS] Tracing origins of errno names/numbers
+In-Reply-To: <op.vs8eqsibi7swck@r832laptop2>
+Message-ID: <584942.97532.qm@web82407.mail.mud.yahoo.com>
+
+--- On Thu, 3/31/11, Random832 <random832 at fastmail.us> wrote:
+
+EDOTDOT caught my eye for some reason - maybe because it's the only one
+you attributed to linux in a long list of SVr1 ones... what were 72
+through 76 in SVR1?
+
+As the comment indicates, EDOTDOT came from "RFS" - the almost never used "remote file system" that was (optionally, I think) part of System V Release 3.
+
+As best I can recall, that is also where several of the other error numbers in the 72 - 79 range probably came from.
+
+Michael Davidson
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110331/d828a845/attachment.html>
+
+From downing.nick+tuhs at gmail.com  Fri Apr  1 12:51:38 2011
+From: downing.nick+tuhs at gmail.com (Nick Downing)
+Date: Fri, 1 Apr 2011 13:51:38 +1100
+Subject: [TUHS] Tracing origins of errno names/numbers
+In-Reply-To: <584942.97532.qm@web82407.mail.mud.yahoo.com>
+References: <op.vs8eqsibi7swck@r832laptop2>
+	<584942.97532.qm@web82407.mail.mud.yahoo.com>
+Message-ID: <AANLkTi=yk+_6hnA+xvhn37i1rt32-JByu7dbYaDoa1Gd@mail.gmail.com>
+
+I also looked up EDOTDOT and found reference to RFS but not much info about
+it.  Why was it not used?  Not reliable enough?  I have often thought that
+the stateless, idempotent NFS protocol leaves a lot to be desired due to its
+inability to implement unix semantics (as discussed in the wikipedia stub
+article on RFS), has this been improved with NFS4?  Should RFS be revived
+and used?  Some of its features sounded quite attractive (location
+transparency, etc).  It does appear to have the ability to execute a program
+remotely??  What happens with regard to PIDs, home directory etc in this
+case?  Does anyone know?
+cheers, Nick
+
+On Fri, Apr 1, 2011 at 1:23 PM, Michael Davidson <
+michael_davidson at pacbell.net> wrote:
+
+> --- On *Thu, 3/31/11, Random832 <random832 at fastmail.us>* wrote:
+>
+>
+> EDOTDOT caught my eye for some reason - maybe because it's the only one
+> you attributed to linux in a long list of SVr1 ones... what were 72
+> through 76 in SVR1?
+>
+>
+> As the comment indicates, EDOTDOT came from "RFS" - the almost never used
+> "remote file system" that was (optionally, I think) part of System V Release
+> 3.
+>
+> As best I can recall, that is also where several of the other error numbers
+> in the 72 - 79 range probably came from.
+>
+> Michael Davidson
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110401/dcb1b911/attachment.html>
+
+From michael_davidson at pacbell.net  Fri Apr  1 13:26:04 2011
+From: michael_davidson at pacbell.net (Michael Davidson)
+Date: Thu, 31 Mar 2011 20:26:04 -0700 (PDT)
+Subject: [TUHS] Tracing origins of errno names/numbers
+Message-ID: <934693.10287.qm@web82408.mail.mud.yahoo.com>
+
+Regardless of its technical merits (and I suspect that the implementation may have been pretty bad) RFS was doomed by AT&T's licensing policies and general ineptitude at marketing UNIX.  Similarly the widespread adoption of NFS was driven by the fact that Sun made it a de facto standard.
+
+On Thu Mar 31st, 2011 7:51 PM PDT Nick Downing wrote:
+
+>I also looked up EDOTDOT and found reference to RFS but not much info about
+>it.  Why was it not used?  Not reliable enough?  I have often thought that
+>the stateless, idempotent NFS protocol leaves a lot to be desired due to its
+>inability to implement unix semantics (as discussed in the wikipedia stub
+>article on RFS), has this been improved with NFS4?  Should RFS be revived
+>and used?  Some of its features sounded quite attractive (location
+>transparency, etc).  It does appear to have the ability to execute a program
+>remotely??  What happens with regard to PIDs, home directory etc in this
+>case?  Does anyone know?
+>cheers, Nick
+>
+>On Fri, Apr 1, 2011 at 1:23 PM, Michael Davidson <
+>michael_davidson at pacbell.net> wrote:
+>
+>> --- On *Thu, 3/31/11, Random832 <random832 at fastmail.us>* wrote:
+>>
+>>
+>> EDOTDOT caught my eye for some reason - maybe because it's the only one
+>> you attributed to linux in a long list of SVr1 ones... what were 72
+>> through 76 in SVR1?
+>>
+>>
+>> As the comment indicates, EDOTDOT came from "RFS" - the almost never used
+>> "remote file system" that was (optionally, I think) part of System V Release
+>> 3.
+>>
+>> As best I can recall, that is also where several of the other error numbers
+>> in the 72 - 79 range probably came from.
+>>
+>> Michael Davidson
+>>
+>> _______________________________________________
+>> TUHS mailing list
+>> TUHS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>>
+>>
+
+
+
+From cowan at mercury.ccil.org  Fri Apr  1 13:38:47 2011
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Thu, 31 Mar 2011 23:38:47 -0400
+Subject: [TUHS] Tracing origins of errno names/numbers
+In-Reply-To: <934693.10287.qm@web82408.mail.mud.yahoo.com>
+References: <934693.10287.qm@web82408.mail.mud.yahoo.com>
+Message-ID: <20110401033847.GA14980@mercury.ccil.org>
+
+Michael Davidson scripsit:
+
+> Regardless of its technical merits (and I suspect that the
+> implementation may have been pretty bad) RFS was doomed by AT&T's
+> licensing policies and general ineptitude at marketing UNIX.  Similarly
+> the widespread adoption of NFS was driven by the fact that Sun made
+> it a de facto standard.
+
+A familiar tale: NeWS vs. X was exactly the same story, only with the players
+reversed.
+
+-- 
+John Cowan  cowan at ccil.org   http://www.ccil.org/~cowan
+Dievas dave dantis; Dievas duos duonos          --Lithuanian proverb
+Deus dedit dentes; deus dabit panem             --Latin version thereof
+Deity donated dentition;
+  deity'll donate doughnuts                     --English version by Muke Tever
+God gave gums; God'll give granary              --Version by Mat McVeagh
+
+
+From lm at bitmover.com  Fri Apr  1 13:40:23 2011
+From: lm at bitmover.com (Larry McVoy)
+Date: Thu, 31 Mar 2011 20:40:23 -0700
+Subject: [TUHS] Tracing origins of errno names/numbers
+In-Reply-To: <934693.10287.qm@web82408.mail.mud.yahoo.com>
+References: <934693.10287.qm@web82408.mail.mud.yahoo.com>
+Message-ID: <20110401034023.GB28441@bitmover.com>
+
+If people wish to discuss RFS vs NFS, I was there are Sun when all this 
+happened.
+
+On Thu, Mar 31, 2011 at 08:26:04PM -0700, Michael Davidson wrote:
+> Regardless of its technical merits (and I suspect that the implementation may have been pretty bad) RFS was doomed by AT&T's licensing policies and general ineptitude at marketing UNIX.  Similarly the widespread adoption of NFS was driven by the fact that Sun made it a de facto standard.
+> 
+> On Thu Mar 31st, 2011 7:51 PM PDT Nick Downing wrote:
+> 
+> >I also looked up EDOTDOT and found reference to RFS but not much info about
+> >it.  Why was it not used?  Not reliable enough?  I have often thought that
+> >the stateless, idempotent NFS protocol leaves a lot to be desired due to its
+> >inability to implement unix semantics (as discussed in the wikipedia stub
+> >article on RFS), has this been improved with NFS4?  Should RFS be revived
+> >and used?  Some of its features sounded quite attractive (location
+> >transparency, etc).  It does appear to have the ability to execute a program
+> >remotely??  What happens with regard to PIDs, home directory etc in this
+> >case?  Does anyone know?
+> >cheers, Nick
+> >
+> >On Fri, Apr 1, 2011 at 1:23 PM, Michael Davidson <
+> >michael_davidson at pacbell.net> wrote:
+> >
+> >> --- On *Thu, 3/31/11, Random832 <random832 at fastmail.us>* wrote:
+> >>
+> >>
+> >> EDOTDOT caught my eye for some reason - maybe because it's the only one
+> >> you attributed to linux in a long list of SVr1 ones... what were 72
+> >> through 76 in SVR1?
+> >>
+> >>
+> >> As the comment indicates, EDOTDOT came from "RFS" - the almost never used
+> >> "remote file system" that was (optionally, I think) part of System V Release
+> >> 3.
+> >>
+> >> As best I can recall, that is also where several of the other error numbers
+> >> in the 72 - 79 range probably came from.
+> >>
+> >> Michael Davidson
+> >>
+> >> _______________________________________________
+> >> TUHS mailing list
+> >> TUHS at minnie.tuhs.org
+> >> https://minnie.tuhs.org/mailman/listinfo/tuhs
+> >>
+> >>
+> 
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From grog at lemis.com  Fri Apr  1 15:59:38 2011
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Fri, 1 Apr 2011 16:59:38 +1100
+Subject: [TUHS] RFS (was: Tracing origins of errno names/numbers)
+In-Reply-To: <20110401034023.GB28441@bitmover.com>
+References: <934693.10287.qm@web82408.mail.mud.yahoo.com>
+	<20110401034023.GB28441@bitmover.com>
+Message-ID: <20110401055938.GH7159@dereel.lemis.com>
+
+On Thursday, 31 March 2011 at 20:40:23 -0700, Larry McVoy wrote:
+> On Thu, Mar 31, 2011 at 08:26:04PM -0700, Michael Davidson wrote:
+>> On Thu Mar 31st, 2011 7:51 PM PDT Nick Downing wrote:
+>>> On Fri, Apr 1, 2011 at 1:23 PM, Michael Davidson wrote:
+>>>
+>>>> EDOTDOT caught my eye for some reason - maybe because it's the only one
+>>>> you attributed to linux in a long list of SVr1 ones... what were 72
+>>>> through 76 in SVR1?
+>>>>
+>>>> As the comment indicates, EDOTDOT came from "RFS" - the almost never used
+>>>> "remote file system" that was (optionally, I think) part of System V Release
+>>>> 3.
+>>>>
+>>>> As best I can recall, that is also where several of the other error numbers
+>>>> in the 72 - 79 range probably came from.
+>>>
+>>> I also looked up EDOTDOT and found reference to RFS but not much info about
+>>> it.  Why was it not used?  Not reliable enough?  I have often thought that
+>>> the stateless, idempotent NFS protocol leaves a lot to be desired due to its
+>>> inability to implement unix semantics (as discussed in the wikipedia stub
+>>> article on RFS), has this been improved with NFS4?  Should RFS be revived
+>>> and used?  Some of its features sounded quite attractive (location
+>>> transparency, etc).  It does appear to have the ability to execute a program
+>>> remotely??  What happens with regard to PIDs, home directory etc in this
+>>> case?  Does anyone know?
+>>
+>> Regardless of its technical merits (and I suspect that the
+>> implementation may have been pretty bad) RFS was doomed by AT&T's
+>> licensing policies and general ineptitude at marketing UNIX.
+>> Similarly the widespread adoption of NFS was driven by the fact that
+>> Sun made it a de facto standard.
+>
+> If people wish to discuss RFS vs NFS, I was there are Sun when all
+> this happened.
+
+Go ahead!  I have always wondered what was wrong with RFS, though I
+suppose a Sun employee might have a slightly close perspective.
+
+Greg
+--
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  See
+http://www.lemis.com/grog/email/signed-mail.php for more details.
+If your Microsoft MUA reports problems, please read
+http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 196 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110401/a5a24f2a/attachment.sig>
+
+From arnold at skeeve.com  Fri Apr  8 05:07:33 2011
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Thu, 07 Apr 2011 22:07:33 +0300
+Subject: [TUHS] when did new awk first appear?
+Message-ID: <201104071907.p37J7XTQ025032@localhost.localdomain>
+
+Hi. Does anyone remember for sure if "new" awk shipped with System V
+Release 3.1 or 3.2?  I know it wasn't 3.0.
+
+Thanks!
+
+Arnold Robbins
+
+
+From tuhs at cuzuco.com  Fri Apr  8 13:56:26 2011
+From: tuhs at cuzuco.com (Brian S Walden)
+Date: Thu, 7 Apr 2011 23:56:26 -0400 (EDT)
+Subject: [TUHS] when did new awk first appear?
+Message-ID: <201104080356.p383uQX4016699@cuzuco.com>
+
+I know for sure that in 1988's svr3.2 the "awk" command was the 1988 version
+and the "oawk" command was the version from 1979.
+
+In svr3.0 the "awk" command was the old and we'd get the new one 
+from Holmdel's unix tools distribution group (called USTOP) and
+install it as "nawk"
+
+I think you could get the new one in stock svr3.1 but cannot
+remember it it was provide as "awk" or "nawk."
+
+> Hi. Does anyone remember for sure if "new" awk shipped with System V
+> Release 3.1 or 3.2?  I know it wasn't 3.0.
+> 
+> Thanks!
+> 
+> Arnold Robbins
+
+
+
+From lm at bitmover.com  Fri Apr  8 14:10:15 2011
+From: lm at bitmover.com (Larry McVoy)
+Date: Thu, 7 Apr 2011 21:10:15 -0700
+Subject: [TUHS] when did new awk first appear?
+In-Reply-To: <201104080356.p383uQX4016699@cuzuco.com>
+References: <201104080356.p383uQX4016699@cuzuco.com>
+Message-ID: <20110408041015.GG1031@bitmover.com>
+
+bwk tarred up his awk source and sent it to me.  I can paw through and see
+what I can find.  Unless he objects.  I know dmr lurks here, does bwk?
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From imp at bsdimp.com  Fri Apr  8 14:21:39 2011
+From: imp at bsdimp.com (Warner Losh)
+Date: Thu, 7 Apr 2011 22:21:39 -0600
+Subject: [TUHS] when did new awk first appear?
+In-Reply-To: <20110408041015.GG1031@bitmover.com>
+References: <201104080356.p383uQX4016699@cuzuco.com>
+	<20110408041015.GG1031@bitmover.com>
+Message-ID: <D8B5FF64-FC7F-419A-A228-46316CD1ECEE@bsdimp.com>
+
+The one-true-awk is in FreeBSD, so why would bwk object to your pawing through his tarball?  It is in FreeBSD's svn repo.
+
+Warner
+
+
+On Apr 7, 2011, at 10:10 PM, Larry McVoy wrote:
+
+> bwk tarred up his awk source and sent it to me.  I can paw through and see
+> what I can find.  Unless he objects.  I know dmr lurks here, does bwk?
+> -- 
+> ---
+> Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+> 
+> 
+
+
+
+From lm at bitmover.com  Fri Apr  8 15:06:19 2011
+From: lm at bitmover.com (Larry McVoy)
+Date: Thu, 7 Apr 2011 22:06:19 -0700
+Subject: [TUHS] when did new awk first appear?
+In-Reply-To: <4D9E96BA.2070208@solar.stanford.edu>
+References: <201104080356.p383uQX4016699@cuzuco.com>
+	<20110408041015.GG1031@bitmover.com>
+	<4D9E96BA.2070208@solar.stanford.edu>
+Message-ID: <20110408050619.GH1031@bitmover.com>
+
+Indeed.  I funded a lot of work based on awk and at some point I asked
+bwk if we could see the original source.  He sent me ~bwk/awk as a 
+tarball.
+
+The dmr reference is because I've never seen bwk here but dmr does
+show up.
+
+On Thu, Apr 07, 2011 at 10:01:46PM -0700, Deborah Scherrer wrote:
+> Brian Kernighan wrote awk, not Dennis.
+>
+> Debbie
+>
+> On 4/7/2011 9:10 PM, Larry McVoy wrote:
+>> bwk tarred up his awk source and sent it to me.  I can paw through and see
+>> what I can find.  Unless he objects.  I know dmr lurks here, does bwk?
+
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From dscherrer at solar.stanford.edu  Fri Apr  8 15:01:46 2011
+From: dscherrer at solar.stanford.edu (Deborah Scherrer)
+Date: Thu, 07 Apr 2011 22:01:46 -0700
+Subject: [TUHS] when did new awk first appear?
+In-Reply-To: <20110408041015.GG1031@bitmover.com>
+References: <201104080356.p383uQX4016699@cuzuco.com>
+	<20110408041015.GG1031@bitmover.com>
+Message-ID: <4D9E96BA.2070208@solar.stanford.edu>
+
+Brian Kernighan wrote awk, not Dennis.
+
+Debbie
+
+On 4/7/2011 9:10 PM, Larry McVoy wrote:
+> bwk tarred up his awk source and sent it to me.  I can paw through and see
+> what I can find.  Unless he objects.  I know dmr lurks here, does bwk?
+
+
+From martin.hardie at gmail.com  Fri Apr  8 17:52:32 2011
+From: martin.hardie at gmail.com (martin hardie)
+Date: Fri, 8 Apr 2011 17:52:32 +1000
+Subject: [TUHS] when did new awk first appear?
+In-Reply-To: <D8B5FF64-FC7F-419A-A228-46316CD1ECEE@bsdimp.com>
+References: <201104080356.p383uQX4016699@cuzuco.com>
+	<20110408041015.GG1031@bitmover.com>
+	<D8B5FF64-FC7F-419A-A228-46316CD1ECEE@bsdimp.com>
+Message-ID: <BANLkTimwejfK_awK8tdkN-OJpgCpdXsHgg@mail.gmail.com>
+
+not sure when it was exactly but very early
+see p 46 http://auskadi.googlepages.com/nix1.pdf
+
+
+
+
+
+On 8 April 2011 14:21, Warner Losh <imp at bsdimp.com> wrote:
+
+> The one-true-awk is in FreeBSD, so why would bwk object to your pawing
+> through his tarball?  It is in FreeBSD's svn repo.
+>
+> Warner
+>
+>
+> On Apr 7, 2011, at 10:10 PM, Larry McVoy wrote:
+>
+> > bwk tarred up his awk source and sent it to me.  I can paw through and
+> see
+> > what I can find.  Unless he objects.  I know dmr lurks here, does bwk?
+> > --
+> > ---
+> > Larry McVoy                lm at bitmover.com
+> http://www.bitkeeper.com
+> > _______________________________________________
+> > TUHS mailing list
+> > TUHS at minnie.tuhs.org
+> > https://minnie.tuhs.org/mailman/listinfo/tuhs
+> >
+> >
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110408/f749e325/attachment.html>
+
+From jaapna at xs4all.nl  Fri Apr  8 19:02:42 2011
+From: jaapna at xs4all.nl (Jaap Akkerhuis)
+Date: Fri, 8 Apr 2011 11:02:42 +0200
+Subject: [TUHS] when did new awk first appear?
+In-Reply-To: <4D9E96BA.2070208@solar.stanford.edu>
+References: <201104080356.p383uQX4016699@cuzuco.com>
+	<20110408041015.GG1031@bitmover.com>
+	<4D9E96BA.2070208@solar.stanford.edu>
+Message-ID: <70633485-3EE6-4D7B-B15F-2141A5F3F2D7@xs4all.nl>
+
+
+On Apr 8, 2011, at 7:01, Deborah Scherrer wrote:
+
+> Brian Kernighan wrote awk
+
+Officially it was written by Aho Weinberger Kernighan but
+I suspect Brian did most of the actual coding.
+
+> Debbie
+> 
+> On 4/7/2011 9:10 PM, Larry McVoy wrote:
+>> bwk tarred up his awk source and sent it to me.
+
+I suspect it was actually a shar ball. I received a version around 1987
+when the book (See <http://cm.bell-labs.com/cm/cs/awkbook/>)
+was still being written.
+
+I don't know when it was officially distributed or in which distribution.
+
+	jaap
+
+
+From arnold at skeeve.com  Fri Apr  8 20:19:43 2011
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Fri, 08 Apr 2011 13:19:43 +0300
+Subject: [TUHS] when did new awk first appear?
+In-Reply-To: <D8B5FF64-FC7F-419A-A228-46316CD1ECEE@bsdimp.com>
+References: <201104080356.p383uQX4016699@cuzuco.com>
+	<20110408041015.GG1031@bitmover.com>
+	<D8B5FF64-FC7F-419A-A228-46316CD1ECEE@bsdimp.com>
+Message-ID: <201104081019.p38AJhka003257@localhost.localdomain>
+
+Hi All.  Thanks for the responses.  BWK's awk is available from his home
+page at Princeton, http://www.cs.princeton.edu/~bwk, click on the link
+for the Bell Labs mirror and keep going.
+
+The FreeBSD awk is based on BWK's, with a number of fixes / improvements,
+but I don't know how frequently they sync with his version; the most
+recent on BWK's home page is from May 2010.
+
+I asked BWK when it was first released to the world but he doesn't
+remember if it was SVR3.1 or SVR3.2.  The FIXES file in the source says
+the book on awk went to the printer in August 1987 and I remember that
+it was October 1987 when I bought the book.  I suppose I should try to
+double check if it says that awk is available with Unix from AT&T; if
+it does then that probably points at SVR3.1. (Anyone know the official
+release dates for 3.1 and 3.2?  That might help.)
+
+The gawk doc has said 3.1 since forever, but recently I started to wonder.
+Nevertheless, since I wrote that much closer to when it happened, maybe I
+should just trust my past self and not worry about it too much.  :-)
+
+BWK first released his awk publicly circa 1993; I have about 20 different
+versions, which I think comprise all the public releases he's made over
+the years, but I can't be sure that I didn't miss any, since he doesn't
+notify me when he makes a release :-(.
+
+Thanks,
+
+Arnold
+
+
+From tuhs at cuzuco.com  Sat Apr  9 02:33:14 2011
+From: tuhs at cuzuco.com (Brian S Walden)
+Date: Fri, 8 Apr 2011 12:33:14 -0400 (EDT)
+Subject: [TUHS] when did new awk first appear?
+Message-ID: <201104081633.p38GXEnc002327@cuzuco.com>
+
+Jaap Akkerhuis wrote:
+> Officially it was written by Aho Weinberger Kernighan but
+> I suspect Brian did most of the actual coding.
+
+quote of Aho from an interview ---
+
+ "We [Aho and Kernighan] had created a grammatical specification for AWK but
+  hadn't yet created the full run-time environment. Weinberger came along
+  and said 'hey, this looks like a language I could use myself', and within
+  a week he created a working run time for AWK."
+
+see http://www.computerworld.com.au/article/216844/a-z_programming_languages_awk/?fp=4194304&fpid=1%2F
+
+
+
+From cyrille.lefevre-lists at laposte.net  Mon Apr 11 19:56:48 2011
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Mon, 11 Apr 2011 11:56:48 +0200
+Subject: [TUHS] when did new awk first appear?
+In-Reply-To: <201104071907.p37J7XTQ025032@localhost.localdomain>
+References: <201104071907.p37J7XTQ025032@localhost.localdomain>
+Message-ID: <4DA2D060.9010802@laposte.net>
+
+
+Le 07/04/2011 21:07, Aharon Robbins a écrit :
+>
+> Hi. Does anyone remember for sure if "new" awk shipped with System V
+> Release 3.1 or 3.2?  I know it wasn't 3.0.
+
+Hi,
+
+http://www.levenez.com/lang/ says 1978 for oawk and 1985 for nawk.
+
+regarding http://www.levenez.com/unix/, 1978 is between v6 and v7,
+and 1985 is between SVr2 and SVr3.0.
+
+Regards,
+
+Cyrille Lefevre
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+
+
+From arnold at skeeve.com  Mon Apr 11 20:43:23 2011
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Mon, 11 Apr 2011 10:43:23 GMT
+Subject: [TUHS] when did new awk first appear?
+Message-ID: <201104111043.p3BAhNiL003811@freefriends.org>
+
+Hi.
+
+> > Hi. Does anyone remember for sure if "new" awk shipped with System V
+> > Release 3.1 or 3.2?  I know it wasn't 3.0.
+>
+> Hi,
+>
+> http://www.levenez.com/lang/ says 1978 for oawk and 1985 for nawk.
+
+New awk existed inside the Research group for some time before it
+filtered out through System V.  It was even available separately,
+directly from them, to educational institutions. Circa 1986 I got
+a copy that way when I worked at the Emory University computing center.
+
+> regarding http://www.levenez.com/unix/, 1978 is between v6 and v7,
+> and 1985 is between SVr2 and SVr3.0.
+
+True but not relevant; new awk was released with System V at either
+3.1 or 3.2; I'm leaning towards 3.1 since that is what I wrote way back
+when in the gawk manual when I knew for sure. :-)
+
+Unless anyone can check the actual sources, I think we should declare
+this closed...  Thanks to everyone for the feedback.
+
+Arnold
+
+
+From jaapna at xs4all.nl  Mon Apr 11 21:35:50 2011
+From: jaapna at xs4all.nl (Jaap Akkerhuis)
+Date: Mon, 11 Apr 2011 13:35:50 +0200
+Subject: [TUHS] when did new awk first appear?
+In-Reply-To: <4DA2D060.9010802@laposte.net>
+References: <201104071907.p37J7XTQ025032@localhost.localdomain>
+	<4DA2D060.9010802@laposte.net>
+Message-ID: <65A048BD-693E-4FEE-9D50-6023371A6AF2@xs4all.nl>
+
+
+> http://www.levenez.com/lang/ says 1978 for oawk and 1985 for nawk.
+> 
+> regarding http://www.levenez.com/unix/, 1978 is between v6 and v7,
+> and 1985 is between SVr2 and SVr3.0.
+
+The preface of "The AWK Programming Language" says: "Awk was originally
+designed and implemented by the authors in 1977, ... so awk was enhanced
+in a new version made available in 1985". About the book and the
+enhancements the preface says that "The examples in Chapter 1 use only
+the facilities of the new version; many examples in later chapters take advantage
+of new features. This version of awk is part of Unix System V Release 3.1. 
+Source code for this version is also available through AT*T's Unix System
+Toolchest software distribution; call 1-201-522-6900 and log in as guest." 
+
+There is also info how to get it in other parts of the world.
+
+	jaap
+
+
+
+From arnold at skeeve.com  Wed Apr 13 05:17:29 2011
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Tue, 12 Apr 2011 22:17:29 +0300
+Subject: [TUHS] when did new awk first appear?
+In-Reply-To: <65A048BD-693E-4FEE-9D50-6023371A6AF2@xs4all.nl>
+References: <201104071907.p37J7XTQ025032@localhost.localdomain>
+	<4DA2D060.9010802@laposte.net>
+	<65A048BD-693E-4FEE-9D50-6023371A6AF2@xs4all.nl>
+Message-ID: <201104121917.p3CJHT2u002710@localhost.localdomain>
+
+Thanks for straightening this out!  When I did a quick skim of my copy
+of the book a few weeks ago I missed it.
+
+Arnold
+
+> From: Jaap Akkerhuis <jaapna at xs4all.nl>
+> Date: Mon, 11 Apr 2011 13:35:50 +0200
+> To: tuhs at minnie.tuhs.org
+> Subject: Re: [TUHS] when did new awk first appear?
+>
+> > http://www.levenez.com/lang/ says 1978 for oawk and 1985 for nawk.
+> > 
+> > regarding http://www.levenez.com/unix/, 1978 is between v6 and v7,
+> > and 1985 is between SVr2 and SVr3.0.
+>
+> The preface of "The AWK Programming Language" says: "Awk was originally
+> designed and implemented by the authors in 1977, ... so awk was enhanced
+> in a new version made available in 1985". About the book and the
+> enhancements the preface says that "The examples in Chapter 1 use only
+> the facilities of the new version; many examples in later chapters take advantage
+> of new features. This version of awk is part of Unix System V Release 3.1. 
+> Source code for this version is also available through AT*T's Unix System
+> Toolchest software distribution; call 1-201-522-6900 and log in as guest." 
+>
+> There is also info how to get it in other parts of the world.
+>
+> 	jaap
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From madcrow.maxwell at gmail.com  Thu Apr 14 09:00:56 2011
+From: madcrow.maxwell at gmail.com (Michael Kerpan)
+Date: Wed, 13 Apr 2011 19:00:56 -0400
+Subject: [TUHS] Novell and Ancient Unix
+Message-ID: <BANLkTimsHbdz10rvLokFRJKM0Od0Utom7A@mail.gmail.com>
+
+Now that Novell has definitively been found by the courts to own the
+Unix copyrights AND decided not to sell them in their latest batch of
+financial flailing about, I'm wondering what they're going to do about
+the Ancient Unix license. While they've promised not to sue anybody
+about Unix, I'm wondering if they'll ever officially endorse the
+Ancient Unix 4-clause license or perhaps even switch it to something a
+little less awkward like a 3-clause BSD clone or the MIT license.
+Also, I wonder if perhaps they might be convinced to expand the
+license to cover things like System III or maybe even some early
+versions of System V. How might one go about making these inquiries?
+
+
+From wkt at tuhs.org  Thu Apr 14 09:12:18 2011
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 14 Apr 2011 09:12:18 +1000
+Subject: [TUHS] Novell and Ancient Unix
+In-Reply-To: <BANLkTimsHbdz10rvLokFRJKM0Od0Utom7A@mail.gmail.com>
+References: <BANLkTimsHbdz10rvLokFRJKM0Od0Utom7A@mail.gmail.com>
+Message-ID: <20110413231218.GA13201@minnie.tuhs.org>
+
+On Wed, Apr 13, 2011 at 07:00:56PM -0400, Michael Kerpan wrote:
+> Also, I wonder if perhaps they might be convinced to expand the
+> license to cover things like System III or maybe even some early
+> versions of System V. How might one go about making these inquiries?
+
+If anybody has any contacts at Novell, or even pointers to people
+who have pointers to Novell, please pass them on. I too would like to
+get SysIII and early SysV out publicly.
+
+Cheers,
+	Warren
+
+
+From neozeed at gmail.com  Thu Apr 14 09:25:54 2011
+From: neozeed at gmail.com (Jason Stevens)
+Date: Wed, 13 Apr 2011 19:25:54 -0400
+Subject: [TUHS] Novell and Ancient Unix
+In-Reply-To: <20110413231218.GA13201@minnie.tuhs.org>
+References: <BANLkTimsHbdz10rvLokFRJKM0Od0Utom7A@mail.gmail.com>
+	<20110413231218.GA13201@minnie.tuhs.org>
+Message-ID: <BANLkTiknVhawB4TLohwTiXdiRa0+Rn6Y+Q@mail.gmail.com>
+
+I tried last year and they were doing their best to sell me linux..  I
+even gave them links showing that they owned SYSV, I was asking about
+source/binary licenses, or even the ability to resell SYSV.. lol that
+got me nowhere.
+
+On Wed, Apr 13, 2011 at 7:12 PM, Warren Toomey <wkt at tuhs.org> wrote:
+>
+> On Wed, Apr 13, 2011 at 07:00:56PM -0400, Michael Kerpan wrote:
+> > Also, I wonder if perhaps they might be convinced to expand the
+> > license to cover things like System III or maybe even some early
+> > versions of System V. How might one go about making these inquiries?
+>
+> If anybody has any contacts at Novell, or even pointers to people
+> who have pointers to Novell, please pass them on. I too would like to
+> get SysIII and early SysV out publicly.
+>
+> Cheers,
+>        Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From madcrow.maxwell at gmail.com  Thu Apr 14 09:51:44 2011
+From: madcrow.maxwell at gmail.com (Michael Kerpan)
+Date: Wed, 13 Apr 2011 19:51:44 -0400
+Subject: [TUHS] Novell and Ancient Unix
+In-Reply-To: <BANLkTiknVhawB4TLohwTiXdiRa0+Rn6Y+Q@mail.gmail.com>
+References: <BANLkTimsHbdz10rvLokFRJKM0Od0Utom7A@mail.gmail.com>
+	<20110413231218.GA13201@minnie.tuhs.org>
+	<BANLkTiknVhawB4TLohwTiXdiRa0+Rn6Y+Q@mail.gmail.com>
+Message-ID: <BANLkTik+iBxhadEYQH=8jEt3tbkGcD03-A@mail.gmail.com>
+
+On Wed, Apr 13, 2011 at 7:25 PM, Jason Stevens <neozeed at gmail.com> wrote:
+> I tried last year and they were doing their best to sell me linux..  I
+> even gave them links showing that they owned SYSV, I was asking about
+> source/binary licenses, or even the ability to resell SYSV.. lol that
+> got me nowhere.
+
+For something they fought so hard in court to own, they sure are
+clueless about what they have. Still, perhaps asking about reselling
+SVR4 or whatever they nominally may still have in some catalog isn't
+going to get you in touch with the people who would need to be
+persuaded to release some earlier stuff under an open license.
+
+
+From neozeed at gmail.com  Thu Apr 14 09:56:52 2011
+From: neozeed at gmail.com (Jason Stevens)
+Date: Wed, 13 Apr 2011 19:56:52 -0400
+Subject: [TUHS] Novell and Ancient Unix
+In-Reply-To: <BANLkTik+iBxhadEYQH=8jEt3tbkGcD03-A@mail.gmail.com>
+References: <BANLkTimsHbdz10rvLokFRJKM0Od0Utom7A@mail.gmail.com>
+	<20110413231218.GA13201@minnie.tuhs.org>
+	<BANLkTiknVhawB4TLohwTiXdiRa0+Rn6Y+Q@mail.gmail.com>
+	<BANLkTik+iBxhadEYQH=8jEt3tbkGcD03-A@mail.gmail.com>
+Message-ID: <BANLkTinS+OX12y++260rQ0Kg-cj70MAbEw@mail.gmail.com>
+
+I honestly wonder if the people doing the lawsuits, and the people
+selling stuff are even in the same continent...Then again they
+probably have one of those fantastic 1970's models where you buy
+through a reseller who masquerades as the parent company, and only
+sells what is on a price list or at most they can pursue a part
+number...  It is always strange these companies that fight over old
+stuff like crazy, but refuse to support, or sell it...
+
+But I'll sit tight, as I know the pain of supporting MS-DOS based
+stuff .... in 2011.
+
+On Wed, Apr 13, 2011 at 7:51 PM, Michael Kerpan
+<madcrow.maxwell at gmail.com> wrote:
+> On Wed, Apr 13, 2011 at 7:25 PM, Jason Stevens <neozeed at gmail.com> wrote:
+>> I tried last year and they were doing their best to sell me linux..  I
+>> even gave them links showing that they owned SYSV, I was asking about
+>> source/binary licenses, or even the ability to resell SYSV.. lol that
+>> got me nowhere.
+>
+> For something they fought so hard in court to own, they sure are
+> clueless about what they have. Still, perhaps asking about reselling
+> SVR4 or whatever they nominally may still have in some catalog isn't
+> going to get you in touch with the people who would need to be
+> persuaded to release some earlier stuff under an open license.
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+From lyndon at orthanc.ca  Thu Apr 14 10:34:02 2011
+From: lyndon at orthanc.ca (Lyndon Nerenberg)
+Date: Wed, 13 Apr 2011 17:34:02 -0700 (PDT)
+Subject: [TUHS] Novell and Ancient Unix
+In-Reply-To: <BANLkTik+iBxhadEYQH=8jEt3tbkGcD03-A@mail.gmail.com>
+References: <BANLkTimsHbdz10rvLokFRJKM0Od0Utom7A@mail.gmail.com>
+	<20110413231218.GA13201@minnie.tuhs.org>
+	<BANLkTiknVhawB4TLohwTiXdiRa0+Rn6Y+Q@mail.gmail.com>
+	<BANLkTik+iBxhadEYQH=8jEt3tbkGcD03-A@mail.gmail.com>
+Message-ID: <alpine.BSF.2.00.1104131726560.90396@legolas.orthanc.ca>
+
+> For something they fought so hard in court to own, they sure are
+> clueless about what they have.
+
+I recall a message to the list a year or two(?) ago from Warren (I think) 
+describing how he had to explain to one of the many incarnations of SCO[1]
+just exactly what all this "UNIX" stuff was that they had bought (i.e. 
+all the nth Editions, SysIII, SVRx, etc).  I'm too lazy to search the list 
+archives to find it, but it's there someplace.
+
+--lyndon
+
+[1] The SCO-variant that was the ancestor of Caldera/Novell.  My brain 
+turns to cottage cheese every time I think about this part of history.
+
+
+From lm at bitmover.com  Thu Apr 14 11:04:57 2011
+From: lm at bitmover.com (Larry McVoy)
+Date: Wed, 13 Apr 2011 18:04:57 -0700
+Subject: [TUHS] Novell and Ancient Unix
+In-Reply-To: <BANLkTinS+OX12y++260rQ0Kg-cj70MAbEw@mail.gmail.com>
+References: <BANLkTimsHbdz10rvLokFRJKM0Od0Utom7A@mail.gmail.com>
+	<20110413231218.GA13201@minnie.tuhs.org>
+	<BANLkTiknVhawB4TLohwTiXdiRa0+Rn6Y+Q@mail.gmail.com>
+	<BANLkTik+iBxhadEYQH=8jEt3tbkGcD03-A@mail.gmail.com>
+	<BANLkTinS+OX12y++260rQ0Kg-cj70MAbEw@mail.gmail.com>
+Message-ID: <20110414010457.GL21881@bitmover.com>
+
+I used to be plugged in to those guys but it was decades ago.
+Anyone know if Ransome Love is still there?  Nope, just
+googled him.  I can try and track him down and ask for help.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From stanley.lieber at gmail.com  Thu Apr 14 11:10:51 2011
+From: stanley.lieber at gmail.com (Stanley Lieber)
+Date: Wed, 13 Apr 2011 20:10:51 -0500
+Subject: [TUHS] Novell and Ancient Unix
+In-Reply-To: <20110414010457.GL21881@bitmover.com>
+References: <BANLkTimsHbdz10rvLokFRJKM0Od0Utom7A@mail.gmail.com>
+	<20110413231218.GA13201@minnie.tuhs.org>
+	<BANLkTiknVhawB4TLohwTiXdiRa0+Rn6Y+Q@mail.gmail.com>
+	<BANLkTik+iBxhadEYQH=8jEt3tbkGcD03-A@mail.gmail.com>
+	<BANLkTinS+OX12y++260rQ0Kg-cj70MAbEw@mail.gmail.com>
+	<20110414010457.GL21881@bitmover.com>
+Message-ID: <BANLkTiky6vUf46s3f+iDpZHFHCkdZF5gbQ@mail.gmail.com>
+
+Does Novell also now own Research Unix v8, v9 and v10?
+
+-sl
+
+
+From wkt at tuhs.org  Thu Apr 14 11:13:12 2011
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 14 Apr 2011 11:13:12 +1000
+Subject: [TUHS] Novell and Ancient Unix
+In-Reply-To: <BANLkTiky6vUf46s3f+iDpZHFHCkdZF5gbQ@mail.gmail.com>
+References: <BANLkTimsHbdz10rvLokFRJKM0Od0Utom7A@mail.gmail.com>
+	<20110413231218.GA13201@minnie.tuhs.org>
+	<BANLkTiknVhawB4TLohwTiXdiRa0+Rn6Y+Q@mail.gmail.com>
+	<BANLkTik+iBxhadEYQH=8jEt3tbkGcD03-A@mail.gmail.com>
+	<BANLkTinS+OX12y++260rQ0Kg-cj70MAbEw@mail.gmail.com>
+	<20110414010457.GL21881@bitmover.com>
+	<BANLkTiky6vUf46s3f+iDpZHFHCkdZF5gbQ@mail.gmail.com>
+Message-ID: <20110414011312.GA19413@minnie.tuhs.org>
+
+On Wed, Apr 13, 2011 at 08:10:51PM -0500, Stanley Lieber wrote:
+> Does Novell also now own Research Unix v8, v9 and v10?
+
+I don't believe so, as they were from the labs not USL. However,
+Norman or Dennis would be able to clarify.
+
+Cheers,
+	Warren
+
+
+From grog at lemis.com  Thu Apr 14 12:49:28 2011
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Thu, 14 Apr 2011 12:49:28 +1000
+Subject: [TUHS] Novell and Ancient Unix
+In-Reply-To: <BANLkTik+iBxhadEYQH=8jEt3tbkGcD03-A@mail.gmail.com>
+References: <BANLkTimsHbdz10rvLokFRJKM0Od0Utom7A@mail.gmail.com>
+	<20110413231218.GA13201@minnie.tuhs.org>
+	<BANLkTiknVhawB4TLohwTiXdiRa0+Rn6Y+Q@mail.gmail.com>
+	<BANLkTik+iBxhadEYQH=8jEt3tbkGcD03-A@mail.gmail.com>
+Message-ID: <20110414024928.GQ49656@dereel.lemis.com>
+
+On Wednesday, 13 April 2011 at 19:51:44 -0400, Michael Kerpan wrote:
+> On Wed, Apr 13, 2011 at 7:25 PM, Jason Stevens <neozeed at gmail.com> wrote:
+>> I tried last year and they were doing their best to sell me linux..  I
+>> even gave them links showing that they owned SYSV, I was asking about
+>> source/binary licenses, or even the ability to resell SYSV.. lol that
+>> got me nowhere.
+>
+> For something they fought so hard in court to own, they sure are
+> clueless about what they have
+
+They're a big company.  Left hand, right hand syndrome.
+
+Greg
+--
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  See
+http://www.lemis.com/grog/email/signed-mail.php for more details.
+If your Microsoft MUA reports problems, please read
+http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 196 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110414/443e0de3/attachment.sig>
+
+From BHuntsman at mail2.cu-portland.edu  Thu Apr 14 17:00:00 2011
+From: BHuntsman at mail2.cu-portland.edu (Benjamin Huntsman)
+Date: Thu, 14 Apr 2011 07:00:00 +0000
+Subject: [TUHS] Novell and Ancient Unix
+In-Reply-To: <20110414011312.GA19413@minnie.tuhs.org>
+References: <BANLkTimsHbdz10rvLokFRJKM0Od0Utom7A@mail.gmail.com>
+	<20110413231218.GA13201@minnie.tuhs.org>
+	<BANLkTiknVhawB4TLohwTiXdiRa0+Rn6Y+Q@mail.gmail.com>
+	<BANLkTik+iBxhadEYQH=8jEt3tbkGcD03-A@mail.gmail.com>
+	<BANLkTinS+OX12y++260rQ0Kg-cj70MAbEw@mail.gmail.com>
+	<20110414010457.GL21881@bitmover.com>
+	<BANLkTiky6vUf46s3f+iDpZHFHCkdZF5gbQ@mail.gmail.com>,
+	<20110414011312.GA19413@minnie.tuhs.org>
+Message-ID: <5782C16A7C920E469B74E11B5608B8E708A23424@Kriegler.ntdom.cupdx>
+
+I've been asking this question around for a few years now.  My interest is in seeing the 10th Edition get released.
+I've been told by sources in the Labs that there is no "9th Edition" in distribution format.  I'm only aware of the Labs'
+archive copy and Norman Wilson's copies of 10th Edition still in existance...
+
+Word is that Alcatel-Lucent and AT&T both don't care about it anymore.  I'm pretty sure it'd be up to Novell to add
+8th, 9th, and 10th Edition UNIX to the "Ancient UNIX" license.  Might be a bit trickier getting SysIII and SysV on the
+list, though.
+
+I've been shooting e-mails to Novell's Intellectual Property office every few months for a while, but got no response.
+It's probably time someone picked up the phone and attempted to navigate their menus.  We'd probably need the 
+right person to call, though.  I've been meaning to set up a petition site to get a few signatures and see if we could
+get Dennis Ritchie or someone to try to make a call.  Since this has come up again, I might give it a shot to see if
+I can at least find a point of contact...
+
+
+________________________________________
+From: tuhs-bounces at minnie.tuhs.org [tuhs-bounces at minnie.tuhs.org] on behalf of Warren Toomey [wkt at tuhs.org]
+Sent: Wednesday, April 13, 2011 6:13 PM
+To: Stanley Lieber
+Cc: tuhs at minnie.tuhs.org
+Subject: Re: [TUHS] Novell and Ancient Unix
+
+On Wed, Apr 13, 2011 at 08:10:51PM -0500, Stanley Lieber wrote:
+> Does Novell also now own Research Unix v8, v9 and v10?
+
+I don't believe so, as they were from the labs not USL. However,
+Norman or Dennis would be able to clarify.
+
+Cheers,
+        Warren
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From arnold at skeeve.com  Fri Apr 15 06:24:59 2011
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Thu, 14 Apr 2011 23:24:59 +0300
+Subject: [TUHS] Novell and Ancient Unix
+In-Reply-To: <5782C16A7C920E469B74E11B5608B8E708A23424@Kriegler.ntdom.cupdx>
+References: <BANLkTimsHbdz10rvLokFRJKM0Od0Utom7A@mail.gmail.com>
+	<20110413231218.GA13201@minnie.tuhs.org>
+	<BANLkTiknVhawB4TLohwTiXdiRa0+Rn6Y+Q@mail.gmail.com>
+	<BANLkTik+iBxhadEYQH=8jEt3tbkGcD03-A@mail.gmail.com>
+	<BANLkTinS+OX12y++260rQ0Kg-cj70MAbEw@mail.gmail.com>
+	<20110414010457.GL21881@bitmover.com>
+	<BANLkTiky6vUf46s3f+iDpZHFHCkdZF5gbQ@mail.gmail.com>
+	<20110414011312.GA19413@minnie.tuhs.org>
+	<5782C16A7C920E469B74E11B5608B8E708A23424@Kriegler.ntdom.cupdx>
+Message-ID: <201104142024.p3EKOxXZ002361@localhost.localdomain>
+
+Hi All.
+
+I willing to bet that the lady running Groklaw would be a great person
+to help out in the effort to free up the old Unixes.  She probably knows
+who to talk to, and I bet they know who she is.
+
+It's worth a shot, methinks.
+
+Thanks,
+
+Arnold
+
+
+From aek at bitsavers.org  Sat Apr 16 07:13:07 2011
+From: aek at bitsavers.org (Al Kossow)
+Date: Fri, 15 Apr 2011 14:13:07 -0700
+Subject: [TUHS] Novell and Ancient Unix
+In-Reply-To: <5782C16A7C920E469B74E11B5608B8E708A23424@Kriegler.ntdom.cupdx>
+References: <BANLkTimsHbdz10rvLokFRJKM0Od0Utom7A@mail.gmail.com>	<20110413231218.GA13201@minnie.tuhs.org>	<BANLkTiknVhawB4TLohwTiXdiRa0+Rn6Y+Q@mail.gmail.com>	<BANLkTik+iBxhadEYQH=8jEt3tbkGcD03-A@mail.gmail.com>	<BANLkTinS+OX12y++260rQ0Kg-cj70MAbEw@mail.gmail.com>	<20110414010457.GL21881@bitmover.com>	<BANLkTiky6vUf46s3f+iDpZHFHCkdZF5gbQ@mail.gmail.com>,
+	<20110414011312.GA19413@minnie.tuhs.org>
+	<5782C16A7C920E469B74E11B5608B8E708A23424@Kriegler.ntdom.cupdx>
+Message-ID: <4DA8B4E3.1050208@bitsavers.org>
+
+On 4/14/11 12:00 AM, Benjamin Huntsman wrote:
+
+> I've been shooting e-mails to Novell's Intellectual Property office every few months for a while, but got no response.
+> It's probably time someone picked up the phone and attempted to navigate their menus.  We'd probably need the
+> right person to call, though.  I've been meaning to set up a petition site to get a few signatures and see if we could
+> get Dennis Ritchie or someone to try to make a call.  Since this has come up again, I might give it a shot to see if
+> I can at least find a point of contact...
+>
+
+If it helps, I can offer The Computer History Museum as an institutional host for the archive. We've had some good luck
+recently with HP, Xerox, and IBM in getting code released for non-commercial use.
+
+Al Kossow
+Robert N. Miner Software Curator
+Computer History Museum
+
+
+
+

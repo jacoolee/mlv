@@ -1,0 +1,4392 @@
+From pnr at planet.nl  Fri Jun  4 09:21:25 2021
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Fri, 4 Jun 2021 01:21:25 +0200
+Subject: [TUHS] 32V memory management: not quite V7 style swapping
+Message-ID: <BACAD706-6743-4977-81F0-2EDB9D654273@planet.nl>
+
+
+Received wisdom is that 32V used V7 style swapping for memory management. Over the past days I’ve come to the conclusion that this is a very partial truth and only holds true for 32V as it existed in the first half of 1978. In the second half of ’78 it implemented something that is referred to as “scatter loading” which is an interesting halfway house on the road to demand paging. It was also used in the VAX version of Sys III (and presumably in SysV R1 and early R2).
+
+In the 32V report from July 1978 it says:
+
+"Like the UNIX system for the PDP-11, the current implementation for the VAX-11/780 maintains each process in contiguous physical memory and swaps processes to disk when there is not enough physical memory to contain them all. Reducing external memory fragmentation to zero by utilizing the VAX- 11/780 memory mapping hardware for scatter loading is high on the list of things to do in the second implementation pass. To simplify kernel memory allocation, the size of the user-segment memory map is an assembly parameter which currently allows three pages of page table or 192K bytes total for text, data, and stack.” (https://www.bell-labs.com/usr/dmr/www/otherports/32v.pdf).
+
+It turns out that scatter loading was added in the next months, and it was this version that was used as the basis for 3BSD and SysIII.
+
+Babaoglu & Joy write:
+
+"Except for the machine-dependent sections of code, UNIX for the VAX was quite similar to that for the PDP-11 which has a 16-bit address space and no paging hardware. It made no use of the memory-management hardware available on the VAX aside from simulating the PDP-11 segment registers with VAX page table entries. The main-memory management schemes employed by this first version of the system were identical to their PDP-11 counterparts -- processes were allocated contiguous blocks of real memory on a first-fit basis and were swapped in their entirety. A subsequent version of the system was capable of loading processes into noncontiguous real memory locations, called scatter loading, and was able to swap only portions of a process, called partial swapping, as deemed necessary by the memory contention. This would become the basis for the paging system development discussed in this paper.” (https://www.researchgate.net/publication/247924813_Converting_a_swap-based_system_to_do_paging_in_an_architecture_lacking_page-referenced_bits)
+
+The 32V code on the TUHS website (e.g. here https://www.tuhs.org/cgi-bin/utree.pl?file=32V) is actually this later scatter loading code, and not the early 1978 code that used V7 style memory management. The 32-bit Sys III code is closely related (see https://www.tuhs.org/cgi-bin/utree.pl?file=SysIII/usr/src/uts/vax).
+
+===
+
+My current understanding of how scatter loading worked (based on a brief code review) is as follows:
+
+(Note that on the VAX pages/frames are 512 bytes and the page list is essentially single level; page lists grow quickly. It is also unusual in the sense that user page table entries point to kernel virtual memory, but kernel page table entries point to physical memory).
+
+- Each process keeps a list of pages in its u-area (a page table prototype, if you will). This list is fixed size and allows up to 512KB per process in 32V and ~2.5MB per process in Sys III (i.e up to 1024 resp. 5120 pages).
+
+- The kernel keeps a bitmap of free/used frames in physical memory.
+
+- When a process loads/grows, the bitmap is scanned for free frames, these are marked as in-use, and added to the u-area list. If there are not enough free pages a process is selected for swapping out. Swapping out is gradual, in 8KB chunks in 32V and 32KB chunks in SysIII. When a process shrinks or completes, its pages are added back to the bitmap.
+
+- When a partially swapped out process needs to run, the swapped out part is loaded back similar to the above. Partial swap-outs truncate the process, so everything above the remaining size needs to re-load.
+
+- The user process page table is not swapped, but recreated from the u-area data instead.
+
+- When switching between user processes, the kernel needs to update 16 (32V) or 40 (SysIII) kernel page table entries to update the user memory map.
+
+Scatter loading and partial swapping seem to be a major improvement over V7 style swapping, although it of course falls short of demand paging. So far I have not seen bits of code that suggest ‘lazy loading’ or copy-on-write functionality in 32V or Sys III, but these things would not seem impossible to do in this memory management scheme.
+
+In short, the view that “32V used V7 style swapping” seems to be an oversimplification.
+
+
+
+
+
+
+
+
+From arrigo at alchemistowl.org  Sun Jun  6 22:58:18 2021
+From: arrigo at alchemistowl.org (Arrigo Triulzi)
+Date: Sun, 6 Jun 2021 14:58:18 +0200
+Subject: [TUHS] =?utf-8?q?Looking_for_a_1987_paper_-_origins_of_=E2=80=9C?=
+ =?utf-8?b?cGhpc2hpbmfigJ0=?=
+Message-ID: <95735368-5789-434F-B6AC-82ED77C42B5B@alchemistowl.org>
+
+Dear TUHS,
+
+would anyone happen to have a copy of:
+
+Felix, Jerry & Hauck, Chris (September 1987). "System Security: A Hacker's Perspective". 1987 Interex Proceedings. 
+
+I can only find references to it on the web but no link to an electronic version.
+
+Cheers,
+
+Arrigo  
+
+From pnr at planet.nl  Mon Jun  7 04:03:33 2021
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Sun, 6 Jun 2021 20:03:33 +0200
+Subject: [TUHS] 32V memory management: not quite V7 style swapping -- source
+ code update
+Message-ID: <9CE2AC05-6B4E-475F-874F-426DD51A8859@planet.nl>
+
+I just noticed that the 32V tape on the TUHS Unix Tree page includes a directory “slowsys”:
+https://www.tuhs.org/cgi-bin/utree.pl?file=32V/usr/src/slowsys
+
+This “slowsys” directory appears to contain the 32V kernel with a pure swapping architecture. It is not quite the kernel described in the well known 32V paper, as it seems to have advanced from a fixed 192KB image size mapping to a more variable mapping of up to 1MB — but otherwise the code appears to be as described in the July 1978 paper.
+
+The directory https://www.tuhs.org/cgi-bin/utree.pl?file=32V/usr/src/sys contains the scatter loading, partial swapping version of the 32V kernel.
+
+Paul
+ 
+
+From clemc at ccc.com  Mon Jun  7 04:23:49 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 6 Jun 2021 14:23:49 -0400
+Subject: [TUHS] 32V memory management: not quite V7 style swapping --
+ source code update
+In-Reply-To: <9CE2AC05-6B4E-475F-874F-426DD51A8859@planet.nl>
+References: <9CE2AC05-6B4E-475F-874F-426DD51A8859@planet.nl>
+Message-ID: <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+
+Paul,
+
+You got me thinking and I'm curious if anyone really knows historically how
+many sites ran a 32V system?   In those days (late 70s/early 80s) the
+universities that knew and and even many sites inside the Bell System, the
+Vaxen I ran 4.1BSD (say the Marx's brothers at Whippany along with the Vax
+in the underseas research lab were we put the AP I did for my thesis).
+There were a couple in Summit I know, and probably Homdel and I'm guessing
+in some of the operating companies, but I never got the feeling 32V was
+popular.  The folks with Vaxen that I knew, if you were able to run BSD
+(4.1 and eventually 4.2), did.  Later on the only non-'pure-joy' systems I
+knew were a couple of Ultrix systems because they wanted the support from
+DEC and IIRC were using FORTRAN and wanted the DEC compiler which only ran
+on Ultrix or VMS.  Inside of AT&T, I personally think I knew more folks
+with VMS (Fortran being the key anchor)  than those that ran 32V.
+ᐧ
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210606/c2ae1846/attachment.htm>
+
+From lm at mcvoy.com  Mon Jun  7 04:30:11 2021
+From: lm at mcvoy.com (Larry McVoy)
+Date: Sun, 6 Jun 2021 11:30:11 -0700
+Subject: [TUHS] 32V memory management: not quite V7 style swapping --
+ source code update
+In-Reply-To: <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+References: <9CE2AC05-6B4E-475F-874F-426DD51A8859@planet.nl>
+ <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+Message-ID: <20210606183011.GA10697@mcvoy.com>
+
+BSD had networking.  Once you had that, you don't look back.  Sys V (and
+prior) so far as I know, didn't get networking until Coherent did their
+STREAMS stack that somehow ended up at Lachman - I ported it to a crazy
+super computer and to SCO Unix.  SCO was pretty stock AT&T code and let
+me tell you, it felt pretty crappy after having used BSD and then SunOS.
+It was a giant step backwards.
+
+I just think the BSD folks were moving forward faster.  Rob with start
+talking about cat waving its tail, I get it, not everything was better
+but a lot was.  Solid networking that performed was very pleasant.
+
+On Sun, Jun 06, 2021 at 02:23:49PM -0400, Clem Cole wrote:
+> Paul,
+> 
+> You got me thinking and I'm curious if anyone really knows historically how
+> many sites ran a 32V system?   In those days (late 70s/early 80s) the
+> universities that knew and and even many sites inside the Bell System, the
+> Vaxen I ran 4.1BSD (say the Marx's brothers at Whippany along with the Vax
+> in the underseas research lab were we put the AP I did for my thesis).
+> There were a couple in Summit I know, and probably Homdel and I'm guessing
+> in some of the operating companies, but I never got the feeling 32V was
+> popular.  The folks with Vaxen that I knew, if you were able to run BSD
+> (4.1 and eventually 4.2), did.  Later on the only non-'pure-joy' systems I
+> knew were a couple of Ultrix systems because they wanted the support from
+> DEC and IIRC were using FORTRAN and wanted the DEC compiler which only ran
+> on Ultrix or VMS.  Inside of AT&T, I personally think I knew more folks
+> with VMS (Fortran being the key anchor)  than those that ran 32V.
+> ???
+
+-- 
+---
+Larry McVoy            	     lm at mcvoy.com             http://www.mcvoy.com/lm 
+
+From clemc at ccc.com  Mon Jun  7 04:35:26 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 6 Jun 2021 14:35:26 -0400
+Subject: [TUHS] 32V memory management: not quite V7 style swapping --
+ source code update
+In-Reply-To: <20210606183011.GA10697@mcvoy.com>
+References: <9CE2AC05-6B4E-475F-874F-426DD51A8859@planet.nl>
+ <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+ <20210606183011.GA10697@mcvoy.com>
+Message-ID: <CAC20D2NUuygSmpTSpBTrALVd+yqJtAd0KVLaePuAWVgM1tbpBg@mail.gmail.com>
+
+4.2 had networking, 4.1 did not.   32V did not either.  I'm asking 32V vs
+4.1
+ᐧ
+
+On Sun, Jun 6, 2021 at 2:30 PM Larry McVoy <lm at mcvoy.com> wrote:
+
+> BSD had networking.  Once you had that, you don't look back.  Sys V (and
+> prior) so far as I know, didn't get networking until Coherent did their
+> STREAMS stack that somehow ended up at Lachman - I ported it to a crazy
+> super computer and to SCO Unix.  SCO was pretty stock AT&T code and let
+> me tell you, it felt pretty crappy after having used BSD and then SunOS.
+> It was a giant step backwards.
+>
+> I just think the BSD folks were moving forward faster.  Rob with start
+> talking about cat waving its tail, I get it, not everything was better
+> but a lot was.  Solid networking that performed was very pleasant.
+>
+> On Sun, Jun 06, 2021 at 02:23:49PM -0400, Clem Cole wrote:
+> > Paul,
+> >
+> > You got me thinking and I'm curious if anyone really knows historically
+> how
+> > many sites ran a 32V system?   In those days (late 70s/early 80s) the
+> > universities that knew and and even many sites inside the Bell System,
+> the
+> > Vaxen I ran 4.1BSD (say the Marx's brothers at Whippany along with the
+> Vax
+> > in the underseas research lab were we put the AP I did for my thesis).
+> > There were a couple in Summit I know, and probably Homdel and I'm
+> guessing
+> > in some of the operating companies, but I never got the feeling 32V was
+> > popular.  The folks with Vaxen that I knew, if you were able to run BSD
+> > (4.1 and eventually 4.2), did.  Later on the only non-'pure-joy' systems
+> I
+> > knew were a couple of Ultrix systems because they wanted the support from
+> > DEC and IIRC were using FORTRAN and wanted the DEC compiler which only
+> ran
+> > on Ultrix or VMS.  Inside of AT&T, I personally think I knew more folks
+> > with VMS (Fortran being the key anchor)  than those that ran 32V.
+> > ???
+>
+> --
+> ---
+> Larry McVoy                  lm at mcvoy.com
+> http://www.mcvoy.com/lm
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210606/3abcced3/attachment.htm>
+
+From imp at bsdimp.com  Mon Jun  7 04:39:12 2021
+From: imp at bsdimp.com (Warner Losh)
+Date: Sun, 6 Jun 2021 12:39:12 -0600
+Subject: [TUHS] 32V memory management: not quite V7 style swapping --
+ source code update
+In-Reply-To: <20210606183011.GA10697@mcvoy.com>
+References: <9CE2AC05-6B4E-475F-874F-426DD51A8859@planet.nl>
+ <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+ <20210606183011.GA10697@mcvoy.com>
+Message-ID: <CANCZdfr0WaV3aGc-o0TSaMQLyaZrU3GDBNtcgi50G48QGTh6pQ@mail.gmail.com>
+
+Outside of Bell Labs the thing was "order the V32 tape. Never install it.
+Send copies of the license to Berkeley. Run 4BSD."
+
+Warner
+
+On Sun, Jun 6, 2021, 12:30 PM Larry McVoy <lm at mcvoy.com> wrote:
+
+> BSD had networking.  Once you had that, you don't look back.  Sys V (and
+> prior) so far as I know, didn't get networking until Coherent did their
+> STREAMS stack that somehow ended up at Lachman - I ported it to a crazy
+> super computer and to SCO Unix.  SCO was pretty stock AT&T code and let
+> me tell you, it felt pretty crappy after having used BSD and then SunOS.
+> It was a giant step backwards.
+>
+> I just think the BSD folks were moving forward faster.  Rob with start
+> talking about cat waving its tail, I get it, not everything was better
+> but a lot was.  Solid networking that performed was very pleasant.
+>
+> On Sun, Jun 06, 2021 at 02:23:49PM -0400, Clem Cole wrote:
+> > Paul,
+> >
+> > You got me thinking and I'm curious if anyone really knows historically
+> how
+> > many sites ran a 32V system?   In those days (late 70s/early 80s) the
+> > universities that knew and and even many sites inside the Bell System,
+> the
+> > Vaxen I ran 4.1BSD (say the Marx's brothers at Whippany along with the
+> Vax
+> > in the underseas research lab were we put the AP I did for my thesis).
+> > There were a couple in Summit I know, and probably Homdel and I'm
+> guessing
+> > in some of the operating companies, but I never got the feeling 32V was
+> > popular.  The folks with Vaxen that I knew, if you were able to run BSD
+> > (4.1 and eventually 4.2), did.  Later on the only non-'pure-joy' systems
+> I
+> > knew were a couple of Ultrix systems because they wanted the support from
+> > DEC and IIRC were using FORTRAN and wanted the DEC compiler which only
+> ran
+> > on Ultrix or VMS.  Inside of AT&T, I personally think I knew more folks
+> > with VMS (Fortran being the key anchor)  than those that ran 32V.
+> > ???
+>
+> --
+> ---
+> Larry McVoy                  lm at mcvoy.com
+> http://www.mcvoy.com/lm
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210606/18607909/attachment.htm>
+
+From imp at bsdimp.com  Mon Jun  7 04:40:38 2021
+From: imp at bsdimp.com (Warner Losh)
+Date: Sun, 6 Jun 2021 12:40:38 -0600
+Subject: [TUHS] 32V memory management: not quite V7 style swapping --
+ source code update
+In-Reply-To: <CAC20D2NUuygSmpTSpBTrALVd+yqJtAd0KVLaePuAWVgM1tbpBg@mail.gmail.com>
+References: <9CE2AC05-6B4E-475F-874F-426DD51A8859@planet.nl>
+ <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+ <20210606183011.GA10697@mcvoy.com>
+ <CAC20D2NUuygSmpTSpBTrALVd+yqJtAd0KVLaePuAWVgM1tbpBg@mail.gmail.com>
+Message-ID: <CANCZdfpUb6CUbDfOn+uYk6wn7951J9d9X53WMG-djgZCKx6SHA@mail.gmail.com>
+
+On Sun, Jun 6, 2021, 12:36 PM Clem Cole <clemc at ccc.com> wrote:
+
+> 4.2 had networking, 4.1 did not.   32V did not either.  I'm asking 32V vs
+> 4.1
+> ᐧ
+>
+
+My info is from the 4.2 time frame...
+
+Warner
+
+On Sun, Jun 6, 2021 at 2:30 PM Larry McVoy <lm at mcvoy.com> wrote:
+>
+>> BSD had networking.  Once you had that, you don't look back.  Sys V (and
+>> prior) so far as I know, didn't get networking until Coherent did their
+>> STREAMS stack that somehow ended up at Lachman - I ported it to a crazy
+>> super computer and to SCO Unix.  SCO was pretty stock AT&T code and let
+>> me tell you, it felt pretty crappy after having used BSD and then SunOS.
+>> It was a giant step backwards.
+>>
+>> I just think the BSD folks were moving forward faster.  Rob with start
+>> talking about cat waving its tail, I get it, not everything was better
+>> but a lot was.  Solid networking that performed was very pleasant.
+>>
+>> On Sun, Jun 06, 2021 at 02:23:49PM -0400, Clem Cole wrote:
+>> > Paul,
+>> >
+>> > You got me thinking and I'm curious if anyone really knows historically
+>> how
+>> > many sites ran a 32V system?   In those days (late 70s/early 80s) the
+>> > universities that knew and and even many sites inside the Bell System,
+>> the
+>> > Vaxen I ran 4.1BSD (say the Marx's brothers at Whippany along with the
+>> Vax
+>> > in the underseas research lab were we put the AP I did for my thesis).
+>> > There were a couple in Summit I know, and probably Homdel and I'm
+>> guessing
+>> > in some of the operating companies, but I never got the feeling 32V was
+>> > popular.  The folks with Vaxen that I knew, if you were able to run BSD
+>> > (4.1 and eventually 4.2), did.  Later on the only non-'pure-joy'
+>> systems I
+>> > knew were a couple of Ultrix systems because they wanted the support
+>> from
+>> > DEC and IIRC were using FORTRAN and wanted the DEC compiler which only
+>> ran
+>> > on Ultrix or VMS.  Inside of AT&T, I personally think I knew more folks
+>> > with VMS (Fortran being the key anchor)  than those that ran 32V.
+>> > ???
+>>
+>> --
+>> ---
+>> Larry McVoy                  lm at mcvoy.com
+>> http://www.mcvoy.com/lm
+>>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210606/61f8dd1b/attachment.htm>
+
+From rich.salz at gmail.com  Mon Jun  7 04:52:05 2021
+From: rich.salz at gmail.com (Richard Salz)
+Date: Sun, 6 Jun 2021 14:52:05 -0400
+Subject: [TUHS] 32V memory management: not quite V7 style swapping --
+ source code update
+In-Reply-To: <CANCZdfpUb6CUbDfOn+uYk6wn7951J9d9X53WMG-djgZCKx6SHA@mail.gmail.com>
+References: <9CE2AC05-6B4E-475F-874F-426DD51A8859@planet.nl>
+ <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+ <20210606183011.GA10697@mcvoy.com>
+ <CAC20D2NUuygSmpTSpBTrALVd+yqJtAd0KVLaePuAWVgM1tbpBg@mail.gmail.com>
+ <CANCZdfpUb6CUbDfOn+uYk6wn7951J9d9X53WMG-djgZCKx6SHA@mail.gmail.com>
+Message-ID: <CAFH29trpSQB-rqfLOuzgs=xxRSs-BRt67+iZrk1sK9DZL8SB0g@mail.gmail.com>
+
+Didn't 4.1c have some kind of networking?
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210606/8880e6ec/attachment.htm>
+
+From clemc at ccc.com  Mon Jun  7 04:53:22 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 6 Jun 2021 14:53:22 -0400
+Subject: [TUHS] 32V memory management: not quite V7 style swapping --
+ source code update
+In-Reply-To: <CAC20D2NUuygSmpTSpBTrALVd+yqJtAd0KVLaePuAWVgM1tbpBg@mail.gmail.com>
+References: <9CE2AC05-6B4E-475F-874F-426DD51A8859@planet.nl>
+ <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+ <20210606183011.GA10697@mcvoy.com>
+ <CAC20D2NUuygSmpTSpBTrALVd+yqJtAd0KVLaePuAWVgM1tbpBg@mail.gmail.com>
+Message-ID: <CAC20D2Oor+AvVt5SbwiQV-6X2MHEF11nqp_TsCQ+2rAOSUna8A@mail.gmail.com>
+
+4.2 and cheap LAN connections and later WAN connections drove the hockey
+stick - no doubt and your are right, until the Stream networking work
+(which was originally Steve Rago and the folks in Summit, IIRC), PWB 3/PWB
+4.0 and later the commercially System V was definitely at a huge
+disadvantage and even when the Streams networking code shows us, the
+performance was not nearly as good plus by that time, all the code had
+started to assume sockets (and sockets had been ported to DOS), so Streams
+was still born.
+ᐧ
+
+On Sun, Jun 6, 2021 at 2:35 PM Clem Cole <clemc at ccc.com> wrote:
+
+> 4.2 had networking, 4.1 did not.   32V did not either.  I'm asking 32V vs
+> 4.1
+> ᐧ
+>
+> On Sun, Jun 6, 2021 at 2:30 PM Larry McVoy <lm at mcvoy.com> wrote:
+>
+>> BSD had networking.  Once you had that, you don't look back.  Sys V (and
+>> prior) so far as I know, didn't get networking until Coherent did their
+>> STREAMS stack that somehow ended up at Lachman - I ported it to a crazy
+>> super computer and to SCO Unix.  SCO was pretty stock AT&T code and let
+>> me tell you, it felt pretty crappy after having used BSD and then SunOS.
+>> It was a giant step backwards.
+>>
+>> I just think the BSD folks were moving forward faster.  Rob with start
+>> talking about cat waving its tail, I get it, not everything was better
+>> but a lot was.  Solid networking that performed was very pleasant.
+>>
+>> On Sun, Jun 06, 2021 at 02:23:49PM -0400, Clem Cole wrote:
+>> > Paul,
+>> >
+>> > You got me thinking and I'm curious if anyone really knows historically
+>> how
+>> > many sites ran a 32V system?   In those days (late 70s/early 80s) the
+>> > universities that knew and and even many sites inside the Bell System,
+>> the
+>> > Vaxen I ran 4.1BSD (say the Marx's brothers at Whippany along with the
+>> Vax
+>> > in the underseas research lab were we put the AP I did for my thesis).
+>> > There were a couple in Summit I know, and probably Homdel and I'm
+>> guessing
+>> > in some of the operating companies, but I never got the feeling 32V was
+>> > popular.  The folks with Vaxen that I knew, if you were able to run BSD
+>> > (4.1 and eventually 4.2), did.  Later on the only non-'pure-joy'
+>> systems I
+>> > knew were a couple of Ultrix systems because they wanted the support
+>> from
+>> > DEC and IIRC were using FORTRAN and wanted the DEC compiler which only
+>> ran
+>> > on Ultrix or VMS.  Inside of AT&T, I personally think I knew more folks
+>> > with VMS (Fortran being the key anchor)  than those that ran 32V.
+>> > ???
+>>
+>> --
+>> ---
+>> Larry McVoy                  lm at mcvoy.com
+>> http://www.mcvoy.com/lm
+>>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210606/35990cfe/attachment.htm>
+
+From clemc at ccc.com  Mon Jun  7 05:02:56 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 6 Jun 2021 15:02:56 -0400
+Subject: [TUHS] 32V memory management: not quite V7 style swapping --
+ source code update
+In-Reply-To: <CAFH29trpSQB-rqfLOuzgs=xxRSs-BRt67+iZrk1sK9DZL8SB0g@mail.gmail.com>
+References: <9CE2AC05-6B4E-475F-874F-426DD51A8859@planet.nl>
+ <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+ <20210606183011.GA10697@mcvoy.com>
+ <CAC20D2NUuygSmpTSpBTrALVd+yqJtAd0KVLaePuAWVgM1tbpBg@mail.gmail.com>
+ <CANCZdfpUb6CUbDfOn+uYk6wn7951J9d9X53WMG-djgZCKx6SHA@mail.gmail.com>
+ <CAFH29trpSQB-rqfLOuzgs=xxRSs-BRt67+iZrk1sK9DZL8SB0g@mail.gmail.com>
+Message-ID: <CAC20D2Nbxce2dcZAfQQpMzbJ-2g_wpK3BJbkx+Lhh4j4imaYYw@mail.gmail.com>
+
+Yes -- this is what I just sent to Larry on  private exchange.
+
+The BSD release order - 3.0 BSD is the replacement for 32V, 4.0 is the
+first real update and 4.1 was the so-called 'FASTVAX' stuff Joy did as part
+of the UNIX/VMS bake off with Stanford.  4.0 and 4.1 are very similar.
+ 4.1 lived 'in the wild' about 3-4 years as the standard 'BSD' and any one
+with Vax (certainly at a university) got the BSD tape.  That is the code
+base that Rob Gurwitz used to write the original BBN TCP -- which did not
+use open (/dev/ip  /dev/tcp/hostname or /dev/udp/hostname) like MIT's
+ChaosNet.
+
+4.1a was Bill's first attempt at rewriting Gurwitz's code and creating
+sockets.   Only a few people had it (I was one) - but it did make it to a
+number of the IETF beta testers -- the MIT folk I know had the tape - Noel
+might know whom there they had it.   4.1b replaced that about 3-6 months
+later but I'm not sure it left UCB very far -- I ran it on one of the CAD
+machines as 4.1c was being created.  IIRC B was the first to have Kirks FFS
+in it and we were pushing the FFS code with our cad programs that beat on
+the FS pretty hard.    BBN might have had 4.1b, as I think that is where
+Gurwitz & Walsh started the BBN2 code.   4.1c came pretty soon thereafter
+as the 'beta' for 4.2 and that also went to IETF folks.   Joy left for Sun,
+so I know Masscomp, Sun and DEC all had copies of 4.1c.   San wnj, Kirk and
+Sam completed the beta, and got the formal release creating the BSD 4.2
+release (which as Larry points out was the first truly networked UNIX) and
+that went just anyone with a UCB license (and all hell broke loose because
+- Henry Spencer's famous '*4.2 is just like Unix, only different*' quote).
+ BBN released their alternative Network stack for sockets (*a.k.a.* BBN2 or
+Bob Walsh version) and that fight started.  About a year or so later Kirk
+and Sam got 4.3 out which was putting back in a number 4.1-ism so not so
+much code broke, I think Van Jacobson's stuff up the hill at LBL went and
+some of the new BBN stuff.  4.4 was at least a year after that.
+
+ᐧ
+
+On Sun, Jun 6, 2021 at 2:52 PM Richard Salz <rich.salz at gmail.com> wrote:
+
+> Didn't 4.1c have some kind of networking?
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210606/7a225532/attachment.htm>
+
+From pnr at planet.nl  Mon Jun  7 05:08:17 2021
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Sun, 6 Jun 2021 21:08:17 +0200
+Subject: [TUHS] 32V memory management: not quite V7 style swapping --
+ source code update
+In-Reply-To: <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+References: <9CE2AC05-6B4E-475F-874F-426DD51A8859@planet.nl>
+ <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+Message-ID: <B28BA58B-7C69-4855-ACC3-CD3FDD8552F9@planet.nl>
+
+Clem,
+
+> You got me thinking and I'm curious if anyone really knows historically how many sites ran a 32V system?
+
+I don’t know the answer to that, but my outsider impression is that 32V and 32-bit Sys III had a very small installed base, and hence that the innovations in it are not all that well known or understood.
+
+However, in searching the web for things related to “scatter loading” I find some references to Xenix. It may be that some of the 32V/SysIII stuff lived in high volume during the mid-80’s through that code base.
+
+——
+
+Going on a tangent, I am wondering about “mmap”. John Reiser wrote that he based the idea on PMAP from Tenex/TOPS-20, and fretted over a system call with 6 parameters. This would be 1980 at the latest.
+
+In their 1981 discussion paper “Proposals for the enhancement of Unix on the VAX” Joy and Fabry propose some mmap like ideas, but without this API specifically. In the 1983 “4.2BSD system manual” they propose the mmap call in more or less its current form, but it is not implemented. It remained unimplemented until SunOS 4 in 1988 and 4.3BSD Reno in 1990.
+
+It makes me wonder how close to the current “mmap" the code in the demand paging version of 32V was; it might have been quite close.
+
+By the way, from that discussion paper it seems that CSRG had access to the demand paging version of the 32V code in 1981 but unfortunately it does not seem to have survived there (I've checked the DVD that Kirk McKusick provides, but the 32V code on there seems the same as what Keith Bostic provided to TUHS).
+
+Paul
+
+> On Jun 6, 2021, at 8:23 PM, Clem Cole <clemc at ccc.com> wrote:
+> 
+> Paul,
+> 
+> You got me thinking and I'm curious if anyone really knows historically how many sites ran a 32V system?   In those days (late 70s/early 80s) the universities that knew and and even many sites inside the Bell System, the Vaxen I ran 4.1BSD (say the Marx's brothers at Whippany along with the Vax in the underseas research lab were we put the AP I did for my thesis).  There were a couple in Summit I know, and probably Homdel and I'm guessing in some of the operating companies, but I never got the feeling 32V was popular.  The folks with Vaxen that I knew, if you were able to run BSD (4.1 and eventually 4.2), did.  Later on the only non-'pure-joy' systems I knew were a couple of Ultrix systems because they wanted the support from DEC and IIRC were using FORTRAN and wanted the DEC compiler which only ran on Ultrix or VMS.  Inside of AT&T, I personally think I knew more folks with VMS (Fortran being the key anchor)  than those that ran 32V.
+> ᐧ
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210606/f5191048/attachment.htm>
+
+From arnold at skeeve.com  Mon Jun  7 05:18:35 2021
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Sun, 06 Jun 2021 13:18:35 -0600
+Subject: [TUHS] 32V memory management: not quite V7 style swapping --
+ source code update
+In-Reply-To: <CAC20D2Nbxce2dcZAfQQpMzbJ-2g_wpK3BJbkx+Lhh4j4imaYYw@mail.gmail.com>
+References: <9CE2AC05-6B4E-475F-874F-426DD51A8859@planet.nl>
+ <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+ <20210606183011.GA10697@mcvoy.com>
+ <CAC20D2NUuygSmpTSpBTrALVd+yqJtAd0KVLaePuAWVgM1tbpBg@mail.gmail.com>
+ <CANCZdfpUb6CUbDfOn+uYk6wn7951J9d9X53WMG-djgZCKx6SHA@mail.gmail.com>
+ <CAFH29trpSQB-rqfLOuzgs=xxRSs-BRt67+iZrk1sK9DZL8SB0g@mail.gmail.com>
+ <CAC20D2Nbxce2dcZAfQQpMzbJ-2g_wpK3BJbkx+Lhh4j4imaYYw@mail.gmail.com>
+Message-ID: <202106061918.156JIZ6C012184@freefriends.org>
+
+Clem Cole <clemc at ccc.com> wrote:
+
+> About a year or so later Kirk
+> and Sam got 4.3 out
+
+4.3 was ~ 3 years after 4.2 (1983 -> 1986). It was mainly a huge
+number of bug fixes and performance improvements.
+
+> which was putting back in a number 4.1-ism so not so much code broke,
+
+For example? As I remember it, it was essentially a super-bug-fixed
+version of 4.2. Nothing more.
+
+> 4.4 was at least a year after that.
+
+It was many years after that, circa 1992.
+
+Arnold
+
+From clemc at ccc.com  Mon Jun  7 05:23:35 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 6 Jun 2021 15:23:35 -0400
+Subject: [TUHS] 32V memory management: not quite V7 style swapping --
+ source code update
+In-Reply-To: <CANCZdfr0WaV3aGc-o0TSaMQLyaZrU3GDBNtcgi50G48QGTh6pQ@mail.gmail.com>
+References: <9CE2AC05-6B4E-475F-874F-426DD51A8859@planet.nl>
+ <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+ <20210606183011.GA10697@mcvoy.com>
+ <CANCZdfr0WaV3aGc-o0TSaMQLyaZrU3GDBNtcgi50G48QGTh6pQ@mail.gmail.com>
+Message-ID: <CAC20D2NaZDg1KCXRK_LtPXY3woKRPYSs2sbUgx+SwuasaWiL2g@mail.gmail.com>
+
+On Sun, Jun 6, 2021 at 2:39 PM Warner Losh <imp at bsdimp.com> wrote:
+
+> Outside of Bell Labs the thing was "order the V32 tape. Never install it.
+> Send copies of the license to Berkeley. Run 4BSD."
+>
+Right - certainly my behavior and what I preached at the time.  But it was
+also true for >>some<< sites inside the labs - frankly many from the ones I
+knew (Mary Ann what did run in Columbus).   There were definitely copies of
+BSD in IH, as I know sent some of the stuff from my own work there. I never
+really understood who 'had' to run 32/V or (PWB 3.0 and PWB 4.0) and like
+Redman and the Marx machines were 'allowed' to be BSD.
+
+What I came to realize is that if a site ran VMS inside the labs, it was
+because they either had a commercial app that required it, or a had some
+really important FORTRAN code that needed the DEC tools.    In the case of
+the later, since the stuff I worked on had a commercial Fortran compiler
+associated (great-great-grandfather to PGI compilers), those sites could
+use BSD so they could get the distribution (I must have written about 25-30
+tapes before I left).  But my stuff only ran on BSD 4.1/4.1a/4.1b/4.1c   -
+I think Rick Spieklemeyers updated it when 4.2 and 4.3 finally finished but
+I had left UCB by then.
+ᐧ
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210606/d703bde7/attachment.htm>
+
+From clemc at ccc.com  Mon Jun  7 05:35:30 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 6 Jun 2021 15:35:30 -0400
+Subject: [TUHS] 32V memory management: not quite V7 style swapping --
+ source code update
+In-Reply-To: <202106061918.156JIZ6C012184@freefriends.org>
+References: <9CE2AC05-6B4E-475F-874F-426DD51A8859@planet.nl>
+ <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+ <20210606183011.GA10697@mcvoy.com>
+ <CAC20D2NUuygSmpTSpBTrALVd+yqJtAd0KVLaePuAWVgM1tbpBg@mail.gmail.com>
+ <CANCZdfpUb6CUbDfOn+uYk6wn7951J9d9X53WMG-djgZCKx6SHA@mail.gmail.com>
+ <CAFH29trpSQB-rqfLOuzgs=xxRSs-BRt67+iZrk1sK9DZL8SB0g@mail.gmail.com>
+ <CAC20D2Nbxce2dcZAfQQpMzbJ-2g_wpK3BJbkx+Lhh4j4imaYYw@mail.gmail.com>
+ <202106061918.156JIZ6C012184@freefriends.org>
+Message-ID: <CAC20D2NWT9ncO6XCd4EnSDBJ3gjGwO3GP2VL6Xc5_EqhBD4b+Q@mail.gmail.com>
+
+On Sun, Jun 6, 2021 at 3:18 PM <arnold at skeeve.com> wrote:
+
+> For example? As I remember it, it was essentially a super-bug-fixed version
+> of 4.2. Nothing more.
+>
+To be honest I've forgotten all of the details, but the big one was the
+ability to (optionall) have the old 4.1 signal semantics and I think there
+were a couple of more.   The stuff that went into 4.3 was heavily driven by
+the Arpa advisory board.  Many people in the Arpa community had felt that
+CSRG was not supplying what they needed.  There were some compromises.  As
+part of that the team put much of the CMU Mach memory system at some point
+(I thought at 4.3) and as Paul pointed out, that's when mmap was finally
+added [which is part of why I think that's when the CMU changes came].   I
+also where the great line (whom I wish IO knew who first said it),
+described "new BSD system was full of other folks' ideas, but had been peed
+on to smell like UCB).
+
+BTW: the other thing that was happening at UCB by then was that while the
+CSRG project was funding a lot of stuff, it was not seen as research, but
+more of a development for hire by then.  There started to be a lot of
+resentment.
+ᐧ
+ᐧ
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210606/26c88062/attachment-0001.htm>
+
+From arnold at skeeve.com  Mon Jun  7 05:45:49 2021
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Sun, 06 Jun 2021 13:45:49 -0600
+Subject: [TUHS] 32V memory management: not quite V7 style swapping --
+ source code update
+In-Reply-To: <CAC20D2NWT9ncO6XCd4EnSDBJ3gjGwO3GP2VL6Xc5_EqhBD4b+Q@mail.gmail.com>
+References: <9CE2AC05-6B4E-475F-874F-426DD51A8859@planet.nl>
+ <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+ <20210606183011.GA10697@mcvoy.com>
+ <CAC20D2NUuygSmpTSpBTrALVd+yqJtAd0KVLaePuAWVgM1tbpBg@mail.gmail.com>
+ <CANCZdfpUb6CUbDfOn+uYk6wn7951J9d9X53WMG-djgZCKx6SHA@mail.gmail.com>
+ <CAFH29trpSQB-rqfLOuzgs=xxRSs-BRt67+iZrk1sK9DZL8SB0g@mail.gmail.com>
+ <CAC20D2Nbxce2dcZAfQQpMzbJ-2g_wpK3BJbkx+Lhh4j4imaYYw@mail.gmail.com>
+ <202106061918.156JIZ6C012184@freefriends.org>
+ <CAC20D2NWT9ncO6XCd4EnSDBJ3gjGwO3GP2VL6Xc5_EqhBD4b+Q@mail.gmail.com>
+Message-ID: <202106061945.156Jjn1l016040@freefriends.org>
+
+Clem Cole <clemc at ccc.com> wrote:
+
+> There were some compromises.  As
+> part of that the team put much of the CMU Mach memory system at some point
+> (I thought at 4.3) and as Paul pointed out, that's when mmap was finally
+> added [which is part of why I think that's when the CMU changes came].
+
+Both of those were 4.4.
+
+Just to set the record straight. :-)
+
+Thanks,
+
+Arnold
+
+From clemc at ccc.com  Mon Jun  7 06:46:34 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 6 Jun 2021 16:46:34 -0400
+Subject: [TUHS] 32V memory management: not quite V7 style swapping --
+ source code update
+In-Reply-To: <202106061945.156Jjn1l016040@freefriends.org>
+References: <9CE2AC05-6B4E-475F-874F-426DD51A8859@planet.nl>
+ <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+ <20210606183011.GA10697@mcvoy.com>
+ <CAC20D2NUuygSmpTSpBTrALVd+yqJtAd0KVLaePuAWVgM1tbpBg@mail.gmail.com>
+ <CANCZdfpUb6CUbDfOn+uYk6wn7951J9d9X53WMG-djgZCKx6SHA@mail.gmail.com>
+ <CAFH29trpSQB-rqfLOuzgs=xxRSs-BRt67+iZrk1sK9DZL8SB0g@mail.gmail.com>
+ <CAC20D2Nbxce2dcZAfQQpMzbJ-2g_wpK3BJbkx+Lhh4j4imaYYw@mail.gmail.com>
+ <202106061918.156JIZ6C012184@freefriends.org>
+ <CAC20D2NWT9ncO6XCd4EnSDBJ3gjGwO3GP2VL6Xc5_EqhBD4b+Q@mail.gmail.com>
+ <202106061945.156Jjn1l016040@freefriends.org>
+Message-ID: <CAC20D2NkG+Qst9Jkz4d2VvGXcSo_5+_FyA=eMv2y4vrBHPnBTw@mail.gmail.com>
+
+Fair enough -- thanks.
+ᐧ
+
+On Sun, Jun 6, 2021 at 3:45 PM <arnold at skeeve.com> wrote:
+
+> Clem Cole <clemc at ccc.com> wrote:
+>
+> > There were some compromises.  As
+> > part of that the team put much of the CMU Mach memory system at some
+> point
+> > (I thought at 4.3) and as Paul pointed out, that's when mmap was finally
+> > added [which is part of why I think that's when the CMU changes came].
+>
+> Both of those were 4.4.
+>
+> Just to set the record straight. :-)
+>
+> Thanks,
+>
+> Arnold
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210606/6977da15/attachment.htm>
+
+From woods at robohack.ca  Tue Jun  8 05:24:43 2021
+From: woods at robohack.ca (Greg A. Woods)
+Date: Mon, 07 Jun 2021 12:24:43 -0700
+Subject: [TUHS] 32V memory management: not quite V7 style swapping --
+ source code update
+In-Reply-To: <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+References: <9CE2AC05-6B4E-475F-874F-426DD51A8859@planet.nl>
+ <CAC20D2NsDsMRQGQMK-cF2OSiN=UpjfYtO4cXcMuOfqdhEZ7zMg@mail.gmail.com>
+Message-ID: <m1lqKrb-0036x9C@more.local>
+
+At Sun, 6 Jun 2021 14:23:49 -0400, Clem Cole <clemc at ccc.com> wrote:
+Subject: Re: [TUHS] 32V memory management: not quite V7 style swapping -- source code update
+>
+> You got me thinking and I'm curious if anyone really knows historically how
+> many sites ran a 32V system?   In those days (late 70s/early 80s) the
+> universities that knew and and even many sites inside the Bell System, the
+> Vaxen I ran 4.1BSD (say the Marx's brothers at Whippany along with the Vax
+> in the underseas research lab were we put the AP I did for my thesis).
+
+If my memory serves me correctly, University of Calgary ran 32V on their
+first teaching VAX 11/780 for a short while when I was starting my
+second year of undergrad (Sept. through to the xmas break, IIRC).  This
+would be the fall of 1980.
+
+After that first term I think it was running 3BSD for the rest of the
+semester, and finally was running and early 4BSD not long after.
+
+As I recall they had tried to run 3.x right away but had some problems
+(possibly with a serial driver?  the initial setup had some 20 or 30
+terminals) and in order to not have all us students trying to crowd onto
+the old PDP 11/60 with just 12 terminals (which was also still in use by
+a bunch of classes), while the VAX sat idle, they just gave up and
+(re)installed 32V.  I think my class probably lost a week or two of time
+to use the system.  At that time the only other teaching system was the
+Multics mainframe, and it was also overloaded with too many users.
+
+I remember being a little dismayed that the BSD C compiler seemed
+entirely different from 32V (where it was very V7-like and thus what I
+was familiar with from first year).  It wasn't until 4BSD offered me job
+control and command history in CSH that I finally became more accepting
+of BSD.
+
+I think it was after the 4.x upgrade that they instituted CPU time
+limits for students, and I remember discovering that if one caught
+SIGXCPU then the limit just kept increasing -- i.e. the hard limit never
+worked in the initial release of whatever version it was -- so I wrote a
+little program that would catch the signal, then burn CPU in a loop
+until the limit was above some requested value, and then it would fork a
+shell.  I put that in my ~/.login and had lots of fun until I was
+caught.  Then I fessed up and didn't get expelled!  They fixed the bug
+of course and as a result of it all I then got to know the sysadmins
+better and learned an awful lot more from them than I did in class on
+some/many days.
+
+--
+					Greg A. Woods <gwoods at acm.org>
+
+Kelowna, BC     +1 250 762-7675           RoboHack <woods at robohack.ca>
+Planix, Inc. <woods at planix.com>     Avoncote Farms <woods at avoncote.ca>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 195 bytes
+Desc: OpenPGP Digital Signature
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210607/ac7c76be/attachment.sig>
+
+From imp at bsdimp.com  Thu Jun 10 05:37:40 2021
+From: imp at bsdimp.com (Warner Losh)
+Date: Wed, 9 Jun 2021 13:37:40 -0600
+Subject: [TUHS] System IV
+Message-ID: <CANCZdfq_eVv9XeECNY8KOsKFVdLGVFhgnQN4AQYND0_DadkPcw@mail.gmail.com>
+
+So I've seen a number of places that talk about Unix TS 3.0 -> 4.0 -> 5.0
+progression and how System III was released and System V was released and
+System IV was internal only.
+
+What I've not seen is the "why" part of this. Why was it internal only?
+
+Warner
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210609/de035605/attachment.htm>
+
+From clemc at ccc.com  Thu Jun 10 06:03:22 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Wed, 9 Jun 2021 16:03:22 -0400
+Subject: [TUHS] System IV
+In-Reply-To: <CANCZdfq_eVv9XeECNY8KOsKFVdLGVFhgnQN4AQYND0_DadkPcw@mail.gmail.com>
+References: <CANCZdfq_eVv9XeECNY8KOsKFVdLGVFhgnQN4AQYND0_DadkPcw@mail.gmail.com>
+Message-ID: <CAC20D2N=msN1mJLZnQjnuMGnjiYSVn0G24E=Sc+oVGCXeR8dPQ@mail.gmail.com>
+
+There was never a System IV and System III was purely marketing, look at
+the docs it's PWB 3.0 but the few AT&T marketing/branding folks around
+didn't want to use the term 'Programmer' when it tried to compete with IBM
+(which was Charlie Brown - AT&T CEO - dream in those days).  As I
+understand it, the issue was that said folks wanted to sell to commercial
+sites (and in particular the 3B20S), and naming the software to drive with
+a term like 'programmer' would be a turn-off for less technical
+(traditional big blue) customers.
+
+As for why PWB 4.0 never got released I believe that was there was a lag
+between what Summit (NJ) did as the 'UNIX Support Group' and what was being
+released as 'product' (NC).  Remember this is all part of the post-Judge
+Green world @ AT&T and things were not really smooth.  >>>my impression<<
+(and like you would love to know more), was that the release of PWB 3.0 was
+part of the pre-consent decree SW release rules, and by the time of System
+V, it was full steam ahead.  PWB 4.0 was finished up during that funny
+period between the two.
+ᐧ
+ᐧ
+
+On Wed, Jun 9, 2021 at 3:38 PM Warner Losh <imp at bsdimp.com> wrote:
+
+> So I've seen a number of places that talk about Unix TS 3.0 -> 4.0 -> 5.0
+> progression and how System III was released and System V was released and
+> System IV was internal only.
+>
+> What I've not seen is the "why" part of this. Why was it internal only?
+>
+> Warner
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210609/f56fd054/attachment.htm>
+
+From wkt at tuhs.org  Thu Jun 10 10:32:30 2021
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 10 Jun 2021 10:32:30 +1000
+Subject: [TUHS] Help Contacting Unix Legal People
+Message-ID: <20210610003230.GB11846@minnie.tuhs.org>
+
+All, we need help contacting some people so that Dan Doernberg can make
+progress on a new Unix book that he's working on. I've attached his
+request to the TUHS list below. If you can help out in any way, please
+contact Dan directly.
+
+Cheers, Warren
+
+   From: Peer-to-Peer Communications LLC <dan at peerllc.com>
+
+   Hello all, I’m the publisher of Lions' Commentary on UNIX (still
+   going strong after 25 years!) and I have an “Ancient UNIX” book project
+   in mind that I need some community help with.
+
+   To avoid running into any “who has copyright rights to UNIX” legal
+   problems, we’re trying to reach out in advance to any
+   companies/organizations that may have such rights (Micro Focus, Xinuos,
+   Nokia, are there others?) in advance. To that end, I’m trying to find
+   staffers there who are:
+      1. sympathetic to sharing information about “ancient UNIX” with the
+   operating system/UNIX communities
+      2. somewhat familiar with the past legal issues and controversies
+   over UNIX ownership (perhaps someone in the legal department)
+
+   If you know any such person(s) at Micro Focus, Xinuos, Nokia, and/or
+   other relevant organizations that has either quality (or ideally a
+   unicorn with both!), please pass on their name and email address to me
+   (even better, add any context about why they might be helpful to me, if
+   it’s OK to say that you referred me to them, etc.].
+
+   Thanks much, all referrals greatly appreciated!
+   Dan Doernberg
+   dan at peerllc.com
+
+From arnold at skeeve.com  Thu Jun 10 17:58:40 2021
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Thu, 10 Jun 2021 01:58:40 -0600
+Subject: [TUHS] System IV
+In-Reply-To: <CANCZdfq_eVv9XeECNY8KOsKFVdLGVFhgnQN4AQYND0_DadkPcw@mail.gmail.com>
+References: <CANCZdfq_eVv9XeECNY8KOsKFVdLGVFhgnQN4AQYND0_DadkPcw@mail.gmail.com>
+Message-ID: <202106100758.15A7weqm013326@freefriends.org>
+
+Warner Losh <imp at bsdimp.com> wrote:
+
+> So I've seen a number of places that talk about Unix TS 3.0 -> 4.0 -> 5.0
+> progression and how System III was released and System V was released and
+> System IV was internal only.
+>
+> What I've not seen is the "why" part of this. Why was it internal only?
+>
+> Warner
+
+I did some contract programming at Southern Bell (one of the operating
+companies) for a while, starting in the summer of 1982.  We used
+USG Unix 4.0 on a PDP-11/70. There were also vaxen.
+
+It was no longer being called PWB by then. In fact, I think that PWB
+was V6 based and an ancestor of System III.  
+
+System III had been released to the world.  When I asked why AT&T
+hadn't released Unix 4.0, I was told that the policy was to release
+one version behind what was being run internally.
+
+After the Bell System break up (1/1/1984), AT&T decided to just
+release what was current, thus the jump to System V, with "System IV"
+never having gotten outside the Bell System.
+
+When I was doing the contract work, although we were on Unix 4.0,
+we used documentation from Unix 3.0; they didn't bother reprinting /
+updating the manuals since the primary changes were apparently
+performance improvements in the kernel. (For example, they moved
+to hash tables for many things instead of simple linked lists.)
+
+I still have the reference manual and the photocopies I made of all
+the other documentation. :-)
+
+There was also a screen editor, named 'se' (NOT related to the Georgia
+Tech 'se' editor) which they'd managed to shoehorn onto the '11.
+It was kinda cool. I used both it and 'ed'. vi was also available but
+I found the modal stuff weird and didn't end up learning it until a year
+or two later. :-)
+
+Hope this is of interest.
+
+Arnold
+
+From arnold at skeeve.com  Thu Jun 10 18:04:50 2021
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Thu, 10 Jun 2021 02:04:50 -0600
+Subject: [TUHS] System IV
+In-Reply-To: <202106100758.15A7weqm013326@freefriends.org>
+References: <CANCZdfq_eVv9XeECNY8KOsKFVdLGVFhgnQN4AQYND0_DadkPcw@mail.gmail.com>
+ <202106100758.15A7weqm013326@freefriends.org>
+Message-ID: <202106100804.15A84oTN014058@freefriends.org>
+
+One other thing that was cool was that the doc defined UNIX as "an
+operating system for the DEC PDP-11, DEC Vax, and the IBM System/370".  :-)
+
+arnold at skeeve.com wrote:
+
+> Warner Losh <imp at bsdimp.com> wrote:
+>
+> > So I've seen a number of places that talk about Unix TS 3.0 -> 4.0 -> 5.0
+> > progression and how System III was released and System V was released and
+> > System IV was internal only.
+> >
+> > What I've not seen is the "why" part of this. Why was it internal only?
+> >
+> > Warner
+>
+> I did some contract programming at Southern Bell (one of the operating
+> companies) for a while, starting in the summer of 1982.  We used
+> USG Unix 4.0 on a PDP-11/70. There were also vaxen.
+>
+> It was no longer being called PWB by then. In fact, I think that PWB
+> was V6 based and an ancestor of System III.  
+>
+> System III had been released to the world.  When I asked why AT&T
+> hadn't released Unix 4.0, I was told that the policy was to release
+> one version behind what was being run internally.
+>
+> After the Bell System break up (1/1/1984), AT&T decided to just
+> release what was current, thus the jump to System V, with "System IV"
+> never having gotten outside the Bell System.
+>
+> When I was doing the contract work, although we were on Unix 4.0,
+> we used documentation from Unix 3.0; they didn't bother reprinting /
+> updating the manuals since the primary changes were apparently
+> performance improvements in the kernel. (For example, they moved
+> to hash tables for many things instead of simple linked lists.)
+>
+> I still have the reference manual and the photocopies I made of all
+> the other documentation. :-)
+>
+> There was also a screen editor, named 'se' (NOT related to the Georgia
+> Tech 'se' editor) which they'd managed to shoehorn onto the '11.
+> It was kinda cool. I used both it and 'ed'. vi was also available but
+> I found the modal stuff weird and didn't end up learning it until a year
+> or two later. :-)
+>
+> Hope this is of interest.
+>
+> Arnold
+
+From clemc at ccc.com  Fri Jun 11 02:05:54 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Thu, 10 Jun 2021 12:05:54 -0400
+Subject: [TUHS] System IV
+In-Reply-To: <202106100758.15A7weqm013326@freefriends.org>
+References: <CANCZdfq_eVv9XeECNY8KOsKFVdLGVFhgnQN4AQYND0_DadkPcw@mail.gmail.com>
+ <202106100758.15A7weqm013326@freefriends.org>
+Message-ID: <CAC20D2O3kph8BHvonzBYyKD=puV9KVq_dH+HXTtNA1ynp3innA@mail.gmail.com>
+
+On Thu, Jun 10, 2021 at 3:59 AM <arnold at skeeve.com> wrote:
+
+> System III had been released to the world.  When I asked why AT&T
+> hadn't released Unix 4.0, I was told that the policy was to release
+> one version behind what was being run internally.
+>
+I was under that impression - I had referred to it in my message as the
+'pre-Judge Green release rules.'
+
+After the Bell System break up (1/1/1984), AT&T decided to just
+> release what was current, thus the jump to System V, with "System IV"
+> never having gotten outside the Bell System.
+>
+Right.
+
+
+> There was also a screen editor, named 'se' (NOT related to the Georgia
+> Tech 'se' editor) which they'd managed to shoehorn onto the '11.
+> It was kinda cool. I used both it and 'ed'. vi was also available but
+> I found the modal stuff weird and didn't end up learning it until a year
+> or two later. :-)
+>
+I remember seeing se -- Brian Redman showed it to me IIRC.  I never tried
+using it myself.  I remember that he was not happy that it was not vi.   If
+I recall the argument in USG was many of the BSD tools were not better or
+even as good as what USG had already created.  But the USG folks did
+eventually add some of them to their stream because so many internal sites
+were already using them.  In particular, v, csh and col -- but there were
+others too and the argument was we have those tools covered already i.e. pg
+vs. more or se vs. vi
+
+
+
+>
+> Hope this is of interest.
+>
+Definitely -- thank you.
+
+Clem
+ᐧ
+ᐧ
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210610/3e3ffad8/attachment.htm>
+
+From andrew at humeweb.com  Fri Jun 11 02:08:36 2021
+From: andrew at humeweb.com (Andrew Hume)
+Date: Thu, 10 Jun 2021 09:08:36 -0700
+Subject: [TUHS] System IV
+In-Reply-To: <CAC20D2O3kph8BHvonzBYyKD=puV9KVq_dH+HXTtNA1ynp3innA@mail.gmail.com>
+References: <CANCZdfq_eVv9XeECNY8KOsKFVdLGVFhgnQN4AQYND0_DadkPcw@mail.gmail.com>
+ <202106100758.15A7weqm013326@freefriends.org>
+ <CAC20D2O3kph8BHvonzBYyKD=puV9KVq_dH+HXTtNA1ynp3innA@mail.gmail.com>
+Message-ID: <5C5352B2-0CD4-4C9A-8CDF-81363FB26E85@humeweb.com>
+
+i will simply observe that when i joined bell labs in 1981, i was on the System III team. we certainly did internal releases under that name..
+
+> On Jun 10, 2021, at 9:05 AM, Clem Cole <clemc at ccc.com> wrote:
+> 
+> 
+> 
+> On Thu, Jun 10, 2021 at 3:59 AM <arnold at skeeve.com <mailto:arnold at skeeve.com>> wrote:
+> System III had been released to the world.  When I asked why AT&T
+> hadn't released Unix 4.0, I was told that the policy was to release
+> one version behind what was being run internally.
+> I was under that impression - I had referred to it in my message as the 'pre-Judge Green release rules.' 
+> 
+> After the Bell System break up (1/1/1984), AT&T decided to just
+> release what was current, thus the jump to System V, with "System IV"
+> never having gotten outside the Bell System.
+> Right.
+>  
+> There was also a screen editor, named 'se' (NOT related to the Georgia
+> Tech 'se' editor) which they'd managed to shoehorn onto the '11.
+> It was kinda cool. I used both it and 'ed'. vi was also available but
+> I found the modal stuff weird and didn't end up learning it until a year
+> or two later. :-)
+> I remember seeing se -- Brian Redman showed it to me IIRC.  I never tried using it myself.  I remember that he was not happy that it was not vi.   If I recall the argument in USG was many of the BSD tools were not better or even as good as what USG had already created.  But the USG folks did eventually add some of them to their stream because so many internal sites were already using them.  In particular, v, csh and col -- but there were others too and the argument was we have those tools covered already i.e. pg vs. more or se vs. vi
+> 
+>   
+> 
+> Hope this is of interest.
+> Definitely -- thank you.
+> 
+> Clem 
+> ᐧ
+> ᐧ
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210610/34a617e0/attachment.htm>
+
+From arnold at skeeve.com  Fri Jun 11 03:36:17 2021
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Thu, 10 Jun 2021 11:36:17 -0600
+Subject: [TUHS] System IV
+In-Reply-To: <5C5352B2-0CD4-4C9A-8CDF-81363FB26E85@humeweb.com>
+References: <CANCZdfq_eVv9XeECNY8KOsKFVdLGVFhgnQN4AQYND0_DadkPcw@mail.gmail.com>
+ <202106100758.15A7weqm013326@freefriends.org>
+ <CAC20D2O3kph8BHvonzBYyKD=puV9KVq_dH+HXTtNA1ynp3innA@mail.gmail.com>
+ <5C5352B2-0CD4-4C9A-8CDF-81363FB26E85@humeweb.com>
+Message-ID: <202106101736.15AHaH7t032126@freefriends.org>
+
+Andrew Hume <andrew at humeweb.com> wrote:
+
+> i will simply observe that when i joined bell labs in 1981, i was on
+> the System III team. we certainly did internal releases under that name..
+
+I assume you mean under the name "PWB". I stand corrected.  At Southern
+Bell I'm pretty sure the doc did not use that name though.  However, it's
+been close to 40 years and I don't feel like digging out the manuals
+to check. :-)
+
+Thanks,
+
+Arnold
+
+>
+
+> > On Jun 10, 2021, at 9:05 AM, Clem Cole <clemc at ccc.com> wrote:
+> > 
+> > 
+> > 
+> > On Thu, Jun 10, 2021 at 3:59 AM <arnold at skeeve.com <mailto:arnold at skeeve.com>> wrote:
+> > System III had been released to the world.  When I asked why AT&T
+> > hadn't released Unix 4.0, I was told that the policy was to release
+> > one version behind what was being run internally.
+> > I was under that impression - I had referred to it in my message as the 'pre-Judge Green release rules.' 
+> > 
+> > After the Bell System break up (1/1/1984), AT&T decided to just
+> > release what was current, thus the jump to System V, with "System IV"
+> > never having gotten outside the Bell System.
+> > Right.
+> >  
+> > There was also a screen editor, named 'se' (NOT related to the Georgia
+> > Tech 'se' editor) which they'd managed to shoehorn onto the '11.
+> > It was kinda cool. I used both it and 'ed'. vi was also available but
+> > I found the modal stuff weird and didn't end up learning it until a year
+> > or two later. :-)
+> > I remember seeing se -- Brian Redman showed it to me IIRC.  I never tried using it myself.  I remember that he was not happy that it was not vi.   If I recall the argument in USG was many of the BSD tools were not better or even as good as what USG had already created.  But the USG folks did eventually add some of them to their stream because so many internal sites were already using them.  In particular, v, csh and col -- but there were others too and the argument was we have those tools covered already i.e. pg vs. more or se vs. vi
+> > 
+> >   
+> > 
+> > Hope this is of interest.
+> > Definitely -- thank you.
+> > 
+> > Clem 
+> > ᐧ
+> > ᐧ
+>
+
+From jsteve at superglobalmegacorp.com  Sun Jun 13 04:58:02 2021
+From: jsteve at superglobalmegacorp.com (Jason Stevens)
+Date: Sun, 13 Jun 2021 02:58:02 +0800
+Subject: [TUHS] Help Contacting Unix Legal People
+Message-ID: <0F0B9BFC06289346B88512B91E55670D3017@EXCHANGE>
+
+I tried sending a letter a while back asking how much is a commercial SYSV
+license anyways, never got a reply. I called their legal and they didn't
+know what a Unix was.
+
+
+I guess shockingly all the public facing micro focus is all on cobol
+
+-----Original Message-----
+From: Warren Toomey
+To: tuhs at tuhs.org
+Sent: 6/10/21 8:32 AM
+Subject: [TUHS] Help Contacting Unix Legal People
+
+All, we need help contacting some people so that Dan Doernberg can make
+progress on a new Unix book that he's working on. I've attached his
+request to the TUHS list below. If you can help out in any way, please
+contact Dan directly.
+
+Cheers, Warren
+
+   From: Peer-to-Peer Communications LLC <dan at peerllc.com>
+
+   Hello all, I’m the publisher of Lions' Commentary on UNIX (still
+   going strong after 25 years!) and I have an “Ancient UNIX” book
+project
+   in mind that I need some community help with.
+
+   To avoid running into any “who has copyright rights to UNIX” legal
+   problems, we’re trying to reach out in advance to any
+   companies/organizations that may have such rights (Micro Focus,
+Xinuos,
+   Nokia, are there others?) in advance. To that end, I’m trying to find
+   staffers there who are:
+      1. sympathetic to sharing information about “ancient UNIX” with
+the
+   operating system/UNIX communities
+      2. somewhat familiar with the past legal issues and controversies
+   over UNIX ownership (perhaps someone in the legal department)
+
+   If you know any such person(s) at Micro Focus, Xinuos, Nokia, and/or
+   other relevant organizations that has either quality (or ideally a
+   unicorn with both!), please pass on their name and email address to
+me
+   (even better, add any context about why they might be helpful to me,
+if
+   it’s OK to say that you referred me to them, etc.].
+
+   Thanks much, all referrals greatly appreciated!
+   Dan Doernberg
+   dan at peerllc.com
+
+From usotsuki at buric.co  Sun Jun 13 05:35:18 2021
+From: usotsuki at buric.co (Steve Nickolas)
+Date: Sat, 12 Jun 2021 15:35:18 -0400 (EDT)
+Subject: [TUHS] Help Contacting Unix Legal People
+In-Reply-To: <0F0B9BFC06289346B88512B91E55670D3017@EXCHANGE>
+References: <0F0B9BFC06289346B88512B91E55670D3017@EXCHANGE>
+Message-ID: <alpine.DEB.2.21.2106121533130.10473@sd-119843.dedibox.fr>
+
+On Sun, 13 Jun 2021, Jason Stevens wrote:
+
+> I tried sending a letter a while back asking how much is a commercial SYSV
+> license anyways, never got a reply. I called their legal and they didn't
+> know what a Unix was.
+>
+> I guess shockingly all the public facing micro focus is all on cobol
+
+Oh, geez.
+
+It's weird that something as major as System V would be practically 
+abandoned or disacknowledged like that.  I mean, Microsoft hasn't 
+abandoned MS-DOS to that point...
+
+-uso.
+
+From joe at via.net  Sun Jun 13 05:49:45 2021
+From: joe at via.net (joe mcguckin)
+Date: Sat, 12 Jun 2021 12:49:45 -0700
+Subject: [TUHS] Help Contacting Unix Legal People
+In-Reply-To: <alpine.DEB.2.21.2106121533130.10473@sd-119843.dedibox.fr>
+References: <0F0B9BFC06289346B88512B91E55670D3017@EXCHANGE>
+ <alpine.DEB.2.21.2106121533130.10473@sd-119843.dedibox.fr>
+Message-ID: <8B4FC334-51B4-4DA0-9982-AA5D24EF544B@via.net>
+
+I wonder what ever happened to all the languages they’ve acquired? Anyone remenber Liant?
+
+
+Joe McGuckin
+ViaNet Communications
+
+joe at via.net
+650-207-0372 cell
+650-213-1302 office
+650-969-2124 fax
+
+
+
+> On Jun 12, 2021, at 12:35 PM, Steve Nickolas <usotsuki at buric.co> wrote:
+> 
+> On Sun, 13 Jun 2021, Jason Stevens wrote:
+> 
+>> I tried sending a letter a while back asking how much is a commercial SYSV
+>> license anyways, never got a reply. I called their legal and they didn't
+>> know what a Unix was.
+>> 
+>> I guess shockingly all the public facing micro focus is all on cobol
+> 
+> Oh, geez.
+> 
+> It's weird that something as major as System V would be practically abandoned or disacknowledged like that.  I mean, Microsoft hasn't abandoned MS-DOS to that point...
+> 
+> -uso.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210612/f544e1cf/attachment.htm>
+
+From aek at bitsavers.org  Sun Jun 13 06:40:56 2021
+From: aek at bitsavers.org (Al Kossow)
+Date: Sat, 12 Jun 2021 13:40:56 -0700
+Subject: [TUHS] Help Contacting Unix Legal People
+In-Reply-To: <8B4FC334-51B4-4DA0-9982-AA5D24EF544B@via.net>
+References: <0F0B9BFC06289346B88512B91E55670D3017@EXCHANGE>
+ <alpine.DEB.2.21.2106121533130.10473@sd-119843.dedibox.fr>
+ <8B4FC334-51B4-4DA0-9982-AA5D24EF544B@via.net>
+Message-ID: <37671a8e-8718-865b-c475-8ddf20b14645@bitsavers.org>
+
+On 6/12/21 12:49 PM, joe mcguckin wrote:
+> I wonder what ever happened to all the languages they’ve acquired? Anyone remenber Liant?
+
+They also have all of the Irma products (Attachmate, et. al.)
+
+
+From sauer at technologists.com  Sun Jun 13 06:32:06 2021
+From: sauer at technologists.com (Charles H Sauer)
+Date: Sat, 12 Jun 2021 15:32:06 -0500
+Subject: [TUHS] Help Contacting Unix Legal People
+In-Reply-To: <0F0B9BFC06289346B88512B91E55670D3017@EXCHANGE>
+References: <0F0B9BFC06289346B88512B91E55670D3017@EXCHANGE>
+Message-ID: <06f8dd8c-ddac-0ee1-3f6a-375e91891152@technologists.com>
+
+IF Micro Focus really has abandoned System V, including SVR4 source, and 
+that could be documented, then it might be plausible to get Dell SVR4 
+publicly visible. Charlie
+
+On 6/12/2021 1:58 PM, Jason Stevens wrote:
+> I tried sending a letter a while back asking how much is a commercial SYSV
+> license anyways, never got a reply. I called their legal and they didn't
+> know what a Unix was.
+> 
+> 
+> I guess shockingly all the public facing micro focus is all on cobol
+> 
+> -----Original Message-----
+> From: Warren Toomey
+> To: tuhs at tuhs.org
+> Sent: 6/10/21 8:32 AM
+> Subject: [TUHS] Help Contacting Unix Legal People
+> 
+> All, we need help contacting some people so that Dan Doernberg can make
+> progress on a new Unix book that he's working on. I've attached his
+> request to the TUHS list below. If you can help out in any way, please
+> contact Dan directly.
+> 
+> Cheers, Warren
+> 
+>     From: Peer-to-Peer Communications LLC <dan at peerllc.com>
+> 
+>     Hello all, I’m the publisher of Lions' Commentary on UNIX (still
+>     going strong after 25 years!) and I have an “Ancient UNIX” book
+> project
+>     in mind that I need some community help with.
+> 
+>     To avoid running into any “who has copyright rights to UNIX” legal
+>     problems, we’re trying to reach out in advance to any
+>     companies/organizations that may have such rights (Micro Focus,
+> Xinuos,
+>     Nokia, are there others?) in advance. To that end, I’m trying to find
+>     staffers there who are:
+>        1. sympathetic to sharing information about “ancient UNIX” with
+> the
+>     operating system/UNIX communities
+>        2. somewhat familiar with the past legal issues and controversies
+>     over UNIX ownership (perhaps someone in the legal department)
+> 
+>     If you know any such person(s) at Micro Focus, Xinuos, Nokia, and/or
+>     other relevant organizations that has either quality (or ideally a
+>     unicorn with both!), please pass on their name and email address to
+> me
+>     (even better, add any context about why they might be helpful to me,
+> if
+>     it’s OK to say that you referred me to them, etc.].
+> 
+>     Thanks much, all referrals greatly appreciated!
+>     Dan Doernberg
+>     dan at peerllc.com
+> 
+
+-- 
+voice: +1.512.784.7526       e-mail: sauer at technologists.com
+fax: +1.512.346.5240         Web: https://technologists.com/sauer/
+Facebook/Google/Skype/Twitter: CharlesHSauer
+
+From pnr at planet.nl  Mon Jun 14 01:23:16 2021
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Sun, 13 Jun 2021 17:23:16 +0200
+Subject: [TUHS] Help Contacting Unix Legal People
+Message-ID: <E467758B-2FAD-4E1F-9034-C05E60C3EE99@planet.nl>
+
+I understand the preference for a bottom-up entry, with somebody already sympathetic.
+
+If there is no such entry point, top-down may work at Microfocus. I guess the ask is for a statement for SysV similar to the Nokia statement for 8th-10th Edition:
+https://media-bell-labs-com.s3.amazonaws.com/pages/20170327_1602/statement%20regarding%20Unix%203-7-17.pdf
+
+According to Companies’ House, the general counsel is Jane Smithard:
+https://find-and-update.company-information.service.gov.uk/company/01504593/officers
+
+She appears to be 67, to have a long tenure with Microfocus and maybe is just the right person:
+"Jane has more than 25 years’ experience as a lawyer in the IT industry and software sector. She has worked with Micro Focus for over 20 years providing a wide range of commercial and corporate legal services, from leading the efforts through the 2005 IPO to driving the legal aspects of the group’s mergers, acquisitions and divestitures strategy including the acquisition of HPE Software and divestiture of SUSE. Jane leads a team of approximately 60 lawyers and other professionals worldwide, the majority of whom are focused directly on supporting the Company’s commercial teams and business.”
+https://www.microfocus.com/en-us/about/leadership-about
+
+Her e-mail appears to be jane (dot) smithard (at) microfocus (dot) com
+
+But I guess that Dan Doernberg already knows all that. His book project sounds intriguing, by the way.
+
+Paul
+
+
+From steffen at sdaoden.eu  Wed Jun 16 08:16:59 2021
+From: steffen at sdaoden.eu (Steffen Nurpmeso)
+Date: Wed, 16 Jun 2021 00:16:59 +0200
+Subject: [TUHS] 70th anniversary of (official) programming errors
+Message-ID: <20210615221659.ltbL6%steffen@sdaoden.eu>
+
+Not Unix in particular.
+At least in Germany it is already the 16th, and my BSD calendar
+notifies that "first programming error is encountered at the
+U. S. Census Bureau".
+
+As not being hard-to-the-core i may have missed it, but also in
+1951, in March, the wonderful Grace Hopper "conceives the first
+compiler, called A-O and later released as Math-Matic.  Hopper is
+also credited with coining the term 'bug' following an incident
+involving a moth and a Mark II.
+
+All (hm!) according to COMPUTERWORLD January 18th, 1999 (i was
+young!), with assistance of the Computer Museum of Boston.
+
+Like McCartney said in the legendary 1999 concert at the Cavern
+club, the first after his wonderful wife Linda died, "See, with
+this band, if we don't get it right ... we start again!".
+
+Thank you.
+
+--steffen
+|
+|Der Kragenbaer,                The moon bear,
+|der holt sich munter           he cheerfully and one by one
+|einen nach dem anderen runter  wa.ks himself off
+|(By Robert Gernhardt)
+
+From cowan at ccil.org  Wed Jun 16 08:54:47 2021
+From: cowan at ccil.org (John Cowan)
+Date: Tue, 15 Jun 2021 18:54:47 -0400
+Subject: [TUHS] 70th anniversary of (official) programming errors
+In-Reply-To: <20210615221659.ltbL6%steffen@sdaoden.eu>
+References: <20210615221659.ltbL6%steffen@sdaoden.eu>
+Message-ID: <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+
+On Tue, Jun 15, 2021 at 6:25 PM Steffen Nurpmeso <steffen at sdaoden.eu> wrote:
+
+
+> As not being hard-to-the-core i may have missed it, but also in
+> 1951, in March, the wonderful Grace Hopper "conceives the first
+> compiler, called A-O and later released as Math-Matic.  Hopper is
+> also credited with coining the term 'bug' following an incident
+> involving a moth and a Mark II.
+>
+
+Yes, but wrongly.  The label next to the moth is "First actual case of bug
+being found", and the word "actual" shows that the slang term already
+existed then.  Brief unexplained faults on telephony (and before that
+telegraphy) lines were "bugs on the line" back in the 19C.  Vibroplex
+telegraph keys, first sold in 1905, had a picture of a beetle on the top of
+the key, and were notorious for creating bugs when inexperienced operators
+used them.  (Vibroplex is still in business, still selling its
+continuous-operation telegraph keys, which ditt as long as you hold the
+paddle to the right.)
+
+
+
+John Cowan          http://vrici.lojban.org/~cowan        cowan at ccil.org
+BALIN FUNDINUL          UZBAD KHAZADDUMU
+BALIN SON OF FUNDIN     LORD OF KHAZAD-DUM
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210615/69c7ca13/attachment.htm>
+
+From crossd at gmail.com  Wed Jun 16 09:44:25 2021
+From: crossd at gmail.com (Dan Cross)
+Date: Tue, 15 Jun 2021 19:44:25 -0400
+Subject: [TUHS] 70th anniversary of (official) programming errors
+In-Reply-To: <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+References: <20210615221659.ltbL6%steffen@sdaoden.eu>
+ <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+Message-ID: <CAEoi9W4cJX_4_965+hw4wUUDzxrW7enkeWGgxYdrobmzjN3SkA@mail.gmail.com>
+
+On Tue, Jun 15, 2021 at 6:55 PM John Cowan <cowan at ccil.org> wrote:
+
+> On Tue, Jun 15, 2021 at 6:25 PM Steffen Nurpmeso <steffen at sdaoden.eu>
+> wrote:
+>
+>> As not being hard-to-the-core i may have missed it, but also in
+>> 1951, in March, the wonderful Grace Hopper "conceives the first
+>> compiler, called A-O and later released as Math-Matic.  Hopper is
+>> also credited with coining the term 'bug' following an incident
+>> involving a moth and a Mark II.
+>>
+>
+> Yes, but wrongly.  The label next to the moth is "First actual case of bug
+> being found", and the word "actual" shows that the slang term already
+> existed then.  Brief unexplained faults on telephony (and before that
+> telegraphy) lines were "bugs on the line" back in the 19C.  Vibroplex
+> telegraph keys, first sold in 1905, had a picture of a beetle on the top of
+> the key, and were notorious for creating bugs when inexperienced operators
+> used them.  (Vibroplex is still in business, still selling its
+> continuous-operation telegraph keys, which ditt as long as you hold the
+> paddle to the right.)
+>
+
+Indeed, the Vibroplex key is called a "bug". I suspect this has something
+to do with its appearance more than anything else, though (it kinda sorta
+looks like, er, a bug).
+
+        - Dan C.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210615/a62910d4/attachment.htm>
+
+From grog at lemis.com  Wed Jun 16 11:06:30 2021
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Wed, 16 Jun 2021 11:06:30 +1000
+Subject: [TUHS] Bug etymology (was: 70th anniversary of (official)
+ programming errors)
+In-Reply-To: <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+References: <20210615221659.ltbL6%steffen@sdaoden.eu>
+ <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+Message-ID: <20210616010630.GK23809@eureka.lemis.com>
+
+On Tuesday, 15 June 2021 at 18:54:47 -0400, John Cowan wrote:
+> On Tue, Jun 15, 2021 at 6:25 PM Steffen Nurpmeso <steffen at sdaoden.eu> wrote:
+>> As not being hard-to-the-core i may have missed it, but also in
+>> 1951, in March, the wonderful Grace Hopper "conceives the first
+>> compiler, called A-O and later released as Math-Matic.  Hopper is
+>> also credited with coining the term 'bug' following an incident
+>> involving a moth and a Mark II.
+>
+> Yes, but wrongly.  The label next to the moth is "First actual case of bug
+> being found", and the word "actual" shows that the slang term already
+> existed then.
+
+Correct.  The Oxford English Dictionary has two overlapping
+definitions (along with dozens of others).  In each case I've shown
+the earliest attestation:
+
+ 5. Originally U.S.
+
+  a. A defect or fault in a machine (esp. an electrical or electronic
+     one), or in a process, etc.
+
+     1875 Operator 15 Aug. 5/1 The biggest âbugâ yet has been
+          discovered in the U.S. Hotel Electric Annunciator.
+
+  b. Computing. An error or other cause of malfunction in a computer
+     program, piece of software, etc.
+
+     1952 Rev. Electronic Digital Computers
+          (Amer. Inst. Electr. Engineers) 18/2 The week we spent in
+          getting the last bug out of our instruction program was an
+          investment we hated to have to make.
+
+It's interesting that they differentiate between the two.
+
+Greg
+--
+Sent from my desktop computer.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft mail program
+reports problems, please read http://lemis.com/broken-MUA.php
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 163 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210616/44f698ab/attachment.sig>
+
+From robpike at gmail.com  Wed Jun 16 13:48:11 2021
+From: robpike at gmail.com (Rob Pike)
+Date: Wed, 16 Jun 2021 13:48:11 +1000
+Subject: [TUHS] 70th anniversary of (official) programming errors
+In-Reply-To: <CAEoi9W4cJX_4_965+hw4wUUDzxrW7enkeWGgxYdrobmzjN3SkA@mail.gmail.com>
+References: <20210615221659.ltbL6%steffen@sdaoden.eu>
+ <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+ <CAEoi9W4cJX_4_965+hw4wUUDzxrW7enkeWGgxYdrobmzjN3SkA@mail.gmail.com>
+Message-ID: <CAKzdPgyk_ZEojzXYLEHV1mPuybsap88fhCzZ-mE5JNukWFmDKQ@mail.gmail.com>
+
+There are citations from Edison in the 19th century using the word, and a
+quote somewhere by Maurice Wilkes about the stairwell moment when he
+realized much of the rest of his life would be spent finding programming
+errors.
+
+That moth was not the first bug, nor the first "bug", it was the first
+recorded "actual bug".
+
+-rob
+
+
+On Wed, Jun 16, 2021 at 9:46 AM Dan Cross <crossd at gmail.com> wrote:
+
+> On Tue, Jun 15, 2021 at 6:55 PM John Cowan <cowan at ccil.org> wrote:
+>
+>> On Tue, Jun 15, 2021 at 6:25 PM Steffen Nurpmeso <steffen at sdaoden.eu>
+>> wrote:
+>>
+>>> As not being hard-to-the-core i may have missed it, but also in
+>>> 1951, in March, the wonderful Grace Hopper "conceives the first
+>>> compiler, called A-O and later released as Math-Matic.  Hopper is
+>>> also credited with coining the term 'bug' following an incident
+>>> involving a moth and a Mark II.
+>>>
+>>
+>> Yes, but wrongly.  The label next to the moth is "First actual case of
+>> bug being found", and the word "actual" shows that the slang term already
+>> existed then.  Brief unexplained faults on telephony (and before that
+>> telegraphy) lines were "bugs on the line" back in the 19C.  Vibroplex
+>> telegraph keys, first sold in 1905, had a picture of a beetle on the top of
+>> the key, and were notorious for creating bugs when inexperienced operators
+>> used them.  (Vibroplex is still in business, still selling its
+>> continuous-operation telegraph keys, which ditt as long as you hold the
+>> paddle to the right.)
+>>
+>
+> Indeed, the Vibroplex key is called a "bug". I suspect this has something
+> to do with its appearance more than anything else, though (it kinda sorta
+> looks like, er, a bug).
+>
+>         - Dan C.
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210616/82f4fb44/attachment.htm>
+
+From bakul at iitbombay.org  Wed Jun 16 14:13:44 2021
+From: bakul at iitbombay.org (Bakul Shah)
+Date: Tue, 15 Jun 2021 21:13:44 -0700
+Subject: [TUHS] 70th anniversary of (official) programming errors
+In-Reply-To: <CAKzdPgyk_ZEojzXYLEHV1mPuybsap88fhCzZ-mE5JNukWFmDKQ@mail.gmail.com>
+References: <20210615221659.ltbL6%steffen@sdaoden.eu>
+ <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+ <CAEoi9W4cJX_4_965+hw4wUUDzxrW7enkeWGgxYdrobmzjN3SkA@mail.gmail.com>
+ <CAKzdPgyk_ZEojzXYLEHV1mPuybsap88fhCzZ-mE5JNukWFmDKQ@mail.gmail.com>
+Message-ID: <C964FEBE-BBE3-4A87-9F2F-E5C277053D85@iitbombay.org>
+
+https://spectrum.ieee.org/the-institute/ieee-history/did-you-know-edison-coined-the-term-bug
+
+Like Edison, she (Grace Hopper) was recalling the word’s older origins in the Welsh bwg, the Scottish bogill or bogle, the German bögge, and the Middle English bugge: the hobgoblins of pre-modern life, resurrected in the 19th century as, to paraphrase philosopher Gilbert Ryle, ghosts in the machine.
+
+Electrical circuits can have "bad connections" so I do wonder if Edison coined this word based on "ghost like" faults that magically appear and disappear!
+
+-- Bakul
+
+> On Jun 15, 2021, at 8:48 PM, Rob Pike <robpike at gmail.com> wrote:
+> 
+> There are citations from Edison in the 19th century using the word, and a quote somewhere by Maurice Wilkes about the stairwell moment when he realized much of the rest of his life would be spent finding programming errors.
+> 
+> That moth was not the first bug, nor the first "bug", it was the first recorded "actual bug".
+> 
+> -rob
+> 
+> 
+> On Wed, Jun 16, 2021 at 9:46 AM Dan Cross <crossd at gmail.com <mailto:crossd at gmail.com>> wrote:
+> On Tue, Jun 15, 2021 at 6:55 PM John Cowan <cowan at ccil.org <mailto:cowan at ccil.org>> wrote:
+> On Tue, Jun 15, 2021 at 6:25 PM Steffen Nurpmeso <steffen at sdaoden.eu <mailto:steffen at sdaoden.eu>> wrote:
+> As not being hard-to-the-core i may have missed it, but also in
+> 1951, in March, the wonderful Grace Hopper "conceives the first
+> compiler, called A-O and later released as Math-Matic.  Hopper is
+> also credited with coining the term 'bug' following an incident
+> involving a moth and a Mark II.
+> 
+> Yes, but wrongly.  The label next to the moth is "First actual case of bug being found", and the word "actual" shows that the slang term already existed then.  Brief unexplained faults on telephony (and before that telegraphy) lines were "bugs on the line" back in the 19C.  Vibroplex telegraph keys, first sold in 1905, had a picture of a beetle on the top of the key, and were notorious for creating bugs when inexperienced operators used them.  (Vibroplex is still in business, still selling its continuous-operation telegraph keys, which ditt as long as you hold the paddle to the right.)
+> 
+> Indeed, the Vibroplex key is called a "bug". I suspect this has something to do with its appearance more than anything else, though (it kinda sorta looks like, er, a bug).
+> 
+>         - Dan C.
+> 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210615/a43e9be8/attachment.htm>
+
+From jsteve at superglobalmegacorp.com  Wed Jun 16 18:16:20 2021
+From: jsteve at superglobalmegacorp.com (Jason Stevens)
+Date: Wed, 16 Jun 2021 16:16:20 +0800
+Subject: [TUHS] 70th anniversary of (official) programming errors
+Message-ID: <0F0B9BFC06289346B88512B91E55670D3018@EXCHANGE>
+
+ Sounds very "Deus ex machina" like.  Although it's hard to staple a ghost
+to your notebook.
+
+-----Original Message-----
+From: Bakul Shah
+To: Rob Pike
+Cc: The Eunuchs Hysterical Society
+Sent: 6/16/21 12:13 PM
+Subject: Re: [TUHS] 70th anniversary of (official) programming errors
+
+https://spectrum.ieee.org/the-institute/ieee-history/did-you-know-edison
+-coined-the-term-bug
+<https://spectrum.ieee.org/the-institute/ieee-history/did-you-know-ediso
+n-coined-the-term-bug> 
+
+Like Edison, she (Grace Hopper) was recalling the word’s older origins
+in the Welsh bwg, the Scottish bogill or bogle, the German bögge, and
+the Middle English bugge: the hobgoblins of pre-modern life, resurrected
+in the 19th century as, to paraphrase philosopher Gilbert Ryle, ghosts
+in the machine.
+
+
+Electrical circuits can have "bad connections" so I do wonder if Edison
+coined this word based on "ghost like" faults that magically appear and
+disappear!
+
+-- Bakul
+
+
+On Jun 15, 2021, at 8:48 PM, Rob Pike <robpike at gmail.com> wrote:
+
+There are citations from Edison in the 19th century using the word, and
+a quote somewhere by Maurice Wilkes about the stairwell moment when he
+realized much of the rest of his life would be spent finding programming
+errors.
+
+That moth was not the first bug, nor the first "bug", it was the first
+recorded "actual bug".
+
+
+-rob
+
+
+On Wed, Jun 16, 2021 at 9:46 AM Dan Cross < crossd at gmail.com
+<mailto:crossd at gmail.com> > wrote:
+
+
+On Tue, Jun 15, 2021 at 6:55 PM John Cowan < cowan at ccil.org
+<mailto:cowan at ccil.org> > wrote:
+
+
+On Tue, Jun 15, 2021 at 6:25 PM Steffen Nurpmeso < steffen at sdaoden.eu
+<mailto:steffen at sdaoden.eu> > wrote:
+
+As not being hard-to-the-core i may have missed it, but also in
+1951, in March, the wonderful Grace Hopper "conceives the first
+compiler, called A-O and later released as Math-Matic.  Hopper is
+also credited with coining the term 'bug' following an incident
+involving a moth and a Mark II.
+
+
+
+Yes, but wrongly.  The label next to the moth is "First actual case of
+bug being found", and the word "actual" shows that the slang term
+already existed then.  Brief unexplained faults on telephony (and before
+that telegraphy) lines were "bugs on the line" back in the 19C.
+Vibroplex telegraph keys, first sold in 1905, had a picture of a beetle
+on the top of the key, and were notorious for creating bugs when
+inexperienced operators used them.  (Vibroplex is still in business,
+still selling its continuous-operation telegraph keys, which ditt as
+long as you hold the paddle to the right.)
+
+
+Indeed, the Vibroplex key is called a "bug". I suspect this has
+something to do with its appearance more than anything else, though (it
+kinda sorta looks like, er, a bug).
+
+        - Dan C.
+
+
+
+
+From steffen at sdaoden.eu  Thu Jun 17 07:57:13 2021
+From: steffen at sdaoden.eu (Steffen Nurpmeso)
+Date: Wed, 16 Jun 2021 23:57:13 +0200
+Subject: [TUHS] 70th anniversary of (official) programming errors
+In-Reply-To: <C964FEBE-BBE3-4A87-9F2F-E5C277053D85@iitbombay.org>
+References: <20210615221659.ltbL6%steffen@sdaoden.eu>
+ <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+ <CAEoi9W4cJX_4_965+hw4wUUDzxrW7enkeWGgxYdrobmzjN3SkA@mail.gmail.com>
+ <CAKzdPgyk_ZEojzXYLEHV1mPuybsap88fhCzZ-mE5JNukWFmDKQ@mail.gmail.com>
+ <C964FEBE-BBE3-4A87-9F2F-E5C277053D85@iitbombay.org>
+Message-ID: <20210616215713.f1CA8%steffen@sdaoden.eu>
+
+Bakul Shah wrote in
+ <C964FEBE-BBE3-4A87-9F2F-E5C277053D85 at iitbombay.org>:
+ |> On Jun 15, 2021, at 8:48 PM, Rob Pike <robpike at gmail.com> wrote:
+ |> There are citations from Edison in the 19th century using the word, \
+ |> and a quote somewhere by Maurice Wilkes about the stairwell moment \
+ |> when he realized much of the rest of his life would be spent finding \
+ |> programming errors.
+ |> 
+ |> That moth was not the first bug, nor the first "bug", it was the \
+ |> first recorded "actual bug".
+ |> 
+ |> -rob
+
+ |https://spectrum.ieee.org/the-institute/ieee-history/did-you-know-edison\
+ |-coined-the-term-bug
+
+Interesting, thanks!  1947, then.
+As you know well the BSD people dropped their calendar instead of
+fixing it.
+
+ |Like Edison, she (Grace Hopper) was recalling the word’s older origins \
+ |in the Welsh bwg, the Scottish bogill or bogle, the German bögge, and \
+
+(Only to clarify that „bögge“ is not a German word to the best of my
+knowledge.  I was looking, as it sounded so »northern«, there is
+»Bodden« for example (a small bay with a very small aperture to
+the sea), but no?)
+
+ |the Middle English bugge: the hobgoblins of pre-modern life, resurrected \
+ |in the 19th century as, to paraphrase philosopher Gilbert Ryle, ghosts \
+ |in the machine.
+
+That not me.  If me, then Schopenhauer.  I also do not like the
+Brainfuck language, for example.  You know, if you have to go
+somewhere ...  In some Bhuddhistic monasteries, for example, monks
+sit cross-legged in front of walls for hours each day.  If you
+really want, that will help, if you have learned the lesson.
+Working in a kitchen garden is also advisable, you can reap.
+
+ |Electrical circuits can have "bad connections" so I do wonder if Edison \
+ |coined this word based on "ghost like" faults that magically appear \
+ |and disappear!
+
+I seem to recall now that the bug story was clarified in the past
+already?  Now it is for me anyway, thank you all for that.  I was
+looking at BSD calendar mail and had a go.
+
+--steffen
+|
+|Der Kragenbaer,                The moon bear,
+|der holt sich munter           he cheerfully and one by one
+|einen nach dem anderen runter  wa.ks himself off
+|(By Robert Gernhardt)
+
+From beebe at math.utah.edu  Fri Jun 18 02:35:12 2021
+From: beebe at math.utah.edu (Nelson H. F. Beebe)
+Date: Thu, 17 Jun 2021 10:35:12 -0600
+Subject: [TUHS] [tuhs] New version of a paper on Unix evolution
+Message-ID: <CMM.0.95.0.1623947712.beebe@gamma.math.utah.edu>
+
+A new journal issue published today carries this paper:
+
+	Diomidis Spinellis and Paris Avgeriou
+	Evolution of the Unix System Architecture: An Exploratory Case Study
+	IEEE Transactions on Software Engineering 47(6) 1134--1163 June 2021
+	https://doi.org/10.1109/TSE.2019.2892149
+
+A preprint is available here:
+
+	https://www.researchgate.net/publication/332826685_Evolution_of_the_Unix_System_Architecture_An_Exploratory_Case_Study
+
+However, it is dated four years ago, and after removing its cover
+page, diffpdf shows numerous changes compared to today's publication.
+
+In the new version, a footnote on the first page says
+
+	Manuscript received 19 May 2018; revised 18 Dec. 2018;
+	accepted 28 Dec. 2018. Date of publication 2 May 2019; 
+	date of current version 14 June 2021.
+
+-------------------------------------------------------------------------------
+- Nelson H. F. Beebe                    Tel: +1 801 581 5254                  -
+- University of Utah                    FAX: +1 801 581 4148                  -
+- Department of Mathematics, 110 LCB    Internet e-mail: beebe at math.utah.edu  -
+- 155 S 1400 E RM 233                       beebe at acm.org  beebe at computer.org -
+- Salt Lake City, UT 84112-0090, USA    URL: http://www.math.utah.edu/~beebe/ -
+-------------------------------------------------------------------------------
+
+From steve at sk2.org  Fri Jun 18 02:42:31 2021
+From: steve at sk2.org (Stephen Kitt)
+Date: Thu, 17 Jun 2021 18:42:31 +0200
+Subject: [TUHS] [tuhs] New version of a paper on Unix evolution
+In-Reply-To: <CMM.0.95.0.1623947712.beebe@gamma.math.utah.edu>
+References: <CMM.0.95.0.1623947712.beebe@gamma.math.utah.edu>
+Message-ID: <a80921c52294986eb5a5547a9a747fae@sk2.org>
+
+Thanks for the pointer!
+
+The paper as published is freely available ("open access") from the IEEE 
+page, it's even licensed under CC-BY-4.0.
+
+Regards,
+
+Stephen
+
+
+Le 17/06/2021 18:35, Nelson H. F. Beebe a écrit :
+> A new journal issue published today carries this paper:
+> 
+> 	Diomidis Spinellis and Paris Avgeriou
+> 	Evolution of the Unix System Architecture: An Exploratory Case Study
+> 	IEEE Transactions on Software Engineering 47(6) 1134--1163 June 2021
+> 	https://doi.org/10.1109/TSE.2019.2892149
+> 
+> A preprint is available here:
+> 
+> 	https://www.researchgate.net/publication/332826685_Evolution_of_the_Unix_System_Architecture_An_Exploratory_Case_Study
+> 
+> However, it is dated four years ago, and after removing its cover
+> page, diffpdf shows numerous changes compared to today's publication.
+> 
+> In the new version, a footnote on the first page says
+> 
+> 	Manuscript received 19 May 2018; revised 18 Dec. 2018;
+> 	accepted 28 Dec. 2018. Date of publication 2 May 2019;
+> 	date of current version 14 June 2021.
+> 
+> -------------------------------------------------------------------------------
+> - Nelson H. F. Beebe                    Tel: +1 801 581 5254            
+>       -
+> - University of Utah                    FAX: +1 801 581 4148            
+>       -
+> - Department of Mathematics, 110 LCB    Internet e-mail: 
+> beebe at math.utah.edu  -
+> - 155 S 1400 E RM 233                       beebe at acm.org  
+> beebe at computer.org -
+> - Salt Lake City, UT 84112-0090, USA    URL: 
+> http://www.math.utah.edu/~beebe/ -
+> -------------------------------------------------------------------------------
+
+From cowan at ccil.org  Sat Jun 19 06:19:37 2021
+From: cowan at ccil.org (John Cowan)
+Date: Fri, 18 Jun 2021 16:19:37 -0400
+Subject: [TUHS] 70th anniversary of (official) programming errors
+In-Reply-To: <20210616215713.f1CA8%steffen@sdaoden.eu>
+References: <20210615221659.ltbL6%steffen@sdaoden.eu>
+ <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+ <CAEoi9W4cJX_4_965+hw4wUUDzxrW7enkeWGgxYdrobmzjN3SkA@mail.gmail.com>
+ <CAKzdPgyk_ZEojzXYLEHV1mPuybsap88fhCzZ-mE5JNukWFmDKQ@mail.gmail.com>
+ <C964FEBE-BBE3-4A87-9F2F-E5C277053D85@iitbombay.org>
+ <20210616215713.f1CA8%steffen@sdaoden.eu>
+Message-ID: <CAD2gp_So8VQE4ApVSAHmNgQOKNGbaBbaizovxweu2+DJnx-NKQ@mail.gmail.com>
+
+On Wed, Jun 16, 2021 at 5:57 PM Steffen Nurpmeso <steffen at sdaoden.eu> wrote:
+
+
+> (Only to clarify that „bögge“ is not a German word to the best of my
+> knowledge.  I was looking, as it sounded so »northern«,
+>
+
+And so it is: it's Low Saxon, and also exists in the compound form
+"böggel-mann", plainly cognate to British English "bogeyman", American
+English "boogeyman".  Or borrowed one way or the other: there is so much
+borrowing and convergence in the Germanic languages around the North and
+Baltic Seas that if we did not know the older varieties of these languages
+we would never be able to work out just how they are related.
+
+
+
+John Cowan          http://vrici.lojban.org/~cowan        cowan at ccil.org
+Unless it was by accident that I had offended someone, I never apologized.
+        --Quentin Crisp
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210618/b0604526/attachment.htm>
+
+From steffen at sdaoden.eu  Sat Jun 19 07:00:47 2021
+From: steffen at sdaoden.eu (Steffen Nurpmeso)
+Date: Fri, 18 Jun 2021 23:00:47 +0200
+Subject: [TUHS] 70th anniversary of (official) programming errors
+In-Reply-To: <CAD2gp_So8VQE4ApVSAHmNgQOKNGbaBbaizovxweu2+DJnx-NKQ@mail.gmail.com>
+References: <20210615221659.ltbL6%steffen@sdaoden.eu>
+ <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+ <CAEoi9W4cJX_4_965+hw4wUUDzxrW7enkeWGgxYdrobmzjN3SkA@mail.gmail.com>
+ <CAKzdPgyk_ZEojzXYLEHV1mPuybsap88fhCzZ-mE5JNukWFmDKQ@mail.gmail.com>
+ <C964FEBE-BBE3-4A87-9F2F-E5C277053D85@iitbombay.org>
+ <20210616215713.f1CA8%steffen@sdaoden.eu>
+ <CAD2gp_So8VQE4ApVSAHmNgQOKNGbaBbaizovxweu2+DJnx-NKQ@mail.gmail.com>
+Message-ID: <20210618210047.5uogF%steffen@sdaoden.eu>
+
+John Cowan wrote in
+ <CAD2gp_So8VQE4ApVSAHmNgQOKNGbaBbaizovxweu2+DJnx-NKQ at mail.gmail.com>:
+ |On Wed, Jun 16, 2021 at 5:57 PM Steffen Nurpmeso <steffen at sdaoden.eu> \
+ |wrote:
+ |> (Only to clarify that „bögge“ is not a German word to the best of my
+ |> knowledge.  I was looking, as it sounded so »northern«,
+ |
+ |And so it is: it's Low Saxon, and also exists in the compound form
+ |"böggel-mann", plainly cognate to British English "bogeyman", American
+ |English "boogeyman".  Or borrowed one way or the other: there is so much
+ |borrowing and convergence in the Germanic languages around the North and
+ |Baltic Seas that if we did not know the older varieties of these languages
+ |we would never be able to work out just how they are related.
+
+This surely leads to nowhere without going into detail, and that
+is hard in respect to the dramatical losses that happened on
+archives etc., due to whatever reason.  You may confuse personal
+opinion.  That happens.
+
+To me it sounds rather like a modification of "Bogen", which can
+mean quite some different things itself, from a "bend" (so the
+profession of a wood-bender comes to mind at a glance, "böge" is
+also the conjugation of "bending" "er böge" thus "he would bend"),
+also the weapon "bow", so they could have been happy producers or
+unhappy consumers of such things as well.  Of course a "Bogen" is
+also needed to play a Violin but putting some strings while
+a thunderstorm approaches, hm, so i stay clear from that, i "make
+a Bogen around it".  Given how many right politicians have that
+name, i let it be good for now.
+
+Cheerio,
+
+--steffen
+|
+|Der Kragenbaer,                The moon bear,
+|der holt sich munter           he cheerfully and one by one
+|einen nach dem anderen runter  wa.ks himself off
+|(By Robert Gernhardt)
+
+From steffen at sdaoden.eu  Sat Jun 19 08:59:43 2021
+From: steffen at sdaoden.eu (Steffen Nurpmeso)
+Date: Sat, 19 Jun 2021 00:59:43 +0200
+Subject: [TUHS] 70th anniversary of (official) programming errors
+In-Reply-To: <20210618210047.5uogF%steffen@sdaoden.eu>
+References: <20210615221659.ltbL6%steffen@sdaoden.eu>
+ <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+ <CAEoi9W4cJX_4_965+hw4wUUDzxrW7enkeWGgxYdrobmzjN3SkA@mail.gmail.com>
+ <CAKzdPgyk_ZEojzXYLEHV1mPuybsap88fhCzZ-mE5JNukWFmDKQ@mail.gmail.com>
+ <C964FEBE-BBE3-4A87-9F2F-E5C277053D85@iitbombay.org>
+ <20210616215713.f1CA8%steffen@sdaoden.eu>
+ <CAD2gp_So8VQE4ApVSAHmNgQOKNGbaBbaizovxweu2+DJnx-NKQ@mail.gmail.com>
+ <20210618210047.5uogF%steffen@sdaoden.eu>
+Message-ID: <20210618225943.g5dsS%steffen@sdaoden.eu>
+
+Steffen Nurpmeso wrote in
+ <20210618210047.5uogF%steffen at sdaoden.eu>:
+ |John Cowan wrote in
+ | <CAD2gp_So8VQE4ApVSAHmNgQOKNGbaBbaizovxweu2+DJnx-NKQ at mail.gmail.com>:
+ ||On Wed, Jun 16, 2021 at 5:57 PM Steffen Nurpmeso <steffen at sdaoden.eu> \
+ ||wrote:
+ ||> (Only to clarify that „bögge“ is not a German word to the best of my
+ ||> knowledge.  I was looking, as it sounded so »northern«,
+ ||
+ ||And so it is: it's Low Saxon, and also exists in the compound form
+ ||"böggel-mann", plainly cognate to British English "bogeyman", American
+ ||English "boogeyman".  Or borrowed one way or the other: there is so much
+ ||borrowing and convergence in the Germanic languages around the North and
+ ||Baltic Seas that if we did not know the older varieties of these languages
+ ||we would never be able to work out just how they are related.
+ |
+ |This surely leads to nowhere without going into detail, and that
+ |is hard in respect to the dramatical losses that happened on
+ |archives etc., due to whatever reason.  You may confuse personal
+ |opinion.  That happens.
+
+Hrhrm.  Also it was shortly before the museum was torn into
+pieces.  Who knows what the journalist asked?  Mary Brandel??
+Ferry Cross The Mersey, so to say.  When i try to interpret the
+actual "sound" of that timeline[1], then "..Hopper is also
+credited.." sounds like an addition that crossed one's mind, out
+of the actual timeline topic, and so it *seems to me* as if the
+collocutor could not be blamed.  Says my gut.
+
+  [1] https://books.google.de/books?id=Y-SUlMt64SoC&pg=PT70&lpg=PT70&dq=census+bureau+bug+1951&source=bl&ots=hulQqmNIT8&sig=ACfU3U2Pdy2HzVAVdzMNq2LUBOqDEpkJLQ&hl=de&sa=X&ved=2ahUKEwip8MDx0ZrxAhVF3aQKHWB0AUcQ6AEwEnoECBEQAw#v=onepage&q=census%20bureau%20bug%201951&f=false
+
+A nice weekend i wish from Germany,
+
+--steffen
+|
+|Der Kragenbaer,                The moon bear,
+|der holt sich munter           he cheerfully and one by one
+|einen nach dem anderen runter  wa.ks himself off
+|(By Robert Gernhardt)
+
+From grog at lemis.com  Sat Jun 19 17:57:35 2021
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Sat, 19 Jun 2021 17:57:35 +1000
+Subject: [TUHS] =?iso-8859-1?q?Bugs=2C_B=C3=B6=C3=B6ge_and_Bogeymen_=28wa?=
+ =?iso-8859-1?q?s=3A_70th_anniversary_of_=28official=29_programming_errors?=
+ =?iso-8859-1?q?=29?=
+In-Reply-To: <CAD2gp_So8VQE4ApVSAHmNgQOKNGbaBbaizovxweu2+DJnx-NKQ@mail.gmail.com>
+References: <20210615221659.ltbL6%steffen@sdaoden.eu>
+ <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+ <CAEoi9W4cJX_4_965+hw4wUUDzxrW7enkeWGgxYdrobmzjN3SkA@mail.gmail.com>
+ <CAKzdPgyk_ZEojzXYLEHV1mPuybsap88fhCzZ-mE5JNukWFmDKQ@mail.gmail.com>
+ <C964FEBE-BBE3-4A87-9F2F-E5C277053D85@iitbombay.org>
+ <20210616215713.f1CA8%steffen@sdaoden.eu>
+ <CAD2gp_So8VQE4ApVSAHmNgQOKNGbaBbaizovxweu2+DJnx-NKQ@mail.gmail.com>
+Message-ID: <20210619075735.GQ23809@eureka.lemis.com>
+
+On Friday, 18 June 2021 at 16:19:37 -0400, John Cowan wrote:
+> On Wed, Jun 16, 2021 at 5:57 PM Steffen Nurpmeso <steffen at sdaoden.eu> wrote:
+>
+>> (Only to clarify that ???bÃ¶gge??? is not a German word to the best of my
+>> knowledge.  I was looking, as it sounded so Â»northernÂ«,
+>
+> And so it is: it's Low Saxon, and also exists in the compound form
+> "bÃ¶ggel-mann", plainly cognate to British English "bogeyman", American
+> English "boogeyman".
+
+Well, there are ways to check these things, especially since Steffen
+came up with alternatives.  As they say, âWas weiÃ Duden?â.
+
+From https://www.duden.de/rechtschreibung/Boeoegg:
+
+  wohl gekÃ¼rzt aus Ã¤lter schweizerisch BÃ¶ggelmann, BÃ¶limann =
+  Schreckgestalt, Kobold, Herkunft ungeklÃ¤rt; vgl. als Ã¤hnliche
+  Bezeichnung englisch bog(e)y (man) = Schreckgespenst, litauisch
+  buÅ¾á»¹s = (ausgestopfte) Schreckgestalt
+
+In other words, a Swiss German word with a derivation similar to what
+you expected.  I hadn't expected that (the Swiss connection).  The OED
+entry is way out of date (1887) and has nothing useful to say except:
+
+  Found in literature only recently; old people vouched (1887) for its
+  use in the nursery as early as 1825, but only as proper name (sense
+  1). Possibly a southern nursery form of bogle , boggle , and boggard
+  , or going back like them to a simpler form which, as mentioned
+  under bog n.1 and bogle n., may be a variant of bugge , bug n.1
+  âterror, bugbear, scarecrowâ. But in the absence of evidence,
+  positive statements concerning its relation to these words cannot be
+  made.
+
+Greg
+--
+Sent from my desktop computer.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft mail program
+reports problems, please read http://lemis.com/broken-MUA.php
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 163 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210619/65757c7e/attachment.sig>
+
+From skogtun at gmail.com  Sat Jun 19 23:34:49 2021
+From: skogtun at gmail.com (Harald Arnesen)
+Date: Sat, 19 Jun 2021 15:34:49 +0200
+Subject: [TUHS] 70th anniversary of (official) programming errors
+In-Reply-To: <20210618210047.5uogF%steffen@sdaoden.eu>
+References: <20210615221659.ltbL6%steffen@sdaoden.eu>
+ <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+ <CAEoi9W4cJX_4_965+hw4wUUDzxrW7enkeWGgxYdrobmzjN3SkA@mail.gmail.com>
+ <CAKzdPgyk_ZEojzXYLEHV1mPuybsap88fhCzZ-mE5JNukWFmDKQ@mail.gmail.com>
+ <C964FEBE-BBE3-4A87-9F2F-E5C277053D85@iitbombay.org>
+ <20210616215713.f1CA8%steffen@sdaoden.eu>
+ <CAD2gp_So8VQE4ApVSAHmNgQOKNGbaBbaizovxweu2+DJnx-NKQ@mail.gmail.com>
+ <20210618210047.5uogF%steffen@sdaoden.eu>
+Message-ID: <2419313d-a951-ba2d-48a4-6b0bf225f2eb@gmail.com>
+
+Steffen Nurpmeso [18.06.2021 23:00]:
+
+> To me it sounds rather like a modification of "Bogen", which can
+> mean quite some different things itself, from a "bend" (so the
+> profession of a wood-bender comes to mind at a glance, "böge" is
+> also the conjugation of "bending" "er böge" thus "he would bend")
+
+In Norway, "bøg" is an older, derogative description of a homosexual
+male. Fits in with the German meaning "bent".
+-- 
+Hilsen Harald
+
+From nikke.karlsson at gmail.com  Sat Jun 19 23:39:33 2021
+From: nikke.karlsson at gmail.com (Niklas Karlsson)
+Date: Sat, 19 Jun 2021 15:39:33 +0200
+Subject: [TUHS] 70th anniversary of (official) programming errors
+In-Reply-To: <2419313d-a951-ba2d-48a4-6b0bf225f2eb@gmail.com>
+References: <20210615221659.ltbL6%steffen@sdaoden.eu>
+ <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+ <CAEoi9W4cJX_4_965+hw4wUUDzxrW7enkeWGgxYdrobmzjN3SkA@mail.gmail.com>
+ <CAKzdPgyk_ZEojzXYLEHV1mPuybsap88fhCzZ-mE5JNukWFmDKQ@mail.gmail.com>
+ <C964FEBE-BBE3-4A87-9F2F-E5C277053D85@iitbombay.org>
+ <20210616215713.f1CA8%steffen@sdaoden.eu>
+ <CAD2gp_So8VQE4ApVSAHmNgQOKNGbaBbaizovxweu2+DJnx-NKQ@mail.gmail.com>
+ <20210618210047.5uogF%steffen@sdaoden.eu>
+ <2419313d-a951-ba2d-48a4-6b0bf225f2eb@gmail.com>
+Message-ID: <CAK6BEgd4yehsSXxpSPCwaR=V=Pa4jrr94tyVPpR7vy6_aUZ_dw@mail.gmail.com>
+
+Den lör 19 juni 2021 kl 15:36 skrev Harald Arnesen <skogtun at gmail.com>:
+
+> Steffen Nurpmeso [18.06.2021 23:00]:
+>
+> > To me it sounds rather like a modification of "Bogen", which can
+> > mean quite some different things itself, from a "bend" (so the
+> > profession of a wood-bender comes to mind at a glance, "böge" is
+> > also the conjugation of "bending" "er böge" thus "he would bend")
+>
+> In Norway, "bøg" is an older, derogative description of a homosexual
+> male. Fits in with the German meaning "bent".
+>
+
+"Bög" means a homosexual male in Sweden also. It used to be derogatory
+but has been adopted by the gay community itself, so it's really just
+descriptive now (although I'm pretty sure kids still use it as an insult).
+
+Niklas
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210619/b9e333d5/attachment.htm>
+
+From henry.r.bent at gmail.com  Sun Jun 20 01:04:37 2021
+From: henry.r.bent at gmail.com (Henry Bent)
+Date: Sat, 19 Jun 2021 11:04:37 -0400
+Subject: [TUHS] Disassemblers
+Message-ID: <CAEdTPBdbNcsjg64GV4u9_7scP1p3RQGfJniQ+Defbvjr0_cR9w@mail.gmail.com>
+
+>From what I can gather the only way to reasonably examine the disassembly
+of a program in the early days of Unix was adb.  Is this true?  Was there a
+way to easily produce a full disassembly?  I'll confess to being fairly
+ignorant of adb use since I always had dbx or the equivalent available.
+The first tool I'm aware of to purposefully/primarily produce a full
+listing is MIPS dis (ca. 1986?) but there must have been something before
+that for other systems, no?
+
+-Henry
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210619/e0dfda8d/attachment.htm>
+
+From steffen at sdaoden.eu  Sun Jun 20 01:48:41 2021
+From: steffen at sdaoden.eu (Steffen Nurpmeso)
+Date: Sat, 19 Jun 2021 17:48:41 +0200
+Subject: [TUHS] =?utf-8?b?QnVncywgQsODwrbDg8K2Z2UgYW5kIEJvZ2V5bWVuICh3?=
+ =?utf-8?q?as=3A_70th_anniversary_of_=28official=29_programming_errors=29?=
+In-Reply-To: <20210619075735.GQ23809@eureka.lemis.com>
+References: <20210615221659.ltbL6%steffen@sdaoden.eu>
+ <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+ <CAEoi9W4cJX_4_965+hw4wUUDzxrW7enkeWGgxYdrobmzjN3SkA@mail.gmail.com>
+ <CAKzdPgyk_ZEojzXYLEHV1mPuybsap88fhCzZ-mE5JNukWFmDKQ@mail.gmail.com>
+ <C964FEBE-BBE3-4A87-9F2F-E5C277053D85@iitbombay.org>
+ <20210616215713.f1CA8%steffen@sdaoden.eu>
+ <CAD2gp_So8VQE4ApVSAHmNgQOKNGbaBbaizovxweu2+DJnx-NKQ@mail.gmail.com>
+ <20210619075735.GQ23809@eureka.lemis.com>
+Message-ID: <20210619154841.Lcgnr%steffen@sdaoden.eu>
+
+Greg 'groggy' Lehey wrote in
+ <20210619075735.GQ23809 at eureka.lemis.com>:
+ |On Friday, 18 June 2021 at 16:19:37 -0400, John Cowan wrote:
+ |> On Wed, Jun 16, 2021 at 5:57 PM Steffen Nurpmeso <steffen at sdaoden.eu> \
+ |> wrote:
+ |>
+ |>> (Only to clarify that ???bÃ¶gge??? is not a German word to the best \
+
+(Your mail was LATIN1 yet the data was not it seems.)
+
+ |>> of my
+ |>> knowledge.  I was looking, as it sounded so Â»northernÂ«,
+ |>
+ |> And so it is: it's Low Saxon, and also exists in the compound form
+ |> "bÃ¶ggel-mann", plainly cognate to British English "bogeyman", American
+ |> English "boogeyman".
+ |
+ |Well, there are ways to check these things, especially since Steffen
+ |came up with alternatives.  As they say, â␦␦Was weiÃ␦ Duden?â␦␦.
+ |
+ |From https://www.duden.de/rechtschreibung/Boeoegg:
+ |
+ |  wohl gekÃ¼rzt aus Ã¤lter schweizerisch BÃ¶ggelmann, BÃ¶limann =
+ |  Schreckgestalt, Kobold, Herkunft ungeklÃ¤rt; vgl. als Ã¤hnliche
+ |  Bezeichnung englisch bog(e)y (man) = Schreckgespenst, litauisch
+ |  buÅ¾á»¹s = (ausgestopfte) Schreckgestalt
+ |
+ |In other words, a Swiss German word with a derivation similar to what
+
+Well, informative.  I am not a Germanist.  But *i* do not *think*
+that a Swiss (Alemannian?) word "Böögge" (that i never have heard,
+a Carnival Goblin mask, see [1-4], where [2-4] are "Larve"nmasken,
+referring to "Gespenst" aka "Ghost") is related to the family name
+"Bögge" in mostly northern Germany.  Schwaben/Alemannen on the one
+hand, and Sachsen, Friesen, Westfalen, Franken and who knows which
+tribes live "normally" where the name distributes[5].
+
+At [5] one can see a very small piece of land at the bottom, near
+Lake Constance, where the name distributes.  Maybe someone was
+thrilled after visiting that land during Carnival and decided to
+move there -- haha! --, i do not know.  You know, Alemannen
+Carnival, they sing things like "kill the cat!" or something, and
+have cat fur on their belt!  Listen, Hackers!!  ...yeah, twenty
+years ago there was an uprising all across Germany after
+Alemannian Carnival was shortly seen in the most widely watched TV
+news, iirc, where such a masked one was jumping around and singing
+this.  Searching the net i find mostly nothing but [6], and there
+you can read
+
+  Miau-Zunft Freiburg
+  1. Die Website www.miau-zunft.de  ist nicht mehr erreichbar. Die
+  Zunft hat bundesweit Proteste ausgelöst, da sie gewagt hatte, im
+  Internet auf ihre Katzenfell-Hästradition hinzuweisen
+  2. Zum BZ-Artikel vom 22.12.2001: Katzenjammer bei der Miau-Zunft
+  3. Auch unser Gästebuch wurde vom Katzenjammer erfasst.  Wie
+  soll dies weitergehen?  Sagen Sie uns doch Ihre Meinung
+  4. Beim Rosenmontagsumzug am 11.2.2002 war die Miau-Zunft nicht
+  feige und trotz aller Bedrohungen tapfer dabei. Aber nur im
+  Käfig-Wagen. Welch ein Katzenjammer!
+
+That is not that, but nonetheless, part of the nationwide protests
+("bundesweit[e] Proteste") that seems to have been.
+Cancel culture, everywhere.  You need a lobby though, fur animals
+usually not have; nor have cows, pigs, chicken, it is your fault
+you have to read this vegetarian pamphlet.
+
+Coming back to "Böge" [7] aka "Boege" [5] as a name, together
+about 1100 entries twenty years ago (data from 2002).
+For [7] there are some more in the Alemannian / Swabian area.
+I do not know.
+
+  [1] https://de.wikipedia.org/wiki/Datei:Narrenzunft_Tettnang_Hopfennarr_Narrentreffen_Me%C3%9Fkirch_2006.jpg
+  [2] https://upload.wikimedia.org/wikipedia/commons/a/a8/Tsch%C3%A4gg%C3%A4ttu-Larven_%28Masken%29.jpg
+  [3] https://de.wikipedia.org/wiki/Larve_(Maske)#/media/Datei:Picswiss_BS-50-23.jpg
+  [4] https://de.wikipedia.org/wiki/Larve_(Maske)#/media/Datei:Biss.jpg
+  [5] http://wiki-de.genealogy.net/Boege_(Familienname)
+  [6] https://freiburg-schwarzwald.de/littenweiler/narren.htm
+  [7] http://wiki-de.genealogy.net/B%C3%B6ge_(Familienname)
+
+ |you expected.  I hadn't expected that (the Swiss connection).  The OED
+ |entry is way out of date (1887) and has nothing useful to say except:
+ |
+ |  Found in literature only recently; old people vouched (1887) for its
+ |  use in the nursery as early as 1825, but only as proper name (sense
+ |  1). Possibly a southern nursery form of bogle , boggle , and boggard
+ |  , or going back like them to a simpler form which, as mentioned
+ |  under bog n.1 and bogle n., may be a variant of bugge , bug n.1
+ |  â␦␦terror, bugbear, scarecrowâ␦␦. But in the absence of evidence,
+ |  positive statements concerning its relation to these words cannot be
+ |  made.
+ --End of <20210619075735.GQ23809 at eureka.lemis.com>
+
+Harald Arnesen wrote in
+ <2419313d-a951-ba2d-48a4-6b0bf225f2eb at gmail.com>:
+ |Steffen Nurpmeso [18.06.2021 23:00]:
+ |
+ |> To me it sounds rather like a modification of "Bogen", which can
+ |> mean quite some different things itself, from a "bend" (so the
+ |> profession of a wood-bender comes to mind at a glance, "böge" is
+ |> also the conjugation of "bending" "er böge" thus "he would bend")
+ |
+ |In Norway, "bøg" is an older, derogative description of a homosexual
+ |male. Fits in with the German meaning "bent".
+
+Hmmm.  Well, given the zappiness and horniness that often can be
+found in this corner, the losses we had due to the golden
+Californian gang bangs, let me only think of the wonderful Bruce
+Chatwin here, there it maybe was a rape, it is terrible!, but
+given the sheer amount of popping and other drugs in this culture
+i am better silent know.
+
+ |Hilsen Harald
+ --End of <2419313d-a951-ba2d-48a4-6b0bf225f2eb at gmail.com>
+
+Niklas Karlsson wrote in
+ <CAK6BEgd4yehsSXxpSPCwaR=V=Pa4jrr94tyVPpR7vy6_aUZ_dw at mail.gmail.com>:
+ |Den lör 19 juni 2021 kl 15:36 skrev Harald Arnesen <skogtun at gmail.com>:
+ ...
+ |> In Norway, "bøg" is an older, derogative description of a homosexual
+ |> male. Fits in with the German meaning "bent".
+ |
+ |"Bög" means a homosexual male in Sweden also. It used to be derogatory
+ |but has been adopted by the gay community itself, so it's really just
+ |descriptive now (although I'm pretty sure kids still use it as an insult).
+
+So *i* could *imagine* Norwegians pronounce their "bøg" and Svedes
+pronounce their "Bög" maybe a bit like "Bock", short and tough.
+Bo-ck, not Booo-ck (english: not buuuu-ck, o!=u), or so.
+The German "Bock" is a "Ram", the "Böckchen" its minimization
+(often not advisable!), and ramification of a Ram is often seen as
+desirable (wham! bam! thank you ma'am!, though that false jobsite,
+in this case).
+
+Rams they have in Friesland aka Low Saxony.  Oh, the wonderful
+"Heidschnucke" ("German heath"), yes, [s]he lives there,
+a "northern short-tailed [Heh! sic] sheep".  These horns can
+"bocken" aka "buck"ing aka is in the season.
+
+ |Niklas
+ --End of <CAK6BEgd4yehsSXxpSPCwaR=V=Pa4jrr94tyVPpR7vy6_aUZ_dw at mail.gmail\
+ .com>
+
+Ah nice weekend everybody.
+
+Ciao from Germany (albeit Hesse[n]),
+
+--steffen
+|
+|Der Kragenbaer,                The moon bear,
+|der holt sich munter           he cheerfully and one by one
+|einen nach dem anderen runter  wa.ks himself off
+|(By Robert Gernhardt)
+
+From nikke.karlsson at gmail.com  Sun Jun 20 01:52:08 2021
+From: nikke.karlsson at gmail.com (Niklas Karlsson)
+Date: Sat, 19 Jun 2021 17:52:08 +0200
+Subject: [TUHS] =?utf-8?b?QnVncywgQsODwrbDg8K2Z2UgYW5kIEJvZ2V5bWVuICh3?=
+	=?utf-8?q?as=3A_70th_anniversary_of_=28official=29_programming_err?=
+	=?utf-8?q?ors=29?=
+In-Reply-To: <20210619154841.Lcgnr%steffen@sdaoden.eu>
+References: <20210615221659.ltbL6%steffen@sdaoden.eu>
+ <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+ <CAEoi9W4cJX_4_965+hw4wUUDzxrW7enkeWGgxYdrobmzjN3SkA@mail.gmail.com>
+ <CAKzdPgyk_ZEojzXYLEHV1mPuybsap88fhCzZ-mE5JNukWFmDKQ@mail.gmail.com>
+ <C964FEBE-BBE3-4A87-9F2F-E5C277053D85@iitbombay.org>
+ <20210616215713.f1CA8%steffen@sdaoden.eu>
+ <CAD2gp_So8VQE4ApVSAHmNgQOKNGbaBbaizovxweu2+DJnx-NKQ@mail.gmail.com>
+ <20210619075735.GQ23809@eureka.lemis.com>
+ <20210619154841.Lcgnr%steffen@sdaoden.eu>
+Message-ID: <CAK6BEgd1rRUqMh_k69tPZ6Av=e3DHJ7jd_Zn_GKpzqh0M=7K-A@mail.gmail.com>
+
+Den lör 19 juni 2021 kl 17:48 skrev Steffen Nurpmeso <steffen at sdaoden.eu>:
+
+> So *i* could *imagine* Norwegians pronounce their "bøg" and Svedes
+> pronounce their "Bög" maybe a bit like "Bock", short and tough.
+> Bo-ck, not Booo-ck (english: not buuuu-ck, o!=u), or so.
+> The German "Bock" is a "Ram", the "Böckchen" its minimization
+> (often not advisable!), and ramification of a Ram is often seen as
+> desirable (wham! bam! thank you ma'am!, though that false jobsite,
+> in this case).
+>
+
+No, not really. It's a long "ö" and the g is a g, not a k/ck. (Not as sure
+of the Norwegian term,
+but if I had to guess I'd say the same there.
+
+Niklas
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210619/1751028d/attachment.htm>
+
+From clemc at ccc.com  Sun Jun 20 01:54:15 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Sat, 19 Jun 2021 11:54:15 -0400
+Subject: [TUHS] Disassemblers
+In-Reply-To: <CAEdTPBdbNcsjg64GV4u9_7scP1p3RQGfJniQ+Defbvjr0_cR9w@mail.gmail.com>
+References: <CAEdTPBdbNcsjg64GV4u9_7scP1p3RQGfJniQ+Defbvjr0_cR9w@mail.gmail.com>
+Message-ID: <CAC20D2Ny25FuucygeLRfMfm+gxE8DJPSg+vp0n5OEtC11_Z_fA@mail.gmail.com>
+
+On Sat, Jun 19, 2021 at 11:05 AM Henry Bent <henry.r.bent at gmail.com> wrote:
+
+> From what I can gather the only way to reasonably examine the disassembly
+> of a program in the early days of Unix was adb.  Is this true?
+>
+>From Research, yes - although sdb and later dbx could do it also I think.
+
+
+
+> Was there a way to easily produce a full disassembly?
+>
+Yes, look at the contents in the early USENIX (Harvard) tape.  IIRC: Along
+with the macro-11 assembler and linker, there was also a disassembler -- I
+want to say it was done at Cooper Union, but it may have been
+someone else[The CU folks got the DEC PDP-10 BLISS binary to run on an
+emulator 'good enough' on their 11/45 to they could 'port' the DEC Fortran
+compiler to V6.  They used/built up PDP-11 tools to support that project].
+
+BTW: there was a version of the DEC DDT that was on those early tapes too
+that somebody wrote.   I started with DDT on V6 because I was coming over
+from the DEC OS world of PDP-10's and RT-11 and adb did not yet exist.
+ But IIRC it was fragile, had issues when V7 came out, so I just taught
+myself adb when it appeared.
+
+There was an even better set of assembly/disassembly/link tools  from
+'down-under' on ??maybe? the Delaware tape.  Plus, Purdue released a ton of
+microprocessor tools, which included PDP-11 support.  All of them tried to
+use the symbol table to reconstruct things like jsr's and memory access.
+Somebody [IIRC it was Phil Karn but I don't remember] tried to do some
+instruction pattern matching / early AI stuff, to see if they
+could reconstruct some of the code with some human help.  As I recall he
+could pick up pointers and if given some header files for sizes would try
+to match code snippets, but I have no idea how he got or what happened too
+it.
+
+
+
+> I'll confess to being fairly ignorant of adb use since I always had dbx or
+> the equivalent available.
+>
+ᐧ
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210619/7b744447/attachment.htm>
+
+From henry.r.bent at gmail.com  Sun Jun 20 02:33:45 2021
+From: henry.r.bent at gmail.com (Henry Bent)
+Date: Sat, 19 Jun 2021 12:33:45 -0400
+Subject: [TUHS] Disassemblers
+In-Reply-To: <CAC20D2Ny25FuucygeLRfMfm+gxE8DJPSg+vp0n5OEtC11_Z_fA@mail.gmail.com>
+References: <CAEdTPBdbNcsjg64GV4u9_7scP1p3RQGfJniQ+Defbvjr0_cR9w@mail.gmail.com>
+ <CAC20D2Ny25FuucygeLRfMfm+gxE8DJPSg+vp0n5OEtC11_Z_fA@mail.gmail.com>
+Message-ID: <CAEdTPBdha+dNCqypSKNuQf0X31oH=M=3Te4GLHyv5WDKE04YTQ@mail.gmail.com>
+
+On Sat, 19 Jun 2021 at 11:54, Clem Cole <clemc at ccc.com> wrote:
+
+> On Sat, Jun 19, 2021 at 11:05 AM Henry Bent <henry.r.bent at gmail.com>
+> wrote:
+>
+>> From what I can gather the only way to reasonably examine the disassembly
+>> of a program in the early days of Unix was adb.  Is this true?
+>>
+> From Research, yes - although sdb and later dbx could do it also I think.
+>
+>
+>> Was there a way to easily produce a full disassembly?
+>>
+> Yes, look at the contents in the early USENIX (Harvard) tape.  IIRC: Along
+> with the macro-11 assembler and linker, there was also a disassembler -- I
+> want to say it was done at Cooper Union, but it may have been
+> someone else[The CU folks got the DEC PDP-10 BLISS binary to run on an
+> emulator 'good enough' on their 11/45 to they could 'port' the DEC Fortran
+> compiler to V6.  They used/built up PDP-11 tools to support that project].
+>
+
+Wait, so it was easier to write an emulator for a PDP-10 binary than it
+would have been to port BLISS to the PDP-11?  Given the different word
+sizes I would not have expected that.
+
+I'll definitely look at those early USENIX tapes - I have copies of them
+and I did think of them when I was writing this, but (at least the early
+ones I looked at) don't appear to have a good index of any sort.  Did they
+have a cover sheet or something equivalent that they came with?  I'm having
+trouble imagining dealing with that much unindexed data on an early system.
+
+There was an even better set of assembly/disassembly/link tools  from
+> 'down-under' on ??maybe? the Delaware tape.  Plus, Purdue released a ton of
+> microprocessor tools, which included PDP-11 support.  All of them tried to
+> use the symbol table to reconstruct things like jsr's and memory access.
+> Somebody [IIRC it was Phil Karn but I don't remember] tried to do some
+> instruction pattern matching / early AI stuff, to see if they
+> could reconstruct some of the code with some human help.  As I recall he
+> could pick up pointers and if given some header files for sizes would try
+> to match code snippets, but I have no idea how he got or what happened too
+> it.
+>
+
+Fascinating.  Thank you as always for the insight.
+
+-Henry
+
+
+> ᐧ
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210619/e2277caa/attachment.htm>
+
+From steffen at sdaoden.eu  Sun Jun 20 02:36:18 2021
+From: steffen at sdaoden.eu (Steffen Nurpmeso)
+Date: Sat, 19 Jun 2021 18:36:18 +0200
+Subject: [TUHS] =?utf-8?b?QnVncywgQsODwrbDg8K2Z2UgYW5kIEJvZ2V5bWVuICh3?=
+ =?utf-8?q?as=3A_70th_anniversary_of_=28official=29_programming_errors=29?=
+In-Reply-To: <CAK6BEgd1rRUqMh_k69tPZ6Av=e3DHJ7jd_Zn_GKpzqh0M=7K-A@mail.gmail.com>
+References: <20210615221659.ltbL6%steffen@sdaoden.eu>
+ <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+ <CAEoi9W4cJX_4_965+hw4wUUDzxrW7enkeWGgxYdrobmzjN3SkA@mail.gmail.com>
+ <CAKzdPgyk_ZEojzXYLEHV1mPuybsap88fhCzZ-mE5JNukWFmDKQ@mail.gmail.com>
+ <C964FEBE-BBE3-4A87-9F2F-E5C277053D85@iitbombay.org>
+ <20210616215713.f1CA8%steffen@sdaoden.eu>
+ <CAD2gp_So8VQE4ApVSAHmNgQOKNGbaBbaizovxweu2+DJnx-NKQ@mail.gmail.com>
+ <20210619075735.GQ23809@eureka.lemis.com>
+ <20210619154841.Lcgnr%steffen@sdaoden.eu>
+ <CAK6BEgd1rRUqMh_k69tPZ6Av=e3DHJ7jd_Zn_GKpzqh0M=7K-A@mail.gmail.com>
+Message-ID: <20210619163618.sIDhm%steffen@sdaoden.eu>
+
+Niklas Karlsson wrote in
+ <CAK6BEgd1rRUqMh_k69tPZ6Av=e3DHJ7jd_Zn_GKpzqh0M=7K-A at mail.gmail.com>:
+ |Den lör 19 juni 2021 kl 17:48 skrev Steffen Nurpmeso <steffen at sdaoden.eu>:
+ |
+ |> So *i* could *imagine* Norwegians pronounce their "bøg" and Svedes
+ |> pronounce their "Bög" maybe a bit like "Bock", short and tough.
+ |> Bo-ck, not Booo-ck (english: not buuuu-ck, o!=u), or so.
+ |> The German "Bock" is a "Ram", the "Böckchen" its minimization
+ |> (often not advisable!), and ramification of a Ram is often seen as
+ |> desirable (wham! bam! thank you ma'am!, though that false jobsite,
+ |> in this case).
+ |
+ |No, not really. It's a long "ö" and the g is a g, not a k/ck. (Not as sure
+ |of the Norwegian term,
+ |but if I had to guess I'd say the same there.
+
+I should have known that.
+I had a tremendous Sverige experience in my childhood (despite the
+football world championship 1958 of course, bad that not so good).
+It is even online at [1], a Friese (Friesian) going; starting at
+second ~60 there is Italian, Japanese, French, and then Swedish
+around second 77.
+
+   [1] https://www.youtube.com/watch?v=JPoiL4UF__0
+
+Thank you.
+Ciao from Germany, and a nice Sunday i wish.
+
+--steffen
+|
+|Der Kragenbaer,                The moon bear,
+|der holt sich munter           he cheerfully and one by one
+|einen nach dem anderen runter  wa.ks himself off
+|(By Robert Gernhardt)
+
+From clemc at ccc.com  Sun Jun 20 02:59:05 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Sat, 19 Jun 2021 12:59:05 -0400
+Subject: [TUHS] Disassemblers
+In-Reply-To: <CAEdTPBdha+dNCqypSKNuQf0X31oH=M=3Te4GLHyv5WDKE04YTQ@mail.gmail.com>
+References: <CAEdTPBdbNcsjg64GV4u9_7scP1p3RQGfJniQ+Defbvjr0_cR9w@mail.gmail.com>
+ <CAC20D2Ny25FuucygeLRfMfm+gxE8DJPSg+vp0n5OEtC11_Z_fA@mail.gmail.com>
+ <CAEdTPBdha+dNCqypSKNuQf0X31oH=M=3Te4GLHyv5WDKE04YTQ@mail.gmail.com>
+Message-ID: <CAC20D2POxdHJsSvRjSozASUWXQ+YAUaSA+7mAoPx1-JsTYHb1g@mail.gmail.com>
+
+On Sat, Jun 19, 2021 at 12:33 PM Henry Bent <henry.r.bent at gmail.com> wrote:
+
+> Wait, so it was easier to write an emulator for a PDP-10 binary than it
+> would have been to port BLISS to the PDP-11?  Given the different word
+> sizes I would not have expected that.
+>
+BLISS-11 was (way) too big to run in the 64K address of the PDP-11 (even
+separated I/D).  Originally, it was a PDP-10 cross compiler and later moved
+to the Vax.   It generated much better code than the original Ritchie or
+later Johnson compilers.   The code generator/optimizer was famous
+(literally the book on code optimization was written about it, called of
+course: "The Design of an Optimizing Compiler"
+<https://www.amazon.com/Design-Optimizing-Compiler-William-Allan/dp/0444001581>
+by
+Wulf and some of his students [ISBN 0444001581] - *a.k.a.* 'The Green Book'
+worth reading BTW.
+
+Later on, DEC's TLG tried at least twice that I know of to make it
+self-hosting but gave up. Long story (and definitely a different thread) if
+DEC has not screwed up the marketing of BLISS, I suspect it might have
+given C a run for the money.  But BLISS *vs*. C is a great example of
+Cole's law that *Simple Economics always beats Sophisticated Architecture*
+[and using Christensen's 'disruptive theory -- it gets better and supplants
+the incombent].
+
+Anyway, the compiler/code generator/linker for DEC Fortran-IV for RT-11,
+RSX, and DOS-11 was written in BLISS-11.  So for CU to retarget it for V6
+they needed a PDP-10, which they did not have.  So they wrote a simulator.
+I remember when they gave a talk about it at Usenix, somebody asked them
+how well Tenex ran on it.
+
+
+
+
+> Did they have a cover sheet or something equivalent that they came with?
+> I'm having trouble imagining dealing with that much unindexed data on an
+> early system.
+>
+Not to my knowledge.  Two things that I believe we need to do for the TUHS
+archives to be even more meaningful is 1.) decode them from tp/ar -- even
+if you read the tape, they are packed together in v5/v6 ar files which are
+PDP-11 binary.  2.) Create an index of what is there.
+
+I've thought about both things but have way too much on my plate to do it
+myself.
+
+> Fascinating.  Thank you as always for the insight.
+>
+Most welcome.
+Clem
+ᐧ
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210619/ed2c8cf6/attachment.htm>
+
+From jnc at mercury.lcs.mit.edu  Sun Jun 20 03:57:59 2021
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Sat, 19 Jun 2021 13:57:59 -0400 (EDT)
+Subject: [TUHS] Disassemblers
+Message-ID: <20210619175759.845EB18C08B@mercury.lcs.mit.edu>
+
+    > From: Henry Bent
+
+    > From what I can gather the only way to reasonably examine the
+    > disassembly of a program in the early days of Unix was adb. Is this
+    > true?  Was there a way to easily produce a full disassembly?
+
+'adb' is quite late. We had it on the PWB1 (V6 enhanced, basically) system at
+MIT, so its roots lie before V7. (Every time I run across people who think V7
+is early, I go into 'get off my lawn' mode.)
+
+The first thing I know of that could disassemble PDP-11 code on Unix was 'db',
+which dates back to V1:
+
+  https://minnie.tuhs.org//cgi-bin/utree.pl?file=V1/man/man1/db.1
+
+It wasn't optimal for doing disassembly, because it was non-trivial to
+dump an entire object file as assembler source - but it could be done.
+
+Later (V5 era) there was something called 'cdb', which was 'db' with
+extensions to make it useful for debugging code whose source was in C:
+
+    https://minnie.tuhs.org//cgi-bin/utree.pl?file=V4/man/man1/cdb.1
+
+There were other non-Unix disassembler (such as DDT), also.
+
+      Noel
+
+From clemc at ccc.com  Sun Jun 20 04:40:12 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Sat, 19 Jun 2021 14:40:12 -0400
+Subject: [TUHS] Disassemblers
+In-Reply-To: <20210619175759.845EB18C08B@mercury.lcs.mit.edu>
+References: <20210619175759.845EB18C08B@mercury.lcs.mit.edu>
+Message-ID: <CAC20D2NkEKLwxJF32=4cyF2Rb4F2ZBK5BnM8gMNhbhuP3Z5iHw@mail.gmail.com>
+
+On Sat, Jun 19, 2021 at 2:25 PM Noel Chiappa <jnc at mercury.lcs.mit.edu>
+wrote:
+
+> 'adb' is quite late. We had it on the PWB1 (V6 enhanced, basically) system
+> at
+> MIT, so its roots lie before V7.
+
+Yeah, it's in the PWB1 source tree.  FWIW: Bourne wrote it ( and it is
+written in his unique 'BourneGOL' C macro dialect)  which (I think) makes
+it a PITA to modify.  Later UCB versions for the Vax removed Steve's
+macros.   So it has some sorts of roots in Research, and most of the world
+did not get to see it until V7 appeared.
+
+
+
+> (Every time I run across people who think V7 is early, I go into 'get off
+> my lawn' mode.)
+>
+Amen.
+ᐧ
+ᐧ
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210619/7f30cc5b/attachment.htm>
+
+From rich.salz at gmail.com  Sun Jun 20 06:44:57 2021
+From: rich.salz at gmail.com (Richard Salz)
+Date: Sat, 19 Jun 2021 16:44:57 -0400
+Subject: [TUHS] Disassemblers
+In-Reply-To: <CAC20D2POxdHJsSvRjSozASUWXQ+YAUaSA+7mAoPx1-JsTYHb1g@mail.gmail.com>
+References: <CAEdTPBdbNcsjg64GV4u9_7scP1p3RQGfJniQ+Defbvjr0_cR9w@mail.gmail.com>
+ <CAC20D2Ny25FuucygeLRfMfm+gxE8DJPSg+vp0n5OEtC11_Z_fA@mail.gmail.com>
+ <CAEdTPBdha+dNCqypSKNuQf0X31oH=M=3Te4GLHyv5WDKE04YTQ@mail.gmail.com>
+ <CAC20D2POxdHJsSvRjSozASUWXQ+YAUaSA+7mAoPx1-JsTYHb1g@mail.gmail.com>
+Message-ID: <CAFH29tqtvdFfLWZKQ9xjAK0UBGD_MNjNVJrJ5L6sEvVxOepV1A@mail.gmail.com>
+
+I remember compiling and playing Langston's "empire" that I was told came
+from a decompiled executable. This was in the 4.2 days.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210619/f718d081/attachment.htm>
+
+From skogtun at gmail.com  Sun Jun 20 07:05:43 2021
+From: skogtun at gmail.com (Harald Arnesen)
+Date: Sat, 19 Jun 2021 23:05:43 +0200
+Subject: [TUHS] =?utf-8?b?QnVncywgQsODwrbDg8K2Z2UgYW5kIEJvZ2V5bWVuICh3?=
+ =?utf-8?q?as=3A_70th_anniversary_of_=28official=29_programming_errors=29?=
+In-Reply-To: <20210619154841.Lcgnr%steffen@sdaoden.eu>
+References: <20210615221659.ltbL6%steffen@sdaoden.eu>
+ <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+ <CAEoi9W4cJX_4_965+hw4wUUDzxrW7enkeWGgxYdrobmzjN3SkA@mail.gmail.com>
+ <CAKzdPgyk_ZEojzXYLEHV1mPuybsap88fhCzZ-mE5JNukWFmDKQ@mail.gmail.com>
+ <C964FEBE-BBE3-4A87-9F2F-E5C277053D85@iitbombay.org>
+ <20210616215713.f1CA8%steffen@sdaoden.eu>
+ <CAD2gp_So8VQE4ApVSAHmNgQOKNGbaBbaizovxweu2+DJnx-NKQ@mail.gmail.com>
+ <20210619075735.GQ23809@eureka.lemis.com>
+ <20210619154841.Lcgnr%steffen@sdaoden.eu>
+Message-ID: <992f4aca-c36f-cfe1-cd96-2ca7eb3a38ea@gmail.com>
+
+Steffen Nurpmeso [19.06.2021 17:48]:
+
+> So *i* could *imagine* Norwegians pronounce their "bøg" and Svedes
+> pronounce their "Bög" maybe a bit like "Bock", short and tough.
+
+No, it's "bøøg", pronounced something like "girl" in English.
+-- 
+Hilsen Harald
+
+From robpike at gmail.com  Sun Jun 20 07:49:10 2021
+From: robpike at gmail.com (Rob Pike)
+Date: Sun, 20 Jun 2021 07:49:10 +1000
+Subject: [TUHS] Disassemblers
+In-Reply-To: <CAFH29tqtvdFfLWZKQ9xjAK0UBGD_MNjNVJrJ5L6sEvVxOepV1A@mail.gmail.com>
+References: <CAEdTPBdbNcsjg64GV4u9_7scP1p3RQGfJniQ+Defbvjr0_cR9w@mail.gmail.com>
+ <CAC20D2Ny25FuucygeLRfMfm+gxE8DJPSg+vp0n5OEtC11_Z_fA@mail.gmail.com>
+ <CAEdTPBdha+dNCqypSKNuQf0X31oH=M=3Te4GLHyv5WDKE04YTQ@mail.gmail.com>
+ <CAC20D2POxdHJsSvRjSozASUWXQ+YAUaSA+7mAoPx1-JsTYHb1g@mail.gmail.com>
+ <CAFH29tqtvdFfLWZKQ9xjAK0UBGD_MNjNVJrJ5L6sEvVxOepV1A@mail.gmail.com>
+Message-ID: <CAKzdPgxGLNkuUNG7CRwbuV0M3SGrf2TN4egSgg=iisT1sr=fBQ@mail.gmail.com>
+
+For v8 or thereabouts, I spent some time fixing some fundamental bugs in db
+and found that it was arcane but remarkably powerful. Since it was lower
+level, it avoided the endemic debugging problem of misleading you about
+your program: All it could do was tell you what the machine was doing.
+(Cdb, sdb, and adb were, at least in my experience, always lying to you.) I
+may be the only person who appreciated db fully. Once the bugs were gone
+you really could use it to good effect, as long as you understood the CPU.
+
+But it was buggy and arcane, no question about that.
+
+-rob
+
+
+
+
+On Sun, Jun 20, 2021 at 6:46 AM Richard Salz <rich.salz at gmail.com> wrote:
+
+> I remember compiling and playing Langston's "empire" that I was told came
+> from a decompiled executable. This was in the 4.2 days.
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210620/d7b064ed/attachment.htm>
+
+From robpike at gmail.com  Sun Jun 20 07:50:12 2021
+From: robpike at gmail.com (Rob Pike)
+Date: Sun, 20 Jun 2021 07:50:12 +1000
+Subject: [TUHS] Disassemblers
+In-Reply-To: <CAKzdPgxGLNkuUNG7CRwbuV0M3SGrf2TN4egSgg=iisT1sr=fBQ@mail.gmail.com>
+References: <CAEdTPBdbNcsjg64GV4u9_7scP1p3RQGfJniQ+Defbvjr0_cR9w@mail.gmail.com>
+ <CAC20D2Ny25FuucygeLRfMfm+gxE8DJPSg+vp0n5OEtC11_Z_fA@mail.gmail.com>
+ <CAEdTPBdha+dNCqypSKNuQf0X31oH=M=3Te4GLHyv5WDKE04YTQ@mail.gmail.com>
+ <CAC20D2POxdHJsSvRjSozASUWXQ+YAUaSA+7mAoPx1-JsTYHb1g@mail.gmail.com>
+ <CAFH29tqtvdFfLWZKQ9xjAK0UBGD_MNjNVJrJ5L6sEvVxOepV1A@mail.gmail.com>
+ <CAKzdPgxGLNkuUNG7CRwbuV0M3SGrf2TN4egSgg=iisT1sr=fBQ@mail.gmail.com>
+Message-ID: <CAKzdPgxTGrehsiJVXVyD19QOXRZrgbYhAx47Ebko4PNHYMuo+Q@mail.gmail.com>
+
+Although upon reflection, I think what I did was fix 'adb' and call it
+'db'. Haven't had my coffee yet this morning.
+
+-rob
+
+
+On Sun, Jun 20, 2021 at 7:49 AM Rob Pike <robpike at gmail.com> wrote:
+
+> For v8 or thereabouts, I spent some time fixing some fundamental bugs in
+> db and found that it was arcane but remarkably powerful. Since it was lower
+> level, it avoided the endemic debugging problem of misleading you about
+> your program: All it could do was tell you what the machine was doing.
+> (Cdb, sdb, and adb were, at least in my experience, always lying to you.) I
+> may be the only person who appreciated db fully. Once the bugs were gone
+> you really could use it to good effect, as long as you understood the CPU.
+>
+> But it was buggy and arcane, no question about that.
+>
+> -rob
+>
+>
+>
+>
+> On Sun, Jun 20, 2021 at 6:46 AM Richard Salz <rich.salz at gmail.com> wrote:
+>
+>> I remember compiling and playing Langston's "empire" that I was told came
+>> from a decompiled executable. This was in the 4.2 days.
+>>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210620/557c774a/attachment-0001.htm>
+
+From clemc at ccc.com  Sun Jun 20 08:55:07 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Sat, 19 Jun 2021 18:55:07 -0400
+Subject: [TUHS] Disassemblers
+In-Reply-To: <CAKzdPgxTGrehsiJVXVyD19QOXRZrgbYhAx47Ebko4PNHYMuo+Q@mail.gmail.com>
+References: <CAEdTPBdbNcsjg64GV4u9_7scP1p3RQGfJniQ+Defbvjr0_cR9w@mail.gmail.com>
+ <CAC20D2Ny25FuucygeLRfMfm+gxE8DJPSg+vp0n5OEtC11_Z_fA@mail.gmail.com>
+ <CAEdTPBdha+dNCqypSKNuQf0X31oH=M=3Te4GLHyv5WDKE04YTQ@mail.gmail.com>
+ <CAC20D2POxdHJsSvRjSozASUWXQ+YAUaSA+7mAoPx1-JsTYHb1g@mail.gmail.com>
+ <CAFH29tqtvdFfLWZKQ9xjAK0UBGD_MNjNVJrJ5L6sEvVxOepV1A@mail.gmail.com>
+ <CAKzdPgxGLNkuUNG7CRwbuV0M3SGrf2TN4egSgg=iisT1sr=fBQ@mail.gmail.com>
+ <CAKzdPgxTGrehsiJVXVyD19QOXRZrgbYhAx47Ebko4PNHYMuo+Q@mail.gmail.com>
+Message-ID: <CAC20D2O5hXaC0kmDq12T2bmzAi4mg-X0_CkKpVva9W52xTFmgQ@mail.gmail.com>
+
+Ah -- if it was adb you redid, no doubt of its power.  I used adb for a
+long time -- PDP-11/VAX/68K but as you said, you could learn a lot about
+your system.   FWIW:  we embedded adb into RTU, calling it kdb.   We didn't
+have no fancy VMs to run the system under, when it halted, it halted.   On
+a personal machine that was not a problem and adb/kdb was very cool.
+
+Clem
+
+On Sat, Jun 19, 2021 at 5:50 PM Rob Pike <robpike at gmail.com> wrote:
+
+> Although upon reflection, I think what I did was fix 'adb' and call it
+> 'db'. Haven't had my coffee yet this morning.
+>
+> -rob
+>
+>
+> On Sun, Jun 20, 2021 at 7:49 AM Rob Pike <robpike at gmail.com> wrote:
+>
+>> For v8 or thereabouts, I spent some time fixing some fundamental bugs in
+>> db and found that it was arcane but remarkably powerful. Since it was lower
+>> level, it avoided the endemic debugging problem of misleading you about
+>> your program: All it could do was tell you what the machine was doing.
+>> (Cdb, sdb, and adb were, at least in my experience, always lying to you.) I
+>> may be the only person who appreciated db fully. Once the bugs were gone
+>> you really could use it to good effect, as long as you understood the CPU.
+>>
+>> But it was buggy and arcane, no question about that.
+>>
+>> -rob
+>>
+>>
+>>
+>>
+>> On Sun, Jun 20, 2021 at 6:46 AM Richard Salz <rich.salz at gmail.com> wrote:
+>>
+>>> I remember compiling and playing Langston's "empire" that I was told
+>>> came from a decompiled executable. This was in the 4.2 days.
+>>>
+>>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210619/c97cd5ba/attachment.htm>
+
+From lm at mcvoy.com  Sun Jun 20 09:14:34 2021
+From: lm at mcvoy.com (Larry McVoy)
+Date: Sat, 19 Jun 2021 16:14:34 -0700
+Subject: [TUHS] Disassemblers
+In-Reply-To: <CAC20D2O5hXaC0kmDq12T2bmzAi4mg-X0_CkKpVva9W52xTFmgQ@mail.gmail.com>
+References: <CAEdTPBdbNcsjg64GV4u9_7scP1p3RQGfJniQ+Defbvjr0_cR9w@mail.gmail.com>
+ <CAC20D2Ny25FuucygeLRfMfm+gxE8DJPSg+vp0n5OEtC11_Z_fA@mail.gmail.com>
+ <CAEdTPBdha+dNCqypSKNuQf0X31oH=M=3Te4GLHyv5WDKE04YTQ@mail.gmail.com>
+ <CAC20D2POxdHJsSvRjSozASUWXQ+YAUaSA+7mAoPx1-JsTYHb1g@mail.gmail.com>
+ <CAFH29tqtvdFfLWZKQ9xjAK0UBGD_MNjNVJrJ5L6sEvVxOepV1A@mail.gmail.com>
+ <CAKzdPgxGLNkuUNG7CRwbuV0M3SGrf2TN4egSgg=iisT1sr=fBQ@mail.gmail.com>
+ <CAKzdPgxTGrehsiJVXVyD19QOXRZrgbYhAx47Ebko4PNHYMuo+Q@mail.gmail.com>
+ <CAC20D2O5hXaC0kmDq12T2bmzAi4mg-X0_CkKpVva9W52xTFmgQ@mail.gmail.com>
+Message-ID: <20210619231434.GK13979@mcvoy.com>
+
+Rob: "it was arcane but remarkably powerful"
+
+Pretty much sums it up.  Wasn't your friend when you were a newbie, was
+really your friend once you got to know it.
+
+On Sat, Jun 19, 2021 at 06:55:07PM -0400, Clem Cole wrote:
+> Ah -- if it was adb you redid, no doubt of its power.  I used adb for a
+> long time -- PDP-11/VAX/68K but as you said, you could learn a lot about
+> your system.   FWIW:  we embedded adb into RTU, calling it kdb.   We didn't
+> have no fancy VMs to run the system under, when it halted, it halted.   On
+> a personal machine that was not a problem and adb/kdb was very cool.
+> 
+> Clem
+> 
+> On Sat, Jun 19, 2021 at 5:50 PM Rob Pike <robpike at gmail.com> wrote:
+> 
+> > Although upon reflection, I think what I did was fix 'adb' and call it
+> > 'db'. Haven't had my coffee yet this morning.
+> >
+> > -rob
+> >
+> >
+> > On Sun, Jun 20, 2021 at 7:49 AM Rob Pike <robpike at gmail.com> wrote:
+> >
+> >> For v8 or thereabouts, I spent some time fixing some fundamental bugs in
+> >> db and found that it was arcane but remarkably powerful. Since it was lower
+> >> level, it avoided the endemic debugging problem of misleading you about
+> >> your program: All it could do was tell you what the machine was doing.
+> >> (Cdb, sdb, and adb were, at least in my experience, always lying to you.) I
+> >> may be the only person who appreciated db fully. Once the bugs were gone
+> >> you really could use it to good effect, as long as you understood the CPU.
+> >>
+> >> But it was buggy and arcane, no question about that.
+> >>
+> >> -rob
+> >>
+> >>
+> >>
+> >>
+> >> On Sun, Jun 20, 2021 at 6:46 AM Richard Salz <rich.salz at gmail.com> wrote:
+> >>
+> >>> I remember compiling and playing Langston's "empire" that I was told
+> >>> came from a decompiled executable. This was in the 4.2 days.
+> >>>
+> >>
+
+-- 
+---
+Larry McVoy            	     lm at mcvoy.com             http://www.mcvoy.com/lm 
+
+From norman at oclsc.org  Sun Jun 20 11:15:53 2021
+From: norman at oclsc.org (Norman Wilson)
+Date: Sat, 19 Jun 2021 21:15:53 -0400 (EDT)
+Subject: [TUHS] Disassemblers
+Message-ID: <20210620011553.E7D7F640CC6@lignose.oclsc.org>
+
+Rob Pike:
+
+  Although upon reflection, I think what I did was fix 'adb' and call it
+  'db'. Haven't had my coffee yet this morning.
+
+====
+
+I don't think so.  I did quite a lot of work on adb during my
+time at the Labs.  I remember clearly that it still used all
+the Bournegol macros when I started; I doubt Rob would have
+left that there.  (It was Rob who translated the shell
+back to C, I believe.)
+
+I got into adb because it still used ptrace and everyone else
+seemed scared to touch the code to convert it to use /proc.
+So I fixed that, and fixed sdb too, and finally removed
+the ptrace call from the kernel.  I remember celebrating
+by expunging ptrace from the UNIX Room copy of the V8
+manual.  ptrace happened to occupt two facing pages, which
+I glued together.
+
+I did a lot more hacking on adb after that, ranging from
+little stuff like making # a synonym for 0x in input
+(so that adb's output could be picked up from the screen
+and re-used as input, a principle established firmly and
+correctly by Rob!) to a major restructuring to isolate
+machine-dependent pieces like instruction decoding and
+word formats, so that it was simpler not only to make
+adb work on a new processor architecture but even to make
+a sort of cross-adb that could, say, correctly interpret
+a PDP-11 core image on a VAX.  (This actually mattered;
+by the time I arrived Research had no PDP-11s running
+general-purpose UNIX, but did have LSI-11s acting as
+Datakit controllers and a standalone power-backed-up
+LSI-11 that decoded the time signal from WWVB.)
+
+I was never really happy about the restructuring; it did
+more or less what I wanted but it wasn't really graceful.
+And cross-adb needed a distinct binary for each target.
+I had thoughts of trying to make a meta-language to
+describe the target's data formats (simple except for
+floating point) and how to print its instructions
+(messier, but I remember being inspired by the clever
+table-driven code in an disassembler Ken wrote for,
+I think it was, the NS32000), so that one could load
+a table from a file at startup; never had the time or
+the courage to carry through on it.
+
+Norman Wilson
+Toronto ON
+
+From brantley at coraid.com  Sun Jun 20 11:41:17 2021
+From: brantley at coraid.com (Brantley Coile)
+Date: Sun, 20 Jun 2021 01:41:17 +0000
+Subject: [TUHS] Disassemblers
+In-Reply-To: <CAKzdPgxTGrehsiJVXVyD19QOXRZrgbYhAx47Ebko4PNHYMuo+Q@mail.gmail.com>
+References: <CAEdTPBdbNcsjg64GV4u9_7scP1p3RQGfJniQ+Defbvjr0_cR9w@mail.gmail.com>
+ <CAC20D2Ny25FuucygeLRfMfm+gxE8DJPSg+vp0n5OEtC11_Z_fA@mail.gmail.com>
+ <CAEdTPBdha+dNCqypSKNuQf0X31oH=M=3Te4GLHyv5WDKE04YTQ@mail.gmail.com>
+ <CAC20D2POxdHJsSvRjSozASUWXQ+YAUaSA+7mAoPx1-JsTYHb1g@mail.gmail.com>
+ <CAFH29tqtvdFfLWZKQ9xjAK0UBGD_MNjNVJrJ5L6sEvVxOepV1A@mail.gmail.com>
+ <CAKzdPgxGLNkuUNG7CRwbuV0M3SGrf2TN4egSgg=iisT1sr=fBQ@mail.gmail.com>
+ <CAKzdPgxTGrehsiJVXVyD19QOXRZrgbYhAx47Ebko4PNHYMuo+Q@mail.gmail.com>
+Message-ID: <ECB94015-4A4E-48F6-ACDC-BA35C9D8C0DB@coraid.com>
+
+And I thank you for it, Rob. I use it still, almost daily.
+
+	Brantley
+
+> On Jun 19, 2021, at 5:50 PM, Rob Pike <robpike at gmail.com> wrote:
+> 
+> Although upon reflection, I think what I did was fix 'adb' and call it 'db'. Haven't had my coffee yet this morning.
+> 
+> -rob
+> 
+> 
+> On Sun, Jun 20, 2021 at 7:49 AM Rob Pike <robpike at gmail.com> wrote:
+> For v8 or thereabouts, I spent some time fixing some fundamental bugs in db and found that it was arcane but remarkably powerful. Since it was lower level, it avoided the endemic debugging problem of misleading you about your program: All it could do was tell you what the machine was doing. (Cdb, sdb, and adb were, at least in my experience, always lying to you.) I may be the only person who appreciated db fully. Once the bugs were gone you really could use it to good effect, as long as you understood the CPU.
+> 
+> But it was buggy and arcane, no question about that.
+> 
+> -rob
+> 
+> 
+> 
+> 
+> On Sun, Jun 20, 2021 at 6:46 AM Richard Salz <rich.salz at gmail.com> wrote:
+> I remember compiling and playing Langston's "empire" that I was told came from a decompiled executable. This was in the 4.2 days.
+
+
+From arnold at skeeve.com  Sun Jun 20 13:30:18 2021
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Sat, 19 Jun 2021 21:30:18 -0600
+Subject: [TUHS] 
+ =?iso-8859-1?q?Bugs=2C_B=C3=B6=C3=B6ge_and_Bogeymen_=28wa?=
+ =?iso-8859-1?q?s=3A_70th_anniversary_of_=28official=29_programming_errors?=
+ =?iso-8859-1?q?=29?=
+In-Reply-To: <992f4aca-c36f-cfe1-cd96-2ca7eb3a38ea@gmail.com>
+References: <20210615221659.ltbL6%steffen@sdaoden.eu>
+ <CAD2gp_T3_1k5Q05VB2p5Cjjcm-mnW6XbTuoC=8WxHmn=96_rdw@mail.gmail.com>
+ <CAEoi9W4cJX_4_965+hw4wUUDzxrW7enkeWGgxYdrobmzjN3SkA@mail.gmail.com>
+ <CAKzdPgyk_ZEojzXYLEHV1mPuybsap88fhCzZ-mE5JNukWFmDKQ@mail.gmail.com>
+ <C964FEBE-BBE3-4A87-9F2F-E5C277053D85@iitbombay.org>
+ <20210616215713.f1CA8%steffen@sdaoden.eu>
+ <CAD2gp_So8VQE4ApVSAHmNgQOKNGbaBbaizovxweu2+DJnx-NKQ@mail.gmail.com>
+ <20210619075735.GQ23809@eureka.lemis.com>
+ <20210619154841.Lcgnr%steffen@sdaoden.eu>
+ <992f4aca-c36f-cfe1-cd96-2ca7eb3a38ea@gmail.com>
+Message-ID: <202106200330.15K3UIjA016233@freefriends.org>
+
+Folks, can we move this discussion elsewhere? It's gotten way off topic.
+
+Thanks,
+
+Arnold
+
+Harald Arnesen <skogtun at gmail.com> wrote:
+
+> Steffen Nurpmeso [19.06.2021 17:48]:
+>
+> > So *i* could *imagine* Norwegians pronounce their "bøg" and Svedes
+> > pronounce their "Bög" maybe a bit like "Bock", short and tough.
+>
+> No, it's "bøøg", pronounced something like "girl" in English.
+> -- 
+> Hilsen Harald
+
+From pnr at planet.nl  Mon Jun 21 08:05:08 2021
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Mon, 21 Jun 2021 00:05:08 +0200
+Subject: [TUHS] demand paged 32V / Contacting Kelleman and/or Buroff
+Message-ID: <D8E7F79D-847B-422D-A595-43421DE13ACD@planet.nl>
+
+I’m still researching John Reiser’s 32V with demand paging, copy-on-write and mmap.
+
+Unfortunately, JFR does not have the bits or a listing for this version of 32V.
+
+I’ve read the MSc theses of Leffler and Shannon with interest (https://www.tuhs.org/Archive/Documentation/Theses/). The thesis of Shannon has an interesting discussion of a demand paged version of his Harris/6 Unix (Chapter 5). It is based on the Tenex ideas, just as JFR mentioned for his version. The thesis of Leffler contains a gant chart that shows that the demand paged version was written in the first months of 1980 -- concurrently with or slightly after the 32V version.
+
+I’ve also (superficially) read the papers on Tenex memory management. The design is closely tied to PDP-10 MMU that BBN designed for Tenex. Some of its data structuring is recognisable in Shannon’s version. One defining aspect is that the design for both is for a virtual address space that is smaller than the physical address space; on a 1980 VAX it was the reverse.
+
+If 32V followed the same design ideas (a big if), it most likely limited processes to a capped address space (e.g. 2MB). It might also have contained an in-core flag/data vector with as many entries as there are pages frames in swap space. If true, these downsides may have been why it did not go on to become the root for SysVR1 or R2 paging.
+
+The demand paging code for SysVR2 was written by Keith A. Kelleman and Steven J. Buroff, and in contemporary conference talks they were saying that they wanted to combine the best parts of demand-paged 32V and BSD. They may have some additional memories that could help with getting a better understanding of the final version of 32V.
+
+Does anybody have contact details for these two gentlemen?
+
+
+
+
+
+
+
+
+
+From msi at malbolge.net  Mon Jun 21 19:37:52 2021
+From: msi at malbolge.net (Michael Siegel)
+Date: Mon, 21 Jun 2021 11:37:52 +0200
+Subject: [TUHS] Arithmetic expansion in Unix shells
+Message-ID: <20210621113752.110edede@moon>
+
+Hello,
+
+I'm currently trying out the rc shell (using Byron Rakitzis'
+implementation for Unix). Compared to Bash, which I normally use, this
+shell has a rather small feature set (which isn't to say that that's
+necessarily a bad thing).
+
+Now, one of the features that Bash has and rc doesn't have is the
+ability to perform arithmetic expansion. That's not really a problem
+because you can just use `expr` instead. I wonder, though, when
+arithmetic expansion as a shell built-in became a thing, especially in
+POSIX sh.
+
+POSIX has included that feature since at least 2001, and probably quite
+some years earlier, given that Bash already had it in 1995 (going by
+the manual page of version 1.14.7, the oldest I could find).
+
+So, maybe someone here can help me find out when this was actually
+standardized.
+
+Thanks.
+
+--
+Michael
+
+From arnold at skeeve.com  Mon Jun 21 19:57:51 2021
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Mon, 21 Jun 2021 03:57:51 -0600
+Subject: [TUHS] Arithmetic expansion in Unix shells
+In-Reply-To: <20210621113752.110edede@moon>
+References: <20210621113752.110edede@moon>
+Message-ID: <202106210957.15L9vpZu004496@freefriends.org>
+
+Arithmetic expansion dates back at least as far as ksh88.
+Bash likely picked it up from there.
+
+The original was only integer math and Bash remains that way (IIRC,
+Chet can correct me if I'm wrong). ksh93 added floating point math.
+
+POSIX would have picked it up from ksh88.
+
+HTH,
+
+Arnold
+
+Michael Siegel <msi at malbolge.net> wrote:
+
+> Hello,
+>
+> I'm currently trying out the rc shell (using Byron Rakitzis'
+> implementation for Unix). Compared to Bash, which I normally use, this
+> shell has a rather small feature set (which isn't to say that that's
+> necessarily a bad thing).
+>
+> Now, one of the features that Bash has and rc doesn't have is the
+> ability to perform arithmetic expansion. That's not really a problem
+> because you can just use `expr` instead. I wonder, though, when
+> arithmetic expansion as a shell built-in became a thing, especially in
+> POSIX sh.
+>
+> POSIX has included that feature since at least 2001, and probably quite
+> some years earlier, given that Bash already had it in 1995 (going by
+> the manual page of version 1.14.7, the oldest I could find).
+>
+> So, maybe someone here can help me find out when this was actually
+> standardized.
+>
+> Thanks.
+>
+> --
+> Michael
+
+From chet.ramey at case.edu  Mon Jun 21 23:50:38 2021
+From: chet.ramey at case.edu (Chet Ramey)
+Date: Mon, 21 Jun 2021 09:50:38 -0400
+Subject: [TUHS] Arithmetic expansion in Unix shells
+In-Reply-To: <202106210957.15L9vpZu004496@freefriends.org>
+References: <20210621113752.110edede@moon>
+ <202106210957.15L9vpZu004496@freefriends.org>
+Message-ID: <04536d5b-a6dd-4900-80de-4efc6824aa68@case.edu>
+
+On 6/21/21 5:57 AM, arnold at skeeve.com wrote:
+> Arithmetic expansion dates back at least as far as ksh88.
+
+ksh had the `let' builtin from at least 1983. The ((...)) compound command
+was there by ksh-86.
+
+> Bash likely picked it up from there.
+
+Sort of, see below.
+
+> The original was only integer math and Bash remains that way (IIRC,
+> Chet can correct me if I'm wrong). ksh93 added floating point math.
+
+Yes, bash only has integer arithmetic, since it's all POSIX requires.
+
+> POSIX would have picked it up from ksh88.
+
+The $((...)) form of arithmetic expansion is something POSIX picked up
+from ksh-88, eventually. The early drafts of the standard (through 1003.2
+d9, at least), used $[...], but they eventually adopted $((...)) because
+ksh-88 had already implemented it, though it's not documented in Bolsky
+and Korn.
+
+I put $[...] into bash first (it's still there, though deprecated), then
+`let', then $((...)) after POSIX added it, and finally  `((' for
+compatibility.
+
+Chet
+
+-- 
+``The lyf so short, the craft so long to lerne.'' - Chaucer
+		 ``Ars longa, vita brevis'' - Hippocrates
+Chet Ramey, UTech, CWRU    chet at case.edu    http://tiswww.cwru.edu/~chet/
+
+From chet.ramey at case.edu  Tue Jun 22 00:20:48 2021
+From: chet.ramey at case.edu (Chet Ramey)
+Date: Mon, 21 Jun 2021 10:20:48 -0400
+Subject: [TUHS] demand paged 32V / Contacting Kelleman and/or Buroff
+In-Reply-To: <D8E7F79D-847B-422D-A595-43421DE13ACD@planet.nl>
+References: <D8E7F79D-847B-422D-A595-43421DE13ACD@planet.nl>
+Message-ID: <52bf4730-f2a5-3dc4-f61f-eda14e13e251@case.edu>
+
+On 6/20/21 6:05 PM, Paul Ruizendaal via TUHS wrote:
+
+> I’ve read the MSc theses of Leffler and Shannon with interest (https://www.tuhs.org/Archive/Documentation/Theses/). The thesis of Shannon has an interesting discussion of a demand paged version of his Harris/6 Unix (Chapter 5). It is based on the Tenex ideas, just as JFR mentioned for his version. The thesis of Leffler contains a gant chart that shows that the demand paged version was written in the first months of 1980 -- concurrently with or slightly after the 32V version.
+
+Sam and Bill did their work at CWRU, which was getting to be a DEC shop at
+the time, at least in the central computing center. When I got there a few
+years later, we were running DEC-20s with TOPS-20, and we were doing some
+kernel and EXEC customizations (we == Case, I was not involved). It's
+likely that both of them, and Rob Gingell, were influenced by exposure to
+Tenex and TOPS-20. Rob would know more.
+
+Chet
+
+-- 
+``The lyf so short, the craft so long to lerne.'' - Chaucer
+		 ``Ars longa, vita brevis'' - Hippocrates
+Chet Ramey, UTech, CWRU    chet at case.edu    http://tiswww.cwru.edu/~chet/
+
+From msi at malbolge.net  Tue Jun 22 00:43:15 2021
+From: msi at malbolge.net (Michael Siegel)
+Date: Mon, 21 Jun 2021 16:43:15 +0200
+Subject: [TUHS] Arithmetic expansion in Unix shells
+In-Reply-To: <04536d5b-a6dd-4900-80de-4efc6824aa68@case.edu>
+References: <20210621113752.110edede@moon>
+ <202106210957.15L9vpZu004496@freefriends.org>
+ <04536d5b-a6dd-4900-80de-4efc6824aa68@case.edu>
+Message-ID: <20210621164315.1587cffe@moon>
+
+Am Mon, 21 Jun 2021 09:50:38 -0400
+schrieb Chet Ramey <chet.ramey at case.edu>:
+
+> The $((...)) form of arithmetic expansion is something POSIX picked up
+> from ksh-88, eventually. The early drafts of the standard (through
+> 1003.2 d9, at least), used $[...], but they eventually adopted
+> $((...)) because ksh-88 had already implemented it, though it's not
+> documented in Bolsky and Korn.
+
+So, in other words, POSIX shell (meaning the shell described in the
+standard as it has been released) had double-parentheses arithmetic
+evaluation from the start?
+
+
+--
+Michael
+
+From chet.ramey at case.edu  Tue Jun 22 00:48:18 2021
+From: chet.ramey at case.edu (Chet Ramey)
+Date: Mon, 21 Jun 2021 10:48:18 -0400
+Subject: [TUHS] Arithmetic expansion in Unix shells
+In-Reply-To: <20210621164315.1587cffe@moon>
+References: <20210621113752.110edede@moon>
+ <202106210957.15L9vpZu004496@freefriends.org>
+ <04536d5b-a6dd-4900-80de-4efc6824aa68@case.edu>
+ <20210621164315.1587cffe@moon>
+Message-ID: <bf61298e-9f69-d091-1e6c-763e413f719b@case.edu>
+
+On 6/21/21 10:43 AM, Michael Siegel wrote:
+> Am Mon, 21 Jun 2021 09:50:38 -0400
+> schrieb Chet Ramey <chet.ramey at case.edu>:
+> 
+>> The $((...)) form of arithmetic expansion is something POSIX picked up
+>> from ksh-88, eventually. The early drafts of the standard (through
+>> 1003.2 d9, at least), used $[...], but they eventually adopted
+>> $((...)) because ksh-88 had already implemented it, though it's not
+>> documented in Bolsky and Korn.
+> 
+> So, in other words, POSIX shell (meaning the shell described in the
+> standard as it has been released) had double-parentheses arithmetic
+> evaluation from the start?
+
+ From the first published version of the standard, yes.
+
+-- 
+``The lyf so short, the craft so long to lerne.'' - Chaucer
+		 ``Ars longa, vita brevis'' - Hippocrates
+Chet Ramey, UTech, CWRU    chet at case.edu    http://tiswww.cwru.edu/~chet/
+
+From tuhs at cuzuco.com  Wed Jun 23 01:52:36 2021
+From: tuhs at cuzuco.com (Brian Walden)
+Date: Tue, 22 Jun 2021 11:52:36 -0400 (EDT)
+Subject: [TUHS] Arithmetic expansion in Unix shells
+Message-ID: <202106221552.15MFqa97028493@cuzuco.com>
+
+even tho it was there, in-shell integer arithmetic had a few
+issues before ksh86.
+
+pre-ksh86 these had problems --
+
+A. decimal point in a number
+$ integer I
+$ I=2.2
+
+would error on the assignment, but with ksh86 $I is truncated to 2
+
+(yes "integer" is an builtin alias to typeset -i and ksh courses at the time
+instructed to use that over typset)
+
+B. negative numbers
+$ integer I
+$ I=-2
+
+here pre-86 $I would be assigned a large value like 2147483646
+
+also ksh was not stardard until SVR4 (very late 80s) so it was found
+in paths like /usr/add-on/bin/ksh or /usr/exptools/bin/ksh, or not even
+there at all, you could not reliably #! ksh scripts
+
+also with ksh86 the double paren ((...)) notation was exactly the same as
+"let ..." and were completely optional if the variable was predefined as
+an integer, so
+
+$ I=0
+$ ((I=I+1))
+
+ and
+
+$ integer I
+$ I=0
+$ I=I+1
+
+are the same.
+
+All internal integers in ksh were C longs (at least 32-bits)
+
+where Bourne shell all vars are strings so you would need to do this --
+
+$ I=`expr $I + 1`
+
+But also at that time expr(1) could NOT deal with negative numbers on input,
+they became strings. So
+
+$ expr -9 + 1
+
+is an error with "non-numeric argument", and
+
+$ expr -11 '<' -1
+
+returns 0, a false statement, which are hidden bugs with variables.
+
+expr(1) was also 32-bits, as was test (i.e [ ) which could deal with
+negative numbers just fine.
+
+for arbitrarily large numbers you needed use dc(1) or bc(1). but dc(1)
+also has a issue with inputing negative numbers as it uses an _ not
+a - to denote a negatve number on input, but does use the - on output.
+
+$ I=`echo _9 1 - p | dc`
+
+is how you would do ((I=-9 - 1)) in bourne with dc
+which is cumbersome if you have a variable with a neagtive number in it,
+and required a "tr - _" first.
+
+however
+
+$ I=`echo -9 - 1 | bc`
+
+worked just fine in bourne.
+
+
+-Brian
+
+Chet Ramey wrote:
+> On 6/21/21 5:57 AM, arnold at skeeve.com wrote:
+> > Arithmetic expansion dates back at least as far as ksh88.
+>
+> ksh had the `let' builtin from at least 1983. The ((...)) compound command
+> was there by ksh-86.
+>
+> > Bash likely picked it up from there.
+>
+> Sort of, see below.
+>
+> > The original was only integer math and Bash remains that way (IIRC,
+> > Chet can correct me if I'm wrong). ksh93 added floating point math.
+>
+> Yes, bash only has integer arithmetic, since it's all POSIX requires.
+>
+> > POSIX would have picked it up from ksh88.
+>
+> The $((...)) form of arithmetic expansion is something POSIX picked up
+> from ksh-88, eventually. The early drafts of the standard (through 1003.2
+> d9, at least), used $[...], but they eventually adopted $((...)) because
+> ksh-88 had already implemented it, though it's not documented in Bolsky
+> and Korn.
+>
+> I put $[...] into bash first (it's still there, though deprecated), then
+> `let', then $((...)) after POSIX added it, and finally  `((' for
+> compatibility.
+>
+> Chet
+
+From msi at malbolge.net  Wed Jun 23 02:24:12 2021
+From: msi at malbolge.net (Michael Siegel)
+Date: Tue, 22 Jun 2021 18:24:12 +0200
+Subject: [TUHS] Arithmetic expansion in Unix shells
+In-Reply-To: <bf61298e-9f69-d091-1e6c-763e413f719b@case.edu>
+References: <20210621113752.110edede@moon>
+ <202106210957.15L9vpZu004496@freefriends.org>
+ <04536d5b-a6dd-4900-80de-4efc6824aa68@case.edu>
+ <20210621164315.1587cffe@moon>
+ <bf61298e-9f69-d091-1e6c-763e413f719b@case.edu>
+Message-ID: <20210622182412.5e3cc586@moon>
+
+Am Mon, 21 Jun 2021 10:48:18 -0400
+schrieb Chet Ramey <chet.ramey at case.edu>:
+
+> On 6/21/21 10:43 AM, Michael Siegel wrote:
+> > So, in other words, POSIX shell (meaning the shell described in the
+> > standard as it has been released) had double-parentheses arithmetic
+> > evaluation from the start?  
+> 
+>  From the first published version of the standard, yes.
+
+Thanks. This will spare me from putting yet another footnote into my
+little review of rc(1).
+
+
+--
+Michael
+
+From aap at papnet.eu  Thu Jun 24 02:01:02 2021
+From: aap at papnet.eu (Angelo Papenhoff)
+Date: Wed, 23 Jun 2021 18:01:02 +0200
+Subject: [TUHS] "The programmer must have been carried away ...
+Message-ID: <YNNavhVcD/nd8ahr@indra.papnet.eu>
+
+... when he declared all the parameters for this procedure"
+
+I'm sure some of you remember this quote expressing John Lions'
+puzzlement over the declaration of printf in the UNIX kernel:
+
+printf(fmt,x1,x2,x3,x4,x5,x6,x7,x8,x9,xa,xb,xc)
+
+Note that parameters x2 and following are never referenced by name
+in the function body, only by pointer arithmetic from &x1.
+
+The historical reason for this long list of parameters is probably
+not well known, so I want to explain it and hope that you will find
+it as enjoyable as I did when I came across it some time ago while
+studying leftover files of B.
+
+To call a function in B, there's a little dance you have to do:
+first push the function address onto the stack, remember the stack
+pointer, push all the arguments, then restore the stack pointer and
+do the actual call.
+
+In diagrams, this is what happens to the B stack:
+
+push func addr:
+
++------------+
+|            |  <- sp
++------------+
+|  func addr |
++------------+
+
+
+mark (n2):
+
++------------+
+|            |  <- sp
++------------+
+|            |  <- old sp (saved on native stack)
++------------+
+|  func addr |
++------------+
+
+
+push arguments:
+
++------------+
+|            |  <- sp
++------------+
+|    arg n   |
++------------+
+|    ...     |
++------------+
+|    arg 0   |
++------------+
+|            |  <- old sp (saved on native stack)
++------------+
+|  func addr |
++------------+
+
+
+call (n3):
+
+pop old sp from stack
+jump to func addr on stack
+set ret addr and old fp
++------------+
+|    arg n   |
++------------+
+|    ...     |
++------------+
+|    arg 0   |
++------------+
+|  ret addr  |
++------------+
+|   old fp   |  <- sp, fp
++------------+
+
+
+The callee then sets sp, so has to know how many args and automatics!
+
++------------+
+|            |  <- sp
++------------+
+|   auto n   |
++------------+
+|    ...     |
++------------+
+|   auto 0   |
++------------+
+|    arg n   |
++------------+
+|    ...     |
++------------+
+|    arg 0   |
++------------+
+|  ret addr  |
++------------+
+|   old fp   |  <- fp
++------------+
+
+
+So because the arguments to a functions were grouped together with
+the automatics and not below the ret addr and saved fp, there has
+to be space on the stack lest they clash. This of course means that
+this printf in B would probably break if called with more arguments
+than it expects.
+So there you have it. Just a line of B code that wasn't updated to C.
+
+
+Cheers,
+aap
+
+From aap at papnet.eu  Thu Jun 24 06:08:51 2021
+From: aap at papnet.eu (Angelo Papenhoff)
+Date: Wed, 23 Jun 2021 22:08:51 +0200
+Subject: [TUHS] [EXT]  "The programmer must have been carried away ...
+In-Reply-To: <F46AB5BC-C48F-4060-AA26-DF802E62B14C@hotmail.co.uk>
+References: <YNNavhVcD/nd8ahr@indra.papnet.eu>
+ <F46AB5BC-C48F-4060-AA26-DF802E62B14C@hotmail.co.uk>
+Message-ID: <YNOU0yG0MK6F54FY@indra.papnet.eu>
+
+On 23/06/21, silas poulson wrote:
+> I’m aware line 2238’s famous “You are not expected to understand
+> this.” Comment is due to odd PDP-11/45 behaviour.
+
+Actually there are two different takes on what it is exactly that you're
+not expected to understand. The "obvious" one in Lions' book, (i.e. saved
+stack being overwritten when swapping so you have to restore from the
+special swap-saved stack), but dmr had a different take on it, that it
+had to do with functions really not being happy if you switch the stack
+underneath them. You can find dummy variables in the interdata port that
+make sure the stack frames of some functions (newproc and swtch?) match.
+So not really a hardware thing but a consequence of the compiler.
+
+> Do you know if other sections of the C show remnants of B or the PDP?
+> Or is it just those spots?
+
+For the kernel I'm just aware of this one. printf was copied over a
+number of times (the c compiler also includes a version) but the kernel
+was never written in B, so i wouldn't expect any B-ness in there
+otherwise.
+
+aap
+
+From imp at bsdimp.com  Fri Jun 25 01:29:09 2021
+From: imp at bsdimp.com (Warner Losh)
+Date: Thu, 24 Jun 2021 09:29:09 -0600
+Subject: [TUHS] Code Review Request: 2.8BSD
+Message-ID: <CANCZdfoBvvif0cJontMneSnjHjQt+Te36ibijLG+psULsJgFYw@mail.gmail.com>
+
+Greetings,
+
+It  has always bugged me that the bsd-family-tree file got 2.8BSD  slightly
+wrong.
+
+It has the relationship V6 -> 1BSD -> 2BSD -> 2.79BSD -> 2.8BSD
+with V7  -> 32V -> 3BSD ... -> 4.1BSD -> 2.8BSD
+
+Now, as far as it goes, that's not terrible. But it's missing something.
+
+First, there was no V6 code in 1BSD or 2BSD through 2.79BSD. It was for V6
+at first then for both V6 and V7, but w/o V7 code. There weren't even
+patches for V6 or new drivers on the early 1BSD and 2BSDs. However,
+starting with 2.8BSD, there's a V7 kernel. Or should I say a heavily
+patched V7 kernel with a ton of #ifdefs for all the fixes and enhancements
+collected by Berkeley and a few minor build system tweaks.
+
+Also, the code from 4.1BSD that's in 2.8 is rather minimal from what I can
+tell with my analysis so far, except indirectly in some of the patches to
+the V7 kernel appear to also be in 4.1BSD. The biggest thing that's in
+2.8BSD from 4.1BSD is the job control (confined to its own directory with
+big warnings that basically say you'll need to update the code and even
+then the system is unstable). 2.9BSD has much better 4.xBSD integration,
+but 2.8 was quite early days for rejoining the two lines. 4.1BSD didn't
+have many berkeley rewrites of userland code, and the 2.8 tape has only a
+few of them (eg ls). So although it's not as complete as one would hope,
+there was a decent amount of code from 4.1BSD flowing into 2.8BSD.
+
+Now, my request. I've created a code review for FreeBSD to fix this.
+https://reviews.freebsd.org/D30883 is the review. We use phabricator in the
+FreeBSD project. Anybody can view this, but if you don't want to create an
+account, please send me email with a comment about the change and/or the
+commit message. It just adds an arc from V7 to 2.8BSD.
+
+Thanks for any time and/or insight you might have here. I'm judging the
+above entirely on the archived code rather than any historical knowledge...
+
+Warner
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210624/f6fd1994/attachment.htm>
+
+From pnr at planet.nl  Sat Jun 26 09:09:53 2021
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Sat, 26 Jun 2021 01:09:53 +0200
+Subject: [TUHS] demand paged 32V / Contacting Tom Raleigh
+Message-ID: <06DB5D89-B0FE-4B06-B180-DE08E8E31CC2@planet.nl>
+
+
+> The demand paging code for SysVR2 was written by Keith A. Kelleman and Steven J. Buroff, and in contemporary conference talks they were saying that they wanted to combine the best parts of demand-paged 32V and BSD. They may have some additional memories that could help with getting a better understanding of the final version of 32V.
+> 
+> Does anybody have contact details for these two gentlemen?
+
+I’ve managed to contact Keith Kelleman and he had some interesting remarks. The paging code in SVR2 was all new code, with a focus the 3B dual processor. It does not derive at the code level from 32V and in fact he does not recall working with the 32V paging code. This kills the hope that the SVR2 code had clues about the 32V code. Keith did suggest that I tried to contact Tom Raleigh, who might have worked with the later 32V code base. Anybody with suggestions for locating him?
+
+===
+
+Besides functionality, the people that remember paged 32V all recall it being very fast. I wonder what made it fast.
+
+First to consider is “faster than what?”. Maybe Rob P. has a specific memory, but I would assume faster than 4BSD: if the comparison was with the "scatter loading, partial swapping” version of 32V people would have expected the better performance and not remember it as impressive 40 years later. Possibly the comparison is with 8th Edition which would have used the 4BSD paging code by then.
+
+If the comparison is with 4BSD, then the CoW feature in paging 32V would have been mostly matched by the vfork mechanism in 4BSD: it covers 80% of the use and it leaves the code paths simpler. If the comparison is with 8th edition, this may be the difference that people remember.
+
+The next possibility is that paging 32V had a better page-out algorithm. Joy/Babaoglu mention that the cost of the clock process is noticable. Maybe paged 32V used a VMS-like FIFO/second chance algorithm that did not need a separate kernel process/thread. Arguably this is not enough for a convincing speed difference.
+
+It is also possible that JFR found a more clever way to do LRU approximation. He remembers that his code used ‘strict LRU’, but not the algorithm. On Tenex - his conceptual reference - that was natural to do, because the MMU hardware maintains a table with 4 words of 36 bits for each frame with statistical data. With the VAX hardware it is a challenge. Considering his mathematical prowess it is maybe plausible that JFR found an efficient way. A slightly better page hit rate gives a significant speed improvement.
+
+All speculation of course: only finding the source will truly tell.
+
+
+From pnr at planet.nl  Sat Jun 26 08:30:46 2021
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Sat, 26 Jun 2021 00:30:46 +0200
+Subject: [TUHS] "The programmer must have been carried away ...
+Message-ID: <D51E8AFB-1957-4553-A44B-93195E37A908@planet.nl>
+
+> So there you have it. Just a line of B code that wasn't updated to C.
+> 
+> Cheers,
+> aap
+
+I love posts like this, thank you! “Sherlock Holmes and the mysterious case of the excessive parameter list"
+
+
+From paul at rileyriot.com  Mon Jun 28 12:34:58 2021
+From: paul at rileyriot.com (Paul Riley)
+Date: Mon, 28 Jun 2021 12:34:58 +1000
+Subject: [TUHS] Using printf from Assembly Language in V6, and db.
+Message-ID: <CAD05_j0NUPk70gbMEgXM7bNJfVkALKxHBbT87d+K=T3DxbF_1Q@mail.gmail.com>
+
+Hi,
+
+I want to use printf from an assembly language program, in V6. It seems
+that the Unix Programmer's Manual doesn't show how to use it from assembly,
+so I wrote a short C program and captured the assembler output, for some
+clues. Listings below.
+
+In my example, the substitutional arguments for printf are pushed onto the
+stack in reverse order, then the address of the string, and then printf is
+called. After this, 6 is added to the stack pointer. I assume that the
+printf routine pops the address of the string off the stack, but leaves the
+other values on the stack, hence the need to add 2x3=6 to the stack after
+calling printf in my example.
+
+What troubles me is that the stack pointer is not decremented before the
+first mov, in the example below. Is this some C convention? I would assume
+that the first push in my example would overwrite the top of the stack.
+Perhaps I'm not used to PDP-11 stack conventions.
+
+I understand db only works on files like a.out or core dumps. If I wanted
+to break the assembly language program to examine values, how can I force a
+termination and core dump elegantly, so I can examine some register values?
+
+Paul
+
+
+*Paul Riley*
+
+Email: paul at rileyriot.com
+
+int a, b, c;
+int main(){
+  printf("printf: start\n");
+  a = 1;
+  b = 2;
+  c = 3;
+  printf("A = %d, B = %d, C = %d", a, b, c);
+  printf("printf: end\n");
+
+}
+
+.comm   _a,2
+.comm   _b,2
+.comm   _c,2
+.globl  _main
+.text
+_main:
+~~main:
+jsr     r5,csv
+jbr     L1
+L2:mov  $L4,(sp)
+jsr     pc,*$_printf
+mov     $1,_a
+mov     $2,_b
+mov     $3,_c
+mov     _c,(sp)
+mov     _b,-(sp)
+mov     _a,-(sp)
+mov     $L5,-(sp)
+jsr     pc,*$_printf
+add     $6,sp
+mov     $L6,(sp)
+jsr     pc,*$_printf
+L3:jmp  cret
+L1:jbr  L2
+.globl
+.data
+L4:.byte 160,162,151,156,164,146,72,40,163,164,141,162,164,12,0
+L5:.byte
+101,40,75,40,45,144,54,40,102,40,75,40,45,144,54,40,103,40,75,40,45,144,0
+L6:.byte 160,162,151,156,164,146,72,40,145,156,144,12,0
+#
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210628/839117ba/attachment.htm>
+
+From paul at rileyriot.com  Mon Jun 28 13:27:51 2021
+From: paul at rileyriot.com (Paul Riley)
+Date: Mon, 28 Jun 2021 13:27:51 +1000
+Subject: [TUHS] Using printf from Assembly Language in V6, and db.
+In-Reply-To: <CAD05_j0NUPk70gbMEgXM7bNJfVkALKxHBbT87d+K=T3DxbF_1Q@mail.gmail.com>
+References: <CAD05_j0NUPk70gbMEgXM7bNJfVkALKxHBbT87d+K=T3DxbF_1Q@mail.gmail.com>
+Message-ID: <CAD05_j1xY-XOPA2xeMcP-kZs5a41EDfiRQezOf_YAgGbOdjqtA@mail.gmail.com>
+
+Or perhaps...
+
+In my example, the substitutional arguments for printf are pushed onto the
+> stack in reverse order, then the address of the string, and then printf is
+> called. After this, 6 is added to the stack pointer. I assume that the
+> printf routine pops the address of the string off the stack, but leaves the
+> other values on the stack, hence the need to add 2x3=6 to the stack after
+> calling printf in my example.
+>
+
+... just adding 2 for every decrement that was done on sp...
+
+Paul
+
+*Paul Riley*
+
+Mo: +61 (0)411 781 394
+Email: paul at rileyriot.com
+
+
+
+On Mon, 28 Jun 2021 at 12:34, Paul Riley <paul at rileyriot.com> wrote:
+
+> Hi,
+>
+> I want to use printf from an assembly language program, in V6. It seems
+> that the Unix Programmer's Manual doesn't show how to use it from assembly,
+> so I wrote a short C program and captured the assembler output, for some
+> clues. Listings below.
+>
+> In my example, the substitutional arguments for printf are pushed onto the
+> stack in reverse order, then the address of the string, and then printf is
+> called. After this, 6 is added to the stack pointer. I assume that the
+> printf routine pops the address of the string off the stack, but leaves the
+> other values on the stack, hence the need to add 2x3=6 to the stack after
+> calling printf in my example.
+>
+> What troubles me is that the stack pointer is not decremented before the
+> first mov, in the example below. Is this some C convention? I would assume
+> that the first push in my example would overwrite the top of the stack.
+> Perhaps I'm not used to PDP-11 stack conventions.
+>
+> I understand db only works on files like a.out or core dumps. If I wanted
+> to break the assembly language program to examine values, how can I force a
+> termination and core dump elegantly, so I can examine some register values?
+>
+> Paul
+>
+>
+> *Paul Riley*
+>
+> Email: paul at rileyriot.com
+>
+> int a, b, c;
+> int main(){
+>   printf("printf: start\n");
+>   a = 1;
+>   b = 2;
+>   c = 3;
+>   printf("A = %d, B = %d, C = %d", a, b, c);
+>   printf("printf: end\n");
+>
+> }
+>
+> .comm   _a,2
+> .comm   _b,2
+> .comm   _c,2
+> .globl  _main
+> .text
+> _main:
+> ~~main:
+> jsr     r5,csv
+> jbr     L1
+> L2:mov  $L4,(sp)
+> jsr     pc,*$_printf
+> mov     $1,_a
+> mov     $2,_b
+> mov     $3,_c
+> mov     _c,(sp)
+> mov     _b,-(sp)
+> mov     _a,-(sp)
+> mov     $L5,-(sp)
+> jsr     pc,*$_printf
+> add     $6,sp
+> mov     $L6,(sp)
+> jsr     pc,*$_printf
+> L3:jmp  cret
+> L1:jbr  L2
+> .globl
+> .data
+> L4:.byte 160,162,151,156,164,146,72,40,163,164,141,162,164,12,0
+> L5:.byte
+> 101,40,75,40,45,144,54,40,102,40,75,40,45,144,54,40,103,40,75,40,45,144,0
+> L6:.byte 160,162,151,156,164,146,72,40,145,156,144,12,0
+> #
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210628/0f9a7ba1/attachment.htm>
+
+From jnc at mercury.lcs.mit.edu  Mon Jun 28 14:48:52 2021
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon, 28 Jun 2021 00:48:52 -0400 (EDT)
+Subject: [TUHS] Using printf from Assembly Language in V6, and db.
+Message-ID: <20210628044852.2B53B18C08F@mercury.lcs.mit.edu>
+
+    > From: Paul Riley
+
+    > I want to use printf from an assembly language program, in V6. ...  the
+    > substitutional arguments for printf are pushed onto the stack in reverse
+    > order, then the address of the string, and then printf is called. After
+    > this, 6 is added to the stack pointer.
+
+This is all down to the standard C environment / calling sequence on the
+PDP-11 (at least, in V6 C; other compilers may do it differently). Calls to
+printf() are in no way special.
+
+Very briefly, there's a 'frame pointer' (R5) which points to the current stack
+frame; all arguments and automatics are relative to that. A pair of special
+routines, csv and cret (I couldn't find the source on TUHS, but it happens to
+be here:
+
+  http://ana-3.lcs.mit.edu/~jnc/tech/unix/lib/csv.s
+
+if you want to see it), set up and tear down the frame on entry/exit to that
+routine. The SP (R6) points to a blank location on the top (i.e. lower address;
+PDP-11 stacks grow down) of the stack.
+
+To call a subroutine, the arguments are pushed, the routine is called (which
+pushes the return PC), and on return (which pops the return PC), the arguments
+are discarded by the caller.
+
+(I wrote a note, BITD, explaining how all this worked; I'll upload it to the
+CHWiki when I get a chance.)
+
+
+    > I assume that the printf routine pops the address of the string off the
+    > stack, but leaves the other values on the stack
+
+No, all C routines (including printf()) leave the stack more or less alone,
+except for CSV/CRET hackery, allocating space for automatic variables on
+routine entry (that would be at L1; try looking at the .s for a routine with
+automatic variables), and popping the return PC on exit. The exception to this
+is the stuff around calling _enother_ routine (sketched above).
+
+Another exception is alloca() (source here:
+
+  http://ana-3.lcs.mit.edu/~jnc/tech/unix/lib/alloca.s
+
+again, couldn't find it in TUHS), which allocated a block of memory on
+the stack (automatically discarded when the routine which called alloca()
+returns). Note that since all automatic variables and incoming arguments
+are relative to the FP, alloca is _really_ simple; justs adjusts the
+SP, and it's done.
+
+    > What troubles me is that the stack pointer is not decremented before the
+    > first mov, in the example below. Is this some C convention? I would
+    > assume that the first push in my example would overwrite the top of the
+    > stack.
+
+That's right; that's because in the C runtime environment, the top location
+on the stack is a trash word (set up by csv).
+
+    > I understand db only works on files like a.out or core dumps. If I
+    > wanted to break the assembly language program to examine values, how can
+    > I force a termination and core dump elegantly, so I can examine some
+    > register values?
+
+Use 'cdb':
+
+  https://minnie.tuhs.org//cgi-bin/utree.pl?file=V6/usr/man/man1/cdb.1
+
+which can do interactive debugging.
+
+      Noel
+
+From paul at rileyriot.com  Mon Jun 28 21:27:08 2021
+From: paul at rileyriot.com (Paul Riley)
+Date: Mon, 28 Jun 2021 21:27:08 +1000
+Subject: [TUHS] Using printf from Assembly Language in V6, and db.
+In-Reply-To: <20210628044852.2B53B18C08F@mercury.lcs.mit.edu>
+References: <20210628044852.2B53B18C08F@mercury.lcs.mit.edu>
+Message-ID: <CAD05_j3Gz472Oj7tMQUk6nEinVHeb3DvC96kjTupugoa6=RXSw@mail.gmail.com>
+
+Noel,
+
+Thanks for that.
+
+As a non-C consumer of printf, should I point R5 at some space for a stack
+and call printf in the same manner as the C example I cited? If it's all
+too hard I'll stick to writing to stdout with my own routines.
+
+Paul
+
+*Paul Riley*
+
+Email: paul at rileyriot.com
+
+
+
+
+On Mon, 28 Jun 2021 at 14:49, Noel Chiappa <jnc at mercury.lcs.mit.edu> wrote:
+
+>     > From: Paul Riley
+>
+>     > I want to use printf from an assembly language program, in V6. ...
+> the
+>     > substitutional arguments for printf are pushed onto the stack in
+> reverse
+>     > order, then the address of the string, and then printf is called.
+> After
+>     > this, 6 is added to the stack pointer.
+>
+> This is all down to the standard C environment / calling sequence on the
+> PDP-11 (at least, in V6 C; other compilers may do it differently). Calls to
+> printf() are in no way special.
+>
+> Very briefly, there's a 'frame pointer' (R5) which points to the current
+> stack
+> frame; all arguments and automatics are relative to that. A pair of special
+> routines, csv and cret (I couldn't find the source on TUHS, but it happens
+> to
+> be here:
+>
+>   http://ana-3.lcs.mit.edu/~jnc/tech/unix/lib/csv.s
+>
+> if you want to see it), set up and tear down the frame on entry/exit to
+> that
+> routine. The SP (R6) points to a blank location on the top (i.e. lower
+> address;
+> PDP-11 stacks grow down) of the stack.
+>
+> To call a subroutine, the arguments are pushed, the routine is called
+> (which
+> pushes the return PC), and on return (which pops the return PC), the
+> arguments
+> are discarded by the caller.
+>
+> (I wrote a note, BITD, explaining how all this worked; I'll upload it to
+> the
+> CHWiki when I get a chance.)
+>
+>
+>     > I assume that the printf routine pops the address of the string off
+> the
+>     > stack, but leaves the other values on the stack
+>
+> No, all C routines (including printf()) leave the stack more or less alone,
+> except for CSV/CRET hackery, allocating space for automatic variables on
+> routine entry (that would be at L1; try looking at the .s for a routine
+> with
+> automatic variables), and popping the return PC on exit. The exception to
+> this
+> is the stuff around calling _enother_ routine (sketched above).
+>
+> Another exception is alloca() (source here:
+>
+>   http://ana-3.lcs.mit.edu/~jnc/tech/unix/lib/alloca.s
+>
+> again, couldn't find it in TUHS), which allocated a block of memory on
+> the stack (automatically discarded when the routine which called alloca()
+> returns). Note that since all automatic variables and incoming arguments
+> are relative to the FP, alloca is _really_ simple; justs adjusts the
+> SP, and it's done.
+>
+>     > What troubles me is that the stack pointer is not decremented before
+> the
+>     > first mov, in the example below. Is this some C convention? I would
+>     > assume that the first push in my example would overwrite the top of
+> the
+>     > stack.
+>
+> That's right; that's because in the C runtime environment, the top location
+> on the stack is a trash word (set up by csv).
+>
+>     > I understand db only works on files like a.out or core dumps. If I
+>     > wanted to break the assembly language program to examine values, how
+> can
+>     > I force a termination and core dump elegantly, so I can examine some
+>     > register values?
+>
+> Use 'cdb':
+>
+>   https://minnie.tuhs.org//cgi-bin/utree.pl?file=V6/usr/man/man1/cdb.1
+>
+> which can do interactive debugging.
+>
+>       Noel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210628/6868ff0b/attachment.htm>
+
+From jnc at mercury.lcs.mit.edu  Tue Jun 29 06:37:28 2021
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon, 28 Jun 2021 16:37:28 -0400 (EDT)
+Subject: [TUHS] Using printf from Assembly Language in V6, and db.
+Message-ID: <20210628203728.8305818C090@mercury.lcs.mit.edu>
+
+    > From: Paul Riley <paul at rileyriot.com>
+
+    >> (I wrote a note, BITD, explaining how all this worked; I'll upload it
+    >> to the CHWiki when I get a chance.)
+
+Now here:
+
+  https://gunkies.org/wiki/PDP-11_C_stack_operation
+
+along with simple examples of args and auto variables, which are both
+referenced via the FP.
+
+
+    > As a non-C consumer of printf, should I point R5 at some space for a
+    > stack and call printf in the same manner as the C example I cited?
+
+Not necessary to do anything with R5 (you can leave it blank); the only things
+a PDP-11 C routine needs are:
+
+- a good stack
+- the arguments, and return point, on the top of the stack
+
+csv will set up the frame pointer, making no assumptions about the old
+contents of R5 - see the source:
+
+  http://ana-3.lcs.mit.edu/~jnc/tech/unix/lib/csv.s
+
+although it does save the old R5 contents, and restore them on exit.
+
+	 Noel
+
+From clemc at ccc.com  Mon Jun 28 23:48:16 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Mon, 28 Jun 2021 09:48:16 -0400
+Subject: [TUHS] Using printf from Assembly Language in V6, and db.
+In-Reply-To: <CAD05_j3Gz472Oj7tMQUk6nEinVHeb3DvC96kjTupugoa6=RXSw@mail.gmail.com>
+References: <20210628044852.2B53B18C08F@mercury.lcs.mit.edu>
+ <CAD05_j3Gz472Oj7tMQUk6nEinVHeb3DvC96kjTupugoa6=RXSw@mail.gmail.com>
+Message-ID: <CAC20D2M-WBWgCjNMZ08yS3iY8CwfgbhM9kM_TspQZsigHiuQ2Q@mail.gmail.com>
+
+Paul,
+
+Noel did a great job of explaining the C calling conventions. I'm going to
+see if I can add a little color, mostly to help explain why.
+
+FWIW: Page 115 of the 1979 PDP-11 Processor Handbook has a nice picture and
+explanation, which I have attached (but I'm not sure if it will pass
+through the mailing list filters):
+[image: JSR-Instruct.png]
+
+
+ A simple way to think about it is that in C, with an HW-based stack
+usually r6 (not all systems had an HW-based sp), the >>caller<< maintains
+the save area.   The sp is always pointing to a place that it can write.
+ Thus no need to pop the last item off the stack (*i.e.* first pushed -
+which in this case means overwriting the top of the stack) since it will
+also be overwritten when the sp is used later.
+
+In your example [I added the LXX and LYY for later explanation]:
+
+L2:mov  $L4,(sp)
+jsr     pc,*$_printf
+mov     $1,_a
+mov     $2,_b
+mov     $3,_c
+LXX:mov     _c,(sp)
+mov     _b,-(sp)
+mov     _a,-(sp)
+mov     $L5,-(sp)
+LYY:jsr     pc,*$_printf
+add     $6,sp
+mov     $L6,(sp)
+jsr     pc,*$_printf
+L3:jmp  cret
+
+So, to map it to the DEC example...  the first mov  $L4,(sp) at label L2 is
+putting 'mmmmmm' on the stack, then the immediately following jsr puts the
+return [which uses an implied pre-decrement, before it writes the stack].
+
+After printf returns (RTS instruction in printf), the sp is back pointing
+to the same 'top' as it was before the call, so no need to further mess
+with sp, caller has done nothing other than modify the top of the stack [mov
+ $L4,(sp)].  But then starting at LXX we see 4 mov instructions in row, 3
+which modify the sp.  This means the caller has 'pushed 6 bytes to the top
+of stack [downward on a PDP-11 --  via the last three mov's to the stack
+with the pre-decrement push's], so the caller needs to clean up those 6
+bytes that it pushed, with the add the follows the jsr.  Note that the next
+printf's argument is placed on the top of the stack but since not other
+args are pushed (as with the first call), there is not need to clean up the
+sp when we return.
+
+Clem
+
+BTW: If you look at the processors, like the IBM S/360 which lacks an HW
+stack, and other languages (say Fortran), the '*push down save area*' is
+maintained by the callee.   There is a different convention on where to
+find parameters for those machines and languages.   It's interesting that
+if you talk to the designers of same (which I have in a number of cases)
+the 8 and 16 bits microprocessors (*e.g.* 8080/M6800/M6502, 8086/M68000)
+were most heavily influenced by the S/360 and the PDP-11.  It's interesting
+what features they took from each.   Having programmed in both systems
+(including assembler in both), the PDP-11 stack scheme is much more natural
+to me personally, but I did spend a number of years in an IBM shop hacking
+TSS/360 in assembler before I ever saw UNIX.
+ᐧ
+
+On Mon, Jun 28, 2021 at 7:28 AM Paul Riley <paul at rileyriot.com> wrote:
+
+> Noel,
+>
+> Thanks for that.
+>
+> As a non-C consumer of printf, should I point R5 at some space for a stack
+> and call printf in the same manner as the C example I cited? If it's all
+> too hard I'll stick to writing to stdout with my own routines.
+>
+> Paul
+>
+> *Paul Riley*
+>
+> Email: paul at rileyriot.com
+>
+>
+>
+>
+> On Mon, 28 Jun 2021 at 14:49, Noel Chiappa <jnc at mercury.lcs.mit.edu>
+> wrote:
+>
+>>     > From: Paul Riley
+>>
+>>     > I want to use printf from an assembly language program, in V6. ...
+>> the
+>>     > substitutional arguments for printf are pushed onto the stack in
+>> reverse
+>>     > order, then the address of the string, and then printf is called.
+>> After
+>>     > this, 6 is added to the stack pointer.
+>>
+>> This is all down to the standard C environment / calling sequence on the
+>> PDP-11 (at least, in V6 C; other compilers may do it differently). Calls
+>> to
+>> printf() are in no way special.
+>>
+>> Very briefly, there's a 'frame pointer' (R5) which points to the current
+>> stack
+>> frame; all arguments and automatics are relative to that. A pair of
+>> special
+>> routines, csv and cret (I couldn't find the source on TUHS, but it
+>> happens to
+>> be here:
+>>
+>>   http://ana-3.lcs.mit.edu/~jnc/tech/unix/lib/csv.s
+>>
+>> if you want to see it), set up and tear down the frame on entry/exit to
+>> that
+>> routine. The SP (R6) points to a blank location on the top (i.e. lower
+>> address;
+>> PDP-11 stacks grow down) of the stack.
+>>
+>> To call a subroutine, the arguments are pushed, the routine is called
+>> (which
+>> pushes the return PC), and on return (which pops the return PC), the
+>> arguments
+>> are discarded by the caller.
+>>
+>> (I wrote a note, BITD, explaining how all this worked; I'll upload it to
+>> the
+>> CHWiki when I get a chance.)
+>>
+>>
+>>     > I assume that the printf routine pops the address of the string off
+>> the
+>>     > stack, but leaves the other values on the stack
+>>
+>> No, all C routines (including printf()) leave the stack more or less
+>> alone,
+>> except for CSV/CRET hackery, allocating space for automatic variables on
+>> routine entry (that would be at L1; try looking at the .s for a routine
+>> with
+>> automatic variables), and popping the return PC on exit. The exception to
+>> this
+>> is the stuff around calling _enother_ routine (sketched above).
+>>
+>> Another exception is alloca() (source here:
+>>
+>>   http://ana-3.lcs.mit.edu/~jnc/tech/unix/lib/alloca.s
+>>
+>> again, couldn't find it in TUHS), which allocated a block of memory on
+>> the stack (automatically discarded when the routine which called alloca()
+>> returns). Note that since all automatic variables and incoming arguments
+>> are relative to the FP, alloca is _really_ simple; justs adjusts the
+>> SP, and it's done.
+>>
+>>     > What troubles me is that the stack pointer is not decremented
+>> before the
+>>     > first mov, in the example below. Is this some C convention? I would
+>>     > assume that the first push in my example would overwrite the top of
+>> the
+>>     > stack.
+>>
+>> That's right; that's because in the C runtime environment, the top
+>> location
+>> on the stack is a trash word (set up by csv).
+>>
+>>     > I understand db only works on files like a.out or core dumps. If I
+>>     > wanted to break the assembly language program to examine values,
+>> how can
+>>     > I force a termination and core dump elegantly, so I can examine some
+>>     > register values?
+>>
+>> Use 'cdb':
+>>
+>>   https://minnie.tuhs.org//cgi-bin/utree.pl?file=V6/usr/man/man1/cdb.1
+>>
+>> which can do interactive debugging.
+>>
+>>       Noel
+>>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210628/9520f744/attachment-0001.htm>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: JSR-Instruct.png
+Type: image/png
+Size: 281905 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210628/9520f744/attachment-0001.png>
+
+From paul at rileyriot.com  Tue Jun 29 22:18:26 2021
+From: paul at rileyriot.com (Paul Riley)
+Date: Tue, 29 Jun 2021 22:18:26 +1000
+Subject: [TUHS] Using printf from Assembly Language in V6, and db.
+In-Reply-To: <20210628203728.8305818C090@mercury.lcs.mit.edu>
+References: <20210628203728.8305818C090@mercury.lcs.mit.edu>
+Message-ID: <CAD05_j0=QWQi+qDpkgmz3oqXK7qKifzouwxSd0=1nne=XW-qMA@mail.gmail.com>
+
+Thanks Noel, Clem for your always generous and highly informative answers.
+I'll digest that and enjoy using C routines in my assembly programs!
+
+Paul
+
+*Paul Riley*
+
+Email: paul at rileyriot.com
+
+
+
+
+On Tue, 29 Jun 2021 at 06:37, Noel Chiappa <jnc at mercury.lcs.mit.edu> wrote:
+
+>     > From: Paul Riley <paul at rileyriot.com>
+>
+>     >> (I wrote a note, BITD, explaining how all this worked; I'll upload
+> it
+>     >> to the CHWiki when I get a chance.)
+>
+> Now here:
+>
+>   https://gunkies.org/wiki/PDP-11_C_stack_operation
+>
+> along with simple examples of args and auto variables, which are both
+> referenced via the FP.
+>
+>
+>     > As a non-C consumer of printf, should I point R5 at some space for a
+>     > stack and call printf in the same manner as the C example I cited?
+>
+> Not necessary to do anything with R5 (you can leave it blank); the only
+> things
+> a PDP-11 C routine needs are:
+>
+> - a good stack
+> - the arguments, and return point, on the top of the stack
+>
+> csv will set up the frame pointer, making no assumptions about the old
+> contents of R5 - see the source:
+>
+>   http://ana-3.lcs.mit.edu/~jnc/tech/unix/lib/csv.s
+>
+> although it does save the old R5 contents, and restore them on exit.
+>
+>          Noel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210629/f6cfb8db/attachment.htm>
+

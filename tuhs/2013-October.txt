@@ -1,0 +1,408 @@
+From azd30 at telus.net  Thu Oct 24 04:26:31 2013
+From: azd30 at telus.net (azd30)
+Date: Wed, 23 Oct 2013 12:26:31 -0600 (MDT)
+Subject: [pups] Netcom HV-1148 QBus Backplane
+In-Reply-To: <7401398.23905568.1382551749049.JavaMail.root@mailid.telus.net>
+Message-ID: <1396472151.23926654.1382552790998.JavaMail.root@mailid.telus.net>
+
+
+Hi all,
+
+I am hoping this list is still alive, since I'd like to find out a bit more info about this backplane.
+It's part of an 11/23 system (based on CPU) that is made by Netcom. It had standard DEC 
+cards in it DLV11, M8021 bootstrap board etc. Apparently the system ran a few years back
+before it was put in storage. I aquired it, in the hopes of bringing it back to life and getting
+it to successfully display a login: prompt.
+
+I have read through the archives, esp. a post from Michael Sokolov back in 98, where he describes 
+the different types of QBus'es. Q/Q, Q/CD etc.
+
+It looks like the backplane that I have (according to some documents written at SLAC in late 70's) 
+is a serpentine or sinusoidal.
+
+A diagram on the cardcage describes as follows:
+
+A B C D
+------------>
+<-----------
+------------->
+<------------
+
+There is also a blurb about slot 2/CD being wired differently. Two slots on the diagram are pre-printed for RL controllers.
+
+My CPU card is a later rev. D so it can do 22bit addressing. I'd like if possible to run 22bits, since this would allow
+me at a later time to put in a 11/73 cpu that would run 2.11. 
+
+How would I go about checking if the backplane is wired for 22bits or not. I seem to remeber the standard qbuses had the W1-W4 pins (?)
+that you could wirewrap to change from 18to22, but this backplane has nothing like that.
+
+Also, in the present configuration, with an 11/23 and 128Kw, could I run v6 or v7 (assuming I can get some form of supported disk storage)? At present
+I only have a floppy controller and a bunch of 8" Shugart 801 drives..
+
+thanks in advance for any replies.
+
+
+--
+alex
+
+
+
+From azd30 at telus.net  Thu Oct 24 05:25:00 2013
+From: azd30 at telus.net (azd30)
+Date: Wed, 23 Oct 2013 13:25:00 -0600 (MDT)
+Subject: [pups] Netcom HV-1148 QBus Backplane
+In-Reply-To: <2F25BE3D5F64F342B56139F31854C9B90105E06188@505MBX2.corp.vnw.com>
+References: <7401398.23905568.1382551749049.JavaMail.root@mailid.telus.net>
+ <1396472151.23926654.1382552790998.JavaMail.root@mailid.telus.net>
+ <2F25BE3D5F64F342B56139F31854C9B90105E06188@505MBX2.corp.vnw.com>
+Message-ID: <932650857.24014130.1382556300674.JavaMail.root@mailid.telus.net>
+
+
+
+Ian,
+
+Thanks for the response and the pointer to the web page. Looks like I can run 2.9 on the machine - I just have to find myself some RL's 8-)
+
+Did some digging around on QBus, and think i found enough info, that coupled with some contiuity tests should allow me to figure out exactly how the backplane is laid out.
+
+regards
+alex
+
+
+----- Original Message -----
+>From: "Ian King" <IanK at LivingComputerMuseum.org>
+>To: "azd30" <azd30 at telus.net>, pups at minnie.tuhs.org
+>Sent: Wednesday, October 23, 2013 11:47:19 AM
+>Subject: RE: Netcom HV-1148 QBus Backplane
+
+>You would probably be better served on the ClassicCmp mailing list.  This list is primarily about software, specifically Unix on the PDP-11.  
+
+>I'd have to dig to answer your question, and there's probably someone on ClassicCmp who can do so off the top of his/her head.  (And I already have my hands full: I'm at work looking at bringing up an IFS to talk to a Xerox Alto.)  
+
+>Take a look at the PUPS webpage for more information on installing e.g., V6 or V7 on various machines.  My recollection is that these versions have requirements in hardware, such as the switch register, that may make them unsuitable for a Qbus machine - but the PUPS page >has a section that can answer definitively.  -- Ian 
+
+
+
+
+From bill at cs.uofs.edu  Thu Oct 24 05:29:19 2013
+From: bill at cs.uofs.edu (Bill Gunshannon)
+Date: Wed, 23 Oct 2013 15:29:19 -0400
+Subject: [pups] Netcom HV-1148 QBus Backplane
+Message-ID: <263aef27c3dbf39f6c6cc5c39014d7e7.squirrel@www.cs.uofs.edu>
+
+> Hi all,
+> I am hoping this list is still alive, since I'd like to find out a bit
+more info about this backplane.
+> It's part of an 11/23 system (based on CPU) that is made by Netcom. It
+had
+> standard DEC
+> cards in it DLV11, M8021 bootstrap board etc. Apparently the system ran
+a
+> few years back
+> before it was put in storage.
+
+I have a few Netcom boxes at home.  I'll try to remember to look
+at what models when I go home.
+
+>                           I aquired it, in the hopes of bringing it
+> back to life and getting
+> it to successfully display a login: prompt.
+
+That would depend on the OS more than the hardware.  :-)
+
+> I have read through the archives, esp. a post from Michael Sokolov back
+in
+> 98, where he describes
+> the different types of QBus'es. Q/Q, Q/CD etc.
+> It looks like the backplane that I have (according to some documents
+written at SLAC in late 70's)
+> is a serpentine or sinusoidal.
+> A diagram on the cardcage describes as follows:
+> A B C D
+> ------------>
+> <-----------
+> ------------->
+> <------------
+> There is also a blurb about slot 2/CD being wired differently. Two slots
+on the diagram are pre-printed for RL controllers.
+
+There were backplanes like that for the two card RL controller.
+
+> My CPU card is a later rev. D so it can do 22bit addressing. I'd like if
+possible to run 22bits, since this would allow
+> me at a later time to put in a 11/73 cpu that would run 2.11.
+
+I may be wrong (but I am sure someone here will correct me) but if the
+backplane is designed for the two card RL controller I think it will be 18
+bit and not capable of 22 bit.
+
+> How would I go about checking if the backplane is wired for 22bits or
+not.
+> I seem to remeber the standard qbuses had the W1-W4 pins (?)
+> that you could wirewrap to change from 18to22, but this backplane has
+nothing like that.
+
+I would guess you could look at it and see how many bits are wired thru.
+And, if you have a clear view of the wirewrap side you should be able to
+see if it has two A-B-C-D slots in the middle.  Difference in wirewrap
+pattern will be obvious.  :-)
+
+> Also, in the present configuration, with an 11/23 and 128Kw, could I run
+v6 or v7 (assuming I can get some form of supported disk storage)? At
+present
+> I only have a floppy controller and a bunch of 8" Shugart 801 drives..
+
+What floppy controller?  Dec didn't use the standard Shugart 8" inteface
+for RX01/RX02 disks.  If it is like the Terak which also used 801's you
+are going to need to find drivers for what OS you decide to use.  Good
+luck with that.
+
+> thanks in advance for any replies.
+
+You might try asking on alt.sys.pdp11 as there are a lot much more
+knowlegable people than I active over there.
+
+bill
+
+-- 
+Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three wolves
+bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+University of Scranton   |
+Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+
+
+
+
+
+
+From slapinid at gmail.com  Wed Oct 30 18:21:20 2013
+From: slapinid at gmail.com (Sergey Lapin)
+Date: Wed, 30 Oct 2013 12:21:20 +0400
+Subject: [TUHS] off-topic: RS232C standard
+Message-ID: <CAFZPMoZ3aSxH48M7b74v-ggZTGoe+-A-NPRyCjmVog=uhHiiNw@mail.gmail.com>
+
+Hi, all!
+Sorry for slightly off-topic question, but do anybody have a copy of
+original circa 1969 RS232C standard? I need it to resolve conflict with me
+and my customer regarding if RS-232C REQUIRES the use of DE-25M connector
+or just
+RECOMMENDS it? It seems that there is a lot of interpretations of this
+standard, but
+no original document anywhere :(
+
+I know it might cost $$$, but I will pay all needed fees.
+
+All the best,
+S.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20131030/aaf8e932/attachment.html>
+
+From ron at ronnatalie.com  Wed Oct 30 20:31:56 2013
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Wed, 30 Oct 2013 06:31:56 -0400
+Subject: [TUHS] off-topic: RS232C standard
+In-Reply-To: <CAFZPMoZ3aSxH48M7b74v-ggZTGoe+-A-NPRyCjmVog=uhHiiNw@mail.gmail.com>
+References: <CAFZPMoZ3aSxH48M7b74v-ggZTGoe+-A-NPRyCjmVog=uhHiiNw@mail.gmail.com>
+Message-ID: <D8F5F46C-6F36-46BF-A3FE-0357B6CD7FE5@ronnatalie.com>
+
+I don't have the original standard but if my memory serves me right it was only a recommendation.
+OCLC shows a bunch of copies at various university libraries around the country.   How close are  you to a major university?
+
+
+
+From ron at ronnatalie.com  Wed Oct 30 20:34:54 2013
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Wed, 30 Oct 2013 06:34:54 -0400
+Subject: [TUHS] off-topic: RS232C standard
+In-Reply-To: <CAFZPMoZ3aSxH48M7b74v-ggZTGoe+-A-NPRyCjmVog=uhHiiNw@mail.gmail.com>
+References: <CAFZPMoZ3aSxH48M7b74v-ggZTGoe+-A-NPRyCjmVog=uhHiiNw@mail.gmail.com>
+Message-ID: <697C1DE1-CAF9-409E-A76B-6AF163126C4B@ronnatalie.com>
+
+One on ebay for sale http://www.ebay.com/itm/EIA-Standard-RS-232-C-August-1969-Vintage-PHOTOCOPY-Free-shipping-/190834094137
+
+
+
+From deritchie at yahoo.com  Wed Oct 30 23:15:11 2013
+From: deritchie at yahoo.com (Dave Ritchie)
+Date: Wed, 30 Oct 2013 06:15:11 -0700 (PDT)
+Subject: [TUHS] off-topic: RS232C standard
+In-Reply-To: <CAFZPMoZ3aSxH48M7b74v-ggZTGoe+-A-NPRyCjmVog=uhHiiNw@mail.gmail.com>
+References: <CAFZPMoZ3aSxH48M7b74v-ggZTGoe+-A-NPRyCjmVog=uhHiiNw@mail.gmail.com>
+Message-ID: <1383138911.44138.YahooMailNeo@web162701.mail.bf1.yahoo.com>
+
+http://www.worldcat.org/title/interface-between-data-terminal-equipment-and-data-communication-equipment-employing-serial-binary-data-interchange/oclc/38637094   might be useful to track down a
+physical copy of the original document (library search engine - The link above is for the RS-232 spec.)
+
+Best regards,
+David Ritchie 
+
+
+
+
+On Wednesday, October 30, 2013 4:22 AM, Sergey Lapin <slapinid at gmail.com> wrote:
+ 
+Hi, all!
+Sorry for slightly off-topic question, but do anybody have a copy of
+original circa 1969 RS232C standard? I need it to resolve conflict with me
+and my customer regarding if RS-232C REQUIRES the use of DE-25M connector or just
+RECOMMENDS it? It seems that there is a lot of interpretations of this standard, but
+no original document anywhere :(
+
+
+I know it might cost $$$, but I will pay all needed fees.
+
+
+All the best,
+
+S.
+
+
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20131030/529319f0/attachment.html>
+
+From deritchie at yahoo.com  Wed Oct 30 23:34:56 2013
+From: deritchie at yahoo.com (Dave Ritchie)
+Date: Wed, 30 Oct 2013 06:34:56 -0700 (PDT)
+Subject: [TUHS] off-topic: RS232C standard
+In-Reply-To: <CAFZPMoZ3aSxH48M7b74v-ggZTGoe+-A-NPRyCjmVog=uhHiiNw@mail.gmail.com>
+References: <CAFZPMoZ3aSxH48M7b74v-ggZTGoe+-A-NPRyCjmVog=uhHiiNw@mail.gmail.com>
+Message-ID: <1383140096.68632.YahooMailNeo@web162703.mail.bf1.yahoo.com>
+
+and here is a link to where to buy the current standard TIA-232-F: http://global.ihs.com/search_res.cfm?RID=TIA&INPUT_DOC_NUMBER=TIA-232 
+
+
+-- David 
+
+
+
+
+On Wednesday, October 30, 2013 4:22 AM, Sergey Lapin <slapinid at gmail.com> wrote:
+ 
+Hi, all!
+Sorry for slightly off-topic question, but do anybody have a copy of
+original circa 1969 RS232C standard? I need it to resolve conflict with me
+and my customer regarding if RS-232C REQUIRES the use of DE-25M connector or just
+RECOMMENDS it? It seems that there is a lot of interpretations of this standard, but
+no original document anywhere :(
+
+
+I know it might cost $$$, but I will pay all needed fees.
+
+
+All the best,
+
+S.
+
+
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20131030/8e39985c/attachment.html>
+
+From gregg.drwho8 at gmail.com  Thu Oct 31 00:07:51 2013
+From: gregg.drwho8 at gmail.com (Gregg Levine)
+Date: Wed, 30 Oct 2013 10:07:51 -0400
+Subject: [TUHS] off-topic: RS232C standard
+In-Reply-To: <CAFZPMoZ3aSxH48M7b74v-ggZTGoe+-A-NPRyCjmVog=uhHiiNw@mail.gmail.com>
+References: <CAFZPMoZ3aSxH48M7b74v-ggZTGoe+-A-NPRyCjmVog=uhHiiNw@mail.gmail.com>
+Message-ID: <CAC5iaNHadixON02dTmFGmbz6zhi4NmMGSFukPn7a=QiE0GcS9Q@mail.gmail.com>
+
+Hello!
+That is a DB-25 Sergei. The 9 pin one that the Newer one uses, is the
+DE9 So far the others are all correct.
+-----
+Gregg C Levine gregg.drwho8 at gmail.com
+"This signature fought the Time Wars, time and again."
+
+
+On Wed, Oct 30, 2013 at 4:21 AM, Sergey Lapin <slapinid at gmail.com> wrote:
+> Hi, all!
+> Sorry for slightly off-topic question, but do anybody have a copy of
+> original circa 1969 RS232C standard? I need it to resolve conflict with me
+> and my customer regarding if RS-232C REQUIRES the use of DE-25M connector or
+> just
+> RECOMMENDS it? It seems that there is a lot of interpretations of this
+> standard, but
+> no original document anywhere :(
+>
+> I know it might cost $$$, but I will pay all needed fees.
+>
+> All the best,
+> S.
+>
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+From reed at reedmedia.net  Thu Oct 31 03:10:38 2013
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Wed, 30 Oct 2013 12:10:38 -0500 (CDT)
+Subject: [TUHS] Univ. of Toronto tape distribution license circa 1977?
+Message-ID: <alpine.NEB.2.02.1310301152280.6872@t1.m.reedmedia.net>
+
+(For reference ... I am writing a detailed history of Berkeley Unix ...)
+
+Does anyone have a copy of and the story about the Univ. of Toronto 
+license used for their tape distributions around 1977?
+
+In an interview in Linux Magazine, Volume 1, Number 6, in November
+1999, Joy said he just took a license from the University of Toronto
+and modified it a little bit and started using that for his BSD.
+It was a one-page license.
+
+I have a copy of an early one page license (from AUUGN newsletter V01.3, 
+Feb/Mar 1979) which was used for the Pascal and Ex release, but it says 
+"(first) Berkeley Software Tape" on it which seems odd to number the 
+real first distribution. Also the copy of the license I have is for $60, 
+but the first distribution tapes were $50; these amounts are both 
+documented in various places for 2BSD and 1BSD respectively. Since maybe 
+the one page license says "(first)" and "$60", maybe there is a 
+different earlier license?
+
+I also tried Googling for some of the terminology but didn't find any 
+hits.
+
+So does anyone have a copy of the license for the Univ. of Toronto tape 
+distribution from the mid 1970's?
+
+On that note, can anyone tell me about the story of the Toronto Unix 
+distributions? I understand in late 1978, the Univ. of Toronto Computing 
+Services group and some other Toronto-area installations were providing 
+their own Unix distributions for standardization of their commonly used 
+commands and were forming the "Toronto Distribution Centre" (mentioned 
+by Gregory Hill, see AUUGN V01.2, Dec-78 / Jan-79). But within a few 
+years, the UTCS was using BSD.
+
+  Jeremy C. Reed
+
+echo 'EhZ[h ^jjf0%%h[[Zc[Z_W$d[j%Xeeai%ZW[ced#]dk#f[d]k_d%' | \
+  tr            '#-~'            '\-.-{'
+
+
+
+
+From ron at ronnatalie.com  Thu Oct 31 04:11:37 2013
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Wed, 30 Oct 2013 14:11:37 -0400
+Subject: [TUHS] Univ. of Toronto tape distribution license circa 1977?
+In-Reply-To: <alpine.NEB.2.02.1310301152280.6872@t1.m.reedmedia.net>
+References: <alpine.NEB.2.02.1310301152280.6872@t1.m.reedmedia.net>
+Message-ID: <3F2B3C23-CDFA-4AE7-BF8D-C62D875E3594@ronnatalie.com>
+
+The money was just to pay for the tape primarily.    There were no restrictions on redistributing the data (over and above the WE license).   I remember hustling tapes through customs on the way to the UT Unix conference back in what 1979.     Since they didn't really have the production to write everybody a tape that wanted one they picked a few people who were centrally located that could get copies and redistribute for them.    Since we (Johns Hopkins) had brought several of us with tapes, we got one to bring back.
+
+
+

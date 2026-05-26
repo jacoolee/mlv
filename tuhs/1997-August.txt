@@ -1,0 +1,662 @@
+From wkt at henry.cs.adfa.oz.au  Fri Aug  1 13:19:52 1997
+From: wkt at henry.cs.adfa.oz.au (Warren Toomey)
+Date: Fri, 1 Aug 1997 13:19:52 +1000 (EST)
+Subject: Old UNIX ftp archive - access ideas
+Message-ID: <199708010319.NAA10575@henry.cs.adfa.oz.au>
+
+Dear PDP-11 & old Unix enthusiasts,
+
+Status report of our petition to SCO about UNIX src licenses. I received this
+from Dion Johnson last week:
+
+	Warren,
+
+	Thanks for your latest news.  That's great about the signatures.
+	Yes, I perused the earlier list and it's really amazing that
+	we have such famous support for this.  I am sure it will be
+	a great PR victory when we finally get this arranged.
+
+	Our exec VP (Doug Michels) is on your side.  I am annoying our
+	legal folks, bless their hearts. :-)  They have a job to do also and
+	I want to be sure we are protecting SCO's interests in the code
+	in the right ways.
+
+	I expect an answer in a week or so.  I suspect there will be
+	further internal iterations here as we craft a license that works
+	for all parties.
+
+	So the right answer to publish is:
+
+	"SCO is pleased to entertain this request from so many loyal and
+	famous fans of UNIX.  We are looking into how we can provide this
+	source code.  No promises at this time, since there are some
+	intellectual property issues that must be resolved, but we will
+	do what we can."
+
+I'll email when I hear more. It occurred to me that if SCO agree to src
+licenses and people buy them, then they will of course want the software.
+I already make the stuff available to several people, on the trust that they
+have existing src licenses (e.g show me the first 100 lines of v7 nami.c etc.)
+At the moment, it's all sitting as .tar.gz files on my desktop box.
+
+If I become the `central repository' for the software, then I'd like to
+set up access procedures which ensure that only legitimate users can access
+the archive, and that eavesdropping or hacking access to the archive
+shouldn't divulge its contents easily.
+
+I'm after comments from you guys, the end users of the archive, as to what
+sounds good, ok, bad, annoying and/or plain stupid to you.
+
+Proposal
+--------
+
+Make the archive available via FTP:
+
+	- To prevent capture of ftp passwords, I suggest that each license
+	  owner has an ftp account, and authentication is done using S/Key.
+
+	  To distribute the S/Key key phrase or a number of S/Key pass
+	  phrases to the license owners, I suggest using PGP email.
+
+Keep the archive files encrypted:
+
+	- This will stop hackers who penetrate the archive from getting the
+	  plaintext version of the files. I suggest using PGP with a very
+	  large key size to encrypt the files. The key won't be kept on the
+	  archive machine.
+
+Transmission to license owner - Suggestion A:
+
+	- Transmit the PGP encrypted files `as is' to the license owner
+	  via ftp. Shortcoming: every license owner has the same private
+	  key required to decrypt the files. A hacker only needs to find
+	  one vulnerable license owner to get the key.
+
+Transmission to license owner - Suggestion B:
+
+	- On-the-fly PGP encrypt the files using a key specific to the
+	  license owner. Shortcoming: end user must have a personal key
+	  plus the common key, and must decrypt everything twice.
+
+Transmission to license owner - Suggestion C:
+
+	- On-the-fly decrypt the archive file, and on-the-fly re-encrypt
+	  it using a key specific to the license owner. End user only needs
+	  one personal PGP key to decrypt the file. Shortcoming: the key
+	  required to decrypt the file back to plaintext must exist on the
+	  archive server. Hackers who break-in can thus get plaintext.
+
+	  I think I prefer Suggestion A. For all 3 suggestions above, PGP
+	  private keys will be sent to license holders using PGP email.
+
+Anyway, this is an off the cuff set of ideas. I certainly want to keep
+my butt from being sued off by SCO :-), and so I need to authenticate users,
+keep audit trails of downloads and logins, and take reasonable steps to
+prevent non-legitimate users from accessing the licensed material.
+
+I'd really like feedback from you about the proposed scheme for providing
+access to this old UNIX software!
+
+Thanks in advance,
+
+	Warren	wkt at cs.adfa.oz.au
+
+
+From wkt at henry.cs.adfa.oz.au  Fri Aug  1 14:02:29 1997
+From: wkt at henry.cs.adfa.oz.au (Warren Toomey)
+Date: Fri, 1 Aug 1997 14:02:29 +1000 (EST)
+Subject: ideas re UNIX licensed distribution
+In-Reply-To: <199708010345.UAA27393@generic.yamato.com> from "Robert J. Kelley" at "Jul 31, 97 08:45:03 pm"
+Message-ID: <199708010402.OAA10623@henry.cs.adfa.oz.au>
+
+In article by Robert J. Kelley:
+> 
+> Why not just use SSH: verified licensees could submit keys and
+> the archive server would keep them on file.  scp could be used
+> to retrieve the files.
+
+I'd still have to encrypt the archive files that are resident on disk.
+Also, ssh is more of a `general' login account. scp would allow someone
+to retrieve /etc/password :-)
+
+If I could restrict scp access, that'd be an ok alternative.
+
+	Warren
+
+
+From wkt at henry.cs.adfa.oz.au  Fri Aug  1 14:33:26 1997
+From: wkt at henry.cs.adfa.oz.au (Warren Toomey)
+Date: Fri, 1 Aug 1997 14:33:26 +1000 (EST)
+Subject: Old UNIX ftp archive - access ideas
+In-Reply-To: <199708010412.VAA15987@moe.2bsd.com> from "Steven M. Schultz" at "Jul 31, 97 09:12:05 pm"
+Message-ID: <199708010433.OAA10684@henry.cs.adfa.oz.au>
+
+In article by Steven M. Schultz:
+> > Make the archive available via FTP:
+> 
+> 	Convenient but the management of "accounts" and S/Key or PGP keys
+> 	could be a real logistic nightmare.
+> 
+> 	Have you considered putting the archive on CDrom and shipping that
+> 	upon receipt of a copy of the license?  Naturally there would be
+> 	a modest fee for the media and shipping.
+> 
+> 	Probably would want a "mirror" shipping office in the US.
+> 
+> 	The reason I asked the "what will most folks want" question earlier
+> 	was that perhaps folks only want a handful or a couple pieces.  CDrom
+> 	writing is extremely simple (I think FreeBSD makes it harder or more
+> 	complex than other systems though) - perhaps folks could, with the
+> 	request for a CD specify which parts they want and a "custom" CD
+> 	could be created.
+> 
+> 	This approach does have its own set of problems but it does do away
+> 	with network snooping, outages and breakins.  The archive could be 
+> 	offline or encrypted with a key known only to you - if you needed to
+> 	make something available you could decrypt a copy and make it available
+> 	for a small timewindow.
+> 
+> 	I know I'm planning on creating a few CDs to safeguard the stuff I've
+> 	obtained so far - good (and cheap) protection against disk crashes
+> 	and unreadable backup tapes.
+> 
+> 	A variation on this scheme would be to master a CD with everything
+> 	on it and let SCO send the CD out along with the license when 
+> 	payment is received.  Hmmmm - I kinda like this the more I think
+> 	about it.  Might even get some nice artwork (the BSD 'imp'?) on
+> 	the cover.  I'm sure SCO gets a real good rate at the CD pressing
+> 	plant so the media cost would be lower than an individual doing it
+> 	on a CDwriter.
+
+> 	Perhaps the online/FTP archive could be a backup or secondary
+> 	means of distribution - if someone convinces you (or sends a copy
+> 	of the license) they have the license but lost the media, etc you
+> 	could set up a PGP encrypted account for them.
+
+> 	Cheers.
+> 	Steven
+
+Yes, I'd thought about cutting a CD directly from the current archive,
+and certainly having someone (SCO, me?) distribute files on CD would
+make the administration a lot easier. I guess license holders could
+buy `upgrade CDs' if the archive changes.
+
+If SCO come to the src license party, I certainly will ask them about
+pressing CDs and distributing them as part of the license sale.
+
+Thanks for the input Steven!
+
+	Warren
+
+
+From m at mbsks.franken.de  Fri Aug  1 17:29:48 1997
+From: m at mbsks.franken.de (Matthias Bruestle)
+Date: Fri, 1 Aug 1997 09:29:48 +0200 (MET DST)
+Subject: Old UNIX ftp archive - access ideas
+In-Reply-To: <199708010319.NAA10575@henry.cs.adfa.oz.au> from Warren Toomey at "Aug 1, 97 01:19:52 pm"
+Message-ID: <m0wuC9m-000Hq5C@mbsks.franken.de>
+
+Mahlzeit
+
+
+According to Warren Toomey:
+> If I become the `central repository' for the software, then I'd like to
+> set up access procedures which ensure that only legitimate users can access
+> the archive, and that eavesdropping or hacking access to the archive
+> shouldn't divulge its contents easily.
+Isn't ftp for a $200-programm secure enough? I'm doing beta testing
+for a programm, which costs $1100 and they distribute the passwords
+for ftp by unencrypted mail. They do that allready for a few releases
+and I don't think they had any problems with that.
+
+> Keep the archive files encrypted:
+> 
+> 	- This will stop hackers who penetrate the archive from getting the
+> 	  plaintext version of the files. I suggest using PGP with a very
+> 	  large key size to encrypt the files. The key won't be kept on the
+> 	  archive machine.
+I don't think you need a very large key. Everyone, which has the
+choice to crack a 512bit key or to pay $200, would choose to pay.
+
+> I'd really like feedback from you about the proposed scheme for providing
+> access to this old UNIX software!
+I think pgp is to difficult to use for some. You could use a simple
+encryption programm like: ftp://isidor.ethz.ch/pub/simpl/safer.V1.1.tar.Z
+which should be very portable. The passphrase could be distributed on
+the license.
+
+
+Mahlzeit
+
+endergone Zwiebeltuete
+
+-- 
+insanity inside
+
+
+From wkt at henry.cs.adfa.oz.au  Thu Aug  7 09:22:07 1997
+From: wkt at henry.cs.adfa.oz.au (Warren Toomey)
+Date: Thu, 7 Aug 1997 09:22:07 +1000 (EST)
+Subject: George's PDP Tape in UK
+Message-ID: <199708062322.JAA03135@henry.cs.adfa.oz.au>
+
+Dear PDP-11 UNIXers,
+
+	Just got this back from George Coulouris in the UK. He's got an
+old tape with PDP-11 UNIX software on it which he'd like to read:
+
+ * In article by George Coulouris:
+ * > Warren,
+ * > Thanks for your reply. I'd be happy to liase with anyone who is willing to
+ * > have a go at reading the tape.
+ * > George
+ *
+
+[and later...]
+
+ * Did anybody get back to you about reading that old PDP-11 tape, George??
+
+No, I'm afraid not.
+
+I have been told that there is a 9-track tape drive at another centre in
+London, but I haven't pursued it 'cos I was waiting for contact from your
+people.
+
+George
+
+-------
+
+Can anybody in the UK or Europe who would be happy to read this old tape for
+George & for the PUPS archive please email him! His address is
+
+	George.Coulouris at dcs.qmw.ac.uk
+
+Many thanks in advance,
+
+	Warren	wkt at cs.adfa.oz.au
+
+
+From engel at numerik.math.uni-siegen.de  Thu Aug  7 18:39:42 1997
+From: engel at numerik.math.uni-siegen.de (Michael Engel)
+Date: Thu, 7 Aug 1997 10:39:42 +0200 (MET DST)
+Subject: George's PDP Tape in UK
+In-Reply-To: <199708062322.JAA03135@henry.cs.adfa.oz.au> from "Warren Toomey" at Aug 7, 97 09:22:07 am
+Message-ID: <9708070839.AA04553@descartes.numerik.math.uni-siegen.de>
+
+
+Hi,
+
+it seems my mail didn`t come through last time ...
+
+> 	Just got this back from George Coulouris in the UK. He's got an
+> old tape with PDP-11 UNIX software on it which he'd like to read:
+> 
+>  * In article by George Coulouris:
+>  * > Warren,
+>  * > Thanks for your reply. I'd be happy to liase with anyone who is willing to
+>  * > have a go at reading the tape.
+>  * > George
+> 
+> [and later...]
+> 
+>  * Did anybody get back to you about reading that old PDP-11 tape, George??
+> 
+> No, I'm afraid not.
+> 
+> I have been told that there is a 9-track tape drive at another centre in
+> London, but I haven't pursued it 'cos I was waiting for contact from your
+> people.
+> 
+We have a TU81+ 9 track tape connected to a VMS Alpha here. So, if you send
+me the tape, I will try to read it. Worked perfectly some months ago for a
+10 yr. old tape from a DECsystem 10 ...
+
+regards,
+	Michael Engel	(engel at unix-ag.uni-siegen.de)
+
+
+
+From wkt at henry.cs.adfa.oz.au  Mon Aug 11 13:22:17 1997
+From: wkt at henry.cs.adfa.oz.au (Warren Toomey)
+Date: Mon, 11 Aug 1997 13:22:17 +1000 (EST)
+Subject: PUPS
+In-Reply-To: <19970808214918.53692@dynamic.isdn.uiuc.edu> from "Mark D. Roth" at "Aug 8, 97 09:49:18 pm"
+Message-ID: <199708110322.NAA04948@henry.cs.adfa.oz.au>
+
+In article by Mark D. Roth:
+> Warren,
+> 
+> I have a PDP-11/03-L at home that I rescued from Bell+Howell Corp and
+> know next to nothing about.  I'm looking for any info I might be able
+> to find on how to get this machine running, as well as any info I
+> might find about getting a Unix implementation for it.
+
+I don't think you'll get Unix running on an /03, I just searched thru the
+paper archives here and I've seen references to /23's, /34's, 40's on up,
+but not for /03's. I'd suspect that the /03 doesn't have the memory management
+(nor the memory) to get Unix running.
+
+> I saw reference to a mailing list on the webpage, but no information
+> on how to join.  What can you tell me?
+
+Mark, I'll add you to the list, and bounce this there as well; someone
+with more knowledge of -11 hardware should be able to set us both straight
+with regards to 11/03's.
+
+Cheers,
+	Warren
+
+
+From sms at moe.2bsd.com  Mon Aug 11 13:53:16 1997
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Sun, 10 Aug 1997 20:53:16 -0700 (PDT)
+Subject: PUPS
+Message-ID: <199708110353.UAA21891@moe.2bsd.com>
+
+Warren, Mark -
+
+> In article by Mark D. Roth:
+> > I have a PDP-11/03-L at home that I rescued from Bell+Howell Corp and
+> > know next to nothing about.  I'm looking for any info I might be able
+> 
+> I don't think you'll get Unix running on an /03, I just searched thru the
+
+	Quite correct.
+
+> paper archives here and I've seen references to /23's, /34's, 40's on up,
+> but not for /03's. I'd suspect that the /03 doesn't have the memory management
+> (nor the memory) to get Unix running.
+
+	Warren - you're absolutely right.  The 11/03 has a maximum memory
+	(most were not fully populated) of 56kbytes and _no_ memory
+	management.  Any Unix (since the initial one on the PDP-7) requires
+	at least two memory management states: kernel and user.  Much later
+	versions can take advantage of the 3rd mode (supervisor).
+
+	Smallest machine I ever ran Unix on was an 11/23 (the development
+	was done on a 11/70 because various programs were too large to run
+	on a non split I/D machine such as the 11/23) and it was, shall we 
+	say, "interesting".  Just enough memory (max of 248kb) to run one or 
+	two user processes at a time (we had a rather large kernel and some
+	homebrew communications drivers) - you could get logged in and then 
+	each time you typed a command the shell would get swapped out to run 
+	your command ;).
+
+> Mark, I'll add you to the list, and bounce this there as well; someone
+> with more knowledge of -11 hardware should be able to set us both straight
+> with regards to 11/03's.
+
+	You got it right - nothing to set straight.  
+
+	Steven Schultz
+
+
+
+From George.Coulouris at dcs.qmw.ac.uk  Fri Aug 22 01:49:53 1997
+From: George.Coulouris at dcs.qmw.ac.uk (George Coulouris)
+Date: Thu, 21 Aug 1997 16:49:53 +0100
+Subject: George's PDP Tape in UK
+In-Reply-To: <9708070839.AA04553@descartes.numerik.math.uni-siegen.de>
+References: <199708062322.JAA03135@henry.cs.adfa.oz.au> from "Warren
+ Toomey" at Aug 7, 97 09:22:07 am
+Message-ID: <l0311070db0221139bb07@[138.37.88.234]>
+
+Dear Michael,
+
+Many thanks for your offer. Sorry for the delay in replying. If you are
+still willing I would like to take up your offer. If you will mail me your
+physical mail address, I'll send you the tape. As far as I can remember the
+tape is a UNIX tar archive, that should be readable on the VMS machine and
+you could give the files back to me by ftp.
+
+(I'm taking up your offer rather than Tim Bradshaw's because you seem to
+have had more recent success with reading old tapes.
+
+Thanks again,
+
+George
+
+At 9:39 am +0100 7/8/97, Michael Engel wrote:
+ * >
+ * We have a TU81+ 9 track tape connected to a VMS Alpha here. So, if you send
+ * me the tape, I will try to read it. Worked perfectly some months ago for a
+ * 10 yr. old tape from a DECsystem 10 ...
+ *
+At 3:22 pm +0100 7/8/97, Tim Bradshaw wrote:
+
+ *
+ * We have old-tape-reading-technology, so we could give it a try.  No
+ * promises at all though (I have to turn the drive back on &c, and it's
+ * not altogether clear that it will work, though it did last time I
+ * tried it), asnd it will take me ages to get around to it, being very
+ * inefficient...
+
+
+------------------------------------------------------------------------------
+George F. Coulouris                         | Computer Science Dept
+Professor of Computer Systems               | QMW, University of London
+WWW:     http://www.dcs.qmw.ac.uk/~george   | Mile End Road
+Phone: +44 171 975 5201 (direct line)       | London E1 4NS
+Fax:          +44 181 980 6533              | United Kingdom
+Home phone:   +44 171 485 5896              |
+pager:        01426 183113                  |
+
+
+
+
+From wkt at henry.cs.adfa.oz.au  Wed Aug 27 10:45:58 1997
+From: wkt at henry.cs.adfa.oz.au (Warren Toomey)
+Date: Wed, 27 Aug 1997 10:45:58 +1000 (EST)
+Subject: Latest PDP-11 UNIX email from SCO
+Message-ID: <199708270045.KAA03801@henry.cs.adfa.oz.au>
+
+All,
+	Here is the latest email from SCO with regards to PDP-11 UNIX
+source licenses. I'll add one comment at the bottom.
+
+Please treat this as YOUR EYES ONLY. I haven't got permission from Dion
+to forward this on (yet), but I think that more pairs of eyes than just
+mine need to have a look at it for any problems.
+
+----- Forwarded message from Dion -----
+
+  From: Dion <dionj at sco.COM>
+  X-Mailer: SCO OpenServer Mail Release 5.0
+  To: wkt at cs.adfa.oz.au
+  Subject: Re: Touching Base!
+  Date: Tue, 26 Aug 97 12:45:07 PDT
+
+Warren,
+
+Good progress.  We have some positive consensus developing.
+Here is the proposed license terms (roughly, not fully legalized
+yet).  Please let me know if you see any problems with this
+proposal:
+
+
+Here are the terms that I think make sense:
+---------------------------------------------------------------------------
+License terms:
+    
+* the license covers the entire distributions (source code, binaries and
+  documentation) of the following versions of UNIX:
+            o 1st, 2nd, 3rd, 4th, 5th, 6th and 7th Edition UNIX
+            o 32V UNIX
+            o PWB/UNIX
+            o those portions of all 2BSD releases which are derived from UNIX
+              source code
+
+* licensees have these rights wrt the binaries and source code of the above
+  versions of UNIX:
+
+use
+store
+reproduce
+edit
+adapt
+enchance
+improve
+otherwise modify
+transmit electronically
+repackage
+
+* These rights are licensed to noncommercial users.  The source may
+  not be sold nor used to develop commercial versions of UNIX.
+
+* licensees have the right to install UNIX binaries on PDP-11 hardware and
+  PDP-11 emulating software
+
+* licensees have the right to allow noncommercial use the UNIX binaries on
+  systems for which the product is licensed.
+    
+   (Note that the latter is already permitted, given SCO's binary license
+    agreement for 5th, 6th and 7th Edition UNIX. We would also be happy with the
+    following conditions imposed in the source code and binary license for
+    PDP-11 UNIXes)
+    
+* license is not transferable.
+
+* source code covered by the license cannot be distributed or disclosed
+  to people not covered by the license.  The licensees are permitted to
+  collaborate on modifications and mutually share their modifications.
+
+* SCO is not required to provide copies of any source code, binaries or
+  documentation with the source code and binary license for PDP-11 UNIXes
+
+License Fee:  SCO charges a one-time license fee of $100 per licensee,
+for a site license for one organization.
+
+We may, at some future time, provide source distributions (if/when
+we can find the sources), but this is not committed.  We know that
+the licensees have, between them, most of the needed sources.
+
+----- End of forwarded message from Dion -----
+
+My comment. The only thing I want to change is:
+
+	* licensees have the right to install UNIX binaries on PDP-11 hardware
+	  and PDP-11 emulating software
+
+becomes
+
+	* licensees have the right to install UNIX software on PDP-11 hardware
+	  and PDP-11 emulating software
+
+This allows us to install source so as to modify it or to rebuild kernels etc.
+
+I briefly raised the issue of source distribution (SCO or me? FTP or CD-ROM?),
+but I suggested that we leave it until the licenses go on sale.
+
+Please email your comments on this to the mailing list
+(oldunix at minnie.cs.adfa.oz.au).
+
+Thanks,
+	Warren	wkt at cs.adfa.oz.au
+
+
+From wkt at henry.cs.adfa.oz.au  Wed Aug 27 15:51:20 1997
+From: wkt at henry.cs.adfa.oz.au (Warren Toomey)
+Date: Wed, 27 Aug 1997 15:51:20 +1000 (EST)
+Subject: Latest PDP-11 UNIX email from SCO
+In-Reply-To: <199708270539.WAA16297@moe.2bsd.com> from "Steven M. Schultz" at "Aug 26, 97 10:39:11 pm"
+Message-ID: <199708270551.PAA00316@henry.cs.adfa.oz.au>
+
+In article by Steven M. Schultz:
+> 	It looks to me that SCO has granted "us" every single thing we were
+> 	asking for.
+
+I've thought of a few more changes:
+
+In the wording from SCO, the status of `documentation' is unclear. The
+following should clear this up:
+
+  + use the term software == `source, binaries and documentation' in many
+    places where this is appropriate.
+
+  + use the term `source' only where they want to restrict to licensees.
+
+
+
+  + also, don't disclose `source' to people not covered by the SCO license
+    or by existing UNIX software licenses from Western Electric and AT&T.
+
+
+Comments anybody?
+
+	Warren
+
+
+From wkt at henry.cs.adfa.oz.au  Fri Aug 29 11:43:09 1997
+From: wkt at henry.cs.adfa.oz.au (Warren Toomey)
+Date: Fri, 29 Aug 1997 11:43:09 +1000 (EST)
+Subject: Latest PDP-11 UNIX email from SCO
+In-Reply-To: <9708281506.AA29078@numbat05-an2.pa.dec.com> from "mcjones@pa.dec.com" at "Aug 28, 97 08:06:23 am"
+Message-ID: <199708290143.LAA03340@henry.cs.adfa.oz.au>
+
+In article by mcjones at pa.dec.com:
+> 
+> > Maybe someone else can volunteer, if I organise the contents :-)
+> 
+> There's one here at my workplace.  I don't know how to use it myself.  
+> I could probably get some help in burning one or two, but I don't 
+> think it would be appropriate to burn dozens or hundreds.  How many 
+> licensees do you anticipate?
+
+There's 300 signatures on the petition. I'd hope that 1/2 of those
+will buy licenses, and probably most would like the stuff in easy-to-use
+form.
+
+I know that Steven Schultz has access to a writer too (hint hint!).
+I will probably buy another hard disk here for the PDP archive, and give
+access to license holders.
+
+I'd like to get users to suggest layout changes & what should be exploded
+etc. so that we can burn a 650M CD image directly from the archive.
+
+Currently, the archive is sitting at 250M, so there's room to explode
+many of the distributions stored there.
+
+We also need to sit down and catalogue this stuff so that it's not
+just a collection of random tapes. I'm slowly doing this & have done
+the most important stuff, see the Tapes/DETAILS file if you ftp in.
+But more work needs to be done.
+
+So hopefully, we can pass the archive (as a Rock Ridge image) to a few
+volunteers to burn CD-R copies. Anybody in Europe who would volunteer?
+
+Just an idea!
+
+	Warren
+
+
+From wkt at henry.cs.adfa.oz.au  Sun Aug 31 12:41:29 1997
+From: wkt at henry.cs.adfa.oz.au (Warren Toomey)
+Date: Sun, 31 Aug 1997 12:41:29 +1000 (EST)
+Subject: PDP-11 Unix CD-ROM archive burn
+In-Reply-To: <B0620B9317B0D0119D3C0060976CE96418B8@nt-main.vitrex.com> from Kevin Wright at "Aug 29, 97 09:24:27 am"
+Message-ID: <199708310241.MAA04803@henry.cs.adfa.oz.au>
+
+In article by Kevin Wright:
+> I could very possibly volunteer to do one.  I have access to my
+> companies cdrom burner.
+> 
+> Subject change:
+> I own a PDP-11/23+ for which I'm constantly searching the Internet for
+> RT-11 and TSX+ documentation and software, as well as any other OS's
+> such as Unix.  Do you have any such software/documentation in your
+> archive of which you would be willing to allow me a copy?
+
+Kevin, until you can buy a license from SCO (soon I hope), all I can
+offer are the binaries for 6th & 7th Edition. If you have an RK05 or RL02,
+then you can get disk images as part of Bob Supnik's PDP-11 emulator,
+at ftp://minnie.cs.adfa.oz.au/pub/PDP-11-sims/Supnik_2.3
+
+(or a similar URL, I'm typing from memory).
+
+If you don't have RK05 or RL02s, someone should be able to build
+a suitable disk image for you. I think you'll need to go 6th Edition
+as you have a /23.
+
+	Warren
+
+

@@ -1,0 +1,585 @@
+From newsham at lava.net  Fri Oct  1 03:49:12 2010
+From: newsham at lava.net (Tim Newsham)
+Date: Thu, 30 Sep 2010 07:49:12 -1000 (HST)
+Subject: [TUHS] 6502 and swtch, was Re: 2.11BSD cross compiler
+In-Reply-To: <20100929043451.GA2673@minnie.tuhs.org>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+	<20100929005148.GA8032@bitmover.com>
+	<AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+	<20100929023819.GA12919@bitmover.com>
+	<alpine.DEB.1.10.1009290516080.14504@ns305552.ovh.net>
+	<20100929035534.GE12919@bitmover.com>
+	<20100929043451.GA2673@minnie.tuhs.org>
+Message-ID: <Pine.BSI.4.64.1009300747110.25174@malasada.lava.net>
+
+> Argh, I wasn't going to post back but I can't resist. Back in the 80's I
+> rewrote Xinu from C into 6502 assembly, and got very primitive multitasking
+> working on the Apple ][. I guess that counts as writing swtch :-)
+>
+> ftp://minnie.tuhs.org/pub/apple2/apple2xinu.tar.gz
+
+Along the same line: http://lng.sourceforge.net/
+A unix-like system written for 6502 (not my doing, I just
+find it cute).  Its interesting because in several ways
+the 6502's not really a great cpu for this kind of thing
+(fixed location stack, not easy to write PIC code...).
+
+But hey, if you can support 8 concurrent users on a 48k
+pdp11, why not unix on a c64? :)
+
+> 	Warren
+
+Tim Newsham | www.thenewsh.com/~newsham | thenewsh.blogspot.com
+
+
+From grog at lemis.com  Sat Oct  2 13:46:01 2010
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Sat, 2 Oct 2010 13:46:01 +1000
+Subject: [TUHS] PDP-8 (was: 2.11BSD cross compiler)
+In-Reply-To: <20100930135029.GB30928@bitmover.com>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+	<20100929005148.GA8032@bitmover.com>
+	<AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+	<20100929023819.GA12919@bitmover.com>
+	<AANLkTin53c5N3wGpPfi5DQ1WdrqtV5+ENmSVSoiZwFXu@mail.gmail.com>
+	<20100930042229.GA66070@dereel.lemis.com>
+	<20100930135029.GB30928@bitmover.com>
+Message-ID: <20101002034601.GE66070@dereel.lemis.com>
+
+On Thursday, 30 September 2010 at  6:50:29 -0700, Larry McVoy wrote:
+>>>>  If you don't get the question you are not an OS person,
+>>>> if you are, of course you get it.
+>>
+>> Hmm.  Am I expected to understand this?  Seriously, I don't know how
+>> many people really wrote anything like swtch ().
+>
+> You'd be amazed at how many people did their own user level threads.
+> Gotta write swtch() for that.
+
+I think you're missing the joke.  But swtch () is a specific kernel
+function in UNIX, though in this thread (excuse the pun) people seem
+to be using it as a synonym for a scheduler.  And not many people need
+to write their threading library by hand any more.
+
+> And it's not swtch() so much as do you understand the stack frames?
+
+That's a different issue.  Any programmer worth his salt needs to
+understand the underlying hardware, including stack frames.  For my
+personal understanding of them, see
+http://www.lemis.com/grog/Documentation/PUS/porting_unix_software/obj.pdf
+towards the end, or http://www.lemis.com/grog/Papers/Debug-tutorial/
+for the kernel context, page 17 on.
+
+> If you could look at the stack frames and give me a stack trace
+> that's more or less the same thing.
+
+(gdb) bt
+
+The real question is not to get a stack trace, but to analyse it.
+
+Greg
+--
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  See
+http://www.lemis.com/grog/email/signed-mail.php for more details.
+If your Microsoft MUA reports problems, please read
+http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 195 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20101002/e02ab2c7/attachment.sig>
+
+From helbig.wolfgang at kabelbw.de  Sat Oct  2 20:06:02 2010
+From: helbig.wolfgang at kabelbw.de (Wolfgang Helbig)
+Date: Sat, 2 Oct 2010 12:06:02 +0200
+Subject: [TUHS] PDP-8 (was: 2.11BSD cross compiler)
+In-Reply-To: <20100930135029.GB30928@bitmover.com>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+	<20100929005148.GA8032@bitmover.com>
+	<AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+	<20100929023819.GA12919@bitmover.com>
+	<AANLkTin53c5N3wGpPfi5DQ1WdrqtV5+ENmSVSoiZwFXu@mail.gmail.com>
+	<20100930042229.GA66070@dereel.lemis.com>
+	<20100930135029.GB30928@bitmover.com>
+Message-ID: <1E63FEE4-7507-4F06-BDDB-7237BDEAD979@kabelbw.de>
+
+Hi,
+
+Am 30.09.2010 um 15:50 schrieb Larry McVoy:
+> 
+> And it's not swtch() so much as do you understand the stack frames?
+
+Absolutely. In http://wwwlehre.dhbw-stuttgart.de/~helbig/os/script/chapt2.3 you'll find all about stacks in Unix V6.
+
+> If you could look at the stack frames and give me a stack trace
+> that's more or less the same thing.
+
+Sincerely,
+Wolfgang
+
+
+
+From lm at bitmover.com  Sun Oct  3 07:03:46 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Sat, 2 Oct 2010 14:03:46 -0700
+Subject: [TUHS] PDP-8 (was: 2.11BSD cross compiler)
+In-Reply-To: <20101002034601.GE66070@dereel.lemis.com>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+	<20100929005148.GA8032@bitmover.com>
+	<AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+	<20100929023819.GA12919@bitmover.com>
+	<AANLkTin53c5N3wGpPfi5DQ1WdrqtV5+ENmSVSoiZwFXu@mail.gmail.com>
+	<20100930042229.GA66070@dereel.lemis.com>
+	<20100930135029.GB30928@bitmover.com>
+	<20101002034601.GE66070@dereel.lemis.com>
+Message-ID: <20101002210346.GE27937@bitmover.com>
+
+> > If you could look at the stack frames and give me a stack trace
+> > that's more or less the same thing.
+> 
+> (gdb) bt
+> 
+> The real question is not to get a stack trace, but to analyse it.
+
+Hmm, we seem to have a different view.  I like people who can write
+the gdb bt code, not run it.  This isn't an imaginary thing, one of 
+my guys showed up one day with his own hand rolled backtrace that we
+ended up putting in our product for support.
+
+The advantage of his, over the following hack we had before, was that
+it worked when no gdb was installed (windows):
+
+void
+gdb_backtrace(void)
+{
+        FILE    *f;
+        char    *cmd;
+
+        unless (getenv("_BK_BACKTRACE")) return;
+        unless ((f = efopen("BK_TTYPRINTF")) ||
+            (f = fopen(DEV_TTY, "w"))) {
+                f = stderr;
+        }
+        cmd = aprintf("gdb -batch -ex backtrace '%s/bk' %u 1>&%d 2>&%d",
+            bin, getpid(), fileno(f), fileno(f));
+
+        system(cmd);
+        free(cmd);
+        if (f != stderr) fclose(f);
+}
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From imp at bsdimp.com  Sun Oct  3 07:39:11 2010
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Sat, 02 Oct 2010 15:39:11 -0600 (MDT)
+Subject: [TUHS] PDP-8
+In-Reply-To: <20101002210346.GE27937@bitmover.com>
+References: <20100930135029.GB30928@bitmover.com>
+	<20101002034601.GE66070@dereel.lemis.com>
+	<20101002210346.GE27937@bitmover.com>
+Message-ID: <20101002.153911.710852003685317415.imp@bsdimp.com>
+
+In message: <20101002210346.GE27937 at bitmover.com>
+            Larry McVoy <lm at bitmover.com> writes:
+: > > If you could look at the stack frames and give me a stack trace
+: > > that's more or less the same thing.
+: > 
+: > (gdb) bt
+: > 
+: > The real question is not to get a stack trace, but to analyse it.
+: 
+: Hmm, we seem to have a different view.  I like people who can write
+: the gdb bt code, not run it.  This isn't an imaginary thing, one of 
+: my guys showed up one day with his own hand rolled backtrace that we
+: ended up putting in our product for support.
+: 
+: The advantage of his, over the following hack we had before, was that
+: it worked when no gdb was installed (windows):
+: 
+: void
+: gdb_backtrace(void)
+: {
+:         FILE    *f;
+:         char    *cmd;
+: 
+:         unless (getenv("_BK_BACKTRACE")) return;
+:         unless ((f = efopen("BK_TTYPRINTF")) ||
+:             (f = fopen(DEV_TTY, "w"))) {
+:                 f = stderr;
+:         }
+:         cmd = aprintf("gdb -batch -ex backtrace '%s/bk' %u 1>&%d 2>&%d",
+:             bin, getpid(), fileno(f), fileno(f));
+: 
+:         system(cmd);
+:         free(cmd);
+:         if (f != stderr) fclose(f);
+: }
+
+Stack back traces are easy on x86, but get a lot harder on !x86 at
+high optimization layers without help from libunwind.  That's the down
+side of not relying on gdb... :)
+
+Warner
+
+
+From newsham at lava.net  Wed Oct 20 11:16:37 2010
+From: newsham at lava.net (Tim Newsham)
+Date: Tue, 19 Oct 2010 15:16:37 -1000 (HST)
+Subject: [TUHS] v6: where is "man"?
+Message-ID: <Pine.BSI.4.64.1010191507110.25174@malasada.lava.net>
+
+I'm playing with unix v6 right now.  I don't see the "man"
+binary anywhere.. anyone know why?
+
+I have v6 installed from tape. The tape has images for three
+disks apparently, root, source and docs. The docs image has
+a man directory with the man pages in them. I don't see a
+man binary anywhere though, and I don't see the sources to
+man in the sources directory either.
+
+I checked the disk images available on the simh "kits" page.
+It has man pages in /mnt/man but no sources or binary.
+(by the way, this image is missing /usr/sys for some reason,
+which is why I am running an installation from tape).
+
+I also checked the
+PDP-11/Trees/V6 directory on TUHS and similarly dont see
+sources or binaries for man (though the man pages are present
+in /usr/man).
+
+There's even a /usr/man/man1/man.1, formatted online here:
+http://wwwlehre.dhbw-stuttgart.de/~helbig/os/v6/doc/I/man.html
+
+anyone know why the source and binary are missing from the
+distributions?
+
+Tim Newsham | www.thenewsh.com/~newsham | thenewsh.blogspot.com
+
+
+From wkt at tuhs.org  Wed Oct 20 15:25:33 2010
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 20 Oct 2010 15:25:33 +1000
+Subject: [TUHS] v6: where is "man"?
+In-Reply-To: <Pine.BSI.4.64.1010191507110.25174@malasada.lava.net>
+References: <Pine.BSI.4.64.1010191507110.25174@malasada.lava.net>
+Message-ID: <20101020052532.GA5690@minnie.tuhs.org>
+
+On Tue, Oct 19, 2010 at 03:16:37PM -1000, Tim Newsham wrote:
+> I'm playing with unix v6 right now.  I don't see the "man"
+> binary anywhere.. anyone know why?
+
+The v6 man.1 manpage says "[man] is a shell command file",
+so there is no source code, just the shell script.
+Still, that doesn't explain why the script file missing.
+It's not on the Dennis_v6 tape, nor the Ken_Wellsch_v6
+tape in the archive. Intruiging!
+
+Cheers,
+	Warren
+
+
+From neozeed at gmail.com  Wed Oct 20 15:44:45 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Wed, 20 Oct 2010 01:44:45 -0400
+Subject: [TUHS] v6: where is "man"?
+In-Reply-To: <20101020052532.GA5690@minnie.tuhs.org>
+References: <Pine.BSI.4.64.1010191507110.25174@malasada.lava.net>
+	<20101020052532.GA5690@minnie.tuhs.org>
+Message-ID: <AANLkTikmng8YMbaJDank7=5OBebrfOJLv3FZs6dBeKrt@mail.gmail.com>
+
+I just booted up the interdata version and... it doesn't have 'man'
+either...
+
+I get the impression from /usr/doc/man   that the man pages on the ID32 were
+setup with a 'make' command to format and print them all....
+
+I guess the man command didn't exist...????
+
+On Wed, Oct 20, 2010 at 1:25 AM, Warren Toomey <wkt at tuhs.org> wrote:
+
+> On Tue, Oct 19, 2010 at 03:16:37PM -1000, Tim Newsham wrote:
+> > I'm playing with unix v6 right now.  I don't see the "man"
+> > binary anywhere.. anyone know why?
+>
+> The v6 man.1 manpage says "[man] is a shell command file",
+> so there is no source code, just the shell script.
+> Still, that doesn't explain why the script file missing.
+> It's not on the Dennis_v6 tape, nor the Ken_Wellsch_v6
+> tape in the archive. Intruiging!
+>
+> Cheers,
+>         Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20101020/4b20a131/attachment.html>
+
+From newsham at lava.net  Wed Oct 20 16:18:48 2010
+From: newsham at lava.net (Tim Newsham)
+Date: Tue, 19 Oct 2010 20:18:48 -1000 (HST)
+Subject: [TUHS] v6: where is "man"?
+In-Reply-To: <AANLkTikmng8YMbaJDank7=5OBebrfOJLv3FZs6dBeKrt@mail.gmail.com>
+References: <Pine.BSI.4.64.1010191507110.25174@malasada.lava.net>
+	<20101020052532.GA5690@minnie.tuhs.org>
+	<AANLkTikmng8YMbaJDank7=5OBebrfOJLv3FZs6dBeKrt@mail.gmail.com>
+Message-ID: <Pine.BSI.4.64.1010192010330.25174@malasada.lava.net>
+
+> I just booted up the interdata version and... it doesn't have 'man'
+> either...
+>
+> I get the impression from /usr/doc/man   that the man pages on the ID32 were
+> setup with a 'make' command to format and print them all....
+>
+> I guess the man command didn't exist...????
+
+Why is there a man page for it?
+
+By the way, I found a /usr/bin/man command in
+PDP-11/Distributions/other/Tim_Shoppa_v6
+in the unix_v6.rl02 image.  Oddly, it uses "cd" instead
+of "chdir" and doesnt run in the normal v6 shell!
+(cut and pasted in the attached file).
+It also uses "set" which isnt supported in v6.
+Although, it does look like a pre-v7 shell script
+by the control flow constructs and lack of variables.
+(compare to /bin/man in V7, which is a new style shell
+script which wont run in V6).
+
+There's also a /usr/ucb/man binary present.  I haven't
+tried it in stock v6.
+
+Its pretty easy to boot the Tim_Shoppa_v6 image,
+just un-gzip it and use:
+
+   set cpu 11/23
+   set tto 7b
+   attach rl0 unix_v6.rl02
+   boot rl0
+
+in simh.  At the boot prompt enter "unix".
+
+Tim Newsham | www.thenewsh.com/~newsham | thenewsh.blogspot.com
+-------------- next part --------------
+cd /usr/doc/man
+if $1x = x goto nope
+        set b = 1
+if ! -r man$1 goto sect1
+        set b = $1
+        shift
+: sect1
+        if -r /mnt/webb/doc/$1.$b goto man
+        if -r man$b/$1.$b goto oldman
+        if -r /etc/help/$1 goto ok
+        if $b != 1 goto notcmd
+        if -r /bin/$1 -o -r /usr/bin/$1 goto iscmd
+        echo $1 "is not a command"
+        goto loop
+: iscmd
+: notcmd
+        echo "Sorry, manual page" $1 "is not available."
+        goto loop
+: man
+        chdir /mnt/webb/doc
+        fmt -term --u $1.$b
+        goto loop
+: oldman
+        chdir man$b
+        nroff -mm $1.$b ^ iul
+        goto loop
+: oldman0
+        chdir man$b
+        nroff -mm $1 ^ iul
+        goto loop
+: ok
+help $1 </dev/tty
+goto loop
+: nope
+echo "usage: man [section] name"
+echo "The following manual pages exist (in form name.section)"
+f /mnt/webb/doc
+exit
+: loop
+shift
+cd /usr/doc/man
+if $1x != x goto sect1
+exit
+
+From imp at bsdimp.com  Thu Oct 21 01:25:33 2010
+From: imp at bsdimp.com (Warner Losh)
+Date: Wed, 20 Oct 2010 09:25:33 -0600 (MDT)
+Subject: [TUHS] v6: where is "man"?
+In-Reply-To: <20101020052532.GA5690@minnie.tuhs.org>
+References: <Pine.BSI.4.64.1010191507110.25174@malasada.lava.net>
+	<20101020052532.GA5690@minnie.tuhs.org>
+Message-ID: <20101020.092533.445287078.imp@bsdimp.com>
+
+In message: <20101020052532.GA5690 at minnie.tuhs.org>
+            Warren Toomey <wkt at tuhs.org> writes:
+: On Tue, Oct 19, 2010 at 03:16:37PM -1000, Tim Newsham wrote:
+: > I'm playing with unix v6 right now.  I don't see the "man"
+: > binary anywhere.. anyone know why?
+: 
+: The v6 man.1 manpage says "[man] is a shell command file",
+: so there is no source code, just the shell script.
+: Still, that doesn't explain why the script file missing.
+: It's not on the Dennis_v6 tape, nor the Ken_Wellsch_v6
+: tape in the archive. Intruiging!
+
+That's very interesting indeed.  FreeBSD has gone "back to the future"
+here and replaced the man program that called groff, et al, with a
+shell script.  Given the complexity of the shell script, however, I
+imagine it wouldn't work too well on v6. :)
+
+Warner
+
+
+From bqt at softjar.se  Wed Oct 20 22:24:41 2010
+From: bqt at softjar.se (Johnny Billquist)
+Date: Wed, 20 Oct 2010 14:24:41 +0200
+Subject: [TUHS] v6: where is "man"?
+In-Reply-To: <mailman.1.1287540001.3876.tuhs@minnie.tuhs.org>
+References: <mailman.1.1287540001.3876.tuhs@minnie.tuhs.org>
+Message-ID: <4CBEDF89.5080102@softjar.se>
+
+On 10/20/10 04:00, Tim Newsham<newsham at lava.net> wrote:
+
+> I'm playing with unix v6 right now.  I don't see the "man"
+> binary anywhere.. anyone know why?
+>
+> I have v6 installed from tape. The tape has images for three
+> disks apparently, root, source and docs. The docs image has
+> a man directory with the man pages in them. I don't see a
+> man binary anywhere though, and I don't see the sources to
+> man in the sources directory either.
+>
+> I checked the disk images available on the simh "kits" page.
+> It has man pages in /mnt/man but no sources or binary.
+> (by the way, this image is missing /usr/sys for some reason,
+> which is why I am running an installation from tape).
+>
+> I also checked the
+> PDP-11/Trees/V6 directory on TUHS and similarly dont see
+> sources or binaries for man (though the man pages are present
+> in /usr/man).
+>
+> There's even a /usr/man/man1/man.1, formatted online here:
+> http://wwwlehre.dhbw-stuttgart.de/~helbig/os/v6/doc/I/man.html
+>
+> anyone know why the source and binary are missing from the
+> distributions?
+
+What "man" binary? You use cat... You have the man-pages, you have a 
+program (or several) to type files... Why would you need yet another 
+program to type files?
+
+	Johnny
+
+
+
+From newsham at lava.net  Thu Oct 21 11:06:42 2010
+From: newsham at lava.net (Tim Newsham)
+Date: Wed, 20 Oct 2010 15:06:42 -1000 (HST)
+Subject: [TUHS] v6: where is "man"?
+In-Reply-To: <4CBEDF89.5080102@softjar.se>
+References: <mailman.1.1287540001.3876.tuhs@minnie.tuhs.org>
+	<4CBEDF89.5080102@softjar.se>
+Message-ID: <Pine.BSI.4.64.1010201504150.25174@malasada.lava.net>
+
+> What "man" binary? You use cat... You have the man-pages, you have a program 
+> (or several) to type files... Why would you need yet another program to type 
+> files?
+
+"man man" does more than "cat /usr/doc/man/man1/man.1".
+(try it!)
+It locates pages by man page section and it formats the
+data using nroff.  See the "man" script I attached in an
+earlier email for details.
+
+> 	Johnny
+
+Tim Newsham | www.thenewsh.com/~newsham | thenewsh.blogspot.com
+
+
+From bqt at softjar.se  Thu Oct 21 21:32:55 2010
+From: bqt at softjar.se (Johnny Billquist)
+Date: Thu, 21 Oct 2010 13:32:55 +0200
+Subject: [TUHS] v6: where is "man"?
+In-Reply-To: <Pine.BSI.4.64.1010201504150.25174@malasada.lava.net>
+References: <mailman.1.1287540001.3876.tuhs@minnie.tuhs.org>
+	<4CBEDF89.5080102@softjar.se>
+	<Pine.BSI.4.64.1010201504150.25174@malasada.lava.net>
+Message-ID: <4CC024E7.6090705@softjar.se>
+
+On 10/21/10 03:06, Tim Newsham wrote:
+>> What "man" binary? You use cat... You have the man-pages, you have a
+>> program (or several) to type files... Why would you need yet another
+>> program to type files?
+>
+> "man man" does more than "cat /usr/doc/man/man1/man.1".
+> (try it!)
+
+Yes, it does a "$(PAGER) /usr/doc/man/cat1/man.0" :-)
+
+> It locates pages by man page section and it formats the
+> data using nroff. See the "man" script I attached in an
+> earlier email for details.
+
+Depends on lots of factors and versions.
+
+Maybe I should have added a smiley. My point was that originally you 
+didn't have a man program. You had man-pages, and you looked at them any 
+way you preferred. And that is what you observed, but didn't seem to 
+grasp, when you looked at V6 (hence the question about where the 
+man-program is).
+
+Short answer then: there is none.
+
+	Johnny
+
+
+From newsham at lava.net  Fri Oct 22 03:32:00 2010
+From: newsham at lava.net (Tim Newsham)
+Date: Thu, 21 Oct 2010 07:32:00 -1000 (HST)
+Subject: [TUHS] v6: where is "man"?
+In-Reply-To: <4CC024E7.6090705@softjar.se>
+References: <mailman.1.1287540001.3876.tuhs@minnie.tuhs.org>
+	<4CBEDF89.5080102@softjar.se>
+	<Pine.BSI.4.64.1010201504150.25174@malasada.lava.net>
+	<4CC024E7.6090705@softjar.se>
+Message-ID: <Pine.BSI.4.64.1010210731030.25174@malasada.lava.net>
+
+> Yes, it does a "$(PAGER) /usr/doc/man/cat1/man.0" :-)
+
+I don't think thats accurate in v6 unix (or many other
+early research unixen). The man pages arent preformatted
+into .0 files afaik.
+
+> Maybe I should have added a smiley. My point was that originally you didn't 
+> have a man program. You had man-pages, and you looked at them any way you 
+> preferred. And that is what you observed, but didn't seem to grasp, when you 
+> looked at V6 (hence the question about where the man-program is).
+>
+> Short answer then: there is none.
+
+I don't think that is accurate.
+
+> 	Johnny
+
+Tim Newsham | www.thenewsh.com/~newsham | thenewsh.blogspot.com
+
+

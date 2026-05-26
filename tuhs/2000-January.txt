@@ -1,0 +1,2846 @@
+From wkt at cs.adfa.edu.au  Tue Jan  4 08:58:41 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Tue, 4 Jan 2000 09:58:41 +1100 (EST)
+Subject: New Version of Apout PDP-11 Emulator
+Message-ID: <200001032258.JAA01481@henry.cs.adfa.edu.au>
+
+Welcome back to all the PUPS mailing list members! They've finally turned our
+router back on here, so now the list server Minnie is no longer deaf.
+
+Over the past few weeks I've been working on my Apout simulator, with help
+from Tim Shoppa, and it now runs binaries from 1st Edition UNIX. The
+announcement is below; details of how to obtain the source, and some UNIX
+binaries, are also given.
+
+Hope you all had a good festive break, and best wishes for the New Year.
+
+Cheers,
+	Warren
+
+
+
+
+
+
+
+               Apout -- Simulate PDP-11 Unix a.out binaries
+                            Version 2.3 Alpha
+
+                     Warren Toomey  wkt at cs.adfa.edu.au
+                               January 2000
+
+Introduction
+------------
+This program is a user-level simulator for UNIX a.out binaries. Binaries
+for V1, V5, V6, V7, 2.9BSD and 2.11BSD can be run with this simulator. The
+user-mode PDP-11 instructions are simulated, and TRAP instructions are
+emulated by calling equivalent native-mode system calls.
+
+The advantages of an a.out simulator over a full-blown PDP-11 simulator are:
+
+   + system calls can be done natively, thus speeding up execution
+   + the simulator is less of a CPU-hog than a full-blown PDP-11 simulator
+   + you don't need a simulated operating system or a simulated file system
+
+Apout can be obtained via anonymous ftp at minnie.cs.adfa.edu.au in the
+directory pub/PDP-11/Sims/Apout. The directory pub/PDP-11/Sims/Apout/UnixBins
+contains tar archives of a.out binaries from several versions of UNIX.
+
+Status
+------
+The program is now at release 2.3 Alpha1. Most of the binaries from V5, V6
+and V7 run fine. All of the V5/V6/V7 system calls are caught, but some are
+ignored and some generate EPERM errors. The V1, 2.9BSD and 2.11BSD
+environments are still under construction: see the file LIMITATIONS for
+details. Finally, the simulator won't run on a big-endian machine.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA29223
+	for pups-liszt; Tue, 4 Jan 2000 10:43:10 +1100 (EST)
+
+From wkt at cs.adfa.edu.au  Tue Jan  4 10:08:05 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Tue, 4 Jan 2000 11:08:05 +1100 (EST)
+Subject: No Answer to `Unix Mallet' Mystery
+Message-ID: <200001040008.LAA03372@henry.cs.adfa.edu.au>
+
+Hi all,
+	I just received this e-mail from Keith Bostic, in reply to a
+strange question which was discussed on this mailing list months (years?)
+ago. Read on.....
+
+
+----- Forwarded message from Keith Bostic -----
+
+Hi, Warren, I'm digging out some old email, and found the following:
+
+> [Chris] While looking over userland source, calendar(1)'s calendar.computer
+>          mentions:
+> 	     08/14   First Unix-based mallet created, 1954
+> 	Could someone please explain the joke. :)
+>
+> [Warren] I can't find it in V6/V7/2.11. According to the SCCS records on
+> 	 Kirk McKusick's 4th CD,
+> 	 /usr/src/usr.bin/calendar/calendars/calendar.computer was:
+>         	date and time created 89/11/27 14:10:01 by bostic
+> 	 Mind you, this was obviously the first time it was checked into SCCS.
+>
+> 	 The earliest calendar.computer files I can find, apart from the
+> 	 SCCS record, are:
+>
+> 	 4bsd/43reno.vax/src.tar,  calendar.computer dated 1989/11/28
+> 	 4bsd/net2/net2.tar,       calendar.computer dated 1989/11/28
+> 	 4bsd/43reno.vax/usr.tar,  calendar.computer dated 1990/07/29
+>
+> 	 so the finger of suspicion does point at Keith Bostic.
+
+I think I'm just the one that checked it in... around that time
+I went through the source tree and committed everything into
+SCCS, and, my bet is that those files weren't already under SCCS.
+
+I also broke the single calendar file up into a bunch of different
+files as part of re-writing calendar(1) to make it AT&T free.
+
+You might want to look in early releases for a "calendar" source
+file, and not "calendar.computer" (although I'm not positive it
+was named "calendar", I'm pretty sure that I broke an original
+file up into multiple files, so I created the "calendar.computer"
+file and filled it with stuff from an already existing file).
+
+> So can you shed any light on this interesting entry in calendar.computer,
+> was it a private joke, and were you the perpertrator?
+
+Not me.  Did you ever figure out where the line came from?
+
+--keith
+----- End of forwarded message from Keith Bostic -----
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id MAA29790
+	for pups-liszt; Tue, 4 Jan 2000 12:15:39 +1100 (EST)
+
+From wkt at cs.adfa.edu.au  Tue Jan  4 11:40:19 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Tue, 4 Jan 2000 12:40:19 +1100 (EST)
+Subject: 200 Ancient UNIX Licenses
+Message-ID: <200001040140.MAA04392@henry.cs.adfa.edu.au>
+
+Hi all,
+	Just a note to say that I have received SCO Ancient UNIX licenses
+up to AU-201 in the mail today. Another note: a bug in the date libraries
+in 5th and 6th Edition Unix prevents ctime() from properly displaying
+dates after November 1999. I haven't bothered to find/fix it yet.
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id WAA32773
+	for pups-liszt; Tue, 4 Jan 2000 22:45:57 +1100 (EST)
+
+From norman at nose.cita.utoronto.ca  Tue Jan  4 22:08:51 2000
+From: norman at nose.cita.utoronto.ca (norman at nose.cita.utoronto.ca)
+Date: Tue, 04 Jan 2000 07:08:51 -0500
+Subject: 200(0) Ancient UNIX Licenses
+Message-ID: <200001041145.WAA32766@minnie.cs.adfa.edu.au>
+
+Warren's note reminds me of a few other Y2K bugs I've spotted that affect
+ancient UNIX:
+- date: no way to set the date past 1999 unless in the present year,
+because two-digit input.
+- at and atrun: commands are stored in the spooling directory with names
+of the form YY.DDD.HHMM.xx, where xx is a unique number.  This one is
+trickier to fix, because the filename is already exactly 14 characters,
+so there's no room for expansion.  (On V10, I just rewrote the programs
+to use a simple UNIX time expressed as a decimal number.  A simpler solution
+might be to print the year in hex.)
+- Perhaps least consequential and most amusing: nroff and troff store the
+year in a number register.  The manual says it contains `the last two
+digits of the year,' and many macro packages assume that is true, but the
+truth is that it contains (year-1900), the same as tm_year.  So, for example,
+when I ran man on New Year's Day, I was told that the manual page had been
+printed on 1/1/100.
+
+I was about to fix the various troff macro packages when I noticed that
+the manual implied that I shouldn't.  I asked Brian Kernighan for an opinion
+(since the code and the manual were both last touched by him); he thinks the
+best view is that the manual is just wrong and the macro packages should be
+fixed.  \n(yr is a read-write register, so `.nr yr \n(yr+1900' is probably
+the easiest fix, though Brian points out that it's not always the right one
+(maybe you really wanted a two-digit year).  If anyone is interested I can
+pass along a more detailed note from Brian.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id CAA33653
+	for pups-liszt; Wed, 5 Jan 2000 02:17:48 +1100 (EST)
+
+From msokolov at meson.jpsystems.com  Wed Jan  5 01:39:51 2000
+From: msokolov at meson.jpsystems.com (Michael Sokolov)
+Date: Tue, 4 Jan 00 09:39:51 -0600
+Subject: 200(0) Ancient UNIX Licenses
+In-Reply-To: <200001041145.WAA32766@minnie.cs.adfa.edu.au>
+Message-ID: <0001041539.AA12473@meson.jpsystems.com>
+
+norman at nose.cita.utoronto.ca wrote:
+
+> Warren's note reminds me of a few other Y2K bugs I've spotted that affect
+> ancient UNIX:
+  ^^^^^^^
+
+Would you please avoid that term? It is offensive to those for whom Kernighan/
+Ritchie/Thompson/Berkeley UNIX is the primary and sole computing platform.
+Thank you.
+
+> - date: no way to set the date past 1999 unless in the present year,
+> because two-digit input.
+> - at and atrun: commands are stored in the spooling directory with names
+> of the form YY.DDD.HHMM.xx, where xx is a unique number.  This one is
+> trickier to fix, because the filename is already exactly 14 characters,
+> so there's no room for expansion.  (On V10, I just rewrote the programs
+> to use a simple UNIX time expressed as a decimal number.  A simpler solution
+> might be to print the year in hex.)
+
+Both Y2K bugs have been fixed in the UNIX master source tree a couple of weeks
+ago, will appear on the 4.3-QJ0b tape. For details, send a subscription request
+to quasijarus-request at meson.jpsystems.com.
+
+> - Perhaps least consequential and most amusing: nroff and troff store the
+> year in a number register.  The manual says it contains `the last two
+> digits of the year,' and many macro packages assume that is true, but the
+> truth is that it contains (year-1900), the same as tm_year.  So, for example,
+> when I ran man on New Year's Day, I was told that the manual page had been
+> printed on 1/1/100.
+>
+> I was about to fix the various troff macro packages when I noticed that
+> the manual implied that I shouldn't.  I asked Brian Kernighan for an opinion
+> (since the code and the manual were both last touched by him); he thinks the
+> best view is that the manual is just wrong and the macro packages should be
+> fixed.  \n(yr is a read-write register, so `.nr yr \n(yr+1900' is probably
+> the easiest fix, though Brian points out that it's not always the right one
+> (maybe you really wanted a two-digit year).  If anyone is interested I can
+> pass along a more detailed note from Brian.
+
+OK, haven't hit that one yet, will look. Please do pass along B. W. Kernighan's
+note.
+
+--
+Michael Sokolov				Harhan Computer Operation Facility
+Special Agent				615 N GOOD LATIMER EXPY #4
+International Free Computing Task Force	DALLAS TX 75204-5852 USA
+					Phone: +1-214-824-7693
+					ARPA INET: msokolov at meson.jpsystems.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id DAA34078
+	for pups-liszt; Wed, 5 Jan 2000 03:27:07 +1100 (EST)
+
+From apg at execpc.com  Wed Jan  5 02:46:07 2000
+From: apg at execpc.com (A. P. Garcia)
+Date: 4 Jan 2000 16:46:07 -0000
+Subject: that ancient old geezer stuff
+Message-ID: <20000104164607.201.qmail@playground.lan>
+
+norman at nose.cita.utoronto.ca wrote:
+>> Warren's note reminds me of a few other Y2K bugs I've spotted that affect
+>> ancient UNIX:
+
+msokolov at meson.jpsystems.com replied:
+> Would you please avoid that term? It is offensive to those for whom Kernighan/
+> Ritchie/Thompson/Berkeley UNIX is the primary and sole computing platform.
+
+
+Interesting.  It's true that the word ancient is generally pejorative
+in the context of computers.  However, I think that this word may have
+helped persuade SCO to offer us licenses for these versions.  The header
+of my license contains some wording like, "Special software license
+agreement for ancient unix source code."
+
+So I tend to use this terminology with an inside-joke kind of smirk on
+my face.  These kernels are more elegant and pure in design than their
+descendants.  If the good folks at SCO are having pleasant dreams, please
+don't disturb their sleep.
+
+
+> Please do pass along B. W. Kernighan's note.
+
+I second this request.  Don't hold out on us.  :-)
+
+
+From norman at nose.cita.utoronto.ca  Wed Jan  5 09:32:03 2000
+From: norman at nose.cita.utoronto.ca (norman at nose.cita.utoronto.ca)
+Date: Tue, 04 Jan 2000 18:32:03 -0500
+Subject: 200(0) Ancient UNIX Licenses
+Message-ID: <200001042310.KAA35724@minnie.cs.adfa.edu.au>
+
+Here's Brian Kernighan's note on troff and Y2K:
+
+in n1.c, numtab[YR] is set to localtime()->tm_year, which is the
+number of years since 1900.  in 2000, this will contain 100.
+the troff manual says that \n(yr contains "the last two digits of
+the current year", but nowhere in the code is this set, and the
+year can be set to anything.  so it's really "the current year
+minus 1900".  the manual and the code are 
+inconsistent, which is always a problem. 
+
+in any case, in most installations troff and nroff are legacy
+systems for which there is no source code, so changing them is
+not feasible.  furthermore, any change to troff is likely to
+require changes in macro packages anyway, and may cause silent
+errors by conflicting with current behavior or colliding with
+previously unused names.
+
+fortunately, it seems straightforward to fix the macro packages
+that are the most likely sources of problem; individual macro
+packages will have to be fixed by individuals.  grepping for
+"yr" will find most trouble spots.
+
+typical macros packages use \n(yr in two ways.  one is
+
+	ds ]W (printed \n(mo/\n(dy/\n(yr)
+
+which assumes that the year is 2 digits and to be printed as 2
+digits.  presumably the first day of 2000 is to be printed as
+1/1/00, so the fix here is to set register yr to 2 digits
+
+	.nr yr \n(yr%100
+
+either once at the beginning (under the assumption that the year
+isn't changed by the macro package) or each time \n(yr is going
+to be used (providing locality at the price of more changes).
+
+the other common usage is
+
+	.ds ]W \*(]m \n(dy, 19\n(yr
+
+the easiest way to fix this is to add, at the beginning again,
+
+	.nr yr 1900+\n(yr
+
+and change all subsequent uses from 19\n(yr to \n(yr.
+
+any macro package that uses both of these constructions will need
+a bit more care to unify things; the easiest fix is likely to be
+two registers, one with the full year and one with the last two
+digits.
+
+	.nr YR 1900+\n(yr	\" 4-digit year
+	.nr yr \n(yr%100	\" last two digits
+
+this will break code that happened to use this register name.
+
+some macro packages (e.g., -mm) try to be clever about dates,
+and include explicit tests to determine whether a user-provided
+date has 2 or 4 digits, and then adjust by 1900; this is another
+case that has to be fiddled by hand.
+
+any approach that changes register yr at the beginning fails if
+the year is set explicitly later on, as it might be by some of
+the date macros in -ms and -mm.  this still seems like the best
+fix, however.
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA35876
+	for pups-liszt; Wed, 5 Jan 2000 10:35:21 +1100 (EST)
+
+From norman at nose.cita.utoronto.ca  Wed Jan  5 09:56:48 2000
+From: norman at nose.cita.utoronto.ca (norman at nose.cita.utoronto.ca)
+Date: Tue, 04 Jan 2000 18:56:48 -0500
+Subject: 200(0) Ancient UNIX Ulcers
+Message-ID: <200001042334.KAA35866@minnie.cs.adfa.edu.au>
+
+Michael Sokolov grumbled:
+
+  > Warren's note reminds me of a few other Y2K bugs I've spotted that affect
+  > ancient UNIX:
+    ^^^^^^^
+
+  Would you please avoid that term? It is offensive to those for whom Kernighan/
+  Ritchie/Thompson/Berkeley UNIX is the primary and sole computing platform.
+  Thank you.
+
+If the shoe doesn't fit, feel free not to wear it.  I certainly didn't have
+`Kernighan/Ritchie/Thompson/Berkeley UNIX' in mind; I rarely do, as I am
+much more interested in ancient systems.
+
+Chuckling all the way to the rest home,
+
+Norman Wilson
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id UAA37886
+	for pups-liszt; Wed, 5 Jan 2000 20:13:04 +1100 (EST)
+
+From grog at lemis.com  Wed Jan  5 19:33:12 2000
+From: grog at lemis.com (Greg Lehey)
+Date: Wed, 5 Jan 2000 20:03:12 +1030
+Subject: 200(0) Ancient UNIX Licenses
+In-Reply-To: <200001041145.WAA32766@minnie.cs.adfa.edu.au>
+References: <200001041145.WAA32766@minnie.cs.adfa.edu.au>
+Message-ID: <20000105200311.Y30038@freebie.lemis.com>
+
+On Tuesday,  4 January 2000 at  7:08:51 -0500, norman at nose.cita.utoronto.ca wrote:
+> Warren's note reminds me of a few other Y2K bugs I've spotted that affect
+> ancient UNIX:
+> - date: no way to set the date past 1999 unless in the present year,
+> because two-digit input.
+
+I didn't have any problem with 2.11BSD.  I just supplied 00 for the
+year.  Which release were you using?
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id AAA38658
+	for pups-liszt; Thu, 6 Jan 2000 00:03:32 +1100 (EST)
+
+From SHOPPA at trailing-edge.com  Wed Jan  5 23:23:18 2000
+From: SHOPPA at trailing-edge.com (Tim Shoppa)
+Date: Wed, 5 Jan 2000 8:23:18 -0500
+Subject: 200(0) Ancient UNIX Licenses
+Message-ID: <000105082318.202000b0@trailing-edge.com>
+
+Greg wrote:
+>On Tuesday,  4 January 2000 at  7:08:51 -0500, norman at nose.cita.utoronto.ca wrote:
+>> Warren's note reminds me of a few other Y2K bugs I've spotted that affect
+>> ancient UNIX:
+>> - date: no way to set the date past 1999 unless in the present year,
+>> because two-digit input.
+>I didn't have any problem with 2.11BSD.  I just supplied 00 for the
+>year.  Which release were you using?
+
+That's because I did the fix for 2.11BSD back when I was Y2K-ing all
+my PDP-11 sources a few years ago, and Steven incorporated it into the
+distribution.  The fix was quick and dirty, but works fine because
+Unix effectively has an expiration date of 2038 when the signed 32-bit time
+word goes negative, so it's easy enough to window the centuries.
+
+This brings up a question: should fixes (and I mean fundamental fixes
+like Y2K ones) be incorporated back into the boot images in the archive, or
+should they be left in their "pristine" state?  (Yes, i know, some of
+those boot images aren't quite so pristine.)
+
+As long as we're on the topic, which versions of Unix had the C
+compiler recognize when it was recompiling the kernel and put a back
+door in for the developers?  And of course the C compiler recognized
+when it was recompiling itself and made sure that the this recognition
+code was also inserted.  As I understand it, the distributed sources
+never had this security hole in them, only the binaries, but of course
+the binaries self-perpetuated the security hole even if you recompiled them.
+
+-- 
+ Tim Shoppa                        Email: shoppa at trailing-edge.com
+ Trailing Edge Technology          WWW:   http://www.trailing-edge.com/
+ 7328 Bradley Blvd		   Voice: 301-767-5917
+ Bethesda, MD, USA 20817           Fax:   301-767-5927
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id BAA39019
+	for pups-liszt; Thu, 6 Jan 2000 01:30:17 +1100 (EST)
+
+From apg at execpc.com  Thu Jan  6 00:46:13 2000
+From: apg at execpc.com (A. P. Garcia)
+Date: 5 Jan 2000 14:46:13 -0000
+Subject: 200(0) Ancient UNIX Licenses
+Message-ID: <20000105144613.450.qmail@playground.lan>
+
+> This brings up a question: should fixes (and I mean fundamental fixes
+> like Y2K ones) be incorporated back into the boot images in the archive, or
+> should they be left in their "pristine" state?  (Yes, i know, some of
+> those boot images aren't quite so pristine.)
+
+Ideally, both.  Perhaps boot images with these fixes should be available,
+yes, but so should the originals.
+
+
+> As long as we're on the topic, which versions of Unix had the C
+> compiler recognize when it was recompiling the kernel and put a back
+> door in for the developers?
+
+Good question!  I don't know, but it was actually the login command...
+
+
+From wkt at cs.adfa.edu.au  Thu Jan  6 06:35:23 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 6 Jan 2000 07:35:23 +1100 (EST)
+Subject: Viral Unix Compiler
+In-Reply-To: <000105082318.202000b0@trailing-edge.com> from Tim Shoppa at "Jan 5, 2000  8:23:18 am"
+Message-ID: <200001052035.HAA24359@henry.cs.adfa.edu.au>
+
+In article by Tim Shoppa:
+> This brings up a question: should fixes (and I mean fundamental fixes
+> like Y2K ones) be incorporated back into the boot images in the archive, or
+> should they be left in their "pristine" state?  (Yes, i know, some of
+> those boot images aren't quite so pristine.)
+
+I'd agree to both. Mind you, once you start patching, where do you stop?
+We could bring V6 up to being POSIX compatible with an ANSI C compiler :-)
+
+Seriously, at one stage I did think of trying to check-in every version of
+UNIX we have into a single CVS repository. Problem is, files have moved
+around, and I want to leave gaps just in case we ever get the missing versions.
+ 
+> As long as we're on the topic, which versions of Unix had the C
+> compiler recognize when it was recompiling [/bin/login] and put a back
+> door in for the developers?
+
+I might ask Dennis for the details. From memory, the binaries never got out
+of the Labs, and it would have been around the time of V6. Also from memory,
+this was the topic of Ken's speech when he won the Turing award. I wonder if
+the article is lying around somewhere.
+
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id HAA41128
+	for pups-liszt; Thu, 6 Jan 2000 07:45:45 +1100 (EST)
+
+From luvisi at andru.sonoma.edu  Thu Jan  6 07:01:27 2000
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Wed, 5 Jan 2000 13:01:27 -0800 (PST)
+Subject: Viral Unix Compiler
+In-Reply-To: <200001052035.HAA24359@henry.cs.adfa.edu.au>
+Message-ID: <Pine.LNX.4.03.10001051300300.7685-100000@andru.sonoma.edu>
+
+On Thu, 6 Jan 2000, Warren Toomey wrote:
+[snip] 
+> I might ask Dennis for the details. From memory, the binaries never got out
+> of the Labs, and it would have been around the time of V6. Also from memory,
+> this was the topic of Ken's speech when he won the Turing award. I wonder if
+> the article is lying around somewhere.
+
+http://www.acm.org/classics/sep95/
+
+Andru
+-- 
+-------------------------------------------------------------------------- 
+| Andru Luvisi                 | http://libweb.sonoma.edu/		 |
+| Programmer/Analyst           |   Library Resources Online              | 
+| Ruben Salazar Library        |-----------------------------------------| 
+| Sonoma State University      | http://www.belleprovence.com/		 |
+| luvisi at andru.sonoma.edu      |   Textile imports from Provence, France |
+--------------------------------------------------------------------------
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA41348
+	for pups-liszt; Thu, 6 Jan 2000 08:14:17 +1100 (EST)
+
+From jcapp at wilkes.kp.net  Thu Jan  6 07:33:48 2000
+From: jcapp at wilkes.kp.net (J. Capp)
+Date: Wed, 5 Jan 2000 16:33:48 -0500 (EST)
+Subject: Viral Unix Compiler
+In-Reply-To: <200001052035.HAA24359@henry.cs.adfa.edu.au>
+Message-ID: <Pine.LNX.4.05.10001051618210.10423-100000@wilkes.kp.net>
+
+
+On Thu, 6 Jan 2000, Warren Toomey wrote:
+
+>
+> I might ask Dennis for the details. From memory, the binaries never got out
+> of the Labs, and it would have been around the time of V6. Also from memory,
+> this was the topic of Ken's speech when he won the Turing award. I wonder if
+> the article is lying around somewhere.
+> 
+
+Ken's speech "Reflections on Trusting Trust", was published in the
+Communication of the ACM, Vol. 27, No. 8, August 1984.  It describes this
+"trojan horse" in great detail.  But I do believe from this article that
+it was an example of what could be done, not necessarily something that
+was ever released into the hands of the public.
+
+Jim Capp
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id UAA48149
+	for pups-liszt; Thu, 6 Jan 2000 20:09:45 +1100 (EST)
+
+From norman at nose.cita.utoronto.ca  Thu Jan  6 19:08:52 2000
+From: norman at nose.cita.utoronto.ca (norman at nose.cita.utoronto.ca)
+Date: Thu, 06 Jan 2000 04:08:52 -0500
+Subject: revisionism
+Message-ID: <200001060909.UAA48145@minnie.cs.adfa.edu.au>
+
+Tim Shoppa:
+  This brings up a question: should fixes (and I mean fundamental fixes
+  like Y2K ones) be incorporated back into the boot images in the archive, or
+  should they be left in their "pristine" state?  (Yes, i know, some of
+  those boot images aren't quite so pristine.)
+
+I would argue strongly that the archive should contain absolutely pure
+copies of any historic objects, whether they were proper distributions
+or just snapshots like most of the older boot images.  It's important
+to preserve accurate, unbowdlerized history; that is part of what we
+should be doing.
+
+There's nothing wrong with keeping fixed-up versions too, but but they
+should be clearly distinguished from the historic originals.  (Perhaps
+we could label them `ancient' and `primary platform'?)
+
+Even using a CVS repository somehow doesn't feel kosher to me, though
+that is probably silly as long as it is possible (and clear how) to
+extract the unimproved original, and as long as the very original
+distribution or dump tape or whatnot is kept around too so that future
+archaeologists have the right thing to study.
+
+Norman Wilson
+684 Crawford Street, Toronto
+(Formerly 696 Crawford Street before a renumbering in the 1950s;
+I keep thinking of putting the old number up too.)
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id UAA48301
+	for pups-liszt; Thu, 6 Jan 2000 20:35:35 +1100 (EST)
+
+From norman at nose.cita.utoronto.ca  Thu Jan  6 19:34:51 2000
+From: norman at nose.cita.utoronto.ca (norman at nose.cita.utoronto.ca)
+Date: Thu, 06 Jan 2000 04:34:51 -0500
+Subject: Viral Unix Compiler
+Message-ID: <200001060935.UAA48295@minnie.cs.adfa.edu.au>
+
+So far as I know (from conversations with insiders in the past), no system
+was ever shipped out of Bell Labs with Ken's self-healing trojan horse in
+login and the C compiler.  (For those who don't remember, both programs
+were involved: login buggered so that a secret string was always accepted
+as a valid password for any login; the compiler buggered to recognize when
+compiling login or itself, and reinsert the buggery.  Hence one can remove
+the buggered sources, but as long as the binaries remain, so will the bugs.)
+
+Ken's Turing Award lecture doesn't say whether those programs were ever
+shipped to the public.  He probably left it dangling on purpose, since
+the point he is trying to make is that it isn't just code you have to trust,
+but the programmer who wrote it; you cannot possibly know everything that's
+going on inside unless you created everything involved, including compilers
+and assemblers and the operating system.
+
+Dennis's Turing Award lecture in the same issue of CACM is worth re-reading too,
+especially for those who think that Open Source is a cure for the common
+cold or that it was invented in the 1990s or 1980s.
+
+Norman Wilson
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id UAA48359
+	for pups-liszt; Thu, 6 Jan 2000 20:45:36 +1100 (EST)
+
+From wkt at cs.adfa.edu.au  Thu Jan  6 19:45:17 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 6 Jan 2000 20:45:17 +1100 (EST)
+Subject: CVS Repository for UNIX
+In-Reply-To: <200001060909.UAA48145@minnie.cs.adfa.edu.au> from "norman@nose.cita.utoronto.ca" at "Jan 6, 2000  4: 8:52 am"
+Message-ID: <200001060945.UAA35060@henry.cs.adfa.edu.au>
+
+In article by norman at nose.cita.utoronto.ca:
+> I would argue strongly that the archive should contain absolutely pure
+> copies of any historic objects, whether they were proper distributions
+> or just snapshots like most of the older boot images.  It's important
+> to preserve accurate, unbowdlerized history; that is part of what we
+> should be doing.
+
+I agree completely.
+ 
+> Even using a CVS repository somehow doesn't feel kosher to me, though
+> that is probably silly as long as it is possible (and clear how) to
+> extract the unimproved original, and as long as the very original
+> distribution or dump tape or whatnot is kept around too so that future
+> archaeologists have the right thing to study.
+
+With CVS you can tag releases, and so you can extract back from a known
+release. You can have branches at various points too, and also merge
+branches. However, it really needs a CVS guru to make it work properly.
+And, of course, when we get to BSD, we should bring the existing
+SCCS deltas into the CVS tree, too.
+
+The CVS idea can be someone else's project :-)
+ 
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id AAA49218
+	for pups-liszt; Fri, 7 Jan 2000 00:17:14 +1100 (EST)
+
+From SHOPPA at trailing-edge.com  Thu Jan  6 23:16:41 2000
+From: SHOPPA at trailing-edge.com (Tim Shoppa)
+Date: Thu, 6 Jan 2000 8:16:41 -0500
+Subject: Viral Unix Compiler
+Message-ID: <000106081641.202001e1@trailing-edge.com>
+
+>So far as I know (from conversations with insiders in the past), no system
+>was ever shipped out of Bell Labs with Ken's self-healing trojan horse in
+>login and the C compiler.  (For those who don't remember, both programs
+>were involved: login buggered so that a secret string was always accepted
+>as a valid password for any login; the compiler buggered to recognize when
+>compiling login or itself, and reinsert the buggery.  Hence one can remove
+>the buggered sources, but as long as the binaries remain, so will the bugs.)
+>
+>Ken's Turing Award lecture doesn't say whether those programs were ever
+>shipped to the public.  He probably left it dangling on purpose, since
+>the point he is trying to make is that it isn't just code you have to trust,
+>but the programmer who wrote it; you cannot possibly know everything that's
+>going on inside unless you created everything involved, including compilers
+>and assemblers and the operating system.
+
+Perhaps Ken went even further and distributed buggered binaries of 'od'
+as well (along with a 'cc' patch to re-insert the 'od' hole),
+so those attempting to hand disassemble the code to *check* for
+the existence of the security hole wouldn't find it.
+
+The 'cc+login' hole is nice, sweet, and self-consistent.  Attempting
+to patch all the other tools to make it impossible to find these holes
+sounds incredibly more complicated.  Maybe it was just the way Ken
+so clearly presented the "how to" lesson that makes anything I try to add
+onto it sound incredibly awkward.
+
+-- 
+ Tim Shoppa                        Email: shoppa at trailing-edge.com
+ Trailing Edge Technology          WWW:   http://www.trailing-edge.com/
+ 7328 Bradley Blvd		   Voice: 301-767-5917
+ Bethesda, MD, USA 20817           Fax:   301-767-5927
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id BAA49497
+	for pups-liszt; Fri, 7 Jan 2000 01:25:03 +1100 (EST)
+
+From jfoust at threedee.com  Fri Jan  7 00:23:43 2000
+From: jfoust at threedee.com (John Foust)
+Date: Thu, 06 Jan 2000 08:23:43 -0600
+Subject: Viral Unix Compiler
+In-Reply-To: <000106081641.202001e1@trailing-edge.com>
+Message-ID: <3.0.5.32.20000106082343.01638ec0@pc>
+
+
+Has it ever been independently established that this viral 
+version of the compiler ever actually existed, or was this 
+just a parable about viral code?
+
+- John
+
+
+
+From arno at usn.nl  Fri Jan  7 06:37:26 2000
+From: arno at usn.nl (Arno Griffioen)
+Date: Thu, 6 Jan 2000 21:37:26 +0100 (CET)
+Subject: Viral Unix Compiler
+In-Reply-To: <200001060935.UAA48295@minnie.cs.adfa.edu.au> from "norman@nose.cita.utoronto.ca" at "Jan 6, 2000  4:34:51 am"
+Message-ID: <200001062037.VAA06991@superluminal.usn.nl>
+
+> Dennis's Turing Award lecture in the same issue of CACM is worth re-reading too,
+> especially for those who think that Open Source is a cure for the common
+> cold or that it was invented in the 1990s or 1980s.
+
+Could you tell me which year/month this was? Perhaps it's in the ACM
+digital library and I can find it that way.
+
+Thanx!
+
+							Bye, Arno.
+
+-- 
+PSINetworks Europe           Fax: +31-23-5699841 | One disk to rule them all,
+Siriusdreef 34               Tel: +31-23-5699840 | One disk to bind them,
+2132WT Hoofddorp+--------------------------------+ One disk to hold the files
+The Netherlands |   *  Musical Interlude  *      | And in the darkness grind 'em
+----------------+--------------------------------+------------------------------
+
+ We say Retribution, We say Vengeance is bliss, We say Revolution,
+ With a Cast-Iron fist!                  (Megadeth, 'The Disintegrators')
+
+--------------------------------------------------------------------------------
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id JAA51647
+	for pups-liszt; Fri, 7 Jan 2000 09:30:02 +1100 (EST)
+
+From grant.maizels at cogita.com.au  Fri Jan  7 08:30:19 2000
+From: grant.maizels at cogita.com.au (Grant Maizels)
+Date: Fri, 7 Jan 2000 09:30:19 +1100 
+Subject: Viral Unix Compiler
+Message-ID: <5AE253C4A378D011A0520000F830A87D5D26AC@sydnt4.syd.cogita.co.nz>
+
+
+>> Dennis's Turing Award lecture in the same issue of CACM is worth
+re-reading too,
+>> especially for those who think that Open Source is a cure for the common
+>> cold or that it was invented in the 1990s or 1980s.
+
+> Could you tell me which year/month this was? Perhaps it's in the ACM
+> digital library and I can find it that way.
+> 
+> Thanx!
+> 
+> 							Bye, Arno.
+> 
+
+The URL is http://www.acm.org/classics/sep95/ so I suppose it is September
+1995.
+
+Grant Maizels
+grant at maizels.nu
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id JAA51689
+	for pups-liszt; Fri, 7 Jan 2000 09:33:16 +1100 (EST)
+
+From wkt at cs.adfa.edu.au  Fri Jan  7 08:32:53 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Fri, 7 Jan 2000 09:32:53 +1100 (EST)
+Subject: Viral Unix Compiler
+In-Reply-To: <3.0.5.32.20000106082343.01638ec0@pc> from John Foust at "Jan 6, 2000  8:23:43 am"
+Message-ID: <200001062232.JAA38496@henry.cs.adfa.edu.au>
+
+In article by John Foust:
+> 
+> Has it ever been independently established that this viral 
+> version of the compiler ever actually existed, or was this 
+> just a parable about viral code?
+> 
+> - John
+
+I've asked Dennis. I'll relay any replies.
+
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id JAA51803
+	for pups-liszt; Fri, 7 Jan 2000 09:49:34 +1100 (EST)
+
+From norman at nose.cita.utoronto.ca  Fri Jan  7 08:48:47 2000
+From: norman at nose.cita.utoronto.ca (norman at nose.cita.utoronto.ca)
+Date: Thu, 06 Jan 2000 17:48:47 -0500
+Subject: Viral Unix Compiler
+Message-ID: <200001062249.JAA51799@minnie.cs.adfa.edu.au>
+
+The original publication of the Ken and Dennis Turing Award lectures
+was in August 1984 CACM.  I gather there may have been some sort of
+repeat a few years ago, but my CACM collection, like my UNIX collection,
+is on the ancient side, so I don't know about that.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA52219
+	for pups-liszt; Fri, 7 Jan 2000 11:12:11 +1100 (EST)
+
+From jp at spektr.eu.org  Fri Jan  7 10:11:12 2000
+From: jp at spektr.eu.org (Jorgen Pehrson)
+Date: Fri, 7 Jan 2000 01:11:12 +0100 (CET)
+Subject: Viral Unix Compiler
+In-Reply-To: <5AE253C4A378D011A0520000F830A87D5D26AC@sydnt4.syd.cogita.co.nz>
+Message-ID: <Pine.BSF.4.10.10001070108050.64922-100000@spektr.eu.org>
+
+On Fri, 7 Jan 2000, Grant Maizels wrote:
+
+> 
+> >> Dennis's Turing Award lecture in the same issue of CACM is worth
+> re-reading too,
+> >> especially for those who think that Open Source is a cure for the common
+> >> cold or that it was invented in the 1990s or 1980s.
+> 
+> > Could you tell me which year/month this was? Perhaps it's in the ACM
+> > digital library and I can find it that way.
+> > 
+> > Thanx!
+> > 
+> > 							Bye, Arno.
+> > 
+> 
+> The URL is http://www.acm.org/classics/sep95/ so I suppose it is September
+> 1995.
+> 
+> Grant Maizels
+> grant at maizels.nu
+
+If you check the first line on that web page, you'll notice that it says:
+"Reprinted from Communication of the ACM, Vol. 27, No. 8, August 1984, pp.
+761-763. Copyright © 1984, Association for Computing Machinery, Inc."
+
+
+So I'll guess the original print date was August 8 1984.
+
+-- 
+Jörgen Pehrson  jp at spektr.eu.org  http://spektr.eu.org/~jp/
+-----------------------------------------------------------
+"Bill Gates and Richard Stallman Meet in Airport; Thousands
+Killed in Resulting Explosion. News at 11."
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id OAA53194
+	for pups-liszt; Fri, 7 Jan 2000 14:59:01 +1100 (EST)
+
+From grant.maizels at cogita.com.au  Fri Jan  7 13:59:23 2000
+From: grant.maizels at cogita.com.au (Grant Maizels)
+Date: Fri, 7 Jan 2000 14:59:23 +1100 
+Subject: Viral Unix Compiler
+Message-ID: <5AE253C4A378D011A0520000F830A87D5D26B1@sydnt4.syd.cogita.co.nz>
+
+Oops that was a bit careless of me.
+
+Grant
+
+-----Original Message-----
+From: Jorgen Pehrson [mailto:jp at spektr.eu.org]
+Sent: Friday, 7 January 2000 11:11
+To: pups at minnie.cs.adfa.edu.au
+Subject: RE: Viral Unix Compiler
+
+
+On Fri, 7 Jan 2000, Grant Maizels wrote:
+
+> 
+> >> Dennis's Turing Award lecture in the same issue of CACM is worth
+> re-reading too,
+> >> especially for those who think that Open Source is a cure for the
+common
+> >> cold or that it was invented in the 1990s or 1980s.
+> 
+> > Could you tell me which year/month this was? Perhaps it's in the ACM
+> > digital library and I can find it that way.
+> > 
+> > Thanx!
+> > 
+> > 							Bye, Arno.
+> > 
+> 
+> The URL is http://www.acm.org/classics/sep95/ so I suppose it is September
+> 1995.
+> 
+> Grant Maizels
+> grant at maizels.nu
+
+If you check the first line on that web page, you'll notice that it says:
+"Reprinted from Communication of the ACM, Vol. 27, No. 8, August 1984, pp.
+761-763. Copyright © 1984, Association for Computing Machinery, Inc."
+
+
+So I'll guess the original print date was August 8 1984.
+
+-- 
+Jörgen Pehrson  jp at spektr.eu.org  http://spektr.eu.org/~jp/
+-----------------------------------------------------------
+"Bill Gates and Richard Stallman Meet in Airport; Thousands
+Killed in Resulting Explosion. News at 11."
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id TAA54308
+	for pups-liszt; Fri, 7 Jan 2000 19:07:40 +1100 (EST)
+
+From bdc at world.std.com  Fri Jan  7 18:07:03 2000
+From: bdc at world.std.com (Brian D Chase)
+Date: Fri, 7 Jan 2000 00:07:03 -0800
+Subject: Viral Unix Compiler
+In-Reply-To: <200001060935.UAA48295@minnie.cs.adfa.edu.au>
+Message-ID: <Pine.SGI.4.04.10001062352070.9097-100000@world.std.com>
+
+On Thu, 6 Jan 2000 norman at nose.cita.utoronto.ca wrote:
+
+[...]
+
+> Dennis's Turing Award lecture in the same issue of CACM is worth
+> re-reading too, especially for those who think that Open Source is a
+> cure for the common cold or that it was invented in the 1990s or
+> 1980s.
+
+Well, I think the whole basis for Richard Stallman's formation of the FSF
+and the GNU project during the 1980's was to keep alive the inherently
+"Open Source" nature of the software created during preceding decades.
+
+I hope not many people actually believe that Open Source is new concept.
+My personal take on Stallman is that he's a little whacked, but I do
+respect him incredibly for the work he's done with through the FSF.  I
+think the industry could very easily have gone the Shareware route of the
+PC world had the GNU project, and eventually Linux, not entered the scene.
+
+It's possible we'd still have been okay with Linux once FreeBSD and
+NetBSD became a reality, but I believe Linux's early appearance struck
+just at exactly the right moment -- just when the web was being born.
+
+There's an immense amount of work ahead, but at least we're maintaining
+our history... and hopefully some people are learning from it.
+
+-brian.
+--- Brian Chase | bdc at world.std.com | http://world.std.com/~bdc/ -----
+It is good that the world has Internet, for the world can see living math
+done from the pouring of the concrete foundation all the way up to where
+the beautiful pictures are hung on the wall and the microwave is warming
+up cheese burritos.  -- Archimedes Plutonium, 1995
+
+
+
+From wkt at cs.adfa.edu.au  Mon Jan 10 15:40:39 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Mon, 10 Jan 2000 16:40:39 +1100 (EST)
+Subject: Successful recompilation of last1120 C compiler
+Message-ID: <200001100540.QAA64928@henry.cs.adfa.edu.au>
+
+Hi All,
+	With a lot of help from Norman Wilson, Tim Shoppa and Dennis Ritchie
+himself, I've been able to modify my Apout emulator to run the 2nd Edition
+UNIX C compiler binaries. Using these, I've been able to recompile the
+`last1120' C compiler described by Dennis on his web page at:
+http://cm.bell-labs.com/cm/cs/who/dmr/primevalC.html
+
+The new version of Apout, as always, is available at:
+ftp://minnie.cs.adfa.edu.au/pub/PDP-11/Sims/Apout/
+
+I've also put the source code to the last1120 C compiler in UnixBins/
+
+Soren also pointed out a code problem stopping compilation on NetBSD,
+which has been fixed.
+
+Cheers all,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id CAA74341
+	for pups-liszt; Tue, 11 Jan 2000 02:10:03 +1100 (EST)
+
+From DSEAGRAV at toad.xkl.com  Tue Jan 11 01:08:33 2000
+From: DSEAGRAV at toad.xkl.com (Daniel A. Seagraves)
+Date: Mon, 10 Jan 2000 07:08:33 -0800
+Subject: I need help rewriting the 2.11BSD bootblock...
+Message-ID: <13514475029.13.DSEAGRAV@toad.xkl.com>
+
+
+Problem as follows:
+
+I have a PDP-11/44, 2 DZ11s, a (currently nonfunctional) Emulex TC12
+tape controller, a Pertec-type drive for that (known working), and a
+Viking UDT MSCP <> SCSI disk controller.  Problem is, the Viking doesn't
+raise the RACMDI bit upon completion of a command because interrupts are
+off, so the boot loops forever.  I tried taking out the test for RACMDI
+and just putting in delay loops, but that doesn't work.  (The boot hangs
+later on trying to reset the controller.  I dunno if the I/O went or not.)
+
+The controller and system are known good.  I can put RT-11 back on the disk
+and it will run fine (excepting the date).  I have a 200 meg SCSI-1 drive
+on there, it will get a 540 meg drive later.
+
+Anyway, I need to change the boot.  I was told others had this problem too.
+I lack MSCP docs and don't really have the knowledge to do this.  Can someone
+help me, or at least point me at someone who can?  I'm more or less stuck for
+now.
+
+-------
+
+
+From SHOPPA at trailing-edge.com  Wed Jan 12 07:58:14 2000
+From: SHOPPA at trailing-edge.com (Tim Shoppa)
+Date: Tue, 11 Jan 2000 16:58:14 -0500
+Subject: More USENIX tapes recovered
+Message-ID: <000111165814.202000b0@trailing-edge.com>
+
+On a recent expedition, I recovered some additional USENIX tapes:
+
+  Usenix 83
+  Usenix 87
+  Usenix 88
+  Usenix 89
+
+Now, none of these are as "classic" as the current Usenix tapes in the
+PUPS archive (by my searching, Usenix 77, 78, 79, 80, and 81.)  Is
+there perhaps some other on-line archive out there that would be
+interested in copies of these tapes?  My E-mails to various addresses
+on www.usenix.org so far have left me with the impression that they
+have no library of material older than 1993 and they have no interest
+in older material, though I strongly suspect that I'm talking with all
+the wrong people.
+
+-- 
+ Tim Shoppa                        Email: shoppa at trailing-edge.com
+ Trailing Edge Technology          WWW:   http://www.trailing-edge.com/
+ 7328 Bradley Blvd		   Voice: 301-767-5917
+ Bethesda, MD, USA 20817           Fax:   301-767-5927
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id DAA85888
+	for pups-liszt; Thu, 13 Jan 2000 03:04:56 +1100 (EST)
+
+From jcrosenberg at earthlink.net  Thu Jan 13 02:03:04 2000
+From: jcrosenberg at earthlink.net (John Rosenberg)
+Date: Wed, 12 Jan 2000 11:03:04 -0500
+Subject: New member
+References: <200001100540.QAA64928@henry.cs.adfa.edu.au>
+Message-ID: <003f01bf5d16$a0ccc020$c469fea9@home>
+
+Kind greetings, all. I am a new member of the Society, and have been
+delighted with the messages I have seen.
+
+Recently I came into posession of a MicroVAX 4000 series machine at an
+auction, and the question now is: What do I do with the darned thing? It was
+really a bargain I could not pass up; and I'm pretty sure that it is in
+entirely usable condition. (I still have to fully test it.)
+
+Suggesetions? I have no Web site to run, even if I did want to spend the
+money on the required infrastructure & maintenance.
+
+Much obliged in advance, and again, I am more than happy to have joined the
+Society.
+
+    John Rosenberg
+    33 Pond Ave. #601
+    Brookline, MA  02445
+
+    617-277-7868
+
+    jcrosenberg at earthlink.net   (generally preferred)
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id DAA86073
+	for pups-liszt; Thu, 13 Jan 2000 03:33:14 +1100 (EST)
+
+From msokolov at meson.jpsystems.com  Thu Jan 13 02:31:19 2000
+From: msokolov at meson.jpsystems.com (Michael Sokolov)
+Date: Wed, 12 Jan 00 10:31:19 -0600
+Subject: New member
+In-Reply-To: <003f01bf5d16$a0ccc020$c469fea9@home>
+Message-ID: <0001121631.AA27623@meson.jpsystems.com>
+
+John Rosenberg <jcrosenberg at earthlink.net> wrote:
+
+> Recently I came into posession of a MicroVAX 4000 series machine at an
+> auction, and the question now is: What do I do with the darned thing?
+
+The right answer for you is the Quasijarus project. See its WWW page at:
+
+http://minnie.cs.adfa.edu.au/Quasijarus/
+
+The project has a mailing list to which I have already subscribed you. To post
+to the list, send to quasijarus at meson.jpsystems.com. If anyone else wants to
+subscribe, drop a line to quasijarus-request at meson.jpsystems.com.
+
+--
+Michael Sokolov				2695 VILLA CREEK DR STE 240
+Software Engineer			DALLAS TX 75234-7329 USA
+JP Systems, Inc.			Phone: +1-972-484-5432 x247
+					    or +1-888-665-2460 x247
+E-mail: msokolov at meson.jpsystems.com	Fax:   +1-972-484-4154
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id DAA86111
+	for pups-liszt; Thu, 13 Jan 2000 03:36:54 +1100 (EST)
+
+From msokolov at meson.jpsystems.com  Thu Jan 13 02:35:04 2000
+From: msokolov at meson.jpsystems.com (Michael Sokolov)
+Date: Wed, 12 Jan 00 10:35:04 -0600
+Subject: New member
+Message-ID: <0001121635.AA27632@meson.jpsystems.com>
+
+I just wrote:
+
+> [...]
+> --
+> Michael Sokolov				2695 VILLA CREEK DR STE 240
+> Software Engineer			DALLAS TX 75234-7329 USA
+> JP Systems, Inc.			Phone: +1-972-484-5432 x247
+> 					    or +1-888-665-2460 x247
+> E-mail: msokolov at meson.jpsystems.com	Fax:   +1-972-484-4154
+
+Argh! Used the wrong sig file again! Here is the right one:
+
+--
+Michael Sokolov				Harhan Computer Operation Facility
+Special Agent				615 N GOOD LATIMER EXPY #4
+International Free Computing Task Force	DALLAS TX 75204-5852 USA
+					Phone: +1-214-824-7693
+					ARPA INET: msokolov at meson.jpsystems.com
+
+I guess I'll keep bumping into this one until I set up separate mail addresses
+for my two affiliations and subscribe to all lists from the right one... Sorry
+about that.
+
+
+From wkt at cs.adfa.edu.au  Sat Jan 15 09:10:07 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Sat, 15 Jan 2000 10:10:07 +1100 (EST)
+Subject: macro-11 for V7-Unix
+In-Reply-To: <387F7844.292A1DEC@fh-jena.de> from "Prof. Karl Kleine" at "Jan 14, 2000  8:25:56 pm"
+Message-ID: <200001142310.KAA06954@henry.cs.adfa.edu.au>
+
+In article by Prof. Karl Kleine:
+> 
+> Dear Warren,
+> 
+> once upon a time, it was around 1981, I used a pdp11/45 with V7
+> (I started my life with Unix with V6 in 1977/8), doing some research
+> in compilers, portability, dense code schemes for interpreters.
+> For that I used a port of DEC MACRO-11 to Unix. There was also
+> an associated linker and the package offered also Fortran, though
+> I didnt't use the latter. As far as I remember, this port was
+> done at Harvard and distributed to some academic sites. I was
+> at the University of Nijmegen, The Netherlands, at that time.
+> 
+> I have the Supnik emulator to play with, and I wonder if this
+> macro-11 and linker is still somewhere around. I would love to
+> prepare a few examples for my lessons here (I'm a professor in
+> computer science these days, at the University of Applied Sciences
+> here in Jena).
+> 
+> Any ideas? Might there be copies in yours archive? I would like
+> to know before I go through the motions of getting teh SCO source
+> licence and all that...
+> 
+> Thanks for your help!
+> Karl Kleine
+
+Hi Karl, I think this came up on Usenet recently. No I don't know
+of a port of Macro-11 to Unix. I'll pass this on to our mailing list,
+just in case anybody knows of it.
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA03424
+	for pups-liszt; Sat, 15 Jan 2000 11:53:18 +1100 (EST)
+
+From SHOPPA at trailing-edge.com  Sat Jan 15 10:52:53 2000
+From: SHOPPA at trailing-edge.com (Tim Shoppa)
+Date: Fri, 14 Jan 2000 19:52:53 -0500
+Subject: macro-11 for V7-Unix
+Message-ID: <000114195253.20200992@trailing-edge.com>
+
+>In article by Prof. Karl Kleine:
+>> once upon a time, it was around 1981, I used a pdp11/45 with V7
+>> (I started my life with Unix with V6 in 1977/8), doing some research
+>> in compilers, portability, dense code schemes for interpreters.
+>> For that I used a port of DEC MACRO-11 to Unix. There was also
+>>... 
+>> I have the Supnik emulator to play with, and I wonder if this
+>> macro-11 and linker is still somewhere around. I would love to
+>> prepare a few examples for my lessons here (I'm a professor in
+
+>Hi Karl, I think this came up on Usenet recently. No I don't know
+>of a port of Macro-11 to Unix. I'll pass this on to our mailing list,
+>just in case anybody knows of it.
+
+As the possibly only member of this list who still makes a living writing
+MACRO-11 code, I'm gonna take two shots at this:
+
+One possibility is the "as11" assembler from Xinu.  It's a fairly portable
+PDP-11 assembler, but doesn't have all the real macro facilities of
+real Macro-11.  You can find this at
+
+ http://metalab.unc.edu/pub/academic/computer-science/history/pdp-11/xinu/unpacked/src/cmd/as11/
+
+The other (and more likely) possibility is the "m11" macro package from
+Harvard, which *does* come with a linker ("l11") as Karl described.  The
+full distribution is in the 2.11BSD source tree, at "/usr/src/new/m11".
+
+Here's the man page - look at the "NOTES" section near the bottom for
+the history.
+
+M11(1)                                                     M11(1)
+
+NAME
+       m11 - Macro-11 assembler for UNIX
+
+SYNOPSIS
+       m11 [ option1 option2 ...  ] file1 file2 ...  filen
+
+DESCRIPTION
+       M11  assembles  the  concatenation  of the specified files
+       (file1, etc.)  and terminates when an  ``.end''  statement
+       is  encountered.   The  resulting  object  file is usually
+       named  filen.obj (see below).  If a file  argument,  filei
+       does  not  contain a ``.'' in its name, the file filei.m11
+       will be sought before filei itself.
+
+       Options, if desired, may appear anywhere in  the  command,
+       and  are  chosen from the following list.  All options are
+       interpreted before any files are read.
+
+       -ls    Produce an assembly listing and place in filen.lst
+
+       -lt    Produce an assembly listing on the standard output.
+
+       -fl    If  coupled  with  the -ls or -lt directives, makes
+              the listing have a shortened format.  It is  short<AD>
+              hand for -nl:seq:loc:bin:bex:me:meb:ttm:toc:sym.
+
+       -uc    Simulate an initial .dsabl lc directive.  Force all
+              characters in macro definitions to be  upper  case.
+              This  flag makes lower-case handling in m11 compat<AD>
+              able with the DEC Macro-11 assemblers.
+
+       -um    Force all characters in  macro  definitions  to  be
+              upper case.  This flag makes lower-case handling in
+              this release of m11 compatable with  previous  ver<AD>
+              sions of m11.
+
+       -de    Make  all  option  choices  needed to make assembly
+              mimic DEC Macro-11.  Implies (inter alia)  the  -uc
+              flag.   This  includes the Johns Hopkins asm assem<AD>
+              bler.
+
+       -ha    Make all option choices  needed  to  make  assembly
+              mimic  earlier  (Harvard)  releases  of  m11.  This
+              implies the -um flag.  Default  .psect  and  .csect
+              attributes are set up in the funny Harvard way.
+
+       -mx    Produce  a  listing  of  the  source  program as it
+              appears after macro expansion.  Macro calls, condi<AD>
+              tional  directives  and so on appear in the listing
+              as comments.  Listing appears on  standard  output.
+              No  machine  code  is  generated  or  listed.  This
+              option is meant to  correspond  to  the  -E  or  -P
+              options of the C compiler cc(1).
+
+       -my    Like  -mx,  except that macro calls and conditional
+              directives do not show up in the listing.
+
+       -10    Generate an error whenever  op  codes  not  in  the
+              PDP-11  ``standard  instruction  set''  are encoun<AD>
+              tered.  Programmers writing for  a  PDP  11/10  can
+              catch  instructions  illegal  for  that  machine by
+              using this argument.
+
+       -dp:args
+              The default attributes  for  a  .psect  or  unnamed
+              .csect  are  redefined,  using  the colon-separated
+              list args of valid .psect attributes.
+
+       -da:args
+              The default attributes for an .asect are redefined.
+
+       -dp:c  The default attributes for a named .csect are rede<AD>
+              fined.
+
+       -li:arglist
+              Simulate an initial .list arglist  directive.   All
+              .list  and  .nlist  directives  in the program text
+              which attempt to change  the  settings  established
+              with the -li flag will be ignored.
+
+       -nl:arglist
+              Like -li:arglist, but for the .nlist directive.
+
+       -en:arglist
+              Similarly, for the .enabl directive.
+
+       -ds:arglist
+              Similarly, but for the .dsabl directive.
+ 
+       -cr:arglist
+              Produces  a  cross-reference  listing.   If the -ls
+              option is also included, the cross-reference  list<AD>
+              ing  will follow the assembly listing in filen.lst.
+              References which are tagged with the symbol  #  are
+              definitions.   References tagged with * are destuc<AD>
+              tive references: the value of the symbol  or  vari<AD>
+              able  in  question is changed.  Arglist consists of
+              colon-separated keywords from  the  following  set.
+              The keywords may be prefix abbreviated:
+
+              sym    All user-defined symbols are indexed.
+
+              mac    All macro names are indexed.
+
+              per    All  uses  of  permanent symbols - op codes,
+                     directives, etc - are indexed.
+
+              pse    All psect names are indexed.   For  compata<AD>
+                     bility  with  the  RT-11  CREF  program, the
+                     argument cse is synonymous with pse.
+
+              err    All errors are indexed.
+
+              reg    All register uses are indexed.
+
+              If no arglist is specified the default  sym:mac:err
+              is  used.  In the listing page and line numbers for
+              uses of symbols are followed by a  #  sign  if  the
+              symbol  is defined and by a * sign if the symbol is
+              modified.
+
+       -lp    Same as -ls, but also spools filen.lst for printing
+              upon completion.
+
+       -no    No  object  file  is  produced.  This is useful for
+              syntax checking or list producing.
+
+       -xs:n  Allots nK words of extra space for symbol table and
+              macro  storage.   NOTE:  This  option  is currently
+              inoperative: m11 automatically allots core for  its
+              tables as needed.
+
+       -xx    Debug flag: generate all kinds of wierd hack flack.
+
+       -ns    No symbol table is  included  in  the  object  file
+              (thus  ddt knows of no symbols from this assembly).
+
+       -sx    Make the symbol table contain ``local symbols''  as
+              well as ordinary symbols.
+
+       -u     Treat  form  feed  characters as spaces.  This will
+              make m11's idea of line numbers coincide  with  the
+              UNIX  text editors.  Macro-11 statements containing
+              imbedded form feed characters will be  parsed  dif<AD>
+              ferently when the -u flag is in effect.
+
+       -na:file
+              Override  the convention of using last name as file
+              name.  Instead, use names file.obj and file.lst for
+              object and listing files.
+
+NOTES
+       This  implementation of Macro-11 is a distant hand-me down
+       from an old DEC Macro-11 modified at Harvard University in
+       the  early  1970's.   It  is  grubby with smudges by Brent
+       Byer, F. J. Howard, Bob Bowering, and Jim Reeds.  It  does
+       not  implement  keyword arguments such as are described in
+       section 7.3.6 of the DEC manual.  The  .enabl  abs  option
+       does  not  work.  Listing control is by default .list ttm.
+       Unlike earlier editions of m11 at UCB and at  Harvard,  it
+       does  treat  immediate  constants of floating point opera<AD>
+       tions correctly: see the last paragraph of  section  6.4.2
+       on  the  middle  of  page 6-27 of the DEC manual.  M11 has
+       several directives not described in the DEC  manual.   See
+       the  New  UCB  M11  Manual.   The  default  attributes for
+       .psects are different from those described in the DEC man<AD>
+       ual,  but  may be changed by the -dp flag.  The .enabl glb
+       feature is implemented: undefined  symbols  are  taken  as
+       undefined global externals.
+
+FILES
+       /usr/share/misc/sysmac.smlsystem macro library (for .mcall
+       directive)
+       filen.xrf           intermediate cross-reference temporary
+       file
+       lpr(1)              spooler
+       /usr/ucb/macxrf     cross-reference post-processor
+
+SEE ALSO
+       PDP-11 MACRO-11 Language Reference Manual , Digital Equip<AD>
+       ment Corp. Order No. AA-5075A-TC, August 1977.
+       New UCB M11 Manual , notional document by Jim Reeds.
+ 
+-- 
+ Tim Shoppa                        Email: shoppa at trailing-edge.com
+ Trailing Edge Technology          WWW:   http://www.trailing-edge.com/
+ 7328 Bradley Blvd		   Voice: 301-767-5917
+ Bethesda, MD, USA 20817           Fax:   301-767-5927
+
+
+From edgee at cyberpass.net  Mon Jan 17 00:19:26 2000
+From: edgee at cyberpass.net (Ed G.)
+Date: Sun, 16 Jan 2000 10:19:26 -0400
+Subject: macro-11 for V7-Unix
+In-Reply-To: <200001142310.KAA06954@henry.cs.adfa.edu.au>
+References: <387F7844.292A1DEC@fh-jena.de> from "Prof. Karl Kleine" at "Jan 14, 2000  8:25:56 pm"
+Message-ID: <200001161520.KAA10760@renoir.op.net>
+
+> > once upon a time, it was around 1981, I used a pdp11/45 with V7
+> > (I started my life with Unix with V6 in 1977/8), doing some research
+> > in compilers, portability, dense code schemes for interpreters.
+> > For that I used a port of DEC MACRO-11 to Unix. There was also
+> > an associated linker and the package offered also Fortran, though
+> > I didnt't use the latter. As far as I remember, this port was
+> > done at Harvard and distributed to some academic sites. I was
+> > at the University of Nijmegen, The Netherlands, at that time.
+
+I'd suggest contacting Professor Harry Lewis at Harvard 
+(lewis at harvard.edu).  We used Macro-11 for Unix in his "Intro to 
+Data Structures" course in 1980.  
+
+Since Professor Lewis is now a dean, this may take some 
+persistence on your part, but I remember Professor Lewis as a 
+decent sort (though busy, even in 1980) and I'm sure he'd be willing 
+to help once he knows who you are.
+
+BTW, I did verify that this was Macro-11 for Unix.  After some 
+rummaging I was able to find (wonder of wonders!) my old "HRSTS 
+Macro; Macro-11 Second Edition; 1/5/76" manual complete with 
+Unix man pages for 'macro', 'linkr' and 'libr.'
+
+Best of luck.
+
+Edgee
+
+PS:  I've just read Tim Shoppa's post; the man pages contained in 
+his email are identical to those in my manual (i.e., looks like you 
+want m11).
+
+
+From joerg at begemot.org  Tue Jan 18 07:38:14 2000
+From: joerg at begemot.org (Joerg B. Micheel)
+Date: Tue, 18 Jan 2000 10:38:14 +1300
+Subject: macro-11 for V7-Unix
+In-Reply-To: <000114195253.20200992@trailing-edge.com>; from Tim Shoppa on Fri, Jan 14, 2000 at 07:52:53PM -0500
+References: <000114195253.20200992@trailing-edge.com>
+Message-ID: <20000118103814.A11188@begemot.org>
+
+On Fri, Jan 14, 2000 at 07:52:53PM -0500, Tim Shoppa wrote:
+> As the possibly only member of this list who still makes a living writing
+> MACRO-11 code, I'm gonna take two shots at this:
+
+I believe the SEP RELAG-3 system (www.sep.de) is based on LSI-11, not sure
+it is written in assembler, though. Perhaps Torsten could tell ...
+
+	Joerg
+-- 
+Joerg B. Micheel			Email: <joerg at begemot.org>
+Begemot Computer Associates		Phone: +64 7 8562148
+40 Masters Avenue, Hillcrest		Fax:   +64 7 8562148
+Hamilton, New Zealand			Pager: +64 868 38222
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id QAA19013
+	for pups-liszt; Tue, 18 Jan 2000 16:18:09 +1100 (EST)
+
+From cdl at mpl.ucsd.edu  Tue Jan 18 15:17:43 2000
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Mon, 17 Jan 2000 21:17:43 -0800 (PST)
+Subject: macro-11 for V7-Unix
+Message-ID: <200001180517.VAA04673@chiton.ucsd.edu>
+
+> From owner-pups at minnie.cs.adfa.edu.au Fri Jan 14 17:09 PST 2000
+> Date: Fri, 14 Jan 2000 19:52:53 -0500
+> From: Tim Shoppa <SHOPPA at trailing-edge.com>
+> To: PUPS at minnie.cs.adfa.oz.au
+> Subject: Re: macro-11 for V7-Unix
+> 
+> >In article by Prof. Karl Kleine:
+> >> once upon a time, it was around 1981, I used a pdp11/45 with V7
+> >> (I started my life with Unix with V6 in 1977/8), doing some research
+> >> in compilers, portability, dense code schemes for interpreters.
+> >> For that I used a port of DEC MACRO-11 to Unix. There was also
+> >>... 
+> >> I have the Supnik emulator to play with, and I wonder if this
+> >> macro-11 and linker is still somewhere around. I would love to
+> >> prepare a few examples for my lessons here (I'm a professor in
+> 
+> >Hi Karl, I think this came up on Usenet recently. No I don't know
+> >of a port of Macro-11 to Unix. I'll pass this on to our mailing list,
+> >just in case anybody knows of it.
+> 
+> As the possibly only member of this list who still makes a living writing
+> MACRO-11 code, I'm gonna take two shots at this:
+> 
+> One possibility is the "as11" assembler from Xinu.  It's a fairly portable
+> PDP-11 assembler, but doesn't have all the real macro facilities of
+> real Macro-11.  You can find this at
+> 
+>  http://metalab.unc.edu/pub/academic/computer-science/history/pdp-11/xinu/unpacked/src/cmd/as11/
+> 
+> The other (and more likely) possibility is the "m11" macro package from
+> Harvard, which *does* come with a linker ("l11") as Karl described.  The
+> full distribution is in the 2.11BSD source tree, at "/usr/src/new/m11".
+> 
+>  Tim Shoppa                        Email: shoppa at trailing-edge.com
+
+Let me toss in another possibility.  Around that time (late 70's -
+early 80's) we (Marine Physical Lab) were running an RT-11 emulator on
+a couple of our PDP-11 Unix systems.  Product of Human Computing
+Resources, as I remember.  Once you can emulate RT-11, you can run all
+of its CUSPs:  assembler, linker, Fortran, what have you.  Assuming, of
+course, that you have appropriate licenses etc.
+
+We did it to get a reasonably capable Fortran compiler with our Unix.
+
+    carl
+
+        carl lowenstein         marine physical lab     u.c. san diego
+        {decvax|ucbvax} !ucsd!mpl!cdl                 cdl at mpl.ucsd.edu
+                                                  clowenstein at ucsd.edu
+
+
+From jcrosenberg at earthlink.net  Thu Jan 20 01:06:45 2000
+From: jcrosenberg at earthlink.net (John Rosenberg)
+Date: Wed, 19 Jan 2000 10:06:45 -0500
+Subject: =?iso-8859-1?B?tVZBWA==?=
+Message-ID: <004801bf628e$d297b920$c469fea9@home>
+
+Please do not trash me on this one! I think that 4000 series µVAX is just a little more than I need. Would anyone care to swap this puppy for a table-top PDP-8 or PDP-11 of any sort? I have a working machine & keyboard; it wants your basic RGB with or without sync (i.e. sync on green). Whaddadya think? Happy new year!   --JCR
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20000119/bd43fed4/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/x-pkcs7-signature
+Size: 3321 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20000119/bd43fed4/attachment.bin>
+
+From wkt at cs.adfa.edu.au  Thu Jan 20 09:54:33 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 20 Jan 2000 10:54:33 +1100 (EST)
+Subject: Recent PUPS Archive additions
+Message-ID: <200001192354.KAA40551@henry.cs.adfa.edu.au>
+
+Hi all,
+	Several new things have arrived in the PUPS Archive, so I thought
+I'd pass on details of what and where.
+
+Tim Shoppa has found & recovered the tapes from the following Usenix
+conferences: 1983, 1987, 1988 and 1989. Their contents are now in
+Applications/Shoppa_Tapes in the archive.
+
+Dennis Ritchie has sent in two DECtape images, s1-bits and s2-bits.
+s2-bits dates from 1972, and contains several 1st Edition binaries and
+the binaries of an early C compiler. s1-bits is part of a disk image,
+but I've been able to recover some of its contents: some application
+source in both assembly and C. It seems to date from early 1973. Both
+tapes are in Distributions/research/1972_stuff in the archive.
+
+By using the C compiler binaries on s2-bits, I've been able to recompile
+the two primeval C compilers whose source is in Applications/Early_C_Compilers
+and which are described by Dennis on his web page at
+http://cm.bell-labs.com/who/dmr/primevalC.html
+
+Most recently, Dennis has also unearthed the on-line manual pages for
+3rd and 4th Edition UNIX. They are in Distributions/research/Dennis_v3
+and Distributions/research/Dennis_v3, respectively.
+
+It still looks like all kernel code before 5th Edition is gone, except
+for the nsys kernel code in Distributions/research/Dennis_v3 and a few bits
+on paper that Dennis has.
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id EAA33093
+	for pups-liszt; Fri, 21 Jan 2000 04:31:59 +1100 (EST)
+
+From apg at execpc.com  Fri Jan 21 03:25:39 2000
+From: apg at execpc.com (A. P. Garcia)
+Date: 20 Jan 2000 17:25:39 -0000
+Subject: CD-R request
+Message-ID: <20000120172539.477.qmail@playground.lan>
+
+> Several new things have arrived in the PUPS Archive, so I thought
+> I'd pass on details of what and where.
+
+Could someone please burn a new snapshot of the archive for me?  I'm happy
+to compensate you, of course.
+
+Thanks,
+Phil Garcia
+Milwaukee, Wisconsin, USA
+
+
+From wkt at cs.adfa.edu.au  Fri Jan 21 12:16:40 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Fri, 21 Jan 2000 13:16:40 +1100 (EST)
+Subject: Emulators
+In-Reply-To: <034201bf63ad$8ad414b0$5d01a8c0@p2350> from emanuel stiebler at "Jan 20, 2000  6:19:18 pm"
+Message-ID: <200001210216.NAA53527@henry.cs.adfa.edu.au>
+
+In article by emanuel stiebler:
+> Hi,
+> Anybody here, who made some benchmarks of the different simulators (supnik,
+> apout, ...)
+> 
+> What I'm looking for is something like:
+> supnik version xxx on pentium 2 350 MHz using linux, is xxx times faster
+> than a 11/73.
+> 
+> cheers & thanks,
+> emanuel
+
+Here's my no-numbers-just-gut-feelings of the various PDP-11 emulators.
+John Wilson's Ersatz is probably the fastest; it's written in assembly
+code, and so gains a fair bit that way.
+
+Second would be the Begemot emulator. They've unrolled the instruction
+decode loop heavily, and that helps a lot.
+
+Bob Supnik's emulator would be the slowest of the three. However, it's
+still not that slow, may 1/3 the speed of Ersatz.
+
+Apout can't be compared to the above 3 emulators, because it doesn't emulate
+peripherals nor supervisor mode. User-mode instructions run at about the
+same speed as Supnik's emulator, but system calls are done by native code.
+
+The sole benchmark I have is: FreeBSD identifies my desktop box as
+Pentium II/Xeon/Celeron (348.93-MHz 686-class CPU). Using Apout, I can
+compile the 2.11BSD GENERIC kernel in 4 minutes 15 seconds.
+
+I'll try building Supnik and Begemot and getting comparative results.
+
+Last comment: all the simulators have strengths & shortcomings, and that
+applies not just to ease of use but also to CPU, I/O performance etc. You
+really have to try them all & find the one that suits you.
+
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id NAA35744
+	for pups-liszt; Fri, 21 Jan 2000 13:44:42 +1100 (EST)
+
+From joerg at begemot.org  Fri Jan 21 12:45:24 2000
+From: joerg at begemot.org (Joerg B. Micheel)
+Date: Fri, 21 Jan 2000 15:45:24 +1300
+Subject: Emulators
+In-Reply-To: <200001210216.NAA53527@henry.cs.adfa.edu.au>; from Warren Toomey on Fri, Jan 21, 2000 at 01:16:40PM +1100
+References: <034201bf63ad$8ad414b0$5d01a8c0@p2350> <200001210216.NAA53527@henry.cs.adfa.edu.au>
+Message-ID: <20000121154524.A71774@begemot.org>
+
+On Fri, Jan 21, 2000 at 01:16:40PM +1100, Warren Toomey wrote:
+> In article by emanuel stiebler:
+> > Hi,
+> > Anybody here, who made some benchmarks of the different simulators (supnik,
+> > apout, ...)
+> > 
+> > What I'm looking for is something like:
+> > supnik version xxx on pentium 2 350 MHz using linux, is xxx times faster
+> > than a 11/73.
+
+Us too! :-)
+
+The problem is that it doesn't scale that simple. Each and every
+instruction has the parsing overhead. Next comes execution overhead.
+You'll find that the parsing is pretty constant, no matter whether
+it is a NOP or some sophisticated MUL command. The execution speed
+varies heavily, very often it is alot faster than the original
+hardware. IO has seen a tremendous speedup, we can benefit here
+from todays hardware alot. Just remeber how long it took to get
+a prompt or echo when hitting the keyboard. As a result, the
+original feeling of the real machine is lost, very unfortunate.
+
+As a rough summary, simple commands do not improve (much), whereas
+everything complex speeds up with the emulator. Harti has done quite
+a bit of testing on different instructions and compared them to an
+LSI11/73 (KDJ11A). The emulator was run on a i486 at the time. Have
+a look at the p11 distribution, it should be in Tests somewhere.
+
+Regards,
+	Joerg
+-- 
+Joerg B. Micheel			Email: <joerg at begemot.org>
+Begemot Computer Associates		Phone: +64 7 8562148
+40 Masters Avenue, Hillcrest		Fax:   +64 7 8562148
+Hamilton, New Zealand			Pager: +64 868 38222
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id DAA39169
+	for pups-liszt; Sat, 22 Jan 2000 03:08:07 +1100 (EST)
+
+From rdkeys at unity.ncsu.edu  Sat Jan 22 02:07:37 2000
+From: rdkeys at unity.ncsu.edu (rdkeys at unity.ncsu.edu)
+Date: Fri, 21 Jan 2000 11:07:37 -0500 (EST)
+Subject: Anyone know what a Masscomp 5400 (54S-01) is?
+Message-ID: <200001211607.LAA12512@uni02du.unity.ncsu.edu>
+
+On a surplus junket, today, I ran across a 2 dollar chassis that was
+listed as a Masscomp 5400 (54S-01) computer.  It looked rather like
+a DECish based thing with dual height cards, like some sort of laboratory
+digital aquisition machine.  On the long-shot that it is some sort of
+PDP-11ish thing, anyone have any recollection or pointers to any info
+on that kind of a Masscomp machine? 
+
+Thanks
+
+Bob
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id DAA42516
+	for pups-liszt; Sat, 22 Jan 2000 03:45:56 +1100 (EST)
+
+From tfb at cley.com  Sat Jan 22 02:44:34 2000
+From: tfb at cley.com (Tim Bradshaw)
+Date: Fri, 21 Jan 2000 16:44:34 +0000 (GMT)
+Subject: Anyone know what a Masscomp 5400 (54S-01) is?
+In-Reply-To: <200001211607.LAA12512@uni02du.unity.ncsu.edu>
+References: <200001211607.LAA12512@uni02du.unity.ncsu.edu>
+Message-ID: <14472.36082.530024.331321@cley.com>
+
+* rdkeys  wrote:
+> On a surplus junket, today, I ran across a 2 dollar chassis that was
+> listed as a Masscomp 5400 (54S-01) computer.  It looked rather like
+> a DECish based thing with dual height cards, like some sort of laboratory
+> digital aquisition machine.  On the long-shot that it is some sort of
+> PDP-11ish thing, anyone have any recollection or pointers to any info
+> on that kind of a Masscomp machine? 
+
+Masscomps were 68k based machines, they had a whole bunch of stuff for
+real-time and data-acquistion type stuff.  They ran something called
+RTU -- real-time Unix -- which was a weirdo sysv / BSD hybrid, not fun
+to use.  If the 5400 is the machine I remember it's a 68020 machine
+but it may have a lot of cards for other stuff in.  If it *is* the
+machine we had it was deeply unreliable.  Masscomp got bought by
+someone else later on but I forget who, so they sometimes get badged
+as some other make.
+
+I would run away, fast.
+
+--tim
+
+
+
+From grog at lemis.com  Sat Jan 22 13:36:55 2000
+From: grog at lemis.com (Greg Lehey)
+Date: Sat, 22 Jan 2000 09:06:55 +0530
+Subject: Anyone know what a Masscomp 5400 (54S-01) is?
+In-Reply-To: <14472.36082.530024.331321@cley.com>; from tfb@cley.com on Fri, Jan 21, 2000 at 04:44:34PM +0000
+References: <200001211607.LAA12512@uni02du.unity.ncsu.edu> <14472.36082.530024.331321@cley.com>
+Message-ID: <20000122090655.B455@mojave.worldwide.lemis.com>
+
+On Friday, 21 January 2000 at 16:44:34 +0000, Tim Bradshaw wrote:
+> * rdkeys  wrote:
+>> On a surplus junket, today, I ran across a 2 dollar chassis that was
+>> listed as a Masscomp 5400 (54S-01) computer.  It looked rather like
+>> a DECish based thing with dual height cards, like some sort of laboratory
+>> digital aquisition machine.  On the long-shot that it is some sort of
+>> PDP-11ish thing, anyone have any recollection or pointers to any info
+>> on that kind of a Masscomp machine?
+>
+> Masscomps were 68k based machines, they had a whole bunch of stuff for
+> real-time and data-acquistion type stuff.  They ran something called
+> RTU -- real-time Unix -- which was a weirdo sysv / BSD hybrid, not fun
+> to use.  If the 5400 is the machine I remember it's a 68020 machine
+> but it may have a lot of cards for other stuff in.  If it *is* the
+> machine we had it was deeply unreliable.  Masscomp got bought by
+> someone else later on but I forget who, so they sometimes get badged
+> as some other make.
+>
+> I would run away, fast.
+
+On the other hand, IIRC this was the machine which was the basis for
+the Egan/Teixeira (sp?) book on writing UNIX drivers.  It might be
+amusing for that reason alone.  If it's functional and you have the
+space, you probably won't regret the $2 you spend for it.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+
+From jcrosenberg at earthlink.net  Mon Jan 24 07:29:05 2000
+From: jcrosenberg at earthlink.net (John Rosenberg)
+Date: Sun, 23 Jan 2000 16:29:05 -0500
+Subject: Anyone know what a Masscomp 5400 (54S-01) is?
+References: <200001211607.LAA12512@uni02du.unity.ncsu.edu> <14472.36082.530024.331321@cley.com>
+Message-ID: <00c501bf65e8$e55600a0$c469fea9@home>
+
+Yeah, that's the machine/software. Terrible software, if an honest
+attempt no doubt. Belongs in the Computer Museum. (It's such a pain
+to use that I would not bother, that is.)
+
+----- Original Message -----
+From: Tim Bradshaw <tfb at cley.com>
+To: <rdkeys at unity.ncsu.edu>
+Cc: <pups at minnie.cs.adfa.edu.au>
+Sent: Friday, January 21, 2000 11:44 AM
+Subject: Re: Anyone know what a Masscomp 5400 (54S-01) is?
+
+
+> * rdkeys  wrote:
+> > On a surplus junket, today, I ran across a 2 dollar chassis that was
+> > listed as a Masscomp 5400 (54S-01) computer.  It looked rather like
+> > a DECish based thing with dual height cards, like some sort of
+laboratory
+> > digital aquisition machine.  On the long-shot that it is some sort of
+> > PDP-11ish thing, anyone have any recollection or pointers to any info
+> > on that kind of a Masscomp machine?
+>
+> Masscomps were 68k based machines, they had a whole bunch of stuff for
+> real-time and data-acquistion type stuff.  They ran something called
+> RTU -- real-time Unix -- which was a weirdo sysv / BSD hybrid, not fun
+> to use.  If the 5400 is the machine I remember it's a 68020 machine
+> but it may have a lot of cards for other stuff in.  If it *is* the
+> machine we had it was deeply unreliable.  Masscomp got bought by
+> someone else later on but I forget who, so they sometimes get badged
+> as some other make.
+>
+> I would run away, fast.
+>
+> --tim
+>
+>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/x-pkcs7-signature
+Size: 3321 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20000123/365ffa0f/attachment.bin>
+
+From apg at execpc.com  Mon Jan 24 08:00:41 2000
+From: apg at execpc.com (A. P. Garcia)
+Date: 23 Jan 2000 22:00:41 -0000
+Subject: archive request
+Message-ID: <20000123220041.169.qmail@playground.lan>
+
+ping
+
+
+>From owner-pups at minnie.cs.adfa.edu.au Thu Jan 20 22:31:56 2000
+Date: 20 Jan 2000 17:25:39 -0000
+From: "A. P. Garcia" <apg at execpc.com>
+To: pups at minnie.cs.adfa.edu.au
+Subject: CD-R request
+
+> Several new things have arrived in the PUPS Archive, so I thought
+> I'd pass on details of what and where.
+
+Could someone please burn a new snapshot of the archive for me?  I'm happy
+to compensate you, of course.
+
+Thanks,
+Phil Garcia
+Milwaukee, Wisconsin, USA
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id PAA01223
+	for pups-liszt; Mon, 24 Jan 2000 15:48:16 +1100 (EST)
+
+From achupahi at uic.rsu.ru  Sat Jan 22 19:26:17 2000
+From: achupahi at uic.rsu.ru (Alexey Chupahin)
+Date: Sat, 22 Jan 2000 12:26:17 +0300
+Subject: Y2k for Unix
+References: <200001210318.OAA54327@henry.cs.adfa.edu.au>
+Message-ID: <388977B9.34055CD2@uic.rnd.runnet.ru>
+
+Hello Warren,
+
+I make date2 program now for BSD and Venix. I just send it for you.
+This is not best program, only Beta version. Please note me if you find bugs.
+To working, it calculates JD time, so algorithm is not best, it requires floating
+instructions. JD time is very useful for Astronomicals (my second hobby is
+Astronomy).
+Other  thing - ctime use local time, while stime Grinvich time, if  I remember.
+So you may need to add a number of  hours to into the source string to see exact
+time you entered:
+Time=Time*3600L*24 + (hour+4)*3600L + minutes*60 + sec;
+                                                   ^
+
+Venix was partically Y2k. I test "find" command with date2 and find (sillogizme!)
+it fine.:-).
+Seems, Venix with new date2 is full Y2k now.
+But BSD and other systems may have a number of non Y2k utilites. I don't like
+BSD's ls program for example. It seems work correctly, but I wish to test it
+again.
+The one way is to copy executable ls from Venix, it works fine on BSD or other way
+- I may fix  ls sources and recompile it.
+
+I'm making Y2k features ( that is hardly then for Unix ) for DEC RT-11.
+To make this, I use better algorithm to calculate time and better interface, and
+if you are interested, I'll port it to Unix too.
+
+I'd like to port Y2k features into Unix 6,7 ,but unfortunatly, it is very
+difficult
+to use "ed" for me. :-) And I don't know how to put files into Unix 6 RL disk - it
+hasn't
+"tar".
+
+May be, we can do well-organized work to prepeare old Unix system to use in
+21Centure?
+We can make full test all utilites for all versions and fix bugs to make Unixes as
+Y2k ready-to-use systems?
+
+Alexey
+
+P.S. I send you date2.c - sources and executable date2 for BSD and Venix both.
+To use it, one can copy date2 into /usr/bin or replace old standard unuseful
+/bin/date
+Usage:
+$date2 year month day [hour min [sec]]
+
+for example:
+
+$date 2000    1        22   12    15
+            ^        ^          ^     ^       ^
+           year month    day hour min
+
+date2 without arguments prints date and time.
+
+
+--
+IC~XC  NI~KA
++------------------------+
+| "I WAS     living,     |
+|  I AM      living and  |
+|  I WILL BE living!"    |
+|                        |
+|         DEC PDP-11...  |
++------------------------+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: Date2
+Type: application/octet-stream
+Size: 9110 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20000122/7ae8af10/attachment.obj>
+-------------- next part --------------
+/* Y2k date program for all Unix systems V0.2.2000, beta version. 
+   (c) Alex Chupakhin, 17-Jun-2000
+   tested on Venix, 2BSD
+   Next better version will comes soon.
+*/
+
+#include <ctype.h>
+
+main(argc,argv)
+int argc;
+char **argv;
+{
+int year,month,day,hour,minutes,sec;
+long mjd();
+long Time,time();
+char *ctime();
+
+if (argc==1) { Time=time(); printf("%s",ctime(&Time) ); exit(); }
+if (argc<4) { printf("Y2k date\nusage\n%s year month day [hour min] [sec]\n",
+	        	argv[0]);exit(); }
+
+year =atoi(argv[1]);
+month=atoi(argv[2]);
+day  =atoi(argv[3]);
+if(argc>=6)
+ {
+   hour   = atoi(argv[4]);
+   minutes= atoi(argv[5]);
+ }
+if(argc==7) sec = atoi(argv[6]);
+
+Time = mjd(year,month,day)-mjd(1970,1,1);
+Time = Time*3600L*24 + (hour+4)*3600L + minutes*60 + sec;
+
+printf("%sJD=%D\n",ctime(&Time),mjd(year,month,day));
+stime(&Time);
+}
+
+
+
+long mjd(y,m,d)
+int y,m,d;
+{
+long a,a4,e,c,b;
+
+if(m<=2) { y--; m+=12; }
+
+a=(long) y/100; 
+a4=a/4; 
+b=2-a+a4;  
+c = (long) (365.25*y);
+e = (long) (30.6001*(m+1));
+return ( c+e+b+d+1720994L );
+}
+
+
+From wkt at cs.adfa.edu.au  Wed Jan 26 10:52:28 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Wed, 26 Jan 2000 11:52:28 +1100 (EST)
+Subject: More Mail from Alexey: anohrt Unix for Pro350
+Message-ID: <200001260052.LAA08670@henry.cs.adfa.edu.au>
+
+Hi all, I've received another e-mail from Alexey about some Y2K software
+for Venix and 2BSD. He's also given me a copy of a Russian UNIX called
+Demos. This is based on something like V7M, but Alexey says that its
+better than Venix. I've only got a tar file with bins & src,  no disk
+images. Anyone with a pro350 or 380 interested in looking at this?
+
+Anyway, here's his latest e-mail and Date.c.		Warren
+
+   From: Alexey Chupahin <achupahi at uic.rsu.ru>
+
+
+Hello Warren, I just receive letter from John Rosenberg. He
+recommended me to resend date2 program. May be, my previous letter
+didn't go to you, but to John? I just try to resend you date2.
+The Date2 is good for first. Now I'm hacking RT-11 DIR (analogue
+ls in Unix :-), unlike to Unix one,  DIR is very bad for Y2k.)
+program with system library SYSLIB.OBJ.  When I finish it, I just
+try to test and fix BSD system. Unfortunatly, I haven't any documents
+described BSD library with utilites to see what subroutines/utilites
+to be needed to fix. May be, I can find it on the Web? But I have
+documentation for Inmos (Russian version7). I use it to see in
+first time. Unlike to poor (but very good!) standard Version 7,
+Russian one has 2 screen editors, including vi, and one Russian
+multiscreen edit RED, editor like small MSWord for Pro, screen
+menu-making/control programs and library, graphic, bisness programs
+and libraries for Pro.  Unfortunatly, I have only documentation,
+no any distributive...
+
+When I finish BSD ( I hope to will finish it soon ) I'll just go
+to Unix7 and 6.  I've got it from your site yet, Version 7 is booted
+Ok... May be, vi from BSD still works in Unix7?
+
+
+> Also, I am still not sure what to do about Demos. It's a pity that
+> you don't have a bootable disk image for it.
+
+Ok... Demos was very good-organized Unix for Pro-350/380... more
+good then Inmos, how I'm hear...
+
+Unfortunatly, I'm not rich student, but I wish to small used Alpha
+for a long time.  I find ready to use Multia in Moscow for 450$.
+In Russia we have a nearly 18$ per month (Crysis :-(   ) I have
+360$ yet.  May be, anybody can help me for 90$...  ;-)
+
+regards,
+
+Alex
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: Date2.c
+Type: *unknown*/x-csh
+Size: 1025 bytes
+Desc: Date2.c
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20000126/0ca5727b/attachment.bin>
+
+From grog at lemis.com  Thu Jan 27 10:33:21 2000
+From: grog at lemis.com (Greg Lehey)
+Date: Thu, 27 Jan 2000 11:03:21 +1030
+Subject: Sun release source code for Solaris 8
+Message-ID: <20000127110321.I53307@freebie.lemis.com>
+
+Sun's releasing the source code to Solaris.  Take a look at
+http://www.sun.com/software/solaris/source/index.html for more
+details.
+
+The conditions look rather like the SCO ancient UNIX licences, but
+it's *cheaper* ($75, which includes deliverables from Sun).  Warren,
+is this ammunition to lobby SCO to drop the prices of Ancient UNIX
+licenses?
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id MAA19237
+	for pups-liszt; Thu, 27 Jan 2000 12:08:01 +1100 (EST)
+
+From lennox at alcita.com  Thu Jan 27 11:00:57 2000
+From: lennox at alcita.com (Mirian Crzig Lennox)
+Date: 26 Jan 2000 20:00:57 -0500
+Subject: Sun release source code for Solaris 8
+In-Reply-To: Greg Lehey's message of "Thu, 27 Jan 2000 11:03:21 +1030"
+References: <20000127110321.I53307@freebie.lemis.com>
+Message-ID: <m3aels1g6u.fsf@shelbyville.oai.com>
+
+Greg Lehey <grog at lemis.com> writes:
+> 
+> The conditions look rather like the SCO ancient UNIX licences, but
+> it's *cheaper* ($75, which includes deliverables from Sun).  Warren,
+> is this ammunition to lobby SCO to drop the prices of Ancient UNIX
+> licenses?
+
+After looking at the site, it seems as though Sun is trying to prevent
+licence holders from sharing code with other licence holders.  If this
+is true, it would certainly make the Solaris licence less desirable to
+hobbyists than the ancient UNIX licence, unfortunately.
+
+--Mirian
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id MAA19344
+	for pups-liszt; Thu, 27 Jan 2000 12:21:43 +1100 (EST)
+
+From joerg at begemot.org  Thu Jan 27 11:23:07 2000
+From: joerg at begemot.org (Joerg B. Micheel)
+Date: Thu, 27 Jan 2000 14:23:07 +1300
+Subject: Sun release source code for Solaris 8
+In-Reply-To: <m3aels1g6u.fsf@shelbyville.oai.com>; from Mirian Crzig Lennox on Wed, Jan 26, 2000 at 08:00:57PM -0500
+References: <20000127110321.I53307@freebie.lemis.com> <m3aels1g6u.fsf@shelbyville.oai.com>
+Message-ID: <20000127142307.A98693@begemot.org>
+
+On Wed, Jan 26, 2000 at 08:00:57PM -0500, Mirian Crzig Lennox wrote:
+> Greg Lehey <grog at lemis.com> writes:
+> > 
+> > The conditions look rather like the SCO ancient UNIX licences, but
+> > it's *cheaper* ($75, which includes deliverables from Sun).  Warren,
+> > is this ammunition to lobby SCO to drop the prices of Ancient UNIX
+> > licenses?
+> 
+> After looking at the site, it seems as though Sun is trying to prevent
+> licence holders from sharing code with other licence holders.  If this
+> is true, it would certainly make the Solaris licence less desirable to
+> hobbyists than the ancient UNIX licence, unfortunately.
+
+You're right, as long as patches do contain portions of Solaris.
+Everything that does so has to funnel trough Sun first, this can
+be done by putting it onto their secure server. The restriction
+is that you can't share it freely, everything must be visible to
+Sun. This is slightly different from the original educational
+license, which allowed sharing with peers bound by the same
+license conditions.
+
+I think, popularity of Solaris might rather be restricted by its
+performance. I have run Solaris x86 on my desktop for a while for
+evaluation purposes. I don't think you could tune it easily to
+become as fast as a regular Linux or *BSD system. Apart from
+that, it certainly is the dinosaur solution of the decade.
+
+	Joerg
+-- 
+Joerg B. Micheel			Email: <joerg at begemot.org>
+Begemot Computer Associates		Phone: +64 7 8562148
+40 Masters Avenue, Hillcrest		Fax:   +64 7 8562148
+Hamilton, New Zealand			Pager: +64 868 38222
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id MAA19380
+	for pups-liszt; Thu, 27 Jan 2000 12:25:03 +1100 (EST)
+
+From emu at ecubics.com  Thu Jan 27 11:28:28 2000
+From: emu at ecubics.com (emanuel stiebler)
+Date: Wed, 26 Jan 2000 18:28:28 -0700
+Subject: Sun release source code for Solaris 8
+References: <20000127110321.I53307@freebie.lemis.com> <m3aels1g6u.fsf@shelbyville.oai.com>
+Message-ID: <01ea01bf6865$d7844a20$5d01a8c0@p2350>
+
+---- Original Message -----
+From: Mirian Crzig Lennox <lennox at alcita.com>
+To: UNIX Heritage Society <pups at minnie.cs.adfa.oz.au>
+Sent: Wednesday, January 26, 2000 18:00
+Subject: Re: Sun release source code for Solaris 8
+
+
+> Greg Lehey <grog at lemis.com> writes:
+> >
+> > The conditions look rather like the SCO ancient UNIX licences, but
+> > it's *cheaper* ($75, which includes deliverables from Sun).  Warren,
+> > is this ammunition to lobby SCO to drop the prices of Ancient UNIX
+> > licenses?
+>
+> After looking at the site, it seems as though Sun is trying to prevent
+> licence holders from sharing code with other licence holders.  If this
+> is true, it would certainly make the Solaris licence less desirable to
+> hobbyists than the ancient UNIX licence, unfortunately.
+
+They don't "prevent" it, it seems that it is always steered by/at SUN.
+
+>From the Webpage:
+
+> If you want to make your source code modifications available to other
+Solaris
+> source code licensees, you can do so by passing the changes back to Sun,
+and
+> Sun will then post them to a secure website that you and other registered
+users
+> may access.
+
+cheers,
+emanuel
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id MAA19666
+	for pups-liszt; Thu, 27 Jan 2000 12:51:11 +1100 (EST)
+
+From sms at moe.2bsd.com  Thu Jan 27 11:42:54 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Wed, 26 Jan 2000 17:42:54 -0800 (PST)
+Subject: Sun release source code for Solaris 8
+Message-ID: <200001270142.RAA00523@moe.2bsd.com>
+
+> From: "Joerg B. Micheel" <joerg at begemot.org>
+> I think, popularity of Solaris might rather be restricted by its
+> performance. I have run Solaris x86 on my desktop for a while for
+
+	Agreed.  I have run Solaris (only up thru 2.6 though) in its
+	"native" environment (Sun hardware) and even there the performance
+	is not anything one would write home about.  The difference between
+	SunOS 4.1.x and Solaris 2.x is dramatic in favor on the older leaner
+	system. 
+
+	I have not run Solarix x86 though but have heard from others (before
+	this) that its performance is quite a bit less than a BSD* system.
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id PAA20265
+	for pups-liszt; Thu, 27 Jan 2000 15:28:36 +1100 (EST)
+
+From grog at lemis.com  Thu Jan 27 14:27:36 2000
+From: grog at lemis.com (Greg Lehey)
+Date: Thu, 27 Jan 2000 14:57:36 +1030
+Subject: Sun release source code for Solaris 8
+In-Reply-To: <m3aels1g6u.fsf@shelbyville.oai.com>
+References: <20000127110321.I53307@freebie.lemis.com> <m3aels1g6u.fsf@shelbyville.oai.com>
+Message-ID: <20000127145736.Q53307@freebie.lemis.com>
+
+On Wednesday, 26 January 2000 at 20:00:57 -0500, Mirian Crzig Lennox wrote:
+> Greg Lehey <grog at lemis.com> writes:
+>>
+>> The conditions look rather like the SCO ancient UNIX licences, but
+>> it's *cheaper* ($75, which includes deliverables from Sun).  Warren,
+>> is this ammunition to lobby SCO to drop the prices of Ancient UNIX
+>> licenses?
+>
+> After looking at the site, it seems as though Sun is trying to
+> prevent licence holders from sharing code with other licence
+> holders.
+
+I'm not 100% sure what they mean here.  Nobody can stop you
+distributing software you wrote as long as it doesn't contain
+proprietary Sun code.  You could do that with diffs.
+
+> If this is true, it would certainly make the Solaris licence less
+> desirable to hobbyists than the ancient UNIX licence, unfortunately.
+
+I think it is anyway.  For hobby purposes, I'd much rather use either
+4.4BSD (for modern usage) or one of the old UNIXes.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id PAA20252
+	for pups-liszt; Thu, 27 Jan 2000 15:26:27 +1100 (EST)
+
+From grog at lemis.com  Thu Jan 27 14:26:02 2000
+From: grog at lemis.com (Greg Lehey)
+Date: Thu, 27 Jan 2000 14:56:02 +1030
+Subject: Sun release source code for Solaris 8
+In-Reply-To: <200001270142.RAA00523@moe.2bsd.com>
+References: <200001270142.RAA00523@moe.2bsd.com>
+Message-ID: <20000127145602.P53307@freebie.lemis.com>
+
+On Wednesday, 26 January 2000 at 17:42:54 -0800, Steven M. Schultz wrote:
+>> From: "Joerg B. Micheel" <joerg at begemot.org>
+>> I think, popularity of Solaris might rather be restricted by its
+>> performance. I have run Solaris x86 on my desktop for a while for
+>
+> 	Agreed.  I have run Solaris (only up thru 2.6 though) in its
+> 	"native" environment (Sun hardware) and even there the performance
+> 	is not anything one would write home about.  The difference between
+> 	SunOS 4.1.x and Solaris 2.x is dramatic in favor on the older leaner
+> 	system.
+
+That's my experience too, but it may not be typical.  For a large
+system with a large number of processes (e.g. ftp server) the
+comparison could be very different.
+
+> 	I have not run Solarix x86 though but have heard from others (before
+> 	this) that its performance is quite a bit less than a BSD* system.
+
+Ditto.  I have a CD somewhere that I just couldn't be bothered
+installing.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id QAA20540
+	for pups-liszt; Thu, 27 Jan 2000 16:03:31 +1100 (EST)
+
+From joerg at begemot.org  Thu Jan 27 15:04:06 2000
+From: joerg at begemot.org (Joerg B. Micheel)
+Date: Thu, 27 Jan 2000 18:04:06 +1300
+Subject: Sun release source code for Solaris 8
+In-Reply-To: <20000127145602.P53307@freebie.lemis.com>; from Greg Lehey on Thu, Jan 27, 2000 at 02:56:02PM +1030
+References: <200001270142.RAA00523@moe.2bsd.com> <20000127145602.P53307@freebie.lemis.com>
+Message-ID: <20000127180406.A574@begemot.org>
+
+On Thu, Jan 27, 2000 at 02:56:02PM +1030, Greg Lehey wrote:
+> On Wednesday, 26 January 2000 at 17:42:54 -0800, Steven M. Schultz wrote:
+> >> From: "Joerg B. Micheel" <joerg at begemot.org>
+> >> I think, popularity of Solaris might rather be restricted by its
+> >> performance. I have run Solaris x86 on my desktop for a while for
+> >
+> > 	Agreed.  I have run Solaris (only up thru 2.6 though) in its
+> > 	"native" environment (Sun hardware) and even there the performance
+> > 	is not anything one would write home about.  The difference between
+> > 	SunOS 4.1.x and Solaris 2.x is dramatic in favor on the older leaner
+> > 	system.
+> 
+> That's my experience too, but it may not be typical.  For a large
+> system with a large number of processes (e.g. ftp server) the
+> comparison could be very different.
+
+That would make quite an interesting test. How much does ftp.cdrom.com
+gain by running FreeBSD instead of Solaris ?
+
+	Joerg
+-- 
+Joerg B. Micheel			Email: <joerg at begemot.org>
+Begemot Computer Associates		Phone: +64 7 8562148
+40 Masters Avenue, Hillcrest		Fax:   +64 7 8562148
+Hamilton, New Zealand			Pager: +64 868 38222
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id QAA20597
+	for pups-liszt; Thu, 27 Jan 2000 16:09:02 +1100 (EST)
+
+From grog at lemis.com  Thu Jan 27 15:08:20 2000
+From: grog at lemis.com (Greg Lehey)
+Date: Thu, 27 Jan 2000 15:38:20 +1030
+Subject: Sun release source code for Solaris 8
+In-Reply-To: <20000127180406.A574@begemot.org>
+References: <200001270142.RAA00523@moe.2bsd.com> <20000127145602.P53307@freebie.lemis.com> <20000127180406.A574@begemot.org>
+Message-ID: <20000127153820.T53307@freebie.lemis.com>
+
+On Thursday, 27 January 2000 at 18:04:06 +1300, Joerg Micheel wrote:
+> On Thu, Jan 27, 2000 at 02:56:02PM +1030, Greg Lehey wrote:
+>> On Wednesday, 26 January 2000 at 17:42:54 -0800, Steven M. Schultz wrote:
+>>>> From: "Joerg B. Micheel" <joerg at begemot.org>
+>>>> I think, popularity of Solaris might rather be restricted by its
+>>>> performance. I have run Solaris x86 on my desktop for a while for
+>>>
+>>> 	Agreed.  I have run Solaris (only up thru 2.6 though) in its
+>>> 	"native" environment (Sun hardware) and even there the performance
+>>> 	is not anything one would write home about.  The difference between
+>>> 	SunOS 4.1.x and Solaris 2.x is dramatic in favor on the older leaner
+>>> 	system.
+>>
+>> That's my experience too, but it may not be typical.  For a large
+>> system with a large number of processes (e.g. ftp server) the
+>> comparison could be very different.
+>
+> That would make quite an interesting test. How much does
+> ftp.cdrom.com gain by running FreeBSD instead of Solaris ?
+
+Good question.  My guess is that Solaris 2 just couldn't handle that
+many connections, but it compete reasonably well with fewer
+connections (say 1000).  I'll copy the FreeBSD chat people and see
+what they think.
+
+For -chat: Sun have announced their intention to release the source
+code of Solaris [2.]8.  We're discussing what this means.  See
+http://www.sun.com/software/solaris/source/ for more details.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id AAA22317
+	for pups-liszt; Fri, 28 Jan 2000 00:02:40 +1100 (EST)
+
+From jcm at dogma.freebsd-uk.eu.org  Thu Jan 27 23:02:23 2000
+From: jcm at dogma.freebsd-uk.eu.org (Jonathon McKitrick)
+Date: Thu, 27 Jan 2000 13:02:23 +0000 (GMT)
+Subject: Sun release source code for Solaris 8
+In-Reply-To: <20000127153820.T53307@freebie.lemis.com>
+Message-ID: <Pine.BSF.4.21.0001271255430.48240-100000@dogma.freebsd-uk.eu.org>
+
+
+Message too convoluted to tell who actually wrote this....but i
+believe Greg wrote the second group of lines....
+
+>> That would make quite an interesting test. How much does
+>> ftp.cdrom.com gain by running FreeBSD instead of Solaris ?
+>
+>Good question.  My guess is that Solaris 2 just couldn't handle that
+>many connections, but it compete reasonably well with fewer
+>connections (say 1000).  I'll copy the FreeBSD chat people and see
+>what they think.
+
+Interestingly, i noticed recently that the response time on usa.net
+seemed much slower.  It appears consistently so, either by ppp
+connection or by network/T1 line.  A few months ago, netcraft showed 
+that they were running FreeBSD.  Guess what they are running
+now? Yup... SOlaris.  I dropped them a line saying i noticed the speed
+difference.
+
+-=> jm <=-
+
+"I've done questionable things, also extraordinary things....
+Revel in your time!"
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id BAA22669
+	for pups-liszt; Fri, 28 Jan 2000 01:26:55 +1100 (EST)
+
+From tls at rek.tjls.com  Fri Jan 28 00:26:41 2000
+From: tls at rek.tjls.com (Thor Lancelot Simon)
+Date: Thu, 27 Jan 2000 09:26:41 -0500
+Subject: Sun release source code for Solaris 8
+In-Reply-To: <20000127180406.A574@begemot.org>; from joerg@begemot.org on Thu, Jan 27, 2000 at 06:04:06PM +1300
+References: <200001270142.RAA00523@moe.2bsd.com> <20000127145602.P53307@freebie.lemis.com> <20000127180406.A574@begemot.org>
+Message-ID: <20000127092641.A16017@rek.tjls.com>
+
+On Thu, Jan 27, 2000 at 06:04:06PM +1300, Joerg B. Micheel wrote:
+> On Thu, Jan 27, 2000 at 02:56:02PM +1030, Greg Lehey wrote:
+> > On Wednesday, 26 January 2000 at 17:42:54 -0800, Steven M. Schultz wrote:
+> > >> From: "Joerg B. Micheel" <joerg at begemot.org>
+> > >> I think, popularity of Solaris might rather be restricted by its
+> > >> performance. I have run Solaris x86 on my desktop for a while for
+> > >
+> > > 	Agreed.  I have run Solaris (only up thru 2.6 though) in its
+> > > 	"native" environment (Sun hardware) and even there the performance
+> > > 	is not anything one would write home about.  The difference between
+> > > 	SunOS 4.1.x and Solaris 2.x is dramatic in favor on the older leaner
+> > > 	system.
+> > 
+> > That's my experience too, but it may not be typical.  For a large
+> > system with a large number of processes (e.g. ftp server) the
+> > comparison could be very different.
+> 
+> That would make quite an interesting test. How much does ftp.cdrom.com
+> gain by running FreeBSD instead of Solaris ?
+
+How can anyone know that it gains anything at all?  To begin with, it's
+never *run* Solaris, so there's no way to draw any kind of meaningful
+comparison.
+
+The dirty little secret of Linux and *BSD is that their ascendance has
+been tightly coupled to Sun's utter inability to build fast, cheap
+uniprocessor machines.  Any way you slice it, a single-processor top-of-
+the-line x86 box is just going to be a *lot* faster and cheaper than
+Sun's entry-level multiprocessor.  The great gamble they made was to
+turn their kernel into a highly-multithreaded thing of beauty -- but
+that *has* to cost some (even some small) amount of uniprocessor
+performance, and since they can't build cheap multiprocesors that are
+as fast as the high end of the commodity uniprocessor x86 boxes,
+for a lot of applications they lose.
+
+Even on a 2- or 4- processor machine, Solaris is demonstrably far
+faster than *BSD or Linux for many workloads.  But you can buy a
+single-processor x86 that's cheaper than Sun's 2- or 4- processor
+box now, which is why people run Linux or FreeBSD or NetBSD.  There
+is still a point at which the only way to get enough performance is
+to add more processors, and at that point Solaris still wins, and
+will for the forseeable (by me, at least) future.
+
+-- 
+Thor Lancelot Simon	                                      tls at rek.tjls.com
+	"And where do all these highways go, now that we are free?"
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id CAA23125
+	for pups-liszt; Fri, 28 Jan 2000 02:53:03 +1100 (EST)
+
+From emu at ecubics.com  Fri Jan 28 01:49:19 2000
+From: emu at ecubics.com (emanuel stiebler)
+Date: Thu, 27 Jan 2000 08:49:19 -0700
+Subject: Sun release source code for Solaris 8
+References: <200001270142.RAA00523@moe.2bsd.com> <20000127145602.P53307@freebie.lemis.com> <20000127180406.A574@begemot.org> <20000127092641.A16017@rek.tjls.com>
+Message-ID: <002101bf68de$142f8430$5d01a8c0@p2350>
+
+----- Original Message -----
+From: Thor Lancelot Simon <tls at rek.tjls.com>
+To: Joerg B. Micheel <joerg at begemot.org>
+Cc: <pups at minnie.cs.adfa.oz.au>
+Sent: Thursday, January 27, 2000 07:26
+Subject: Re: Sun release source code for Solaris 8
+
+
+> The dirty little secret of Linux and *BSD is that their ascendance has
+> been tightly coupled to Sun's utter inability to build fast, cheap
+> uniprocessor machines.  Any way you slice it, a single-processor top-of-
+> the-line x86 box is just going to be a *lot* faster and cheaper than
+> Sun's entry-level multiprocessor.  The great gamble they made was to
+> turn their kernel into a highly-multithreaded thing of beauty -- but
+> that *has* to cost some (even some small) amount of uniprocessor
+> performance, and since they can't build cheap multiprocesors that are
+> as fast as the high end of the commodity uniprocessor x86 boxes,
+> for a lot of applications they lose.
+>
+> Even on a 2- or 4- processor machine, Solaris is demonstrably far
+> faster than *BSD or Linux for many workloads.  But you can buy a
+> single-processor x86 that's cheaper than Sun's 2- or 4- processor
+> box now, which is why people run Linux or FreeBSD or NetBSD.  There
+> is still a point at which the only way to get enough performance is
+> to add more processors, and at that point Solaris still wins, and
+> will for the forseeable (by me, at least) future.
+
+Another thing to mention is also, that it is very easy to build your own
+kernel, exctly for your needs in Linux or *BSD. (removing all
+emulations/compatibility modes, ...) so you get a nice small/fast kernel
+excactly for your type of machine & workload.
+
+Don't think it's so easy on a sun.
+
+cheers,
+emanuel
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id EAA23440
+	for pups-liszt; Fri, 28 Jan 2000 04:02:33 +1100 (EST)
+
+From lennox at alcita.com  Fri Jan 28 02:55:30 2000
+From: lennox at alcita.com (Mirian Crzig Lennox)
+Date: 27 Jan 2000 11:55:30 -0500
+Subject: Sun release source code for Solaris 8
+In-Reply-To: Greg Lehey's message of "Thu, 27 Jan 2000 14:57:36 +1030"
+References: <20000127110321.I53307@freebie.lemis.com> <m3aels1g6u.fsf@shelbyville.oai.com> <20000127145736.Q53307@freebie.lemis.com>
+Message-ID: <m3ln5b5u9p.fsf@shelbyville.oai.com>
+
+Greg Lehey <grog at lemis.com> writes:
+> > After looking at the site, it seems as though Sun is trying to
+> > prevent licence holders from sharing code with other licence
+> > holders.
+> 
+> I'm not 100% sure what they mean here.  Nobody can stop you
+> distributing software you wrote as long as it doesn't contain
+> proprietary Sun code.  You could do that with diffs.
+
+Can I really?  Any diffs are necessarily going to contain some of the
+original proprietary code.  It depends on how aggressive Sun's lawyers
+are going to be about preventing any co-operative development of
+Solaris which is not mediated by Sun.  From their website, it seems
+that Sun wants to be firmly in control of that process.
+
+This is in contrast to the Ancient UNIX licence, where it's my
+impression that SCO really doesn't care what you do with UNIX so long
+as you don't share code with unlicensed people.
+
+> > If this is true, it would certainly make the Solaris licence less
+> > desirable to hobbyists than the ancient UNIX licence, unfortunately.
+> 
+> I think it is anyway.  For hobby purposes, I'd much rather use either
+> 4.4BSD (for modern usage) or one of the old UNIXes.
+
+For practical purposes I agree, although I'm intrigued enough by the
+extremely modular design of Solaris to think it might be fun to spend
+some time playing with.
+
+-- 
+Mirian Crzig Lennox                                Systems Anarchist
+              Invest in America -- buy a Congressman!
+
+
+From jcrosenberg at earthlink.net  Fri Jan 28 23:45:15 2000
+From: jcrosenberg at earthlink.net (John Rosenberg)
+Date: Fri, 28 Jan 2000 08:45:15 -0500
+Subject: Sun release source code for Solaris 8
+References: <Pine.BSF.4.21.0001271255430.48240-100000@dogma.freebsd-uk.eu.org>
+Message-ID: <002001bf6996$34389ec0$b439bfa8@home>
+
+I have written several device drivers (e.g., disk, DSP, DAT) for Solaris.
+It is the slowest OS since Multix. Solaris is buggy, albeit pretty darned
+stable. Interesting OS, but I'd stick by BSD (from a systems programmer
+type).
+
+----- Original Message -----
+From: "Jonathon McKitrick" <jcm at dogma.freebsd-uk.eu.org>
+To: "Greg Lehey" <grog at lemis.com>
+Cc: "Joerg B. Micheel" <joerg at begemot.org>; "Steven M. Schultz"
+<sms at moe.2bsd.com>; <pups at minnie.cs.adfa.oz.au>; "FreeBSD Chat"
+<chat at freebsd.org>
+Sent: Thursday, January 27, 2000 8:02 AM
+Subject: Re: Sun release source code for Solaris 8
+
+
+>
+> Message too convoluted to tell who actually wrote this....but i
+> believe Greg wrote the second group of lines....
+>
+> >> That would make quite an interesting test. How much does
+> >> ftp.cdrom.com gain by running FreeBSD instead of Solaris ?
+> >
+> >Good question.  My guess is that Solaris 2 just couldn't handle that
+> >many connections, but it compete reasonably well with fewer
+> >connections (say 1000).  I'll copy the FreeBSD chat people and see
+> >what they think.
+>
+> Interestingly, i noticed recently that the response time on usa.net
+> seemed much slower.  It appears consistently so, either by ppp
+> connection or by network/T1 line.  A few months ago, netcraft showed
+> that they were running FreeBSD.  Guess what they are running
+> now? Yup... SOlaris.  I dropped them a line saying i noticed the speed
+> difference.
+>
+> -=> jm <=-
+>
+> "I've done questionable things, also extraordinary things....
+> Revel in your time!"
+>
+>
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id BAA28243
+	for pups-liszt; Sat, 29 Jan 2000 01:24:36 +1100 (EST)
+
+From jcm at dogma.freebsd-uk.eu.org  Sat Jan 29 00:24:19 2000
+From: jcm at dogma.freebsd-uk.eu.org (Jonathon McKitrick)
+Date: Fri, 28 Jan 2000 14:24:19 +0000 (GMT)
+Subject: Sun release source code for Solaris 8
+In-Reply-To: <002001bf6996$34389ec0$b439bfa8@home>
+Message-ID: <Pine.BSF.4.21.0001281418330.65317-100000@dogma.freebsd-uk.eu.org>
+
+
+I'm a little concerned where all this leaves FreeBSD.  If Solaris goes
+open source, or something similar, and tries to compete with w2k, plus
+linux is out there growing, and BeOS will be free soon....  FreeBSD might be a
+tough sell.  Several guys i know say the majority of new unix installs
+are Linux with few BSD.  They say the only BSD users that are growing
+are ISPs.  Does anyone have any stats on how fast we are
+growing on the desktop, or in general?
+
+Also, the white paper on BeOS claims that with all the new advances in
+hardware, modern OS's have too many layers, which they call 'silt', to
+allow them to use the hardware effectively.  They argue that only
+starting from scratch allows full use of modern technology, including
+multimedia advances.  How can FreeBSD keep up?  We don't have kernel
+threading and SMP support is still in the works, and most BSD features
+are 'add-ons'.  Should this be a concern for the future?
+
+-=> jm <=-
+
+"Do not taunt the Happy Fun Ball."
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id CAA28648
+	for pups-liszt; Sat, 29 Jan 2000 02:11:14 +1100 (EST)
+
+From emu at ecubics.com  Sat Jan 29 01:14:48 2000
+From: emu at ecubics.com (emanuel stiebler)
+Date: Fri, 28 Jan 2000 08:14:48 -0700
+Subject: Sun release source code for Solaris 8
+References: <Pine.BSF.4.21.0001281418330.65317-100000@dogma.freebsd-uk.eu.org>
+Message-ID: <004e01bf69a2$6c768bb0$5d01a8c0@p2350>
+
+
+----- Original Message -----
+From: Jonathon McKitrick <jcm at dogma.freebsd-uk.eu.org>
+To: John Rosenberg <jcrosenberg at earthlink.net>
+Cc: Greg Lehey <grog at lemis.com>; Joerg B. Micheel <joerg at begemot.org>;
+Steven M. Schultz <sms at moe.2bsd.com>; <pups at minnie.cs.adfa.oz.au>; FreeBSD
+Chat <chat at freebsd.org>
+Sent: Friday, January 28, 2000 07:24
+Subject: Re: Sun release source code for Solaris 8
+
+
+>
+> I'm a little concerned where all this leaves FreeBSD.  If Solaris goes
+> open source, or something similar, and tries to compete with w2k, plus
+> linux is out there growing, and BeOS will be free soon....  FreeBSD might
+be a
+> tough sell.  Several guys i know say the majority of new unix installs
+> are Linux with few BSD.  They say the only BSD users that are growing
+> are ISPs.  Does anyone have any stats on how fast we are
+> growing on the desktop, or in general?
+>
+> Also, the white paper on BeOS claims that with all the new advances in
+> hardware, modern OS's have too many layers, which they call 'silt', to
+> allow them to use the hardware effectively.  They argue that only
+> starting from scratch allows full use of modern technology, including
+> multimedia advances.  How can FreeBSD keep up?  We don't have kernel
+> threading and SMP support is still in the works, and most BSD features
+> are 'add-ons'.  Should this be a concern for the future?
+>
+> -=> jm <=-
+>
+> "Do not taunt the Happy Fun Ball."
+>
+>
+>
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id DAA29086
+	for pups-liszt; Sat, 29 Jan 2000 03:05:50 +1100 (EST)
+
+From tfb at cley.com  Sat Jan 29 02:04:35 2000
+From: tfb at cley.com (Tim Bradshaw)
+Date: Fri, 28 Jan 2000 16:04:35 +0000 (GMT)
+Subject: Sun release source code for Solaris 8
+In-Reply-To: <m3ln5b5u9p.fsf@shelbyville.oai.com>
+References: <20000127110321.I53307@freebie.lemis.com>
+	<m3aels1g6u.fsf@shelbyville.oai.com>
+	<20000127145736.Q53307@freebie.lemis.com>
+	<m3ln5b5u9p.fsf@shelbyville.oai.com>
+Message-ID: <14481.48659.525262.366785@cley.com>
+
+* Mirian Crzig Lennox wrote:
+
+> This is in contrast to the Ancient UNIX licence, where it's my
+> impression that SCO really doesn't care what you do with UNIX so long
+> as you don't share code with unlicensed people.
+
+But that's what you'd expect isn't it?  Sun have some reasonable hope
+of continuing to make money from Solaris, and they obviously would
+like to retain some control, while SCO is unlikely to be regarding
+6th-edition Unix as a big earner...
+
+--tim
+
+
+
+
+From emu at ecubics.com  Sat Jan 29 13:21:32 2000
+From: emu at ecubics.com (emanuel stiebler)
+Date: Fri, 28 Jan 2000 20:21:32 -0700
+Subject: Sun release source code for Solaris 8
+References: <Pine.BSF.4.21.0001281418330.65317-100000@dogma.freebsd-uk.eu.org>
+Message-ID: <02df01bf6a07$f43b8540$5d01a8c0@p2350>
+
+----- Original Message -----
+From: Jonathon McKitrick <jcm at dogma.freebsd-uk.eu.org>
+To: John Rosenberg <jcrosenberg at earthlink.net>
+Cc: Greg Lehey <grog at lemis.com>; Joerg B. Micheel <joerg at begemot.org>;
+Steven M. Schultz <sms at moe.2bsd.com>; <pups at minnie.cs.adfa.oz.au>; FreeBSD
+Chat <chat at freebsd.org>
+Sent: Friday, January 28, 2000 07:24
+Subject: Re: Sun release source code for Solaris 8
+
+
+> tough sell.  Several guys i know say the majority of new unix installs
+> are Linux with few BSD.  They say the only BSD users that are growing
+> are ISPs.
+
+I think, that linux is somehow an entry in the unix world ;-)
+After a while you notice, that *BSD is cleaner & more stable.
+
+
+> Also, the white paper on BeOS claims that with all the new advances in
+> hardware, modern OS's have too many layers, which they call 'silt', to
+> allow them to use the hardware effectively.
+
+Look what happened to linux & *BSD in the last months/years. They adapting
+new technologies very fast ...
+
+> They argue that only
+> starting from scratch allows full use of modern technology, including
+> multimedia advances.  How can FreeBSD keep up?  We don't have kernel
+> threading and SMP support is still in the works, and most BSD features
+> are 'add-ons'.  Should this be a concern for the future?
+
+Don't be "concerned", build in the stuff you're missing ;-)
+
+cheers,
+emanuel
+
+
+
+
+From wkt at cs.adfa.edu.au  Sun Jan 30 10:50:39 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Sun, 30 Jan 2000 11:50:39 +1100 (EST)
+Subject: Sun release source code for Solaris 8
+In-Reply-To: <m3aels1g6u.fsf@shelbyville.oai.com> from Mirian Crzig Lennox at "Jan 26, 2000  8: 0:57 pm"
+Message-ID: <200001300050.LAA33940@henry.cs.adfa.edu.au>
+
+In article by Mirian Crzig Lennox:
+> Greg Lehey <grog at lemis.com> writes:
+> > 
+> > The conditions look rather like the SCO ancient UNIX licences, but
+> > it's *cheaper* ($75, which includes deliverables from Sun).  Warren,
+> > is this ammunition to lobby SCO to drop the prices of Ancient UNIX
+> > licenses?
+> 
+> After looking at the site, it seems as though Sun is trying to prevent
+> licence holders from sharing code with other licence holders.  If this
+> is true, it would certainly make the Solaris licence less desirable to
+> hobbyists than the ancient UNIX licence, unfortunately.
+> --Mirian
+
+Currently out of town. Still, it might be worth asking SCO for a discount!
+Does the license cover all of Solaris, or just the kernel??
+
+Cheers,
+	Warren
+
+

@@ -1,0 +1,1117 @@
+From msokolov at meson.jpsystems.com  Wed Sep  1 03:10:43 1999
+From: msokolov at meson.jpsystems.com (Michael Sokolov)
+Date: Tue, 31 Aug 99 12:10:43 -0500
+Subject: Setting the unit number on RA72
+Message-ID: <9908311710.AA17226@meson.jpsystems.com>
+
+Hi,
+
+I wonder, does anyone know how to set the unit number on an RA72 manually,
+without the RA7x control panel? I need to put two RA72s in a BA123, I have the
+skidplates under the drives, the KDA50 and the right internal SDI cables, but
+this is a BA123, so I don't have that RA7x control panel they put in 3500/3600
+skunk boxes. I know that on RF drives if you don't have that panel connector,
+the drive has its own switches or jumpers to set the DSSI node number, and I'm
+sure that the same is true for the SDI unit number on RA7x drives. There is a
+pack of 3 DIP switches on the right side of the RA72, is that the unit number?
+If so, is bit 0 on the left or on the right? Is 1 up or down? TIA.
+
+--
+Michael Sokolov
+Special Agent
+International Free Computing Task Force
+
+ARPA Internet SMTP mail: msokolov at meson.jpsystems.com
+
+
+From msokolov at meson.jpsystems.com  Thu Sep  2 11:15:23 1999
+From: msokolov at meson.jpsystems.com (Michael Sokolov)
+Date: Wed, 1 Sep 99 20:15:23 -0500
+Subject: KDA50 woes
+Message-ID: <9909020115.AA00610@meson.jpsystems.com>
+
+Hi,
+
+I wonder, does anyone here know anything about the KDA50? I've solved my RA72
+problem (as it turns out, if there is no control panel connected, the drive
+assumes normal operation, i.e., spin up, go on-line, enable port A, no write
+protect, and the unit number between 0 and 7 is set by the switches on the
+right side of the drive), but now I have a different problem: I can't get UNIX
+(4.3BSD-Quasijarus of course) to recognize the KDA50, although it worked fine
+on my Webster ESDI controller back in Ohio, and others have also reported
+successfully booting it on different controllers. By inserting a few debugging
+printouts in the uda driver, I have determined that it fails the udaprobe(). I
+know very little about UDA50/KDA50 registers, so I may be wrong, but it looks
+to me that the code is trying to do the following. It diddles the controller
+registers to make it start the initialization. Then apparently it expects the
+controller to interrupt and set some status bits in some register. However,
+because of Q-bus's odd interrupt protocol and the need to determine the IPL of
+the controller, the procedure is done non-trivially. First it does an spl6(),
+disabling all interrupts except BR7 (which these controllers apparently don't
+use). Then it does the register diddling and testing with these interrupts
+disabled. It allows the CPU to field the interrupt only when the register bits
+indicate that the operation has been performed and the interrupt has been
+posted. Apparently the assumption is that the controller will post the
+interrupt and then set the right bits in the right registers without waiting
+for the CPU to field the interrupt. Also apparently the KDA50 is different and
+doesn't set those bits until the interrupt is fielded, breaking this code.
+
+So my questions to the folks are: First, is my understanding of the situation
+correct? Second, what can be done about it? I guess as a temporary solution I
+can remove this problematic IPL autodetection code and hard-code the IPL of my
+KDA50, but what is it? Is the IPL set with switches on the KDA50 or how? And
+what do the KDA50 switches do in the first place? Does anyone know? TIA.
+
+--
+Michael Sokolov
+Special Agent
+International Free Computing Task Force
+
+ARPA Internet SMTP mail: msokolov at meson.jpsystems.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id PAA00399
+	for pups-liszt; Thu, 2 Sep 1999 15:09:20 +1000 (EST)
+
+From mckusick at flamingo.McKusick.COM  Thu Sep  2 09:44:29 1999
+From: mckusick at flamingo.McKusick.COM (Kirk McKusick)
+Date: Wed, 01 Sep 1999 16:44:29 -0700
+Subject: V7M 
+In-Reply-To: Your message of "Mon, 09 Aug 1999 09:41:23 +1000."
+             <199908082341.JAA83043@henry.cs.adfa.edu.au> 
+Message-ID: <199909012344.QAA29309@flamingo.McKusick.COM>
+
+My recollection is that V7M stood for V7-mini. It was a
+striped down version of V7 that was designed to run on
+the very low-end PDP-11's (like the 11/20).
+
+	Kirk McKusick
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id PAA00533
+	for pups-liszt; Thu, 2 Sep 1999 15:27:01 +1000 (EST)
+
+From sms at moe.2bsd.com  Thu Sep  2 15:25:35 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Wed, 1 Sep 1999 22:25:35 -0700 (PDT)
+Subject: V7M
+Message-ID: <199909020525.WAA04996@moe.2bsd.com>
+
+> From: Kirk McKusick <mckusick at flamingo.McKusick.COM>
+> 
+> My recollection is that V7M stood for V7-mini. It was a
+> striped down version of V7 that was designed to run on
+> the very low-end PDP-11's (like the 11/20).
+
+	Hmmm, interesting.   My memories dredge up the 'M' as meaning
+	"Modified".   Don't recall it ever being touted as 11/20 capable
+	56kb, no MMU would be a wee bit too mini I'd think - was there ever
+	a V7 that could run without an MMU?  If there was I've completely
+	forgotten about it.
+
+	Steven Schultz
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id PAA00770
+	for pups-liszt; Thu, 2 Sep 1999 15:59:45 +1000 (EST)
+
+From johnh at psych.usyd.edu.au  Thu Sep  2 15:59:31 1999
+From: johnh at psych.usyd.edu.au (johnh at psych.usyd.edu.au)
+Date: Thu, 2 Sep 1999 15:59:31 +1000 (EST)
+Subject: V7M
+Message-ID: <199909020559.PAA08258@psychwarp.psych.usyd.edu.au>
+
+
+V7M was the DEC distribution of V7 (pre Ultrix days). Fred Canter did
+most of the work, along with Jerry Brenner and Armando Stettner. It
+supported non ID space machines, and some of the newer DEC hardware.
+My manual lists it as working with :-
+
+CPUS:-	11/23, 34, 44, 45/50/55, 60 and 70
+Disks:-	RL02, RK06, RK07, RM02/3, RP04/5
+Tapes:-	TU10, TE10, TU16, TE16, TS11
+
+There was a strip down of V6 called Miniunix that would run on machines
+without memory management, such at the 11/20, 05, 10 and 35/40 (without MMU
+option). It required a full 56Kb machine, used the first 28Kb for the kernel
+and swapped the last 28Kb for each process. Pipes worked by using a temporary
+inode to store the data and swapping the processes. It was realllllllll slow.
+
+The was also a similar version for 11/03's. I remember that there was an early
+bug in that updates would always rewrite open inodes (last access time had
+changed). You could physically wear out a floppy disk, since it was forever 
+rewriting the sector with the inode for the console terminal.
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id QAA00853
+	for pups-liszt; Thu, 2 Sep 1999 16:07:04 +1000 (EST)
+
+From cdl at mpl.ucsd.edu  Thu Sep  2 16:06:50 1999
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Wed, 1 Sep 1999 23:06:50 -0700 (PDT)
+Subject: V7M
+Message-ID: <199909020606.XAA06196@mpl.ucsd.edu>
+
+> Subject: Re: V7M 
+> cc: pups at minnie.cs.adfa.edu.au
+> Date: Wed, 01 Sep 1999 16:44:29 -0700
+> From: Kirk McKusick <mckusick at flamingo.mckusick.com>
+> 
+> My recollection is that V7M stood for V7-mini. It was a
+> striped down version of V7 that was designed to run on
+> the very low-end PDP-11's (like the 11/20).
+
+Well, actually the M was for Modified.  Particularly modified to work
+with some more DEC peripherals.
+
+What ran on 11/20's was Mini-Unix, which was a stripped-down 6th
+Edition.  By the way I'm not sure that the PUPS archive has a Mini-Unix
+tape.  I have one, although it has not been read since the days when I
+had an 11/20.
+
+    carl
+
+        carl lowenstein         marine physical lab     u.c. san diego
+        {decvax|ucbvax} !ucsd!mpl!cdl                 cdl at mpl.ucsd.edu
+                                                  clowenstein at ucsd.edu
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id QAA00913
+	for pups-liszt; Thu, 2 Sep 1999 16:11:58 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Thu Sep  2 16:09:16 1999
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 2 Sep 1999 16:09:16 +1000 (EST)
+Subject: V7M
+In-Reply-To: <199909020606.XAA06196@mpl.ucsd.edu> from Carl Lowenstein at "Sep 1, 1999 11: 6:50 pm"
+Message-ID: <199909020609.QAA00770@henry.cs.adfa.edu.au>
+
+In article by Carl Lowenstein:
+> Well, actually the M was for Modified.  Particularly modified to work
+> with some more DEC peripherals.
+> 
+> What ran on 11/20's was Mini-Unix, which was a stripped-down 6th
+> Edition.  By the way I'm not sure that the PUPS archive has a Mini-Unix
+> tape.  I have one, although it has not been read since the days when I
+> had an 11/20.
+>     carl
+
+Yep, it's in Distributions/usdl/Mini-Unix. It's not in the research/
+dir because it was not done in the labs, but elsewhere.
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id SAA00659
+	for pups-liszt; Thu, 2 Sep 1999 18:07:17 +1000 (EST)
+
+From ragge at ludd.luth.se  Thu Sep  2 18:05:23 1999
+From: ragge at ludd.luth.se (Anders Magnusson)
+Date: Thu, 2 Sep 1999 10:05:23 +0200 (MET DST)
+Subject: KDA50 woes
+In-Reply-To: <9909020115.AA00610@meson.jpsystems.com> from Michael Sokolov at "Sep 1, 99 08:15:23 pm"
+Message-ID: <199909020805.KAA11504@father.ludd.luth.se>
+
+> Hi,
+> 
+> I wonder, does anyone here know anything about the KDA50? I've solved my RA72
+>
+Well, something I think... :-)
+
+[...]
+> 
+> So my questions to the folks are: First, is my understanding of the situation
+> correct? Second, what can be done about it? I guess as a temporary solution I
+> can remove this problematic IPL autodetection code and hard-code the IPL of my
+> KDA50, but what is it? Is the IPL set with switches on the KDA50 or how? And
+> what do the KDA50 switches do in the first place? Does anyone know? TIA.
+> 
+The IPL autodetect code has seemed to me as unneccessary. You know that
+the KDA50 will always interrupt at spl5, so you can hard-code it in
+the interrupt driver and nuke the autodetect code. The same with the 
+other drivers that can be on Qbus:
+
+	if (uh->uh_type == QBA)
+		spl5();
+
+-- Ragge
+
+
+From msokolov at meson.jpsystems.com  Fri Sep  3 10:32:29 1999
+From: msokolov at meson.jpsystems.com (Michael Sokolov)
+Date: Thu, 2 Sep 99 19:32:29 -0500
+Subject: Now the TK50 problem
+Message-ID: <9909030032.AA01967@meson.jpsystems.com>
+
+Hi,
+
+Having solved the RA72 problem and the KDA50 problem, I'm ready to attack the
+next problem. :-( This time the TK50. I have a very odd problem with it. When I
+first power up the VAX, everything works fine. I can read tapes, restore dumps,
+etc. Then after some uptime (apparently something heat-related) it starts
+behaving very oddly. Tapes with 512-byte records still read just fine, but
+trying to read a tape with 10240-byte records (such as a UNIX filesystem dump
+tape) results in the controller returning a hard error indication of "record
+data truncated". This is so odd that I first thought it was a software problem,
+but it isn't, because this happens identically under 4.3BSD-Quasijarus0 and
+Ultrix V4.0, whose TMSCP drivers are completely different. The fact that the
+problem occurs only after some uptime suggests some kind of overheat, which
+would normally be a very low-level physical problem, but the record size
+dependence suggests something high-level, more likely the controller than the
+drive. This MicroVAX is still under the dealer's warranty (I just bought it on
+Monday), so if this is a bad drive or controller, I can replace it, which which
+of the two is it? Has anyone ever seen this problem before? Does anyone know
+whether it is the drive or the controller that's bad? TIA.
+
+--
+Michael Sokolov
+Special Agent
+International Free Computing Task Force
+
+ARPA Internet SMTP mail: msokolov at meson.jpsystems.com
+
+P.S. The temperature in the machine room is 70F. Not the best for a machine
+room, but the best you'd ever expect for an office, and I think the VAX has no
+right to go on strike at 70F.
+
+
+From msokolov at meson.jpsystems.com  Sun Sep  5 07:26:10 1999
+From: msokolov at meson.jpsystems.com (Michael Sokolov)
+Date: Sat, 4 Sep 99 16:26:10 -0500
+Subject: What's the true size of an RA92?
+Message-ID: <9909042126.AA04576@meson.jpsystems.com>
+
+Hi,
+
+I wonder, does anyone know for sure what is the user capacity of an RA92 in
+blocks? I'm now updating disktab(5) and the driver tables in 4.3BSD-Quasijarus
+to cover new RA disks, and I can't figure out the user capacity of RA92 in
+blocks. For all other RA disks with no exceptions (all RA8x, all RA7x, and
+RA90) the user capacity in blocks is exactly equal to the number of cylinders
+multiplied by the number of heads multiplied by the number of sectors, i.e., no
+funny reserved sectors or tracks or anything like that. Looking in the
+disktab(5) from Ultrix V4.2 I see a perfect match between the geometry and the
+partition sizes for all disks except RA92. The RA92 entry indicates 3279
+cylinders, 13 heads, and 69 sectors per track, but partition c is listed as
+2940951 blocks instead of 3279*13*69=2941263 blocks. Does anyone know for sure
+whether the user capacity of an RA92 is 2940951 blocks, 2941263 blocks, or
+something else altogether?
+
+--
+Michael Sokolov
+Special Agent
+International Free Computing Task Force
+
+ARPA Internet SMTP mail: msokolov at meson.jpsystems.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA17754
+	for pups-liszt; Sun, 5 Sep 1999 10:41:13 +1000 (EST)
+
+From norman at nose.cita.utoronto.ca  Sun Sep  5 10:40:15 1999
+From: norman at nose.cita.utoronto.ca (norman at nose.cita.utoronto.ca)
+Date: Sat, 04 Sep 1999 20:40:15 -0400
+Subject: What's the true size of an RA92?
+Message-ID: <199909050041.KAA17750@minnie.cs.adfa.edu.au>
+
+For any MSCP disk, the proper way to find out how many sectors there are
+is to ask the disk.  The `unit online' command (which has to be used anyway,
+to tell the controller to connect to the disk) reports the unit size in
+sectors; the `get unit status' command reports the number of sectors per
+track, tracks per group, and groups per cylinder.  (The term `group' here
+is MSCP-speak which I've never really understood; the idea seems to be that
+groups are collections of cylinders that can be switched between with relatively
+little time penalty, whereas switching between even adjacent cylinders is more
+expensive.)
+
+Beware, however, that modern disks usually don't have a fixed number of
+sectors per track; the tracks furthest from the spindle have more sectors,
+so that more of the disk surface can be used without too much density
+variation.  Such `zoned' disks weren't common (maybe they didn't even exist)
+when the MSCP spec was first written; maybe the RA92 is new enough that it
+has zones.
+
+I've never been convinced that worrying in great detail about track and
+cylinder sizes gains much performance anyway, but that's another story.
+
+
+From norman at nose.cita.utoronto.ca  Mon Sep  6 08:30:40 1999
+From: norman at nose.cita.utoronto.ca (norman at nose.cita.utoronto.ca)
+Date: Sun, 05 Sep 1999 18:30:40 -0400
+Subject: where did `partition' come from?
+Message-ID: <199909052231.IAA21610@minnie.cs.adfa.edu.au>
+
+The sub-disks that one divide real disks into on UNIX systems are usually
+called `partitions' these days.  But that's not what they were originally
+called on UNIX:
+
+- V7 hp(4) and rp(4) refer to `sections' and `pseudo-disks'.  32V hp(4)
+refers to `portions' and `pseudo-disks.'  Later Research UNIX manuals,
+once Section 4 was being edited again, settled on `sections.'
+
+- System V Release 5.0 (the most recent system for which I have the device
+driver part of the manual) also refers just to `sections.'  (So far as I
+can remember, this convergence was a coincidence; I think I'm the one who
+decided to use `sections' on the Research side, and I think I did so just
+because it was the more graceful of the historic cases, though my memory
+is not clear.)
+
+- 3BSD and 4.0BSD follow 32V; in 4.1BSD, the term `partition' appears as well.
+
+The System V preference for `section' lives on in the device naming scheme
+on System-V-derived, but the documentation even on those systems just says
+`partition' these days.
+
+It looks to me like `partition' came in from the Berkeley world.  Does anyone
+on the list remember where it came from?  Was the new term introduced on
+purpose, or did it just creep in in the way language usually changes?
+
+Norman Wilson
+Occasional pursuer of arcana
+
+
+From wkt at cs.adfa.edu.au  Tue Sep  7 09:56:09 1999
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Tue, 7 Sep 1999 09:56:09 +1000 (EST)
+Subject: Diff between 11/20 and 11/45?
+Message-ID: <199909062356.JAA12397@henry.cs.adfa.edu.au>
+
+Hi all,
+	Dennis Ritchie has unearthed some really old Unix a.out
+executables from around 1st Edition - 2nd Edition period: see
+Distributions/research/1973_stuff in the PUPS Archive.
+
+[ Actually, I suspect his dates are a year off: they should be 1972 ]
+
+I've printed off the 1st Ed manuals from Dennis' web page, and I'm
+attempting to get my a.out emulator, Apout, to run these old binaries.
+
+I've got a few working. cat works. ls and date run, but sort of give
+strange outputs.
+
+These executables were written for a PDP-11/20. Are there any significant
+USER-MODE differences between the 11/20 and later PDP-11 models? I'm
+thinking missing instructions, different addressing mode behaviour etc.
+
+There is no source code with these binaries, so I can't use that to help
+debug the emulator. I do have the following processor handbooks:
+
+	PDP-11 /20 /15 /R20		1972
+	PDP-11 /45			1973
+	PDP-11 /04 /34 /45 /55 /60	1978-79
+
+I just thought I'd ask for pointers here before I hit them for details.
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA27104
+	for pups-liszt; Tue, 7 Sep 1999 11:10:31 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Tue Sep  7 11:10:25 1999
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Tue, 7 Sep 1999 11:10:25 +1000 (EST)
+Subject: KE11-A! (was Diff between 11/20 and 11/45?)
+Message-ID: <199909070110.LAA12638@henry.cs.adfa.edu.au>
+
+Hi all,
+	I've just answered my own question. Reading thru the 11/20
+processor handbook, I see the section on the extended arithmetic element,
+KE11-A, which is ``an option to perform multiplication, division,
+multiple position shifts and normalization significantly faster than
+software routines''.
+
+I also see that unit 1 lives at 777300 - 777316, and the date a.out
+executable does this:
+
+
+230:    TRAP 15			time syscall
+232:    MOV #177770,@#177314
+240:    MOV #47432,@#177300
+246:    ADD #5,@#177304
+254:    MOV #7,@#177300
+262:    MOV @#177302,@#177304
+270:    MOV #5,@#177306
+276:    ADD #40622,@#177304
+304:    MOV @#177304,320
+   . . .
+
+So it looks like I need to add KE11-A support to my emulator :-)
+
+Cheers,
+	Warren
+
+
+From cdl at mpl.ucsd.edu  Tue Sep  7 16:04:02 1999
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Mon, 6 Sep 1999 23:04:02 -0700 (PDT)
+Subject: Diff between 11/20 and 11/45?
+Message-ID: <199909070604.XAA04723@mpl.ucsd.edu>
+
+> From: Warren Toomey <wkt at cs.adfa.edu.au>
+> Subject: Diff between 11/20 and 11/45?
+> To: pups at minnie.cs.adfa.edu.au (Unix Heritage Society)
+> Date: Tue, 7 Sep 1999 09:56:09 +1000 (EST)
+> 
+> 	Dennis Ritchie has unearthed some really old Unix a.out
+> executables from around 1st Edition - 2nd Edition period: see
+> Distributions/research/1973_stuff in the PUPS Archive.
+> 
+> These executables were written for a PDP-11/20. Are there any significant
+> USER-MODE differences between the 11/20 and later PDP-11 models? I'm
+> thinking missing instructions, different addressing mode behaviour etc.
+
+There's a good table in the back of the more recent micro-11 manuals.
+
+The first genuine user-mode difference that I remember coming across was
+an incompatibility in the result of
+
+	MOV SP, -(SP)
+
+It isn't really clear to me why one would want to use this particular
+instruction, however it turned out to hang both BASIC and FOCAL at the
+time.  A zero-length patch wasn't too hard to figure out.
+
+    carl
+
+        carl lowenstein         marine physical lab     u.c. san diego
+        {decvax|ucbvax} !ucsd!mpl!cdl                 cdl at mpl.ucsd.edu
+                                                  clowenstein at ucsd.edu
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA03173
+	for pups-liszt; Wed, 8 Sep 1999 10:13:57 +1000 (EST)
+
+From johnh at psych.usyd.edu.au  Tue Sep  7 11:28:16 1999
+From: johnh at psych.usyd.edu.au (johnh at psych.usyd.edu.au)
+Date: Tue, 7 Sep 1999 11:28:16 +1000 (EST)
+Subject: Diff between 11/20 and 11/45
+Message-ID: <199909070128.LAA09862@psychwarp.psych.usyd.edu.au>
+
+
+There is huge difference between the machines, but not backwards!
+
+The 11/20 doesn't have :-
+
+		EIS instructions like div, mul, ash etc
+		FPU instructions like fmul ...
+		MMU no memory management of any sort, 56Kb memory, 8Kb I/O page
+		    and hence no user modes, 16 bit addressing
+
+So a program written for a 11/20 should work untouched on an 11/45 except for
+some very minor (and ugly) instruction sequences involving using the same
+register for both source and destination eg mov r2,-(r2), or jmp (r2)+.
+The behaviour of the trace trap and T bit is also different.
+
+There is a list of differences some some of the PDP/11 handbooks (perhaps the
+latter architecture book).
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA03319
+	for pups-liszt; Wed, 8 Sep 1999 10:38:29 +1000 (EST)
+
+From dave at fgh.geac.com.au  Wed Sep  8 10:50:39 1999
+From: dave at fgh.geac.com.au (Dave Horsfall)
+Date: Wed, 8 Sep 1999 10:50:39 +1000 (EST)
+Subject: KE11-A! (was Diff between 11/20 and 11/45?)
+In-Reply-To: <199909070110.LAA12638@henry.cs.adfa.edu.au>
+Message-ID: <Pine.GSO.4.10.9909081049430.19899-100000@fgh>
+
+On Tue, 7 Sep 1999, Warren Toomey wrote:
+
+> I also see that unit 1 lives at 777300 - 777316, and the date a.out
+> executable does this:
+
+Yep; I read through my own 11/20 handbook, and I remembered that
+EAE weirdness.
+
+-- 
+Dave Horsfall VK2KFU  dave at geac.com.au  Ph: +61 2 9978-7493 Fx: +61 2 9978-7422
+Geac Computers P/L (FGH Division) 2/57 Christie St, St Leonards 2065, Australia
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA03361
+	for pups-liszt; Wed, 8 Sep 1999 10:43:07 +1000 (EST)
+
+From sms at moe.2bsd.com  Wed Sep  8 10:49:36 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Tue, 7 Sep 1999 17:49:36 -0700 (PDT)
+Subject: Diff between 11/20 and 11/45?
+Message-ID: <199909080049.RAA15948@moe.2bsd.com>
+
+> From: Carl Lowenstein <cdl at mpl.ucsd.edu>
+> The first genuine user-mode difference that I remember coming across was
+> an incompatibility in the result of
+> 
+> 	MOV SP, -(SP)
+
+	Similarily
+
+		MOV R0,(R0)+
+
+	won't work as expected on some 11s.  I suspect that the even less
+	likely case of "mov pc,-(pc)" won't work either :-)
+
+> It isn't really clear to me why one would want to use this particular
+> instruction, however it turned out to hang both BASIC and FOCAL at the
+
+	Fairly common when setting up call frames, etc.  You want the
+	address of where the arguments start and since they're pushed on the
+	stack 'sp' is the value you want.
+
+	There's a comment in 2BSD (I think it came from V7) where mention is 
+	made that "we can't do sp,-(sp) because it won't work on the 11/40".
+
+> time.  A zero-length patch wasn't too hard to figure out.
+
+	Hmmm, interesting.  The workaround I saw took an extra instruction.
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA03462
+	for pups-liszt; Wed, 8 Sep 1999 10:53:48 +1000 (EST)
+
+From johnh at psych.usyd.edu.au  Wed Sep  8 11:07:37 1999
+From: johnh at psych.usyd.edu.au (johnh at psych.usyd.edu.au)
+Date: Wed, 8 Sep 1999 11:07:37 +1000 (EST)
+Subject: KE11-A! (was Diff between 11/20 and 11/45?)
+Message-ID: <199909080107.LAA22126@psychwarp.psych.usyd.edu.au>
+
+
+Are, I was afraid of that. The KE11-A wasn't a real CPU option, but
+was a peripheral that sat on the Unibus
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA03506
+	for pups-liszt; Wed, 8 Sep 1999 10:58:18 +1000 (EST)
+
+From SHOPPA at trailing-edge.com  Wed Sep  8 11:12:00 1999
+From: SHOPPA at trailing-edge.com (Tim Shoppa)
+Date: Tue, 7 Sep 1999 21:12:00 -0400
+Subject: Diff between 11/20 and 11/45?
+Message-ID: <990907211200.2020016c@trailing-edge.com>
+
+>These executables were written for a PDP-11/20. Are there any significant
+>USER-MODE differences between the 11/20 and later PDP-11 models? I'm
+>thinking missing instructions, different addressing mode behaviour etc.
+
+Well, first of all, there is no "User mode" on the 11/20 unless you have
+a KT11 installed.  Everything is kernel mode with no KT11.  Maybe the
+executables are trying to go out and directly bang on the console CSR's,
+the switch register, or the interrupt vectors themselves?
+
+11/20's also frequently had the EAE (Extended Arithmetic Element)
+installed, to make up for the fact that there was no multiply, divide,
+or multiple shift instructions in the native instruction set (and
+wouldn't be until the EIS came along.)  The EAE was a peripheral
+living in I/O space (773000-777316); you wrote the operands to the EAE
+locations and read the results later.  You can put a EAE in a machine
+with EIS, but generally you only did this if you had some binaries without
+sources using the EAE (I know of several sites running 11/24's and 11/44's
+with EAE's today)
+
+There are many other differences, especially dealing with "funny" address
+modes.  Generally, folks like me who have to code so that something works
+across all the -11's know better than to do these things, but back when
+there was *only* the 11/20 some folks didn't know any better and used
+them anyway.
+
+First, we have instructions that use the same register as source
+and destination, with an auto-increment one or the other:
+
+1.  OPR R,(R)+ on an 11/20 increments R before it's used as a source
+operand.  On an 11/45 the initial contents of R are used.
+
+2.  Same thing for OPR R,-(R).
+
+3.  JMP (R)+ or JSR reg,(R)+ increments R before putting it in the PC
+on the 11/20; on the 11/45 R isn't incremented until after the old
+value is put in the PC.
+
+4.  On an 11/20, JMP %R traps to 4; on an 11/45, JMP %R traps to 10
+
+5.  On an 11/20, SWAB does not change the V flag; on every other machine,
+SWAB clears V.  (In the 11/20 processor handbook, it *says* that SWAB
+clears the V flag, but that's not the way the machine actually worked!)
+
+6.  On an 11/20, R0-R7 can be used by the program at addresses 177700-
+177717; on any other machine, they can't be used that way and will
+result in a non-existent memory (NXM) trap.  This can be used for some
+neat tricks where you run code out of the registers (which of course
+is quite non-portable!)
+
+There's lots more differences, having to do with T bits and interrupt
+handling, but I don't know if you're getting that far... and these
+aren't things that you have to worry about in user mode, anyway.
+
+-- 
+ Tim Shoppa                        Email: shoppa at trailing-edge.com
+ Trailing Edge Technology          WWW:   http://www.trailing-edge.com/
+ 7328 Bradley Blvd		   Voice: 301-767-5917
+ Bethesda, MD, USA 20817           Fax:   301-767-5927
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA03564
+	for pups-liszt; Wed, 8 Sep 1999 11:03:51 +1000 (EST)
+
+From dave at fgh.geac.com.au  Wed Sep  8 11:15:48 1999
+From: dave at fgh.geac.com.au (Dave Horsfall)
+Date: Wed, 8 Sep 1999 11:15:48 +1000 (EST)
+Subject: Diff between 11/20 and 11/45?
+In-Reply-To: <199909070604.XAA04723@mpl.ucsd.edu>
+Message-ID: <Pine.GSO.4.10.9909081103330.19899-100000@fgh>
+
+On Mon, 6 Sep 1999, Carl Lowenstein wrote:
+
+> The first genuine user-mode difference that I remember coming across was
+> an incompatibility in the result of
+> 
+> 	MOV SP, -(SP)
+
+Anything involving the same register as src and dst in this way was,
+err, different...
+
+And I have an annotation that the JSR does not behave as documented.
+Unlike page 91, the sequence is not (tmp) <- (dst) / v(SP) <- reg /
+reg <- PC / PC <- (tmp).  The first ISP code is not present i.e. the
+SP is decremented first, not saved, and the last is PC <- (dst).
+
+> It isn't really clear to me why one would want to use this particular
+> instruction, however it turned out to hang both BASIC and FOCAL at the
+> time.  A zero-length patch wasn't too hard to figure out.
+
+Some sort of frame pointer linking, on an architecture that didn't
+have separate frame pointers (like the Vax)?
+
+-- 
+Dave Horsfall VK2KFU  dave at geac.com.au  Ph: +61 2 9978-7493 Fx: +61 2 9978-7422
+Geac Computers P/L (FGH Division) 2/57 Christie St, St Leonards 2065, Australia
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA03594
+	for pups-liszt; Wed, 8 Sep 1999 11:05:14 +1000 (EST)
+
+From SHOPPA at trailing-edge.com  Wed Sep  8 10:48:50 1999
+From: SHOPPA at trailing-edge.com (Tim Shoppa)
+Date: Tue, 7 Sep 1999 20:48:50 -0400
+Subject: Diff between 11/20 and 11/45?
+Message-ID: <990907204850.202001b4@trailing-edge.com>
+
+>	MOV SP, -(SP)
+>
+>It isn't really clear to me why one would want to use this particular
+>instruction
+
+"MOV SP" is often-used shorthand for "MOV some-non-zero-value", since no
+sane implementation would ever have a zero in the SP.  So this would
+put a non-zero value on top of the stack (perhaps as a flag, to be
+cleared by CLR (SP) when ready) - at least on machines where this was legal!
+
+On which machine does this fail, BTW?  On a 11/15, 11/20, 11/23, 11/35
+or 11/40 this ought to work, decrementing SP by two before putting it on
+the stack, and on the 11/03, 11/04, 11/05, 11/10, 11/34, and 11/45
+SP is decremented by two before being put on the stack, according to my
+notes.
+
+-- 
+ Tim Shoppa                        Email: shoppa at trailing-edge.com
+ Trailing Edge Technology          WWW:   http://www.trailing-edge.com/
+ 7328 Bradley Blvd		   Voice: 301-767-5917
+ Bethesda, MD, USA 20817           Fax:   301-767-5927
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA03973
+	for pups-liszt; Wed, 8 Sep 1999 11:47:41 +1000 (EST)
+
+From dave at fgh.geac.com.au  Tue Sep  7 14:13:30 1999
+From: dave at fgh.geac.com.au (Dave Horsfall)
+Date: Tue, 7 Sep 1999 14:13:30 +1000 (EST)
+Subject: Diff between 11/20 and 11/45?
+In-Reply-To: <199909062356.JAA12397@henry.cs.adfa.edu.au>
+Message-ID: <Pine.GSO.4.10.9909071404290.19123-100000@fgh>
+
+On Tue, 7 Sep 1999, Warren Toomey wrote:
+
+> I've got a few working. cat works. ls and date run, but sort of give
+> strange outputs.
+
+What sort of strange output?  My guess is that kernel-wise, date-handling
+would have changed.
+
+> These executables were written for a PDP-11/20. Are there any significant
+> USER-MODE differences between the 11/20 and later PDP-11 models? I'm
+> thinking missing instructions, different addressing mode behaviour etc.
+
+Ummm...  No floating point (all emulated), and I seem to recall that
+it didn't even have multiply/divide; could this be the problem?  The
+/20 was certainly a subset of the "classic" 11.  No memory management,
+but users won't see that.  Also had some quirks, long-forgotten.
+
+My experience is based on the GT-40, which was basically a /20 with a
+graphics processor attached to it (which had a mean Lunar Lander game!).
+
+-- 
+Dave Horsfall VK2KFU  dave at geac.com.au  Ph: +61 2 9978-7493 Fx: +61 2 9978-7422
+Geac Computers P/L (FGH Division) 2/57 Christie St, St Leonards 2065, Australia
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id OAA04594
+	for pups-liszt; Wed, 8 Sep 1999 14:30:23 +1000 (EST)
+
+From cdl at mpl.ucsd.edu  Wed Sep  8 14:43:16 1999
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Tue, 7 Sep 1999 21:43:16 -0700 (PDT)
+Subject: Diff between 11/20 and 11/45?
+Message-ID: <199909080443.VAA07676@mpl.ucsd.edu>
+
+> From owner-pups at minnie.cs.adfa.edu.au Tue Sep  7 18:24 PDT 1999
+> Date: Tue, 7 Sep 1999 17:49:36 -0700 (PDT)
+> From: "Steven M. Schultz" <sms at moe.2bsd.com>
+> To: pups at minnie.cs.adfa.edu.au
+> Subject: Re: Diff between 11/20 and 11/45?
+> 
+> > From: Carl Lowenstein <cdl at mpl.ucsd.edu>
+> > 
+> > 	MOV SP, -(SP)
+> 
+> 	Similarily
+> 
+> 		MOV R0,(R0)+
+> 
+> 	won't work as expected on some 11s.  I suspect that the even less
+> 	likely case of "mov pc,-(pc)" won't work either :-)
+> 
+> > It isn't really clear to me why one would want to use this particular
+> > instruction, however it turned out to hang both BASIC and FOCAL at the
+> 
+> 	Fairly common when setting up call frames, etc.  You want the
+> 	address of where the arguments start and since they're pushed on the
+> 	stack 'sp' is the value you want.
+> 
+> 	There's a comment in 2BSD (I think it came from V7) where mention is 
+> 	made that "we can't do sp,-(sp) because it won't work on the 11/40".
+> 
+> > time.  A zero-length patch wasn't too hard to figure out.
+> 
+> 	Hmmm, interesting.  The workaround I saw took an extra instruction.
+
+Abbreviated due to fading memory over the years, but refreshed by some
+of the current discussion.  The patch was zero-length but involved more
+than the one instruction.  Something similar to:
+
+	MOV SP, -(SP)		MOV SP, R0
+	MOV (sP), R0		MOV R0, -(SP)
+
+The net result being that the initial value of SP is now both in R0 and
+on the stack.  Without doing both a SRC and DST operation on SP in the
+same instruction, which is the thing that is incompatible across different
+processor hardware.
+
+    carl
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id OAA04681
+	for pups-liszt; Wed, 8 Sep 1999 14:51:11 +1000 (EST)
+
+From cdl at mpl.ucsd.edu  Wed Sep  8 15:03:09 1999
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Tue, 7 Sep 1999 22:03:09 -0700 (PDT)
+Subject: Diff between 11/20 and 11/45?
+Message-ID: <199909080503.WAA08055@mpl.ucsd.edu>
+
+> Date: Tue, 7 Sep 1999 14:13:30 +1000 (EST)
+> From: Dave Horsfall <dave at fgh.geac.com.au>
+> To: PDP Unix Preservation Society <pups at minnie.cs.adfa.edu.au>
+> Subject: Re: Diff between 11/20 and 11/45?
+> X-No-Archive: Yes
+> 
+> On Tue, 7 Sep 1999, Warren Toomey wrote:
+> 
+> > I've got a few working. cat works. ls and date run, but sort of give
+> > strange outputs.
+> 
+> What sort of strange output?  My guess is that kernel-wise, date-handling
+> would have changed.
+
+It occurs to me that really early Unix used a time word in PDP-11 ticks,
+not seconds.  So it ran out of time a lot sooner than 2038, like maybe
+only a year after it started, at 60 ticks per second, 31.5 Megaseconds per
+year.  This information was gleaned from a Mt.Xinu calendar from a few
+years ago.
+
+    carl
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id PAA04812
+	for pups-liszt; Wed, 8 Sep 1999 15:28:58 +1000 (EST)
+
+From sms at moe.2bsd.com  Wed Sep  8 15:40:58 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Tue, 7 Sep 1999 22:40:58 -0700 (PDT)
+Subject: Diff between 11/20 and 11/45?
+Message-ID: <199909080540.WAA17669@moe.2bsd.com>
+
+Howdy -
+
+> From: Carl Lowenstein <cdl at mpl.ucsd.edu>
+> Abbreviated due to fading memory over the years, but refreshed by some
+> of the current discussion.  The patch was zero-length but involved more
+
+	It has been a long long ('quad'? ;)) time since I first encountered
+	the problem.
+
+> than the one instruction.  Something similar to:
+> 
+> 	MOV SP, -(SP)		MOV SP, R0
+> 	MOV (SP), R0		MOV R0, -(SP)
+
+	Ah, thank you for bringing that memory back to the front of the brain!
+	If R0 is available for that then yes indeed that'll do the trick very
+	nicely.
+
+> on the stack.  Without doing both a SRC and DST operation on SP in the
+> same instruction, which is the thing that is incompatible across different
+> processor hardware.
+
+	The 11/45 (and 70) behave as "expected" as do the KDJ-11 systems
+	(11/73, etc) so unless a person had an 11/40 (or a /20) around it
+	would be fairly easy to get bit by the "feature".
+
+	When it comes time for MMU "features" I know of one difference between
+	the KDJ-11 and the other members that had an MMU (11/44, /70, etc). Was
+	fun tracking it down but not something I'd want to do again ;)
+
+	Steven
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id QAA04962
+	for pups-liszt; Wed, 8 Sep 1999 16:17:43 +1000 (EST)
+
+From dave at fgh.geac.com.au  Wed Sep  8 16:29:16 1999
+From: dave at fgh.geac.com.au (Dave Horsfall)
+Date: Wed, 8 Sep 1999 16:29:16 +1000 (EST)
+Subject: Diff between 11/20 and 11/45?
+In-Reply-To: <199909080540.WAA17669@moe.2bsd.com>
+Message-ID: <Pine.GSO.4.10.9909081618240.19899-100000@fgh>
+
+On Tue, 7 Sep 1999, Steven M. Schultz wrote:
+
+> > 	MOV SP, -(SP)		MOV SP, R0
+> > 	MOV (SP), R0		MOV R0, -(SP)
+> 
+> 	Ah, thank you for bringing that memory back to the front of the brain!
+> 	If R0 is available for that then yes indeed that'll do the trick very
+> 	nicely.
+
+Yep, I remember that now!  Often thought it was odd, but it worked
+on all platforms.
+
+The convention was that R0/1 were scratch (used to return results)
+and R2/3/4 had to be saved (they were the caller's first three register
+variables).  R5 was used as a frame pointer (?) and R6/7 you know
+better as SP/PC.
+
+> 	The 11/45 (and 70) behave as "expected" as do the KDJ-11 systems
+> 	(11/73, etc) so unless a person had an 11/40 (or a /20) around it
+> 	would be fairly easy to get bit by the "feature".
+
+We had 40s, and used to dream of owning a 70...  I learned a lot about
+porting Edition 6 to the /23, /60, etc.
+
+> 	When it comes time for MMU "features" I know of one difference between
+> 	the KDJ-11 and the other members that had an MMU (11/44, /70, etc). Was
+> 	fun tracking it down but not something I'd want to do again ;)
+
+Do you recall the PC-board hack on the sep-ID machines that changed
+the MFPI instruction to do something that was expressly prohibited?
+Something about allowing a user program to access something else, for
+some obscure hack or other...
+
+-- 
+Dave Horsfall VK2KFU  dave at geac.com.au  Ph: +61 2 9978-7493 Fx: +61 2 9978-7422
+Geac Computers P/L (FGH Division) 2/57 Christie St, St Leonards 2065, Australia
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id UAA05921
+	for pups-liszt; Wed, 8 Sep 1999 20:30:43 +1000 (EST)
+
+From hsmade at dds.nl  Wed Sep  8 20:41:32 1999
+From: hsmade at dds.nl (Wim Fournier)
+Date: Wed, 8 Sep 1999 12:41:32 +0200 (MET DST)
+Subject: Newbie question
+Message-ID: <Pine.GSO.3.90.990908123352.21899B-100000@fatima.dds.nl>
+
+Hi,
+
+I am the happy owner of a pdp-11/94. I've got it from our local telecom 
+provider (kpn). As I am not a specialist on these machines, I would like 
+to ask some questions:
+- My pdp won't accept mains... when I supply power it doesn't do 
+anything.. I've heard it could be something with the power-supply not 
+being closed.. but I cannot find what it is.. it's fully closed.
+
+- I've got sdi / tu80 and an other diskcontroller... What type of disks 
+can I use to boot from?? (disks = floppy / tape / harddrive)
+
+- What about the 2 connectors at the back.. 1 has 3 pins and can be 
+connected to the mains regulator (or something (a box for switching the 
+mains)) an other one has got 2 pins and no info...
+
+- Is there some info on hardware to connect at the diverse controllers 
+(modem / serial??)
+
+GreetZz
+
+Wim Fournier
+
+hsmade at dds.nl
+
+
+From sms at moe.2bsd.com  Thu Sep  9 03:00:05 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Wed, 8 Sep 1999 10:00:05 -0700 (PDT)
+Subject: Diff between 11/20 and 11/45?
+Message-ID: <199909081700.KAA26837@moe.2bsd.com>
+
+Hi -
+
+> From: Dave Horsfall <dave at fgh.geac.com.au>
+> Do you recall the PC-board hack on the sep-ID machines that changed
+
+	No, I do not recall seeing a PCB hack (hacking on an 11/70 was
+	frowned upon ;))
+
+> the MFPI instruction to do something that was expressly prohibited?
+
+	But I do know what that 'something' was.   In "user" or "supervisor"
+	mode MPFI functioned as "MFPD" - a user program could not read its own 
+	I(nstruction) space.    Only for "kernel" mode did MFPI access the
+	I space.
+
+> Something about allowing a user program to access something else, for
+> some obscure hack or other...
+
+	It was aimed at providing "execute only" code - a program could "run"
+	but not "read" its code space.
+
+	This caused problems though if trap handlers (floating point exception
+	handling comes to mind) needed to retrieve the faulted instruction
+	for inspection/analysis.  Thus in 2BSD there is a system call that
+	programs can issue to request the KERNEL to do the 'mfpi' for them
+	and return the value.
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id TAA10091
+	for pups-liszt; Thu, 9 Sep 1999 19:48:18 +1000 (EST)
+
+From bqt at Update.UU.SE  Thu Sep  9 19:58:19 1999
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Thu, 9 Sep 1999 11:58:19 +0200 (MET DST)
+Subject: Diff between 11/20 and 11/45?
+In-Reply-To: <199909062356.JAA12397@henry.cs.adfa.edu.au>
+Message-ID: <Pine.VUL.3.93.990909115534.22939A-100000@Zeke.Update.UU.SE>
+
+On Tue, 7 Sep 1999, Warren Toomey wrote:
+
+> These executables were written for a PDP-11/20. Are there any significant
+> USER-MODE differences between the 11/20 and later PDP-11 models? I'm
+> thinking missing instructions, different addressing mode behaviour etc.
+
+As far as I can remember, there aren't any huge differences. However, some
+stuff behave differently in the 11/20. On the other hand, some stuff
+behave differently in just about every implementation...
+
+Condition flags on some instructions specifically. And the 11/20 might
+have had some limitations on using the PC which differed as well.
+
+I have a processor handbook for the "modern" -11s, which has a chart with
+all differences between different models. I started writing it down, to
+place in the PDP-11 FAQ, but haven't come that far yet...
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From wkt at cs.adfa.edu.au  Sun Sep 12 19:56:46 1999
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Sun, 12 Sep 1999 19:56:46 +1000 (EST)
+Subject: Unisys 5000 / 7000 manual set
+In-Reply-To: <m11Pvny-0083kOC@babel.apana.org.au> from "johna@babel.apana.org.au" at "Sep 12, 1999  8:39:34 am"
+Message-ID: <199909120956.TAA16461@henry.cs.adfa.edu.au>
+
+In article by johna at babel.apana.org.au:
+> Hi Warren,
+> I have a set (11 I think) of manuals for the Unisys 5000 / 7000 series
+> which I'd be happy to give away. Not sure if they are of historical
+> interest (too recent, perhaps) or if it was a landmark computer ...
+> 
+> Anyway, I'd be happy to donate them to the Unix archive if you're 
+> interested.  I'm in Sydney, North Ryde, and would be happy to pass them
+> on next time we're in earshot of each other 
+
+Actually, your email made me think: if I collect _erverything_ offered to
+me, then I _will_ run out of room soon.
+
+So, how about the idea of a register? You tell me what you have & your
+contact details. I put up a web page with the stuff, your name, and
+your contact details if you are happy.
+
+Then, if people want access to them, they can contact you. Or, if you'd
+rather not have your contact details on the web, they can contact me.
+
+And if you feel like getting rid of them, you can email me and I'll see
+if anybody wants them.
+
+Let me know what you think. P.S I'm cc'ing this to the PUPS mail list
+for similar comments.
+
+Cheers,
+	Warren
+
+
+From wkt at cs.adfa.edu.au  Fri Sep 17 11:53:55 1999
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Fri, 17 Sep 1999 11:53:55 +1000 (EST)
+Subject: History of the BSD
+Message-ID: <199909170153.LAA39697@henry.cs.adfa.edu.au>
+
+All,
+	I just found this on-line article from Kirk McKusick on the
+history of BSD.  http://www.oreilly.com/catalog/opensources/book/kirkmck.html
+
+	Warren
+
+
+From wkt at cs.adfa.edu.au  Sat Sep 18 17:57:07 1999
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Sat, 18 Sep 1999 17:57:07 +1000 (EST)
+Subject: Ptr to a Vax simulator
+Message-ID: <199909180757.RAA47264@henry.cs.adfa.edu.au>
+
+Just FYI: http://www.forest-edge.net/evax.html
+
+	Warren
+
+

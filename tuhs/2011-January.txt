@@ -1,0 +1,1180 @@
+From dgunix at gmail.com  Tue Jan  4 00:29:16 2011
+From: dgunix at gmail.com (DG UX)
+Date: Mon, 3 Jan 2011 16:29:16 +0200
+Subject: [TUHS] Oracle SQR 3.0.13.3 for Solaris
+In-Reply-To: <AANLkTi=17eK1tj9WvyyAjNq8rfNfr8GfYmsye6gbZSp9@mail.gmail.com>
+References: <AANLkTi=17eK1tj9WvyyAjNq8rfNfr8GfYmsye6gbZSp9@mail.gmail.com>
+Message-ID: <AANLkTi=d2yi4k8wpnV=3u0pOOzNeKfNJ4Oqca5grPBu3@mail.gmail.com>
+
+Hello,
+
+Looking for an old version of SQR (Oracle's reporting program) -
+3.0.13/.0.15 for >= SunOs5, a.k.a Solaris (>=2.x).
+We've got SQR 3.0.13 for SunOS 4, but of course it is not compatible
+with our Solaris Oracle client (which isn't sunos4, but sunos 5.8).
+According to some records and posts online, there is an 3.0.13 for
+Solaris :) just need to find a copy
+
+We've already posted a request in SQRUG (SQR User Group) mailing list
+and of course contacted our local Oracle provider (who gave us the
+SunOS4 version).
+Needles to say, we're in contract with Oracle, once we get a correct
+version of the program and according to a successful P.O.C, fully
+payed licenses will be purchased.
+Check with your ex MITI/Sqribe, Oracle contacts.
+
+Cash prize - $1,000 to finder.
+
+Thanks a lot,
+
+A', D' and friends at the DGUX Project
+
+
+From wkt at tuhs.org  Sun Jan 16 18:43:30 2011
+From: wkt at tuhs.org (Warren Toomey)
+Date: Sun, 16 Jan 2011 18:43:30 +1000
+Subject: [TUHS] History of #! interpretation in Unix
+Message-ID: <20110116084330.GA27396@minnie.tuhs.org>
+
+Hi all, best wishes for 2011. I had an e-mail from Sven Mascheck asking about
+the history of #! interpretation in System V. I couldn't find any #!
+code in the kernels before SysVR4. However, I thought I'd pass the
+query onto the TUHS list, in case others can shed some light on the question.
+
+Did SysV systems before r4 do #! interpretation, and if so where was it done:
+kernel, library, shell? Any code references, e.g. function names etc.?
+
+Many thanks,
+	Warren
+
+
+From cowan at mercury.ccil.org  Sun Jan 16 19:55:49 2011
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sun, 16 Jan 2011 04:55:49 -0500
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <20110116084330.GA27396@minnie.tuhs.org>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+Message-ID: <20110116095548.GC3374@mercury.ccil.org>
+
+Warren Toomey scripsit:
+
+> Hi all, best wishes for 2011. I had an e-mail from Sven Mascheck asking about
+> the history of #! interpretation in System V. I couldn't find any #!
+> code in the kernels before SysVR4. 
+
+That's correct.  The feature was added to the 8th Research edition kernel,
+but didn't migrate to the System III/V line until SVR4.  Shebangs began
+very early in BSD as a csh-only hack, but appeared as a config option
+in kernels as early as 2.8BSD, according to Wikipedia; 4.2BSD was the
+first release that turned them on by default.
+
+Perl has always (I think) had its own shebang support; you can get Perl
+to exec an arbitrary interpreter for a script provided it has a shebang.
+Modern shells will use /bin/sh to run scripts that *don't* have shebangs,
+except for ksh which considers itself /bin/sh-compatible, and therefore
+runs such scripts itself.
+
+-- 
+I am expressing my opinion.  When my            John Cowan
+honorable and gallant friend is called,         cowan at ccil.org
+he will express his opinion.  This is           http://www.ccil.org/~cowan
+the process which we call Debate.                   --Winston Churchill
+
+
+From wkb at xs4all.nl  Sun Jan 16 20:53:55 2011
+From: wkb at xs4all.nl (Wilko Bulte)
+Date: Sun, 16 Jan 2011 11:53:55 +0100
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <20110116084330.GA27396@minnie.tuhs.org>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+Message-ID: <C3B4F6C7-25CD-4AE1-91F1-3B5A02DCB2F6@xs4all.nl>
+
+Hi Warren
+
+I worked on SVR3 maintenance at Philips Information Systems in the dim past. I'm almost certain, like 99%, that #! was not in R3
+
+Wilko
+
+Op 16 jan. 2011 om 09:43 heeft Warren Toomey <wkt at tuhs.org> het volgende geschreven:
+
+> Hi all, best wishes for 2011. I had an e-mail from Sven Mascheck asking about
+> the history of #! interpretation in System V. I couldn't find any #!
+> code in the kernels before SysVR4. However, I thought I'd pass the
+> query onto the TUHS list, in case others can shed some light on the question.
+> 
+> Did SysV systems before r4 do #! interpretation, and if so where was it done:
+> kernel, library, shell? Any code references, e.g. function names etc.?
+> 
+> Many thanks,
+>    Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From mascheck at in-ulm.de  Sun Jan 16 23:20:39 2011
+From: mascheck at in-ulm.de (Sven Mascheck)
+Date: Sun, 16 Jan 2011 14:20:39 +0100
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <20110116095548.GC3374@mercury.ccil.org>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+	<20110116095548.GC3374@mercury.ccil.org>
+Message-ID: <20110116132039.GA16484@lisa.in-ulm.de>
+
+John Cowan wrote:
+> Warren Toomey scripsit:
+
+> > the history of #! interpretation in System V. I couldn't find any #!
+> > code in the kernels before SysVR4. 
+
+> The feature was added to the 8th Research edition kernel,
+> but didn't migrate to the System III/V line until SVR4.  
+
+Thanks to you all.  Amazing, it came so "late".
+
+> Shebangs began very early in BSD as a csh-only hack, but appeared
+> as a config option in kernels as early as 2.8BSD, according to
+> Wikipedia; 4.2BSD was the first release that turned them on by
+> default.
+
+In a usenet discussion with G.Ritter in '01 I noticed the first detailed
+hint about the origin, and since then I've tried my best to document
+the issue on http://www.in-ulm.de/~mascheck/various/shebang/#origin
+
+(And although someone added some of the links I collected,
+ I believe Wikipedia still has several things mixed up,
+ while I'm quite busy to keep my own stuff consistent...)
+
+4.0BSD had incorporated it originally among the BSDs.
+2.8BSD came soon, sounds earlier, but after its original release,
+2BSD was just a different development line (http://www.levenez.com/unix/unix_a4.pdf).
+
+As you mention "shebangs began .. as csh-only hack":
+I still wonder if one may call the BSD csh-hack as origin,
+because #! might have been developed independently at Bell Labs.
+(although, in turn, the idea might origin from Berkeley, as the
+ interesting answer from DMR in the wikipedia article suggests.)
+And BTW: it was not "csh-only", but sh was hacked symmetrically :)
+
+
+> Perl has always (I think) had its own shebang support; you can get Perl
+> to exec an arbitrary interpreter for a script provided it has a shebang.
+
+The traditional ash, bash-1 (and -2 ff. as compile time option) also
+implement that.
+
+
+> Modern shells will use /bin/sh to run scripts that *don't* have shebangs,
+> except for ksh which considers itself /bin/sh-compatible, and therefore
+> runs such scripts itself.
+
+I thought sh-like shells in general try to interprete scripts themselves
+upon an ENOEXEC.  Do you know certain shells which actually call "/bin/sh"?
+
+    Sven
+
+
+From cowan at mercury.ccil.org  Mon Jan 17 03:17:15 2011
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sun, 16 Jan 2011 12:17:15 -0500
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <20110116132039.GA16484@lisa.in-ulm.de>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+	<20110116095548.GC3374@mercury.ccil.org>
+	<20110116132039.GA16484@lisa.in-ulm.de>
+Message-ID: <20110116171715.GD3374@mercury.ccil.org>
+
+Sven Mascheck scripsit:
+
+> As you mention "shebangs began .. as csh-only hack":
+> I still wonder if one may call the BSD csh-hack as origin,
+> because #! might have been developed independently at Bell Labs.
+
+No, that would be too much of a coincidence to choose exactly the
+same characters.  There has to be a single point of origin, from
+which it spread by stimulus diffusion (you hear there are telescopes,
+you know they use lenses, you build your own telescope).
+
+> I thought sh-like shells in general try to interprete scripts themselves
+> upon an ENOEXEC.  Do you know certain shells which actually call "/bin/sh"?
+
+Yes, seemingly bash does that too.  Bogus.
+
+-- 
+John Cowan    cowan at ccil.org    http://ccil.org/~cowan
+The whole of Gaul is quartered into three halves.
+        --Julius Caesar
+
+
+From mascheck at in-ulm.de  Mon Jan 17 05:19:42 2011
+From: mascheck at in-ulm.de (Sven Mascheck)
+Date: Sun, 16 Jan 2011 20:19:42 +0100
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <20110116171715.GD3374@mercury.ccil.org>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+	<20110116095548.GC3374@mercury.ccil.org>
+	<20110116132039.GA16484@lisa.in-ulm.de>
+	<20110116171715.GD3374@mercury.ccil.org>
+Message-ID: <20110116191942.GA26424@lisa.in-ulm.de>
+
+John Cowan wrote:
+> Sven Mascheck scripsit:
+> 
+> > As you mention "shebangs began .. as csh-only hack":
+> > I still wonder if one may call the BSD csh-hack as origin,
+> > because #! might have been developed independently at Bell Labs.
+> 
+> No, that would be too much of a coincidence to choose exactly the
+> same characters.  There has to be a single point of origin, from
+> which it spread by stimulus diffusion (you hear there are telescopes,
+> you know they use lenses, you build your own telescope).
+
+This doesn't sound obligatory to me (I know it's academic).
+DMR might have known the csh-hack (and if a comment character is
+implemented anywhere, here csh, then it's obvious to use it for #!)
+
+
+> > I thought sh-like shells in general try to interprete scripts themselves
+> > upon an ENOEXEC.  Do you know certain shells which actually call "/bin/sh"?
+> 
+> Yes, seemingly bash does that too.  Bogus.
+
+How'd you get the impression?  I can't verify this.
+bash-1.05:execute_cmd.c executed the commands itself, in a subshell,
+
+" [ errno == ENOEXEC ]
+
+  /* This file is executable.
+     If it begins with #!, then help out people with losing
+     operating systems.  Otherwise, check to see if it is a binary
+     file by seeing if the first line (or upto 30 characters) are in
+     the ASCII set.  Execute the contents as shell commands. */ "
+
+and this hasn't been changed (except length or return status)
+until the current release.
+
+Perhaps you had another shell in mind?  I believe a shell should
+try to execute commands itself instead of calling any other shell.
+(That's the only way how executing on in POSIX shell is possible, BTW,
+because neither #! nor paths are standardized).
+
+
+From cowan at mercury.ccil.org  Mon Jan 17 06:17:46 2011
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sun, 16 Jan 2011 15:17:46 -0500
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <20110116191942.GA26424@lisa.in-ulm.de>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+	<20110116095548.GC3374@mercury.ccil.org>
+	<20110116132039.GA16484@lisa.in-ulm.de>
+	<20110116171715.GD3374@mercury.ccil.org>
+	<20110116191942.GA26424@lisa.in-ulm.de>
+Message-ID: <20110116201745.GE3374@mercury.ccil.org>
+
+Sven Mascheck scripsit:
+
+> DMR might have known the csh-hack (and if a comment character is
+> implemented anywhere, here csh, then it's obvious to use it for #!)
+
+That might account for the "#", but not for "#!" taken together.
+Having two different people invent the shebang independently (as opposed
+to *implementing* it independently, as has happened many times -- 8th
+Edition, SVR4, Linux, etc.) is just too improbable for me to swallow.
+
+> > > I thought sh-like shells in general try to interprete scripts themselves
+> > > upon an ENOEXEC.  Do you know certain shells which actually call "/bin/sh"?
+> > 
+> > Yes, seemingly bash does that too.  Bogus.
+> 
+> How'd you get the impression?  I can't verify this.
+
+No, I meant that bash does what ksh does: uses itself, which means that a
+shebang-free script runs differently on bash, ksh, dash.  This is IMHO
+unfortunate.
+
+> (That's the only way how executing on in POSIX shell is possible, BTW,
+> because neither #! nor paths are standardized).
+
+Good point.  IMHO the Posix sh definition should be extended so that all
+shells claiming Posix-compliance should do shebangs.
+
+-- 
+John Cowan  cowan at ccil.org  http://ccil.org/~cowan
+And now here I was, in a country where a right to say how the country should
+be governed was restricted to six persons in each thousand of its population.
+For the nine hundred and ninety-four to express dissatisfaction with the
+regnant system and propose to change it, would have made the whole six
+shudder as one man, it would have been so disloyal, so dishonorable, such
+putrid black treason.  --Mark Twain's Connecticut Yankee
+
+
+From lm at bitmover.com  Mon Jan 17 06:42:05 2011
+From: lm at bitmover.com (Larry McVoy)
+Date: Sun, 16 Jan 2011 12:42:05 -0800
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <20110116201745.GE3374@mercury.ccil.org>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+	<20110116095548.GC3374@mercury.ccil.org>
+	<20110116132039.GA16484@lisa.in-ulm.de>
+	<20110116171715.GD3374@mercury.ccil.org>
+	<20110116191942.GA26424@lisa.in-ulm.de>
+	<20110116201745.GE3374@mercury.ccil.org>
+Message-ID: <20110116204205.GA28118@bitmover.com>
+
+On Sun, Jan 16, 2011 at 03:17:46PM -0500, John Cowan wrote:
+> Sven Mascheck scripsit:
+> 
+> > DMR might have known the csh-hack (and if a comment character is
+> > implemented anywhere, here csh, then it's obvious to use it for #!)
+> 
+> That might account for the "#", but not for "#!" taken together.
+> Having two different people invent the shebang independently (as opposed
+> to *implementing* it independently, as has happened many times -- 8th
+> Edition, SVR4, Linux, etc.) is just too improbable for me to swallow.
+
+I grepped 32v, v7, sysIII for it and didn't find it.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From mascheck at in-ulm.de  Mon Jan 17 07:08:12 2011
+From: mascheck at in-ulm.de (Sven Mascheck)
+Date: Sun, 16 Jan 2011 22:08:12 +0100
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <20110116201745.GE3374@mercury.ccil.org>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+	<20110116095548.GC3374@mercury.ccil.org>
+	<20110116132039.GA16484@lisa.in-ulm.de>
+	<20110116171715.GD3374@mercury.ccil.org>
+	<20110116191942.GA26424@lisa.in-ulm.de>
+	<20110116201745.GE3374@mercury.ccil.org>
+Message-ID: <20110116210812.GB26424@lisa.in-ulm.de>
+
+John Cowan wrote:
+> Sven Mascheck scripsit:
+
+> > DMR might have known the csh-hack [...]
+> 
+> Having two different people invent the shebang independently
+
+who (or what system) do you mean was the 2nd?
+
+
+> > > > > Modern shells will use /bin/sh to run scripts that *don't* have shebangs,
+[...]
+> No, I meant that bash does what ksh does: uses itself, [...]
+
+With /bin/sh you actually meant any shell calling "itself"?
+Otherwise I'm afraid, I have some difficulties following you.
+
+
+> IMHO the Posix sh definition should be extended so that all
+> shells claiming Posix-compliance should do shebangs.
+
+Shells themselves should implement it, not the kernel?
+
+There was a working group resolution to standardize #!, which didn't
+make it, http://www.opengroup.org/platform/resolutions/bwg2000-004.html
+you could chime in
+
+
+From cowan at mercury.ccil.org  Mon Jan 17 07:37:38 2011
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sun, 16 Jan 2011 16:37:38 -0500
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <20110116210812.GB26424@lisa.in-ulm.de>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+	<20110116095548.GC3374@mercury.ccil.org>
+	<20110116132039.GA16484@lisa.in-ulm.de>
+	<20110116171715.GD3374@mercury.ccil.org>
+	<20110116191942.GA26424@lisa.in-ulm.de>
+	<20110116201745.GE3374@mercury.ccil.org>
+	<20110116210812.GB26424@lisa.in-ulm.de>
+Message-ID: <20110116213738.GG3374@mercury.ccil.org>
+
+Sven Mascheck scripsit:
+
+> who (or what system) do you mean was the 2nd?
+
+That was hypothetical.
+
+Trying again:  "It's unlikely that two different people chose #! as the
+executable-script mark independently."
+
+> With /bin/sh you actually meant any shell calling "itself"?
+> Otherwise I'm afraid, I have some difficulties following you.
+
+I mean that whereas (t)csh uses /bin/sh to run scripts with no
+shebangs, the Posix-compatible shells execute scripts with no
+shebangs directly.  And this is Bad.
+
+> > IMHO the Posix sh definition should be extended so that all
+> > shells claiming Posix-compliance should do shebangs.
+> 
+> Shells themselves should implement it, not the kernel?
+
+It might be too much to ask the kernel to do, especially on
+non-traditional Posix systems like z/OS.
+
+> There was a working group resolution to standardize #!, which didn't
+> make it, http://www.opengroup.org/platform/resolutions/bwg2000-004.html
+> you could chime in
+
+I see the problem now: a portable awk script, for example, can't assume
+that the Posix awk is in /usr/bin/awk, so "#!/usr/bin/awk" might get the
+wrong awk.  So the feature is not worth standardizing for Posix.
+
+-- 
+[W]hen I wrote it I was more than a little              John Cowan
+febrile with foodpoisoning from an antique carrot       cowan at ccil.org
+that I foolishly ate out of an illjudged faith          http://ccil.org/~cowan
+in the benignancy of vegetables.  --And Rosta
+
+
+From tfb at tfeb.org  Mon Jan 17 20:09:40 2011
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Mon, 17 Jan 2011 10:09:40 +0000
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <20110116201745.GE3374@mercury.ccil.org>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+	<20110116095548.GC3374@mercury.ccil.org>
+	<20110116132039.GA16484@lisa.in-ulm.de>
+	<20110116171715.GD3374@mercury.ccil.org>
+	<20110116191942.GA26424@lisa.in-ulm.de>
+	<20110116201745.GE3374@mercury.ccil.org>
+Message-ID: <C8C9827B-E4B4-4CBB-9504-A94342E8D2F8@tfeb.org>
+
+On 16 Jan 2011, at 20:17, John Cowan wrote:
+
+> That might account for the "#", but not for "#!" taken together.
+> Having two different people invent the shebang independently (as opposed
+> to *implementing* it independently, as has happened many times -- 8th
+> Edition, SVR4, Linux, etc.) is just too improbable for me to swallow.
+
+One possibility is that there was prior art for "!" meaning "run in a shell" which gave various people the same idea independently: in a script it needs to be commented out so the shell will not barf, so you pretty naturally get "#!" as the magic sequence.  That's really arguing that the inventions were not independent but they were both copying from something else.
+
+The obvious place that "!" might have come from is ed: it seems to have been there essentially for ever (the 1st edition manuals have it).
+
+--tim
+
+From imp at bsdimp.com  Tue Jan 18 02:35:34 2011
+From: imp at bsdimp.com (Warner Losh)
+Date: Mon, 17 Jan 2011 09:35:34 -0700
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <20110116213738.GG3374@mercury.ccil.org>
+References: <20110116084330.GA27396@minnie.tuhs.org>	<20110116095548.GC3374@mercury.ccil.org>	<20110116132039.GA16484@lisa.in-ulm.de>	<20110116171715.GD3374@mercury.ccil.org>	<20110116191942.GA26424@lisa.in-ulm.de>	<20110116201745.GE3374@mercury.ccil.org>	<20110116210812.GB26424@lisa.in-ulm.de>
+	<20110116213738.GG3374@mercury.ccil.org>
+Message-ID: <4D346FD6.7070103@bsdimp.com>
+
+On 01/16/2011 14:37, John Cowan wrote:
+> Sven Mascheck scripsit:
+>> With /bin/sh you actually meant any shell calling "itself"?
+>> Otherwise I'm afraid, I have some difficulties following you.
+> I mean that whereas (t)csh uses /bin/sh to run scripts with no
+> shebangs, the Posix-compatible shells execute scripts with no
+> shebangs directly.  And this is Bad.
+
+The alternatives are worse.
+
+On a sysIII system, you had the situation where scripts would be 
+executed by whatever your shell.  So if you put a script on the system, 
+you had to make sure everybody used csh and write it in csh, or you had 
+to make sure nobody did and write it in /bin/sh.
+
+The current situation says that 'you must opt-in' to a different shell, 
+which leads to more predictable behavior.
+
+Later, #! processing moved into the kernel so that interpreters would 
+execute things directly.
+
+To cope with that confusing mess, the perl env hack was born so that the 
+perl scripts could execute anywhere, independent of the shell driving it.
+
+Warner
+
+
+From imp at bsdimp.com  Tue Jan 18 02:25:29 2011
+From: imp at bsdimp.com (Warner Losh)
+Date: Mon, 17 Jan 2011 09:25:29 -0700
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <C3B4F6C7-25CD-4AE1-91F1-3B5A02DCB2F6@xs4all.nl>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+	<C3B4F6C7-25CD-4AE1-91F1-3B5A02DCB2F6@xs4all.nl>
+Message-ID: <4D346D79.90203@bsdimp.com>
+
+On 01/16/2011 03:53, Wilko Bulte wrote:
+> Hi Warren
+>
+> I worked on SVR3 maintenance at Philips Information Systems in the dim past. I'm almost certain, like 99%, that #! was not in R3
+
+That matches my memory of various 3B1 machines I had to use as part of 
+my support activities at The Wollognong Group back in 1989.  All the 
+SIII machines didn't do #!, while some of the SysV machines did.  I do 
+know that r1 didn't have it, but r4 did.
+
+Warner
+> Wilko
+>
+> Op 16 jan. 2011 om 09:43 heeft Warren Toomey<wkt at tuhs.org>  het volgende geschreven:
+>
+>> Hi all, best wishes for 2011. I had an e-mail from Sven Mascheck asking about
+>> the history of #! interpretation in System V. I couldn't find any #!
+>> code in the kernels before SysVR4. However, I thought I'd pass the
+>> query onto the TUHS list, in case others can shed some light on the question.
+>>
+>> Did SysV systems before r4 do #! interpretation, and if so where was it done:
+>> kernel, library, shell? Any code references, e.g. function names etc.?
+>>
+>> Many thanks,
+>>     Warren
+>> _______________________________________________
+>> TUHS mailing list
+>> TUHS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+>
+
+
+
+From reed at reedmedia.net  Tue Jan 18 05:02:48 2011
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Mon, 17 Jan 2011 13:02:48 -0600 (CST)
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <20110116084330.GA27396@minnie.tuhs.org>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+Message-ID: <alpine.NEB.2.01.1101171232320.22444@t1.m.reedmedia.net>
+
+4BSD (4.0) usr/src/sys/sys/TODO (of Nov.  9, 1980) says it was planned:
+
+	6. Exec fixes
+        	Implement dmr's #! feature; pass string arguments through 
+		faster.
+
+And the usr/src/sys/newsys/sys1.c has explanation of it and source code.
+
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=4BSD/usr/src/sys/sys/TODO
+
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=4BSD/usr/src/sys/newsys/sys1.c
+
+This seems to indicate the idea was not developed separately at 
+Berkeley.
+
+It was introduced into BSD by April 1981. For 2BSD (2.8) it was added by 
+Dec. 16, 1981 when built with MENLO_SCRIPT defined (but I don't see that 
+documented or defined).
+
+
+From cowan at mercury.ccil.org  Tue Jan 18 06:51:28 2011
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Mon, 17 Jan 2011 15:51:28 -0500
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <alpine.NEB.2.01.1101171232320.22444@t1.m.reedmedia.net>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+	<alpine.NEB.2.01.1101171232320.22444@t1.m.reedmedia.net>
+Message-ID: <20110117205128.GI2461@mercury.ccil.org>
+
+Jeremy C. Reed scripsit:
+
+> This seems to indicate the idea was not developed separately at 
+> Berkeley.
+
+Thanks for doing the digging.  What this shows is that dmr came up with
+the idea of putting shebang processing into the kernel, but it does not
+show where shebangs as a shell feature came from.  I still think that
+has to be the CSRG.
+
+> It was introduced into BSD by April 1981. For 2BSD (2.8) it was added by 
+> Dec. 16, 1981 when built with MENLO_SCRIPT defined (but I don't see that 
+> documented or defined).
+
+Thanks again for clarifying the ordering here: I had assumed that 2.8
+was older than 4.0.
+
+--
+We call nothing profound                        cowan at ccil.org
+that is not wittily expressed.                  John Cowan
+        --Northrop Frye (improved)
+
+
+From mascheck at in-ulm.de  Tue Jan 18 06:58:27 2011
+From: mascheck at in-ulm.de (Sven Mascheck)
+Date: Mon, 17 Jan 2011 21:58:27 +0100
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <alpine.NEB.2.01.1101171232320.22444@t1.m.reedmedia.net>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+	<alpine.NEB.2.01.1101171232320.22444@t1.m.reedmedia.net>
+Message-ID: <20110117205827.GE26424@lisa.in-ulm.de>
+
+Jeremy C. Reed wrote:
+> 4BSD (4.0) usr/src/sys/sys/TODO (of Nov.  9, 1980) says it was planned:
+
+It was not until now that I noticed that the subject is _that_ general :)
+
+I had already tried to completely collect all the interesting pieces
+available through TUHS (and the CSRG archive) on a page as I mentioned
+earlier in this thread.  But I'd like to tie in with
+
+> For 2BSD (2.8) it was added by Dec. 16, 1981 when built with
+> MENLO_SCRIPT defined (but I don't see that documented or defined).
+
+According to /usr/kernel/src/cmd/standalone/tapes/instructions
+these seem to be fixes from the U.S. Geological Survey in Menlo Park,
+perhaps by Bill Jolitz.  The code looks different from 4BSD, because
+2.8BSD was a 7th ed kernel with several adds+fixes (all to be activated
+by macros like the above).  I don't know yet how #! was created/derived
+here, exactly - which remindes me that I don't know how the original
+implementation (research unix) looked exactly.  I always had the impression
+that 4.0BSD newsys/sys1.c already had been adjusted to BSD...
+
+
+From cowan at mercury.ccil.org  Tue Jan 18 06:47:18 2011
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Mon, 17 Jan 2011 15:47:18 -0500
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <4D346FD6.7070103@bsdimp.com>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+	<20110116095548.GC3374@mercury.ccil.org>
+	<20110116132039.GA16484@lisa.in-ulm.de>
+	<20110116171715.GD3374@mercury.ccil.org>
+	<20110116191942.GA26424@lisa.in-ulm.de>
+	<20110116201745.GE3374@mercury.ccil.org>
+	<20110116210812.GB26424@lisa.in-ulm.de>
+	<20110116213738.GG3374@mercury.ccil.org>
+	<4D346FD6.7070103@bsdimp.com>
+Message-ID: <20110117204717.GH2461@mercury.ccil.org>
+
+Warner Losh scripsit:
+
+> The alternatives are worse.
+
+You're making my point for me.
+
+> On a sysIII system, you had the situation where scripts would be  
+> executed by whatever your shell.  So if you put a script on the system,  
+> you had to make sure everybody used csh and write it in csh, or you had  
+> to make sure nobody did and write it in /bin/sh.
+
+Right.
+
+> The current situation says that 'you must opt-in' to a different shell,  
+> which leads to more predictable behavior.
+
+Unfortunately not.  The current situation is that when a shell sees a
+shebang-free script, it decides whether it is Posix enough to execute
+that script.  So ash, bash, dash, ksh, zsh will all run shebang-free
+scripts themselves, whereas csh, tcsh will defer to /bin/sh.
+
+What I am arguing for is that *all* shells should defer to /bin/sh
+to execute shebang-free scripts.  As things stand, the behavior of a
+shebang-free script depends on which shell is trying to run it, whereas
+it should only depend (says I) on the identity of /bin/sh.
+
+> Later, #! processing moved into the kernel so that interpreters would  
+> execute things directly.
+
+Yes, and that's a Good Thing.
+
+-- 
+The experiences of the past show                John Cowan
+that there has always been a discrepancy        cowan at ccil.org
+between plans and performance.                  http://www.ccil.org/~cowan
+        --Emperor Hirohito, August 1945
+
+
+From reed at reedmedia.net  Tue Jan 18 08:41:39 2011
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Mon, 17 Jan 2011 16:41:39 -0600 (CST)
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <20110117205128.GI2461@mercury.ccil.org>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+	<alpine.NEB.2.01.1101171232320.22444@t1.m.reedmedia.net>
+	<20110117205128.GI2461@mercury.ccil.org>
+Message-ID: <alpine.NEB.2.01.1101171616540.22444@t1.m.reedmedia.net>
+
+On Mon, 17 Jan 2011, John Cowan wrote:
+
+> > This seems to indicate the idea was not developed separately at 
+> > Berkeley.
+> 
+> Thanks for doing the digging.  What this shows is that dmr came up with
+> the idea of putting shebang processing into the kernel, but it does not
+> show where shebangs as a shell feature came from.  I still think that
+> has to be the CSRG.
+
+As a similar feature, Joy's experimental "ashell" in the first BSD had a 
+feature to run Pascal objects (started with the magic 0404 octal word) 
+with the px interpreter. In 2BSD (and then 3BSD), his new csh had the 
+OTHERSH feature -- if it started with # it would use csh; if the script 
+did not begin with the # it would use /bin/sh.
+
+I still don't see the same #! feature, but the above appear they may be 
+inspiration. Also the 1BSD and 2BSD predate CSRG.
+
+> > It was introduced into BSD by April 1981. For 2BSD (2.8) it was added by 
+> > Dec. 16, 1981 when built with MENLO_SCRIPT defined (but I don't see that 
+> > documented or defined).
+> 
+> Thanks again for clarifying the ordering here: I had assumed that 2.8
+> was older than 4.0.
+
+
+
+From cyrille.lefevre-lists at laposte.net  Wed Jan 19 14:10:33 2011
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Wed, 19 Jan 2011 05:10:33 +0100
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <alpine.NEB.2.01.1101171232320.22444@t1.m.reedmedia.net>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+	<alpine.NEB.2.01.1101171232320.22444@t1.m.reedmedia.net>
+Message-ID: <4D366439.8020808@laposte.net>
+
+
+Le 17/01/2011 20:02, Jeremy C. Reed a écrit :
+>
+> 4BSD (4.0) usr/src/sys/sys/TODO (of Nov.  9, 1980) says it was planned:
+>
+> 	6. Exec fixes
+>          	Implement dmr's #! feature; pass string arguments through
+> 		faster.
+>
+> And the usr/src/sys/newsys/sys1.c has explanation of it and source code.
+>
+> http://minnie.tuhs.org/cgi-bin/utree.pl?file=4BSD/usr/src/sys/sys/TODO
+>
+> http://minnie.tuhs.org/cgi-bin/utree.pl?file=4BSD/usr/src/sys/newsys/sys1.c
+>
+> This seems to indicate the idea was not developed separately at
+> Berkeley.
+>
+> It was introduced into BSD by April 1981. For 2BSD (2.8) it was added by
+> Dec. 16, 1981 when built with MENLO_SCRIPT defined (but I don't see that
+> documented or defined).
+
+Hi,
+
+yet another reference but more in the spirit of what csh does, it only 
+checks for a simple hash (#), no explaim mark (!), and is enclosed in 
+UCB_SCRIPT define.
+
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=2.9BSD/usr/src/sys/sys/sys1.c
+
+2.11 BSD seems to have an enhanced version of this feature in the sense 
+where the shell path may be followed by some arguments (i.e.: /bin/sh -x)
+
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=2.11BSD/sys/sys/kern_exec.c
+
+Regards,
+
+Cyrille Lefevre
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+
+
+From mascheck at in-ulm.de  Thu Jan 20 06:35:06 2011
+From: mascheck at in-ulm.de (Sven Mascheck)
+Date: Wed, 19 Jan 2011 21:35:06 +0100
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <4D366439.8020808@laposte.net>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+	<alpine.NEB.2.01.1101171232320.22444@t1.m.reedmedia.net>
+	<4D366439.8020808@laposte.net>
+Message-ID: <20110119203506.GB12678@lisa.in-ulm.de>
+
+Cyrille Lefevre wrote:
+
+> yet another reference but more in the spirit of what csh does, it only  
+> checks for a simple hash (#), no explaim mark (!), and is enclosed in  
+> UCB_SCRIPT define.
+>
+> http://minnie.tuhs.org/cgi-bin/utree.pl?file=2.9BSD/usr/src/sys/sys/sys1.c
+
+Perhaps you missed the ! in the macro?
+#define SCRMAG '#!'
+
+> 2.11 BSD seems to have an enhanced version of this feature in the sense  
+> where the shell path may be followed by some arguments (i.e.: /bin/sh -x)
+
+Yes, #! originally had not implemented arguments at all (this even applies
+to 386BSD).  Arguments ("all in one") came with 4.2BSD and later, variations
+appeared like splitting up into argv[] or delivering only the "first" argument.
+-- 
+http://www.in-ulm.de/~mascheck/various/shebang/#results
+
+
+From cyrille.lefevre-lists at laposte.net  Thu Jan 20 14:09:43 2011
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Thu, 20 Jan 2011 05:09:43 +0100
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <20110119203506.GB12678@lisa.in-ulm.de>
+References: <20110116084330.GA27396@minnie.tuhs.org>	<alpine.NEB.2.01.1101171232320.22444@t1.m.reedmedia.net>	<4D366439.8020808@laposte.net>
+	<20110119203506.GB12678@lisa.in-ulm.de>
+Message-ID: <4D37B587.8050409@laposte.net>
+
+
+Le 19/01/2011 21:35, Sven Mascheck a écrit :
+>
+> Cyrille Lefevre wrote:
+>
+>> yet another reference but more in the spirit of what csh does, it only
+>> checks for a simple hash (#), no explaim mark (!), and is enclosed in
+>> UCB_SCRIPT define.
+>>
+>> http://minnie.tuhs.org/cgi-bin/utree.pl?file=2.9BSD/usr/src/sys/sys/sys1.c
+>
+> Perhaps you missed the ! in the macro?
+
+right %-/
+
+> #define SCRMAG '#!'
+
+multi-character character constant !
+
+u.u_exdata.ux_mag == SCRMAG makes me wonder...
+
+$ cat x.c
+#include <stdio.h>
+main() { int c = '#!'; printf("%x", c); return 0; }
+$ make x
+cc     x.c   -o x
+x.c:2:18: warning: multi-character character constant
+$ ./x
+2321
+$ man ascii
+...
+| 20 sp | 21  ! | 22  " | 23  # | 24  $ | 25  % | 26  & | 27  ' |
+...
+
+well, it works !
+
+
+Regards,
+
+Cyrille Lefevre
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+
+
+From wkt at tuhs.org  Thu Jan 20 14:44:40 2011
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 20 Jan 2011 14:44:40 +1000
+Subject: [TUHS] Anybody recognise this Unix editor?
+Message-ID: <20110120044440.GA27823@minnie.tuhs.org>
+
+I thought I'd pop in another question here, given the good response we had
+with #!
+
+I first encountered Unix in 1982 at a summer school held by the University
+of Wollongong in Australia. They had an modeless text editor installed,
+and I have never been able to determine if this was a homegrown editor, or
+an editor which was more widely distributed.
+
+I've attached the first 2 pages of the editor's tutorial; the rest are
+temporarily at http://minnie.tuhs.org/Z2/WollongongEdit/
+
+Does anybody recognise this at all?
+
+Many thanks in advance,
+	Warren
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 1.jpg
+Type: image/jpeg
+Size: 123103 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110120/fccfd394/attachment.jpg>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 2.jpg
+Type: image/jpeg
+Size: 122646 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110120/fccfd394/attachment-0001.jpg>
+
+From arnold at skeeve.com  Thu Jan 20 16:11:05 2011
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Thu, 20 Jan 2011 06:11:05 GMT
+Subject: [TUHS] Anybody recognise this Unix editor?
+Message-ID: <201101200611.p0K6B5MH001531@freefriends.org>
+
+Could it be the Rand Editor?  I think it was usually invoked as 'e'.
+
+Arnoldd
+
+
+From wkt at tuhs.org  Thu Jan 20 18:19:39 2011
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 20 Jan 2011 18:19:39 +1000
+Subject: [TUHS] Anybody recognise this Unix editor?
+In-Reply-To: <201101200611.p0K6B5MH001531@freefriends.org>
+References: <201101200611.p0K6B5MH001531@freefriends.org>
+Message-ID: <20110120081939.GA31459@minnie.tuhs.org>
+
+On Thu, Jan 20, 2011 at 06:11:05AM +0000, arnold at skeeve.com wrote:
+> Could it be the Rand Editor?  I think it was usually invoked as 'e'.
+> Arnoldd
+
+No, I just downloaded and read through the manual for the Rand editor,
+they seem to be quite different. Thanks for the suggestion, though.
+
+Cheers,
+	Warren
+
+
+From miller at hamnavoe.com  Sat Jan 22 01:38:27 2011
+From: miller at hamnavoe.com (Richard Miller)
+Date: Fri, 21 Jan 2011 15:38:27 +0000
+Subject: [TUHS] Anybody recognise this Unix editor?
+In-Reply-To: <20110120224751.GA6373@minnie.tuhs.org>
+Message-ID: <94e72829eb567308334e4a889521f47d@hamnavoe.com>
+
+Warren Toomey said:
+> I first encountered Unix in 1982 at a summer school held by the University
+> of Wollongong in Australia. They had an modeless text editor installed,
+> and I have never been able to determine if this was a homegrown editor, or
+> an editor which was more widely distributed.
+
+The editor was homegrown in Wollongong in 1981, as a late addition to the
+Interdata Unix port.  I wrote it in response to an elegant and concise
+formal mathematical specification of a "display-oriented text editor"
+written by Bernard Sufrin of Oxford University's Programming Research
+Group.  Bernard's specification was essentially an abstract model of an
+existing minimalist (and modeless) screen editor 'ded' developed by his
+colleague Richard Bornat at Queen Mary College in London.  I've never seen
+'ded' itself, but I expect that if you tried both editors you would see a
+close family resemblance.
+
+The Wollongong editor was not widely disseminated.  I don't think it got
+into any official Unix distribution except perhaps for Edition VII - its
+austere minimalism could not compete with the dazzling complexity of emacs
+or vi.  I did license it to Interdata (later aka Perkin-Elmer) for use on
+their own OS/32 operating system, where it was called MEDIT.  I carried on
+for many years using it myself and porting it to various flavours of Unix,
+Minix, even MS/DOS, and most recently Plan 9.  It was only after giving up
+Unix for Plan 9 that I finally switched to using Rob Pike's 'acme', which
+is, in its way, even more elegantly minimal.
+
+-- Richard Miller
+
+
+
+From steve at quintile.net  Sat Jan 22 08:44:08 2011
+From: steve at quintile.net (Steve Simon)
+Date: Fri, 21 Jan 2011 22:44:08 +0000
+Subject: [TUHS] the wollongong editor
+Message-ID: <bbe5d1b78adbe80b556002c569ea9603@quintile.net>
+
+My interest is tweeked, do you still have the source
+for the paper on your editor and perhaps the plan9 source?
+
+I never moved across to acme, I am still a sam addict, but
+I am always interested in new ideas.
+
+The Only editors I ever used on Edition-VII where vi and le,
+and le I only brushed up against.
+
+-Steve
+
+
+From tfb at tfeb.org  Sun Jan 23 03:20:17 2011
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Sat, 22 Jan 2011 17:20:17 +0000
+Subject: [TUHS] Anybody recognise this Unix editor?
+In-Reply-To: <94e72829eb567308334e4a889521f47d@hamnavoe.com>
+References: <94e72829eb567308334e4a889521f47d@hamnavoe.com>
+Message-ID: <66F0B735-0FF1-437D-B829-41169559A7E9@tfeb.org>
+
+On 21 Jan 2011, at 15:38, Richard Miller wrote:
+
+> Bernard's specification was essentially an abstract model of an
+> existing minimalist (and modeless) screen editor 'ded' developed by his
+> colleague Richard Bornat at Queen Mary College in London.  I've never seen
+> 'ded' itself, but I expect that if you tried both editors you would see a
+> close family resemblance.
+
+Somewhere there is a paper which describes, I think, ded - certainly some editor written at QMC - from the user-interface perspective.
+
+From arnold at skeeve.com  Sun Jan 23 04:41:58 2011
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Sat, 22 Jan 2011 20:41:58 +0200
+Subject: [TUHS] the wollongong editor
+In-Reply-To: <bbe5d1b78adbe80b556002c569ea9603@quintile.net>
+References: <bbe5d1b78adbe80b556002c569ea9603@quintile.net>
+Message-ID: <201101221841.p0MIfwQD002992@localhost.localdomain>
+
+> The Only editors I ever used on Edition-VII where vi and le,
+> and le I only brushed up against.
+
+What was Edition VII? Some vendor's version of V7?  Real V7 didn't have
+vi, as that came from UCB.
+
+What was 'le'?  Never heard of it....
+
+Thanks,
+
+Arnold
+
+
+From cowan at mercury.ccil.org  Sun Jan 23 05:08:52 2011
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sat, 22 Jan 2011 14:08:52 -0500
+Subject: [TUHS] the wollongong editor
+In-Reply-To: <201101221841.p0MIfwQD002992@localhost.localdomain>
+References: <bbe5d1b78adbe80b556002c569ea9603@quintile.net>
+	<201101221841.p0MIfwQD002992@localhost.localdomain>
+Message-ID: <20110122190852.GE18521@mercury.ccil.org>
+
+Aharon Robbins scripsit:
+
+> What was Edition VII? Some vendor's version of V7?  Real V7 didn't have
+> vi, as that came from UCB.
+
+Yes, specifically the Perkin-Elmer version, a port of V7 (with additions)
+to the Interdata and P/E machines.
+
+> What was 'le'?  Never heard of it....
+
+Unfortunately there is a more recent editor called "le", so it's difficult
+to find out.
+
+-- 
+And it was said that ever after, if any                 John Cowan
+man looked in that Stone, unless he had a               cowan at ccil.org
+great strength of will to turn it to other              http://ccil.org/~cowan
+purpose, he saw only two aged hands withering
+in flame.   --"The Pyre of Denethor"
+
+
+From pechter at gmail.com  Sun Jan 23 10:52:09 2011
+From: pechter at gmail.com (Bill Pechter)
+Date: Sat, 22 Jan 2011 19:52:09 -0500
+Subject: [TUHS] Fwd:  the wollongong editor
+In-Reply-To: <20110122190852.GE18521@mercury.ccil.org>
+References: <bbe5d1b78adbe80b556002c569ea9603@quintile.net>
+	<201101221841.p0MIfwQD002992@localhost.localdomain>
+	<20110122190852.GE18521@mercury.ccil.org>
+Message-ID: <AANLkTimBj+=ZDZUx_Mmv2p0JpQqSzh0PQ8iPKmNscaNr@mail.gmail.com>
+
+---------- Forwarded message ----------
+From: John Cowan <cowan at mercury.ccil.org>
+Date: Sat, Jan 22, 2011 at 2:08 PM
+Subject: Re: [TUHS] the wollongong editor
+To: Aharon Robbins <arnold at skeeve.com>
+Cc: tuhs at minnie.tuhs.org
+
+
+Aharon Robbins scripsit:
+
+> What was Edition VII? Some vendor's version of V7?  Real V7 didn't have
+> vi, as that came from UCB.
+
+Yes, specifically the Perkin-Elmer version, a port of V7 (with additions)
+to the Interdata and P/E machines.
+
+> What was 'le'?  Never heard of it....
+
+Unfortunately there is a more recent editor called "le", so it's difficult
+to find out.
+
+--
+And it was said that ever after, if any                 John Cowan
+man looked in that Stone, unless he had a               cowan at ccil.org
+great strength of will to turn it to other
+http://ccil.org/~cowan <http://ccil.org/%7Ecowan>
+purpose, he saw only two aged hands withering
+in flame.   --"The Pyre of Denethor"
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+I spent a bit of time at Concurrent and I thought their le editor on their
+68k desktop UniPlus/MicroXelos boxes was the Rand Editor.
+
+Bill
+
+                                                  <#>              <#>
+<#>       <#>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110122/d227cc3d/attachment.html>
+
+From wkt at tuhs.org  Thu Jan 27 15:45:08 2011
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 27 Jan 2011 15:45:08 +1000
+Subject: [TUHS] dmr & ken win japan prize
+Message-ID: <20110127054508.GA29854@minnie.tuhs.org>
+
+http://www.sfgate.com/cgi-bin/article.cgi?f=/c/a/2011/01/25/BUTI1HDJSA.DTL&type=tech
+
+"The two Bell Labs computer scientists - named today as winners of the 2011 Japan Prize for information and communications - just wanted to build a better operating system."
+
+Just in case you didn't see it!
+
+Cheers,
+	Warren
+
+
+From reed at reedmedia.net  Sat Jan 29 05:38:58 2011
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Fri, 28 Jan 2011 13:38:58 -0600 (CST)
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <alpine.NEB.2.01.1101171232320.22444@t1.m.reedmedia.net>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+	<alpine.NEB.2.01.1101171232320.22444@t1.m.reedmedia.net>
+Message-ID: <alpine.NEB.2.01.1101281335120.22444@t1.m.reedmedia.net>
+
+On Mon, 17 Jan 2011, Jeremy C. Reed wrote:
+
+> It was introduced into BSD by April 1981. For 2BSD (2.8) it was added by 
+> Dec. 16, 1981 when built with MENLO_SCRIPT defined (but I don't see that 
+> documented or defined).
+
+Doing some related research, I noticed I had written in my notes (maybe 
+over a year ago) that Robert Elz added #! to BSD. Here is the email 
+message with the background:
+
+http://mail-index.netbsd.org/netbsd-users/2008/11/10/msg002390.html
+
+
+From mascheck at in-ulm.de  Mon Jan 31 01:05:24 2011
+From: mascheck at in-ulm.de (Sven Mascheck)
+Date: Sun, 30 Jan 2011 16:05:24 +0100
+Subject: [TUHS] History of #! interpretation in Unix
+In-Reply-To: <alpine.NEB.2.01.1101281335120.22444@t1.m.reedmedia.net>
+References: <20110116084330.GA27396@minnie.tuhs.org>
+	<alpine.NEB.2.01.1101171232320.22444@t1.m.reedmedia.net>
+	<alpine.NEB.2.01.1101281335120.22444@t1.m.reedmedia.net>
+Message-ID: <20110130150524.GH26691@lisa.in-ulm.de>
+
+Jeremy C. Reed wrote:
+> 
+> Doing some related research, I noticed I had written in my notes (maybe 
+> over a year ago) that Robert Elz added #! to BSD. Here is the email 
+> message with the background:
+> 
+> http://mail-index.netbsd.org/netbsd-users/2008/11/10/msg002390.html
+
+Thanks for digging that out. I was confused at first, because 4.0 BSD
+implemented it without arguments, while the above article tells
+
+"When I added it to BSD, I made a conscious decision to permit
+ exactly one arg - not a general command line."
+
+But the first regular occurence (active by default) in 4.2BSD
+is implemented like that.
+
+Do you feel like providing access to more of your research?
+
+

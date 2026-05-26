@@ -1,0 +1,1791 @@
+From SHOPPA at trailing-edge.com  Sat Jul  1 21:00:37 2000
+From: SHOPPA at trailing-edge.com (Tim Shoppa)
+Date: Sat, 1 Jul 2000 7:00:37 -0400
+Subject: [pups] 11/23 and other qbus machines
+Message-ID: <000701070037.262009c5@trailing-edge.com>
+
+>I'm maybe going to acquire an 11/23.  It looks like this is kind of
+>small for running v7 and/or 2.11 as it has no split I/D (it does have
+>an MMU in it but only an 18-bit one I think).
+
+Yeah, perhaps the best choice here would be the set of RL02's I found with
+a V6 system on RL02 packs.  Hook up a RLV11 or a RLV12, a couple of
+RL02 drives, and you're in business.
+
+>How similar is the physical hardware (card cage I mean really) of this
+>to things like 11/73,11/83?  I'm wondering if I might one day be able
+>to acquire a card-set from something bigger and install it in the same
+>rack, my logic being that cards are a lot easier to get from far away
+>than racks, and this machine is only a few miles away.
+
+It's very similar, but it's also rather likely that the card cage that your
+11/23 comes in will only support 18-bit bus addresses.  If you want
+to run 2.11BSD that's not really enough memory.  For some
+details about what Q-bus hardware supports 18-bit stuff and what 
+Q-bus hardware supports 22-bit stuff, please look at your Micronotes,
+specifically #5, _Q22 Compatible Options_.  If you aren't lucky enough
+to own a set, you can browse them at
+
+http://metalab.unc.edu/pub/academic/computer-science/history/pdp-11/micronotes/
+
+In large part, it's impossible to specify a PDP-11 as a "PDP-11/23" and
+know with any certainty what any single part of it is.  There's much
+more to a system than the CPU (and note there are several very different
+CPU boards sold as 11/23's), you also have to consider backplane, memory,
+and disk/tape storage.  It'd be nice if Warren linked to some not-on-
+Minnie resources for these subjects important to many PUPS members (hint hint,
+nudge nudge!)
+
+-- 
+ Tim Shoppa                        Email: shoppa at trailing-edge.com
+ Trailing Edge Technology          WWW:   http://www.trailing-edge.com/
+ 7328 Bradley Blvd		   Voice: 301-767-5917
+ Bethesda, MD, USA 20817           Fax:   301-767-5927
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id VAA05783
+	for pups-liszt; Sat, 1 Jul 2000 21:13:56 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From wkt at cs.adfa.edu.au  Sat Jul  1 21:11:44 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Sat, 1 Jul 2000 21:11:44 +1000 (EST)
+Subject: [pups] Re: PDP-11 ptrs on minnie
+In-Reply-To: <000701070037.262009c5@trailing-edge.com> from Tim Shoppa at "Jul 1, 2000  7: 0:37 am"
+Message-ID: <200007011111.VAA61141@henry.cs.adfa.edu.au>
+
+In article by Tim Shoppa:
+> It'd be nice if Warren linked to some not-on-
+> Minnie resources for these subjects important to many PUPS members (hint hint,
+> nudge nudge!)
+
+Send me the URLs & tell me where on http://minnie.cs.adfa.edu.au/PUPS
+you'd like to see them :-)
+
+	Warren
+
+
+From ssfr at unm.edu  Sun Jul  2 12:24:57 2000
+From: ssfr at unm.edu (W . Suika Roberts)
+Date: Sat, 1 Jul 2000 20:24:57 -0600
+Subject: [pups] Pre-startup questions
+Message-ID: <20000701202457.A23817@miyuki.genom.co.jp>
+
+I just (yesterday) aquired a microPDP 11/73 -- it had been used by my
+school to operate some sort of geological test equipment that is no
+longer present, and was working when it went out of service, who knows
+how long ago.
+
+She has a pair of RX02s, an RD52a inside her case, and that's all I've
+determined so far, since I haven't opened her up, really, yet.
+
+I'm interested in documentation on monitor commands, what the boot
+sequence should look like, and other such software stuff right now.
+
+I'm also wondering about useful things like: `Is the part number in a
+standard location on each card', `What is the form factor difference
+between Q-bus and Unibus', `Will starting her up trip the breaker', and
+`How much space is there in that little rackmount'
+
+In the near future, I'd like to find ethernet and SCSI adaptors for her,
+and so am wondering where parts might be aquired.
+
+Thanks,
+	Suika (very happy) 
+-- 
+				 ssfr at unm.edu
+The computer is not mightier than a cup of coffee, or other liquid, or a young
+school age child with a tool box...                          --L. E. Waltz
+	  <a href="http://www.unm.edu/~ssfr/">Suika no homepage</a>
+
+
+From robin at ruffnready.co.uk  Sun Jul  2 18:25:08 2000
+From: robin at ruffnready.co.uk (Robin Birch)
+Date: Sun, 2 Jul 2000 09:25:08 +0100
+Subject: [pups] Pre-startup questions
+In-Reply-To: <20000701202457.A23817@miyuki.genom.co.jp>
+References: <20000701202457.A23817@miyuki.genom.co.jp>
+Message-ID: <I46DuKAkxvX5Ew3e@ruffnready.co.uk>
+
+In message <20000701202457.A23817 at miyuki.genom.co.jp>, W . Suika Roberts
+<ssfr at unm.edu> writes
+>I just (yesterday) aquired a microPDP 11/73 -- it had been used by my
+>school to operate some sort of geological test equipment that is no
+>longer present, and was working when it went out of service, who knows
+>how long ago.
+>
+So long as it was working when it was last connected it will probably
+work when you switch it on.  these things are fairly reliable.  Once you
+have worked out how to boot it you will probably need to get in and
+disable the start-up sequence that probably loads the software to run
+the test equipment that it was connected to.  Then you can look round
+and see what you have got in the way of an operating system.
+
+>She has a pair of RX02s, an RD52a inside her case, and that's all I've
+>determined so far, since I haven't opened her up, really, yet.
+>
+Ok, an RD52 isn't very big, you will need to look at increasing that if
+you want useful disk space.  The best disc will be an RD54 if the disc
+controller supports it.  Failing that there are articles in the archive
+(I think) about using non DEC discs with their controllers.
+
+When you get round to adding operating systems and the like, a simple
+tape controller and drive would be an advantage.  Anything like a TK50
+or TS11 set up would help.
+
+>I'm interested in documentation on monitor commands, what the boot
+>sequence should look like, and other such software stuff right now.
+>
+
+Ok, some one can probably copy the docs for you.  For a start, when you
+switch it on the monitor will show a boot sequence as it counts through
+a set of numbers.  These are the internal tests.  during this list press
+control C and a prompt should come up, then press H followed by return,
+that should give you enough pointers to go through the on board help, a
+little skimpy but its a start.
+
+With luck you should be able to interrupt the boot sequence of the
+operating system to prevent it going over to the final application.
+This way you can have a see around inside and find out what OS you have
+and start playing.
+
+>I'm also wondering about useful things like: `Is the part number in a
+>standard location on each card', `What is the form factor difference
+>between Q-bus and Unibus', `Will starting her up trip the breaker', and
+>`How much space is there in that little rackmount'
+>
+
+The part number is usually engraved on the handle of the card.  This
+will be something like M7555.  There is a list in the archive that
+should allow you to relate between these numbers and the card
+description.
+
+Q BUS and UNIBUS cards have, in the quad versions, similar form factors,
+however they are NOT interchangeable as the bus specs are totally
+different.
+
+You should be able to put a singe BA23 box 11/73 into a domestic power
+outlet without burning the house down.
+
+
+You will probably find the bus has 3 or 4 spare slots.  This is based on
+a processor card, say 2 memory cards, an MSCP (disc) controller and some
+serial ports.  What ever the system was that it was connected to may
+also have an interface card.
+
+>In the near future, I'd like to find ethernet and SCSI adaptors for her,
+>and so am wondering where parts might be aquired.
+>
+Both parts are available, ethernet is easy and comparatively cheap.
+SCSI is easy and expensive.  You can get SCSI controllers for tape, disc
+and both but be surprised at the price. There are many places that sell
+boards for these beasts, some one in your area could give you much
+better advice than me.
+
+>Thanks,
+>       Suika (very happy) 
+
+
+So I should think :-)
+
+Robin
+____________________________________________________________________
+Robin Birch     robin at ruffnready.co.uk
+
+M1ASU/2E0ARJ/M5ABD     Old computers and radios always welcome
+
+
+From SHOPPA at trailing-edge.com  Tue Jul 11 02:32:33 2000
+From: SHOPPA at trailing-edge.com (Tim Shoppa)
+Date: Mon, 10 Jul 2000 12:32:33 -0400
+Subject: [pups] AT&T Unix Operating System for Writers Workbench Software?
+Message-ID: <000710123233.202002e2@trailing-edge.com>
+
+In a big batch of 9-tracks and RL01 packs rescued this morning, I have
+two tapes, one labeled
+
+          AT&T
+       ** 66938 **
+
+ UNIX OPERATING SYSTEM FOR
+ WRITERS WORKBENCH SOFTWARE
+
+ TPname: LOAD PGM FOR PDP 11/70
+
+the other labeled
+
+          AT&T
+       ** 66611 **
+  UNIX OPERATING SYSTEM
+  WRITERS WORKBENCH SOFTWARE
+
+  TPname: LOAD PGM FOR VAX 11/780 11/750
+
+Both have copyright dates of 1984.  You can see scans of the original
+labels (high-res scans, they're big files!) at
+
+  http://www.trailing-edge.com/www/wwtapes/
+
+I won't be able to make binary copies of these until this evening, but does
+anyone know where these tapes fit into the scheme of AT&T stuff?  i.e.
+are these custom-built SYS III and SYS V systems?  Is the PDP-11/70 tape
+perhaps eligible for inclusion in the PUPS archive under the SCO license?
+
+-- 
+ Tim Shoppa                        Email: shoppa at trailing-edge.com
+ Trailing Edge Technology          WWW:   http://www.trailing-edge.com/
+ 7328 Bradley Blvd		   Voice: 301-767-5917
+ Bethesda, MD, USA 20817           Fax:   301-767-5927
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA65501
+	for pups-liszt; Tue, 11 Jul 2000 08:58:53 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From cjd at sunmexico.sun.com  Tue Jul 11 08:54:53 2000
+From: cjd at sunmexico.sun.com (Cuenta para lectura de e-mail)
+Date: Mon, 10 Jul 2000 17:54:53 -0500 (CDT)
+Subject: [pups] AT&T Unix Operating System for Writers Workbench Software?
+Message-ID: <200007102255.RAA16145@sunmex.sunmexico.Sun.COM>
+
+I believe WWB was an offshoot or derivative of PWB, the Programmer's Workbench,
+which was a special version of V6.  I think WWB was where "pic" first showed
+up.  PWB was, I think V6 with a few extra utilities added.  WWB may be the same.
+
+	- Chris
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id JAA65907
+	for pups-liszt; Tue, 11 Jul 2000 09:52:52 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From SHOPPA at trailing-edge.com  Tue Jul 11 09:51:19 2000
+From: SHOPPA at trailing-edge.com (Tim Shoppa)
+Date: Mon, 10 Jul 2000 19:51:19 -0400
+Subject: [pups] AT&T Unix Operating System for Writers Workbench Software?
+Message-ID: <000710195119.202002e2@trailing-edge.com>
+
+>I believe WWB was an offshoot or derivative of PWB, the Programmer's Workbench,
+>which was a special version of V6.  I think WWB was where "pic" first showed
+>up.  PWB was, I think V6 with a few extra utilities added.  WWB may be the same.
+
+I don't think what I've found here is that major.  It starts
+with a Makefile:
+
+# NOTICE-NOT TO BE DISCLOSED OUTSIDE BELL SYS EXCEPT UNDER WRITTEN AGRMT
+#             Makefile: Writer's Workbench system version 2.0.1.10, 5/26/83
+#               makefile for the WRITER'S WORKBENCH SYSTEM
+#       This package includes over 30 programs that suggest improvements
+#       to written documents, including improved versions of the
+#       Style  and Diction programs as well as many more writing aids.
+
+and the README says:
+
+       This file gives instructions for building and installing the Writer's
+       Workbench system source  code.  This information is also contained
+       in the document "UNIX(TM) Writer's Workbench Software Installation
+       and Administration Guide."
+
+These particular tapes have been stored in absolutely horrible conditions
+(pretty much kept in an outdoors storage shed during both winter and summer for
+the past decade) and I'm going to have to bake and/or lubricate them before I
+make a not-half-assed attempt at recovering them.  The PDP11/70 tape is
+particularly bad (it actually broke when I was just loading it into
+the drive!) and it may be a goner.
+
+I don't see any obvious mentions of 'pic' in what I read so far.
+
+-- 
+ Tim Shoppa                        Email: shoppa at trailing-edge.com
+ Trailing Edge Technology          WWW:   http://www.trailing-edge.com/
+ 7328 Bradley Blvd		   Voice: 301-767-5917
+ Bethesda, MD, USA 20817           Fax:   301-767-5927
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA66034
+	for pups-liszt; Tue, 11 Jul 2000 10:19:32 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From grant.maizels at cogita.com.au  Tue Jul 11 10:21:30 2000
+From: grant.maizels at cogita.com.au (Grant Maizels)
+Date: Tue, 11 Jul 2000 10:21:30 +1000
+Subject: [pups] AT&T Unix Operating System for Writers Workbench Softw
+	are?
+Message-ID: <6334A5F54DFE5F4FA3032AF1BE95A0F30F7583@sydnt4.cogita.local>
+
+Tim,
+
+Writers Work Bench was an extension to the basic troff/nroff tools developed
+earlier, but took new directions. It included a whole lot of new programs
+like diction (a grammar checker??) which were more to do with the content
+than the formatting. I think that pic was developed separately by bwk for a
+research version. I have never used WWB but I have some documentation on it
+somewhere at home. I believe that it was sold with source as an add on for
+various Unicies.
+
+Grant Maizels
+grant at maizels.nu
+
+-----Original Message-----
+From: Tim Shoppa [mailto:SHOPPA at trailing-edge.com]
+Sent: Tuesday, 11 July 2000 9:51
+To: PUPS at MINNIE.CS.ADFA.OZ.AU
+Subject: Re: [pups] AT&T Unix Operating System for Writers Workbench
+Software?
+
+
+>I believe WWB was an offshoot or derivative of PWB, the Programmer's
+Workbench,
+>which was a special version of V6.  I think WWB was where "pic" first
+showed
+>up.  PWB was, I think V6 with a few extra utilities added.  WWB may be the
+same.
+
+I don't think what I've found here is that major.  It starts
+with a Makefile:
+
+# NOTICE-NOT TO BE DISCLOSED OUTSIDE BELL SYS EXCEPT UNDER WRITTEN AGRMT
+#             Makefile: Writer's Workbench system version 2.0.1.10, 5/26/83
+#               makefile for the WRITER'S WORKBENCH SYSTEM
+#       This package includes over 30 programs that suggest improvements
+#       to written documents, including improved versions of the
+#       Style  and Diction programs as well as many more writing aids.
+
+and the README says:
+
+       This file gives instructions for building and installing the Writer's
+       Workbench system source  code.  This information is also contained
+       in the document "UNIX(TM) Writer's Workbench Software Installation
+       and Administration Guide."
+
+These particular tapes have been stored in absolutely horrible conditions
+(pretty much kept in an outdoors storage shed during both winter and summer
+for
+the past decade) and I'm going to have to bake and/or lubricate them before
+I
+make a not-half-assed attempt at recovering them.  The PDP11/70 tape is
+particularly bad (it actually broke when I was just loading it into
+the drive!) and it may be a goner.
+
+I don't see any obvious mentions of 'pic' in what I read so far.
+
+-- 
+ Tim Shoppa                        Email: shoppa at trailing-edge.com
+ Trailing Edge Technology          WWW:   http://www.trailing-edge.com/
+ 7328 Bradley Blvd		   Voice: 301-767-5917
+ Bethesda, MD, USA 20817           Fax:   301-767-5927
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id MAA66635
+	for pups-liszt; Tue, 11 Jul 2000 12:25:07 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From schoedel at kw.igs.net  Tue Jul 11 12:12:45 2000
+From: schoedel at kw.igs.net (Kevin Schoedel)
+Date: Mon, 10 Jul 2000 22:12:45 -0400
+Subject: [pups] RE: AT&T Unix Operating System for Writers Workbench Softw 	are?
+In-Reply-To: <6334A5F54DFE5F4FA3032AF1BE95A0F30F7583@sydnt4.cogita.local>
+References: <6334A5F54DFE5F4FA3032AF1BE95A0F30F7583@sydnt4.cogita.local>
+Message-ID: <v04210100b5902e0219c2@[216.58.99.172]>
+
+On 2000/07/11 at 10:21am +1000, Grant Maizels
+<grant.maizels at cogita.com.au> wrote:
+>Writers Work Bench was an extension to the basic troff/nroff tools developed
+>earlier, but took new directions. It included a whole lot of new programs
+>like diction (a grammar checker??) which were more to do with the content
+>than the formatting. I think that pic was developed separately by bwk for a
+>research version. I have never used WWB but I have some documentation on it
+>somewhere at home. I believe that it was sold with source as an add on for
+>various Unicies.
+
+I have a little documentation here, mostly three papers from BSTJ vol. 62
+no. 6, July/August 1983. It did contain -- as the makefile says --
+'diction' (basically a search for 'bad' phrases), 'style' (which
+generated readabilty and other statistics for text), 'punct' (a basic
+punctuation checker), and a handful of other similar programs.
+
+Importantly for the PUPS archive, I'm pretty certain that AT&T retained
+ownership of WWB when it sold UNIX, so it wouldn't be covered by the SCO
+license. I have no idea who owns it now.
+
+'pic', along with troff and such, was in *Documenter's* Workbench.
+
+-- 
+Kevin Schoedel
+schoedel at kw.igs.net
+
+
+From vandys at zendo.com  Mon Jul 24 00:05:19 2000
+From: vandys at zendo.com (Andy Valencia)
+Date: Sun, 23 Jul 2000 07:05:19 -0700
+Subject: [pups] Eh...
+Message-ID: <200007231405.HAA00405@vandys-pc.zendo.com>
+
+I should mention that "at rl0 ..." also doesn't work:
+
+sim> at rl0 /users/vandys/tmp/v7/v7_rl02_1145
+sim> b rl0
+@/
+@/
+
+HALT instruction, PC: 000002 (HALT)
+sim>
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA64000
+	for pups-liszt; Mon, 24 Jul 2000 08:06:36 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From vandys at zendo.com  Mon Jul 24 00:03:02 2000
+From: vandys at zendo.com (Andy Valencia)
+Date: Sun, 23 Jul 2000 07:03:02 -0700
+Subject: [pups] UNIX V7 11/45 image booting
+Message-ID: <200007231403.HAA00392@vandys-pc.zendo.com>
+
+I'm trying to boot the image v7_rl02_1145 from sim_2.3d, and get:
+
+PDP-11 simulator V2.3d
+sim> at rl02 /users/vandys/tmp/v7/v7_rl02_1145
+sim> b rl02
+@
+
+I can type things to the '@' prompt, but it never does anything unless I
+type '/', at which point it bombs back to the emulator.  My scan of the
+documentation for bootstraps doesn't point out any state with an '@'
+prompt... help?
+
+I can't tell you how many years it's been since I've had access to an '11
+running V7.  Looking forward to it!
+
+Thanks,
+Andy Valencia
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA64083
+	for pups-liszt; Mon, 24 Jul 2000 08:24:58 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From wkt at henry.cs.adfa.edu.au  Mon Jul 24 08:22:52 2000
+From: wkt at henry.cs.adfa.edu.au (Warren Toomey)
+Date: Mon, 24 Jul 2000 08:22:52 +1000 (EST)
+Subject: [pups] UNIX V7 11/45 image booting
+In-Reply-To: <200007231403.HAA00392@vandys-pc.zendo.com> from Andy Valencia at
+ "Jul 23, 2000 07:03:02 am"
+Message-ID: <200007232222.IAA28671@henry.cs.adfa.edu.au>
+
+In article by Andy Valencia:
+> I'm trying to boot the image v7_rl02_1145 from sim_2.3d, and get:
+> 
+> PDP-11 simulator V2.3d
+> sim> at rl02 /users/vandys/tmp/v7/v7_rl02_1145
+> sim> b rl02
+> @
+> 
+> I can type things to the '@' prompt, but it never does anything...
+> Andy Valencia
+
+At the bottom of simh_doc.txt in the Supnik emulator sources, it says:
+
+UNIX V7 is contained on a single RL02 disk image.  To boot UNIX:
+
+        sim> set cpu 18b
+        sim> set rl0 RL02
+        sim> att rl0 unix_v7_rl.dsk
+        sim> boot rl0
+        @boot
+        New Boot, known devices are hp ht rk rl rp tm vt
+        : rl(0,0)rl2unix
+        # 
+
+A smaller image is contained on a single RK05 disk image.  To boot UNIX:
+
+        sim> set cpu 18b
+        sim> att rk0 unix_v7_rk.dsk
+        sim> boot rk0
+        @boot
+        New Boot, known devices are hp ht rk rl rp tm vt
+        : rk(0,0)rkunix
+        # STTY -LCASE
+        #
+
+Hope this helps!
+
+Cheers,
+	Warren
+
+
+From vandys at zendo.com  Mon Jul 24 16:56:56 2000
+From: vandys at zendo.com (Andy Valencia)
+Date: Mon, 24 Jul 2000 06:56:56 +0000
+Subject: [pups] UNIX V7 11/45 image booting
+In-Reply-To: Your message of "Mon, 24 Jul 2000 08:22:52 +1000."
+             <200007232222.IAA28671@henry.cs.adfa.edu.au> 
+Message-ID: <200007240656.e6O6uu726697@zendo.com>
+
+[Warren Toomey <wkt at henry.cs.adfa.edu.au> writes:]
+
+>UNIX V7 is contained on a single RL02 disk image.  To boot UNIX:
+>...
+>Hope this helps!
+
+Thanks!  (Don't know how I missed this. :-<)
+
+Yes, it helped, and I'm now the proud owner of a (virtual) single-user V7 box.
+
+Time to hack!
+
+Andy Valencia
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA71804
+	for pups-liszt; Tue, 25 Jul 2000 10:13:39 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From rblair at webteksdesign.com  Tue Jul 25 10:08:16 2000
+From: rblair at webteksdesign.com (Ryan Blair)
+Date: Mon, 24 Jul 2000 20:08:16 -0400
+Subject: [pups] 2.11 BSD image booting
+Message-ID: <001901bff5cc$8c02f200$2f0e0923@rbp200>
+
+In the same rut as Andy Valencia:
+
+I have tried booting the 2.11 BSD distribution that was in the boot images
+directory, it has something like 9 disc pack images, and a script to boot it
+with Supnik. Well, it boots all right, but I can't access most of the
+filesystem, just the root, and even there most of the files seem corrupt. It
+gets even worse when I try to shut it down. It will not even boot back up
+after I shut it down in the emulator.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA71852
+	for pups-liszt; Tue, 25 Jul 2000 10:16:23 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From wkt at henry.cs.adfa.edu.au  Tue Jul 25 10:14:09 2000
+From: wkt at henry.cs.adfa.edu.au (Warren Toomey)
+Date: Tue, 25 Jul 2000 10:14:09 +1000 (EST)
+Subject: [pups] 2.11 BSD image booting
+In-Reply-To: <001901bff5cc$8c02f200$2f0e0923@rbp200> from Ryan Blair at "Jul
+ 24, 2000 08:08:16 pm"
+Message-ID: <200007250014.KAA35364@henry.cs.adfa.edu.au>
+
+In article by Ryan Blair:
+[Charset iso-8859-1 unsupported, filtering to ASCII...]
+> In the same rut as Andy Valencia:
+> I have tried booting the 2.11 BSD distribution that was in the boot images
+> directory, it has something like 9 disc pack images, and a script to boot it
+> with Supnik. Well, it boots all right, but I can't access most of the
+> filesystem, just the root, and even there most of the files seem corrupt. It
+> gets even worse when I try to shut it down. It will not even boot back up
+> after I shut it down in the emulator.
+
+I think all the 2.11BSD disk images in Boot_Images are suspect.
+
+I wonder if we could prevail upon Steven Schultz (or someone)
+to build some 2.11BSD disk images which would be suitable for the
+Supnik and Ersatz emulators.
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA71925
+	for pups-liszt; Tue, 25 Jul 2000 10:29:28 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From grog at lemis.com  Tue Jul 25 10:22:40 2000
+From: grog at lemis.com (Greg Lehey)
+Date: Tue, 25 Jul 2000 09:52:40 +0930
+Subject: [pups] 2.11 BSD image booting
+In-Reply-To: <200007250014.KAA35364@henry.cs.adfa.edu.au>; from wkt@henry.cs.adfa.edu.au on Tue, Jul 25, 2000 at 10:14:09AM +1000
+References: <001901bff5cc$8c02f200$2f0e0923@rbp200> <200007250014.KAA35364@henry.cs.adfa.edu.au>
+Message-ID: <20000725095240.B98476@wantadilla.lemis.com>
+
+On Tuesday, 25 July 2000 at 10:14:09 +1000, Warren Toomey wrote:
+> In article by Ryan Blair:
+> [Charset iso-8859-1 unsupported, filtering to ASCII...]
+>> In the same rut as Andy Valencia:
+>> I have tried booting the 2.11 BSD distribution that was in the boot images
+>> directory, it has something like 9 disc pack images, and a script to boot it
+>> with Supnik. Well, it boots all right, but I can't access most of the
+>> filesystem, just the root, and even there most of the files seem corrupt. It
+>> gets even worse when I try to shut it down. It will not even boot back up
+>> after I shut it down in the emulator.
+>
+> I think all the 2.11BSD disk images in Boot_Images are suspect.
+>
+> I wonder if we could prevail upon Steven Schultz (or someone)
+> to build some 2.11BSD disk images which would be suitable for the
+> Supnik and Ersatz emulators.
+
+I had some somewhere, but I haven't run them for a while.  They're
+also very big.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA72058
+	for pups-liszt; Tue, 25 Jul 2000 11:01:35 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From jeremy at mail.flyingcroc.net  Tue Jul 25 10:37:47 2000
+From: jeremy at mail.flyingcroc.net (Jeremy Bingham)
+Date: Mon, 24 Jul 2000 17:37:47 -0700 (PDT)
+Subject: [pups] Getting a MicroPDP-11 Running
+Message-ID: <Pine.BSF.4.21.0007241715580.62180-100000@gilliam.users.flyingcroc.net>
+
+I just acquired a MicroPDP-11 from a Goodwill a couple of days ago with a
+RX50-A dual 400KB floppy and an RD52 31/33(?)MB hard drive, but it doesn't 
+have a tape drive. My questions are:
+
+1.) What UNIXes have been successfully loaded onto these types of machines?
+
+2.) Can it be done without a tape? If so, has anybody pulled it off?
+
+3.) Are there any utilities, either DOS or UNIX/Linux/FreeBSD based, to write
+and/or format RX50 floppies?
+
+I tried looking through the mail archive, but there didn't seem to be anything
+there that addressed this question. Thanks in advance to everybody.
+
+-j
+
+----------------------------------------------------------
+
+You know you've been spending too much time on the computer when your
+friend misdates a check, and you suggest adding a "++" to fix it.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id NAA72592
+	for pups-liszt; Tue, 25 Jul 2000 13:28:58 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Tue Jul 25 13:00:06 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Mon, 24 Jul 2000 20:00:06 -0700 (PDT)
+Subject: [pups] 2.11 BSD image booting
+Message-ID: <200007250300.UAA22851@moe.2bsd.com>
+
+Howdy -
+
+> From: Warren Toomey <wkt at henry.cs.adfa.edu.au>
+> In article by Ryan Blair:
+> > In the same rut as Andy Valencia:
+> > I have tried booting the 2.11 BSD distribution that was in the boot images
+> > directory, it has something like 9 disc pack images, and a script to boot it
+> > with Supnik. Well, it boots all right, but I can't access most of the
+> > filesystem, just the root, and even there most of the files seem corrupt.
+> 
+> I think all the 2.11BSD disk images in Boot_Images are suspect.
+
+	Hmmm, I don't think they're corrupt.
+
+	Wasn't there a similar posting a month or two ago about someone (I 
+	forget who it was) having "massive corruption".   It turned out that
+	the simulator was only told to use 256kb of memory (18bit mode).  Once
+	the "set cpu 2048k" command was added to the conf file the problems
+	cleared right up.   A good case can be made that it's a bug the system
+	doesn't outright crash if it's unhappy with the amount of memory but
+	given it's so easy to 'add memory' to the system I can't work up any
+	enthusiasm to track down and fix the problem ;)
+
+> I wonder if we could prevail upon Steven Schultz (or someone)
+> to build some 2.11BSD disk images which would be suitable for the
+> Supnik and Ersatz emulators.
+
+	Well, one could take the tape images that are in the archive and
+	run the suitable tape preparation program ('makesimtape' for Supnik's
+	simulator and I think makesimtape.c is around in the archive as well).
+	Might need a "toggle in" boot for that (it's in the 2.11 setup and
+	installation guide) though since I do not recall the Supnik simulator
+	knowing how to boot from tape.
+
+	Try putting "set cpu 2048k" (I don't _think_ you need both "set cpu
+	22b" and "set cpu 2048k" but having both doesn't hurt and may help).
+
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id NAA72598
+	for pups-liszt; Tue, 25 Jul 2000 13:29:21 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Tue Jul 25 13:18:29 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Mon, 24 Jul 2000 20:18:29 -0700 (PDT)
+Subject: [pups] Getting a MicroPDP-11 Running
+Message-ID: <200007250318.UAA23005@moe.2bsd.com>
+
+Hi!
+
+> From: Jeremy Bingham <jeremy at mail.flyingcroc.net>
+> I just acquired a MicroPDP-11 from a Goodwill a couple of days ago with a
+
+	Wow - that's a source for PDP-11s I would never have thought of :)
+
+> RX50-A dual 400KB floppy and an RD52 31/33(?)MB hard drive, but it doesn't 
+> have a tape drive. My questions are:
+
+> 1.) What UNIXes have been successfully loaded onto these types of machines?
+
+	I think we need just one more little piece of information before we
+	can match up a version of Unix with your new machine.
+
+	We need to know if it's an 11/23 (23+), or an 11/53 (73).   The 
+	label "MicroPDP-11" was used on a number of systems.   If it's a 53
+	or better then you can run any of the PDP-11 Unix systems that are
+	out there.  If it's a 23 class machine then you're limited to V7
+	or earlier (2.9BSD would probably fit but it would be a struggle and
+	you definitely wouldn't be able to use the networking).
+
+	Looking at the system maint register with the console ODT would
+	probably be the easiest way to determine the cpu type - examine
+	location 177750 (or 17777750 depending if the system needs the 
+	explicit 22 bit address).  Bits 4 thru 7 tell the module type:
+	5 = KDJ-11E (93, 94), 4 = KDJ-11D (53), 3 = KXJ11-C, 2 = KDJ11B
+	(quad high 73), 1 = KDJ-11A (dual high board 73).   If it's a 23 the
+	sys maint register probably doesn't exist.
+
+	Another way would be to look at the module number on the spine of the
+	card ;)
+
+> 2.) Can it be done without a tape? If so, has anybody pulled it off?
+
+	A ~32mb disk is going to be very tight for any 2BSD system.  V7 will
+	fit I think.
+
+> 3.) Are there any utilities, either DOS or UNIX/Linux/FreeBSD based, to write
+> and/or format RX50 floppies?
+
+	Hmmm, I thought John Wilson has some utilities that could do that.
+	Normally you need to buy preformatted RX50 disks or have a DEC Rainbow
+	(DOS) system around.
+
+	On the other hand if the controller is an RQDX3 it is possible with
+	some luck (and more hardware skill than I have ;)) hook up a standard
+	5.25" Teac floppy drive.   I don't have the location of the info for
+	that at hand - you might try the alt.sys.pdp11 or vmsnet.pdp-11 
+	newsgroups (lots of knowing folks hang out there).
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id OAA72804
+	for pups-liszt; Tue, 25 Jul 2000 14:19:41 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From entropy at zippy.bernstein.com  Tue Jul 25 14:16:09 2000
+From: entropy at zippy.bernstein.com (maximum entropy)
+Date: Tue, 25 Jul 2000 00:16:09 -0400 (EDT)
+Subject: [pups] Getting a MicroPDP-11 Running
+In-Reply-To: <200007250318.UAA23005@moe.2bsd.com> (sms@moe.2bsd.com)
+References: <200007250318.UAA23005@moe.2bsd.com>
+Message-ID: <200007250416.e6P4G9T17046@zippy.bernstein.com>
+
+>Date: Mon, 24 Jul 2000 20:18:29 -0700 (PDT)
+>From: "Steven M. Schultz" <sms at moe.2bsd.com>
+>
+>> From: Jeremy Bingham <jeremy at mail.flyingcroc.net>
+>> [...]
+>> 3.) Are there any utilities, either DOS or UNIX/Linux/FreeBSD based, to write
+>> and/or format RX50 floppies?
+>
+>	Hmmm, I thought John Wilson has some utilities that could do that.
+>	Normally you need to buy preformatted RX50 disks or have a DEC Rainbow
+>	(DOS) system around.
+>
+>	On the other hand if the controller is an RQDX3 it is possible with
+>	some luck (and more hardware skill than I have ;)) hook up a standard
+>	5.25" Teac floppy drive.   I don't have the location of the info for
+>	that at hand - you might try the alt.sys.pdp11 or vmsnet.pdp-11 
+>	newsgroups (lots of knowing folks hang out there).
+
+http://vaxarchive.org/hw/rx50.html
+...contains a good FAQ with some useful links, including a link to
+John Wilson's stuff at DBIT.
+
+I'm also appending here a file with some informative messages on the
+subject.  I had this file stored away with a bunch of Venix images for
+the Pro.  I don't remember if this file (RX50.notes) came with the
+Venix stuff, or if I collected them together myself.  I'm pretty sure
+it's the former, but I couldn't find any links to it by searching the
+net.  Anyway, here it is...
+
+>From barry at chezmoto.ai.mit.edu Tue Aug  4 08:14:38 1992
+>From: barry at chezmoto.ai.mit.edu (Barry Kort)
+>Newsgroups: comp.sys.dec.micro
+>Subject: Re: reading rainbow disks on a '386 PC
+>Date: 2 Aug 92 11:53:41 GMT
+>Organization: MicroMuse
+>In-reply-to: keithr at garfield.cs.mun.ca's message of 1 Aug 92 01:10:53 GMT
+>
+>I use the RX50DRVR on my AT which allows my 1.2 MB drive to read RX50
+>diskettes.  What this does is to create a new driveletter (F:) which
+>spins the HD drive as if it were an RX50 drive.  
+>
+>RX50DRVR does not know anything about the directory structure on 
+>the disks.  If I do 'dir F:' it assumes DOS directory structure,
+>which works fine on Rainbow diskettes, since they use the DOS
+>directory structure.
+>
+>To read RT11 formatted diskettes, there is a utility called RT11
+>which groks the RT11 file structure.  I have not yet found a similar
+>utility which handles the RMS-11 file structure of the PRO 3xx series.
+>
+>I can use Norton Utilities with RX50DRVR to examine the RX50 diskette
+>in the F: drive, but then I am accessing the diskette sector by sector,
+>not by logical file.
+>
+>I haven't explored the new utilities from the gentlemen in the Former
+>Soviet Union who have announced some DOS environment tools for
+>manipulating RX50 diskettes.
+>
+>Using RX50DRVR in combination with the RT11 utility program, I can
+>low-level format a blank HD diskette as an RX50 diskette, then
+>put it in the PRO and do a high-level RMS-11 style Initialization.
+>This allows me to create new RX50 diskettes out of plain old unformatted
+>or recycled 1.2 MB HD diskettes.
+>
+>Using Venix on the PRO, I can do a raw image copy of a diskette in one 
+>drive to a blank diskette in another drive.  (This kind of copy will fail
+>if the target diskette has any bad sectors, since there is no attempt
+>to rearrange sectors to detour around any bad blocks.)
+>
+>Finally, by hooking up the PRO to a Unix or DOS machine via the
+>COM port (or to a Unix host via Ethernet/DECnet if you have a DECNA
+>card), you can transfer files via any number of techniques, ranging
+>>from straight ASCII upload/capture using ordinary terminal emulators,
+>Kermit file transfers if you have Kermit on both machines, or by
+>DECnet file transfer using NFT or dcp utilities.
+>
+>None of this is particularly trivial to implement, but the bottom
+>line is that there are many ways to pull files off RX50 diskettes
+>and transfer them to Unix or DOS machines.
+>
+>Barry Kort
+>
+>From cosc16to at menudo.uh.edu Tue Aug  4 08:14:48 1992
+>From: cosc16to at menudo.uh.edu (Andy Hakim)
+>Newsgroups: comp.sys.dec.micro
+>Subject: Re: reading rainbow disks on a '386 PC
+>Date: 2 Aug 92 19:45:22 GMT
+>Organization: University of Houston
+>X-Newsreader: Tin 1.1 PL4
+>
+>barry at chezmoto.ai.mit.edu (Barry Kort) writes:
+>: 
+>: Using RX50DRVR in combination with the RT11 utility program, I can
+>: low-level format a blank HD diskette as an RX50 diskette, then
+>: put it in the PRO and do a high-level RMS-11 style Initialization.
+>: This allows me to create new RX50 diskettes out of plain old unformatted
+>: or recycled 1.2 MB HD diskettes.
+>: 
+>: Using Venix on the PRO, I can do a raw image copy of a diskette in one 
+>: drive to a blank diskette in another drive.  (This kind of copy will fail
+>: if the target diskette has any bad sectors, since there is no attempt
+>: to rearrange sectors to detour around any bad blocks.)
+>
+> 
+>Another method of obtaining a formatted disk for the Pro-3xx, is to
+>use an image copy program called Teledisk (shareware) for the PC.  Not only
+>does this program allow you to do a disk-to-disk copy, but it can also
+>store a disk into a file (on the PC).  This way, it is possible to keep an
+>image file of a blank P/OS formatted disk, and then crank out new copies
+>easily.
+> 
+>In my experience, low density disks (360k) on a high density (1.2m) AT class
+>drives seem to work out best.
+> 
+>-andy
+>
+>From lasner at watsun.cc.columbia.edu Tue Aug  4 08:14:56 1992
+>From: lasner at watsun.cc.columbia.edu (Charles Lasner)
+>Newsgroups: comp.sys.dec.micro
+>Subject: Re: reading rainbow disks on a '386 PC
+>Date: 3 Aug 92 06:39:56 GMT
+>Reply-To: lasner at watsun.cc.columbia.edu (Charles Lasner)
+>Organization: Columbia University
+>Nntp-Posting-Host: watsun.cc.columbia.edu
+>
+>In article <1992Aug2.194522.18244 at menudo.uh.edu> cosc16to at menudo.uh.edu (Andy Hakim) writes:
+>> 
+>>Another method of obtaining a formatted disk for the Pro-3xx, is to
+>>use an image copy program called Teledisk (shareware) for the PC.  Not only
+>>does this program allow you to do a disk-to-disk copy, but it can also
+>>store a disk into a file (on the PC).  This way, it is possible to keep an
+>>image file of a blank P/OS formatted disk, and then crank out new copies
+>>easily.
+>
+>Where can I obtain Teledisk?  Does it require any low-level preformatting
+>of the media on the target?
+>
+>IF you use DR-DOS and RAINDOS (but not RX50DRVR) you can use DISKCOPY and
+>DISKCOMP to copy RX50 MS-DOS diskettes to each other, or to files on the
+>hard disk:
+>
+>DISKCOPY E: C:\RX50DISK.IMG
+>
+>DISKCOPY E: E:
+>
+>DISKCOPY C:\RX50DISK.IMG E:
+>
+>DISKCOMP E: C:\RX50DISK.IMG
+>
+>When writing the file or disk image onto a target disk, the diskette has to
+>be already formatted as a low-level RX50, yet there are no high-level
+>considerations, so non-DOS RX50's can be directly used as targets!
+>
+>Of course input diskettes have to already be MS-DOS RX50 DECmate II/Rainbow
+>diskettes because of DOS restrictions.
+>
+>Note that DOS 5 cannot do anything but "standard" disk sizes, and can't
+>copy disk images to files at all.
+>
+>> 
+>>In my experience, low density disks (360k) on a high density (1.2m) AT class
+>>drives seem to work out best.
+>
+>And without hub rings is better.  If you suspect that a disk is actually
+>high-density when it has no hub rings, there is a simple test:
+>
+>Just format it as a normal 1.2 Meg disk.  a low-density diskette will get
+>hundreds of Kbytes in bad sectors, while a HD diskette will get little or
+>no errors, thus proving it unsuitable for RX50 purposes.  Most disks with
+>hub rings are already clearly low-density, but after you remove them, this
+>will prove a quick check for actual diskette formulation.
+>
+>cjl
+>
+>From cosc16to at menudo.uh.edu Tue Aug  4 08:15:02 1992
+>From: cosc16to at menudo.uh.edu (Andy Hakim)
+>Newsgroups: comp.sys.dec.micro
+>Subject: Re: reading rainbow disks on a '386 PC
+>Date: 3 Aug 92 16:42:35 GMT
+>Organization: University of Houston
+>X-Newsreader: Tin 1.1 PL4
+>
+>lasner at watsun.cc.columbia.edu (Charles Lasner) writes:
+>: 
+>: Where can I obtain Teledisk?  Does it require any low-level preformatting
+>: of the media on the target?
+>: 
+>I checked the ftp site "wuarchive.wustle.edu", it is in directory 
+>"mirrors2/msdos/dskutl" as file "teled212.zip".
+>
+>Nope, this one does not require any low level preformatting.  It's possible
+>to stick in a brand new ds/dd and let it go.  Incidently, teledisk is
+>made by the same people, Sydex, who make 22disk.
+>
+>-andy
+>
+>From cosc16to at menudo.uh.edu Tue Aug  4 08:15:11 1992
+>From: cosc16to at menudo.uh.edu (Andy Hakim)
+>Newsgroups: comp.sys.dec.micro
+>Subject: Re: reading rainbow disks on a '386 PC
+>Date: 3 Aug 92 16:54:30 GMT
+>Organization: University of Houston
+>X-Newsreader: Tin 1.1 PL4
+>
+>: I checked the ftp site "wuarchive.wustle.edu", it is in directory 
+>: "mirrors2/msdos/dskutl" as file "teled212.zip".
+>
+>Correction, it's spelled "wuarchive.wustl.edu" with a missing 'e'.
+> 
+>Host nic.switch.ch   (130.59.1.40)
+>    Location: /mirror/msdos/dskutl
+>      FILE      rw-rw-r--     93805  Dec 23  1990   teled212.zip
+> 
+>Host ftp.uu.net   (137.39.1.9)
+>    Location: /systems/msdos/simtel20/dskutl
+>      FILE      rw-r--r--     93805  Dec 22  1990   teled212.zip
+> 
+>Host wuarchive.wustl.edu   (128.252.135.4)
+>    Location: /mirrors3/garbo.uwasa.fi/diskutil
+>      FILE      rw-rw-r--     94075  Dec 11  1990   teled212.zip
+>    Location: /mirrors/msdos/dskutl
+>      FILE      rw-r--r--     93805  Dec 23  1990   teled212.zip
+> 
+>archie>
+>
+>From lasner at watsun.cc.columbia.edu Tue Aug  4 08:15:17 1992
+>From: lasner at watsun.cc.columbia.edu (Charles Lasner)
+>Newsgroups: comp.sys.dec.micro
+>Subject: Re: reading rainbow disks on a '386 PC
+>Date: 4 Aug 92 05:55:11 GMT
+>Reply-To: lasner at watsun.cc.columbia.edu (Charles Lasner)
+>Organization: Columbia University
+>Nntp-Posting-Host: watsun.cc.columbia.edu
+>
+>In article <1992Aug3.164235.1187 at menudo.uh.edu> cosc16to at menudo.uh.edu (Andy Hakim) writes:
+>>lasner at watsun.cc.columbia.edu (Charles Lasner) writes:
+>>: 
+>>: Where can I obtain Teledisk?  Does it require any low-level preformatting
+>>: of the media on the target?
+>>: 
+>>I checked the ftp site "wuarchive.wustle.edu", it is in directory 
+>>"mirrors2/msdos/dskutl" as file "teled212.zip".
+>>
+>>Nope, this one does not require any low level preformatting.  It's possible
+>>to stick in a brand new ds/dd and let it go.  Incidently, teledisk is
+>>made by the same people, Sydex, who make 22disk.
+>>
+>>-andy
+>
+>Sydex also makes RAINDOS.
+>
+>I suspect that teledisk will only make sector-compatible descendents though,
+>so if I have a specially layed-out version of a diskette (such as 2:1
+>interleave or staggered, etc.) the descendent will lose that aspect of
+>optimization, and will instead become "vanilla" RX50 format in the
+>case of RX50 diskette.
+>
+>The point is that certain software, especially for DECmates not specifically
+>geared to CP/M-80, and *any* bootable DECmate diskette (including CP/M-80) the
+>format used in stock RX50 layout is non-optimal.  There are different 
+>requirements for different specific applications, but just as on PC's, the
+>use of non-interleaved non-staggered disks can be demonstrated to be
+>inferior to a variant in terms of sector ordering at the low format level.
+>
+>Rainbow MS-DOS disks have an implied software interleave of 2:1 for the
+>FAT area, and 1:1 in the rest; this is in software, so the standard disk
+>layout should be maintained, except that the *stagger* is not taken into
+>account.  Thus, like a PC, Rainbow MS-DOS disks should be formatted with a
+>stagger of 2 per track.  Thus track 1 is layed out 1,2,3,4,5,6,7,8,9,10 and
+>track 2 is layed out 9,10,1,2,3,4,5,6,7,8.  When the disk seeks from track 1
+>to track 2, it will thus miss 9 and 10, but immediately find 1.  Were the
+>stagger not there, it would miss 1 and 2, and reject 3,4,5,6,7,8,9 while
+>waiting for 1 to come around again.  Thus staggering relieves rotational
+>latency.
+>
+>For the DECmate, there are two additional problems:
+>
+>All bootable diskettes require the logically sequential reading of tracks
+>78, 79 in the order 1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10.  But the RX
+>interface of the DECmate can't perform 1:1 interleave ever, so this is
+>anti-optimal not only in stagger but more importantly in interleave.  Thus, 
+>this area of the disk should be formatted with an interleave of 2:1 as well
+>as a stagger of 2.  Thus the disk is layed out:
+>
+>track 78: 1,6,2,7,3,8,4,9,5,10
+>track 79: 5,10,1,6,2,7,3,8,4,9
+>
+>This restriction is based on the ROM routines that read in this area in linear
+>order.  This is mostly why all DECmates take so long to boot up!  Changing to
+>a better sector order will chop seconds out of the boot time.
+>
+>Further, all systems other than CP/M-80 require some form of help, mostly
+>applying the stagger that helps the Rainbow as well (again other than CP/M).
+>For DECmate MS-DOS, tracks 0-3 should be in 1-1 interleave because the software
+>already maps the disk in 2:1 usage.  tracks 4-79 should be formatted 2:1
+>interleave to help out the RX interface when the Rainbow-optimal ordering
+>is invoked (similar to the DECmate ROM access, and just as inefficient on
+>a DECmate).
+>
+>OS/278 does a software 2:1 interleave, so the only help needed is a
+>disk-wide stagger factor of 2.
+>
+>Note that RT-11 and all other -11-oriented disks should use stock format only
+>because this superior software maps all sectors to include both the 2-1
+>interleave and stagger of 2 already.
+>
+>So, if Teledisk is a *really* good utility, it won't disturb the format's
+>stagger and interleave as it copies the disks!
+>
+>cjl
+>
+>From lasner at watsun.cc.columbia.edu Tue Aug  4 08:15:23 1992
+>From: lasner at watsun.cc.columbia.edu (Charles Lasner)
+>Newsgroups: comp.sys.dec.micro
+>Subject: Re: reading rainbow disks on a '386 PC
+>Date: 3 Aug 92 05:39:27 GMT
+>Reply-To: lasner at watsun.cc.columbia.edu (Charles Lasner)
+>Organization: Columbia University
+>Nntp-Posting-Host: watsun.cc.columbia.edu
+>
+>In article <BARRY.92Aug2075341 at chezmoto.ai.mit.edu> barry at chezmoto.ai.mit.edu (Barry Kort) writes:
+>>I use the RX50DRVR on my AT which allows my 1.2 MB drive to read RX50
+>>diskettes.  What this does is to create a new driveletter (F:) which
+>>spins the HD drive as if it were an RX50 drive.  
+>
+>RX50DRVR, like RAINDOS, creates a new logical drive past your last existent
+>drive, so it's F: for you because you apparently have an A: through E: before
+>the driver gets loaded in CONFIG.SYS.
+>
+>>
+>>RX50DRVR does not know anything about the directory structure on 
+>>the disks.  If I do 'dir F:' it assumes DOS directory structure,
+>>which works fine on Rainbow diskettes, since they use the DOS
+>>directory structure.
+>
+>That's not quite true, since the disk organization has to be DOS as implemented
+>on DECmate II MSDOS/Rainbow MS-DOS only.  It is true only in the sense that
+>you can make your own BIOS calls to read the disks yourself without caring
+>about the significence.  But that's no different from doing so with any
+>floppy on a PC.
+>
+>>
+>>To read RT11 formatted diskettes, there is a utility called RT11
+>>which groks the RT11 file structure.  I have not yet found a similar
+>>utility which handles the RMS-11 file structure of the PRO 3xx series.
+>
+>Where can I get this RT11 utility?  It sounds useful.  Does it specifically
+>require/recognize the RX50DRVR or does it merely work in an innocuous way
+>with the same drive letter?  (Would it work also with A:? or must it have
+>RX50DRVR present.  If so, would it work with RAINDOS as an alternative?)
+>
+>>
+>>I can use Norton Utilities with RX50DRVR to examine the RX50 diskette
+>>in the F: drive, but then I am accessing the diskette sector by sector,
+>>not by logical file.
+>>
+>>I haven't explored the new utilities from the gentlemen in the Former
+>>Soviet Union who have announced some DOS environment tools for
+>>manipulating RX50 diskettes.
+>
+>Re the Soviet-originating files:
+>
+>The files come with a piece of shareware originating in Italy that intercepts
+>DOS's calls for formatting commands, so that "odd" sizes, such as using:
+>FORMAT A: /T:80 /N:10 are now legal.  The result is a double-sided disk that
+>is quite suitably low-level formatted for RX50, but the high-level is PC
+>compatible, *not* DECmate/Rainbow's idea of MS-DOS, and specifically must be
+>used on a "normal" drive and *not* with RX50DRVR.  All media indicators are
+>stock PC-type, not RX50.  However, since the low-level is now correct, and
+>errors are recorded in a way that FORMAT indicated when it finished, and can
+>be re-confirmed with CHKDSK, etc., the media can be determined to be error-
+>free hopefully.  If so, then the companion program RX50INIT that comes with
+>RX50DRVR can be used to initialize the directory so DECmate/Rainbow MS-DOS
+>likes the disk, and of course the RX50DRVR-controlled logical device such as
+>F: in your example.  Note also that RX50INIT can be used with RAINDOS as well.
+>Also, RX50INIT requires ANSI.SYS be loaded purely for cosmetic reasons.
+>RX50DRVR and RX50INIT were designed for DOS 3.3 usage.  They don't support the
+>extensions to DOS brought into versions 4 and 5, so there are some problems.
+>RX50INIT fails totally in those two systems, and CHKDSK can't work there
+>either.  With some adjustment to the BUFFERS= statement in CONFIG.SYS, they
+>can be made to work for read/write purposes under DOS 4 or 5.  
+>
+>
+>When used with DR-DOS 6.0, all RX50DRVR and RX50INIT functions work fine.
+>
+>
+>>
+>>Using RX50DRVR in combination with the RT11 utility program, I can
+>>low-level format a blank HD diskette as an RX50 diskette, then
+>>put it in the PRO and do a high-level RMS-11 style Initialization.
+>>This allows me to create new RX50 diskettes out of plain old unformatted
+>>or recycled 1.2 MB HD diskettes.
+>
+>Just a word about using HD media:
+>
+>You can't reliably use HD media on an actual RX50, because the coercivity
+>is too far off in HD media.  It was designed for the higher-frequency
+>recording of the "real" 1.2 Meg format (500 KHz) and not the 250 KHz recording
+>rate of the RX50, which is actually the same as good 'ol DS/DD media (360K
+>kid of media).  Some revisions of RX50 drive in comination with certain RX
+>controllers in some DEC machins fare better than others, but it can be
+>demonstrated that a lot of combinations don't particularly "like" HD
+>media.
+>
+>The designated media for RX50 is Maxell MD1DD-RX50 or equivalent, which is
+>what used to be called "quad" media.  This is well-honed low-density media,
+>so it is rated for use on 96 TPI (80 track) drives, not just 48 TPI (40 track)
+>drives as is usual.  Note that MD2D is not MD2DD.  (The 2 just means two-sided
+>which for all intents and purposes today can be ignored; virtuall *all* media
+>is actually made double-sided :-).)  The DD means 80-track support, but since
+>most media are made well-honed, most cheap disks can support 80 tracks anyway.
+>These disks will *not* cause I/O errors on any RX50!  However, long-term usage
+>requires the hub rings be removed completely (use alcohol to get the sticky
+>stuff off, or ask your supplier for no-hub disks!).  Failing to remove
+>hub rings means eventually the disks will get unreliable sooner than they
+>ought to due to registration problems.  All 96 TPI disks have this problem.
+>Note that MD2HD and MD1DD don't have hub rings!  It is rumored that there is
+>a "premium" line of diskettes from Fuji apart from their standard line of
+>inexpensive diskettes that has a specially reinforced hub area, that isn't
+>a hub ring per se.  If the same mechanism is used in both HD and DD media, 
+>then the DD type would be the best thing today to use with impunity for
+>RX50.  Clearly the MD1DD or MD2DD or MD1DD or the 3M equivalents are too
+>expensive, considering that what we want are the cheapest types of diskettes
+>with the hub rings never added.  (We don't want to pay more for less!)
+>
+>Re RT-11 utility:
+>
+>I don't know anything about the RT11 utility program, but RX50DRVR cannot
+>format disks; the code lacks support for the FORMAT command, and also some
+>calls needed by both CHKDSK and FORMAT.  Attempts to use either on DOS 4
+>or 5 will get error messages.  Even on 3.3, where CHKDSK is more "forgiving"
+>you still get the message about "format not supported on device" when
+>using RX50DRVR.  So, if your claim for formatting is true, the RT11 utility
+>must contain low-level formatting code of its own, and perhaps only needs
+>RX50DRVR to locate the proper device?
+>
+>RAINDOS is a share-ware mostly superset of RX50DRVR, and it totally supports
+>CHKDSK and FORMAT in DOS 4 and 5.  It works fine with RX50INIT (assuming that
+>RX50INIT can work!) and suffers from only two known problems:
+>
+>1)	Should you specify a format command with the FORMAT F: command,
+>and the O/S is DR-DOS 6, then if it really does attempt a low-level format,
+>it gets a cryptic error message and fails.  Note that MS-DOS 5 and DR-DOS 6
+>will always attempt a "quick" format if possible, unless over-ridden.  This
+>case of a quick format doesn't fail, but also isn't formatting!  Just 
+>rewriting a cleaned-up high-level format directory initialize.
+>
+>2)	It is sometimes strangely slow, as compared to RX50DRVR where both
+>could work.  When using Norton 4.5's DT program, RX50DRVR handles the
+>disk at normal speed, and allows DT to mark bad clusters (if any) quite
+>nicely.  When RAINDOS is used, it causes many recalibrates for unknown
+>reasons.  In some cases, the sloth isn't that noticeable, but this is a
+>sore point usage.
+>
+>Otherwise, RAINDOS is a total replacement for RX50DRVR, or so it would seem.
+>Norton NU treats RX50DRVR diskettes and RAINDOS diskettes equally since it
+>does one-sector I/O.
+>
+>>
+>>Using Venix on the PRO, I can do a raw image copy of a diskette in one 
+>>drive to a blank diskette in another drive.  (This kind of copy will fail
+>>if the target diskette has any bad sectors, since there is no attempt
+>>to rearrange sectors to detour around any bad blocks.)
+>>
+>>Finally, by hooking up the PRO to a Unix or DOS machine via the
+>>COM port (or to a Unix host via Ethernet/DECnet if you have a DECNA
+>>card), you can transfer files via any number of techniques, ranging
+>>from straight ASCII upload/capture using ordinary terminal emulators,
+>>Kermit file transfers if you have Kermit on both machines, or by
+>>DECnet file transfer using NFT or dcp utilities.
+>>
+>>None of this is particularly trivial to implement, but the bottom
+>>line is that there are many ways to pull files off RX50 diskettes
+>>and transfer them to Unix or DOS machines.
+>>
+>>Barry Kort
+>
+>If the Soviet files prove to work, and apparently requiring the Italian
+>TSR shareware program, we can probably make Files-11 RX50 diskettes as well.
+>I have just received these programs and will be evaluating them when feasible.
+>I am still working with the accompanying Italian shareware which has some
+>interesting "generic" features of its own with respect to the entire RX50
+>issue.  I suspect that its presence enhances any of these utilities, although
+>it's possible redundant and perhaps extraneous to some of the utilities.
+>
+>In any case, there are many ways to get files moved around.
+>
+>Another excellent package is 22DISK from Sydex, the same shareware author
+>as RAINDOS.  This package low-level formats RX50's in either DECmate CP/M-80
+>or Rainbow CP/M-80/86 format.  (They are similar, but not identical, although
+>they can read each other's disks no sweat; it's a matter of interleave, etc.
+>and a throughput issue, not a format per se issue.)  It then high-level
+>formats the disks for CP/M usage.  So, its a good place to do the low-level
+>formatting required for all of these other utilities.  For example, on
+>DR-DOS 6, you first run 22DISK to format the disk, then use RX50INIT to get
+>an RX50 MS-DOS DECmate/Rainbow high-level structure, and then can use
+>RAINDOS to transfer files, run CHKDSK, and do quick-formats with FORMAT /Q,
+>etc.  Notice this avoids all of the Raindos/DR-DOS interaction :-).
+>
+>22DISK can get directory listings of CP/M disks, and can transfer files
+>to/from MS-DOS from/to the designated CP/M diskette.  It supports literally
+>hundreds of CP/M formats, which implies many low and high-level support
+>variants.  This program is highly reminiscent of the former Rainbow, and
+>later PC-based "Media Master" program, but is for PC/MS-DOS only, and
+>requires HD drives for the RX50 formats.
+>
+>I believe there is an obscure PRO option for a CP/M-80 board, so this might
+>be yet another way to get files in/out of a PRO.
+>
+>So, like cats, there are many ways to "skin" an RX50 :-).
+>
+>cjl
+>
+>From lasner at watsun.cc.columbia.edu Tue Aug  4 08:15:29 1992
+>From: lasner at watsun.cc.columbia.edu (Charles Lasner)
+>Newsgroups: comp.sys.dec.micro
+>Subject: Good report on Teledisk.
+>Date: 4 Aug 92 07:27:25 GMT
+>Reply-To: lasner at watsun.cc.columbia.edu (Charles Lasner)
+>Organization: Columbia University
+>Nntp-Posting-Host: watsun.cc.columbia.edu
+>
+>I have down-loaded Sydex's teledisk, and have found it to exceed my
+>expectations in some useful ways.
+>
+>For starters, all of my attentions are based on the problems of distributing
+>RX50 diskettes not necessarily in stock format, and not yet having any
+>satisfactory way of creating the necessary disks.
+>
+>Background:
+>
+>There are several desirable variant formats for RX50 that have been discussed
+>elsewhere.  The only known program to create them is FDFORMAT for PC's.  While
+>this freeware program is generally quite good, it has a few crucial bugs that
+>make it unsuitable for RX50 usage.  It is conceivable that this will be
+>solved by using some additional/non-standard parameters to FDFORMAT to create
+>usable disks, but in any case, the use of all obvious parameters yields disks
+>that are flakey on some RX50's, and downright unreadable on others.  In
+>addition, these disks are so messed up that a DECmate can't even WRITE on the
+>disks and read back what it just wrote reliably!  Yet, this isn't a media
+>problem because it can be demonstrated that the problem disappears by
+>low-level format of the same diskette with either Sydex's RAINDOS or 22DISK
+>packages.  (Note that *some* RX50 systems using some newer-designed controllers
+>and/or higher revision drives and/or RX50-compatibility modes on different
+>drives have little or no problems with these FDFORMATted diskettes; indeed
+>the diskettes are fine on a PC; there's some low-level detail that's incorrect
+>about FDFORMATted diskettes.  Some parameter is being set to a PC-acceptable
+>value that doesn't center on RX50's requirements.  Perhaps this will be
+>uncovered at a later time obviating this entire discussion.  Until such a 
+>time, FDFORMAT cannot be used to create RX50 diskettes that are readable on
+>*all* RX50 systems.  FDFORMAT also has a few other operational bugs, such as
+>incorrect recognition of certain I/O errors, etc., but these are exception
+>cases, and for all other PC purposes, it serves quite admirably.)
+>
+>The reason why FDFORMAT is desirable is that it is the only known program
+>capable of creating the variant RX50 formats where the format must be
+>done with interleave and stagger factors, especially if the disk must have
+>"zones" where the format changes.  For example, to create a disk best suited
+>for DECmate OS/278 usage, the following *TWO* commands should be given:
+>
+>FDFORMAT A: /T:80 /N:10 /1 /Y:2 /I:2
+>FDFORMAT A: /T:78 /N:10 /1 /Y:2
+>
+>The first command creates a disk with an interleave of 2:1 and a stagger of
+>2 throughout.  The second command changes tracks 0-77 to have 1:1 interleave
+>and a stagger of 2 throughout.
+>
+>When OS/278 is copied onto such a diskette, the "slushware" tracks are read
+>in much faster than on standard RX50 diskettes, and all access to the rest of
+>the diskette is speeded somewhat because of the stagger factor which overcomes
+>the software's lack of stagger mapping.  But since the software does map the
+>sector order into a 2:1 interleave, the hardware order must stay in 1:1
+>interleave sequence.
+>
+>This would be a nice disk to use for the intended purpose, but many DECmates
+>will be unable to read this diskette.  Literally, it will get a CRC error
+>on *every* sector!  Furthermore, if you attempt to write an image of the
+>software onto this diskette, it will get a CRC error on *every* sector even
+>though it just wrote the disk out!
+>
+>Enter Teledisk to the rescue!
+>
+>When I read Teledisk's documentation, I had doubts that it could solve
+>this problem, because I noticed it could be quite "smart", perhaps *too*
+>smart!  It claims that it can get around certain copy-protection methods
+>by virtue of how it operates, so I figured that it would likely copy the
+>problems of FDFORMAT as well :-(.  Or, alternatively, it might guess that
+>the diskette was an RX50 and proceed to format it in a stock manner, thus
+>destroying the optimization applied by using the two FDFORMAT commands instead
+>of just using RAINDOS or 22DISK to create stock low-level RX50 diskettes.
+>
+>Well, I was wrong on both counts!
+>
+>Teledisk understands how to maintain sector order, and pointed out the
+>change of interleave from 1:1 to 2:1 at track 78, so that problem is
+>hurdled.
+>
+>Teledisk understands that these sectors should be formatted with apparently
+>the same parameters as the formatting routines in 22DISK and RAINDOS, so the
+>resultant disk *is* readable on DECmates!  Of course, this is *not* an
+>"exact" copy, but rather it is a "better" copy.  Apparently Teledisk only
+>writes sectors in a "sane" format, and the copy-protection they refer to
+>is the class of "funny" sector ordering, size, or count, not any lower-level
+>details.  Apparently the Sydex code at work in RAINDOS and 22DISK is also
+>within Teledisk, thus since Teledisk recognizes the disk as a 10-sector/track
+>512 bytes/sector disk, it writes it as would RAINDOS, etc., except Teledisk
+>is sensitive to sector ordering unlike the other Sydex programs, etc.
+>
+>Thus, the descendent disk is actually *better* than the original.  I can now
+>therefore distribute diskettes in the intended format for working-copy usage
+>of the best effort of each diskette :-).
+>
+>Additionally, if I modify distribution diskettes to be in their intended
+>format instead of their original stock format (virtually all diskettes that
+>need to be distributed are in stock RX50 format, because the need to create
+>optimal diskette layout is generally newer than the software; indeed, this
+>entire effort is to distribute software that performs *better* than the
+>original!), then the master disks should be copied with Teledisk to create
+>perfect copies in one step.
+>
+>There are additional advantages:
+>
+>Teledisk can also create an MS-DOS file that is the image of the diskette
+>in either a rudimentary-compressed or advanced-compressed form.  These files
+>can be transmitted down the net and then reconstructed on PC-AT's for use
+>on RX50 targets.  Since they are compressed, this minimizes the overhead 
+>as well, etc.
+>
+>So, Teledisk has made my day :-).
+>
+>cjl
+>
+>From barry at chezmoto.ai.mit.edu Wed Aug  5 10:12:06 1992
+>From: barry at chezmoto.ai.mit.edu (Barry Kort)
+>Newsgroups: comp.sys.dec.micro
+>Subject: Re: reading rainbow disks on a '386 PC
+>Date: 4 Aug 92 12:13:30 GMT
+>Organization: MicroMuse
+>In-reply-to: lasner at watsun.cc.columbia.edu's message of 3 Aug 92 05:39:27 GMT
+>
+>Charles,
+>
+>You can retreive rt11.zip by anonymous ftp from
+>newton.canterbury.ac.nz, 132.181.40.1, in the pub/local directory.
+>
+>Barry
+>
+>From lasner at watsun.cc.columbia.edu Wed Aug  5 10:12:14 1992
+>From: lasner at watsun.cc.columbia.edu (Charles Lasner)
+>Newsgroups: comp.sys.dec.micro
+>Subject: Re: reading rainbow disks on a '386 PC
+>Date: 4 Aug 92 18:41:23 GMT
+>Reply-To: lasner at watsun.cc.columbia.edu (Charles Lasner)
+>Organization: Columbia University
+>Nntp-Posting-Host: watsun.cc.columbia.edu
+>
+>In article <BARRY.92Aug4081330 at chezmoto.ai.mit.edu> 
+>arry at chezmoto.ai.mit.edu (Barry Kort) writes:
+>
+>>Charles,
+>
+>>You can retreive rt11.zip by anonymous ftp from
+>>newton.canterbury.ac.nz, 132.181.40.1, in the pub/local directory.
+>
+>>Barry
+>
+>Got it.  It looks nice.  It produces what appears to be a nice RT-11-like
+>environment on a PC for file transfers, etc., but is inferior to Teledisk
+>for the purpose of making a compacted image of an entire disk as a DOS
+>file.  Since this is a frill, it can be completely overlooked :-).
+>
+>And yes, it does Format DD-type media to stock RX50 as advertised.  I will
+>only take you to task on the minor point: it doesn't require RX50DRVR at all.
+>There was a little confusion as to whether they were tied together, which is
+>not the case.
+>
+>This program is written in Turbo Pascal.  It would seem that someone who
+>can understand enough TP and the quirky code to call BIOS routines should
+>incorporate some of RT11.PAS into FDFORMAT (also a TP-based item) since
+>the format routine works fine while FDFORMAT does not for RX50 as discussed
+>elsewhere.
+>
+>Overall a nice program.
+>
+>cjl
+>
+>
+>
+>
+>
+
+--
+entropy -- it's not just a good idea, it's the second law.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id TAA74088
+	for pups-liszt; Tue, 25 Jul 2000 19:05:40 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From lars at nocrew.org  Tue Jul 25 15:55:00 2000
+From: lars at nocrew.org (lars brinkhoff)
+Date: 25 Jul 2000 07:55:00 +0200
+Subject: [pups] 2.11 BSD image booting
+In-Reply-To: "Steven M. Schultz"'s message of "Mon, 24 Jul 2000 20:00:06 -0700 (PDT)"
+References: <200007250300.UAA22851@moe.2bsd.com>
+Message-ID: <858zuq21qj.fsf@junk.nocrew.org>
+
+"Steven M. Schultz" <sms at moe.2bsd.com> writes:
+> > From: Warren Toomey <wkt at henry.cs.adfa.edu.au>
+> > I think all the 2.11BSD disk images in Boot_Images are suspect.
+> 	Hmmm, I don't think they're corrupt.
+
+I use the 2.11_rp_unknown (Current Patch Level: 400, Date: January 24,
+1998) image without any problems.  Well, I didn't know the root
+password, so I had to erase it in single user mode.
+
+> 	Wasn't there a similar posting a month or two ago about someone (I 
+> 	forget who it was) having "massive corruption".   It turned out that
+> 	the simulator was only told to use 256kb of memory (18bit mode).  Once
+> 	the "set cpu 2048k" command was added to the conf file the problems
+> 	cleared right up.
+
+That was probably me.
+
+> 	Try putting "set cpu 2048k" (I don't _think_ you need both "set cpu
+> 	22b" and "set cpu 2048k" but having both doesn't hurt and may help).
+
+This is the script I use:
+
+set cpu 22b
+set cpu 3072K
+at rp0 2.11_rp_unknown
+at rl0 x.tar
+b rp
+
+
+From lcanet at wanadoo.fr  Tue Jul 25 22:24:39 2000
+From: lcanet at wanadoo.fr (Laurent Canet)
+Date: Tue, 25 Jul 2000 14:24:39 +0200 (MET DST)
+Subject: [pups] 2.11 BSD image booting  
+References: <200007250014.KAA35364@henry.cs.adfa.edu.au>
+Message-ID: <397d8707398e9b99@apicra.wanadoo.fr> (added by apicra.wanadoo.fr)
+
+
+> > In the same rut as Andy Valencia:
+> > I have tried booting the 2.11 BSD distribution that was in the boot images
+> > directory, it has something like 9 disc pack images, and a script to boot it
+> > with Supnik. Well, it boots all right, but I can't access most of the
+> > filesystem, just the root, and even there most of the files seem corrupt. It
+> > gets even worse when I try to shut it down. It will not even boot back up
+> > after I shut it down in the emulator.
+> 
+> I think all the 2.11BSD disk images in Boot_Images are suspect.
+> 
+I ran the 2.11bsd_on_rl02 without problems on bob supnik's emulator. (you need to issue a mount -a command after booting in order to mount the 4 RL02 disk and the 5 RK packs in correct places)
+
+I also ran the 2.11_rp_unknown on bob supnik's emulator and on p11.
+It worked fine except that password files were corrupted (and contained unknown passwords)
+So I replaced /etc/passwd*; /etc/master.passwd; /bin/passwd and /etc/mkpasswd (which was no present) with the files of the RL distribution
+
+Now it works very good, on p11 emulator under linux 2.2 with networking support.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA78042
+	for pups-liszt; Wed, 26 Jul 2000 08:21:13 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From SHOPPA at enterprise.trailing-edge.com  Tue Jul 25 22:02:19 2000
+From: SHOPPA at enterprise.trailing-edge.com (SHOPPA at enterprise.trailing-edge.com)
+Date: Tue, 25 Jul 2000 8:02:19 -0400
+Subject: [pups] Getting a MicroPDP-11 Running
+Message-ID: <000725080219.224004d6@enterprise.trailing-edge.com>
+
+>> 2.) Can it be done without a tape? If so, has anybody pulled it off?
+
+>	A ~32mb disk is going to be very tight for any 2BSD system.  V7 will
+>	fit I think.
+
+But does V7 have a MSCP disk driver?  Recommending to someone that all they
+have to do is write a driver when they don't even have a running machine yet
+is, IMHO, a bit optimistic :-).
+
+Of course, under the Mentec PDP-11 hobbyist program he could install
+RT-11 or RSX-11 or MicroRSTS on such a machine quite nicely from a bunch
+of RX50 or RX33 floppies he made from the Mentec CD-ROM's.
+
+>> 3.) Are there any utilities, either DOS or UNIX/Linux/FreeBSD based, to write
+>> and/or format RX50 floppies?
+
+>	Hmmm, I thought John Wilson has some utilities that could do that.
+
+  See ftp://ftp.dbit.com/pub/putr/
+
+How many RX50's would it take to hold a root filesystem dump?  15 or so?
+It's not *quite* as cruel as the RX01 root distribution we discussed over
+some Pastrami sandwiches a couple of years back.  But it is approaching the
+"Wagner Ring cycle on convenient 45's" stage!
+
+>	On the other hand if the controller is an RQDX3 it is possible with
+>	some luck (and more hardware skill than I have ;)) hook up a standard
+>	5.25" Teac floppy drive.   I don't have the location of the info for
+>	that at hand - you might try the alt.sys.pdp11 or vmsnet.pdp-11 
+>	newsgroups (lots of knowing folks hang out there).
+
+  See ftp://ftp.spc.edu/third-party-disks.txt
+
+See, it's these sorts of references we need in the PUPS FAQ list.  The
+same questions come up every month, I give the same pointers, then everybody
+forgets them again, until I answer the same questions the next month :-).
+
+Tim. (shoppa at trailing-edge.com)
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA78068
+	for pups-liszt; Wed, 26 Jul 2000 08:21:47 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From wb at vestein.arb-phys.uni-dortmund.de  Wed Jul 26 01:43:29 2000
+From: wb at vestein.arb-phys.uni-dortmund.de (Wilhelm B. Kloke)
+Date: Tue, 25 Jul 2000 17:43:29 +0200 (MET DST)
+Subject: [pups] Algol 68 for PDP11?
+Message-ID: <200007251543.RAA31300@yorikke.arb-phys.uni-dortmund.de>
+
+Hi,
+
+is a location known where this may be preserved? This should be
+an Algol68S (P.Hibbard) compiler from CMU adapted for V7 Unix in Manitoba.
+At least, Andy Walker calls the beast 'Manitoba compiler'. See recent
+discussion in comp.lang.misc.
+
+Regards, wbk
+-- 
+Dipl.-Math. Wilhelm Bernhard Kloke
+Institut fuer Arbeitsphysiologie an der Universitaet Dortmund
+Ardeystrasse 67, D-44139 Dortmund, Tel. 0231-1084-257
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA78127
+	for pups-liszt; Wed, 26 Jul 2000 08:27:06 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From wkt at henry.cs.adfa.edu.au  Wed Jul 26 08:24:51 2000
+From: wkt at henry.cs.adfa.edu.au (Warren Toomey)
+Date: Wed, 26 Jul 2000 08:24:51 +1000 (EST)
+Subject: [pups] Re; Algol 68 for PDP11?
+In-Reply-To: <200007251543.RAA31300@yorikke.arb-phys.uni-dortmund.de> from "Wilhelm
+ B. Kloke" at "Jul 25, 2000 05:43:29 pm"
+Message-ID: <200007252224.IAA40182@henry.cs.adfa.edu.au>
+
+In article by Wilhelm B. Kloke:
+> Hi,
+> 
+> is a location known where this may be preserved? This should be
+> an Algol68S (P.Hibbard) compiler from CMU adapted for V7 Unix in Manitoba.
+> At least, Andy Walker calls the beast 'Manitoba compiler'. See recent
+> discussion in comp.lang.misc.
+> 
+> Regards, wbk
+
+Is it freely available or requires a license? Regardless, I'd be happy
+to put it in to the PDP-11/Applications area in our Unix Archive.
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA78895
+	for pups-liszt; Wed, 26 Jul 2000 11:22:43 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Wed Jul 26 09:47:40 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Tue, 25 Jul 2000 16:47:40 -0700 (PDT)
+Subject: [pups] Getting a MicroPDP-11 Running
+Message-ID: <200007252347.QAA05298@moe.2bsd.com>
+
+Hi -
+
+> From: SHOPPA at enterprise.trailing-edge.com
+> 
+> But does V7 have a MSCP disk driver?  Recommending to someone that all they
+
+	Oops - I messed up there didn't I?  Concentrated so much on the size
+	of the disk I forgot about the MSCPness of the device :(
+
+	Ummm, as a matter of fact no it doesn't.  Depending what version 
+	of V7 you have it may or may not even have an RL driver.
+
+> How many RX50's would it take to hold a root filesystem dump?  15 or so?
+
+	Oh perhaps 8 or 9.  Using RX33 disks it only took 4 floppies but 
+	the RX50 is what, 400kb (about 1/3 that of the RX33).
+
+	It's more like just Siegfried on 45's rather than the entire Ring ;)
+
+>   See ftp://ftp.spc.edu/third-party-disks.txt
+
+	Is ftp.spc.edu still up and running?  I know spc11c.spc.edu is out of
+	action and I'm not sure home much longer the systems at SPC.EDU will
+	keep running now that Terry's no longer there.
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+
+From norman at nose.cs.utoronto.ca  Thu Jul 27 23:48:45 2000
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Thu, 27 Jul 2000 09:48:45 -0400
+Subject: [pups] V7 vs RX50 (was Getting a MicroPDP-11 Running)
+Message-ID: <200007271351.XAA90686@minnie.cs.adfa.edu.au>
+
+400KB floppies, or even 1.4MB ones, may seem tiny now; but they should
+hardly be undersized for a bare-bones V7 root file system.  Remember
+that disks weren't all that big in the late 1970s, and that one of the
+important fixes in V7 was that it became possible to make a file system
+bigger than 32MB.
+
+The V7 version of the `Setting Up UNIX' paper doesn't say just how big
+the root file system dump is, but the instructions say the file system
+itself should have 5000 blocks: about 2.4MB.  If the dump was that big,
+it would have taken just over 6 RX50 diskettes.  (But it probably wasn't
+that big, because there must have been a good bit of free space in the
+standard root--/tmp was there too!)
+
+I once ran a stripped-down V7 off a single RK05 (2.5MB including swap)
+for several days, during an air-conditioning crisis.  The system wasn't
+fully-functional, but there was enough there to let the secretarial staff
+keep up with their typing, and even run troff.
+
+The real trouble with the RX50 is not so much the size as the speed:
+the damn things are painfully slow.  I sometimes boot my V10 MicroVAXes
+from RX50, as part of an experimental Jumpstart-like installation scheme.
+The bare-bones installation environment requires only two floppies; the
+real nuisance is that it takes several minutes to read them.
+
+And, of course, V7 doesn't have an MSCP driver, since MSCP didn't hit the
+streets until 1982 or so.
+
+Norman Wilson
+
+
+From jp at spektr.eu.org  Sun Jul 30 11:54:32 2000
+From: jp at spektr.eu.org (Jorgen Pehrson)
+Date: Sun, 30 Jul 2000 03:54:32 +0200 (CEST)
+Subject: [pups] Overlays?
+Message-ID: <Pine.BSF.4.21.0007300336450.13497-100000@spektr.eu.org>
+
+Hi,
+I've just installed 2.11BSD on one of my PDPs, from a TK50 tape I just
+re-discovered in the trunk of my car. And now I'm in the process of
+applying patches. When I installed patch 412 and started to rebuild the
+kernel, ld complains with a "ld: too big for type 431". 
+Does this means that I have to rearrange stuff between the BASE and the
+various OV entries?
+
+How can I find out which overlay is too big? I've tried to do a:
+138% root--> size unix.o
+text    data    bss     dec     hex
+52352   6928    37622   96902   17a86   total text: 115520
+        overlays: 7680,7232,7808,7744,4864,8576,4736,6848,7680
+
+How big is too big? And also if none of the overlays above are too big, I
+guess it must be the BASE that is too big? 
+
+Is there some sort of documentation anywhere that describe this voodoo
+stuff and black magic a bit? 
+
+Btw, I've put my makefile is at http://spektr.eu.org/~jp/Makefile.LOKE. 
+Any suggestions on what .o file I should move to what overlay?
+
+Thanks!
+
+-- 
+Jörgen Pehrson  jp at spektr.eu.org  http://spektr.eu.org/~jp/
+-----------------------------------------------------------
+"i must say the linux community is a lot nicer than the unix
+community. a negative comment on unix would warrent death
+threats. with linux, it is like stirring up a nest of butterflies."
+             -- Ken Thompson. 1999
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id VAA16344
+	for pups-liszt; Mon, 31 Jul 2000 21:30:05 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From rblair at webteksdesign.com  Sat Jul 29 07:12:05 2000
+From: rblair at webteksdesign.com (Ryan Blair)
+Date: Fri, 28 Jul 2000 17:12:05 -0400
+Subject: [pups] makesimtape.c
+Message-ID: <000b01bff8d8$831b6be0$b40f0923@rbp200>
+
+While reading back through the mailing list messages, trying to find out why
+my tape images never seem to work, I came across a program that I cannot
+seem to find. It was mentioned lately as "makesimtape.c" but I cannot find
+it anywhere in the archives. Anybody have a lead on this?
+
+Thanks,
+Ryan Blair
+rblair at webteksdesign.com
+
+

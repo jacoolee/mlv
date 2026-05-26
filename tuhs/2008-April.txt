@@ -1,0 +1,2394 @@
+From wkt at tuhs.org  Tue Apr  1 14:22:15 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Tue, 1 Apr 2008 14:22:15 +1000
+Subject: [pups] init on V6 Unix
+In-Reply-To: <6B7CD94C177AB54B9E7D054936D5DC83019FE7BE@zmy16exm72.ds.mot.com>
+References: <6B7CD94C177AB54B9E7D054936D5DC83019FE7BE@zmy16exm72.ds.mot.com>
+Message-ID: <20080401042215.GB26157@minnie.tuhs.org>
+
+On Fri, Mar 21, 2008 at 09:44:59AM +0800, Hao Qingfeng-TKNV68 wrote:
+> Hello, Warren, Excuse me for my abruptness. I am  QingFeng Hao from
+> China and got your mail from the website through google searching, :-).
+> I know you're expect on the operating system. Now I am researching the
+> Unix V6's source code , but I met some questions, if you could spend
+> some time to give some aim, I 'll apprecite it much.
+> Question1: After startup, process 1 runs in the user mode and execute
+> the file /etc/init actually, right? So what's the /etc/init's content?
+> When was it written to the disk(combined with Unix)?
+> Question2: Do you have any documents about the peripherals such as
+> KL-11, PC-11? I just got a pdp11/40  and a simple hardware manual from
+> the website. But they are not enough.
+> Thanks a lot.
+> QingFeng Hao
+> Moto-SME
+
+Hi QingFeng, I think you should join the PUPS mailing list ( see
+http://minnie.tuhs.org/mailman/listinfo/pups ), as the people on
+the list should be able to answer your questions.
+
+Q1: The source code for V6 init.c is here:
+    http://minnie.tuhs.org/UnixTree/V6/usr/source/s1/init.c.html
+
+Q2: I would browse through this area of bitsavers.org:
+    http://www.bitsavers.org/pdf/dec/pdp11/
+
+Hope this helps, and if you have other questions please e-mail them
+to the PUPS mailing list, so that we can all help you out.
+
+Cheers,
+	Warren
+
+
+From wkt at tuhs.org  Tue Apr  1 14:39:51 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Tue, 1 Apr 2008 14:39:51 +1000
+Subject: [pups] 2.11BSD patches?
+Message-ID: <20080401043951.GE26449@minnie.tuhs.org>
+
+----- Forwarded message from Jonathan Engdahl <jrengdahl at gmail.com> -----
+
+Date: Sat, 12 Jan 2008 22:50:29 -0500
+From: Jonathan Engdahl <jrengdahl at gmail.com>
+To: wkt at tuhs.org, sms at 2bsd.com
+Subject: 2.11BSD
+
+I don't know what got into me. I decided to fire up a PDP-11. I have not 
+touched one of these for about 5 years. I've mostly been messing with 
+embedded Linux stuff.
+
+The 2.11BSD patch archive has gone offline. Do you know if there is a 
+mirror of this somewhere?
+
+http://moe.2bsd.com/
+
+Jonathan Engdahl
+----- End forwarded message -----
+
+
+From brad at heeltoe.com  Wed Apr  2 11:12:14 2008
+From: brad at heeltoe.com (Brad Parker)
+Date: Tue, 01 Apr 2008 21:12:14 -0400
+Subject: [pups] 2.11BSD patches?
+In-Reply-To: <20080401043951.GE26449@minnie.tuhs.org> 
+References: <20080401043951.GE26449@minnie.tuhs.org>
+Message-ID: <24809.1207098734@mini>
+
+
+Warren Toomey wrote:
+>
+>The 2.11BSD patch archive has gone offline. Do you know if there is a 
+>mirror of this somewhere?
+>
+>http://moe.2bsd.com/
+
+I wondered the same thing.  If anyone has an archive I'd be happy to
+host it on a reasonably fast colo server in Atlanta.
+
+(doesn't everyone have a pdp-11 collection? :-)
+
+-brad
+
+
+
+From sms at 2BSD.COM  Wed Apr  2 12:32:27 2008
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Tue, 1 Apr 2008 19:32:27 -0700 (PDT)
+Subject: [pups] 2.11BSD patches?
+In-Reply-To: <24809.1207098734@mini>
+Message-ID: <Pine.BSI.4.05L.10804011929420.8960-100000@moe.2bsd.com>
+
+On Tue, 1 Apr 2008, Brad Parker wrote:
+
+> Warren Toomey wrote:
+> >
+> >The 2.11BSD patch archive has gone offline. Do you know if there is a 
+> >mirror of this somewhere?
+> >http://moe.2bsd.com/
+
+	It's been up 24x7 (w/ the exception of poweroutages) since about 1998
+
+	Now if you're in one of the  11 or 12000 netblocks I've banned for
+	scanning/hacking/spamming well, sigh, that's too bad :(
+
+> I wondered the same thing.  If anyone has an archive I'd be happy to
+> host it on a reasonably fast colo server in Atlanta.
+
+	Try 
+
+	  ftp.wx.gd-ais.com
+
+> (doesn't everyone have a pdp-11 collection? :-)
+
+	No, i've one that hasn't been powered up in 5 years and likely
+	has dried out all the capacitors anyhow.  All things come to an
+	end and my interest in "slow" waned a long time ago 
+
+	Steven Schultz
+
+
+
+From wkt at tuhs.org  Wed Apr  2 12:54:41 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 2 Apr 2008 12:54:41 +1000
+Subject: [pups] 2.11BSD patches?
+In-Reply-To: <Pine.BSI.4.05L.10804011929420.8960-100000@moe.2bsd.com>
+References: <24809.1207098734@mini>
+	<Pine.BSI.4.05L.10804011929420.8960-100000@moe.2bsd.com>
+Message-ID: <20080402025441.GA80242@minnie.tuhs.org>
+
+On Tue, Apr 01, 2008 at 07:32:27PM -0700, Steven M. Schultz wrote:
+> 	Now if you're in one of the  11 or 12000 netblocks I've banned for
+> 	scanning/hacking/spamming well, sigh, that's too bad :(
+> 
+I must be:
+
+ftp ftp.wx.gd-ais.com
+Connected to raid.wx.gd-ais.com.
+421 Service not available, remote server has closed connection.
+
+:-(	Warren
+
+
+From sms at 2BSD.COM  Wed Apr  2 13:18:11 2008
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Tue, 1 Apr 2008 20:18:11 -0700 (PDT)
+Subject: [pups] 2.11BSD patches?
+In-Reply-To: <20080402025441.GA80242@minnie.tuhs.org>
+Message-ID: <Pine.BSI.4.05L.10804012013290.9090-100000@moe.2bsd.com>
+
+
+On Wed, 2 Apr 2008, Warren Toomey wrote:
+
+> On Tue, Apr 01, 2008 at 07:32:27PM -0700, Steven M. Schultz wrote:
+> > 	Now if you're in one of the  11 or 12000 netblocks I've banned for
+> > 	scanning/hacking/spamming well, sigh, that's too bad :(
+> > 
+> I must be:
+> 
+> ftp ftp.wx.gd-ais.com
+> Connected to raid.wx.gd-ais.com.
+> 421 Service not available, remote server has closed connection.
+
+	Is this you:
+
+Apr  1 19:53:35 raid ftpd at 199.107.241.17[9514]: refused connect from 58.174.148.191
+Apr  1 19:53:59 raid ftpd at 199.107.241.17[9515]: refused connect from 58.174.148.191
+
+raid.2-> nslookup -q=ptr 58.174.148.191
+Server:  raid.WX.GD-AIS.COM
+Address:  192.168.19.17
+
+*** raid.WX.GD-AIS.COM can't find 191.148.174.58.in-addr.arpa.: Non-existent host/domain
+
+	No reverse DNS.  So that block isn't in the packet filters since you're
+	getting a connection refused.  None of the systems I run will provice
+	service to systems without reverse DNS.  Been that way for years.
+
+	'course I could while list that specific address if it's going to
+	remain "yours".
+
+	Steven
+
+
+
+From helbig at lehre.ba-stuttgart.de  Mon Apr  7 00:34:02 2008
+From: helbig at lehre.ba-stuttgart.de (Wolfgang Helbig)
+Date: Sun, 6 Apr 2008 16:34:02 +0200 (MEST)
+Subject: [pups] init on V6 Unix
+Message-ID: <200804061450.m36EoKXt000596@bsd.korb>
+
+
+Hi, Quing Feng,
+
+at http://www.ba-stuttgart.de/~helbig/os/v6/pdp11 you'll find a detailed 
+description of the pdp-11 and its peripherals as needed for understanding design 
+and implementation of V6.
+
+and at http://www.ba-stuttgart.de/~helbig/os/script/chapt2.4 you'll find a
+description of the init process.
+
+have fun,
+Wolfgang Helbig
+
+Warren Thomas wrote:
+>
+>On Fri, Mar 21, 2008 at 09:44:59AM +0800, Hao Qingfeng-TKNV68 wrote:
+>> Hello, Warren, Excuse me for my abruptness. I am  QingFeng Hao from
+>> China and got your mail from the website through google searching, :-).
+>> I know you're expect on the operating system. Now I am researching the
+>> Unix V6's source code , but I met some questions, if you could spend
+>> some time to give some aim, I 'll apprecite it much.
+>> Question1: After startup, process 1 runs in the user mode and execute
+>> the file /etc/init actually, right? So what's the /etc/init's content?
+>> When was it written to the disk(combined with Unix)?
+>> Question2: Do you have any documents about the peripherals such as
+>> KL-11, PC-11? I just got a pdp11/40  and a simple hardware manual from
+>> the website. But they are not enough.
+>> Thanks a lot.
+>> QingFeng Hao
+>> Moto-SME
+>
+>Hi QingFeng, I think you should join the PUPS mailing list ( see
+>http://minnie.tuhs.org/mailman/listinfo/pups ), as the people on
+>the list should be able to answer your questions.
+>
+>Q1: The source code for V6 init.c is here:
+>    http://minnie.tuhs.org/UnixTree/V6/usr/source/s1/init.c.html
+>
+>Q2: I would browse through this area of bitsavers.org:
+>    http://www.bitsavers.org/pdf/dec/pdp11/
+>
+>Hope this helps, and if you have other questions please e-mail them
+>to the PUPS mailing list, so that we can all help you out.
+>
+>Cheers,
+>	Warren
+>_______________________________________________
+>PUPS mailing list
+>PUPS at minnie.tuhs.org
+>https://minnie.tuhs.org/mailman/listinfo/pups
+
+--
+"Dijkstra is right, but you don't say such things!"
+(A less courageous programmer)
+
+------------- End Forwarded Message -------------
+
+
+--
+"Dijkstra is right, but you don't say such things!"
+(A less courageous programmer)
+
+
+
+From robinb at ruffnready.co.uk  Wed Apr  9 06:09:00 2008
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Tue, 8 Apr 2008 21:09:00 +0100
+Subject: [pups] 2.11BSD patches?
+In-Reply-To: <20080401043951.GE26449@minnie.tuhs.org>
+References: <20080401043951.GE26449@minnie.tuhs.org>
+Message-ID: <000001c899b4$672c2b10$0200a8c0@robinslaptop>
+
+Warren,
+I've downloaded the whole thing from Steve's site.  Do you want me to send
+this to you so that you can make it publicly available.  I've checked this
+with Steve and he's ok with it.
+
+Robin
+
+
+-----Original Message-----
+From: pups-bounces at minnie.tuhs.org [mailto:pups-bounces at minnie.tuhs.org] On
+Behalf Of Warren Toomey
+Sent: 01 April 2008 05:40
+To: PDP-11 Unix Preservation Society
+Subject: [pups] 2.11BSD patches?
+
+----- Forwarded message from Jonathan Engdahl <jrengdahl at gmail.com> -----
+
+Date: Sat, 12 Jan 2008 22:50:29 -0500
+From: Jonathan Engdahl <jrengdahl at gmail.com>
+To: wkt at tuhs.org, sms at 2bsd.com
+Subject: 2.11BSD
+
+I don't know what got into me. I decided to fire up a PDP-11. I have not 
+touched one of these for about 5 years. I've mostly been messing with 
+embedded Linux stuff.
+
+The 2.11BSD patch archive has gone offline. Do you know if there is a 
+mirror of this somewhere?
+
+http://moe.2bsd.com/
+
+Jonathan Engdahl
+----- End forwarded message -----
+_______________________________________________
+PUPS mailing list
+PUPS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From robinb at ruffnready.co.uk  Wed Apr  9 06:44:35 2008
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Tue, 8 Apr 2008 21:44:35 +0100
+Subject: [pups] 2.11BSD patches?
+In-Reply-To: <4ab61a80804081338q1f515badx249198866b67a839@mail.gmail.com>
+References: <20080401043951.GE26449@minnie.tuhs.org>
+	<000001c899b4$672c2b10$0200a8c0@robinslaptop>
+	<4ab61a80804081338q1f515badx249198866b67a839@mail.gmail.com>
+Message-ID: <000201c899b9$5f37c8b0$0200a8c0@robinslaptop>
+
+Hi Dave,
+The archive that I've got has got a couple more files which look like the
+original update instructions and so on.  Would be of use if I ftp'd you the
+compressed tar I've got of the whole lot?  It would be a good idea I guess
+if it was put up in a couple of separate places.
+
+Robin
+
+-----Original Message-----
+From: David Cornejo [mailto:dave at dogwood.com] 
+Sent: 08 April 2008 21:38
+To: robinb at ruffnready.co.uk
+Cc: Warren Toomey; PDP-11 Unix Preservation Society
+Subject: Re: [pups] 2.11BSD patches?
+
+it's also been mirrored here: ftp://white.dogwood.com/pub/2.11BSD
+(O'ahu Hawai'i)
+
+On Tue, Apr 8, 2008 at 10:09 AM, Robin Birch <robinb at ruffnready.co.uk>
+wrote:
+> Warren,
+>  I've downloaded the whole thing from Steve's site.  Do you want me to
+send
+>  this to you so that you can make it publicly available.  I've checked
+this
+>  with Steve and he's ok with it.
+>
+>  Robin
+>
+>
+>
+>
+>  -----Original Message-----
+>  From: pups-bounces at minnie.tuhs.org [mailto:pups-bounces at minnie.tuhs.org]
+On
+>  Behalf Of Warren Toomey
+>  Sent: 01 April 2008 05:40
+>  To: PDP-11 Unix Preservation Society
+>  Subject: [pups] 2.11BSD patches?
+>
+>  ----- Forwarded message from Jonathan Engdahl <jrengdahl at gmail.com> -----
+>
+>  Date: Sat, 12 Jan 2008 22:50:29 -0500
+>  From: Jonathan Engdahl <jrengdahl at gmail.com>
+>  To: wkt at tuhs.org, sms at 2bsd.com
+>  Subject: 2.11BSD
+>
+>  I don't know what got into me. I decided to fire up a PDP-11. I have not
+>  touched one of these for about 5 years. I've mostly been messing with
+>  embedded Linux stuff.
+>
+>  The 2.11BSD patch archive has gone offline. Do you know if there is a
+>  mirror of this somewhere?
+>
+>  http://moe.2bsd.com/
+>
+>  Jonathan Engdahl
+>  ----- End forwarded message -----
+>  _______________________________________________
+>  PUPS mailing list
+>  PUPS at minnie.tuhs.org
+>  https://minnie.tuhs.org/mailman/listinfo/pups
+>
+>  _______________________________________________
+>  PUPS mailing list
+>  PUPS at minnie.tuhs.org
+>  https://minnie.tuhs.org/mailman/listinfo/pups
+>
+
+
+
+From dave at dogwood.com  Wed Apr  9 06:38:23 2008
+From: dave at dogwood.com (David Cornejo)
+Date: Tue, 8 Apr 2008 10:38:23 -1000
+Subject: [pups] 2.11BSD patches?
+In-Reply-To: <000001c899b4$672c2b10$0200a8c0@robinslaptop>
+References: <20080401043951.GE26449@minnie.tuhs.org>
+	<000001c899b4$672c2b10$0200a8c0@robinslaptop>
+Message-ID: <4ab61a80804081338q1f515badx249198866b67a839@mail.gmail.com>
+
+it's also been mirrored here: ftp://white.dogwood.com/pub/2.11BSD
+(O'ahu Hawai'i)
+
+On Tue, Apr 8, 2008 at 10:09 AM, Robin Birch <robinb at ruffnready.co.uk> wrote:
+> Warren,
+>  I've downloaded the whole thing from Steve's site.  Do you want me to send
+>  this to you so that you can make it publicly available.  I've checked this
+>  with Steve and he's ok with it.
+>
+>  Robin
+>
+>
+>
+>
+>  -----Original Message-----
+>  From: pups-bounces at minnie.tuhs.org [mailto:pups-bounces at minnie.tuhs.org] On
+>  Behalf Of Warren Toomey
+>  Sent: 01 April 2008 05:40
+>  To: PDP-11 Unix Preservation Society
+>  Subject: [pups] 2.11BSD patches?
+>
+>  ----- Forwarded message from Jonathan Engdahl <jrengdahl at gmail.com> -----
+>
+>  Date: Sat, 12 Jan 2008 22:50:29 -0500
+>  From: Jonathan Engdahl <jrengdahl at gmail.com>
+>  To: wkt at tuhs.org, sms at 2bsd.com
+>  Subject: 2.11BSD
+>
+>  I don't know what got into me. I decided to fire up a PDP-11. I have not
+>  touched one of these for about 5 years. I've mostly been messing with
+>  embedded Linux stuff.
+>
+>  The 2.11BSD patch archive has gone offline. Do you know if there is a
+>  mirror of this somewhere?
+>
+>  http://moe.2bsd.com/
+>
+>  Jonathan Engdahl
+>  ----- End forwarded message -----
+>  _______________________________________________
+>  PUPS mailing list
+>  PUPS at minnie.tuhs.org
+>  https://minnie.tuhs.org/mailman/listinfo/pups
+>
+>  _______________________________________________
+>  PUPS mailing list
+>  PUPS at minnie.tuhs.org
+>  https://minnie.tuhs.org/mailman/listinfo/pups
+>
+
+
+From milov at uwlax.edu  Wed Apr 30 00:38:31 2008
+From: milov at uwlax.edu (Milo Velimirovic)
+Date: Tue, 29 Apr 2008 09:38:31 -0500
+Subject: [pups] [Unix-jun72] Is there anything I can do to help?
+In-Reply-To: <4817151F.7030204@gmail.com>
+References: <4817151F.7030204@gmail.com>
+Message-ID: <69C9D0A1-F0A5-4A27-909A-283F6603A6B6@uwlax.edu>
+
+I'm really interested in this project.
+
+My first exposure to the -11 was in 1976. I learned assembly language  
+in the second computer science course I took on an 11/20.
+
+Since then I've been a big fan of the pdp11 and own several of the  
+more recent designs. I'd be happy to help with this project but I  
+don't have any free timem to devote for another week.
+
+I have a pdp11/05 that is comparable to the 11/20 in terms of speed  
+and instruction set. I need help in restoring it to operating  
+condition. Sepcifically the power supplies need some transistors to be  
+replaced. There are also a bunch of other things that may need help.  
+Core is of unknown capacity but it's doubtful that it exceeds 24kW.  
+I'd also prefer not to have to resurrect a hardcopy console which  
+means converting the console interface on the CPU board to talk to a  
+more modern serial device. Any constructive  :) suggestions welcome.
+
+
+  - Milo
+
+On Apr 29, 2008, at 7:31 AM, Andrew Warkentin wrote:
+
+> Is there anything I can do to help restore this system? I'm not very
+> familiar with PDP-11 assembly.
+> _______________________________________________
+> Unix-jun72 mailing list
+> Unix-jun72 at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/unix-jun72
+
+--
+Milo Velimirović,  Unix Computer Network Administrator
+608.785.6618 Office -  608.386.2817 Cell
+University of Wisconsin - La Crosse
+La Crosse, Wisconsin 54601 USA   43 48 48 N 91 13 53 W
+
+
+
+
+
+From wkt at tuhs.org  Tue Apr 29 08:38:59 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Tue, 29 Apr 2008 08:38:59 +1000
+Subject: [Unix-jun72] New mailing list for Unix 1972 effort
+Message-ID: <20080428223859.GA3698@minnie.tuhs.org>
+
+All, I've just created a mailing list for the people involved in the effort
+to reconstruct the Unix kernel from the 1972 assembly listing. I thought
+it would be good to keep the mundane details of the work separate from the
+TUHS mailing list.
+
+The new list is unix-jun72 at tuhs.org
+
+I've manually subscribed the e-mail addresses that seem to be interested
+in the work. If you want to be removed from the new list, e-mail me. If
+you want to subscribe to the list, you can go here to do that:
+
+https://minnie.tuhs.org/mailman/listinfo/unix-jun72
+
+Cheers,
+	Warren
+
+
+From wkt at tuhs.org  Tue Apr 29 08:49:32 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Tue, 29 Apr 2008 08:49:32 +1000
+Subject: [Unix-jun72] Existing resources
+Message-ID: <20080428224932.GA3915@minnie.tuhs.org>
+
+I just thought I'd make a quick list of what we have at our disposal, apart
+from the humans that is :)
+
+http://www.bitsavers.org/pdf/bellLabs/unix/PreliminaryUnixImplementationDocument_Jun72.pdf
+	- the 1972 kernel on paper, currently being OCR'd in
+
+http://cm.bell-labs.com/cm/cs/who/dmr/1stEdman.html
+http://www.tuhs.org/Archive/PDP-11/Distributions/research/Dennis_v3/v3man.tar.gz
+	- manuals for 1st and 3rd Edition UNIX. I have 2nd Ed on paper, and
+	  I'll scan it in.
+
+http://www.tuhs.org/Archive/PDP-11/Distributions/research/1972_stuff/
+	- binaries from around 1972 in the s2.tar.gz tarball.
+	- fragment of source code from 1972 in s1-fragments.tar.gz.
+
+http://www.tuhs.org/Archive/Applications/Early_C_Compilers/
+	- early C compiler source, known to be working and can
+	  recompile itself. The last1120c.tar.gz is probably the
+	  one best suited to the 1972 kernel.
+
+http://www.tuhs.org/Archive/PDP-11/Emulators/Apout/
+	- Apout, an emulator which can actually run the 1972 binaries.
+	  This means we can use the 1972 tools to help reconstruct the system.
+
+http://simh.trailing-edge.com/
+	- Bob Supnik's simh emulator, which we can use to boot the kernel
+	  once it's typed in and assembled
+
+Cheers,
+	Warren
+
+
+From newsham at lava.net  Tue Apr 29 09:03:09 2008
+From: newsham at lava.net (Tim Newsham)
+Date: Mon, 28 Apr 2008 13:03:09 -1000 (HST)
+Subject: [Unix-jun72] Some discussion
+In-Reply-To: <20080428224932.GA3915@minnie.tuhs.org>
+References: <20080428224932.GA3915@minnie.tuhs.org>
+Message-ID: <Pine.BSI.4.64.0804281258520.20990@malasada.lava.net>
+
+Below I include part of an email I sent out to Brantley earlier on my 
+plans.  I've been using 7ed unix and "as" so far to compile the pieces
+of the source as they've become available.  I have a "sys.s" file
+in the svn that defines the system calls per the u1.s file (Brantley
+says the older versions of "as" had the syscall table built in):
+
+    $ as - sys.s u0.s ux.s
+
+and used that as a quick litmus test for syntax errors.  Now that I
+am aware of apout I will probably start using the "as" from the 1972
+bits.
+
+earlier comments:
+-----
+As for putting the machine together, I've put together some notes
+in the svn under machine.txt.  It seems to be a pdp 11/20 with 24kbytes
+ram, and rk03, rf, ttys on a dc-11, tape on tc-11.  I think all of
+this should be fairly easy to set up in simh except the ttys
+(and console is only used in single user according to docs).  Simh
+doesnt support 24kbyte ram setting, but 32k should prob work fine.
+
+Interestingly the kernel has a build mode ("cold") where it will
+build a new filesystem on disk, so that might make bringing up
+the system a little easier.  There's a boot sequence that seems a
+little elaborate described in one of the 1st ed manuals, but probably
+for initial bring-up it would be sufficient to just deposit all
+the values in the right place with simh using a script to generate
+the simh config...
+
+If you have any suggestions, I'd love to hear them.  I've played with
+pdp-11 in simh before, but a lot of this is still new to me.
+
+
+Tim Newsham
+http://www.thenewsh.com/~newsham/
+
+
+From newsham at lava.net  Tue Apr 29 11:33:25 2008
+From: newsham at lava.net (Tim Newsham)
+Date: Mon, 28 Apr 2008 15:33:25 -1000 (HST)
+Subject: [Unix-jun72] assembling ux.s
+Message-ID: <Pine.BSI.4.64.0804281528090.20990@malasada.lava.net>
+
+I am trying out apout using the "1972_stuff" binaries.  When using
+"as" to assemble "ux" (e10-01 through e10-02) it gives an error
+"m 0024" (multiply-defined label) for the line:
+
+     mount:    .=.+1024.
+
+I assume this is because the assembler has predefined the "mount"
+system call (I ran across this earlier when using my system call
+table sys.s with ux with the v7 assembler).
+
+We can work around this (ie. use the v7 assembler without the definition
+for "mount"), but it worries me a little -- why does the listing
+have such an obvious and large flaw?  The symbol "mount" is used
+in several places, so this isn't likely to be a small typo.  I can't
+think of a good explanation as to why this error would exist in the
+listing other than possibly pointing to another assembler being used.
+
+Tim Newsham
+http://www.thenewsh.com/~newsham/
+
+
+From wkt at tuhs.org  Tue Apr 29 16:31:01 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Tue, 29 Apr 2008 16:31:01 +1000
+Subject: [Unix-jun72] assembling ux.s
+In-Reply-To: <Pine.BSI.4.64.0804281528090.20990@malasada.lava.net>
+References: <Pine.BSI.4.64.0804281528090.20990@malasada.lava.net>
+Message-ID: <20080429063101.GA23694@minnie.tuhs.org>
+
+On Mon, Apr 28, 2008 at 03:33:25PM -1000, Tim Newsham wrote:
+> I am trying out apout using the "1972_stuff" binaries.  When using
+> "as" to assemble "ux" (e10-01 through e10-02) it gives an error
+> "m 0024" (multiply-defined label) for the line:
+> 
+>      mount:    .=.+1024.
+> 
+> I assume this is because the assembler has predefined the "mount"
+> system call (I ran across this earlier when using my system call
+> table sys.s with ux with the v7 assembler).
+
+It does look like this is the case. The manual says that syscall names
+are pre-defined, and in these source fragments from 1972, you can see
+that as definitely knows about mount and open:
+
+http://minnie.tuhs.org/UnixTree/1972_stuff/s1/frag37.html
+http://minnie.tuhs.org/UnixTree/1972_stuff/s1/frag22.html
+
+I've sent an e-mail to Dennis to see if he can remember what the procedure
+was to rebuild the kernel from the assembly source.
+
+Cheers,
+	Warren
+
+
+From andreww591 at gmail.com  Tue Apr 29 22:31:27 2008
+From: andreww591 at gmail.com (Andrew Warkentin)
+Date: Tue, 29 Apr 2008 06:31:27 -0600
+Subject: [Unix-jun72] Is there anything I can do to help?
+Message-ID: <4817151F.7030204@gmail.com>
+
+Is there anything I can do to help restore this system? I'm not very 
+familiar with PDP-11 assembly.
+
+
+From milov at uwlax.edu  Wed Apr 30 00:38:31 2008
+From: milov at uwlax.edu (Milo Velimirovic)
+Date: Tue, 29 Apr 2008 09:38:31 -0500
+Subject: [Unix-jun72] Is there anything I can do to help?
+In-Reply-To: <4817151F.7030204@gmail.com>
+References: <4817151F.7030204@gmail.com>
+Message-ID: <69C9D0A1-F0A5-4A27-909A-283F6603A6B6@uwlax.edu>
+
+I'm really interested in this project.
+
+My first exposure to the -11 was in 1976. I learned assembly language  
+in the second computer science course I took on an 11/20.
+
+Since then I've been a big fan of the pdp11 and own several of the  
+more recent designs. I'd be happy to help with this project but I  
+don't have any free timem to devote for another week.
+
+I have a pdp11/05 that is comparable to the 11/20 in terms of speed  
+and instruction set. I need help in restoring it to operating  
+condition. Sepcifically the power supplies need some transistors to be  
+replaced. There are also a bunch of other things that may need help.  
+Core is of unknown capacity but it's doubtful that it exceeds 24kW.  
+I'd also prefer not to have to resurrect a hardcopy console which  
+means converting the console interface on the CPU board to talk to a  
+more modern serial device. Any constructive  :) suggestions welcome.
+
+
+  - Milo
+
+On Apr 29, 2008, at 7:31 AM, Andrew Warkentin wrote:
+
+> Is there anything I can do to help restore this system? I'm not very
+> familiar with PDP-11 assembly.
+> _______________________________________________
+> Unix-jun72 mailing list
+> Unix-jun72 at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/unix-jun72
+
+--
+Milo Velimirović,  Unix Computer Network Administrator
+608.785.6618 Office -  608.386.2817 Cell
+University of Wisconsin - La Crosse
+La Crosse, Wisconsin 54601 USA   43 48 48 N 91 13 53 W
+
+
+
+
+
+From newsham at lava.net  Wed Apr 30 03:00:22 2008
+From: newsham at lava.net (Tim Newsham)
+Date: Tue, 29 Apr 2008 07:00:22 -1000 (HST)
+Subject: [Unix-jun72] Is there anything I can do to help?
+In-Reply-To: <4817151F.7030204@gmail.com>
+References: <4817151F.7030204@gmail.com>
+Message-ID: <Pine.BSI.4.64.0804290657030.20990@malasada.lava.net>
+
+> Is there anything I can do to help restore this system? I'm not very
+> familiar with PDP-11 assembly.
+
+Anyone who wants to help and doesn't mind a little tedium, we still
+need people to review some of the sections.  If you go to the svn
+and read the notes file you'll notice that many sections haven't
+been reviewed yet.  Just add your name to the section you are going
+to commit to, and start comparing the entered pages to the original
+document.  In particular take care to look for the use of capital O
+in place of 0 (zero) and the use of 1 (one) I (eye) and l (ell).
+
+If you find any weirdness in the original document please enter it
+as-is and document it in the notes file.  When you're done your
+edits, commit them back to the svn.  You'll need to send me your
+google account name for me to add you to the project so you can
+check out the code with commit access.
+
+It would probably be a good idea to drop an email to the list claiming
+your piece of work, too.
+
+Tim Newsham
+http://www.thenewsh.com/~newsham/
+
+
+From cyrille.lefevre-lists at laposte.net  Wed Apr 30 10:16:41 2008
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Wed, 30 Apr 2008 02:16:41 +0200
+Subject: [Unix-jun72] tif images
+Message-ID: <4817BA69.6010301@laposte.net>
+
+Hi,
+
+here is my 2p :
+
+	http://cyrillelefevre.free.fr/jun72/jun72.zip
+
+which is an archive of automatically extracted tif images from the 
+original pdf file.
+
+so, no need to print/scan any more...
+
+Regards,
+
+Cyrille Lefevre
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+
+From cyrille.lefevre-lists at laposte.net  Wed Apr 30 11:14:52 2008
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Wed, 30 Apr 2008 03:14:52 +0200
+Subject: [Unix-jun72] tif images
+In-Reply-To: <4817BA69.6010301@laposte.net>
+References: <4817BA69.6010301@laposte.net>
+Message-ID: <4817C80C.5060708@laposte.net>
+
+Cyrille Lefevre a écrit :
+> Hi,
+> 
+> here is my 2p :
+> 
+> 	http://cyrillelefevre.free.fr/jun72/jun72.zip
+> 
+> which is an archive of automatically extracted tif images from the 
+> original pdf file.
+> 
+> so, no need to print/scan any more...
+
+don't know if this may help, but here is an archive of converted tif to 
+raw text using tesseract (233 KB).
+
+	http://cyrillelefevre.free.fr/jun72/jun72.zip
+
+yet another conversion using VeryPDF Image2PDF-OCR which enable text 
+selection using Acrobat (13.4 MB)
+
+	http://cyrillelefevre.free.fr/jun72/jun72.pdf
+
+PS : the tiff archive is 12.6 MB heavy.
+
+Regards,
+
+Cyrille Lefevre
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+
+
+From cyrille.lefevre-lists at laposte.net  Wed Apr 30 11:17:42 2008
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Wed, 30 Apr 2008 03:17:42 +0200
+Subject: [Unix-jun72] tif images
+In-Reply-To: <4817C80C.5060708@laposte.net>
+References: <4817BA69.6010301@laposte.net> <4817C80C.5060708@laposte.net>
+Message-ID: <4817C8B6.2090402@laposte.net>
+
+Cyrille Lefevre a écrit :
+> don't know if this may help, but here is an archive of converted tif to 
+> raw text using tesseract (233 KB).
+> 
+>     http://cyrillelefevre.free.fr/jun72/jun72.zip
+
+it's :
+
+       http://cyrillelefevre.free.fr/jun72/jun72tesseract.zip
+
+Regards,
+
+Cyrille Lefevre
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+
+
+From wkt at tuhs.org  Wed Apr 30 20:21:20 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 30 Apr 2008 20:21:20 +1000
+Subject: [Unix-jun72] Disassembler in progress
+Message-ID: <20080430102120.GA84492@minnie.tuhs.org>
+
+Guys, I'm writing a PDP-11 a.out disassember. I think it will be useful for
+a couple of reasons:
+
+ - we will be able to convert the extant 1972 binaries back into some form
+   of source code. It won't be as good as the real thing, but it will be
+   better than the binary.
+ - we have some source code in fragmentary form on the s1 tape, see
+   http://minnie.tuhs.org/UnixTree/1972_stuff/. Some of the fragments
+   are identifiable, some are not. We might be able to use the
+   diassembled binaries to identify some of the fragments, and even
+   reconstruct a hybrid original/diassembled version of the source
+   for some of the 1972 applications.
+
+Right now, here's what I've got: disassembly of the top of 1972 ls:
+
+    sys        break: 00
+    mov        $01,044260
+    mov        sp,r5
+    mov        (r5)+,043732
+    tst        (r5)+
+    dec        043732
+    mov        043732,043734
+    bgt        040056
+    mov        $042542,r5
+    mov        (r5)+,r4
+    cmpb        (r4)+,$055
+    bne        040174
+    dec        043734
+
+and the top of the frag19 file:
+
+        sys     break; end+512.
+        mov     $1,obuf
+        mov     sp,r5
+        mov     (r5)+,count
+        tst     (r5)+
+        dec     count
+        mov     count,ocount
+        bgt     loop
+        mov     $dotp,r5
+loop:
+        mov     (r5)+,r4
+        cmpb    (r4)+,$'-
+        bne     1f
+        dec     ocount
+
+At the moment it's a 1-pass disassembler. I want to make it 2-pass: on the
+first pass I will try to identify labels for branches, functions, strings and
+variable locations (and given them arbitrary names); on the second pass
+I'll print out the instructions with reference to the labels.
+None of the binaries have symbol tables, unfortunately.
+
+It's a start, anyway.
+	Warren
+
+
+From brad at heeltoe.com  Wed Apr 30 23:01:51 2008
+From: brad at heeltoe.com (Brad Parker)
+Date: Wed, 30 Apr 2008 09:01:51 -0400
+Subject: [Unix-jun72] ocr'd e03
+In-Reply-To: <20080430102120.GA84492@minnie.tuhs.org> 
+Message-ID: <3018.1209560511@mini>
+
+
+Hi,
+
+I'm new to this (just discovered it - way cool!), so as an experiment I
+opened the scanned pdf and cut and pasted e03-01,02,03,04 into gimp,
+shrunk them to 3000x3000 and sent them to the tesseract web site.  It
+does an amazing job.  A little emacs work and the source looks good.
+
+Anyway, I know e03 is assigned to someone else, but they where not in
+the svn.  should I check them in?  (I just did it as an experiment, and
+I don't want to step on anyone;)
+
+I'm also curious how we boot strap this.  In the end I assume we need a
+binary image which one of the sims can read.  I have 0.5 a mind to write
+a quick and dirty assembler which outputs a binary file... 
+
+But I suppose it would be better to use the original as/as2.  Can this
+be run with apout? (I'd be curious to hear how people are doing it).
+
+I'm happy to keep plugging through the remaining un-ocr'd pages if no
+one screams, sending email first of course.
+
+-brad
+
+
+From wes.parish at paradise.net.nz  Wed Apr  9 19:05:54 2008
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Wed, 09 Apr 2008 21:05:54 +1200
+Subject: [TUHS] the V distributed system
+Message-ID: <200804092105.54738.wes.parish@paradise.net.nz>
+
+I was researching various windowing systems for various reasons and I found 
+the mention of the V distributed sytem on the W article stub on Wikipedia:
+http://en.wikipedia.org/wiki/W_Window_System
+"W was originally developed at Stanford University by Paul Asente and Brian 
+Reid for the V operating system."
+
+A few questions here: is V close enough to Unix to warrant winding up in 
+an "Other" category in the TUHS repository?  Does anyone have a copy of it 
+(plus source if possible)?  If so, who should I contact?
+
+Thanks
+
+Wesley Parish
+-- 
+Clinersterton beademung, with all of love - RIP James Blish
+-----
+Gaul is quartered into three halves.  Things which are 
+impossible are equal to each other.  Guerrilla 
+warfare means up to their monkey tricks. 
+Extracts from "Schoolboy Howlers" - the collective wisdom 
+of the foolish.
+-----
+Mau e ki, he aha te mea nui?
+You ask, what is the most important thing?
+Maku e ki, he tangata, he tangata, he tangata.
+I reply, it is people, it is people, it is people.
+
+
+From aek at bitsavers.org  Thu Apr 10 01:31:30 2008
+From: aek at bitsavers.org (Al Kossow)
+Date: Wed, 09 Apr 2008 08:31:30 -0700
+Subject: [TUHS] the V distributed system
+In-Reply-To: <200804092105.54738.wes.parish@paradise.net.nz>
+References: <200804092105.54738.wes.parish@paradise.net.nz>
+Message-ID: <47FCE152.20400@bitsavers.org>
+
+Wesley Parish wrote:
+> 
+> A few questions here: is V close enough to Unix to warrant winding up in 
+> an "Other" category in the TUHS repository?
+
+Possibly, though the main connection is the implementation language.
+You can refer to documents on it at
+http://bitsavers.org/pdf/stanford/v-system
+
+   Does anyone have a copy of it
+> (plus source if possible)?  If so, who should I contact?
+
+At one point, Stanford was licensing it. Check with David
+Cherriton to see what its current status is. Copies may be
+available if clearance can be obtained to release it.
+
+
+
+
+From andreww591 at gmail.com  Fri Apr 11 11:26:45 2008
+From: andreww591 at gmail.com (Andrew Warkentin)
+Date: Thu, 10 Apr 2008 19:26:45 -0600
+Subject: [TUHS] test
+Message-ID: <47FEBE55.3050106@gmail.com>
+
+This is a test. Please ignore.
+
+(checking if I am subscribed - the server doesn't appear to be sending 
+success messages)
+
+
+From wkt at tuhs.org  Wed Apr 23 16:03:56 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 23 Apr 2008 16:03:56 +1000
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+Message-ID: <20080423060356.GA88398@minnie.tuhs.org>
+
+All,
+	I'm sure I saw a PDF document a few years ago which was an early
+UNIX kernel written in assembly code. I thought I had saved the document,
+but alas I can't find it. Can anybody remind me where to get it, or
+perhaps I was hallucinating!
+
+Thanks,
+	Warren
+
+
+From wkt at tuhs.org  Wed Apr 23 16:07:21 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 23 Apr 2008 16:07:21 +1000
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <20080423060356.GA88398@minnie.tuhs.org>
+References: <20080423060356.GA88398@minnie.tuhs.org>
+Message-ID: <20080423060721.GA92411@minnie.tuhs.org>
+
+On Wed, Apr 23, 2008 at 04:03:56PM +1000, Warren Toomey wrote:
+> 	I'm sure I saw a PDF document a few years ago which was an early
+> UNIX kernel written in assembly code. I thought I had saved the document,
+> but alas I can't find it. Can anybody remind me where to get it, or
+> perhaps I was hallucinating!
+
+Humph, I should always delay 5 minutes before e-mailing :-) I just
+found it at bitsavers:
+http://www.bitsavers.org/pdf/bellLabs/unix/PreliminaryUnixImplementationDocument_Jun72.pdf
+
+	Warren
+
+
+From newsham at lava.net  Thu Apr 24 04:27:59 2008
+From: newsham at lava.net (Tim Newsham)
+Date: Wed, 23 Apr 2008 08:27:59 -1000 (HST)
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <20080423060721.GA92411@minnie.tuhs.org>
+References: <20080423060356.GA88398@minnie.tuhs.org>
+	<20080423060721.GA92411@minnie.tuhs.org>
+Message-ID: <Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+
+> Humph, I should always delay 5 minutes before e-mailing :-) I just
+> found it at bitsavers:
+> http://www.bitsavers.org/pdf/bellLabs/unix/PreliminaryUnixImplementationDocument_Jun72.pdf
+
+wow, I didn't know that so much of the system was still around somewhere.
+Has anyone started work on typing it in and trying to get a system
+built?  (would make for great captchas ;-)
+
+How complimentary are these listings with the "1972_stuff" on TUHS?
+
+> 	Warren
+
+Tim Newsham
+http://www.thenewsh.com/~newsham/
+
+
+From wkt at tuhs.org  Thu Apr 24 10:07:36 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 24 Apr 2008 10:07:36 +1000
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+References: <20080423060356.GA88398@minnie.tuhs.org>
+	<20080423060721.GA92411@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+Message-ID: <20080424000736.GA48312@minnie.tuhs.org>
+
+On Wed, Apr 23, 2008 at 08:27:59AM -1000, Tim Newsham wrote:
+> >Humph, I should always delay 5 minutes before e-mailing :-) I just
+> >found it at bitsavers:
+> >http://www.bitsavers.org/pdf/bellLabs/unix/PreliminaryUnixImplementationDocument_Jun72.pdf
+> 
+> wow, I didn't know that so much of the system was still around somewhere.
+> Has anyone started work on typing it in and trying to get a system
+> built?
+
+I thought about it a while back, but the potential for OCR errors is high,
+and so too the frustration level. I'd say, only if someone was to fund the
+work :-)
+ 
+> How complementary are these listings with the "1972_stuff" on TUHS?
+
+the s2 tape in the PDP-11/Distributions/research/1972_stuff area contains
+userland binaries and libraries from 1972, so there's a strong possibility
+that the kernel in the PDF document would be able to execute the binaries.
+
+Cheers,
+	Warren
+
+
+From newsham at lava.net  Thu Apr 24 11:57:41 2008
+From: newsham at lava.net (Tim Newsham)
+Date: Wed, 23 Apr 2008 15:57:41 -1000 (HST)
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <20080424000736.GA48312@minnie.tuhs.org>
+References: <20080423060356.GA88398@minnie.tuhs.org>
+	<20080423060721.GA92411@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+	<20080424000736.GA48312@minnie.tuhs.org>
+Message-ID: <Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+
+> I thought about it a while back, but the potential for OCR errors is high,
+> and so too the frustration level. I'd say, only if someone was to fund the
+> work :-)
+
+What about a community effort?  The sources start on pdf page 6 and go
+through pdf page 96.  That's only 91 pages.  If someone was to OCR these
+and place them in some distributed revision control, one page per file,
+and 9 people each took ownership over 10 pages each, it wouldn't take
+that much effort to get it done.  Someone would have to write scripts
+to glue the pages properly back into files, but that should be a fairly
+minor effort in comparison.  Finally someone would have to get build
+tools appropriate for processing the files, and feed back the errors
+to the contributors to help fix up (or provide tools for contributors
+to test their work independently).
+
+I could commit myself to 10 pages if others were willing to come forward
+and take a chunk.
+
+> the s2 tape in the PDP-11/Distributions/research/1972_stuff area contains
+> userland binaries and libraries from 1972, so there's a strong possibility
+> that the kernel in the PDF document would be able to execute the binaries.
+
+Restoring most of a working 1972 unix software system would be incredible.
+
+> 	Warren
+
+Tim Newsham
+http://www.thenewsh.com/~newsham/
+
+
+From newsham at lava.net  Thu Apr 24 16:04:10 2008
+From: newsham at lava.net (Tim Newsham)
+Date: Wed, 23 Apr 2008 20:04:10 -1000 (HST)
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+References: <20080423060356.GA88398@minnie.tuhs.org>
+	<20080423060721.GA92411@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+	<20080424000736.GA48312@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+Message-ID: <Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>
+
+> What about a community effort?  The sources start on pdf page 6 and go
+> through pdf page 96.  That's only 91 pages.  If someone was to OCR these
+> and place them in some distributed revision control, one page per file,
+> and 9 people each took ownership over 10 pages each, it wouldn't take
+> that much effort to get it done.  Someone would have to write scripts
+> to glue the pages properly back into files, but that should be a fairly
+> minor effort in comparison.  Finally someone would have to get build
+> tools appropriate for processing the files, and feed back the errors
+> to the contributors to help fix up (or provide tools for contributors
+> to test their work independently).
+>
+> I could commit myself to 10 pages if others were willing to come forward
+> and take a chunk.
+
+Here's a start.
+
+     http://www.thenewsh.com/%7Enewsham/unix_jun72/
+
+I did the 10 pages of section E00.  It took me about
+3-4 hours.  The files should probably be reviewed, so I'm estimating
+about 5 hours of work for 10 pages.
+
+If other people are interested in committing their time, I'll commit to 
+another 10 pages plus reviewing 10 pages of someone elses work if someone 
+will review my work.
+
+Tim Newsham
+http://www.thenewsh.com/~newsham/
+
+
+From aek at bitsavers.org  Fri Apr 25 02:34:39 2008
+From: aek at bitsavers.org (Al Kossow)
+Date: Thu, 24 Apr 2008 09:34:39 -0700
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>
+References: <20080423060356.GA88398@minnie.tuhs.org>	<20080423060721.GA92411@minnie.tuhs.org>	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>	<20080424000736.GA48312@minnie.tuhs.org>	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+	<Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>
+Message-ID: <4810B69F.1000500@bitsavers.org>
+
+Tim Newsham wrote:
+>> What about a community effort?
+
+I went back into the archive and rescanned the entire document at 400dpi
+uncompressed 8bits/pixel. Someone I know has been working on an OCR program
+optimized for printouts, I'm hoping to get him interested.
+
+What would be more interesting is recovering the original program documentation
+which appeared in the same document, but is very light. There was also the
+original hand-written version from Jan-Mar 1972 which I also scanned.
+
+
+
+
+From newsham at lava.net  Fri Apr 25 02:44:56 2008
+From: newsham at lava.net (Tim Newsham)
+Date: Thu, 24 Apr 2008 06:44:56 -1000 (HST)
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <4810B69F.1000500@bitsavers.org>
+References: <20080423060356.GA88398@minnie.tuhs.org>
+	<20080423060721.GA92411@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+	<20080424000736.GA48312@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+	<Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>
+	<4810B69F.1000500@bitsavers.org>
+Message-ID: <Pine.BSI.4.64.0804240643260.20990@malasada.lava.net>
+
+> Tim Newsham wrote:
+>>> What about a community effort?
+>
+> I went back into the archive and rescanned the entire document at 400dpi
+> uncompressed 8bits/pixel. Someone I know has been working on an OCR program
+> optimized for printouts, I'm hoping to get him interested.
+
+That would be great and would make the effort much easier!
+
+> What would be more interesting is recovering the original program 
+> documentation
+> which appeared in the same document, but is very light. There was also the
+> original hand-written version from Jan-Mar 1972 which I also scanned.
+
+I'm much more interested in reconstructing a running system, myself.
+The documentation is great to have, but its already readable (although
+not searchable) in the current pdf.  At least in most places (there are
+some really faded sections).
+
+Tim Newsham
+http://www.thenewsh.com/~newsham/
+
+
+From aek at bitsavers.org  Fri Apr 25 03:16:00 2008
+From: aek at bitsavers.org (Al Kossow)
+Date: Thu, 24 Apr 2008 10:16:00 -0700
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <143F6603-5D78-4C0E-B159-F421657356C9@tfeb.org>
+References: <20080423060356.GA88398@minnie.tuhs.org>
+	<20080423060721.GA92411@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+	<20080424000736.GA48312@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+	<Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>
+	<4810B69F.1000500@bitsavers.org>
+	<Pine.BSI.4.64.0804240643260.20990@malasada.lava.net>
+	<143F6603-5D78-4C0E-B159-F421657356C9@tfeb.org>
+Message-ID: <4810C050.3030507@bitsavers.org>
+
+Tim Bradshaw wrote:
+
+> I think it's fascinating that we may end up with a working first edition 
+> Unix which has been *typed in by hand in 2008*.
+
+Only the kernel. Sounds like Warren has the rest in machine-readable form.
+
+This is exactly what they had to do to get DTSS running again. The code was
+retyped from a listing that a field service engineer had saved in his garage.
+
+I see this a LOT at the Computer History Museum. The oldest code has only survived
+on paper (tape, cards, listings). Almost no magnetic media has survived from the
+60's. I was recently talking to someone about OS/360, and it appears almost none of
+it from the 60's has survived, which is staggering considering how pervasive those
+systems were.
+
+
+
+
+
+
+From tfb at tfeb.org  Fri Apr 25 03:07:07 2008
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Thu, 24 Apr 2008 18:07:07 +0100
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <Pine.BSI.4.64.0804240643260.20990@malasada.lava.net>
+References: <20080423060356.GA88398@minnie.tuhs.org>
+	<20080423060721.GA92411@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+	<20080424000736.GA48312@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+	<Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>
+	<4810B69F.1000500@bitsavers.org>
+	<Pine.BSI.4.64.0804240643260.20990@malasada.lava.net>
+Message-ID: <143F6603-5D78-4C0E-B159-F421657356C9@tfeb.org>
+
+>
+> I'm much more interested in reconstructing a running system, myself.
+> The documentation is great to have, but its already readable (although
+> not searchable) in the current pdf.  At least in most places (there  
+> are
+> some really faded sections).
+
+I think it's fascinating that we may end up with a working first  
+edition Unix which has been *typed in by hand in 2008*. None of the  
+bits will actually be the original ones.  Borges would be proud  
+("Pierre Menard, Author of the Quixote" is the story I am thinking of).
+
+If anyone is looking for volunteers I would have a go at typing bits  
+in, but I do not know how much time I'm likely to have.
+
+--tim
+
+
+From madcrow.maxwell at gmail.com  Fri Apr 25 03:27:17 2008
+From: madcrow.maxwell at gmail.com (Michael Kerpan)
+Date: Thu, 24 Apr 2008 13:27:17 -0400
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <4810C050.3030507@bitsavers.org>
+References: <20080423060356.GA88398@minnie.tuhs.org>
+	<20080423060721.GA92411@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+	<20080424000736.GA48312@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+	<Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>
+	<4810B69F.1000500@bitsavers.org>
+	<Pine.BSI.4.64.0804240643260.20990@malasada.lava.net>
+	<143F6603-5D78-4C0E-B159-F421657356C9@tfeb.org>
+	<4810C050.3030507@bitsavers.org>
+Message-ID: <8dd2d95c0804241027x3280724aq8d48bdf044b690a2@mail.gmail.com>
+
+I guess we need to start archiving all software on acid-free archival
+paper, then. It's the only way it'll survive.
+
+
+From newsham at lava.net  Fri Apr 25 03:30:58 2008
+From: newsham at lava.net (Tim Newsham)
+Date: Thu, 24 Apr 2008 07:30:58 -1000 (HST)
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <8dd2d95c0804241027x3280724aq8d48bdf044b690a2@mail.gmail.com>
+References: <20080423060356.GA88398@minnie.tuhs.org>
+	<20080423060721.GA92411@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+	<20080424000736.GA48312@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+	<Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>
+	<4810B69F.1000500@bitsavers.org>
+	<Pine.BSI.4.64.0804240643260.20990@malasada.lava.net>
+	<143F6603-5D78-4C0E-B159-F421657356C9@tfeb.org>
+	<4810C050.3030507@bitsavers.org>
+	<8dd2d95c0804241027x3280724aq8d48bdf044b690a2@mail.gmail.com>
+Message-ID: <Pine.BSI.4.64.0804240729441.20990@malasada.lava.net>
+
+> I guess we need to start archiving all software on acid-free archival
+> paper, then. It's the only way it'll survive.
+
+And not necessarily in human readable form -- how about some format
+that is very easy to ocr with minimal errors and error correcting codes?
+
+ps: how many pages to archive a gigabyte of src code? ;-)
+
+Tim Newsham
+http://www.thenewsh.com/~newsham/
+
+
+From aek at bitsavers.org  Fri Apr 25 03:45:08 2008
+From: aek at bitsavers.org (Al Kossow)
+Date: Thu, 24 Apr 2008 10:45:08 -0700
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <8dd2d95c0804241027x3280724aq8d48bdf044b690a2@mail.gmail.com>
+References: <20080423060356.GA88398@minnie.tuhs.org>	<20080423060721.GA92411@minnie.tuhs.org>	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>	<20080424000736.GA48312@minnie.tuhs.org>	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>	<Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>	<4810B69F.1000500@bitsavers.org>	<Pine.BSI.4.64.0804240643260.20990@malasada.lava.net>	<143F6603-5D78-4C0E-B159-F421657356C9@tfeb.org>	<4810C050.3030507@bitsavers.org>
+	<8dd2d95c0804241027x3280724aq8d48bdf044b690a2@mail.gmail.com>
+Message-ID: <4810C724.8020409@bitsavers.org>
+
+Michael Kerpan wrote:
+> I guess we need to start archiving all software on acid-free archival
+> paper, then. It's the only way it'll survive.
+
+The reason it didn't survive was no one cared about saving it. Companies
+actively destroyed it so they didn't have to support it, or have it available
+for legal descovery. The paper copies survive because someone tossed a listing
+in a box and threw it in their garage. So it wasn't really the archival medium
+that is the problem, but the fact that there was no monetary reason to save
+it.
+
+What has been saved from the past 20-30 years has demonstrated that people
+are taking some interest in software preservation now, and mirrored archives
+reflect the fact is pretty easy to implement basic digital preservation through
+replication.
+
+One of the issues I run into is what to save. The early stuff is easy, you save
+anything from before 1975 that can still be found. PC era and forward is MUCH more
+difficult because of the volume.
+
+
+
+
+From wb at freebie.xs4all.nl  Fri Apr 25 03:38:39 2008
+From: wb at freebie.xs4all.nl (Wilko Bulte)
+Date: Thu, 24 Apr 2008 19:38:39 +0200
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <8dd2d95c0804241027x3280724aq8d48bdf044b690a2@mail.gmail.com>
+References: <20080423060721.GA92411@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+	<20080424000736.GA48312@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+	<Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>
+	<4810B69F.1000500@bitsavers.org>
+	<Pine.BSI.4.64.0804240643260.20990@malasada.lava.net>
+	<143F6603-5D78-4C0E-B159-F421657356C9@tfeb.org>
+	<4810C050.3030507@bitsavers.org>
+	<8dd2d95c0804241027x3280724aq8d48bdf044b690a2@mail.gmail.com>
+Message-ID: <20080424173839.GA99065@freebie.xs4all.nl>
+
+Quoting Michael Kerpan, who wrote on Thu, Apr 24, 2008 at 01:27:17PM -0400 ..
+> I guess we need to start archiving all software on acid-free archival
+> paper, then. It's the only way it'll survive.
+
+Papertape.
+
+The info is in the holes..
+
+;-)
+
+Wilko
+
+
+From lyricalnanoha at dosius.ath.cx  Fri Apr 25 03:35:55 2008
+From: lyricalnanoha at dosius.ath.cx (lyricalnanoha)
+Date: Thu, 24 Apr 2008 13:35:55 -0400 (EDT)
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <Pine.BSI.4.64.0804240729441.20990@malasada.lava.net>
+References: <20080423060356.GA88398@minnie.tuhs.org>
+	<20080423060721.GA92411@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+	<20080424000736.GA48312@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+	<Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>
+	<4810B69F.1000500@bitsavers.org>
+	<Pine.BSI.4.64.0804240643260.20990@malasada.lava.net>
+	<143F6603-5D78-4C0E-B159-F421657356C9@tfeb.org>
+	<4810C050.3030507@bitsavers.org>
+	<8dd2d95c0804241027x3280724aq8d48bdf044b690a2@mail.gmail.com>
+	<Pine.BSI.4.64.0804240729441.20990@malasada.lava.net>
+Message-ID: <alpine.DEB.0.99.0804241335240.12056@andisteele.dosius.ath.cx>
+
+
+
+On Thu, 24 Apr 2008, Tim Newsham wrote:
+
+>> I guess we need to start archiving all software on acid-free archival
+>> paper, then. It's the only way it'll survive.
+>
+> And not necessarily in human readable form -- how about some format
+> that is very easy to ocr with minimal errors and error correcting codes?
+
+Like a hexadecimal dump?
+
+-uso.
+
+
+From cowan at ccil.org  Fri Apr 25 04:07:59 2008
+From: cowan at ccil.org (John Cowan)
+Date: Thu, 24 Apr 2008 14:07:59 -0400
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <8dd2d95c0804241027x3280724aq8d48bdf044b690a2@mail.gmail.com>
+References: <20080423060721.GA92411@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+	<20080424000736.GA48312@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+	<Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>
+	<4810B69F.1000500@bitsavers.org>
+	<Pine.BSI.4.64.0804240643260.20990@malasada.lava.net>
+	<143F6603-5D78-4C0E-B159-F421657356C9@tfeb.org>
+	<4810C050.3030507@bitsavers.org>
+	<8dd2d95c0804241027x3280724aq8d48bdf044b690a2@mail.gmail.com>
+Message-ID: <20080424180759.GE13977@mercury.ccil.org>
+
+Michael Kerpan scripsit:
+
+> I guess we need to start archiving all software on acid-free archival
+> paper, then. It's the only way it'll survive.
+
+That doesn't protect it from being thrown out.
+
+Archiving can be done on any medium:  what matters is that there is
+someone with the right, the power, and the concern to make copies of it
+periodically onto new media.
+
+-- 
+John Cowan                                   cowan at ccil.org
+        "You need a change: try Canada"  "You need a change: try China"
+                --fortune cookies opened by a couple that I know
+
+
+From ckeck at texoma.net  Fri Apr 25 04:15:28 2008
+From: ckeck at texoma.net (ckeck at texoma.net)
+Date: Thu, 24 Apr 2008 13:15:28 -0500 (CDT)
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <Pine.BSI.4.64.0804240729441.20990@malasada.lava.net>
+References: <20080423060356.GA88398@minnie.tuhs.org>
+	<20080423060721.GA92411@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+	<20080424000736.GA48312@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+	<Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>
+	<4810B69F.1000500@bitsavers.org>
+	<Pine.BSI.4.64.0804240643260.20990@malasada.lava.net>
+	<143F6603-5D78-4C0E-B159-F421657356C9@tfeb.org>
+	<4810C050.3030507@bitsavers.org>
+	<8dd2d95c0804241027x3280724aq8d48bdf044b690a2@mail.gmail.com>
+	<Pine.BSI.4.64.0804240729441.20990@malasada.lava.net>
+Message-ID: <Pine.BSF.4.58.0804241314150.5475@mail.keck.cx>
+
+What about magneto-optical disks? They are supposed to last 50 years.
+Problem is that one would have to not only hold on to the disks, but also
+the drives, as well as a system with a SCSI I/F.
+
+-Cornelius
+
+On Thu, 24 Apr 2008, Tim Newsham wrote:
+
+> Date: Thu, 24 Apr 2008 07:30:58 -1000 (HST)
+> From: Tim Newsham <newsham at lava.net>
+> To: Michael Kerpan <madcrow.maxwell at gmail.com>
+> Cc: tuhs at tuhs.org
+> Subject: Re: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+>
+> > I guess we need to start archiving all software on acid-free archival
+> > paper, then. It's the only way it'll survive.
+>
+> And not necessarily in human readable form -- how about some format
+> that is very easy to ocr with minimal errors and error correcting codes?
+>
+> ps: how many pages to archive a gigabyte of src code? ;-)
+>
+> Tim Newsham
+> http://www.thenewsh.com/~newsham/
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+-- 
+Cornelius Keck -----------------------------------------> ckeck at texoma.net
+
+
+From aek at bitsavers.org  Fri Apr 25 04:40:23 2008
+From: aek at bitsavers.org (Al Kossow)
+Date: Thu, 24 Apr 2008 11:40:23 -0700
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <Pine.BSF.4.58.0804241314150.5475@mail.keck.cx>
+References: <20080423060356.GA88398@minnie.tuhs.org>	<20080423060721.GA92411@minnie.tuhs.org>	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>	<20080424000736.GA48312@minnie.tuhs.org>	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>	<Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>	<4810B69F.1000500@bitsavers.org>	<Pine.BSI.4.64.0804240643260.20990@malasada.lava.net>	<143F6603-5D78-4C0E-B159-F421657356C9@tfeb.org>	<4810C050.3030507@bitsavers.org>	<8dd2d95c0804241027x3280724aq8d48bdf044b690a2@mail.gmail.com>	<Pine.BSI.4.64.0804240729441.20990@malasada.lava.net>
+	<Pine.BSF.4.58.0804241314150.5475@mail.keck.cx>
+Message-ID: <4810D417.8040005@bitsavers.org>
+
+ckeck at texoma.net wrote:
+> What about magneto-optical disks? They are supposed to last 50 years.
+
+This is the wrong way to think about preservation of digital data,
+which is inherently easy to duplicate without loss. You don't want
+to wait 50 years to find out there is no economical way to read the
+media someone wrote in the past.
+
+As John said:
+
+"Archiving can be done on any medium:  what matters is that there is
+someone with the right, the power, and the concern to make copies of it
+periodically onto new media."
+
+The critical point to add to this is that the data integrity needs to be
+constantly verified, even on presumed stable storage, and it is migrated
+to what at that time is easily to deal with storage, so you CAN easily
+verify it.
+
+
+
+
+
+
+
+
+From milov at uwlax.edu  Fri Apr 25 04:39:30 2008
+From: milov at uwlax.edu (Milo Velimirovic)
+Date: Thu, 24 Apr 2008 13:39:30 -0500
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <20080424173839.GA99065@freebie.xs4all.nl>
+References: <20080423060721.GA92411@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+	<20080424000736.GA48312@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+	<Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>
+	<4810B69F.1000500@bitsavers.org>
+	<Pine.BSI.4.64.0804240643260.20990@malasada.lava.net>
+	<143F6603-5D78-4C0E-B159-F421657356C9@tfeb.org>
+	<4810C050.3030507@bitsavers.org>
+	<8dd2d95c0804241027x3280724aq8d48bdf044b690a2@mail.gmail.com>
+	<20080424173839.GA99065@freebie.xs4all.nl>
+Message-ID: <77B03391-56D2-40EB-AE41-7E23854EA55E@uwlax.edu>
+
+bar codes printed on archival paper -- what was the name of the format  
+that was published in BYTE?
+
+On Apr 24, 2008, at 12:38 PM, Wilko Bulte wrote:
+
+> Quoting Michael Kerpan, who wrote on Thu, Apr 24, 2008 at 01:27:17PM  
+> -0400 ..
+>> I guess we need to start archiving all software on acid-free archival
+>> paper, then. It's the only way it'll survive.
+>
+> Papertape.
+>
+> The info is in the holes..
+>
+> ;-)
+>
+> Wilko
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+--
+Milo Velimirović,  Unix Computer Network Administrator
+608-785-6618 Office -  608-386-2817 Cell
+University of Wisconsin - La Crosse
+La Crosse, Wisconsin 54601 USA   43 48 48 N 91 13 53 W
+--
+There's a reason Dennis Ritchie and Ken Thompson have been awarded the  
+U.S. National Medal of Technology (1998) and are fellows of the  
+Computer History Museum Online. Dave Cutler hasn't and isn't.
+"You are not expected to understand this."
+
+
+
+
+From newsham at lava.net  Fri Apr 25 04:43:18 2008
+From: newsham at lava.net (Tim Newsham)
+Date: Thu, 24 Apr 2008 08:43:18 -1000 (HST)
+Subject: [TUHS] ocr/typing jun72 unix kernel code
+Message-ID: <Pine.BSI.4.64.0804240837140.20990@malasada.lava.net>
+
+I've started an SVN for the OCR'd results:
+
+    http://code.google.com/p/unix-jun72/
+
+if anyone needs commit access email me your account name.  I've already 
+assigned some blocks to people.  If you want a block either claim it in 
+the notes.txt file or email me and I'll add it.  Also if you have plans to 
+perform raw OCRs of large sections of the original doc, please let me know 
+or make a note of it in the notes.txt file.
+
+Tim Newsham
+http://www.thenewsh.com/~newsham/
+
+
+From milov at uwlax.edu  Fri Apr 25 04:44:37 2008
+From: milov at uwlax.edu (Milo Velimirovic)
+Date: Thu, 24 Apr 2008 13:44:37 -0500
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <Pine.BSF.4.58.0804241314150.5475@mail.keck.cx>
+References: <20080423060356.GA88398@minnie.tuhs.org>
+	<20080423060721.GA92411@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+	<20080424000736.GA48312@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+	<Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>
+	<4810B69F.1000500@bitsavers.org>
+	<Pine.BSI.4.64.0804240643260.20990@malasada.lava.net>
+	<143F6603-5D78-4C0E-B159-F421657356C9@tfeb.org>
+	<4810C050.3030507@bitsavers.org>
+	<8dd2d95c0804241027x3280724aq8d48bdf044b690a2@mail.gmail.com>
+	<Pine.BSI.4.64.0804240729441.20990@malasada.lava.net>
+	<Pine.BSF.4.58.0804241314150.5475@mail.keck.cx>
+Message-ID: <DA785D14-150E-49E1-BB21-F7F42A6979A4@uwlax.edu>
+
+I'd vote against. The MO disks and drive in my NeXT no longer work.  
+(of course if anyone has advice for resuscitating MO devices, I'm all  
+ears.)
+
+  - Milo
+
+
+
+On Apr 24, 2008, at 1:15 PM, ckeck at texoma.net wrote:
+
+> What about magneto-optical disks? They are supposed to last 50 years.
+> Problem is that one would have to not only hold on to the disks, but  
+> also
+> the drives, as well as a system with a SCSI I/F.
+>
+> -Cornelius
+>
+> On Thu, 24 Apr 2008, Tim Newsham wrote:
+>
+>> Date: Thu, 24 Apr 2008 07:30:58 -1000 (HST)
+>> From: Tim Newsham <newsham at lava.net>
+>> To: Michael Kerpan <madcrow.maxwell at gmail.com>
+>> Cc: tuhs at tuhs.org
+>> Subject: Re: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+>>
+>>> I guess we need to start archiving all software on acid-free  
+>>> archival
+>>> paper, then. It's the only way it'll survive.
+>>
+>> And not necessarily in human readable form -- how about some format
+>> that is very easy to ocr with minimal errors and error correcting  
+>> codes?
+>>
+>> ps: how many pages to archive a gigabyte of src code? ;-)
+>>
+>> Tim Newsham
+>> http://www.thenewsh.com/~newsham/
+>> _______________________________________________
+>> TUHS mailing list
+>> TUHS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>>
+>
+> -- 
+> Cornelius Keck -----------------------------------------> ckeck at texoma.net
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+--
+Milo Velimirović,  Unix Computer Network Administrator
+608-785-6618 Office -  608-386-2817 Cell
+University of Wisconsin - La Crosse
+La Crosse, Wisconsin 54601 USA   43 48 48 N 91 13 53 W
+--
+Unix: Where /etc/init is job #1.
+
+
+
+
+From imp at bsdimp.com  Fri Apr 25 04:57:12 2008
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Thu, 24 Apr 2008 12:57:12 -0600 (MDT)
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <4810D417.8040005@bitsavers.org>
+References: <Pine.BSI.4.64.0804240729441.20990@malasada.lava.net>
+	<Pine.BSF.4.58.0804241314150.5475@mail.keck.cx>
+	<4810D417.8040005@bitsavers.org>
+Message-ID: <20080424.125712.756919467.imp@bsdimp.com>
+
+In message: <4810D417.8040005 at bitsavers.org>
+            Al Kossow <aek at bitsavers.org> writes:
+: The critical point to add to this is that the data integrity needs to be
+: constantly verified, even on presumed stable storage, and it is migrated
+: to what at that time is easily to deal with storage, so you CAN easily
+: verify it.
+
+I keep my archives on a series of disks.  There's always at least 2
+copies, often times more, and the underlying disks get swapped out on
+a round-robin basis.  Helps limit my exposure to one or two
+failures...  I've had horrible luck with all other methods...
+
+Warner
+
+
+From lm at bitmover.com  Fri Apr 25 05:02:39 2008
+From: lm at bitmover.com (Larry McVoy)
+Date: Thu, 24 Apr 2008 12:02:39 -0700
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <20080424.125712.756919467.imp@bsdimp.com>
+References: <Pine.BSI.4.64.0804240729441.20990@malasada.lava.net>
+	<Pine.BSF.4.58.0804241314150.5475@mail.keck.cx>
+	<4810D417.8040005@bitsavers.org>
+	<20080424.125712.756919467.imp@bsdimp.com>
+Message-ID: <20080424190239.GC26001@bitmover.com>
+
+On Thu, Apr 24, 2008 at 12:57:12PM -0600, M. Warner Losh wrote:
+> In message: <4810D417.8040005 at bitsavers.org>
+>             Al Kossow <aek at bitsavers.org> writes:
+> : The critical point to add to this is that the data integrity needs to be
+> : constantly verified, even on presumed stable storage, and it is migrated
+> : to what at that time is easily to deal with storage, so you CAN easily
+> : verify it.
+> 
+> I keep my archives on a series of disks.  There's always at least 2
+> copies, often times more, and the underlying disks get swapped out on
+> a round-robin basis.  Helps limit my exposure to one or two
+> failures...  I've had horrible luck with all other methods...
+
+We do the same thing here.  For /home which has all the stuff we really
+care about we have 
+
+	/nightly	- last night's copy of the data
+	/nightly2	- same thing, night before
+	/weekly		- last Sunday's copy of the data
+	/weekly2	- same thing, week before
+
+and we do it so that
+
+	diff foo /nightly/$PWD
+
+works.  Handy, that.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From jfoust at threedee.com  Fri Apr 25 05:35:30 2008
+From: jfoust at threedee.com (John Foust)
+Date: Thu, 24 Apr 2008 14:35:30 -0500
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <77B03391-56D2-40EB-AE41-7E23854EA55E@uwlax.edu>
+References: <20080423060721.GA92411@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+	<20080424000736.GA48312@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+	<Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>
+	<4810B69F.1000500@bitsavers.org>
+	<Pine.BSI.4.64.0804240643260.20990@malasada.lava.net>
+	<143F6603-5D78-4C0E-B159-F421657356C9@tfeb.org>
+	<4810C050.3030507@bitsavers.org>
+	<8dd2d95c0804241027x3280724aq8d48bdf044b690a2@mail.gmail.com>
+	<20080424173839.GA99065@freebie.xs4all.nl>
+	<77B03391-56D2-40EB-AE41-7E23854EA55E@uwlax.edu>
+Message-ID: <6.2.3.4.2.20080424142112.057fc1e0@mail.threedee.com>
+
+At 01:39 PM 4/24/2008, Milo Velimirovic wrote:
+>bar codes printed on archival paper -- what was the name of the format  that was published in BYTE?
+
+BYTE Paperbytes, Cauzin Softstrips, etc.
+
+But 2D bar codes have come a long way since then.  
+
+http://en.wikipedia.org/wiki/Bar_codes
+
+I'd say the larger problems are that laser toner doesn't stick enough, or sticks 
+to other pages especially under heat or pressure or time, and inkjet ink is expensive 
+and water-soluble.
+
+- John
+
+
+
+From peterjeremy at optushome.com.au  Fri Apr 25 07:39:17 2008
+From: peterjeremy at optushome.com.au (Peter Jeremy)
+Date: Fri, 25 Apr 2008 07:39:17 +1000
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <Pine.BSI.4.64.0804240729441.20990@malasada.lava.net>
+References: <Pine.BSI.4.64.0804230825160.20990@malasada.lava.net>
+	<20080424000736.GA48312@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+	<Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>
+	<4810B69F.1000500@bitsavers.org>
+	<Pine.BSI.4.64.0804240643260.20990@malasada.lava.net>
+	<143F6603-5D78-4C0E-B159-F421657356C9@tfeb.org>
+	<4810C050.3030507@bitsavers.org>
+	<8dd2d95c0804241027x3280724aq8d48bdf044b690a2@mail.gmail.com>
+	<Pine.BSI.4.64.0804240729441.20990@malasada.lava.net>
+Message-ID: <20080424213916.GP92261@server.vk2pj.dyndns.org>
+
+On Thu, Apr 24, 2008 at 07:30:58AM -1000, Tim Newsham wrote:
+>> I guess we need to start archiving all software on acid-free archival
+>> paper, then. It's the only way it'll survive.
+>
+>And not necessarily in human readable form -- how about some format
+>that is very easy to ocr with minimal errors and error correcting codes?
+
+PGP successfully did this (primarily to work-around US crypto laws):
+http://mitpress.mit.edu/catalog/item/default.asp?ttype=2&tid=7024
+
+Archiving digital data is actually a major problem: Not only do you
+need to be able to physically read the media but you need to be able
+to interpret the bits that you read.  This probably means access to
+the software that was used to create it (more data to archive) running
+on the relevant OS (yet more data) and hardware (you might be able to
+emulate this if someone archive a good-enough description).
+
+-- 
+Peter Jeremy
+Please excuse any delays as the result of my ISP's inability to implement
+an MTA that is either RFC2821-compliant or matches their claimed behaviour.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 195 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20080425/35676bf8/attachment.sig>
+
+From wb at freebie.xs4all.nl  Fri Apr 25 16:27:50 2008
+From: wb at freebie.xs4all.nl (Wilko Bulte)
+Date: Fri, 25 Apr 2008 08:27:50 +0200
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <20080424213916.GP92261@server.vk2pj.dyndns.org>
+References: <20080424000736.GA48312@minnie.tuhs.org>
+	<Pine.BSI.4.64.0804231553200.20990@malasada.lava.net>
+	<Pine.BSI.4.64.0804231958530.20990@malasada.lava.net>
+	<4810B69F.1000500@bitsavers.org>
+	<Pine.BSI.4.64.0804240643260.20990@malasada.lava.net>
+	<143F6603-5D78-4C0E-B159-F421657356C9@tfeb.org>
+	<4810C050.3030507@bitsavers.org>
+	<8dd2d95c0804241027x3280724aq8d48bdf044b690a2@mail.gmail.com>
+	<Pine.BSI.4.64.0804240729441.20990@malasada.lava.net>
+	<20080424213916.GP92261@server.vk2pj.dyndns.org>
+Message-ID: <20080425062750.GC3258@freebie.xs4all.nl>
+
+Quoting Peter Jeremy, who wrote on Fri, Apr 25, 2008 at 07:39:17AM +1000 ..
+> On Thu, Apr 24, 2008 at 07:30:58AM -1000, Tim Newsham wrote:
+> >> I guess we need to start archiving all software on acid-free archival
+> >> paper, then. It's the only way it'll survive.
+> >
+> >And not necessarily in human readable form -- how about some format
+> >that is very easy to ocr with minimal errors and error correcting codes?
+> 
+> PGP successfully did this (primarily to work-around US crypto laws):
+> http://mitpress.mit.edu/catalog/item/default.asp?ttype=2&tid=7024
+> 
+> Archiving digital data is actually a major problem: Not only do you
+> need to be able to physically read the media but you need to be able
+> to interpret the bits that you read.  This probably means access to
+> the software that was used to create it (more data to archive) running
+
+Yeah... can you say "Microsoft Office" files?
+
+-- 
+Wilko Bulte				wilko at FreeBSD.org
+
+
+From lorddoomicus at mac.com  Sat Apr 26 10:03:15 2008
+From: lorddoomicus at mac.com (Lord Doomicus)
+Date: Fri, 25 Apr 2008 20:03:15 -0400
+Subject: [TUHS] The Coming 40th Anniversary of UNIX?
+Message-ID: <AA1013A7-A6AA-412F-859C-893A59203F8B@mac.com>
+
+It occurs to me that next year will the the 40th Anniversary of UNIX.
+
+Is anyone planning any type of celebration?  Perhaps the Vintage  
+Computer Festival?
+
+- Derrik
+
+Derrik Walker v2.0, RHCE
+lorddoomicus at mac.com
+http://www.doomd.net
+
+The twenty first century is when it all changes, and Torchwood is ready!
+	- Captain Jack Harkness, Torchwood Three.
+
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20080425/212d0e57/attachment.html>
+
+From lm at bitmover.com  Sat Apr 26 10:52:57 2008
+From: lm at bitmover.com (Larry McVoy)
+Date: Fri, 25 Apr 2008 17:52:57 -0700
+Subject: [TUHS] The Coming 40th Anniversary of UNIX?
+In-Reply-To: <AA1013A7-A6AA-412F-859C-893A59203F8B@mac.com>
+References: <AA1013A7-A6AA-412F-859C-893A59203F8B@mac.com>
+Message-ID: <20080426005257.GA24877@bitmover.com>
+
+Are dmr and bwk and ken on this list?  Be fun to include them.  If we
+want to have a bay area gathering I'll happily offer up my place, we have
+an annual pig roast here that is somewhat well attended by local geeks
+(ZFS guys, Linus, Dave Miller, some Bell Labs folks like Greg Chesson
+and Bart Locanthi the guy that did the BLIT with Rob Pike - still my
+favorite terminal).  I'm probably forgetting somebody who will be pissed
+so sue me.  But we gather a good crowd of geeks.
+
+http://bitmover.com/lm/pig_roast
+
+On Fri, Apr 25, 2008 at 08:03:15PM -0400, Lord Doomicus wrote:
+> It occurs to me that next year will the the 40th Anniversary of UNIX.
+> 
+> Is anyone planning any type of celebration?  Perhaps the Vintage  
+> Computer Festival?
+> 
+> - Derrik
+> 
+> Derrik Walker v2.0, RHCE
+> lorddoomicus at mac.com
+> http://www.doomd.net
+> 
+> The twenty first century is when it all changes, and Torchwood is ready!
+> 	- Captain Jack Harkness, Torchwood Three.
+> 
+> 
+> 
+> 
+
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From norman at oclsc.org  Sat Apr 26 12:35:39 2008
+From: norman at oclsc.org (Norman Wilson)
+Date: Fri, 25 Apr 2008 21:35:39 -0500 (EDT)
+Subject: [TUHS] The Coming 40th Anniversary of UNIX?
+Message-ID: <1209173652.26155.for-standards-violators@oclsc.org>
+
+I'm sure there will be at least some recognition of the 40th
+anniversary at a certain event in mid-June 2009 in San Diego.
+
+Norman Wilson
+Toronto ON
+
+
+From pechter at gmail.com  Sun Apr 27 01:17:42 2008
+From: pechter at gmail.com (Bill Pechter)
+Date: Sat, 26 Apr 2008 11:17:42 -0400
+Subject: [TUHS] The Coming 40th Anniversary of UNIX?
+In-Reply-To: <1209173652.26155.for-standards-violators@oclsc.org>
+References: <1209173652.26155.for-standards-violators@oclsc.org>
+Message-ID: <ee5521f80804260817p5d543247w385191df8ad935b3@mail.gmail.com>
+
+Would be nice to get them to VCF-East... It's at the old Evans area of Fort
+Monmouth near Neptune and Wall Township NJ.  Not too far travel-wise.
+I wonder if the folks at MARCH (Mid Atlantic Retro Computing) know about
+this.
+
+Meanwhile it's off to the Trenton Computer Festival now.
+
+Bill
+
+On Fri, Apr 25, 2008 at 10:35 PM, Norman Wilson <norman at oclsc.org> wrote:
+
+> I'm sure there will be at least some recognition of the 40th
+> anniversary at a certain event in mid-June 2009 in San Diego.
+>
+> Norman Wilson
+> Toronto ON
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+
+-- 
+--
+d|i|g|i|t|a|l had it THEN. Don't you wish you could still buy it now!
+pechter-at-gmail.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20080426/2d11deaf/attachment.html>
+
+From wkt at tuhs.org  Mon Apr 28 20:48:53 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Mon, 28 Apr 2008 20:48:53 +1000
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <200804241753.KAA02899@mist.magic.com>
+References: <200804241753.KAA02899@mist.magic.com>
+Message-ID: <20080428104853.GB72917@minnie.tuhs.org>
+
+On Thu, Apr 24, 2008 at 10:53:30AM -0700, James A. Markevitch wrote:
+> I have been referring to this as version "1.5" since the date is later
+> than the first edition manual, but before the second edition manual.
+> Does anyone know if it's truly V1 of the kernel, or something between
+> V1 and V2?
+
+The date on the first page of the memo (PDF) is September 1972. That puts
+the memo after 2nd Edition (June 1972) and 3rd Edition (Feb 1973).
+
+The s2 tape in the Unix Archive has binaries which are dated mainly in
+1972, spread from January thru to December, so they should be
+contemporaneous with the kernel in the PDF.
+
+The 1st Edition manuals are on-line on Dennis Ritchie's web page at:
+http://cm.bell-labs.com/cm/cs/who/dmr/1stEdman.html
+I have a photocopy of the 2nd Edition manuals from Norman Wilson; I will
+scan them in as a bunch of tiffs. The 3rd Edition manuals are at
+http://www.tuhs.org/Archive/PDP-11/Distributions/research/Dennis_v3/v3man.tar.gz
+but they refer to the C version, so they may not be as useful here.
+
+> Does anyone have utilities earlier than the "1972" stuff from TUHS?
+
+No, the s1 and s2 tapes are the earliest machine readable files that
+we have.
+
+I'm assuming that some of you are keen to see it running. It's going to
+take a lot of work, especially on the debugging side. The existing 1972
+binaries are already executable using my Apout emulator, so that will
+help in two ways: we can run the old assembler, and we can tell if a bug
+was in a userland binary and not in the kernel.
+
+If I get a chance, I should try to compare the 1e and 2e manuals, to
+outline the kernel API differences, as this might help us to determine
+which binaries we have that will run on the PDF kernel.
+
+Cheers,
+	Warren
+
+
+From jam at magic.com  Tue Apr 29 00:15:22 2008
+From: jam at magic.com (James A. Markevitch)
+Date: Mon, 28 Apr 2008 07:15:22 -0700 (PDT)
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+Message-ID: <200804281415.HAA18735@mist.magic.com>
+
+> On Thu, Apr 24, 2008 at 10:53:30AM -0700, James A. Markevitch wrote:
+> > I have been referring to this as version "1.5" since the date is later
+> > than the first edition manual, but before the second edition manual.
+> > Does anyone know if it's truly V1 of the kernel, or something between
+> > V1 and V2?
+> 
+> The date on the first page of the memo (PDF) is September 1972. That puts
+> the memo after 2nd Edition (June 1972) and 3rd Edition (Feb 1973).
+
+However, the date at the bottom of each page of the source listing
+is 3/17/72.  My assumption is that the code was from that date, but that
+the author of the memo spent a few months writing up the text that goes
+along with it.
+
+That's why I've been assuming that it was code somewhere between Version 1
+and Version 2.
+
+> I have a photocopy of the 2nd Edition manuals from Norman Wilson; I will
+> scan them in as a bunch of tiffs.
+
+If possible, can you scan them at 400dpi or 600dpi?  Those are much
+more amenable to OCR than 300dpi.
+
+Alternatively, if you can send me a hardcopy, I will scan it at 600dpi
+and pass it along to bitsavers.
+
+> I'm assuming that some of you are keen to see it running. It's going to
+> take a lot of work, especially on the debugging side.
+
+I have already noticed quite a few errors in the listing, so it's not
+clear that the PDF was something that actually ran, or whether it had
+been re-typed by somebody.  So far, many of the errors I have found are
+in the "cold" portion of it, so it may be that the "warm" code will
+run properly.
+
+James Markevitch
+
+
+From newsham at lava.net  Tue Apr 29 02:52:16 2008
+From: newsham at lava.net (Tim Newsham)
+Date: Mon, 28 Apr 2008 06:52:16 -1000 (HST)
+Subject: [TUHS] Whence 1st Edition Unix Kernel Assembly?
+In-Reply-To: <20080428104853.GB72917@minnie.tuhs.org>
+References: <200804241753.KAA02899@mist.magic.com>
+	<20080428104853.GB72917@minnie.tuhs.org>
+Message-ID: <Pine.BSI.4.64.0804280641150.20990@malasada.lava.net>
+
+> The date on the first page of the memo (PDF) is September 1972. That puts
+> the memo after 2nd Edition (June 1972) and 3rd Edition (Feb 1973).
+
+The cover sheet says sept 14, 1972, an invitation to a talk on the
+internals of unix.  The next page, titled "Preliminary Release of
+UNIX Implementation Documentation", is dated 6/20/72.  The actual
+unix sources contain a header and a footer and the footer states
+"Issue D   Date 3/17/72".  So the sources are probably from much
+earlier in the year.
+
+I was reading through a lot of the 1e manuals that are online (on dmr's 
+page).  Much of what is said there lines up with the sources. For example, 
+it mentions that core files are 8kbyte of memory plus a few more bytes for 
+process state.  The kernel sources write out this amount of memory on core 
+dump. The notes from dmr mention that the machine is a PDP-11/20 with 
+24kbyte of memory and the memory layout in u0 reserves 16kbyte for kernel 
+memory and 8kbyte for user memory.
+
+One possible deviation is that the tty0(IV) man page says there are six
+devices, but the u0 srcs sets ntty to 8+1 (I'm assuming the +1 is for
+the console tty).
+
+DMR's comments hints that they will be omving to the PDP-11/45 soon after
+1ed:
+
+"By this time we knew about the upcoming PDP-11/45, and had visited
+Digital in Maynard to talk about it; in particular, we had the specs
+for the floating-point instructions it supported. So the system
+described here included a simulator for the instructions (fptrap(III))."
+
+But it appears the kernel code we have is still just for a 24kbyte
+machine (I'm assuming they would have gotten more memory when they
+got a new machine?).
+
+Anyway, I'm far from an expert on old PDP's or old UNIX's, but my
+gut feeling so far is that this is pretty close to what is described
+in the 1ed manuals that are online.
+
+> I'm assuming that some of you are keen to see it running. It's going to
+> take a lot of work, especially on the debugging side. The existing 1972
+> binaries are already executable using my Apout emulator, so that will
+> help in two ways: we can run the old assembler, and we can tell if a bug
+> was in a userland binary and not in the kernel.
+
+Ahh!  I wasn't aware of that!  Excellent.  I would definitely like to
+play with it some.  So far I've been using the 7e assembler to
+validate that the code is in compilable condition to help weed out
+typos.  The only gotcha I came across so far was that the system calls
+arent defined by the assembler (so I whipped up a corresponding sys.s
+based on u1.s).  Building the real kernel with the real 1e assembler
+will give me a lot more confidence that the assembler phase isn't
+causing any problems.
+
+> If I get a chance, I should try to compare the 1e and 2e manuals, to
+> outline the kernel API differences, as this might help us to determine
+> which binaries we have that will run on the PDF kernel.
+
+That would be excellent.
+
+> Cheers,
+> 	Warren
+
+Tim Newsham
+http://www.thenewsh.com/~newsham/
+
+
+From wkt at tuhs.org  Tue Apr 29 08:38:59 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Tue, 29 Apr 2008 08:38:59 +1000
+Subject: [TUHS] New mailing list for Unix 1972 effort
+Message-ID: <20080428223859.GA3698@minnie.tuhs.org>
+
+All, I've just created a mailing list for the people involved in the effort
+to reconstruct the Unix kernel from the 1972 assembly listing. I thought
+it would be good to keep the mundane details of the work separate from the
+TUHS mailing list.
+
+The new list is unix-jun72 at tuhs.org
+
+I've manually subscribed the e-mail addresses that seem to be interested
+in the work. If you want to be removed from the new list, e-mail me. If
+you want to subscribe to the list, you can go here to do that:
+
+https://minnie.tuhs.org/mailman/listinfo/unix-jun72
+
+Cheers,
+	Warren
+
+
+From angus at fairhaven.za.net  Wed Apr 30 00:15:54 2008
+From: angus at fairhaven.za.net (Angus Robinson)
+Date: Tue, 29 Apr 2008 16:15:54 +0200
+Subject: [TUHS] New mailing list for Unix 1972 effort
+In-Reply-To: <20080428223859.GA3698@minnie.tuhs.org>
+References: <20080428223859.GA3698@minnie.tuhs.org>
+Message-ID: <48172D9A.1080302@fairhaven.za.net>
+
+Would anybody mind if i subscribe to the list, i am interested in how 
+its all coming about ?
+
+Warren Toomey wrote:
+> All, I've just created a mailing list for the people involved in the effort
+> to reconstruct the Unix kernel from the 1972 assembly listing. I thought
+> it would be good to keep the mundane details of the work separate from the
+> TUHS mailing list.
+>
+> The new list is unix-jun72 at tuhs.org
+>
+> I've manually subscribed the e-mail addresses that seem to be interested
+> in the work. If you want to be removed from the new list, e-mail me. If
+> you want to subscribe to the list, you can go here to do that:
+>
+> https://minnie.tuhs.org/mailman/listinfo/unix-jun72
+>
+> Cheers,
+> 	Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>   
+
+
+From asbesto at freaknet.org  Wed Apr 30 18:52:15 2008
+From: asbesto at freaknet.org (asbesto)
+Date: Wed, 30 Apr 2008 10:52:15 +0200
+Subject: [TUHS] New mailing list for Unix 1972 effort
+In-Reply-To: <48172D9A.1080302@fairhaven.za.net>
+References: <20080428223859.GA3698@minnie.tuhs.org>
+	<48172D9A.1080302@fairhaven.za.net>
+Message-ID: <20080430085214.GC6236@freaknet.org>
+
+Tue, Apr 29, 2008 at 04:15:54PM +0200, Angus Robinson wrote:
+
+> Would anybody mind if i subscribe to the list, i am interested in how 
+> its all coming about ?
+
+me too, just to lurk :)
+
+-- 
+[ 73 de IW9HGS : freaknet medialab : radiocybernet : poetry hacklab]
+[ http://freaknet.org/asbesto -  http://papuasia.org/radiocybernet ]
+[ NON SCRIVERMI USANDO LETTERE ACCENTATE!  - NON MANDARMI ALLEGATI ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC and SPAM ]
+
+
+
+From wkt at tuhs.org  Wed Apr 30 19:33:43 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 30 Apr 2008 19:33:43 +1000
+Subject: [TUHS] New mailing list for Unix 1972 effort
+In-Reply-To: <20080430085214.GC6236@freaknet.org>
+References: <20080428223859.GA3698@minnie.tuhs.org>
+	<48172D9A.1080302@fairhaven.za.net>
+	<20080430085214.GC6236@freaknet.org>
+Message-ID: <20080430093343.GA83559@minnie.tuhs.org>
+
+> Tue, Apr 29, 2008 at 04:15:54PM +0200, Angus Robinson wrote:
+> > Would anybody mind if i subscribe to the list, i am interested in how 
+> > its all coming about ?
+> 
+On Wed, Apr 30, 2008 at 10:52:15AM +0200, asbesto wrote:
+> me too, just to lurk :)
+
+You're all free to lurk, simply subscribe here:
+https://minnie.tuhs.org/mailman/listinfo/unix-jun72
+
+Cheers,
+	Warren
+
+
+From wkt at tuhs.org  Wed Apr 30 21:56:51 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 30 Apr 2008 21:56:51 +1000
+Subject: [TUHS] Query on PDP-11 assembly
+Message-ID: <20080430115651.GA86539@minnie.tuhs.org>
+
+All, I'm trying to write a PDP-11 disassembler for a.out files. I'm having
+trouble dealing with jsrs. Take, for example, the code here:
+http://minnie.tuhs.org/UnixTree/1972_stuff/s1/frag19.html
+
+I can happily deal with the   jsr pc,do   type of jsr, but the ones
+involving r5 have me stumped, e.g.:
+
+	jsr	r5,questf; < nonexistent\n\0>; .even
+
+It appears that data is being inserted into the executable directly
+after the jsr instruction. How does the rts which returns from the jsr
+know how much data to skip, and what is the involvement of r5 here?
+
+Thanks,
+	Warren
+
+
+From brantley at coraid.com  Wed Apr 30 23:55:13 2008
+From: brantley at coraid.com (Brantley Coile)
+Date: Wed, 30 Apr 2008 09:55:13 -0400
+Subject: [TUHS] Query on PDP-11 assembly
+In-Reply-To: <20080430115651.GA86539@minnie.tuhs.org>
+References: <20080430115651.GA86539@minnie.tuhs.org>
+Message-ID: <48187A41.80105@coraid.com>
+
+In your example, -(sp) = r5; r5 = pc; pc = guestf.
+Guestf will have to bump r5 as in consumes the parameters.
+Rts r5 means pc = r5; r5 = (sp)+.
+
+Hope this helps.
+
+Warren Toomey wrote:
+> All, I'm trying to write a PDP-11 disassembler for a.out files. I'm having
+> trouble dealing with jsrs. Take, for example, the code here:
+> http://minnie.tuhs.org/UnixTree/1972_stuff/s1/frag19.html
+> 
+> I can happily deal with the   jsr pc,do   type of jsr, but the ones
+> involving r5 have me stumped, e.g.:
+> 
+> 	jsr	r5,questf; < nonexistent\n\0>; .even
+> 
+> It appears that data is being inserted into the executable directly
+> after the jsr instruction. How does the rts which returns from the jsr
+> know how much data to skip, and what is the involvement of r5 here?
+> 
+> Thanks,
+> 	Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+

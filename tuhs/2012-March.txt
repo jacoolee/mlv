@@ -1,0 +1,101 @@
+From drsalists at gmail.com  Fri Mar  2 09:29:50 2012
+From: drsalists at gmail.com (Dan Stromberg)
+Date: Thu, 1 Mar 2012 15:29:50 -0800
+Subject: [TUHS] "Slow system call" and EINTR
+Message-ID: <CAGGBd_p12gWvRTz5soB_swFkT4QxL0upTKxLP2L_P=UKym2Z6w@mail.gmail.com>
+
+I gather system calls can return EINTR only when they are "slow".  True?
+
+What makes a system call "slow"?  Is it the ability to block for a while?
+But I wouldn't think dup(2) would block, for example.
+
+(I -=Love=- *ix!)
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20120301/5340d004/attachment.html>
+
+From ramble1035 at dslextreme.com  Fri Mar  2 09:59:53 2012
+From: ramble1035 at dslextreme.com (ramble1035 @dslextreme.com)
+Date: Thu, 1 Mar 2012 15:59:53 -0800
+Subject: [TUHS] "Slow system call" and EINTR
+In-Reply-To: <CAGGBd_p12gWvRTz5soB_swFkT4QxL0upTKxLP2L_P=UKym2Z6w@mail.gmail.com>
+References: <CAGGBd_p12gWvRTz5soB_swFkT4QxL0upTKxLP2L_P=UKym2Z6w@mail.gmail.com>
+Message-ID: <CAFn3HkPJ7ccGZXrupAeFo5nK6Xab_Denuu2qW4qAwenixHdCrQ@mail.gmail.com>
+
+On Thu, Mar 1, 2012 at 3:29 PM, Dan Stromberg <drsalists at gmail.com> wrote:
+>
+> I gather system calls can return EINTR only when they are "slow".  True?
+
+For a unique definition of "slow"...  :)
+
+> What makes a system call "slow"?  Is it the ability to block for a while?
+> But I wouldn't think dup(2) would block, for example.
+
+>From my experience, a slow vs fast call is only partially based on
+time.  It's more based on obtaining and releasing resources.
+
+A slow system call is one that might take a long time, and any
+resource allocations requested during the system call processing can
+be easily undone (returned).  TTY input, as an example.
+
+Things like a disk request are *supposed* to be quick, but even if
+they're not, they involve allocating buffers, queueing disk requests,
+setting up possible interrupts or DMA, and other messy internal
+details.  Aborting a pending disk request would be a substantial
+amount of effort.  Thus, a disk request cannot be interrupted and it's
+classified as "fast".  (or "not slow")
+
+This presents a few difficulties when you consider something like NFS,
+which acts like a disk request until it gets down to the network
+layer, where things might well take a long time.  But interrupting and
+aborting this is not easy, which is why some NFS requests, when hung,
+stay hung even when you bang on Control-C for a while.
+
+Really simple things like dup, which involves a simple copy, would
+probably not block unless there were extreme issues with memory
+allocation or something.
+
+  -- Chris
+
+
+From jfoust at threedee.com  Wed Mar 14 02:09:04 2012
+From: jfoust at threedee.com (John Foust)
+Date: Tue, 13 Mar 2012 11:09:04 -0500
+Subject: [TUHS] ASR 37 teletype desired by LCM / Vulcan.com
+In-Reply-To: <E5C6A964-1931-4EB9-9B62-303309FDDAA6@bsdimp.com>
+References: <CAFCBnZvMuUvZNm72pvWkS30PH7o3eS8ii2WQ5XaZyviAxhwHOA@mail.gmail.com>
+	<20120201121214.55c73577@cnb.csic.es>
+	<4F2A907D.9000000@fastmail.us>
+	<89159FF1-5521-4890-A5F0-30DC9E5B7EC9@bsdimp.com>
+	<20120202173623.GQ30634@mercury.ccil.org>
+	<alpine.BSF.2.00.1202030759350.66525@aneurin.horsfall.org>
+	<52BD3851-95AF-4DFC-8728-9F2DB1E1614C@bsdimp.com>
+	<CAGSRWbiJesxtoC38_FEZM7_jMa3cvx=SUjT+nUoGd5irxr_ajg@mail.gmail.com>
+	<E5C6A964-1931-4EB9-9B62-303309FDDAA6@bsdimp.com>
+Message-ID: <20120313170240.00A7C28E3D@minnie.tuhs.org>
+
+
+I forward a request from the Greenkeys (teletype) mailing list. 
+
+The ASR 37 did upper- and lower-case.
+
+- John
+
+From: Cynde Moya <CyndeM at vulcan.com>
+To: greenkeys <GreenKeys at mailman.qth.net>
+Date: Mon, 12 Mar 2012 22:01:51 +0000
+Subject: [GreenKeys] Wanted : ASR 37
+ 
+The Living Computer Museum is looking to purchase a working or restorable ASR 37 teletype. Do you have any leads? Thanks very much.
+ 
+ 
+Cynde Moya
+Librarian/Archivist, Vintage Computing
+Vulcan Inc
+206 342-2385
+http://www.vulcan.com
+http://www.LivingComputerMuseum.org
+ 
+
+
+

@@ -1,0 +1,1755 @@
+From jrvalverde at cnb.csic.es  Fri Jun  6 22:37:01 2008
+From: jrvalverde at cnb.csic.es (Jose R. Valverde)
+Date: Fri, 6 Jun 2008 14:37:01 +0200
+Subject: [Unix-jun72] Semi-OT: Other systems to reconstruct?
+In-Reply-To: <f7f1e0d30805220952s765c2082h5d8380c459f97d3c@mail.gmail.com>
+References: <4834E2E5.20302@gmail.com> <483598D0.8070009@bitsavers.org>
+	<f7f1e0d30805220952s765c2082h5d8380c459f97d3c@mail.gmail.com>
+Message-ID: <20080606143701.1b52d130@veda.cnb.uam.es>
+
+Sorry I' ve been a lurker so long after subscribing. I had a problem in my
+e-mail configuration and, coupled with some congress travels, missed most
+list messages until I noticed today.
+
+Regarding the disassembler, has anyone tried the one derMouse included in
+his emulator in TUHS?
+
+I have also found another PDP11 disassembler (for RT11) at
+
+	http://ftp.dbit.com/pub/pdp11/rt11/
+
+For the bold, there seems to be another PDP11 disassembler in BBC basic
+at 
+	http://mdfs.net/Software/PDP11/ 
+this one comes with an assembler AND SOME UnixIO.mac library which leads 
+me to suppose it may work on a.out files. It may probably be used under
+a CP/M emulator with BBC Basic.
+
+Finally, what about IDA, the interactive disassembler? It once claimed
+to support PDP11 and old versions may be around (the 4.9 is free but 
+I ain't sure it still supports PDP11).
+
+Any of those should help build a current one for the a.out format.
+
+BTW, and just for fun, I just found out about pdpxasm, which says is a
+"PDP-11 cross-assembler, cross-linker, and cross-disassembler run under
+DOS, by Strobe Data Inc." and is also freely downloadable.
+
+Might be fun to see what its cross-disassembler produces. 
+
+				j
+			
+
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20080606/e9ec6300/attachment.sig>
+
+From doug at remarque.org  Sat Jun  7 11:49:02 2008
+From: doug at remarque.org (Doug Merritt)
+Date: Fri,  6 Jun 2008 18:49:02 -0700 (PDT)
+Subject: [Unix-jun72] Semi-OT: Other systems to reconstruct?
+In-Reply-To: <20080606143701.1b52d130@veda.cnb.uam.es>
+Message-ID: <20080607014902.E05A05A522@remarque.org>
+
+I appreciate the constructive suggestions, and they may well
+be helpful to someone on the list, but as for what I'm doing,
+I *started* with a working disassembler. As you point out,
+there's no shortage of pdp 11 disassemblers.
+
+Thing is, it's quite rare for disassemblers to even bother
+to begin to try to produce output very similar to the original
+input.
+
+An easy example is that they had a mnemonic BES (Branch if
+Error Set), which is simply a synonym for BCS (Branch if Carry
+Set), but used upon return from system calls that set carry
+to indicate error. It wasn't too hard for me to add automatic
+disassembly of BES under the stated circumstances, but I would
+be surprised if other pdp11 disassemblers did so.
+
+There's a fairly long list of such issues, of varying difficulty.
+Handling jsr r5 (which embeds non-executable parameter data right
+in the midst of executable instructions, with no clear indication
+of where it ends) is one of the few such that *some* disassemblers
+out there *might* have tackled, perhaps.
+
+Producing "temporary labels" was my big headache (although I
+think I figured it out and would have finished that a while back
+if it weren't for other demands on my time).
+
+My goal is to emit assembler code that can be used as a high
+quality replacement for lost assembly source code, with an
+absolute minimum of post-disassembly hand-massaging by humans.
+
+If anyone wants quick and dirty disassembly for some reason,
+sure, it's easily available, go for it. (BTW the stuff I'm working
+with isn't "a.out" format; the early stuff is just raw machine
+code.)
+
+Two other places to get pdp11 disassembler are the debuggers
+db and adb, and also v5/v6 "od", IIRC.
+
+P.S. I visited Google today and walked past Ken's office, but
+although he was in, I didn't have time to stop and pester him. :-)
+	Doug
+--
+Professional Wild-eyed Visionary        Member, Crusaders for a Better Tomorrow
+
+
+From doug at remarque.org  Sun Jun  8 14:06:55 2008
+From: doug at remarque.org (Doug Merritt)
+Date: Sat,  7 Jun 2008 21:06:55 -0700 (PDT)
+Subject: [Unix-jun72] DEC 10 for sale on ebay
+In-Reply-To: <20080607014902.E05A05A522@remarque.org>
+Message-ID: <20080608040655.CD6645A521@remarque.org>
+
+A DEC 10 is for sale on ebay (search for "pdp 10" or "KL10");
+the seller, apparently a collector letting it go reluctantly,
+says it may be the first time one has appeared on ebay, and
+so far as I know from foraging there over the years, he may
+be right.
+
+This isn't really the right mailing list to pass that word on, but
+Warren and some others of you are on other various retro computer
+lists where collectors hang out -- please pass the word.
+
+Someone might also check to see if the Computer History Museum
+has the funds and interest for it. Bruce Dahmer's museum has
+the space for it, but I would guess would want it to be loaned/donated
+(i.e. if someone wants to buy it but lacks a place to put it...)
+
+Earlier today it was $1,000 min bid, but that didn't meet the
+reserve, with a "buy it now" of $50,000, which the seller said
+he considered ridiculously high. He guestimated freight at
+$1,000, buyer to pay actual freight; my not-very-educated guess
+is that $1,000 is sharply on the low side even for the lower 48 states.
+
+I have some history with 10s and 20s, but they aren't as personally
+meaningful to me as pdp11s -- still, if I were a billionaire I would
+buy-it-now without a second thought (and boot ITS) :-)
+	Doug
+--
+Professional Wild-eyed Visionary        Member, Crusaders for a Better Tomorrow
+
+
+From milov at uwlax.edu  Tue Jun 10 04:52:43 2008
+From: milov at uwlax.edu (Milo Velimirovic)
+Date: Mon, 9 Jun 2008 13:52:43 -0500
+Subject: [Unix-jun72] DEC 10 for sale on ebay
+In-Reply-To: <20080608040655.CD6645A521@remarque.org>
+References: <20080608040655.CD6645A521@remarque.org>
+Message-ID: <E8CD65E2-7368-461F-A2FF-7B5CD6F9FC21@uwlax.edu>
+
+
+On Jun 7, 2008, at 11:06 PM, Doug Merritt wrote:
+...
+>
+> This isn't really the right mailing list to pass that word on, but
+> Warren and some others of you are on other various retro computer
+> lists where collectors hang out -- please pass the word.
+
+of course it's germane; the box with blue switches at the top of one  
+of the cabinets is an 11/40. Mighty expensive way to get a pdp11,  
+though. :)
+
+  - Milo
+
+--
+Milo Velimirović,  Unix Computer Network Administrator
+La Crosse, Wisconsin 54601 USA   43 48 48 N 91 13 53 W
+
+
+
+
+
+From aek at bitsavers.org  Tue Jun 10 05:51:29 2008
+From: aek at bitsavers.org (Al Kossow)
+Date: Mon, 09 Jun 2008 12:51:29 -0700
+Subject: [Unix-jun72] DEC 10 for sale on ebay
+In-Reply-To: <20080608040655.CD6645A521@remarque.org>
+References: <20080608040655.CD6645A521@remarque.org>
+Message-ID: <484D89C1.1080804@bitsavers.org>
+
+Doug Merritt wrote:
+
+> Someone might also check to see if the Computer History Museum
+> has the funds and interest for it. 
+
+CHM has one.
+
+
+
+From brad at heeltoe.com  Tue Jun 10 06:36:26 2008
+From: brad at heeltoe.com (Brad Parker)
+Date: Mon, 09 Jun 2008 16:36:26 -0400
+Subject: [Unix-jun72] DEC 10 for sale on ebay
+In-Reply-To: <E8CD65E2-7368-461F-A2FF-7B5CD6F9FC21@uwlax.edu> 
+References: <20080608040655.CD6645A521@remarque.org>
+	<E8CD65E2-7368-461F-A2FF-7B5CD6F9FC21@uwlax.edu>
+Message-ID: <19329.1213043786@mini>
+
+
+>of course it's germane; the box with blue switches at the top of one  
+>of the cabinets is an 11/40. Mighty expensive way to get a pdp11,  
+>though. :)
+
+I just wish it were a KS10.  KL's are really cool but just too darn big.
+
+-brad
+
+Brad Parker
+Heeltoe Consulting
++1-781-483-3101
+http://www.heeltoe.com
+
+
+
+
+From wkt at tuhs.org  Wed Jun 25 11:37:12 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 25 Jun 2008 11:37:12 +1000
+Subject: [Unix-jun72] SIMH V3.8-0 released: KE11A and DC11 added
+Message-ID: <20080625013712.GA8898@minnie.tuhs.org>
+
+All Simh version 3.8-0 has been released by Bob Supnik. It now has all the
+support that we need to run 1st Edition UNIX. In our Subversion repository,
+I've updated the Readme file and the simh.cfg file to match the new simulator.
+
+Cheers,
+	Warren
+
+
+From newsham at lava.net  Thu Jun 26 06:19:38 2008
+From: newsham at lava.net (Tim Newsham)
+Date: Wed, 25 Jun 2008 10:19:38 -1000 (HST)
+Subject: [Unix-jun72] SIMH V3.8-0 released: KE11A and DC11 added
+In-Reply-To: <20080625013712.GA8898@minnie.tuhs.org>
+References: <20080625013712.GA8898@minnie.tuhs.org>
+Message-ID: <Pine.BSI.4.64.0806251017500.27752@malasada.lava.net>
+
+> All Simh version 3.8-0 has been released by Bob Supnik. It now has all the
+> support that we need to run 1st Edition UNIX. In our Subversion repository,
+> I've updated the Readme file and the simh.cfg file to match the new simulator.
+
+Great!
+
+I think we should take out the patch that comments out tty0 through tty7
+in init.s.  The current Readme suggests doing this manually.  Thoughts?
+
+I can through up a tarball with the disk images to work with the
+latest simh on the download site...
+
+> 	Warren
+
+Tim Newsham
+http://www.thenewsh.com/~newsham/
+
+
+From wkt at tuhs.org  Thu Jun 26 11:31:23 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 26 Jun 2008 11:31:23 +1000
+Subject: [Unix-jun72] SIMH V3.8-0 released: KE11A and DC11 added
+In-Reply-To: <Pine.BSI.4.64.0806251017500.27752@malasada.lava.net>
+References: <20080625013712.GA8898@minnie.tuhs.org>
+	<Pine.BSI.4.64.0806251017500.27752@malasada.lava.net>
+Message-ID: <20080626013123.GA40316@minnie.tuhs.org>
+
+On Wed, Jun 25, 2008 at 10:19:38AM -1000, Tim Newsham wrote:
+> Great!
+> 
+> I think we should take out the patch that comments out tty0 through tty7
+> in init.s.  The current Readme suggests doing this manually.  Thoughts?
+
+I'd be happy with that, sounds good.
+ 
+> I can throw up a tarball with the disk images to work with the
+> latest simh on the download site...
+
+That would also be a good idea!
+
+Thanks Tim,
+	Warren
+
+
+From newsham at lava.net  Thu Jun 26 15:43:54 2008
+From: newsham at lava.net (Tim Newsham)
+Date: Wed, 25 Jun 2008 19:43:54 -1000 (HST)
+Subject: [Unix-jun72] SIMH V3.8-0 released: KE11A and DC11 added
+In-Reply-To: <20080626013123.GA40316@minnie.tuhs.org>
+References: <20080625013712.GA8898@minnie.tuhs.org>
+	<Pine.BSI.4.64.0806251017500.27752@malasada.lava.net>
+	<20080626013123.GA40316@minnie.tuhs.org>
+Message-ID: <Pine.BSI.4.64.0806251942280.27752@malasada.lava.net>
+
+> I'd be happy with that, sounds good.
+
+I submitted my patch and edited the Readme.
+
+>> I can throw up a tarball with the disk images to work with the
+>> latest simh on the download site...
+> That would also be a good idea!
+
+I added a download on the site:
+http://code.google.com/p/unix-jun72/downloads/list
+
+which has everything you need to get started except a simh pdp11 binary.
+If anyone has problems with this please let me know.
+
+> 	Warren
+
+Tim Newsham
+http://www.thenewsh.com/~newsham/
+
+
+From lehmann at ans-netz.de  Tue Jun  3 14:18:07 2008
+From: lehmann at ans-netz.de (Oliver Lehmann)
+Date: Tue, 3 Jun 2008 06:18:07 +0200
+Subject: [TUHS] Introduction
+Message-ID: <20080603061807.996d9648.lehmann@ans-netz.de>
+
+Hi everybody,
+
+I don't know if it's usual or not to write an introduction but I'll just
+do so by keeping more an eye on the computer system I own.
+If you don't care just skip this mail ;)
+
+As my From header states my name is Oliver, I live in germany and right
+now I'm 27 years old. That should be enough to my person - now let me
+tell you a bit more about the computer system I own ;)
+
+EAW P8000
+
+This system was built between 1987 and the breakdown of the former GDR -
+the eastern part of germany - 1990. The system itself is split up into
+two "towers" connected together. The first tower called "P8000 Computer"
+contains a 8Bit system (Z80) and a 16Bit system (Z8001).The 2nd case -
+the "P8000 Winchester" - contains a Winchester Disc Controller which runs
+with a Z80 CPU and is connected to the 16Bit part of the "P8000
+Computer". Up to three MFM drives (all with the same geometry while the
+geometry itself can be configured) can be connected to the WDC.
+
+The 8Bit part is built on a single board, has 64KB SRAM, 2 SIOs to
+connect up to 4 terminals to it, one PIO to connect a EPROM programmer,
+and one PIO to establish a connection to the 16Bit part. It has 2 5.25"
+floppy drives with an external connector to connect two further 5.25" or
+8" floppy drives. The systemmonitor is loaded from two 2732 EPROMs.
+The system originally supported three operating systems while two
+survived the time being. I own UDOS which is a Z80-RIO clone and OS/M
+which is a CP/M clone. There also was an OS called IS/M which was an ISIS
+clone.
+
+The more interesting (at least for me) part is the 16Bit part. The 16Bit
+part is built on a single board too (6layer) while the DRAM are single
+board which can be hooked up onto the mainboard.
+The system runs a Z8001 with 3 MMUs and Z80-peripherial ICs (PIO, SIO...)
+It also has 2 SIOs for 4 terminal connections, and one PIO to connect the
+WDC. The system also has two furhter PIO chips to establish a connection
+to the 8Bit system. The system runs with up to 4MB of DRAM but it might
+run with more RAM with self-made RAM modules. There exists also a RTC for
+the system and an extension to connect an 80286CPU + 1MBRAM to the 16BIT
+port to run a x86 OS on it while stearing it from the OS running on the
+16Bit system.
+The Operating-System running on the 16Bit part is WEGA - a ZiLOG ZEUS
+clone.
+To boot WEGA at first the 8Bit system has to be booted up with UDOS (the
+Z80-RIO clone) to load a communication software which handles the
+communication over the 8Bit-PIO. After this is done the system switches
+over to the 16Bit system and the system monitor there gets loaded. The
+WEGA-Kernel (most parts are still original ZEUS objects) itself has the
+corresponding part for the 8<->16Bit communication interface in it.
+This was done to get access to the floppy drives, the EPROM programmer
+and the 4 8Bit-terminal connections which are all connected to the Z80
+on the 8Bit-system.
+To access for example a floppy, the WEGA-kernel has to send the request
+using the PIO connection to the 8Bit system which handles it and sends
+the results back to the WEGA-kernel on the 16 Bit system. Same goes with
+the WDC which is connected through another PIO directly to the 16Bit
+system - command codes are sent to the Z80 on the WDC which handles the
+codes and sends the results back to the 16Bit system. Not that fast but
+it works good.
+
+Pictures and so one are all collected on my homepage
+http://pofo.de/P8000/ while most (if not to say all) of original
+documents are written in german...
+
+So - what do I do with the system? I use it for learn more about hardware
+processes itself, assembler and to get a deeper UNIX knowledge which is
+easier to start with there then with todays UNIX systems.
+
+Las project was to get TCP/IP working and I successed by usingg K5JB to
+get FTP and ping to work via SLIP. Because the speed was damn slow (and
+not just because of the baud rate), I came to the conclusion that a
+better performance could be achieved by implementing TCP/IP in the
+kernelspace instead of having it run in the userspace.
+
+So my goal is now to get the kernel sources right now to make the
+neccessary changes to get TCP/IP running in the kernel. As you might
+think now this is not so easy as it sounds. The sources for some objects
+of the kernel survied over the time, but many are missing. I'm now
+sitting here since a month disassembling the original kernel object and
+writing the disassembled code back in C. I've started this by having lets
+say nearly-to-zero ASM knowldege and I'm making good progress. Not much
+is left, but from time to time the C files are not compiling to
+exactly the same object which is in the kernel. Some times other
+temporary registers are used for operations, or I can't get to the same C
+code doesn't matter of what I'm trying and so on. I'm trying to get 100%
+the same object to be 100% sure I have the same code the object was built
+with. The compiler on that system should be the same but of course I
+can't guarantee that for sure.
+
+I'll put a web page together with my open C<->ASM questions because I
+think I can format things better there so asking and reading would be
+easier (probably because it is a lot of text)
+
+My progess can be seen here: http://pofo.de/P8000/kernel.php
+And the sources I got so far are here: 
+  http://cvs.laladev.org/index.html/WEGA/src/uts/
+
+I hope you can help me a bit with answering the things I can't find an
+answer myself ;)
+
+-- 
+ Oliver Lehmann
+  http://www.pofo.de/
+  http://wishlist.ans-netz.de/
+
+
+From jrvalverde at cnb.csic.es  Wed Jun  4 21:57:29 2008
+From: jrvalverde at cnb.csic.es (Jose R. Valverde)
+Date: Wed, 4 Jun 2008 13:57:29 +0200
+Subject: [TUHS] Introduction
+Message-ID: <20080604135729.4c50e178@veda.cnb.uam.es>
+
+Dear Oliver
+
+	Astounding work!
+
+What reference source are you using for the reconstruction process?
+I bet you are having a look at the source code for Plexis sys3 in the 
+TUHS archives, and comparing with the stock sysIII from SCO, right?
+
+FWIW from the source trees from SCO and Plexis, the code layout was
+arranged by CPU. I'd bet the WEGA authors had access so SysIII sources,
+and if they'd gone through the pains to get it, then they might as
+well got both -or perhaps Plexis, which should have been more easy
+to get- to use as their codebase. So a comparison of both source 
+trees should yield useful insights from the differences between PDP11,
+VAX and Z8000.
+
+BTW, as I remember practice in the '80s it was not uncommon to write 
+source in C and then tweak the assembler produced by hand to gain some
+extra efficiency or fixes. It is also possible that the authors resorted 
+to tricks (like casting an int parameter to char) to force the compiler 
+generate the code they wanted. You should also watch out for external or
+global symbols. It is also possible that the system was compiled with a 
+different (may  be earlier) version of the compiler that was later shipped. 
+If you can't get stock code to render the same asm then I'd bet for the 
+latest explanation (different compiler versions).
+
+Other than that, you are doing an astounding work!
+
+BTW, there are other Z8000 UNIX floating around. Maybe one of them will
+shed some extra light.
+
+> So my goal is now to get the kernel sources right now to make the
+> neccessary changes to get TCP/IP running in the kernel. As you might
+> think now this is not so easy as it sounds. The sources for some objects
+> of the kernel survied over the time, but many are missing. I'm now
+> sitting here since a month disassembling the original kernel object and
+> writing the disassembled code back in C. I've started this by having lets
+> say nearly-to-zero ASM knowldege and I'm making good progress. Not much
+> is left, but from time to time the C files are not compiling to
+> exactly the same object which is in the kernel. Some times other
+> temporary registers are used for operations, or I can't get to the same C
+> code doesn't matter of what I'm trying and so on. I'm trying to get 100%
+> the same object to be 100% sure I have the same code the object was built
+> with. The compiler on that system should be the same but of course I
+> can't guarantee that for sure.
+
+				
+
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+
+
+From lehmann at ans-netz.de  Thu Jun  5 01:11:16 2008
+From: lehmann at ans-netz.de (Oliver Lehmann)
+Date: Wed, 4 Jun 2008 17:11:16 +0200
+Subject: [TUHS] Introduction
+In-Reply-To: <20080604135729.4c50e178@veda.cnb.uam.es>
+References: <20080604135729.4c50e178@veda.cnb.uam.es>
+Message-ID: <20080604171116.1b2775f9.lehmann@ans-netz.de>
+
+Jose R. Valverde wrote:
+
+> Dear Oliver
+> 
+> 	Astounding work!
+
+Thanks :)
+
+While I'm puzzeling the html document together with my open questions
+(not so much questions but not so easy - at least for me - i guess) to
+present them here (yeah, fear! ;) just some answers...
+
+> 
+> What reference source are you using for the reconstruction process?
+> I bet you are having a look at the source code for Plexis sys3 in the 
+> TUHS archives, and comparing with the stock sysIII from SCO, right?
+
+I have Plexis sources and used plain SYSIII sources - yes. Sometimes
+I also used V7 sources because it pointed out through the recovery
+process that sometimes the V7 source matched more the implementation
+in WEGA than the SYSIII implementation was.
+
+
+> FWIW from the source trees from SCO and Plexis, the code layout was
+> arranged by CPU. I'd bet the WEGA authors had access so SysIII sources,
+> and if they'd gone through the pains to get it, then they might as
+> well got both -or perhaps Plexis, which should have been more easy
+> to get- to use as their codebase. So a comparison of both source 
+> trees should yield useful insights from the differences between PDP11,
+> VAX and Z8000.
+
+The biggest problem here is the memory segmentation. Plexis has - as far
+as I understand the code - no segmentation/non-segmentation support. It
+only supports one memory segment like the other SYSIII implementation did
+(please correct me if I'm wrong - I'm far away from being a professional
+here).
+ZEUS introduced a flag in the user structure specifying if the user runs
+a programm in the segmented or non-segmented mode which was based on what
+C-compiler was used (or what ASM, PLZ/ASM, PLZ/SYS directive was set.). In
+the segmented mode all 128 memory segments where used, in the non
+segmented mode only one of those 128 segments (as far as I can remember
+it was always segment 63) was used.
+
+In plexis I didn't saw such logic. This creates problems when it comes to
+memory access in the Kernel or such things like file execution where the
+special s.out header has differences for segmented or non-segmented
+programs.
+
+the WEGA-Developer themself (I had contact to their kernel developer) just
+took ZEUS and wrote "some" machine-specific kernel parts new. They never
+had access to the ZEUS sources. Later after WEGA was in place they got
+access to original V7 sources and modified/added stuff in WEGA. All
+sources the WEGA guys used is available to me because I got access to the
+Development floppies (containing also firmware sources and so on... ;))
+It can be clearly determined which objects are still original ZEUS objects
+and which where rewritten by the WEGA guys:
+
+a) the libraries LIB1 and LIB2 are storing the file modification times
+of the included objects. The original ZEUS objects are all dated in '83
+or '84, all WEGA implementations are dated later beginning with '86 for
+some ASM-based objects and '88 and '89 for C-based objects.
+b) the original ZEUS libraries are all containing the SCCS ident string
+like
+char sys4wstr[] = "@[$]sys4.c		Rev : 4.2 	09/26/83 22:15:02";
+whereas the WEGA-sources are not containing such "whatstring".
+
+
+> It is also possible that the system was compiled with a 
+> different (may  be earlier) version of the compiler that was later shipped. 
+
+This might be the case - but I just don't hope so..
+
+> BTW, there are other Z8000 UNIX floating around. Maybe one of them will
+> shed some extra light.
+
+I'm much interested about hearing more about this. I only knew ZEUS, even
+Plexis came quite late to my ears.
+
+  Greetings, Oliver
+
+-- 
+ Oliver Lehmann
+  http://www.pofo.de/
+  http://wishlist.ans-netz.de/
+
+
+From lehmann at ans-netz.de  Thu Jun  5 01:16:22 2008
+From: lehmann at ans-netz.de (Oliver Lehmann)
+Date: Wed, 4 Jun 2008 17:16:22 +0200
+Subject: [TUHS] Introduction
+In-Reply-To: <20080604171116.1b2775f9.lehmann@ans-netz.de>
+References: <20080604135729.4c50e178@veda.cnb.uam.es>
+	<20080604171116.1b2775f9.lehmann@ans-netz.de>
+Message-ID: <20080604171622.ac7bd431.lehmann@ans-netz.de>
+
+Oliver Lehmann wrote:
+
+> I have Plexis sources and used plain SYSIII sources - yes. Sometimes
+> I also used V7 sources because it pointed out through the recovery
+> process that sometimes the V7 source matched more the implementation
+> in WEGA than the SYSIII implementation was.
+
+One thing I forgott to add - ZEUS also had 2 Kernel objects where no
+SYSIII or V7 equivalent existed for. one was called break.o, and one
+was called lock.o. While lock.o implementes functions for a file locking
+granulated on read/write/read+write base, break.o implements function I
+can't see the meaning ... ;)
+I got break.o completly rewritten into break.c because the logic itself
+was not so hard to read. 
+http://cvs.laladev.org/index.html/WEGA/src/uts/sys/break.c?rev=1.2
+
+lock.o on the other hand I got not rewritten into C because I don't
+understand even the ASM listing with the handling of the struct
+locklist[] and so on... I'll skip that object for now.
+
+
+-- 
+ Oliver Lehmann
+  http://www.pofo.de/
+  http://wishlist.ans-netz.de/
+
+
+From lehmann at ans-netz.de  Thu Jun  5 03:56:09 2008
+From: lehmann at ans-netz.de (Oliver Lehmann)
+Date: Wed, 4 Jun 2008 19:56:09 +0200
+Subject: [TUHS] C <-> ASM problem
+Message-ID: <20080604195609.17240ccb.lehmann@ans-netz.de>
+
+Hi,
+
+while creating a web-page about the open questions of how to create C
+code which compiles through the optimizer run to the same ASM code as the
+original object was made from, I found the fix for one of my two "top"
+questions. 
+
+The (right now) remaining question is here:
+
+	http://pofo.de/P8000/problems.php
+
+
+
+The other (solved) problem was:
+
+I had the following ASM code:
+
+         ldk     r2,#0
+         ldb     rl2,_u+1060
+         ld      r3,r2
+         neg     r3
+         add     r3,#256
+         ldb     rh3,rl3
+         clrb    rl3
+         ld      _u+48,r3
+
+so i created the following C code out of it:
+
+u.u_count = (-u.u_segmts[NUSEGS-1].sg_limit+0x100)<<8;
+
+but this compiled to this ASM code:
+
+         ldk     r2,#0
+         ldb     rl2,_u+1060
+         neg     r2
+         add     r2,#256
+         ldb     rh2,rl2
+         clrb    rl2
+         ld      _u+48,r2
+
+As you can see the copy of r2 to r3 and the further processing with r3 is
+missing here. I also thought "who the fuck would write such an C-code,
+the code must look different". but I did not found the solution what
+could have been written in the C code until I've talked today with a
+colleague of mine at work about ASM and my problems. He isn't familar
+with  Z80(00)-ASM but he used to program ASM years ago with his C64. We
+took the ASM code and simulated it with values:
+
+_u+1060 contains 15 and is loaded to rl2   15	(0x000F / 00000000 00001111)
+this gets negated (2 complement formed)	  -15	(0xFFF1 / 11111111 11110001)
+to that, 256 gets added			  241	(0x00F1 / 00000000 11110001)
+this is 8 bit rightshiftet		61696	(0xF100 / 11110001 00000000)
+the result gets loaded into _u+48
+
+He then got the idea that all this could be aritmetical written
+as ((256 - 15)*256) because -15+256 is == 256-15 and rightshifts are done
+aritmetically by multiplying the value with 256. It could have also been
+done by having 256² - 256*x. This was great. With that information I wrote
+in C:
+
+u.u_count = (256-u.u_segmts[NUSEGS-1].sg_limit)<<8;
+
+And this generated the same ASM code as in the original code 
+problem solved :)
+
+-- 
+ Oliver Lehmann
+  http://www.pofo.de/
+  http://wishlist.ans-netz.de/
+
+
+From jrvalverde at cnb.csic.es  Fri Jun  6 01:07:30 2008
+From: jrvalverde at cnb.csic.es (Jose R. Valverde)
+Date: Thu, 5 Jun 2008 17:07:30 +0200
+Subject: [TUHS] Introduction
+In-Reply-To: <20080604135729.4c50e178@veda.cnb.uam.es>
+References: <20080604135729.4c50e178@veda.cnb.uam.es>
+Message-ID: <20080605170730.35320095@veda.cnb.uam.es>
+
+> so i created the following C code out of it:
+> 
+> u.u_count = (-u.u_segmts[NUSEGS-1].sg_limit+0x100)<<8;
+> ...
+> 
+> done by having 256² - 256*x. This was great. With that information I wrote
+> in C:
+> 
+> u.u_count = (256-u.u_segmts[NUSEGS-1].sg_limit)<<8;
+
+
+What happens if you use instead
+
+	u.u_count = (~(-u.u_segmts[NUSEGS-1].sg_limit))<<8;
+
+That should mean the same, would avoid using a hard coded value and the
+compiler may optimize it to the same assembly.
+
+I hope you understand that any advice will probably be faulty as we can
+not check the code generated by our suggestions as you do. As long as you
+don't mind that, it's OK.
+
+				j
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+
+
+From jrvalverde at cnb.csic.es  Fri Jun  6 01:17:58 2008
+From: jrvalverde at cnb.csic.es (Jose R. Valverde)
+Date: Thu, 5 Jun 2008 17:17:58 +0200
+Subject: [TUHS] Introduction
+In-Reply-To: <20080604135729.4c50e178@veda.cnb.uam.es>
+References: <20080604135729.4c50e178@veda.cnb.uam.es>
+Message-ID: <20080605171758.64c80f06@veda.cnb.uam.es>
+
+break() migh be used to allocate memory. There was a break() routine used
+for low level memory allocation. The ancient code or even the MINIX code
+may help you understand it. Look for break or brk.
+
+lock().. are you sure it is for file locking? If so, it may have been
+mimic'ed from XENIX file locking mechanisms. Otherwise it might implement
+a low level lock to avoid CPU contention as the machine you describe needs
+to coordinate work among more than one CPU.
+
+				j
+
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+
+
+From lehmann at ans-netz.de  Fri Jun  6 03:45:40 2008
+From: lehmann at ans-netz.de (Oliver Lehmann)
+Date: Thu, 5 Jun 2008 19:45:40 +0200
+Subject: [TUHS] Introduction
+In-Reply-To: <20080605171758.64c80f06@veda.cnb.uam.es>
+References: <20080604135729.4c50e178@veda.cnb.uam.es>
+	<20080605171758.64c80f06@veda.cnb.uam.es>
+Message-ID: <20080605194540.186fabae.lehmann@ans-netz.de>
+
+Jose R. Valverde wrote:
+
+> lock().. are you sure it is for file locking? If so, it may have been
+> mimic'ed from XENIX file locking mechanisms. Otherwise it might implement
+> a low level lock to avoid CPU contention as the machine you describe needs
+> to coordinate work among more than one CPU.
+
+I'm sure. I've the man-page for lkdata() and unlk()
+
+       #include <sys/lockblk.h>
+
+       long lkdata (fildes, flag, lkblk);
+       int fildes, flag;
+       struct lockblk *lkblk;
+
+       long unlk (fildes, flag, lkblk);
+       int fildes, flag;
+       struct lockblk *lkblk;
+
+in the eastern germany english was not teached (or very rarely) so many
+things - even in the world of the computers - where kept in german - so
+did the man pages.
+
+I can post the man-page link but your german isn't probably that good ;)
+	http://pofo.de/cgi-bin/man.cgi?query=lkdata
+
+
+-- 
+ Oliver Lehmann
+  http://www.pofo.de/
+  http://wishlist.ans-netz.de/
+
+
+From lehmann at ans-netz.de  Fri Jun  6 03:59:47 2008
+From: lehmann at ans-netz.de (Oliver Lehmann)
+Date: Thu, 5 Jun 2008 19:59:47 +0200
+Subject: [TUHS] Introduction
+In-Reply-To: <20080605170730.35320095@veda.cnb.uam.es>
+References: <20080604135729.4c50e178@veda.cnb.uam.es>
+	<20080605170730.35320095@veda.cnb.uam.es>
+Message-ID: <20080605195947.27193afe.lehmann@ans-netz.de>
+
+Jose R. Valverde wrote:
+
+> > so i created the following C code out of it:
+> > 
+> > u.u_count = (-u.u_segmts[NUSEGS-1].sg_limit+0x100)<<8;
+> > ...
+> > 
+> > done by having 256² - 256*x. This was great. With that information I wrote
+> > in C:
+> > 
+> > u.u_count = (256-u.u_segmts[NUSEGS-1].sg_limit)<<8;
+> 
+> 
+> What happens if you use instead
+> 
+> 	u.u_count = (~(-u.u_segmts[NUSEGS-1].sg_limit))<<8;
+> 
+> That should mean the same, would avoid using a hard coded value and the
+> compiler may optimize it to the same assembly.
+
+This gets compiled+optimized to:
+
+        ldb     rl2,_u+1060
+        neg     r2
+        com     r2
+        ldb     rh2,rl2
+        clrb    rl2
+        ld      _u+48,r2
+
+I think 256 is ok for me as it a) works, and b) I'm using a defined
+variable (CPAS - clicks per address space) instead of the hardcoded 256
+and instead of <<8 I'm using "ctob()" which is defined as 
+
+/* clicks to bytes */
+# define ctob(x)        ((x)<<8)
+
+so I guess this is OK.
+
+
+
+The other (unsolved) problem is quite more complicated for me. I tried
+several different things:
+
+u.u_dirp.l = (long)((saddr_t *)uap->linkname)->l & 0x7f00ffffL;
+u.u_dirp.l = ((long)uap->linkname&0x7F00FFFFL);
+u.u_dirp.l = (long)((int)uap->linkname&0x7F00);
+
+(the types are all defined in param.h I linked to at the webpage) I've
+tried to figure out what happens there.
+
+Any value which is in the long-word-register will be ANDed with
+
+    7F       00      FF       FF
+01111111 00000000 11111111 11111111
+
+This means, that the higher register will be taken from the long-word-
+register unmodified. For the lower register the first bit will be
+removed, and the highbyte will be removed as well. The colleague of
+mine meant this could have to do something with memory adressing - maybe
+to get an address from a memory segment. I didn't understood it that
+much. But we didn't found a way how it could be written "differently" and
+the optimizer creates the ANDing - again with a temporary register.
+I also tried to put the 0x7f00ffff in front of the variable just to be
+sure this is not what's triggering the copy. But without success. Maybe
+I'm to focused on the ANDing with 7f00 of the first 16bit register-word
+from the 32bit-longword - who knows?
+
+-- 
+ Oliver Lehmann
+  http://www.pofo.de/
+  http://wishlist.ans-netz.de/
+
+
+From a.phillip.garcia at gmail.com  Fri Jun  6 03:44:54 2008
+From: a.phillip.garcia at gmail.com (A P Garcia)
+Date: Thu, 5 Jun 2008 12:44:54 -0500
+Subject: [TUHS] solaris and sysv source
+Message-ID: <d2bba1970806051044q5cf4eb80l45485118b434998@mail.gmail.com>
+
+Hi,
+
+Does having a license for Solaris 8 source allow you to also have
+System V source?
+
+Thank you,
+Phil Garcia
+
+
+From jrvalverde at cnb.csic.es  Fri Jun  6 19:58:41 2008
+From: jrvalverde at cnb.csic.es (Jose R. Valverde)
+Date: Fri, 6 Jun 2008 11:58:41 +0200
+Subject: [TUHS] Introduction
+In-Reply-To: <20080604135729.4c50e178@veda.cnb.uam.es>
+References: <20080604135729.4c50e178@veda.cnb.uam.es>
+Message-ID: <20080606115841.54e3eafb@veda.cnb.uam.es>
+
+> Hi,
+> 
+> Does having a license for Solaris 8 source allow you to also have
+> System V source?
+
+It probably depends on what your Solaris 8 source license says. I can't
+remember offhand the terms of the Solaris Foundation Source Program which
+provided it under non-disclosure terms, but it wouldn't surprise me if
+they stated that you only got access to Solaris 8, not to ancestor SV
+code.
+
+Your license should tell (mine is at home now) but I suspect it will be
+highly restricted. 
+
+				j
+
+
+
+From pepe at naleco.com  Wed Jun 11 07:11:26 2008
+From: pepe at naleco.com (Pepe)
+Date: Tue, 10 Jun 2008 23:11:26 +0200
+Subject: [TUHS] SCO says it was not authorized to licence SVRX to SUN, MS.
+Message-ID: <20080610211126.GA16743@d600.naleco.com>
+
+Hello.
+
+Very interesting article from http://arstechnica.com here:
+
+http://arstechnica.com/news.ars/post/20080501-deluded-sco-ceo-on-witness-stand-linux-is-a-copy-of-unix.html
+
+A quote from that article:
+
+"Greg Jones, VP of Technology at Novell, was called as a witness. Jones
+was asked if SCO ever told Novell that it would sue Linux users. He
+said, "No, never that specific." When asked if SCO notified Novell under
+the Asset Purchase Agreement Amendment 2 that it would enter into a
+license with Microsoft, he said, "No." 
+
+Jones testified that SVRX code is in Solaris and that he had discovered
+several cases of this. At that point, Novell entered into evidence at
+least 21 examples of OpenSolaris code that had been taken from the SVRX
+code base (one such example can be found on the OpenSolaris web site)
+and re-licensed under Sun's open-source CDDL license. 
+
+He further testified that the agreement between SCO and Sun was
+"extraordinary" in allowing a move from a proprietary license to an
+open-source license, and if Novell had been asked, it would have
+prevented SCO from entering into that agreement. He said the same thing
+regarding the Microsoft agreement with SCO, as well as the agreement
+between SCO and Computer Associates."
+
+	And then this pearl: 
+
+"SCO argues that it was not authorized to execute license agreements and
+that interested third parties such as Sun and Microsoft should get their
+money back, but it says that Novell is not entitled to hold the money in
+the interim. If you purchased a license from SCO that was unauthorized,
+the argument is that you'll need sue them to get it back. Since SCO is
+currently in bankruptcy proceedings, that could be difficult."
+
+------
+
+Ain't it funny?
+
+
+-- 
+Pepe
+pepe at naleco.com
+
+
+
+From jrvalverde at cnb.csic.es  Tue Jun 24 00:18:01 2008
+From: jrvalverde at cnb.csic.es (Jose R. Valverde)
+Date: Mon, 23 Jun 2008 16:18:01 +0200
+Subject: [TUHS] Introduction
+In-Reply-To: <20080605171758.64c80f06@veda.cnb.uam.es>
+References: <20080604135729.4c50e178@veda.cnb.uam.es>
+	<20080605171758.64c80f06@veda.cnb.uam.es>
+Message-ID: <20080623161801.19a53c3e@veda.cnb.uam.es>
+
+> The (right now) remaining question is here:
+> 
+> 	http://pofo.de/P8000/problems.php
+
+
+My guess on this:
+
+> I've some functions where the asm code looks as follows:
+> 
+> 0530 3582  0004     584         ldl     rr2,rr8(#4)
+> 0534 9424                       ldl     rr4,rr2
+> 0536 0704  7f00     585         and     r4,#32512
+> 04d2 5d04  8000*    586         ldl     _u+78,rr4
+> 04d6 004e*
+> 
+> This means, an unsigned long value stored in rr8 at position 4 gets loaded into rr2, then into rr4 and then ANDed with 7F00FFFF (r4 are the first 2 bytes of rr4). After the operation is done, the result gets loaded into the address the external reference _u is stored + 78 bytes. The C code I tried to produce out of this information is:
+
+May be there is an additional cast being done. On prf.c you have a
+similar AND:
+
+                s=(char *)(*(long *)adx & 0x7F00FFFF);
+
+As you can see there is a double indirection. My guess is that the
+AND is done to clear some segmentation information, say to ensure the
+datsegment of the program, possibly as a
+security measure against a user process providing a pointer crafted
+to point to an invalid address. The raw -unsafe- code would have
+looked like
+		s = (char *) *adx;
+
+So, the address pointed to by adx, which is a char * is first cast 
+into long *, then ANDed to clear those bits, then assigned. That would
+mean that char* would then be restricted in this system to fit within
+that 0x7F00FFFF mask. If that is so, then the original code in sys2.c 
+for link()
+
+		u.u_dirp.l = (caddr_t) ((long) uap->linkname);
+
+was recoded to ensure that the (void) int* it got from uap was cleaned
+before actual use:
+
+	u.u_dirp.l = (caddr_t) (*((long *)(uap->linkname &0x7F00FFFF)))
+
+uap->linkname is a re-interpretation (as per the struct cast) of the
+data stored in u.u_ap, but u.u_ap is an (int*), a generic pointer that
+might point to anything (a char* as expected or anything else). Then,
+this would explain why you see other register usage in other similar
+situations like in rdwr() after assignment of uap->cbuf (another char*)
+
+Could you try that or some such? It would be used then whenever a
+char * is to be retrieved through a generic int (void) pointer.
+
+					j
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valiigencia Artificial cuando falta la Natural
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20080623/eb15d5f3/attachment.sig>
+
+From lehmann at ans-netz.de  Tue Jun 24 02:11:01 2008
+From: lehmann at ans-netz.de (Oliver Lehmann)
+Date: Mon, 23 Jun 2008 18:11:01 +0200
+Subject: [TUHS] Introduction
+In-Reply-To: <20080623161801.19a53c3e@veda.cnb.uam.es>
+References: <20080604135729.4c50e178@veda.cnb.uam.es>
+	<20080605171758.64c80f06@veda.cnb.uam.es>
+	<20080623161801.19a53c3e@veda.cnb.uam.es>
+Message-ID: <20080623181101.e862a3a2.lehmann@ans-netz.de>
+
+Hi Jose,
+
+Jose R. Valverde wrote:
+
+> 
+> 	u.u_dirp.l = (caddr_t) (*((long *)(uap->linkname &0x7F00FFFF)))
+> 
+
+leads to:
+
+"sys2.c":305: operands of "&" have incompatible types 
+Error in file sys2.c: Error.  No assembly.
+
+
+I've changed it to:
+	u.u_dirp.l = (caddr_t) (*((long *)((long)uap->linkname &0x7F00FFFF)));
+
+and this produces:
+
+        ldl     rr2,rr8(#4)
+        and     r2,#32512
+        ldl     rr4, at rr2
+        ldl     _u+78,rr4
+
+not exactly the wanted code :(
+
+Greetings, Oliver
+
+-- 
+ Oliver Lehmann
+  http://www.pofo.de/
+  http://wishlist.ans-netz.de/
+
+
+From jrvalverde at cnb.csic.es  Wed Jun 25 19:40:40 2008
+From: jrvalverde at cnb.csic.es (Jose R. Valverde)
+Date: Wed, 25 Jun 2008 11:40:40 +0200
+Subject: [TUHS] Introduction
+In-Reply-To: <20080623181101.e862a3a2.lehmann@ans-netz.de>
+References: <20080604135729.4c50e178@veda.cnb.uam.es>
+	<20080605171758.64c80f06@veda.cnb.uam.es>
+	<20080623161801.19a53c3e@veda.cnb.uam.es>
+	<20080623181101.e862a3a2.lehmann@ans-netz.de>
+Message-ID: <20080625114040.54124362@veda.cnb.uam.es>
+
+Oliver:
+
+Right, it seems that I mistransliterated the code in a hurry or confusion. 
+
+I notice that on prf.c *adx is a pointer to be assigned to s, whereas in
+sys2.c uap->linkname is the pointer itself thas is assigned to u.u_dirp.l
+So my initial transliteration was wrong as I was assigning *uap->linkname
+instead of uap->linkname.
+
+Reviewing the assembler you submitted I notice it looks almost like what you
+wanted but for @rr2 instead of rr2 so it might have been the extra * I
+wrongly added in front of the parenthesized & expression and the erroneously
+placed parenthesis (which I also got wrong) the reason for not getting what 
+you wanted.
+
+If on prf.c you have in printf
+	register unsigned int *adx;
+	char *s;
+
+	adx = &x1;
+...
+	s = (char *) * adx;
+and was recoded on WEGA in printfv
+	register unsigned *adx;
+	register char *s;
+
+	adx = x1;
+...
+	s = (char *)(*(long *)adx & 0x7F00FFFF);
+
+then maybe the right code on sys.c would be a change from
+	caddr_t u.u_dirp;		/* char *, from param.h user.h */
+        register struct a {
+                char    *target;
+                char    *linkname;
+        } *uap;
+...
+	u.u_dirp.l = (caddr_t) uap->linkname;
+to
+	caddr_t u.u_dirp.l;		/* char *, from param.h user.h */ 
+	register struct a {
+                char    *target;
+                char    *linkname;
+        } *uap;
+...
+	u.u_dirp.l = (caddr_t) ) ((long *) uap->linkname & 0x7F00FFFF);
+
+Note also the difference in parenthesis usage with what you said you had
+tried on http://pofo.de/P8000/problems.php
+	u.u_dirp.l = (caddr_t)(((long)uap->linkname) & 0x7F00FFFF);
+
+I fear that I was too tired when I wrote my previous posting and made two
+many mistakes.
+
+Anyway, the first step should be to check what prf.c generates as assembler 
+at these & lines when compiled. If it matches the sample code you mention you
+have in other places then it means the same device was used to generate it
+(which I would guess is the case) and then it should be a matter of thinking
+clearly of what is being assigned. I do believe the surviving trace in prf.c
+is the key to understanding the problem assembly code.
+
+				j
+
+On Mon, 23 Jun 2008 18:11:01 +0200 Oliver Lehmann <lehmann at ans-netz.de>
+wrote:
+> Hi Jose,
+> 
+> Jose R. Valverde wrote:
+> 
+> > 
+> > 	u.u_dirp.l = (caddr_t) (*((long *)(uap->linkname &0x7F00FFFF)))
+> > 
+> 
+> leads to:
+> 
+> "sys2.c":305: operands of "&" have incompatible types 
+> Error in file sys2.c: Error.  No assembly.
+> 
+> 
+> I've changed it to:
+> 	u.u_dirp.l = (caddr_t) (*((long *)((long)uap->linkname &0x7F00FFFF)));
+> 
+> and this produces:
+> 
+>         ldl     rr2,rr8(#4)
+>         and     r2,#32512
+>         ldl     rr4, at rr2
+>         ldl     _u+78,rr4
+> 
+> not exactly the wanted code :(
+> 
+> Greetings, Oliver
+> 
+> -- 
+>  Oliver Lehmann
+>   http://www.pofo.de/
+>   http://wishlist.ans-netz.de/
+
+
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20080625/f57ad71e/attachment.sig>
+
+From jrvalverde at cnb.csic.es  Wed Jun 25 20:25:05 2008
+From: jrvalverde at cnb.csic.es (Jose R. Valverde)
+Date: Wed, 25 Jun 2008 12:25:05 +0200
+Subject: [TUHS] Introduction
+In-Reply-To: <20080623181101.e862a3a2.lehmann@ans-netz.de>
+References: <20080604135729.4c50e178@veda.cnb.uam.es>
+	<20080605171758.64c80f06@veda.cnb.uam.es>
+	<20080623161801.19a53c3e@veda.cnb.uam.es>
+	<20080623181101.e862a3a2.lehmann@ans-netz.de>
+Message-ID: <20080625122505.4e3d9803@veda.cnb.uam.es>
+
+Oliver,
+
+	BTW, I am thiking more clearly now and realize I initially confused 
+the uap struct in lock() with u_uap, although what is actually assigned is
+uap->linkname to u.u_dirp.
+
+	When seeing the type definitions in param.h I also notice that it
+defines caddr_t (the type of the u.u_dirp.l side of the saddr_t union) as
+
+typedef char 		*caddr_t;	/* pointer to kernel things */
+
+that leads me to consider that the &0x7F00FFFF may be an additional 
+security check to ensure that the pointer falls within valid memory 
+space, in which case it would match the memory map.
+
+I notice that nsseg in mch.s may return %7F00 on some cases and is used
+in machdep.c as stseg = nsseg(u_state->s_sp); so it seems the stack uses
+segment 0x7F00. Then may be the & is shorthand to make sure the address
+pointed by the ANDed pointer falls within the stack. It would probably
+imply user programs have a maximum stack size of 65536 bytes as well.
+
+That may explain why some pointers are ANDed and others not. I haven't
+had a thorough look, but if the &0x7F00FFFF usage is consistent, then
+that's is an explanation that may guide source reconstruction.
+
+Does this look sensible?
+
+					j
+
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20080625/8fe9f063/attachment.sig>
+
+From lehmann at ans-netz.de  Fri Jun 27 00:52:46 2008
+From: lehmann at ans-netz.de (Oliver Lehmann)
+Date: Thu, 26 Jun 2008 16:52:46 +0200
+Subject: [TUHS] Introduction
+In-Reply-To: <20080625122505.4e3d9803@veda.cnb.uam.es>
+References: <20080604135729.4c50e178@veda.cnb.uam.es>
+	<20080605171758.64c80f06@veda.cnb.uam.es>
+	<20080623161801.19a53c3e@veda.cnb.uam.es>
+	<20080623181101.e862a3a2.lehmann@ans-netz.de>
+	<20080625122505.4e3d9803@veda.cnb.uam.es>
+Message-ID: <20080626165246.9c3933eb.lehmann@ans-netz.de>
+
+Hi Jose,
+
+first - thanks for taking the time helping me here on this issue.
+
+		s=(char *)(*(long *)adx & 0x7F00FFFF);
+
+in prf.c compiles to:
+
+        ldl     rr2,|_stkseg+~L1+8|(fp)
+        ldl     rr4, at rr2
+        and     r4,#32512
+        ldl     |_stkseg+~L1+12|(fp),rr4
+
+I've some places in the WEGA kernel where this ANDing is done in a
+way I need it, but I have no source which compiles to the way I need
+it. I've searched all the kernel for it.
+I guess the WEGA-developer which replaced some ZEUS objects by his
+own implementation didn't found out the real syntax too and so created
+basically the same syntax I have now in the sources for the original
+ZEUS objects. So some sources (mostly theese with german comments ;)
+are containing 7F00FFFF ANDings which are compatible because they are
+not the original ZEUS objects where this copying is made. And for
+ZEUS I've zero sources...
+
+So the only thing in sys2.c's link() you wanted me to change in your
+previous mail was:
+
+	u.u_dirp.l = (caddr_t) ((long *) uap->linkname & 0x7F00FFFF);
+
+right? Tried this, and got:
+
+"sys2.c":305: operands of "&" have incompatible types 
+Error in file sys2.c: Error.  No assembly.
+
+
+> I notice that nsseg in mch.s may return %7F00 on some cases and is used
+> in machdep.c as stseg = nsseg(u_state->s_sp); so it seems the stack uses
+> segment 0x7F00. Then may be the & is shorthand to make sure the address
+> pointed by the ANDed pointer falls within the stack. It would probably
+> imply user programs have a maximum stack size of 65536 bytes as well.
+> 
+> That may explain why some pointers are ANDed and others not. I haven't
+> had a thorough look, but if the &0x7F00FFFF usage is consistent, then
+> that's is an explanation that may guide source reconstruction.
+
+A memory segment is 64Kbyte of size. The hardware is a bit special here.
+The CPU can access the memory in a segmented and a nonsegmented mode. For
+this purpose 3(!) MMUs are existing. A special MMU control logic is
+implemented which can handle 3 states:
+1: segmented OS (CPU works in system mode)
+	The segments Code, Data and Stack are managed by MMU1. MMU2 and
+	MMU3 are not active
+2: userprocess not segmented (CPU works in normal-mode, segmentnumber 63)
+	The segments Code, Data and Stack are managed by MMU1. MMU2 and
+	MMU3 are not active. This is done by a special break register
+3: userprocess segmented (CPU works in normal-mode)
+	MMU2 and MMU3 are used to process the 128 possible memory segments
+	which can be Code-, Data- or Stack-Segments. MMU2 manages the
+	segments 0-63 and MMU3 manages the segments 64-128. The switching
+	between both MMUs works hardwarecontrolled in dependence of the
+	segmentline. Both MMUs are programmed for segment 0..63.
+
+A colleague of mine wrote about this:
+>>>>>
+I've looked at your problems site and think I can imagine why the AND 0x7f00ffff
+is there. Remember, the Z8000 segmentation concept is flawed the way that a segment
+address can wrap around without warning. Now, at a higher level, UNIX uses a flat 
+address space and somewhere, this logic address needs to be translated into 
+physical addresses. This is done by the MMU - however, if within a pointer arithmetic
+an overflow beyond the 64k boundary happens, it can spill over into the segment number
+which is - you might remember at bit [30:24]. So as soon as a pointer is created by the
+compiler, it is ANDed with 0x7f00 for the upper 16bits to extract the segment number and 
+with 0xffff for the lower 16bit address to obtain the real logic address PC.
+
+It would be really interesting to look at the implementation of malloc for memory blocks
+greater than 64K byte. My assumption is that the compiler inserts this AND on its own for
+any pointer arithmetic.
+<<<<<
+
+Maybe this helps...
+
+   Greetings, Oliver
+
+-- 
+ Oliver Lehmann
+  http://www.pofo.de/
+  http://wishlist.ans-netz.de/
+
+
+From jrvalverde at cnb.csic.es  Fri Jun 27 22:24:30 2008
+From: jrvalverde at cnb.csic.es (Jose R. Valverde)
+Date: Fri, 27 Jun 2008 14:24:30 +0200
+Subject: [TUHS] Introduction
+In-Reply-To: <20080626165246.9c3933eb.lehmann@ans-netz.de>
+References: <20080604135729.4c50e178@veda.cnb.uam.es>
+	<20080605171758.64c80f06@veda.cnb.uam.es>
+	<20080623161801.19a53c3e@veda.cnb.uam.es>
+	<20080623181101.e862a3a2.lehmann@ans-netz.de>
+	<20080625122505.4e3d9803@veda.cnb.uam.es>
+	<20080626165246.9c3933eb.lehmann@ans-netz.de>
+Message-ID: <20080627142430.57e0a9c4@veda.cnb.uam.es>
+
+Dear Oliver,
+
+	well, the fact that prf.c uses the anding explicitly means that
+it was actually used as such directly in the code. But...
+
+On Thu, 26 Jun 2008 16:52:46 +0200
+Oliver Lehmann <lehmann at ans-netz.de> wrote:
+> Hi Jose,
+> 
+> first - thanks for taking the time helping me here on this issue.
+> 
+> 		s=(char *)(*(long *)adx & 0x7F00FFFF);
+> 
+> in prf.c compiles to:
+>
+Let me test if I understand this:
+ 
+>         ldl     rr2,|_stkseg+~L1+8|(fp)
+
+	rr2 = adx
+
+>         ldl     rr4, at rr2
+
+	rr4 = *adx
+
+>         and     r4,#32512	
+>         ldl     |_stkseg+~L1+12|(fp),rr4
+	s = rr4
+> 
+
+
+Which is the equivalent to the code you describe in your problems page
+except for the @
+
+it also would look like what's doing is
+
+	s = (char *) ( (*(long *)adx) & 0x7F00FFFF;
+
+reflecting how the compiler has read the line (giving higher precedence
+to the * than to the &). Am I mistaken? Hence the & is done to the value
+pointed by adx, not to adx itself before indirecting it.
+
+That means that adx contains a pointer to a pointer instead of a pointer
+to unsigned int as declared, and would explain why the need for the 
+first cast (long *), so the value pointed by adx is stored in a long
+not an unsigned int. I wonder why adx would not have been declared as
+unsigned long * directly...
+
+Then that long (which is actually a pointer) is ANDed to fall in the 
+stack, and finally coerced to be interpreted as a char *.
+
+>  
+> So the only thing in sys2.c's link() you wanted me to change in your
+> previous mail was:
+> 
+> 	u.u_dirp.l = (caddr_t) ((long *) uap->linkname & 0x7F00FFFF);
+> 
+> right? Tried this, and got:
+> 
+> "sys2.c":305: operands of "&" have incompatible types 
+> Error in file sys2.c: Error.  No assembly.
+> 
+My take is that whatever the original source must have been very
+close to my suggestion. If we assume the former interpretation
+then, of course in prf.c it compiles (as it is ANDing a pointer
+coerced to long with the constant) and here it doesn't (as it
+would be ANDing a long *.
+
+Why don't you try to split the assignment into various statements
+to reproduce the assembly and the recombine them? Like, e.g.
+
+1:	r2 = uap->linkname;		/* ldl rr2,rr8(#4) */
+2:	r4 = (long) r2;			/* ldl rr4,rr2 */
+3:	r4 &= 0x7F00FFFF;		/* and rr4,#32512 */
+4:	u.u_dirp.l = (caddr_t) r4;	/* ldl _u+78, rr4 */
+
+If you can get it by parts, then you can work your way back
+recombining with parenthesis. I suspect line (2) above will give the
+lead.
+
+Other possibility is some other conversion was used. I notice similar code 
+on rdwr(), but here it is of the king
+	ldl rrX, something
+	ldl rr4,rrX(#some offset)
+	and r4,#32512 (or some other value, like 61440) 
+
+So, what if it was called somehow so that the compiler decided to assign 
+the value of rr2 to an auxililary register believing there was an offset 
+but the offset was zero?
+
+	u.u_dirp.l => ((saddr_t) (uap->linkname)).l
+
+may be they first cast uap->linkname into a segmented address (as it points to
+user data) leading to
+
+		(saddr_t) uap->linkname).l
+
+to get the segmented stack pointer that was to be fixed by the AND and then you
+cast it to long for the AND
+
+		(long) ((saddr_t) uap->linkname).l
+giving
+	u.u_dirp.l = (caddr_t) ((long) (((saddr_t) uap->linkname).l) & 0x7F00FFFF);
+	// this might force use of an aux. variable for the 0 offset and then anding it
+
+or may be the simpler implicitly forces the code
+
+	u.u_dirp = (saddr_t) (((long) uap->linkname) & 0x7F00FFFF);
+
+Another possibility is that it were coded by hand in assembler working over
+assembly listings generated by the compiler: on development, probably prf.c
+was coded early on, and then maybe they hand coded that code using prf.c as
+a template (reproducing the verbose now unneeded ldl rr4,rr2 line).
+
+> 
+> > I notice that nsseg in mch.s may return %7F00 on some cases and is used
+> > in machdep.c as stseg = nsseg(u_state->s_sp); so it seems the stack uses
+> > segment 0x7F00. Then may be the & is shorthand to make sure the address
+> > pointed by the ANDed pointer falls within the stack. It would probably
+> > imply user programs have a maximum stack size of 65536 bytes as well.
+> > 
+> > That may explain why some pointers are ANDed and others not. I haven't
+> > had a thorough look, but if the &0x7F00FFFF usage is consistent, then
+> > that's is an explanation that may guide source reconstruction.
+> 
+> A memory segment is 64Kbyte of size. The hardware is a bit special here.
+> The CPU can access the memory in a segmented and a nonsegmented mode. For
+> this purpose 3(!) MMUs are existing. A special MMU control logic is
+> implemented which can handle 3 states:
+> 1: segmented OS (CPU works in system mode)
+> 	The segments Code, Data and Stack are managed by MMU1. MMU2 and
+> 	MMU3 are not active
+> 2: userprocess not segmented (CPU works in normal-mode, segmentnumber 63)
+> 	The segments Code, Data and Stack are managed by MMU1. MMU2 and
+> 	MMU3 are not active. This is done by a special break register
+> 3: userprocess segmented (CPU works in normal-mode)
+> 	MMU2 and MMU3 are used to process the 128 possible memory segments
+> 	which can be Code-, Data- or Stack-Segments. MMU2 manages the
+> 	segments 0-63 and MMU3 manages the segments 64-128. The switching
+> 	between both MMUs works hardwarecontrolled in dependence of the
+> 	segmentline. Both MMUs are programmed for segment 0..63.
+> 
+> A colleague of mine wrote about this:
+> >>>>>
+> I've looked at your problems site and think I can imagine why the AND 0x7f00ffff
+> is there. Remember, the Z8000 segmentation concept is flawed the way that a segment
+> address can wrap around without warning. Now, at a higher level, UNIX uses a flat 
+> address space and somewhere, this logic address needs to be translated into 
+> physical addresses. This is done by the MMU - however, if within a pointer arithmetic
+> an overflow beyond the 64k boundary happens, it can spill over into the segment number
+> which is - you might remember at bit [30:24]. So as soon as a pointer is created by the
+> compiler, it is ANDed with 0x7f00 for the upper 16bits to extract the segment number and 
+> with 0xffff for the lower 16bit address to obtain the real logic address PC.
+> 
+> It would be really interesting to look at the implementation of malloc for memory blocks
+> greater than 64K byte. My assumption is that the compiler inserts this AND on its own for
+> any pointer arithmetic.
+> <<<<<
+> 
+> Maybe this helps...
+> 
+>    Greetings, Oliver
+> 
+> -- 
+>  Oliver Lehmann
+>   http://www.pofo.de/
+>   http://wishlist.ans-netz.de/
+
+
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20080627/3f93ff3d/attachment.sig>
+
+From lehmann at ans-netz.de  Sun Jun 29 18:25:23 2008
+From: lehmann at ans-netz.de (Oliver Lehmann)
+Date: Sun, 29 Jun 2008 10:25:23 +0200
+Subject: [TUHS] Introduction
+In-Reply-To: <20080627142430.57e0a9c4@veda.cnb.uam.es>
+References: <20080604135729.4c50e178@veda.cnb.uam.es>
+	<20080605171758.64c80f06@veda.cnb.uam.es>
+	<20080623161801.19a53c3e@veda.cnb.uam.es>
+	<20080623181101.e862a3a2.lehmann@ans-netz.de>
+	<20080625122505.4e3d9803@veda.cnb.uam.es>
+	<20080626165246.9c3933eb.lehmann@ans-netz.de>
+	<20080627142430.57e0a9c4@veda.cnb.uam.es>
+Message-ID: <20080629102523.0219a85c.lehmann@ans-netz.de>
+
+Jose R. Valverde wrote:
+
+> Why don't you try to split the assignment into various statements
+> to reproduce the assembly and the recombine them? Like, e.g.
+> 
+> 1:	r2 = uap->linkname;		/* ldl rr2,rr8(#4) */
+> 2:	r4 = (long) r2;			/* ldl rr4,rr2 */
+> 3:	r4 &= 0x7F00FFFF;		/* and rr4,#32512 */
+> 4:	u.u_dirp.l = (caddr_t) r4;	/* ldl _u+78, rr4 */
+
+hm.. this won't work because the compiler starts handing out registers
+the register-declared variables with the highest register possible so
+would start with rr10 or so.
+
+> 	u.u_dirp.l = (caddr_t) ((long) (((saddr_t) uap->linkname).l) & 0x7F00FFFF);
+
+I've changed it to:
+
+	u.u_dirp.l = (caddr_t) ((long) (((saddr_t *) uap->linkname)->l) & 0x7F00FFFF);
+
+otherwise it won't compile. It compiles to:
+
+        ldl     rr2,rr8(#4)
+        ldl     rr4, at rr2
+        and     r4,#32512
+        ldl     _u+78,rr4
+
+is it because I added a * and changed . to ->?
+
+> 	u.u_dirp = (saddr_t) (((long) uap->linkname) & 0x7F00FFFF);
+
+this generates:
+"sys2.c":305: operands of CAST have incompatible types 
+"sys2.c":305: operands of "=" have incompatible types 
+
+:(
+
+-- 
+ Oliver Lehmann
+  http://www.pofo.de/
+  http://wishlist.ans-netz.de/
+
+
+From jrvalverde at cnb.csic.es  Mon Jun 30 19:30:28 2008
+From: jrvalverde at cnb.csic.es (Jose R. Valverde)
+Date: Mon, 30 Jun 2008 11:30:28 +0200
+Subject: [TUHS] Introduction
+In-Reply-To: <20080629102523.0219a85c.lehmann@ans-netz.de>
+References: <20080604135729.4c50e178@veda.cnb.uam.es>
+	<20080605171758.64c80f06@veda.cnb.uam.es>
+	<20080623161801.19a53c3e@veda.cnb.uam.es>
+	<20080623181101.e862a3a2.lehmann@ans-netz.de>
+	<20080625122505.4e3d9803@veda.cnb.uam.es>
+	<20080626165246.9c3933eb.lehmann@ans-netz.de>
+	<20080627142430.57e0a9c4@veda.cnb.uam.es>
+	<20080629102523.0219a85c.lehmann@ans-netz.de>
+Message-ID: <20080630113028.46a50360@veda.cnb.uam.es>
+
+On Sun, 29 Jun 2008 10:25:23 +0200
+Oliver Lehmann <lehmann at ans-netz.de> wrote:
+> Jose R. Valverde wrote:
+> 
+> > Why don't you try to split the assignment into various statements
+> > to reproduce the assembly and the recombine them? Like, e.g.
+> > 
+> > 1:	r2 = uap->linkname;		/* ldl rr2,rr8(#4) */
+> > 2:	r4 = (long) r2;			/* ldl rr4,rr2 */
+> > 3:	r4 &= 0x7F00FFFF;		/* and rr4,#32512 */
+> > 4:	u.u_dirp.l = (caddr_t) r4;	/* ldl _u+78, rr4 */
+> 
+> hm.. this won't work because the compiler starts handing out registers
+> the register-declared variables with the highest register possible so
+> would start with rr10 or so.
+
+But you would still be able to see what did generate the code (barring
+register number).
+> 
+> > 	u.u_dirp.l = (caddr_t) ((long) (((saddr_t) uap->linkname).l) & 0x7F00FFFF);
+> 
+> I've changed it to:
+> 
+> 	u.u_dirp.l = (caddr_t) ((long) (((saddr_t *) uap->linkname)->l) & 0x7F00FFFF);
+> 
+> otherwise it won't compile. It compiles to:
+> 
+>         ldl     rr2,rr8(#4)
+>         ldl     rr4, at rr2
+>         and     r4,#32512
+>         ldl     _u+78,rr4
+> 
+> is it because I added a * and changed . to ->?
+
+Yes, but it also does not reflect the correct usage. linkname is not an saddr_t* but
+an saddrt_t. And you want to assign directly the value of uap->linkname not what it
+points to.
+
+typedef	union	
+{
+    caddr_t		l;
+    struct
+    {
+	unsigned	left;
+	unsigned	right;
+    }			half;
+}			saddr_t;	/* segmented address with parts */
+
+> 
+> > 	u.u_dirp = (saddr_t) (((long) uap->linkname) & 0x7F00FFFF);
+> 
+> this generates:
+> "sys2.c":305: operands of CAST have incompatible types 
+> "sys2.c":305: operands of "=" have incompatible types 
+> 
+> :(
+
+My fault. That's a typical beginner's mistake I made there. I'm starting
+to feel embarrassed of so many mistakes I'm making lately. BTW, I'm on a
+deadline so most probably my mind is not 100% in place so do not take me
+too seriously specially when dealing with complex abstract data types.
+
+That is because an saddr_t is a union. You cannot assign directly to a
+union (u.u_dirp), you must assign to a union member (u.u_dirp.l), but
+the union member is not an saddr_t, it is a caddr_t: the correct text
+would be 
+ 	u.u_dirp.l = (caddr_t) (((long) uap->linkname) & 0x7F00FFFF);
+
+which you know does not work. That is why I suggested the extra cast to
+see if the compiler would be misled into using an unneeded zero-offset
+assignment instruction to an auxiliary register.
+
+	u.u_dirp.l = (caddr_t) ((long) (((saddr_t) uap->linkname).l) & 0x7F00FFFF);
+
+that should be tantamount to
+
+	u.u_dirp.l = (caddrt_t) ((long) ((caddr_t) uap->linkname) & 0x7F00FFFF);
+
+where due to the long cast the initial caddr_t cast would be redundant
+reducing to
+
+	u.u_dirp.l = (caddr_t) ((long) uap->linkname & 0x7F00FFFF);
+
+but introducing a saddr_t cast that might fool the compiler into a
+temporary assignment with a zero offset (the .l) into ldl rr4,rr2
+
+And I still think that dividing the assignment into intermediate
+instructions and looking at the assembly might shed some light into
+what is going on.
+
+> 
+> -- 
+>  Oliver Lehmann
+>   http://www.pofo.de/
+>   http://wishlist.ans-netz.de/
+
+
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20080630/e747ed01/attachment.sig>
+

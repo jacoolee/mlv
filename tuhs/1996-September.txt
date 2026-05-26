@@ -1,0 +1,250 @@
+From m at mbsks.franken.de  Wed Sep 11 09:49:05 1996
+From: m at mbsks.franken.de (Matthias Bruestle)
+Date: Wed, 11 Sep 1996 01:49:05 +0200 (MET DST)
+Subject: UNIX for my 11/34A
+Message-ID: <m0v0cYF-000NSdC@mbsks.franken.de>
+
+Mahlzeit
+
+
+
+My name is Matthias Bruestle and I'm new on this mailing list.
+I'm collecting old computers and have until now 34.
+
+I have a 11/34A with 128kB RAM, DL11-W and 2 RL01. I want to
+install UNIX on her. Because there are no RL01 disk images
+which I can use directly, I want to prepare one with a
+PDP-11 emulator. I got V6 to boot with the Supnik emulator,
+but noticed than that V6 has no support for RL01 drives.
+Does someone have RL01 drivers for V6 or must I use V7?
+
+The last step would be to download the image over the serial
+line. Is there allready a programm for RT-11SJ V4.00
+which does this?
+
+
+
+Thanks for your help
+
+endergone Zwiebeltuete
+
+-- 
+insanity inside
+
+
+From wkt at csadfa.cs.adfa.oz.au  Wed Sep 11 11:21:29 1996
+From: wkt at csadfa.cs.adfa.oz.au (Warren Toomey)
+Date: Wed, 11 Sep 1996 11:21:29 +1000 (EST)
+Subject: UNIX for my 11/34A
+In-Reply-To: <m0v0cYF-000NSdC@mbsks.franken.de> from "Matthias Bruestle" at Sep 11, 96 01:49:05 am
+Message-ID: <9609110121.AA05654@dolphin>
+
+In atricle by Matthias Bruestle:
+> Does someone have RL01 drivers for V6 or must I use V7?
+
+Matthias, I'm pretty sure that the v6 RL driver supports RL01s and RL02s,
+the only difference is number of sectors on the RL01.
+
+If you have an RL02 disk image mounted on /dev/rl0, and an empty
+RL01-sized disk image mounted on /dev/rl1, you should be able to
+say:
+
+	$ mkfs /dev/rl1 <size of RL01 in 512-byte blocks>
+	$ mount /dev/rl1 /mnt
+
+You can then copy over the root files from /dev/rl0 to /dev/rl1 with tar.
+
+One thing to note, the RL02 kernel comes with swap at the end of the
+RL02. You will need to rebuild a kernel so that the location and size of the
+swap will fit onto a RL01 and still leave some file space. In fact, you must
+remember to subtract the swap space size when you do the mkfs.
+
+Best to do this on the emulator and get the RL01 image ready before
+moving it to the /34. I also forgot to mention that you need to install
+the bootstrap code onto the RL01 image. Check the mkfs man page for details.
+
+> The last step would be to download the image over the serial
+> line. Is there already a programm for RT-11SJ V4.00
+> which does this?
+
+Someone did say they have a program to do this. You might want to look
+back through the mail archives on the PUPS web page.
+
+Cheers,
+	Warren
+
+
+From sms at wlv.iipo.gtegsc.com  Thu Sep 12 01:30:34 1996
+From: sms at wlv.iipo.gtegsc.com (Steven M. Schultz)
+Date: Wed, 11 Sep 1996 08:30:34 -0700 (PDT)
+Subject: UNIX for my 11/34A
+Message-ID: <199609111530.IAA04582@wlv.iipo.gtegsc.com>
+
+Warren -
+
+	Greetings.
+
+> From: wkt at csadfa.cs.adfa.oz.au (Warren Toomey)
+> Matthias, I'm pretty sure that the v6 RL driver supports RL01s and RL02s,
+> the only difference is number of sectors on the RL01.
+
+	V6 predates the RL02 by enough time that I doubt V6 has RL0? support
+	unless someone managed to graft it on after ~1979 (by which time V7
+	was out).
+
+	V7 _initially_ did *not* have RL02 support.  When we got our first V7
+	tape in 1979 a RL02 driver was written locally in ~79 or 80.  So 
+	unless someone added the RL0? support to V7 and submitted the updated
+	images to the archives it's doubtful RL devices can be used with V7.
+
+	2.9BSD came with the necessary drivers because that system came a couple
+	years later than V7 and the folks at UCB had had time to write the
+	drivers and boot support.
+
+> One thing to note, the RL02 kernel comes with swap at the end of the
+> RL02. You will need to rebuild a kernel so that the location and size of the
+
+	Quite right.  The 'swaplo' global must agree with the partition table
+	wired into the driver or the system will end up swapping over top of
+	the root filesystem.  *ick* ;)
+
+	Cheers.
+
+	Steven
+
+
+
+From m at mbsks.franken.de  Thu Sep 12 03:38:42 1996
+From: m at mbsks.franken.de (Matthias Bruestle)
+Date: Wed, 11 Sep 1996 19:38:42 +0200 (MET DST)
+Subject: UNIX for my 11/34A
+In-Reply-To: <199609111530.IAA04582@wlv.iipo.gtegsc.com> from "Steven M. Schultz" at Sep 11, 96 08:30:34 am
+Message-ID: <m0v0tFM-000NZuC@mbsks.franken.de>
+
+Mahlzeit
+
+
+
+> 	V7 _initially_ did *not* have RL02 support.  When we got our first V7
+> 	tape in 1979 a RL02 driver was written locally in ~79 or 80.  So 
+> 	unless someone added the RL0? support to V7 and submitted the updated
+> 	images to the archives it's doubtful RL devices can be used with V7.
+The V7 are RL02 images and include the RL drivers.
+
+> > One thing to note, the RL02 kernel comes with swap at the end of the
+> > RL02. You will need to rebuild a kernel so that the location and size of the
+> 	Quite right.  The 'swaplo' global must agree with the partition table
+> 	wired into the driver or the system will end up swapping over top of
+> 	the root filesystem.  *ick* ;)
+rl1conf:
+
+rl
+root rl 0
+swap rl 0
+swplo 9000
+nswap 1240
+tm
+
+I assume that means that the filesystem ist 9000 block long and the
+swap 1240 blocks. (-> mkfs /dev/rl1 9000)
+
+Until now I have the RL02 cleaned up, so it fits on a RL01, and
+made a filesystem on the RL01. Now I'm fighting with the emu.
+
+
+
+
+Mahlzeit
+ 
+endergone Zwiebeltuete
+
+-- 
+insanity inside
+
+
+From pnt103 at ugrad.cs.york.ac.uk  Thu Sep 12 03:24:44 1996
+From: pnt103 at ugrad.cs.york.ac.uk (pnt103 at ugrad.cs.york.ac.uk)
+Date: Thu, 12 Sep 96 03:24:44
+Subject: UNIX for my 11/34A
+Message-ID: <swordfish.842494878@ugrad.cs.york.ac.uk>
+
+My V7 has RL drivers, and AFAIR they're on my distribution tape, which has
+a 1980 date sticker on it (I think; it's not to hand).
+
+My 11/23 only has RL02s on it, and it was running V7 fine this morning :-)
+
+Pete
+
+
+
+From m at mbsks.franken.de  Thu Sep 12 17:24:13 1996
+From: m at mbsks.franken.de (Matthias Bruestle)
+Date: Thu, 12 Sep 1996 09:24:13 +0200 (MET DST)
+Subject: UNIX for my 11/34A
+Message-ID: <m0v168F-000NRtC@mbsks.franken.de>
+
+Mahlzeit
+
+
+
+OK. Now I have a RL01 image, which boots at least on the emu with
+the original rl1unix kernel.
+
+# mkfs /dev/rl1 9000
+# dd if=/usr/mdec/rluboot of=/dev/rl1 count=1
+# mount /dev/rl1 /mnt
+# df
+# rm -rf /usr/dicts /usr/src /usr/games /rkunix /usr/spool/uucppublic/ansi*
+# tar cf - .profile bin boot etc lib tmp usr | (cd mnt; tar xf -)
+# cp /rl1unix /mnt/unix
+# mkdir /mnt/mnt
+# mkdir /mnt/dev
+# cp /dev/makefile /mnt/dev
+# cd /mnt/dev
+# make
+# make rl
+# ln rl0 swap
+# cd /usr/sys/conf
+# cp rl1conf conf
+conf: remove last line (tm)
+m.h: uncomment "#define _1134"
+makefile: M = smch
+copied pk.p, stat.h and tty.h from other V7 source to /usr/sys/h
+# make unix
+# cp unix /mnt/nunix
+
+The selfmade kernel nunix doesn't boot. Did I something wrong?
+
+Should I adjust also other options in m.h or param.h to get better
+performance with 128kByte (not kWord) RAM?
+
+
+
+
+Thanks
+
+endergone Zwiebeltuete
+
+-- 
+insanity inside
+
+
+From wkt at csadfa.cs.adfa.oz.au  Sun Sep 15 11:52:22 1996
+From: wkt at csadfa.cs.adfa.oz.au (Warren Toomey)
+Date: Sun, 15 Sep 1996 11:52:22 +1000 (EST)
+Subject: PDP Unix Archive Down...
+Message-ID: <9609150152.AA15484@dolphin>
+
+All,
+	I accidentally shut down the PDP Unix ftp archive on
+henry.cs.adfa.oz.au yesterday, as it's my desktop PC and I temporarily
+forgot about its other uses. It should be back on again at 0000 GMT Monday.
+
+I've also got a new Pentium to replace the 486 which is henry, and I will
+cut over to the new machine sometime in the next two weeks, so if you are
+having any troubles ftp'ing stuff from this machine, please let me know.
+
+Cheers,
+	Warren
+
+

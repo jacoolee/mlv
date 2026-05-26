@@ -1,0 +1,1609 @@
+From robinb at ruffnready.co.uk  Tue Aug  6 16:45:04 2002
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Tue, 6 Aug 2002 07:45:04 +0100
+Subject: [pups] Message for Steve Schultz
+Message-ID: <xNc2+ZCwB3T9EwCM@falstaf.demon.co.uk>
+
+Hi Steve,
+Long time no chat.  Can't get through to your email on moe so can you 
+amend my email address for patch distributions to 
+robinb at ruffnready.co.uk.  Attempting to stem the tide of spam :-(
+
+Cheers
+
+Robin
+
+
+From lion at apocalypse.org  Thu Aug  8 16:17:20 2002
+From: lion at apocalypse.org (Michael)
+Date: Thu, 8 Aug 2002 02:17:20 -0400
+Subject: [pups] 2.11BSD on non separate I&D systems?
+Message-ID: <p05111a03b977bc56fc8c@[192.48.232.56]>
+
+Hi folks,
+
+Forgive me in case this question has been asked before..
+
+Has anyone done anything to try and get 2.11BSD working
+on non-separate I&D PDP-11s?
+
+One of the various READMEs I ran across said it might be possible
+with some creative memory layouts using overlays.
+
+I briefly searched the PUPS mail archives but turned up
+nothing.
+
+Thanks,
+
+-- Michael
+lion at apocalypse.org
+
+
+From Fred.van.Kempen at microwalt.nl  Thu Aug  8 18:17:15 2002
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Thu, 8 Aug 2002 10:17:15 +0200
+Subject: [pups] 2.11BSD on non separate I&D systems?
+Message-ID: <7AD18F04B62B7440BE22E190A3F7721401FEC8@mwsrv04.microwalt.nl>
+
+Hi,
+
+> Has anyone done anything to try and get 2.11BSD working
+> on non-separate I&D PDP-11s?
+> 
+> One of the various READMEs I ran across said it might be possible
+> with some creative memory layouts using overlays.
+> 
+> I briefly searched the PUPS mail archives but turned up
+> nothing.
+No way.  It already relies heavily on overlays to get things
+done.  Even without the networking code (which requires I&D,
+*and* Supervisor mode), there is pretty much no way to get it
+to fit (even a small system) within a 64K space.
+
+If you really need a UNIX that (slowly ;-) fits in the nonID
+space, ytu Ultrix-11.  That fits, although its very slow on such 
+machines.
+
+Cheers,
+	Fred
+
+
+From cmcnabb at vt.edu  Wed Aug 14 04:06:07 2002
+From: cmcnabb at vt.edu (Christopher McNabb)
+Date: 13 Aug 2002 14:06:07 -0400
+Subject: [pups] Unix on a PDP-11/24
+Message-ID: <1029261967.4542.0.camel@cmlaptop>
+
+I've acquired a PDP-11/24 with 2 RL02s and a RA80.  What are my options
+for running Unix?
+-- 
+---------------------------------------------------------------------
+Christopher L McNabb              Tel:   540 231 7554
+Operating Systems Analyst         Email: cmcnabb at vt.edu
+Virginia Tech                     ICBM:  37.205622N 80.414595W
+GMRS: WPSR255                     ARS:   N2UX  Grid Sq: EM97SD
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 232 bytes
+Desc: This is a digitally signed message part
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20020813/6a15c474/attachment.sig>
+
+From bill at cs.scranton.edu  Wed Aug 14 04:16:32 2002
+From: bill at cs.scranton.edu (Bill Gunshannon)
+Date: Tue, 13 Aug 2002 14:16:32 -0400 (EDT)
+Subject: [pups] Unix on a PDP-11/24
+In-Reply-To: <1029261967.4542.0.camel@cmlaptop>
+Message-ID: <20020813141527.E22691-100000@server2.cs.scranton.edu>
+
+On 13 Aug 2002, Christopher McNabb wrote:
+
+> I've acquired a PDP-11/24 with 2 RL02s and a RA80.  What are my options
+> for running Unix?
+>
+
+Ultrix-11 if you can get a 9-track tape drive. :-)
+
+bill
+
+-- 
+Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three wolves
+bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+University of Scranton   |
+Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+
+
+
+From Fred.van.Kempen at microwalt.nl  Wed Aug 14 05:18:48 2002
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Tue, 13 Aug 2002 21:18:48 +0200
+Subject: [pups] Unix on a PDP-11/24
+Message-ID: <7AD18F04B62B7440BE22E190A3F772146822@mwsrv04.microwalt.nl>
+
+> I've acquired a PDP-11/24 with 2 RL02s and a RA80.  What are 
+> my options for running Unix?
+Either a small system like V7, or Ultrix-11.
+
+And no, you don't need a tape drive... as long as you have a PC
+around, and the PDP-11 has a serial port, you can use my VTserver
+package to install Ultrix over the console port.
+
+Cheers,
+	Fred
+
+
+From iking at microsoft.com  Wed Aug 14 05:27:54 2002
+From: iking at microsoft.com (Ian King)
+Date: Tue, 13 Aug 2002 12:27:54 -0700
+Subject: [pups] Unix on a PDP-11/24
+Message-ID: <8D25F244B8274141B5D313CA4823F39C057A234E@red-msg-06.redmond.corp.microsoft.com>
+
+You could also run Unix v6, if you're of a historical bent; 2.9BSD
+should run with no problems; and possibly v7, if you have the 22-bit
+address bus and enough RAM.  Keep in mind that if there isn't a
+distribution for your machine, you can build one on an emulator, then
+create a disk image.  However, with v6 I ran the 11/40 image on an 11/34
+and was able to rebuild for my hardware.  
+
+Warren wrote a neat tool to get bits onto a machine over a serial line;
+it takes a while (at 9600 baud!), but it works.  Look on the PUPS site
+under VTserver; don't worry that there probably isn't an installation
+package for a given version or machine, there's a way to run a small
+client on a PC that can talk to a bootstrap on the target machine.  --
+Ian 
+
+DISCLAIMER: Pay no attention to that man behind the curtain - or to my
+email address.  These rantings are my personal statements, and not a
+product of my employer.  
+
+-----Original Message-----
+From: Bill Gunshannon [mailto:bill at cs.scranton.edu] 
+Sent: Tuesday, August 13, 2002 11:17 AM
+To: Unix_Preservation_List
+Subject: Re: [pups] Unix on a PDP-11/24
+
+
+On 13 Aug 2002, Christopher McNabb wrote:
+
+> I've acquired a PDP-11/24 with 2 RL02s and a RA80.  What are my 
+> options for running Unix?
+>
+
+Ultrix-11 if you can get a 9-track tape drive. :-)
+
+bill
+
+-- 
+Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three
+wolves
+bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+University of Scranton   |
+Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+
+_______________________________________________
+PUPS mailing list
+PUPS at minnie.tuhs.org http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+From kevin at ps8.co.uk  Thu Aug 15 21:16:56 2002
+From: kevin at ps8.co.uk (Kevin Murrell)
+Date: Thu, 15 Aug 2002 12:16:56 +0100
+Subject: [pups] Vtserver, BSD2.11 and brain_fatigue
+Message-ID: <IJECIIPFALOPEJDGENLAIEAHDDAA.kevin@ps8.co.uk>
+
+Hi all
+
+Firstly, I have done this before, but due to age/stress/tiredness/whatever,
+I can't remember what I did!
+
+I am using Warren's/Fred's vtserver program to install BSD2.11 on an 11/53.
+
+I have installed the root.dump file (and all the steps beforehand) and now
+my '53 boots into 2.11.  So far so good!
+
+I now need to restore the usr file systems - all the stuff in file6/7/8.tar
+
+How do I do this still using Vtserver.
+
+Someone remind me please!
+
+Regards
+
+
+Kevin Murrell
+
+
+
+From Fred.van.Kempen at microwalt.nl  Thu Aug 15 22:22:48 2002
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Thu, 15 Aug 2002 14:22:48 +0200
+Subject: [pups] Vtserver, BSD2.11 and brain_fatigue
+In-Reply-To: <IJECIIPFALOPEJDGENLAIEAHDDAA.kevin@ps8.co.uk>
+Message-ID: <000101c24456$791969a0$c401a8c0@WKSFred>
+
+That's the nasty part of the whole thing.
+
+VTserver support is ONLY present in the SAS part of the BSD and Ultrix
+systems I patched.  So, once you're out of the SAS part (read: once you
+have your machine booting into Unix by itself), you no longer have a 
+link to the VT services.
+
+Two solutions to that:
+
+1.  Use the VTclient program to basically do the same the SAS stuff
+    does, but from within the Unix system.  I have added VTclient to
+    the base dist (root fs) of Ultrix-11, and that worked.  Ultrix,
+    by the way, also installs the /usr file system in the SAS phase,
+    so that's not a problem to begin with.  For BSD, we could do the
+    same: have an /sbin/vtc and use that to extract the usr fs from
+    the VT server using a commandline such as:
+
+		(cd /; umask 0; /sbin/vtc -F 5 | tar xfvp -)
+
+    which extracts tape file #5 (thats the usr fs, if memory serves me
+    right) on the VTserver, and runs it through "tar" to extract and 
+    install it.  This REQUIRES the console line to be in 8N1 mode,
+    obviously, and this is not always the case !!!!
+
+2.  While still in the SAS phase, create a disk, partition or volume,
+    and copy the usr fs onto that in raw (tar{.Z}) mode.  Once the
+    Unix system boots by itself, mount the extra volume, and unpack
+    the tar fs to its proper location.
+
+Icky, huh? :)
+
+--f
+
+
+> -----Original Message-----
+> From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]On
+> Behalf Of Kevin Murrell
+> Sent: Thursday, August 15, 2002 1:17 PM
+> To: Pups Mailing List
+> Subject: [pups] Vtserver, BSD2.11 and brain_fatigue
+> 
+> 
+> Hi all
+> 
+> Firstly, I have done this before, but due to 
+> age/stress/tiredness/whatever,
+> I can't remember what I did!
+> 
+> I am using Warren's/Fred's vtserver program to install 
+> BSD2.11 on an 11/53.
+> 
+> I have installed the root.dump file (and all the steps 
+> beforehand) and now
+> my '53 boots into 2.11.  So far so good!
+> 
+> I now need to restore the usr file systems - all the stuff in 
+> file6/7/8.tar
+> 
+> How do I do this still using Vtserver.
+> 
+> Someone remind me please!
+> 
+> Regards
+> 
+> 
+> Kevin Murrell
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+> 
+
+
+
+From langj at bellsouth.net  Fri Aug 16 01:49:23 2002
+From: langj at bellsouth.net (joseph c lang)
+Date: Thu, 15 Aug 2002 11:49:23 -0400
+Subject: [pups] Vtserver, BSD2.11 and brain_fatigue
+References: <IJECIIPFALOPEJDGENLAIEAHDDAA.kevin@ps8.co.uk>
+Message-ID: <3D5BCD83.C7E55FA9@bellsouth.net>
+
+I used vtc to transfer the tar files after bsd was running.
+
+http://users.safeaccess.com/engdahl/vtc.htm
+
+I also had to break the tar files into smaller pieces and delete some
+stuff
+to fit my limited disk space.
+
+It's slow but it works!
+
+joe lang
+
+Kevin Murrell wrote:
+> 
+> Hi all
+> 
+> Firstly, I have done this before, but due to age/stress/tiredness/whatever,
+> I can't remember what I did!
+> 
+> I am using Warren's/Fred's vtserver program to install BSD2.11 on an 11/53.
+> 
+> I have installed the root.dump file (and all the steps beforehand) and now
+> my '53 boots into 2.11.  So far so good!
+> 
+> I now need to restore the usr file systems - all the stuff in file6/7/8.tar
+> 
+> How do I do this still using Vtserver.
+> 
+> Someone remind me please!
+> 
+> Regards
+> 
+> Kevin Murrell
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+From lars at fwn.rug.nl  Sun Aug 18 19:43:57 2002
+From: lars at fwn.rug.nl (Lars Buitinck)
+Date: Sun, 18 Aug 2002 11:43:57 +0200 (CEST)
+Subject: [pups] PDP-9?
+Message-ID: <1029663837.3d5f6c5d30faa@w3.fwn.rug.nl>
+
+we all know that UNIX first ran on the PDP-7 and then on the PDP-11/20,
+but does anyone know anything about PDP-9 UNIX?  it\'s mentioned in \"The
+UNIX Time-Sharing System\" in the V7 manual:
+
+\"The earliest [version of UNIX] (circa 1969-70) ran on the Digital
+Equipment Corporation PDP-7 and -9 computers.\"
+
+--
+If I travelled to the end of the rainbow
+As Dame Fortune did intend
+Murphy would be there to tell me
+The pot is at the other end
+
+Lars
+
+
+From bqt at update.uu.se  Mon Aug 19 04:04:41 2002
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Sun, 18 Aug 2002 20:04:41 +0200 (CEST)
+Subject: [pups] PDP-9?
+In-Reply-To: <1029663837.3d5f6c5d30faa@w3.fwn.rug.nl>
+Message-ID: <Pine.LNX.4.21.0208182002240.5130-100000@Tempo.Update.UU.SE>
+
+On Sun, 18 Aug 2002, Lars Buitinck wrote:
+
+> we all know that UNIX first ran on the PDP-7 and then on the PDP-11/20,
+> but does anyone know anything about PDP-9 UNIX?  it\'s mentioned in \"The
+> UNIX Time-Sharing System\" in the V7 manual:
+> 
+> \"The earliest [version of UNIX] (circa 1969-70) ran on the Digital
+> Equipment Corporation PDP-7 and -9 computers.\"
+
+Hmmm, I cannot exactly answer that, but the PDP-7 and PDP-9 were both
+18-bit machines, and somewhat compatible, I believe.
+The whole line is (I believe):
+
+PDP-4 -> PDP-7 -> PDP-9 -> PDP-15
+
+So I guess that if you had it running on a PDP-7, you could probably
+almost take the code unmodified and run it on the PDP-9.
+The PDP-15 have a different bus (Unibus?) I believe, and thus,
+peripherials are different from the predecessors.
+This obviosuly affects the OS. :-)
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From Fred.van.Kempen at microwalt.nl  Mon Aug 19 07:59:02 2002
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Sun, 18 Aug 2002 23:59:02 +0200
+Subject: [pups] Dilog DQ686, anyone?
+Message-ID: <7AD18F04B62B7440BE22E190A3F7721401FF1D@mwsrv04.microwalt.nl>
+
+Hey gang,
+
+Does anyone have an online manual or other info for the DQ686
+ESDI disk controller from Dilog?  I'm trying to fix a VAX 4,
+which as that beastie...
+
+Thanks,
+	Fred
+
+
+From jkunz at maja.unixag-kl.fh-kl.de  Mon Aug 19 19:20:15 2002
+From: jkunz at maja.unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Mon, 19 Aug 2002 11:20:15 +0200
+Subject: [pups] Dilog DQ686, anyone?
+In-Reply-To: <7AD18F04B62B7440BE22E190A3F7721401FF1D@mwsrv04.microwalt.nl>
+References: <7AD18F04B62B7440BE22E190A3F7721401FF1D@mwsrv04.microwalt.nl>
+Message-ID: <20020819092015.GA3347@unixag-kl.fh-kl.de>
+
+On Sun, Aug 18, 2002 at 11:59:02PM +0200, Fred N. van Kempen wrote:
+
+> Does anyone have an online manual or other info for the DQ686
+> ESDI disk controller from Dilog?  I'm trying to fix a VAX 4,
+> which as that beastie...
+I have a DQ686 in my MicroVAX III runing 4.3BSD-Tahoe and a DQ696
+in my PDP11/83 runing 2.11BSD. I don't have a manual for them.
+All I have is a .txt that describes the DIP switch settings of 
+the DQ696 and the commands to invoke the firmware setup of the DQ686:
+>>>D/P/L 20088004 80000001 <cr>
+>>>D/P/W 20001f40 20 <cr>
+>>>D/P/W 2000146a 3FFF <cr>
+>>>S 200 <CR> 
+[or for GPX version]
+>>>S 218 <cr>
+
+If you can get the description of the DIP switch settings of
+the DQ686, please part with us. :-) 
+-- 
+
+
+
+tsch��,
+         Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+
+From cdl at mpl.ucsd.edu  Mon Aug 19 09:58:49 2002
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Sun, 18 Aug 2002 16:58:49 -0700 (PDT)
+Subject: [pups] Dilog DQ686, anyone?
+Message-ID: <200208182358.QAA02194@opihi.ucsd.edu>
+
+> From: "Fred N. van Kempen" <Fred.van.Kempen at microwalt.nl>
+> To: <pups at minnie.tuhs.org>
+> Subject: [pups] Dilog DQ686, anyone?
+> 
+> Hey gang,
+> 
+> Does anyone have an online manual or other info for the DQ686
+> ESDI disk controller from Dilog?  I'm trying to fix a VAX 4,
+> which as that beastie...
+
+There is a manual for the DQ696, which is essentially the same thing
+except it controls 2 drives not 4.  It was last seen by me at
+
+< http://www.miim.com/documents/dilog/dq696.zip >.
+
+It is zip-compressed MSWord.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+
+From dmr at plan9.bell-labs.com  Wed Aug 21 13:55:55 2002
+From: dmr at plan9.bell-labs.com (Dennis Ritchie)
+Date: Tue, 20 Aug 2002 23:55:55 -0400
+Subject: [pups] re: PDP-9
+Message-ID: <8bef78f335e274ebd82d30a31ac9c3d8@plan9.bell-labs.com>
+
+Bilquist said (quoting Buitinck):
+
+ > > we all know that UNIX first ran on the PDP-7 and then on the PDP-11/20,
+ > > but does anyone know anything about PDP-9 UNIX?  it\'s mentioned in \"The
+ > > UNIX Time-Sharing System\" in the V7 manual:
+ > > 
+ > > \"The earliest [version of UNIX] (circa 1969-70) ran on the Digital
+ > > Equipment Corporation PDP-7 and -9 computers.\"
+
+ > Hmmm, I cannot exactly answer that, but the PDP-7 and PDP-9 were both
+ > 18-bit machines, and somewhat compatible, I believe.
+ > The whole line is (I believe):
+
+ > PDP-4 -> PDP-7 -> PDP-9 -> PDP-15
+
+ > So I guess that if you had it running on a PDP-7, you could probably
+ > almost take the code unmodified and run it on the PDP-9.
+ > The PDP-15 have a different bus (Unibus?) I believe, and thus,
+ > peripherials are different from the predecessors.
+ > This obviosuly affects the OS. :-)
+
+The 7, 9, 15 were very compatible.  I think the -15
+had some scheme for using an index register, which
+the earlier ones didn't have, but it was otherwise
+pretty much identical in IS architecture.
+
+There was very little rewriting to try Unix out
+on the -9 and -15; perhaps just some tweaks in
+the disk device commands.  I don't think the
+system actually ran on either for more than a few
+hours.  Ken was just playing around.
+
+The -15 may have had an electrically different
+bus, but I'm reasonably sure it was not a Unibus.
+All of them used IOT instructions, not memory-mapped
+IO registers.
+
+Both of the machines we tried were being used by other groups
+and we couldn't squat on them as with the PDP-7.
+I recall that  the -15's main job was controlling a
+step-and-repeat camera that exposed LSI masks.
+
+	Dennis
+
+
+
+From IVIE at cc.usu.edu  Wed Aug 21 18:01:07 2002
+From: IVIE at cc.usu.edu (Roger Ivie)
+Date: Wed, 21 Aug 2002 01:01:07 -0700 (MST)
+Subject: [pups] Re: PDP-9
+Message-ID: <01KLJHDIATV69D4L6T@cc.usu.edu>
+
+Dennis Ritchie said:
+> The 7, 9, 15 were very compatible.  I think the -15
+> had some scheme for using an index register, which
+> the earlier ones didn't have, but it was otherwise
+> pretty much identical in IS architecture.
+
+According to Gordon Bell's "Computer Engineering", the primary differences
+from the -4 to the -7 were switching from 6-bit to ASCII I/O devices and
+the addition of a trap mechanism. The -9 primarily changed the memory
+system, going to 2-1/2D core; it was also microcoded. The -15 went to
+TTL ICs and added index registers and memory relocation. He says
+"The PDP-9 instruction compatibility was acheived with three minor
+exceptions about which no complaints were received", although I don't
+see an explanation of the exceptions.
+
+http://research.microsoft.com/users/GBell/Computer_Engineering/
+
+-- 
+Roger Ivie
+ivie at cc.usu.edu
+
+
+From alsbergt at zoopee.org  Wed Aug 21 19:07:53 2002
+From: alsbergt at zoopee.org (Tom Alsberg)
+Date: Wed, 21 Aug 2002 12:07:53 +0300
+Subject: [pups] Test message
+Message-ID: <20020821090753.GA17546@zoopee.org>
+
+This is a test message, please ignore it.
+
+  -- Tom
+
+-- 
+  Tom Alsberg - certified insane, complete illiterate.
+        e-mail: <alsbergt at softhome.net>
+	Homepage: http://www.cs.huji.ac.il/~alsbergt/
+  * An idea is not responsible for the people who believe in it.
+
+
+From lars at nocrew.org  Wed Aug 21 19:19:18 2002
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: 21 Aug 2002 11:19:18 +0200
+Subject: [pups] re: PDP-9
+In-Reply-To: <8bef78f335e274ebd82d30a31ac9c3d8@plan9.bell-labs.com>
+References: <8bef78f335e274ebd82d30a31ac9c3d8@plan9.bell-labs.com>
+Message-ID: <85hehovaax.fsf@junk.nocrew.org>
+
+Dennis Ritchie <dmr at plan9.bell-labs.com> writes:
+> The 7, 9, 15 were very compatible.  [...]  There was very little
+> rewriting to try Unix out on the -9 and -15; perhaps just some
+> tweaks in the disk device commands.  I don't think the system
+> actually ran on either for more than a few hours.  Ken was just
+> playing around.
+
+No attempts to run on a PDP-4, then?
+
+-- 
+Lars Brinkhoff          http://lars.nocrew.org/     Linux, GCC, PDP-10,
+Brinkhoff Consulting    http://www.brinkhoff.se/    HTTP programming
+
+
+From bqt at update.uu.se  Wed Aug 21 19:21:08 2002
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Wed, 21 Aug 2002 11:21:08 +0200 (CEST)
+Subject: [pups] re: PDP-9
+In-Reply-To: <8bef78f335e274ebd82d30a31ac9c3d8@plan9.bell-labs.com>
+Message-ID: <Pine.LNX.4.21.0208211114550.23988-100000@Tempo.Update.UU.SE>
+
+On Tue, 20 Aug 2002, Dennis Ritchie wrote:
+
+> Bilquist said (quoting Buitinck):
+> 
+>  > So I guess that if you had it running on a PDP-7, you could probably
+>  > almost take the code unmodified and run it on the PDP-9.
+>  > The PDP-15 have a different bus (Unibus?) I believe, and thus,
+>  > peripherials are different from the predecessors.
+>  > This obviosuly affects the OS. :-)
+> 
+> The 7, 9, 15 were very compatible.  I think the -15
+> had some scheme for using an index register, which
+> the earlier ones didn't have, but it was otherwise
+> pretty much identical in IS architecture.
+> 
+> There was very little rewriting to try Unix out
+> on the -9 and -15; perhaps just some tweaks in
+> the disk device commands.  I don't think the
+> system actually ran on either for more than a few
+> hours.  Ken was just playing around.
+
+About as I suspected then.
+Interesting to hear that the grade of compatibility was that high. I've
+neved had the chance to play with any 18-bitters.
+
+> The -15 may have had an electrically different
+> bus, but I'm reasonably sure it was not a Unibus.
+> All of them used IOT instructions, not memory-mapped
+> IO registers.
+
+The Unibus do not require a memory mapped I/O model, though. And it does
+have 18 address and data bits. (Two data bits are used for parity on a
+PDP-11.)
+The DEC-2020 also used a Unibus.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From lars at fwn.rug.nl  Wed Aug 21 19:34:58 2002
+From: lars at fwn.rug.nl (Lars Buitinck)
+Date: Wed, 21 Aug 2002 11:34:58 +0200 (CEST)
+Subject: [pups] PDP-9
+In-Reply-To: <Pine.LNX.4.21.0208211114550.23988-100000@Tempo.Update.UU.SE>
+References: <Pine.LNX.4.21.0208211114550.23988-100000@Tempo.Update.UU.SE>
+Message-ID: <1029922498.3d635ec2440ee@w3.fwn.rug.nl>
+
+Thus spake Johnny Billquist unto PUPS:
+> The DEC-2020 also used a Unibus.
+
+2020?  a PDP-10 model?
+
+--
+If I travelled to the end of the rainbow
+As Dame Fortune did intend
+Murphy would be there to tell me
+The pot is at the other end
+
+Lars
+
+
+From bqt at update.uu.se  Wed Aug 21 19:57:14 2002
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Wed, 21 Aug 2002 11:57:14 +0200 (CEST)
+Subject: [pups] PDP-9
+In-Reply-To: <1029922498.3d635ec2440ee@w3.fwn.rug.nl>
+Message-ID: <Pine.LNX.4.21.0208211154310.23988-100000@Tempo.Update.UU.SE>
+
+On Wed, 21 Aug 2002, Lars Buitinck wrote:
+
+> Thus spake Johnny Billquist unto PUPS:
+> > The DEC-2020 also used a Unibus.
+> 
+> 2020?  a PDP-10 model?
+
+Yes. The KS-10. The "small" PDP-10. The last PDP-10. The "modern" PDP-10
+without extended addressing.
+And yes, it used the Unibus for an I/O bus. Someone else will probably
+correct me, but I think it might even have used a variation of the RH-11
+for Massbus.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From cdl at mpl.ucsd.edu  Thu Aug 22 05:59:42 2002
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Wed, 21 Aug 2002 12:59:42 -0700 (PDT)
+Subject: [pups] re: PDP-9
+Message-ID: <200208211959.MAA04677@opihi.ucsd.edu>
+
+> To: pups at minnie.tuhs.org
+> From: Dennis Ritchie <dmr at plan9.bell-labs.com>
+> Subject: [pups] re: PDP-9
+> Date: Tue, 20 Aug 2002 23:55:55 -0400
+> 
+> Bilquist said (quoting Buitinck):
+> 
+>  > > we all know that UNIX first ran on the PDP-7 and then on the PDP-11/20,
+>  > > but does anyone know anything about PDP-9 UNIX?  it\'s mentioned in \"The
+>  > > UNIX Time-Sharing System\" in the V7 manual:
+>  > > 
+>  > > \"The earliest [version of UNIX] (circa 1969-70) ran on the Digital
+>  > > Equipment Corporation PDP-7 and -9 computers.\"
+> 
+>  > Hmmm, I cannot exactly answer that, but the PDP-7 and PDP-9 were both
+>  > 18-bit machines, and somewhat compatible, I believe.
+>  > The whole line is (I believe):
+> 
+>  > PDP-4 -> PDP-7 -> PDP-9 -> PDP-15
+> 
+>  > So I guess that if you had it running on a PDP-7, you could probably
+>  > almost take the code unmodified and run it on the PDP-9.
+>  > The PDP-15 have a different bus (Unibus?) I believe, and thus,
+>  > peripherials are different from the predecessors.
+>  > This obviosuly affects the OS. :-)
+> 
+> The 7, 9, 15 were very compatible.  I think the -15
+> had some scheme for using an index register, which
+> the earlier ones didn't have, but it was otherwise
+> pretty much identical in IS architecture.
+> 
+> There was very little rewriting to try Unix out
+> on the -9 and -15; perhaps just some tweaks in
+> the disk device commands.  I don't think the
+> system actually ran on either for more than a few
+> hours.  Ken was just playing around.
+> 
+> The -15 may have had an electrically different
+> bus, but I'm reasonably sure it was not a Unibus.
+> All of them used IOT instructions, not memory-mapped
+> IO registers.
+> 
+> 	Dennis
+
+What I remember, as the last gasp of PDP-15 production was a
+dual-processor setup, linked with a PDP-11.  The intent was to take
+advantage of the lower-cost Unibus peripherals.  I remember the
+sales literature, but do not recall ever seeing one.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+
+From frank at wortner.com  Thu Aug 22 12:06:38 2002
+From: frank at wortner.com (Frank Wortner)
+Date: Wed, 21 Aug 2002 22:06:38 -0400
+Subject: [pups] re: PDP-9
+In-Reply-To: <Pine.LNX.4.21.0208211114550.23988-100000@Tempo.Update.UU.SE>
+Message-ID: <B989BF6E.5692%frank@wortner.com>
+
+on 8/21/02 5:21 AM, Johnny Billquist at bqt at update.uu.se wrote:
+
+> About as I suspected then.
+> Interesting to hear that the grade of compatibility was that high. I've
+> neved had the chance to play with any 18-bitters.
+
+You can indulge in 18-bit nostalgia courtesy of Bob Supnik.  His Computer
+History Simulation Project includes simulators for the DEC 18-bit computer
+line.  Check out http://simh.trailing-edge.com/ if you are interested.
+
+Unfortunately,  there isn't much surviving software for these machines.  The
+site does include a PDP-7 based simulator of the PDP-8(!),  and the
+"Advanced Software System" OS for the PDP-15 (which I believe will also run
+on the PDP-9).
+
+Bob's wish list includes a plea for DECsys and the First through Fourth
+Editions of Unix,  but unless someone unearths a cache somewhere,  these may
+be lost to history.  Too bad. :-(
+
+-- 
+Frank
+
+"It's snowing still.  *And* freezing.  However,  we haven't had an
+earthquake recently."
+* Eeyore,  "The House at Pooh Corner"
+
+
+
+
+From wkt at minnie.tuhs.org  Thu Aug 22 12:47:05 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Thu, 22 Aug 2002 12:47:05 +1000 (EST)
+Subject: [pups] Re: Missing 1st to 4th Editions
+In-Reply-To: <B989BF6E.5692%frank@wortner.com> from Frank Wortner at "Aug 21,
+ 2002 10:06:38 pm"
+Message-ID: <200208220247.g7M2l5a53585@minnie.tuhs.org>
+
+In article by Frank Wortner:
+> Bob's wish list includes a plea for DECsys and the First through Fourth
+> Editions of Unix,  but unless someone unearths a cache somewhere,  these may
+> be lost to history.  Too bad. :-(
+> Frank
+
+A 3rd Edition kernel (ok, nearly 4th Edition) still survives at:
+http://www.tuhs.org/Archive/PDP-11/Distributions/research/Dennis_v3/
+
+We don't have any 3rd Edition application. However, the kernel can be
+tweaked to understand the 5th Edition filesystem layout, and we have
+been able to boot this kernel and run some 5th Edition programs on it.
+Of course, the pipe system call is missing :-)
+
+	Warren
+
+
+From wkb at freebie.xs4all.nl  Thu Aug 22 15:38:07 2002
+From: wkb at freebie.xs4all.nl (Wilko Bulte)
+Date: Thu, 22 Aug 2002 07:38:07 +0200
+Subject: [pups] some RD54 drives free to takers in .nl
+Message-ID: <20020822073807.A6468@freebie.xs4all.nl>
+
+Hi,
+
+I have some RD54 drives (and maybe a RD53 or so) that I want to
+part with. Free for a PDP user in the Netherlands who is willing
+to pick them up in Arnhem (I won't ship them)
+
+Wilko
+-- 
+|   / o / /_  _   				wilko at FreeBSD.org
+|/|/ / / /(  (_)  Bulte				Arnhem, the Netherlands
+
+
+From kevin at ps8.co.uk  Thu Aug 22 23:04:05 2002
+From: kevin at ps8.co.uk (Kevin Murrell)
+Date: Thu, 22 Aug 2002 14:04:05 +0100
+Subject: [pups] It all works!!
+Message-ID: <IJECIIPFALOPEJDGENLAGEFJDDAA.kevin@ps8.co.uk>
+
+Needed to tell someone, so I thought I would tell all of you!
+
+My PDP11/73 now has BSD2.11 installed and working.  I added a DEQNA card,
+rebuilt the kernel and now ping, telnet, ftp et al is working.
+
+The joy of telneting into my '11 from a Windoze machine is beyond words!
+
+Many thanks to Warren, Fred and Joe for all the help and advice.
+
+Regards
+
+
+Kevin
+
+
+
+From Fred.van.Kempen at microwalt.nl  Fri Aug 23 20:15:30 2002
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Fri, 23 Aug 2002 12:15:30 +0200
+Subject: [pups] It all works!!
+Message-ID: <7AD18F04B62B7440BE22E190A3F7721401FF67@mwsrv04.microwalt.nl>
+
+I suggest you now find a multi-port beer card, insert that into
+a free slot, add /dev/beer to the kernel, and abuse it lots... :)
+
+(rumor is, that 2.9bsd has much more space available for /dev/beer
+buffers, though, so if 2.11 doesn't allow enough of it, just take
+the plunge and downgrade to 2.9... ;-)
+
+--f
+
+
+> -----Original Message-----
+> From: Kevin Murrell [mailto:kevin at ps8.co.uk]
+> Sent: Thursday, August 22, 2002 3:04 PM
+> To: Pups Mailing List
+> Subject: [pups] It all works!!
+> 
+> 
+> Needed to tell someone, so I thought I would tell all of you!
+> 
+> My PDP11/73 now has BSD2.11 installed and working.  I added a 
+> DEQNA card,
+> rebuilt the kernel and now ping, telnet, ftp et al is working.
+> 
+> The joy of telneting into my '11 from a Windoze machine is 
+> beyond words!
+> 
+> Many thanks to Warren, Fred and Joe for all the help and advice.
+> 
+> Regards
+> 
+> 
+> Kevin
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+> 
+
+
+From robinb at ruffnready.co.uk  Tue Aug 27 21:12:16 2002
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Tue, 27 Aug 2002 12:12:16 +0100
+Subject: [pups] It all works!!
+In-Reply-To: <IJECIIPFALOPEJDGENLAGEFJDDAA.kevin@ps8.co.uk>
+References: <IJECIIPFALOPEJDGENLAGEFJDDAA.kevin@ps8.co.uk>
+Message-ID: <mPtTupAQ61a9EwJE@falstaf.demon.co.uk>
+
+Well done Kevin,
+I've never tried the route that you have gone down, always having had 
+the luxury of distributions on tapes and a working tape drive.
+
+Cheers
+
+Robin
+In message <IJECIIPFALOPEJDGENLAGEFJDDAA.kevin at ps8.co.uk>, Kevin Murrell 
+<kevin at ps8.co.uk> writes
+>Needed to tell someone, so I thought I would tell all of you!
+>
+>My PDP11/73 now has BSD2.11 installed and working.  I added a DEQNA card,
+>rebuilt the kernel and now ping, telnet, ftp et al is working.
+>
+>The joy of telneting into my '11 from a Windoze machine is beyond words!
+>
+>Many thanks to Warren, Fred and Joe for all the help and advice.
+>
+>Regards
+>
+>
+>Kevin
+>
+>_______________________________________________
+>PUPS mailing list
+>PUPS at minnie.tuhs.org
+>http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From Fred.van.Kempen at microwalt.nl  Tue Aug 27 21:54:44 2002
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Tue, 27 Aug 2002 13:54:44 +0200
+Subject: [pups] It all works!!
+Message-ID: <7AD18F04B62B7440BE22E190A3F7721401FF7E@mwsrv04.microwalt.nl>
+
+Ian King wrote:
+
+> > I suggest you now find a multi-port beer card, insert that into a
+free
+> > slot, add /dev/beer to the kernel, and abuse it lots... :)
+> > 
+> > (rumor is, that 2.9bsd has much more space available for /dev/beer
+> > buffers, though, so if 2.11 doesn't allow enough of it, just take
+the
+> > plunge and downgrade to 2.9... ;-)
+> > Should he implement uubp?  
+Well, that's kinda store-and-forward.  A bit dated, innit?  Why
+not go the modern way and go straight for the splattering-type
+mbdp?  For those who dunno: Multicast Beer Distribution Protocol.
+
+One catch... given the kind of stuff we want distributed, we'd better
+not have any (memory and/or session) leaks...
+
+--f
+
+
+From wkt at minnie.tuhs.org  Wed Aug 28 09:19:21 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 28 Aug 2002 09:19:21 +1000 (EST)
+Subject: [pups] heavy to ship (fwd)
+Message-ID: <200208272319.g7RNJLg10188@minnie.tuhs.org>
+
+----- Forwarded message from Joe Dellea -----
+
+Date: Tue, 27 Aug 2002 02:35:12 -0600
+From: Joe Dellea <jjdellea at chisp.net>
+To: wkt at tuhs.org
+Subject: heavy to ship
+
+Proffessor Toomey:
+    I have an interesting problem for you....
+
+    A friend of mine here in Denver, (Colorado,US) is in posession of a
+PDP 11/73 and litterally a ton of peripheral hardware- it was left in
+her house by her ex-husband who more than likely dumpster-dived it while
+working for the phone company. The Ex is a talented Computer guy, but a
+bit of an idiot in his personal life....
+
+Friend wants to find a new home for this machine.
+Friend is erratic. Also fairly pissed off.
+Could probably use some money, but mainly wants the thing to go away,
+rather than calculate actual dollar value or whatever.... Would be happy
+if it went to a good home.
+
+What does one do in such a situation?
+
+In my case, I found your web-page near the top of a Google search.....
+
+Regards,
+Joe Dellea
+jjdellea at chisp.net
+
+
+----- End of forwarded message from Joe Dellea -----
+
+
+From wkt at minnie.tuhs.org  Wed Aug 28 09:20:10 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 28 Aug 2002 09:20:10 +1000 (EST)
+Subject: [pups] Re: heavy to ship
+In-Reply-To: <3D6B39C0.3622033A@chisp.net> from Joe Dellea at "Aug 27, 2002 02:35:12
+ am"
+Message-ID: <200208272320.g7RNKA110211@minnie.tuhs.org>
+
+In article by Joe Dellea:
+> What does one do in such a situation?
+
+Hi Joe, I've passed the e-mail on to some mailing lists, and hopefully
+you will get some eager mail about it soon!
+
+Good luck,
+	Warren
+
+
+
+From jjdellea at chisp.net  Wed Aug 28 10:31:17 2002
+From: jjdellea at chisp.net (Joe Dellea)
+Date: Tue, 27 Aug 2002 18:31:17 -0600
+Subject: [pups] Re: heavy to ship
+References: <200208272320.g7RNKA110211@minnie.tuhs.org>
+Message-ID: <3D6C19D4.8190C6D5@chisp.net>
+
+
+Warren Toomey wrote:
+
+> In article by Joe Dellea:
+> > What does one do in such a situation?
+>
+> Hi Joe, I've passed the e-mail on to some mailing lists, and hopefully
+> you will get some eager mail about it soon!
+>
+> Good luck,
+>         Warren
+
+Warren:
+    Thank you, sir. Much appreciated.... I'd hate to see it go to waste.
+    Thanks,
+    Joe
+
+
+
+
+
+From mike at ducky.net  Fri Aug  9 09:16:45 2002
+From: mike at ducky.net (Mike Haertel)
+Date: Thu, 8 Aug 2002 16:16:45 -0700 (PDT)
+Subject: [TUHS] v7 upgrade
+In-Reply-To: <15474.59068.85087.897739@hod.void.org>
+Message-ID: <200208082316.g78NGjqs064933@ducky.net>
+
+I'm fairly sure I once saw the MIT 68k port of PCC
+on a Usenix tape.  No idea which one, but probably
+around 1982 or so.
+
+
+From wkt at minnie.tuhs.org  Fri Aug  9 09:49:00 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Fri, 9 Aug 2002 09:49:00 +1000 (EST)
+Subject: [TUHS] v7 upgrade
+In-Reply-To: <200208082316.g78NGjqs064933@ducky.net> from Mike Haertel at "Aug
+ 8, 2002 04:16:45 pm"
+Message-ID: <200208082349.g78Nn1r18022@minnie.tuhs.org>
+
+In article by Mike Haertel:
+> I'm fairly sure I once saw the MIT 68k port of PCC
+> on a Usenix tape.  No idea which one, but probably
+> around 1982 or so.
+
+I just looked in the Usenix tapes in the Unix Archive, no luck. The closest
+I could find is the directory delaware/cwru.v7/pcc in the file
+Applications/Spencer_Tapes/del.tar.gz, but this looks like a PDP-11
+version and not a port.
+
+	Warren
+
+
+From wkt at minnie.tuhs.org  Sat Aug 10 10:09:54 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Sat, 10 Aug 2002 10:09:54 +1000 (EST)
+Subject: [TUHS] Re: pcc ports
+In-Reply-To: <15474.59068.85087.897739@hod.void.org> from "M E Leypold @ labnet"
+ at "Feb 20, 2002 00:58:52 am"
+Message-ID: <200208100009.g7A09tT33285@minnie.tuhs.org>
+
+In article by M E Leypold @ labnet:
+> Al Kossow writes:
+>  > There were ports of PCC to the 8086, Z8000, and 68000 done by
+>  > MIT's Laboratory for Computer Science. This might be a more
+>  > historically correct place to start.
+> I alway wondered, wether the source of these ports is available
+> somewhere. I bet it isn't.
+> Regards -- Markus
+
+Al has sent in the PCC ports mentioned to the Unix Archive. They are
+now available on the primary site at both:
+
+   http://www.tuhs.org/Archive/Applications/Portable_CC/
+   ftp://minnie.tuhs.org/UnixArchive/Applications/Portable_CC/
+
+The mirror sites should pick these up soon.
+
+Thanks Al!
+	Warren
+
+
+From cpg at aladdin.de  Sun Aug 11 05:56:46 2002
+From: cpg at aladdin.de (cpg at aladdin.de)
+Date: Sat, 10 Aug 2002 21:56:46 +0200
+Subject: [TUHS] Re: pcc ports
+Message-ID: <200208101956.VAA00605@gibbon.cnet.aladdin.de>
+
+On 08/10/2002 10:09:54 AM ZE10 Warren Toomey wrote:
+>
+>In article by M E Leypold @ labnet:
+>> Al Kossow writes:
+>>  > There were ports of PCC to the 8086, Z8000, and 68000 done by
+>>  > MIT's Laboratory for Computer Science. This might be a more
+>>  > historically correct place to start.
+>> I alway wondered, wether the source of these ports is available
+>> somewhere. I bet it isn't.
+>> Regards -- Markus
+>
+>Al has sent in the PCC ports mentioned to the Unix Archive. They are
+>now available on the primary site at both:
+>
+>   http://www.tuhs.org/Archive/Applications/Portable_CC/
+>   ftp://minnie.tuhs.org/UnixArchive/Applications/Portable_CC/
+
+I see there no version for the Z8000 but for the 16032. Was there
+really a Z8000 version?
+
+regards,
+chris
+
+
+From aek at spies.com  Sun Aug 11 09:54:16 2002
+From: aek at spies.com (Al Kossow)
+Date: Sat, 10 Aug 2002 16:54:16 -0700
+Subject: [TUHS] Re: pcc ports
+Message-ID: <200208102354.g7ANsGfn002033@spies.com>
+
+> I see there no version for the Z8000 but for the 16032. Was there 
+> really a Z8000 version? 
+
+http://www.lcs.mit.edu/about/architects.html
+
+"Fortunately for Ward, by 1980 the community of computer researchers had grown from a few labs to a few dozen---and for the most part, the research community was moving in one particular direction: UNIX, the castrated Multics operating system that had been spawned from Bell Labs. UNIX was loved because it was small and portable, which meant that it would be easy for Ward to get the operating system running on the NuMachine. The group got the UNIX source code from Bell Labs and ported the operating system to three different microprocessors: the Zilog Z8000, the Intel 8086, and the Motorola 68000. Although it would not be clear for several years, by building a single-user computer with a bitmapped display, a network interface, and a powerful microprocessor, Ward's group had just created one of the world's first UNIX workstations.
+"
+
+
+From cpg at aladdin.de  Sun Aug 11 10:37:42 2002
+From: cpg at aladdin.de (Christian Groessler)
+Date: 11 Aug 2002 02:37:42 +0200
+Subject: [TUHS] Re: pcc ports
+Message-ID: <877kiyqlgp.fsf@gibbon.cnet.aladdin.de>
+
+On 08/10/2002 04:54:16 PM MST Al Kossow wrote:
+>
+>> I see there no version for the Z8000 but for the 16032. Was there
+>> really a Z8000 version?
+>
+>http://www.lcs.mit.edu/about/architects.html
+>
+>"Fortunately for Ward, by 1980 the community of computer researchers
+>had grown from a few labs to a few dozen---and for the most part, the  
+>research community was moving in one particular direction: UNIX, the
+>castrated Multics operating system that had been spawned from Bell
+>Labs. UNIX was loved because it was small and portable, which meant
+>that it would be easy for Ward to get the operating system running on
+>the NuMachine. The group got the UNIX source code from Bell Labs and
+>ported the operating system to three different microprocessors: the
+>Zilog Z8000, the Intel 8086, and the Motorola 68000. Although it
+>would not be clear for several years, by building a single-user
+>computer with a bitmapped display, a network interface, and a
+>powerful microprocessor, Ward's group had just created one of the
+>world's first UNIX workstations.
+>"
+
+Hmm, but where is it? :-)
+
+regards,
+chris
+
+
+
+From russell283 at attbi.com  Fri Aug 23 06:52:23 2002
+From: russell283 at attbi.com (russ)
+Date: Thu, 22 Aug 2002 14:52:23 -0600
+Subject: [TUHS] RE: Porting Unix v6 to i386
+Message-ID: <000801c24a1d$d1b67d60$0400000a@lakwod1.co.home.com>
+
+It seems as though there was considerable interest in Porting Unix v6 to i386 some months ago. This is a project that appeals to me also. I was wondering if anyone has made any headway in the project and would like to share their experience.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20020822/12dced38/attachment.html>
+
+From peter.jeremy at alcatel.com.au  Fri Aug 23 07:23:29 2002
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Fri, 23 Aug 2002 07:23:29 +1000
+Subject: [TUHS] RE: Porting Unix v6 to i386
+In-Reply-To: <000801c24a1d$d1b67d60$0400000a@lakwod1.co.home.com>; from russell283@attbi.com on Thu, Aug 22, 2002 at 02:52:23PM -0600
+References: <000801c24a1d$d1b67d60$0400000a@lakwod1.co.home.com>
+Message-ID: <20020823072329.O72938@gsmx07.alcatel.com.au>
+
+On 2002-Aug-22 14:52:23 -0600, russ <russell283 at attbi.com> wrote:
+>It seems as though there was considerable interest in Porting  Unix v6 to
+>i386 some months ago. This is a project that appeals to me also. I  was
+>wondering if anyone has made any headway in the project and would like to
+>share their experience.
+
+I've been mulling over something like this for some time.  I haven't
+actually gotten very far because:
+1) I hadn't found an open-source, 16-bit x86 C compiler that could run
+   in 64K+64K.  It looks like there may be some suitable candidates now.
+2) My planned target system succumbed to old age.  (The HDD failed and
+   the bios only provides a choice of specific 80 or 120MB sizes).
+
+Peter
+
+
+From wkt at minnie.tuhs.org  Fri Aug 23 09:56:03 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Fri, 23 Aug 2002 09:56:03 +1000 (EST)
+Subject: [TUHS] RE: Porting Unix v6 to i386
+In-Reply-To: <20020823072329.O72938@gsmx07.alcatel.com.au> from Peter Jeremy
+ at "Aug 23, 2002 07:23:29 am"
+Message-ID: <200208222356.g7MNu3p63094@minnie.tuhs.org>
+
+In article by Peter Jeremy:
+> On 2002-Aug-22 14:52:23 -0600, russ <russell283 at attbi.com> wrote:
+> >It seems as though there was considerable interest in Porting  Unix v6 to
+> >i386 some months ago.
+
+Firstly, see http://www.tuhs.org/Archive/Other/V6on286/
+for someone who has already done this.
+
+Then see http://www.tuhs.org/Archive/Applications/Portable_CC/
+for ports of pcc to 8086 and 80286. Note that these are now
+covered by Caldera's BSD-style Ancient UNIX license.
+
+> I've been mulling over something like this for some time.  I haven't
+> actually gotten very far because:
+> 1) I hadn't found an open-source, 16-bit x86 C compiler that could run
+>    in 64K+64K.  It looks like there may be some suitable candidates now.
+
+pcc? What about Bruce Evan's bcc? If the planned architecture is a 286,
+what about C68?
+
+> 2) My planned target system succumbed to old age.  (The HDD failed and
+>    the bios only provides a choice of specific 80 or 120MB sizes).
+> Peter
+
+8-)
+	Warren
+
+
+From wkt at minnie.tuhs.org  Wed Aug 28 09:19:21 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 28 Aug 2002 09:19:21 +1000 (EST)
+Subject: [TUHS] heavy to ship (fwd)
+Message-ID: <200208272319.g7RNJLg10188@minnie.tuhs.org>
+
+----- Forwarded message from Joe Dellea -----
+
+Date: Tue, 27 Aug 2002 02:35:12 -0600
+From: Joe Dellea <jjdellea at chisp.net>
+To: wkt at tuhs.org
+Subject: heavy to ship
+
+Proffessor Toomey:
+    I have an interesting problem for you....
+
+    A friend of mine here in Denver, (Colorado,US) is in posession of a
+PDP 11/73 and litterally a ton of peripheral hardware- it was left in
+her house by her ex-husband who more than likely dumpster-dived it while
+working for the phone company. The Ex is a talented Computer guy, but a
+bit of an idiot in his personal life....
+
+Friend wants to find a new home for this machine.
+Friend is erratic. Also fairly pissed off.
+Could probably use some money, but mainly wants the thing to go away,
+rather than calculate actual dollar value or whatever.... Would be happy
+if it went to a good home.
+
+What does one do in such a situation?
+
+In my case, I found your web-page near the top of a Google search.....
+
+Regards,
+Joe Dellea
+jjdellea at chisp.net
+
+
+----- End of forwarded message from Joe Dellea -----
+
+
+From wkt at minnie.tuhs.org  Wed Aug 28 09:20:10 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 28 Aug 2002 09:20:10 +1000 (EST)
+Subject: [TUHS] Re: heavy to ship
+In-Reply-To: <3D6B39C0.3622033A@chisp.net> from Joe Dellea at "Aug 27, 2002 02:35:12
+ am"
+Message-ID: <200208272320.g7RNKA110211@minnie.tuhs.org>
+
+In article by Joe Dellea:
+> What does one do in such a situation?
+
+Hi Joe, I've passed the e-mail on to some mailing lists, and hopefully
+you will get some eager mail about it soon!
+
+Good luck,
+	Warren
+
+
+
+From jjdellea at chisp.net  Wed Aug 28 10:31:17 2002
+From: jjdellea at chisp.net (Joe Dellea)
+Date: Tue, 27 Aug 2002 18:31:17 -0600
+Subject: [TUHS] Re: heavy to ship
+References: <200208272320.g7RNKA110211@minnie.tuhs.org>
+Message-ID: <3D6C19D4.8190C6D5@chisp.net>
+
+
+Warren Toomey wrote:
+
+> In article by Joe Dellea:
+> > What does one do in such a situation?
+>
+> Hi Joe, I've passed the e-mail on to some mailing lists, and hopefully
+> you will get some eager mail about it soon!
+>
+> Good luck,
+>         Warren
+
+Warren:
+    Thank you, sir. Much appreciated.... I'd hate to see it go to waste.
+    Thanks,
+    Joe
+
+
+
+
+
+From bqt at update.uu.se  Thu Aug 29 02:07:17 2002
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Wed, 28 Aug 2002 18:07:17 +0200 (CEST)
+Subject: [TUHS] Ultrix...
+Message-ID: <Pine.LNX.4.21.0208281804110.8219-100000@Tempo.Update.UU.SE>
+
+Hi. I have a small question for you.
+
+I'm trying to figure out a way of getting the MSCP driver from Ultrix
+available for porting to NetBSD.
+The problem is that it's (c) by Digital, now HP.
+
+Does anyone know of any persons who were involved in the old days when
+code was exchanged between BSD and Ultrix? Those people might be a good
+starting point for getting code today as well I suspect.
+
+Does anyone else around here have any good clues on this?
+
+Could I be lucky enough that Ultrix actually have been released?
+
+And I'm talking Ultrix-32 here, not Ultrix-11.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From msokolov at ivan.Harhan.ORG  Thu Aug 29 03:48:12 2002
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Wed, 28 Aug 02 10:48:12 PDT
+Subject: [TUHS] Ultrix...
+Message-ID: <0208281748.AA00801@ivan.Harhan.ORG>
+
+Johnny Billquist <bqt at update.uu.se> wrote:
+
+> I'm trying to figure out a way of getting the MSCP driver from Ultrix
+> available for porting to NetBSD.
+
+I don't support NetBSD, but Ultrix' MSCP/SCA code is available to everyone.
+
+> The problem is that it's (c) by Digital, now HP.
+
+It is a problem only if you choose to honor copyright laws. Since that is your
+personal voluntary choice, it is your problem.
+
+> Could I be lucky enough that Ultrix actually have been released?
+> And I'm talking Ultrix-32 here, not Ultrix-11.
+
+The International Free Computing Task Force has freed the Ultrix-32 V2.00 and
+V4.20 sources. They can be found on our FTP site in
+
+ivan.Harhan.ORG:/pub/UNIX/thirdparty/Ultrix-32
+
+-- 
+Michael Sokolov					786 E MISSION AVE APT F
+Programletarian Freedom Fighter			ESCONDIDO CA 92025-2154 USA
+International Free Computing Task Force		Phone: +1-760-480-4575
+						msokolov at ivan.Harhan.ORG (ARPA)
+Let the Source be with you
+Programletarians of the world, unite!
+
+
+From bqt at update.uu.se  Thu Aug 29 20:27:25 2002
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Thu, 29 Aug 2002 12:27:25 +0200 (CEST)
+Subject: [TUHS] Re: TUHS digest, Vol 1 #71 - 2 msgs
+In-Reply-To: <200208290206.g7T26eD19221@minnie.tuhs.org>
+Message-ID: <Pine.LNX.4.21.0208291220490.23934-100000@Tempo.Update.UU.SE>
+
+Sokolov wrote:
+
+> Johnny Billquist <bqt at update.uu.se> wrote:
+> 
+> > I'm trying to figure out a way of getting the MSCP driver from Ultrix
+> > available for porting to NetBSD.
+> 
+> I don't support NetBSD, but Ultrix' MSCP/SCA code is available to everyone.
+
+I know you don't support it. :-)
+
+> > The problem is that it's (c) by Digital, now HP.
+> 
+> It is a problem only if you choose to honor copyright laws. Since that is your
+> personal voluntary choice, it is your problem.
+
+Yes, and it's *that* problem I'm looking for a solution to.
+
+> > Could I be lucky enough that Ultrix actually have been released?
+> > And I'm talking Ultrix-32 here, not Ultrix-11.
+> 
+> The International Free Computing Task Force has freed the Ultrix-32 V2.00 and
+> V4.20 sources. They can be found on our FTP site in
+
+Freed as in "legally freed", or just "made available".
+
+> ivan.Harhan.ORG:/pub/UNIX/thirdparty/Ultrix-32
+
+harhan.org don't exist from where my dns is looking... :-/
+Another machine I have access to managed to resolve ivan.harhan.org to
+208.221.139.1, but there is no response at that address.
+
+However, if it is just the sources, and not some legal notes available,
+then I don't need to go there.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From wkt at minnie.tuhs.org  Sat Aug 31 17:39:53 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Sat, 31 Aug 2002 17:39:53 +1000 (EST)
+Subject: [TUHS] computer inventory for hardcore geeks (fwd)
+Message-ID: <200208310739.g7V7dr839001@minnie.tuhs.org>
+
+All,
+	I just received this e-mail. I have no idea who Wendy is, but
+perhaps the things she has stashed away may be of some interest to you.
+
+	Warren
+----- Forwarded message from Wendy Murphy -----
+
+>From jendywo at yahoo.com Sat Aug 31 08:22:00 2002
+Message-ID: <20020830222155.14119.qmail at web14907.mail.yahoo.com>
+Date: Fri, 30 Aug 2002 15:21:55 -0700 (PDT)
+From: Wendy Murphy <jendywo at yahoo.com>
+Subject: computer inventory for hardcore geeks
+To: clintw at colorado.cirrus.com, xds_sigma7 at hotmail.com, eric at brouhaha.com,
+   iking at microsoft.com, mcquiggi at sfu.ca, emu at ecubics.com, dworkin at village.org,
+   russell283 at attbi.com
+Cc: rob at witte-family.net, jjdellea at chisp.net, wkt at tuhs.org
+X-Spam-Status: No, hits=0.0 required=5.0 tests= version=2.01
+Content-Length:  3539
+
+In my quest to get the house clean so I can get out, I
+decided to inventory the computer stuff.  It's like
+inventory by the technologically blind!  I got just so
+far before I got frustrated and gave up.  
+
+Pat and Rob took the sillyscope (with the intention of
+selling it, I believe) and the RT, I think it was
+called (to keep for my ex-).  
+
+Dworkin took the PDP-11/73.  I asked him for $84
+because that's what I need to keep Xcel from shutting
+off my electricity, but he chose to give me a check
+for $500, which I have not cashed and won't until he's
+had the stuff long enough to ascertain that it works
+and tell me so, or for two weeks, whichever comes
+first.
+
+That leaves:
+(Note: sizes are eyeballed by someone with a lousy
+eye)
+IN THE GARAGE:
+     various cables, keyboards, mouses, plugs,
+cabinets, broken TVs, VCRs, and a Laser disk player,
+and miscellaneous hardware
+     a box about 1'x1.5'x2' with a 3.5" and a 5.25"
+drive, and seven flat buttons with colored lights and
+symbols, like turtles, rabbits, and lightning bolts.
+     an Alpha Micro 1000E
+     Raster Tech monitor
+     D-SCAN, an 8"x8"x1" board with 17 female cable
+plugs in three rows labeled "In" "Out" and "CH", six
+columns labeled "R G B H V C"
+     a 3'x3'x2' dec RXO2 and RLO2
+     exposure timer & power supply unit
+     Sharp electric typewriter, and another electric
+typewriter up too high for me to read anything off it.
+     a couple of Apple II+s  (Dad wants to keep one as
+he has some information on a 5.25" floppy formatted
+for that computer)
+     SCM152 dry copier
+     microfiche reader ?
+     Kennedy model 9300 tape drive
+     AlphaWrite documentation, and several 3-ring
+binders of documentation I just didn't feel like
+thumbing through for particulars right now (but can
+later, if you like)
+     and the infamous 78 2'x2' floor tiles.  (Dworkin
+said he's seen them advertised for $9 apiece, new. 
+They're not quite in new condition, but that gives a
+ballpark for what they ought to be worth)
+
+I didn't check IN THE LOFT, because it's too high for
+me to reach or see.
+
+IN THE FURNACE ROOM: I saw
+     an Amdex 300A video monitor
+     NEC multisync 2A monitor
+     Raster Tech monitor
+     ADDS (?) monitor
+     and at least one other monitor with no words I
+could identify
+     An okidata printer
+     an ALPS ALQ200 printer
+     an IBM selectric II typewriter
+     a Minolta fax 261
+     and a "stack" -- y'know, a computer, with two
+3.5" and one 5.25" floppy drives and buttons that said
+"turbo" and "reset", but no brand name I could make
+out.
+
+IN THE CAVE: there remains
+     a Scientific Atlanta receiver
+     IBM monitor
+     IBM 3.5" floppy drive
+     HP LaserJet printer
+     Smith-Corona electric typewriter
+     Data south DS 150 printer
+     Microscience International Corporation thing that
+says it has 7 heads and 855 cylinders, but won't tell
+me what it uses them for
+     digital h3350; I don't know what it is, but it's
+the size of a deck of cards
+     a couple of EMLock security door thingies
+(magnetic)
+    various boards (green things with solder and
+little batteries and stuff on them)
+     a couple of Alpha Micro video cassettes
+
+That's what I had the energy to see.  Can you
+enlighten me as to what these things are and what
+ought to be done with them?  I can't even get at the
+other stuff in the furnace room/garage until some of
+it gets moved.
+
+~ Wendy the technologically incorrigible
+----- End of forwarded message from Wendy Murphy -----
+
+

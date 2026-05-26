@@ -1,0 +1,284 @@
+From wkt at csadfa.cs.adfa.oz.au  Thu Jan 16 08:41:28 1997
+From: wkt at csadfa.cs.adfa.oz.au (Warren Toomey)
+Date: Thu, 16 Jan 1997 09:41:28 +1100 (EST)
+Subject: PDP-11 (fwd)
+Message-ID: <9701152241.AA14987@dolphin>
+
+----- Forwarded message from Don Kabuss -----
+
+Date: Wed, 20 Nov 1996 13:22:36 -0600
+From: kabussdr at SLUVCA.SLU.EDU (Don Kabuss)
+Subject: PDP-11
+To: wkt at cs.adfa.oz.au
+
+Hello Warren,
+
+My name is Don.
+I visited your webpage today about the "PDP-11 UNIX Preservation Society".
+Although I'm not inclined to participate, I am however the proud owner of a
+DEC PDP-11/04. It is complete except for a dumb terminal/ keyboard.  It is
+mounted in two 6 1/2 foot tall steel racks it includes a dual 8" floppy
+drives with unopened boxes of new 8" disks, one 12" cartridge removable
+hard drive with 6 cartridges, one 12" reel to reel mass storage tape drive,
+power supply, supportive hardware and all cabling.  Also there is an 18"
+medium speed drum printer in a sound proof encloser.  No it's not for sale.
+However, I would like to give it away. Obviously it is very heavy and
+there is no way I could ship it. I would like to know if there is a member
+of this Society somewhere in the mid-west ( close to St. Louis,
+Missouri,USA ) that might be interested in having it just for coming to get
+it? The unit was fully functional when I removed the dumb terminal to use
+in another application, so it's not just "junk".
+This unit is mine and not property of the University that I'm affiliated with.
+I hope this may serve a common interest.
+Thanks
+Don.
+
+
+----- End of forwarded message from Don Kabuss -----
+
+
+From tih at Hamartun.Priv.NO  Fri Jan 10 05:18:56 1997
+From: tih at Hamartun.Priv.NO (Tom I Helbekkmo)
+Date: Thu, 9 Jan 1997 20:18:56 +0100 (CET)
+Subject: Weird TS05 gotcha
+Message-ID: <970109195614.25256A@barsoom.Hamartun.Priv.NO>
+
+I just wanted to share an interesting experience that might save
+someone else some time if the occasion should arise...
+
+I've got a Q4 cabinet with two BA23s in the middle, an RA81 below them
+and a TS05 tape station on top.  It's had a KA630 (a MicroVAX II, that
+is) CPU running VAX/VMS, Ultrix and 4.3BSD-Reno before, and the TS05
+has always behaved perfectly.  Just recently, I reconfigured this box
+with a MicroPDP-11/73 (a great little system: two RD54s, twin RX50s,
+TK50 and TS05, DELQA, DHQ11 and the RA81), and was dismayed to find
+that my trusty old 9 track tape station no longer worked!
+
+After several, unsuccessful attempts to get some (too) old diagnostic
+software to work, I put the KA630 back in, and ran MDM, the MicroVAX
+Diagnostic Monitor.  The tape station checked out perfectly.  Back in
+went the 11/73 -- sure enough, it didn't work.  Experimenting showed
+that I could fsf, bsf rewind and stat the tape station with mt all I
+wanted, but I couldn't read nor write.  The controller always gave an
+illegal address error, which the manual says is what happens when you
+use it in a 22 bit qbus while it's configured for 18 bit operation.
+
+Of course, that couldn't be for real, right?  I mean, the KA630 is a
+22 bit system, and it worked on that with several operating systems!
+Still, it doesn't hurt to check, so I pulled the controller.  Yup, it
+was set to 18 bit mode.  Flipped it to 22, turned on buffering at the
+same time -- and I now have a fast, dependable 1600bpi 9 track again!
+
+If anyone can explain how this thing worked in the first place, I'd
+appreciate it!  (Oh, and if anyone has some hints for this youngster
+about the proper care and feeding of my TS05 as the years go by, that
+would come in very handy as well!)  (Heck, while I'm asking all this,
+an RK05 with qbus controller and a few packs would be great, too, and
+would go real well with this old /23 I've got sitting here!)
+
+-tih
+-- 
+Popularity is the hallmark of mediocrity.  --Niles Crane, "Frasier"
+
+
+
+
+From wkt at csadfa.cs.adfa.oz.au  Thu Jan 23 08:01:23 1997
+From: wkt at csadfa.cs.adfa.oz.au (Warren Toomey)
+Date: Thu, 23 Jan 1997 09:01:23 +1100 (EST)
+Subject: 7th Edition on a real PDP-11/23+ (fwd)
+Message-ID: <9701222201.AA22095@dolphin>
+
+> 	From: "Bob Armstrong" <bob at poco-adagio.santa-clara.ca.us>
+> 	Subject: 7th Edition on a real PDP-11/23+
+> 	To: wkt at csadfa.cs.adfa.oz.au
+> 
+> Warren,
+> 
+>   I'm not sure if the PUPS members would be interested, but I have   
+> successfully been able to run the 7th Edition RL02 image that accompanies   
+> Bob Supniks emulator on a real PDP-11/23+.Jim Carpenter (jimc at zach1.tiac.net) 
+> deserves a special thanks for helping me work out a few problems in bringing
+> it up.  If any other members of the group are interested in doing the same I
+> would be happy to help.
+
+Bob, I'm cc'ing this reply to the mailing list so that the others will
+get a copy.
+
+>   As I understand the terms of the SCO license, this should be perfectly
+> legal so long as it is for non-commerical purposes.  There doesn't seem
+> to be anything in the license that limits me to using an emulator.
+> Please correct me if you disagree.
+
+As far as I can see, you can do anything with the disk image as long as
+it's non-commercial. So I'm sure that it's perfectly legal.
+> 
+>   Performance is suprisingly good, especially considering that the 11/23+   
+> was no speed demon even by old PDP standards.  And it's amazing - the
+> whole Unix system fits on a 10Mb pack with about 3.5Mb free!
+> 
+>   The contents of this disk image seem to be pretty limited, and I'm
+> interested in knowing if any of the missing components (e.g. man pages!!)
+> are available anywhere.  I'm also interested to know if there are any V7
+> kernels available with more devices installed.  I've got a lot of hardware
+> on my 11/23, especially a TSV05 but also a RX02 and TU58, that this system
+> can't use.
+> Bob Armstrong
+
+Bob, firstly if you can write down the details of how you got the
+image installed & running on the 23+, and email it to the mailing list
+(oldunix at minnie.cs.adfa.oz.au), that'd be great, as I archive the mail.
+
+Secondly, I'm unsure of the copyright/legal status of the man pages.
+It would be good if they could be released publically. I might ask Bob
+Supnik if he has any ideas.
+
+Finally, many of the members of the PUPS mail list are covered by
+source code licenses, so if you can tell us what device you require,
+I'm sure someone can build a kernel for you. I wonder if it's legal to
+ship a kernel which has device drivers not in Bob Supnik's disk image?!
+Hope so!
+
+Cheers,
+	Warren
+
+
+From wkt at csadfa.cs.adfa.oz.au  Thu Jan 23 09:00:04 1997
+From: wkt at csadfa.cs.adfa.oz.au (Warren Toomey)
+Date: Thu, 23 Jan 1997 10:00:04 +1100 (EST)
+Subject: 7th Edition on a real PDP-11/23+ (fwd)
+In-Reply-To: <199701222227.QAA18403@arcturus.USask.Ca> from "Neil Johnson" at Jan 22, 97 04:27:25 pm
+Message-ID: <9701222300.AA22463@dolphin>
+
+In atricle by Neil Johnson:
+> Unfortunately I cannot justify calling sources for man pages "object code".
+> Redistributing the man pages may be in the spirit of SCO's agreement, but
+> is not allowed in the agreement. I do not think they should be added to the 
+> distribution without SCO's permission.
+> 
+> Finally a disclaimer: I am not a lawyer, this is just my understanding of 
+> the licence, for which I give SCO my thanks.
+> Neil
+
+THat was my impression too, Neil. I was being hopeful (as always). We do
+need to talk with SCO (via Bob Supnik?) to ensure we have SCO's permission
+first.
+
+Thanks!
+
+	Warren
+
+
+From engel at unix-ag.uni-siegen.de  Thu Jan 23 10:49:20 1997
+From: engel at unix-ag.uni-siegen.de (Michael Engel)
+Date: Thu, 23 Jan 1997 01:49:20 +0100 (MET)
+Subject: 7th Edition on a real PDP-11/23+ (fwd)
+In-Reply-To: <9701222201.AA22095@dolphin> from "Warren Toomey" at Jan 23, 97 09:01:23 am
+Message-ID: <199701230049.BAA21049@vespa.unix-ag.uni-siegen.de>
+
+
+> > Warren,
+> > 
+> >   I'm not sure if the PUPS members would be interested, but I have   
+> > successfully been able to run the 7th Edition RL02 image that accompanies   
+> > Bob Supniks emulator on a real PDP-11/23+.Jim Carpenter (jimc at zach1.tiac.net) 
+> > deserves a special thanks for helping me work out a few problems in bringing
+> > it up.  If any other members of the group are interested in doing the same I
+> > would be happy to help.
+> 
+> Bob, I'm cc'ing this reply to the mailing list so that the others will
+> get a copy.
+ 
+Great ! Finally gotta dig out that old RL02 drive ... How did you manage
+to get the image onto the RL02 ?
+
+> Secondly, I'm unsure of the copyright/legal status of the man pages.
+> It would be good if they could be released publically. I might ask Bob
+> Supnik if he has any ideas.
+ 
+Some time ago, the 7th Edition man pages were available on 
+http://plan9.att.com. This machine currently seems to be down, so I can't 
+verify if the man pages are still there.
+
+regards,
+	Michael Engel	(engel at unix-ag.uni-siegen.de)
+
+
+
+From bob at poco-adagio.santa-clara.ca.us  Thu Jan 23 15:20:45 1997
+From: bob at poco-adagio.santa-clara.ca.us (Bob Armstrong)
+Date: Wed, 22 Jan 97 21:20:45 PST
+Subject: 7th Edition on a real PDP-11/23+
+Message-ID: <009AEC32982F5600.00000130@poco-adagio.santa-clara.ca.us>
+
+
+>Bob, firstly if you can write down the details of how you got the
+>image installed & running on the 23+, and email it to the mailing list
+>(oldunix at minnie.cs.adfa.oz.au), that'd be great, as I archive the mail.
+
+  It was actually quite simple.  Bob Supnik's RL02 file is simply a byte
+for byte dump of a pack.  That is, it's just sector 0, head 0, cylinder 0
+followed by sector 1, head 0, cylinder 0, ... then all the sectors of
+head 1, cylinder 0, then cylinder 1, etc.  There are no overhead bytes
+in the file an no interleaving is used.  RL02s have 40 sectors of 256
+bytes each per track, two heads, and 512 cylinders for a total 10240K bytes
+per disk (which happens to be exactly the size of Bob's RL02 file :-)
+
+  You want to be careful about bad sectors, since RL02s do bad block
+replacement at the device driver level.  If your pack has any bad sectors
+that aren't at exactly the same spot as bad sectors on Bob's original
+pack (not very likely!), then this isn't going to work.  Fortunately
+error free RL02 packs are relatively easy to come by.
+
+  Anyway, since the only other RL02 that I have access to is on a VMS
+system, I had to write a little program for VMS to load the disk using
+physical I/O.  I'd be happy to make this program available if anyone
+wants it.
+
+  Once you have the pack loaded, you can just mount it on a 11/23 and use
+the RL02 hardware boostrap.  The Unix boot will start and print a "@" for
+a prompt.  Reply by entering "unix" and carriage return, and you'll see
+"mem=205376" followed by "SINGLE USER LOGIN:".  Enter ^Z and Unix will
+start timesharing, then you can login in using root with the password "pdp".
+
+  I had two problems in this process.  First, I didn't know about the
+Unix bootstrap program (I'm afraid I've never used Bob's emulator!), and
+when I saw the "@" I just blindly assumed I'd been dumped back into ODT.
+Fortunately Jim Carpenter was kind enough to educate me about this.
+
+  Second, Unix would hang up as soon as I started timesharing.  This
+turned out to be because my LTC in the 11/23 wasn't working, which doesn't
+bother RT11 at all but it does hang Unix.  After I repaired the hardware
+everything ran fine.
+
+  If someone has a PDP-11 with a RL02 drive and no way to load V7 on a
+pack, I am willing to do it if you send me a blank RL02.  I believe the
+SCO license allows this so long as:
+
+	1) I don't charge for the service
+	2) You certify that it is for non-commerical use
+	3) I include a printed copy of SCO's license
+
+Note that this kernel supports only RL02 drives, so unless your -11
+has a RL02 drive this system won't work.  RD5x and RA8x drives won't do.
+A similar procedure would probably work with the RK05 images, but I
+don't have the hardware to try.
+
+>Finally, many of the members of the PUPS mail list are covered by
+>source code licenses, so if you can tell us what device you require,
+
+  I have a 11/23, DLV11J (4 lines), RL02/RLV11, TU58 (on one of the
+DLV11 ports), RX02/RXV21, and a TSV05 9-track tape.  The TSV05 is
+TS11 compatible, and I'd especially like to have support for it.
+Bob's kernel supports MASSBUS tapes, but not a TS11.
+
+>I'm sure someone can build a kernel for you. I wonder if it's legal to
+>ship a kernel which has device drivers not in Bob Supnik's disk image?!
+
+  SCO's license seems to cover all PDP-11 binaries for 7th Edition Unix,
+and it doesn't seem to say anything about their origin.  Of course,
+I'm not a lawyer either.
+
+Bob
+
+

@@ -1,0 +1,828 @@
+From brad at heeltoe.com  Mon Mar 15 10:25:51 2004
+From: brad at heeltoe.com (Brad Parker)
+Date: Sun, 14 Mar 2004 19:25:51 -0500
+Subject: [pups] ultrix-3.x install using simh?
+Message-ID: <200403150025.i2F0PpJ22311@mwave.heeltoe.com>
+
+
+Hi,
+
+Has anyone tried to install the ultrix-3.x distribution using simh?
+
+I hacked a little program to build a tape image.  It boots fine.  I told
+the ultrix install I wanted to install for an 11/34 on a RL02.  It seems
+to install fine and then reboot on the RL02 but hang in the shell after
+the boot (see below).
+
+I know using an RL02 with an 34 is optimistic :-) it's just that what I
+have for actual hardware.
+
+any idea if this is an simh problem or an ultrix problem or user error?
+
+-brad
+
+output:
+
+...
+****** BOOTING ULTRIX-11 SYSTEM TO SINGLE-USER MODE ******
+
+Sizing Memory...  
+
+Boot: rl(0,0)unix    (CTRL/C will abort auto-boot)
+
+rl(0,0)unix: 14784+17026+8192+8000+8064+8192+8128+8128+8128+8192+8192+8064+7744+
+6976
+
+ULTRIX-11 Kernel V3.0
+
+realmem = 253952
+buffers = 25600
+clists  = 1600
+usermem = 95232
+maxumem = 95232
+erase = delete, kill = ^U, intr = ^C
+
+From asmodai at ao.mine.nu  Mon Mar  1 00:48:30 2004
+From: asmodai at ao.mine.nu (Paul Ward)
+Date: Sun, 29 Feb 2004 14:48:30 +0000
+Subject: [TUHS] Microsoft, SCO, and a certain License
+In-Reply-To: <200402292034.03414.wes.parish@paradise.net.nz>
+References: <200402292034.03414.wes.parish@paradise.net.nz>
+Message-ID: <197818621475.20040229144830@ao.mine.nu>
+
+Wes ðu hal Wesley,
+
+On Sunday, February 29, 2004, 7:34:03 AM, ure freond feorran awrat: 
+
+WP> I know the SCO topic's been done to death, and all, but I was thinking about
+WP> the Microsoft purchase of a Unix license (apparently) for their MS SFU
+WP> (Windows Services For Unix) which contrary to the plain meaning of the name,
+WP> is essentially a Unix (apparently OpenBSD, according to rumour) box on top of
+WP> the Windows kernel and Win32 API.
+
+WP> The question is, wouldn't that put Microsoft and the SCO Group in breach of
+WP> the settlement between AT&T and Berkeley?  If Win SFU _is_ OpenBSD, and
+WP> Microsoft have bought a license to run it from the SCO Group of all people,
+WP> isn't that in effect picking a fight with Theo de Raadt?
+
+Found in "ls":
+Copyright (c) 1991, 1993, 1994 The Regents of the University of California.  All
+ rights reserved.  Copyright (c) 1996, 1998 Softway Systems Inc.
+
+$OpenBSD: strlen.c,v 1.3 1996/08/19 08:34:19 tholo Exp $
+$OpenBSD: strcpy.c,v 1.4 1996/08/19 08:34:14 tholo Exp $
+$OpenBSD: strncpy.c,v 1.2 1996/08/19 08:34:22 tholo Exp $
+$OpenBSD: strncmp.c,v 1.3 1996/08/19 08:34:21 tholo Exp $
+$OpenBSD: strlcpy.c,v 1.4 1999/05/01 18:56:41 millert Exp $
+$OpenBSD: fts.c,v 1.15 1998/03/19 00:30:01 millert Exp $
+$OpenBSD: strcmp.c,v 1.3 1996/08/19 08:34:12 tholo Exp $
+$OpenBSD: memset.c,v 1.2 1996/08/19 08:34:07 tholo Exp $
+$OpenBSD: strcat.c,v 1.4 1996/08/19 08:34:10 tholo Exp $
+$OpenBSD: memchr.c,v 1.2 1996/08/19 08:34:04 tholo Exp $
+
+There are a few OpenBSD CVS tags in libc.a as well.
+
+However, there are no BSD-style copyright notices in any of the header
+files, only this:
+
+$ pwd ; grep -i OpenBSD *
+/usr/include
+string.h:/* strncat(), strncpy() replacements from OpenBSD/FreeBsd */
+
+This leads me to suspect that BSD isn't the base for libc or the
+include files.
+
+Maybe BSD is the base for /bin, /usr/bin etc.
+
+As SFU doesn't have a kernel, this is probably either based on Xenix,
+or some other companies attempt at a UNIX emulation layer (note the
+copyrights to Softway Systems Inc.)
+
+
+-- 
+Best regards,
+ Paul                            mailto:asmodai at ao.mine.nu
+
+
+From jsnader at ix.netcom.com  Mon Mar  1 02:25:49 2004
+From: jsnader at ix.netcom.com (Jon Snader)
+Date: Sun, 29 Feb 2004 11:25:49 -0500
+Subject: [TUHS] Microsoft, SCO, and a certain License
+In-Reply-To: <20040229075430.GD49757@wantadilla.lemis.com>
+References: <200402292034.03414.wes.parish@paradise.net.nz>
+	<20040229075430.GD49757@wantadilla.lemis.com>
+Message-ID: <20040229162549.GA90365@ix.netcom.com>
+
+On Sun, Feb 29, 2004 at 06:24:30PM +1030, Greg 'groggy' Lehey wrote:
+> 
+> The most important detail is whether it was, in fact, derived from
+> OpenBSD.  This sounds very unlikely to me.  If it were the case, why
+> would they pay anything to SCO?
+> 
+
+I have no idea whether Microsoft based SFU on OpenBSD or not, but
+the conventional wisdom on Groklaw, the SCOX Yahoo Finance Board,
+and similar domains that are following the SCO issue is that Microsoft's
+purchase of the license was a backdoor way of financing an attack on
+Linux.  I don't whether that's true either, but it does provide an
+answer to your question.
+
+jcs
+
+From grog at lemis.com  Mon Mar  1 09:28:10 2004
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Mon, 1 Mar 2004 09:58:10 +1030
+Subject: [TUHS] Microsoft, SCO, and a certain License
+In-Reply-To: <197818621475.20040229144830@ao.mine.nu>
+References: <200402292034.03414.wes.parish@paradise.net.nz>
+	<197818621475.20040229144830@ao.mine.nu>
+Message-ID: <20040229232810.GI49757@wantadilla.lemis.com>
+
+On Sunday, 29 February 2004 at 14:48:30 +0000, Paul Ward wrote:
+> Wes ðu hal Wesley,
+>
+> On Sunday, February 29, 2004, 7:34:03 AM, ure freond feorran awrat:
+>
+> WP> I know the SCO topic's been done to death, and all, but I was thinking about
+> WP> the Microsoft purchase of a Unix license (apparently) for their MS SFU
+> WP> (Windows Services For Unix) which contrary to the plain meaning of the name,
+> WP> is essentially a Unix (apparently OpenBSD, according to rumour) box on top of
+> WP> the Windows kernel and Win32 API.
+>
+> WP> The question is, wouldn't that put Microsoft and the SCO Group in breach of
+> WP> the settlement between AT&T and Berkeley?  If Win SFU _is_ OpenBSD, and
+> WP> Microsoft have bought a license to run it from the SCO Group of all people,
+> WP> isn't that in effect picking a fight with Theo de Raadt?
+>
+> Found in "ls":
+> Copyright (c) 1991, 1993, 1994 The Regents of the University of California.  All
+>  rights reserved.  Copyright (c) 1996, 1998 Softway Systems Inc.
+>
+> $OpenBSD: strlen.c,v 1.3 1996/08/19 08:34:19 tholo Exp $
+> $OpenBSD: strcpy.c,v 1.4 1996/08/19 08:34:14 tholo Exp $
+> $OpenBSD: strncpy.c,v 1.2 1996/08/19 08:34:22 tholo Exp $
+> $OpenBSD: strncmp.c,v 1.3 1996/08/19 08:34:21 tholo Exp $
+> $OpenBSD: strlcpy.c,v 1.4 1999/05/01 18:56:41 millert Exp $
+> $OpenBSD: fts.c,v 1.15 1998/03/19 00:30:01 millert Exp $
+> $OpenBSD: strcmp.c,v 1.3 1996/08/19 08:34:12 tholo Exp $
+> $OpenBSD: memset.c,v 1.2 1996/08/19 08:34:07 tholo Exp $
+> $OpenBSD: strcat.c,v 1.4 1996/08/19 08:34:10 tholo Exp $
+> $OpenBSD: memchr.c,v 1.2 1996/08/19 08:34:04 tholo Exp $
+>
+> There are a few OpenBSD CVS tags in libc.a as well.
+
+Hmm.  In that case, Microsoft *is* abusing the OpenBSD license by not
+stating clearly that the code is derived in part from OpenBSD.
+
+Greg
+--
+Note: I discard all HTML mail unseen.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040301/7a359a68/attachment.sig>
+
+From kwall at kurtwerks.com  Mon Mar  1 09:54:28 2004
+From: kwall at kurtwerks.com (Kurt Wall)
+Date: Sun, 29 Feb 2004 18:54:28 -0500
+Subject: [TUHS] Microsoft, SCO, and a certain License
+In-Reply-To: <20040229162549.GA90365@ix.netcom.com>
+References: <200402292034.03414.wes.parish@paradise.net.nz>
+	<20040229075430.GD49757@wantadilla.lemis.com>
+	<20040229162549.GA90365@ix.netcom.com>
+Message-ID: <20040229235428.GV533@kurtwerks.com>
+
+In a 0.7K blaze of typing glory, Jon Snader wrote:
+> On Sun, Feb 29, 2004 at 06:24:30PM +1030, Greg 'groggy' Lehey wrote:
+> > 
+> > The most important detail is whether it was, in fact, derived from
+> > OpenBSD.  This sounds very unlikely to me.  If it were the case, why
+> > would they pay anything to SCO?
+> > 
+> 
+> I have no idea whether Microsoft based SFU on OpenBSD or not, but
+> the conventional wisdom on Groklaw, the SCOX Yahoo Finance Board,
+> and similar domains that are following the SCO issue is that Microsoft's
+> purchase of the license was a backdoor way of financing an attack on
+> Linux.  I don't whether that's true either, but it does provide an
+> answer to your question.
+
+That was my initial thought, too. I decided that the idea that Microsfot
+would purchase a license as a business tactic was just too paranoid or 
+perverse and lumped it in the same category as lining my hat with aluminum
+foil to disrupt the government's mind control experiments. Lately, I'm not
+so sure. If Ronald Reagan can call ketchup a vegetable, Bill Clinton can
+debate the meaning of the word "is", then Microsoft could well have
+purchased a license from SCO, insofar as the $10 or $20 million is pocket
+change for them.
+
+Kurt
+-- 
+Man usually avoids attributing cleverness to somebody else -- unless it
+is an enemy.
+		-- Albert Einstein
+
+From tuhs at rops.org  Mon Mar  1 10:46:35 2004
+From: tuhs at rops.org (Roger Willcocks)
+Date: Mon, 1 Mar 2004 00:46:35 -0000
+Subject: [TUHS] Microsoft, SCO, and a certain License
+References: 	<200402292034.03414.wes.parish@paradise.net.nz><197818621475.20040229144830@ao.mine.nu>
+	<20040229232810.GI49757@wantadilla.lemis.com>
+Message-ID: <005701c3ff26$a6425130$2301a8c0@burton>
+
+> Hmm.  In that case, Microsoft *is* abusing the OpenBSD license by not
+> stating clearly that the code is derived in part from OpenBSD.
+
+See Q306819 -
+http://support.microsoft.com/default.aspx?scid=kb;EN-US;q306819 - Release
+Notes for Windows XP Contained in the Relnotes.htm File:
+
+---snip---
+This product includes software developed by the University of California,
+Berkeley and its contributors.
+
+Portions of this product are based in part on the work of the Regents of the
+University of California, Berkeley and its contributors. Because Microsoft
+has included the Regents of the University of California, Berkeley, software
+in this product, Microsoft is required to include the following text that
+accompanied such software:
+
+Copyright 1985, 1988 Regents of the University of California. All rights
+reserved.
+
+Redistribution and use in source and binary forms are permitted provided
+that the above copyright notice and this paragraph are duplicated in all
+such forms and that any documentation, advertising materials, and other
+materials related to such distribution and use acknowledge that the software
+was developed by the University of California, Berkeley. The name of the
+University may not be used to endorse or promote products derived from this
+software without specific prior written permission. THIS SOFTWARE IS
+PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTIBILITY AND FITNESS
+FOR A PARTICULAR PURPOSE.
+---snip---
+
+although I would question whether there's an acknowledgement in all related
+advertising materials...
+
+--
+Roger
+
+
+----- Original Message ----- 
+From: "Greg 'groggy' Lehey" <grog at lemis.com>
+To: "Paul Ward" <asmodai at ao.mine.nu>
+Cc: "Wesley Parish" <wes.parish at paradise.net.nz>; <TUHS at minnie.tuhs.org>
+Sent: Sunday, February 29, 2004 11:28 PM
+Subject: Re: [TUHS] Microsoft, SCO, and a certain License
+
+
+
+----- Original Message ----- 
+From: "Greg 'groggy' Lehey" <grog at lemis.com>
+To: "Paul Ward" <asmodai at ao.mine.nu>
+Cc: "Wesley Parish" <wes.parish at paradise.net.nz>; <TUHS at minnie.tuhs.org>
+Sent: Sunday, February 29, 2004 11:28 PM
+Subject: Re: [TUHS] Microsoft, SCO, and a certain License
+
+
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+From grog at lemis.com  Mon Mar  1 10:53:42 2004
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Mon, 1 Mar 2004 11:23:42 +1030
+Subject: [TUHS] Microsoft, SCO, and a certain License
+In-Reply-To: <005701c3ff26$a6425130$2301a8c0@burton>
+References: <20040229232810.GI49757@wantadilla.lemis.com>
+	<005701c3ff26$a6425130$2301a8c0@burton>
+Message-ID: <20040301005342.GR49757@wantadilla.lemis.com>
+
+On Monday,  1 March 2004 at  0:46:35 -0000, Roger Willcocks wrote:
+>> Hmm.  In that case, Microsoft *is* abusing the OpenBSD license by not
+>> stating clearly that the code is derived in part from OpenBSD.
+>
+> See Q306819 -
+> http://support.microsoft.com/default.aspx?scid=kb;EN-US;q306819 - Release
+> Notes for Windows XP Contained in the Relnotes.htm File:
+>
+> ---snip---
+> This product includes software developed by the University of California,
+> Berkeley and its contributors.
+>
+> ...
+> ---snip---
+>
+> although I would question whether there's an acknowledgement in all
+> related advertising materials...
+
+I suspect that that's sufficient.  The advertising clause has always
+been a bone of contention.
+
+Greg
+--
+Note: I discard all HTML mail unseen.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040301/bee44c87/attachment.sig>
+
+From wes.parish at paradise.net.nz  Mon Mar  1 18:52:15 2004
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Mon, 01 Mar 2004 21:52:15 +1300
+Subject: [TUHS] As of this moment ...
+Message-ID: <200403012152.15627.wes.parish@paradise.net.nz>
+
+I am a bona fide BSD user, running 4.3BSD Quasijarus0c on my copy of the SIMH 
+VAX.  (Mind you - just to set the cat amongst the pigeons - running on my 
+Linux box ... :-)
+
+Thanks to everybody for all your help.  It's been greatly appreciated.
+-- 
+Wesley Parish
+* * *
+Clinersterton beademung - in all of love.  RIP James Blish
+* * *
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+
+From wes.parish at paradise.net.nz  Tue Mar  2 18:25:27 2004
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Tue, 02 Mar 2004 21:25:27 +1300
+Subject: [TUHS] Just a bit of (Intel BSD) history
+Message-ID: <200403022125.27722.wes.parish@paradise.net.nz>
+
+Michael Sokolov, I notice you're quite fond of the 4.3BSD family, and regard 
+it as the One True Un*x.
+
+If you'll go to http://masalai.free.fr/386BSD.tar.gz, you'll find Bill 
+Jolitz's 386BSD 1.0 - mostly the source code.  (I've also got the 386BSD 0.0 
+source files on my machine - about a decade after I almost got them 
+downloaded but decided not to because Linux was marginally cheaper in terms 
+of disk numbers.  I'll have to mount them loopback and copy the files off 
+them.)
+
+And perhaps it can be placed with the other 4.3BSD family members in the 
+appropriate minnie.tuhs directory, Warren?
+-- 
+Wesley Parish
+* * *
+Clinersterton beademung - in all of love.  RIP James Blish
+* * *
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+
+From wkt at tuhs.org  Tue Mar  2 18:32:22 2004
+From: wkt at tuhs.org (Warren Toomey)
+Date: Tue, 2 Mar 2004 18:32:22 +1000
+Subject: [TUHS] Just a bit of (Intel BSD) history
+In-Reply-To: <200403022125.27722.wes.parish@paradise.net.nz>
+References: <200403022125.27722.wes.parish@paradise.net.nz>
+Message-ID: <20040302083222.GA78955@minnie.tuhs.org>
+
+On Tue, Mar 02, 2004 at 09:25:27PM +1300, Wesley Parish wrote:
+> Michael Sokolov, I notice you're quite fond of the 4.3BSD family, and regard 
+> it as the One True Un*x.
+> 
+> If you'll go to http://masalai.free.fr/386BSD.tar.gz, you'll find Bill 
+> Jolitz's 386BSD 1.0 - mostly the source code.  (I've also got the 386BSD 0.0 
+> source files on my machine - about a decade after I almost got them 
+> downloaded but decided not to because Linux was marginally cheaper in terms 
+> of disk numbers.  I'll have to mount them loopback and copy the files off 
+> them.)
+> 
+> And perhaps it can be placed with the other 4.3BSD family members in the 
+> appropriate minnie.tuhs directory, Warren?
+
+It's at ftp://minnie.tuhs.org/BSD and I suppose I should move these
+into the archive.
+
+	Warren
+
+From kstailey at yahoo.com  Sat Mar  6 00:08:02 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Fri, 5 Mar 2004 06:08:02 -0800 (PST)
+Subject: [TUHS] FWD: Is SCO beneficial?
+Message-ID: <20040305140802.52568.qmail@web60507.mail.yahoo.com>
+
+SCO's whole story is just TOO bizarre... (Score:3, Interesting)
+by cozziewozzie (344246) on Friday March 05, @08:24AM (#8474219)
+I mean, who could have thought of a worse, more stupid way to piss off the
+whole tech sector and drive yourself into bankruptcy. The more I think about
+it, the more this strange idea develops that SCO (Caldera) is actually doing
+all this rubbish to help the Linux community. OK, it is way out there, but in
+some perverted way, it makes sense.
+
+First of all, you have a Linux company (Caldera) who, despite their best
+efforts, has trouble staying afloat. At this time, there is no corporate
+support for Linux, the big vendors are running away from it, and the "GPL has
+never been tested in court" is touted as an argument all over the place. Big
+UNIX vendors only see Linux as a way to get people into their more proprietary
+solutions.
+
+So, Caldera buys out a UNIX vendor and does the most ridiculous thing
+imaginable: sues everybody, proclaims that Linux is communist and all that
+bullshit. Fast forward to the current situation: IBM, HP, Novell and other big
+players are squarely behind Linux and protecting it. Microsoft is exposed as a
+greedy monopolist who uses underhand tactics (yet again). GPL gets tested in
+court and it is under such circumstances that guarantee a strong precedent in
+GPL's favour. The UNIX heritage is cleared once and for all. Linux wins, in a
+BSD fashion, and is free from corporate FUD. And who pays the bill? Greedy
+investors.
+
+This could turn out the be the best thing for the corporate image of Linux
+ever.
+
+--- Join the Society Against Raping the Word "Definitely".
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Search - Find what you�re looking for faster
+http://search.yahoo.com
+
+From ljb at merit.edu  Sat Mar  6 01:40:14 2004
+From: ljb at merit.edu (Larry J. Blunk)
+Date: 05 Mar 2004 10:40:14 -0500
+Subject: [TUHS] Microsoft, SCO, and a certain License
+In-Reply-To: <200402292034.03414.wes.parish@paradise.net.nz>
+References: <200402292034.03414.wes.parish@paradise.net.nz>
+Message-ID: <1078501214.3788.20.camel@ablate.merit.edu>
+
+On Sun, 2004-02-29 at 02:34, Wesley Parish wrote:
+> I know the SCO topic's been done to death, and all, but I was thinking about 
+> the Microsoft purchase of a Unix license (apparently) for their MS SFU 
+> (Windows Services For Unix) which contrary to the plain meaning of the name, 
+> is essentially a Unix (apparently OpenBSD, according to rumour) box on top of 
+> the Windows kernel and Win32 API.
+> 
+> The question is, wouldn't that put Microsoft and the SCO Group in breach of 
+> the settlement between AT&T and Berkeley?  If Win SFU _is_ OpenBSD, and 
+> Microsoft have bought a license to run it from the SCO Group of all people, 
+> isn't that in effect picking a fight with Theo de Raadt?
+> 
+> This isn't definite, of course - some details I'm not sure of.  But I think if 
+> this is so, we have some very interesting few years to look forward to.
+
+
+ Microsoft and SCO have been very coy about what it is that Microsoft
+actually licensed.  I believe the closest they have come to explaining
+it can be found in a Byte interview by Trevor Marshall --
+http://www.byte.com/documents/s=8276/byt1055784622054/0616_marshall.html
+where Chris Sontag of SCO is quoted as saying that Microsoft merely
+licensed an "applications interface layer."
+
+  I take this to mean they are probably talking about header files
+like errno.h, signal.h, etc.   I believe that Microsoft development
+products have iterations of these and they only have Microsoft copyright
+notices in them (no AT&T or BSD notices).   SFU would have them
+as well, although I'm not sure what copyright notices are on those.
+SCO claims that the lack of a copyright notices violates the USL vs.
+BSDi settlement.  Of course, this claim is extremely tenuous (since
+Microsoft's headers files origination likely predates the settlement
+and were derived independently from public sources).
+
+  In the end, I strongly suspect this was a way for Microsoft to funnel
+money to SCO to attack Linux as opposed to Microsoft claims of
+"respecting Intellectual Property Rights."
+ 
+
+
+
+
+From jcapp at anteil.com  Sat Mar  6 01:50:22 2004
+From: jcapp at anteil.com (Jim Capp)
+Date: Fri, 5 Mar 2004 10:50:22 -0500
+Subject: [TUHS] Microsoft, SCO, and a certain License
+In-Reply-To: <1078501214.3788.20.camel@ablate.merit.edu>
+References: <200402292034.03414.wes.parish@paradise.net.nz>
+	<1078501214.3788.20.camel@ablate.merit.edu>
+Message-ID: <20040305155022.GA24027@anteil.com>
+
+On Fri, Mar 05, 2004 at 10:40:14AM -0500, Larry J. Blunk wrote:
+> 
+>  Microsoft and SCO have been very coy about what it is that Microsoft
+> actually licensed.  I believe the closest they have come to explaining
+> it can be found in a Byte interview by Trevor Marshall --
+> http://www.byte.com/documents/s=8276/byt1055784622054/0616_marshall.html
+> where Chris Sontag of SCO is quoted as saying that Microsoft merely
+> licensed an "applications interface layer."
+> 
+>   I take this to mean they are probably talking about header files
+> like errno.h, signal.h, etc.   I believe that Microsoft development
+> products have iterations of these and they only have Microsoft copyright
+> notices in them (no AT&T or BSD notices).   SFU would have them
+> as well, although I'm not sure what copyright notices are on those.
+> SCO claims that the lack of a copyright notices violates the USL vs.
+> BSDi settlement.  Of course, this claim is extremely tenuous (since
+> Microsoft's headers files origination likely predates the settlement
+> and were derived independently from public sources).
+> 
+>   In the end, I strongly suspect this was a way for Microsoft to funnel
+> money to SCO to attack Linux as opposed to Microsoft claims of
+> "respecting Intellectual Property Rights."
+>  
+
+I think it's very odd that Microsoft would need a license from SCO
+at all.  Isn't it true that before there was SCO, there was Microsoft
+XENIX?  I find it hard to believe that Microsoft would have divested itself
+of all rights in XENIX (including the headers above) when spinning off
+SCO.
+
+
+
+From zme at hush.ai  Sat Mar  6 07:36:39 2004
+From: zme at hush.ai (zme at hush.ai)
+Date: Fri,  5 Mar 2004 13:36:39 -0800
+Subject: [TUHS] Microsoft,SCO,and a certain License
+Message-ID: <200403052136.i25LadIo096256@mailserver1.hushmail.com>
+
+I find it interesting how Microsoft's name seems to pop up in Unix software.
+There are quite a few times when Microsoft's name appears on the same
+line as SCO's.
+
+$ strings svr4.tar | grep -i microsoft | sort | uniq -c | sort -rn
+
+[output attached]
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: microsoft.txt
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040305/548b83ef/attachment.txt>
+
+From grog at lemis.com  Sat Mar  6 09:38:42 2004
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Sat, 6 Mar 2004 10:08:42 +1030
+Subject: [TUHS] Microsoft,SCO,and a certain License
+In-Reply-To: <200403052136.i25LadIo096256@mailserver1.hushmail.com>
+References: <200403052136.i25LadIo096256@mailserver1.hushmail.com>
+Message-ID: <20040305233842.GP67801@wantadilla.lemis.com>
+
+On Friday,  5 March 2004 at 13:36:39 -0800, zme at hush.ai wrote:
+> I find it interesting how Microsoft's name seems to pop up in Unix software.
+> There are quite a few times when Microsoft's name appears on the same
+> line as SCO's.
+>
+> $ strings svr4.tar | grep -i microsoft | sort | uniq -c | sort -rn
+>
+> [output attached]
+>
+> ?? ^@ ^@ ^@ ^@1^@7^@8^@	^@/^@*^@	^@C^@o^@p^@y^@r^@i^@g^@h^@t^@ ^@(^@c^@)^@ ^@1^@9^@8^@7^@,^@ ^@1^@9^@8^@8^@ ^@M^@i^@c^@r^@o^@s^@o^@f^@t^@ ^@C^@o^@r^@p^@o^@r^@a^@t^@i^@o^@n^@	^@*^@/^@
+^@
+> ^@ ^@ ^@ ^@ ^@1^@7^@0^@	^@/^@*^@	^@T^@h^@i^@s^@ ^@M^@o^@d^@u^@l^@e^@ ^@c^@o^@n^@t^@a^@i^@n^@s^@ ^@P^@r^@o^@p^@r^@i^@e^@t^@a^@r^@y^@ ^@I^@n^@f^@o^@r^@m^@a^@t^@i^@o^@n^@ ^@o^@f^@ ^@M^@i^@c^@r^@o^@s^@o^@f^@t^@ ^@ ^@*^@/^@
+^@
+
+Is this unicode?  It would look better converted:
+
+>     178	/*	Copyright (c) 1987, 1988 Microsoft Corporation	*/
+>     170	/*	This Module contains Proprietary Information of Microsoft  */
+>      63	/	Copyright (c) 1987, 1988 Microsoft Corporation
+>      53	#	Copyright (c) 1987, 1988 Microsoft Corporation
+>      47	/	This Module contains Proprietary Information of Microsoft
+>      41	#	This Module contains Proprietary Information of Microsoft
+>      16	/	This Module contains Proprietary Information of Microsoft 
+>      13	#	This Module contains Proprietary Information of Microsoft 
+>      10	 *	The Santa Cruz Operation, Microsoft Corporation
+
+SVR4 contains XENIX compatibility code.  XENIX was written for
+Microsoft by SCO.
+
+>       6	#ifdef MICROSOFT
+>       6	 *	Copyright (C) Microsoft Corporation, 1984, 1985, 1986, 1987.
+>       3	Copyright (C) 1987, 1988 Microsoft Corp.\nAll Rights Reserved\n",
+>       3	/*	This Module contains Proprietary Information of Microsoft 	*/
+>       2	mcs    -a "@(#) Copyright (c) 1987, 1988 Microsoft Corp." unix
+>       2	echo "		This Module contains Proprietary Information of Microsoft"
+>       2	echo "			Copyright (c) 1987, 1988 Microsoft Corporation"
+>       2	 * request from a node that wants to talk Microsoft's MS-NET Core
+>       2		Copyright (C) 1987, 1988 Microsoft Corp.
+>       1	echo "            This Module contains Proprietary Information of Microsoft"
+>       1	echo "                 Copyright (c) 1987, 1988 Microsoft Corporation"
+>       1	0	short		0x206		Microsoft a.out
+>       1	0	short		0x140		old Microsoft 8086 x.out
+>       1	0	long		0x140		old Microsoft 8086 x.out
+>       1	0	byte		0x80		8086 relocatable (Microsoft)
+>       1	/*      This Module contains Proprietary Information of Microsoft  */
+>       1	/*      Copyright (c) 1987, 1988 Microsoft Corporation  */
+>       1	**      modified by Hans Spiller, Microsoft to handle \r better July 23, 82
+>       1	*       This Module contains Proprietary Information of Microsoft
+>       1	*       Copyright (c) 1987, 1988 Microsoft Corporation
+>       1	*	This Module contains Proprietary Information of Microsoft
+>       1	*	Copyright (c) 1987, 1988 Microsoft Corporation
+>       1	#define V86VI_MOUSE     0x00000020      /* Microsoft mouse              */
+>       1	#	This Module contains Proprietary Information of Microsoft  
+>       1	#	Copyright (c) 1987, 1988 Microsoft Corporation	
+>       1	 * Definitions for Lotus/Intel/Microsoft Expanded Memory Emulation
+>       1	 *      some extension are requested to consult with Microsoft to see
+>       1	 *      made a part of standard OS.  Microsoft feels that this is
+>       1	 *      Microsoft's policy is to minimize the incompatibilities between
+>       1	 *	This Module contains Proprietary Information of Microsoft
+>       1	 *	Copyright (C) Microsoft Corporation, 1984-7.
+>       1	 *	Copyright (C) Microsoft Corporation, 1983
+>       1	 *		 7-05-85	Rich Patterson	Added support for Microsoft
+>       1	 *		 6-20-85	Rich Patterson	Added support for Microsoft
+>       1		signal (SIGFPE,bswap_sig);	/* needed if fp is microsoft */
+>       1		cmn_err(CE_CONT, "Copyright (c) 1987, 1988 Microsoft Corp.\n");
+>       1		MS-DOS is a trademark of Microsoft Corporation
+>       1		Copyright (C) 1987, 1988 Microsoft Corp
+>       1			 * CAVEAT: Microsoft changed rename for Microsoft C V3.0.
+
+Greg
+--
+Note: I discard all HTML mail unseen.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040306/14f0e850/attachment.sig>
+
+From wes.parish at paradise.net.nz  Sat Mar  6 08:01:09 2004
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Sat, 06 Mar 2004 11:01:09 +1300
+Subject: [TUHS] making VAX disk file images
+Message-ID: <200403061101.09485.wes.parish@paradise.net.nz>
+
+I've got OpenVMS 7.3 and am planning on installing it under the SIMH/TS10 VAX.  
+How do I go about making disk file images?
+
+None of the SIMH/TS10 files seem to include a Linux utility for making such a 
+creature - does anyone have any pointers?
+
+Thanks
+-- 
+Wesley Parish
+* * *
+Clinersterton beademung - in all of love.  RIP James Blish
+* * *
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+
+From wes.parish at paradise.net.nz  Mon Mar  8 21:01:55 2004
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Tue, 09 Mar 2004 00:01:55 +1300
+Subject: [TUHS] making VAX disk file images
+Message-ID: <200403090001.55544.wes.parish@paradise.net.nz>
+
+Thanks to everybody who replied.  And thanks to Markus Weber for pointing me 
+to http://www.wherry.com/gadgets/retrocomputing/vax-simh.html
+
+I've got OpenVMS 7.3 installed now, I just haven't got it fully setup.
+
+That makes me a user of, let's see, how many Operating Systems?  And I used to 
+think being able to install MS-DOS 5.0 was a mark of the fully-capable and 
+highly-skilled computer-user! <(;^)
+(Took me ages to work out I needed to fdisk the C: partition to install OS/2 
+2.0; SLS Linux 0.99pl?? took ages to work out how to make partitions _and_ 
+file systems, and I was nowhere near game enough to try extfs; Maybe I'm 
+getting there - or at least, somewhere! ;)
+-- 
+Wesley Parish
+* * *
+Clinersterton beademung - in all of love.  RIP James Blish
+* * *
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+
+From arnold at skeeve.com  Wed Mar 10 19:17:49 2004
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Wed, 10 Mar 2004 11:17:49 +0200
+Subject: [TUHS] so MS is behind SCO
+Message-ID: <200403100917.i2A9HnUE020368@skeeve.com>
+
+	http://www.opensource.org/halloween/halloween10.html
+
+'nuff said.  --Arnold
+
+From kstailey at yahoo.com  Wed Mar 10 23:54:55 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Wed, 10 Mar 2004 05:54:55 -0800 (PST)
+Subject: [TUHS] so MS is behind SCO
+In-Reply-To: <200403100917.i2A9HnUE020368@skeeve.com>
+Message-ID: <20040310135455.20867.qmail@web60510.mail.yahoo.com>
+
+http://finance.yahoo.com/q/bc?t=1y&s=SCOX&l=off&z=m&q=l&c=rhat
+
+--- Aharon Robbins <arnold at skeeve.com> wrote:
+> 	http://www.opensource.org/halloween/halloween10.html
+> 
+> 'nuff said.  --Arnold
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Search - Find what you�re looking for faster
+http://search.yahoo.com
+
+From grog at lemis.com  Thu Mar 11 09:11:27 2004
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Thu, 11 Mar 2004 09:41:27 +1030
+Subject: [TUHS] so MS is behind SCO
+In-Reply-To: <20040310135455.20867.qmail@web60510.mail.yahoo.com>
+References: <200403100917.i2A9HnUE020368@skeeve.com>
+	<20040310135455.20867.qmail@web60510.mail.yahoo.com>
+Message-ID: <20040310231127.GE87996@wantadilla.lemis.com>
+
+On Wednesday, 10 March 2004 at  5:54:55 -0800, Kenneth Stailey wrote:
+> http://finance.yahoo.com/q/bc?t=1y&s=SCOX&l=off&z=m&q=l&c=rhat
+
+A more interesting chart is
+http://finance.yahoo.com/q/bc?s=SCOX&t=5d&l=off&z=m&q=l&c=rhat .  It
+looks as if nobody's taking SCO too seriously any more, not even the
+market.
+
+Greg
+--
+Note: I discard all HTML mail unseen.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040311/b28f6c9e/attachment.sig>
+
+From kstailey at yahoo.com  Thu Mar 11 09:50:29 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Wed, 10 Mar 2004 15:50:29 -0800 (PST)
+Subject: [TUHS] so MS is behind SCO
+In-Reply-To: <20040310231127.GE87996@wantadilla.lemis.com>
+Message-ID: <20040310235029.46890.qmail@web60509.mail.yahoo.com>
+
+
+--- Greg 'groggy' Lehey <grog at lemis.com> wrote:
+> On Wednesday, 10 March 2004 at  5:54:55 -0800, Kenneth Stailey wrote:
+> > http://finance.yahoo.com/q/bc?t=1y&s=SCOX&l=off&z=m&q=l&c=rhat
+> 
+> A more interesting chart is
+> http://finance.yahoo.com/q/bc?s=SCOX&t=5d&l=off&z=m&q=l&c=rhat .  It
+> looks as if nobody's taking SCO too seriously any more, not even the
+> market.
+> 
+> Greg
+> --
+
+Back when they were just sueing IBM they appeared more legitimate to someone
+who could not understand the techinical aspects.  Now that they are sueing
+everybody and losing money doing it they're bonafide cranks.
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Search - Find what you�re looking for faster
+http://search.yahoo.com
+
+From kstailey at yahoo.com  Tue Mar 16 04:09:10 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Mon, 15 Mar 2004 10:09:10 -0800 (PST)
+Subject: [TUHS] BSD family tree with Quasijarus in it
+Message-ID: <20040315180910.76757.qmail@web60510.mail.yahoo.com>
+
+I found this while playing with AmphetaDesk for the very first time.
+
+http://www.tribug.org/img/bsd-family-tree.gif
+
+Offhand I think the very top of the graphic is terribly misleading.  It
+insinuates that UNIX is derived from Multics.  It would be just as true to say
+it was derived from Project Genie or to say that Linux is derived from UNIX. 
+They are independant systems with similarities, nothing more.
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail - More reliable, more storage, less spam
+http://mail.yahoo.com
+

@@ -1,0 +1,201 @@
+From wes.parish at paradise.net.nz  Sat Aug  2 22:20:24 2003
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Sun, 3 Aug 2003 00:20:24 +1200
+Subject: [pups] Cheriton, Zed, and Thoth
+Message-ID: <200308030020.25263.wes.parish@paradise.net.nz>
+
+I came across his book a few days ago in the Computer Science section of the 
+University of Canterbury (NZ) Library.
+
+Does anyone know what happened to it?  Where it disappeared to, etc?
+
+Zed, for example, is another BCPL derivative, so I feel right at home with it.
+
+Wesley Parish
+-- 
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+From wes.parish at paradise.net.nz  Sat Aug  2 22:20:24 2003
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Sun, 3 Aug 2003 00:20:24 +1200
+Subject: [TUHS] Cheriton, Zed, and Thoth
+Message-ID: <200308030020.25263.wes.parish@paradise.net.nz>
+
+I came across his book a few days ago in the Computer Science section of the 
+University of Canterbury (NZ) Library.
+
+Does anyone know what happened to it?  Where it disappeared to, etc?
+
+Zed, for example, is another BCPL derivative, so I feel right at home with it.
+
+Wesley Parish
+-- 
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+From bwc at coraid.com  Sat Aug  2 23:05:36 2003
+From: bwc at coraid.com (bwc at coraid.com)
+Date: Sat, 2 Aug 2003 09:05:36 -0400
+Subject: [TUHS] speaking of Zed...
+Message-ID: <b20913d55a6c13e3f7eee1a1055eed73@coraid.com>
+
+More than 20 years ago I worked on a CDC minicomputer the Cyber 18/30.  I heard
+about an operating system for it that used Zed.  Does anyone know about it?
+ Brantley
+
+From aek at spies.com  Sun Aug  3 11:46:11 2003
+From: aek at spies.com (Al Kossow)
+Date: Sat, 2 Aug 2003 18:46:11 -0700
+Subject: [TUHS] Re: Cheriton, Zed, and Thoth
+Message-ID: <200308030146.h731kBkY023828@spies.com>
+
+
+I came across his book a few days ago in the Computer Science section of the 
+University of Canterbury (NZ) Library.
+
+Does anyone know what happened to it?  Where it disappeared to, etc?
+
+--
+
+"The Thoth System: Multi-Process Stucturing and Portability"
+
+Prof Cheriton has been on the faculty of Stanford University since
+the early 80's. The book was derived from his PhD thesis at the
+University of Waterloo.
+
+I emailed him about a year ago asking exactly this question, since
+I was looking for software to run on a TI990 minicomputer, and it's
+gone.. He didn't really want to even talk much about it.
+
+The Stanford V-System is the closest descendent of Thoth. Even that
+may be difficult to find.
+
+From JStevens at prcnet.com  Sat Aug  9 08:14:56 2003
+From: JStevens at prcnet.com (JStevens at prcnet.com)
+Date: Fri, 8 Aug 2003 18:14:56 -0400 
+Subject: [TUHS] v6on286
+Message-ID: <960567643238154CB8EC909ED1138931086B8703@pagg1exch2>
+
+I just downloaded the source, and after much scrounging around I found my
+old Borland 3.1 compiler.. I built the un.exe, and it does the same thing..
+blank  screen, and off to nowhere... so I started to add some printf's...
+ 
+Such as this bit in ken\main.c
+ 
+            craftproc();
+            printf("main.c craftproc()\n");
+            initdevices();
+            printf("main.c initdevices()\n");
+            cinit();
+            printf("main.c cinit()\n");
+            binit();
+            printf("main.c binit()\n");
+ 
+ 
+and I modified dmr\cov.c
+ 
+initvid()
+        {
+//      if (video==1)
+//              (gdt_beg+6)->base_l =0;
+        outbyte (VIDCA,VIDCSTART);
+        outbyte (VIDCD,0);
+        outbyte (VIDCA,VIDCEND);
+        outbyte (VIDCD,14);
+        outbyte (VIDCA,VIDADDRL);
+        outbyte (VIDCD,0);
+        outbyte (VIDCA,VIDADDRH);
+        outbyte (VIDCD,0);
+//      clear_screen(vd_attr);
+        cosilence();
+        }
+ 
+so I could see some more.. it seems to initialize ok under virtual PC.. I
+think the next thing is to dig for some more info on the 1st task.. My Lyons
+book is somewhere as I want to create a dummy task that prints "a", and a
+second one that prints "b", so I can test the scheduler and get
+"abababababba" or something like that..
+ 
+Another thing I noticed after trying to build the userland is that crt0.asm
+is missing.. I'm too much of a newbie to construct that though.. Anyways
+I'll try to get further this weekend either with my Lyons book, or with v6
+on simh.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030808/de0ca265/attachment.html>
+
+From JStevens at prcnet.com  Tue Aug 12 04:38:59 2003
+From: JStevens at prcnet.com (JStevens at prcnet.com)
+Date: Mon, 11 Aug 2003 14:38:59 -0400
+Subject: [TUHS] v6on286
+Message-ID: <960567643238154CB8EC909ED1138931086B8711@pagg1exch2>
+
+FYI the reason why it locks is the 286 multi-tasking is busted.. if you
+comment out the iret in ken/slp.c it goes further, but it's busted none the
+less...
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030811/8d4b6ce6/attachment.html>
+
+From masouds at stormbird.org  Thu Aug 28 04:53:21 2003
+From: masouds at stormbird.org (masouds at stormbird.org)
+Date: Wed, 27 Aug 2003 14:53:21 -0400 (EDT)
+Subject: [TUHS] V7 on i386?
+Message-ID: <40589.216.191.248.101.1062010401.squirrel@www.stormbird.org>
+
+Hello,
+I was looking through mailing list archives for any attempts of porting
+UNIX V7 to i386. I saw a discussion of it at
+http://minnie.tuhs.org/pipermail/tuhs/2002-January/000071.html where Some
+brave soul tries to port V6 to i386; Does anyone know whether or not
+anything came out of it?
+cheers,
+Masoud
+PS: needless to say, I've recently joined this mailing list.
+
+
+
+
+From macbiesz at optonline.net  Thu Aug 28 12:47:44 2003
+From: macbiesz at optonline.net (Maciek Bieszczad)
+Date: Wed, 27 Aug 2003 22:47:44 -0400
+Subject: [TUHS] V7 on i386?
+In-Reply-To: <40589.216.191.248.101.1062010401.squirrel@www.stormbird.org>
+Message-ID: <000001c36d0e$c24a12f0$03fea8c0@maciek>
+
+http://www.southern-storm.com.au/v7upgrade.html
+
+Quote from the site: "This site contains a copy of the Version 7 Unix
+sources, upgraded to conform with modern C conventions."
+
+There's also V6on286, see:
+ftp://minnie.tuhs.org/UnixArchive/Other/V6on286/. Refer to the previous
+"v6on286" posts this month.
+
+--
+Maciek (macbiesz at optonline.net)
+
+-----Original Message-----
+From: tuhs-bounces at minnie.tuhs.org [mailto:tuhs-bounces at minnie.tuhs.org]
+On Behalf Of masouds at stormbird.org
+Sent: Wednesday, August 27, 2003 2:53 PM
+To: tuhs at minnie.tuhs.org
+Subject: [TUHS] V7 on i386?
+
+Hello,
+I was looking through mailing list archives for any attempts of porting
+UNIX V7 to i386. I saw a discussion of it at
+http://minnie.tuhs.org/pipermail/tuhs/2002-January/000071.html where
+Some
+brave soul tries to port V6 to i386; Does anyone know whether or not
+anything came out of it?
+cheers,
+Masoud
+PS: needless to say, I've recently joined this mailing list.
+
+

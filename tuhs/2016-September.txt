@@ -1,0 +1,4214 @@
+From cowan at ccil.org  Thu Sep  1 00:37:03 2016
+From: cowan at ccil.org (John Cowan)
+Date: Wed, 31 Aug 2016 10:37:03 -0400
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <01a901d2038c$157e4ff0$407aefd0$@ronnatalie.com>
+References: <alpine.BSF.2.11.1608290416020.74486@aneurin.horsfall.org>
+ <CAOkr1zXkmRx7p1sET=a+1ffh=nSeh0G-vTDipiZPAjTbVVYQ_Q@mail.gmail.com>
+ <20160829031619.GB48170@eureka.lemis.com>
+ <15EAA199-2C57-4621-A71E-95E046086BB5@tfeb.org>
+ <CAD2gp_TdEBKDhvT80vFTT9jk3yY=3wjocNrG4Lhe646aDB0DxA@mail.gmail.com>
+ <01a901d2038c$157e4ff0$407aefd0$@ronnatalie.com>
+Message-ID: <CAD2gp_Rxno3-+Lwk0R8qHNeZ4QUiJC1CSeY3mQKSdVUT_9uPHw@mail.gmail.com>
+
+On Wed, Aug 31, 2016 at 9:32 AM, Ron Natalie <ron at ronnatalie.com> wrote:
+
+> The null pointer constant does not need a cast on ANY architecture .
+
+
+Well, it's a matter of what counts as "need".  People normally expect
+execl("/bin/sh", "sh", "-c", "date", NULL) to work, but it will not on
+systems
+that define NULL as 0 and have different sizes of integers and pointers
+(or, Ghu forbid, null pointers that are not all-bits-0).  The man page is
+careful to warn against this practice, but it is commonplace anyhow,
+and on such architectures, defining NULL as (void *)0 will protect
+users against this situation.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Clear?  Huh!  Why a four-year-old child could understand this report.
+Run out and find me a four-year-old child.  I can't make head or tail
+out of it.        --Rufus T. Firefly on government reports
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160831/0de71090/attachment.html>
+
+From norman at oclsc.org  Thu Sep  1 19:17:46 2016
+From: norman at oclsc.org (Norman Wilson)
+Date: Thu,  1 Sep 2016 05:17:46 -0400 (EDT)
+Subject: [TUHS] Comments on "C"
+Message-ID: <20160901091746.1F3734422E@lignose.oclsc.org>
+
+Every time someone starts spouting about how unsafe
+C is, and how all the world's problems would be solved
+if only people would stop using it, I think of Flon's
+Axiom, for 35 years my favourite one-liner about
+programming and languages:
+
+  There does not now, nor will there ever, exist a
+  programming language in which it is the least bit
+  hard to write bad programs.
+
+Flon's Axiom comes from a short note On Research
+in Structured Programming, published in SIGPLAN
+Notices in October 1975.  It's just as true today.
+
+Over the years I've seen people misinterpret the
+Axiom as an argument against looking for better
+programming languages at all, but that's not what
+it means.  (Read the original note--it's a page
+and a half--for full context; it is, alas, behind
+ACM's Digital Library paywall.)  There are certainly
+languages that make certain sorts of mistakes easier
+or harder, or are easier or harder to read, but in
+the end most of that really is up to the programmer.
+
+Programming well requires a lot of thought and care
+and careful rereading, and often throwing half the
+code out and re-doing it better, and until we can
+have a programming community the majority of whom
+are up to those challenges, we will continue to have
+crashes and security vulnerabilities and other
+embarrassing bugs aplenty, no matter what language
+is used.
+
+Norman Wilson
+Toronto ON
+
+
+From clemc at ccc.com  Fri Sep  2 01:11:25 2016
+From: clemc at ccc.com (Clem Cole)
+Date: Thu, 1 Sep 2016 11:11:25 -0400
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <20160901091746.1F3734422E@lignose.oclsc.org>
+References: <20160901091746.1F3734422E@lignose.oclsc.org>
+Message-ID: <CAC20D2NQ4JeEa+0ymsLEByT+nm-_5abt8xG2K1GsLEUSs=1uQA@mail.gmail.com>
+
+On Thu, Sep 1, 2016 at 5:17 AM, Norman Wilson <norman at oclsc.org> wrote:
+
+> Flon's Axiom comes from a short note On Research
+> in Structured Programming, published in SIGPLAN
+> Notices in October 1975.  It's just as true today.
+>
+​+1  (a few times) - His axiom is also one of my favorites.   Flon was
+brilliant and funny.​
+
+
+​Page 16 and 17.   Scanned from my copy and ocred - fair use declared ;-)
+
+Its interesting... FORTRAN still pays my salary ;-)
+It's not banks & insurance company programmers.  It's the physicist,
+chemists et al running on my supercomputer that still use it.
+
+But as Flon says, I see just as many bad Java, javascript, Python programs.
+
+
+==========  Sigplan Notices October 1975 -- pages 16 and part of 17.
+
+On Research in Structured Programming
+
+Lawrence Flon
+
+Department of Computer Science
+
+Carnegie-Mellon University
+
+Pittsburgh, PA 15213
+
+
+
+The August issue of SIGPLAN Notices contained a rather interesting
+collection of material.  Not suprisingly, I was struck with some humor at
+first upon noticing the rather glaring connection between Karp's letter on
+the one hand and examples of each of his objections on the other. The issue
+presented, in addition, a lampoon of what has become a somewhat limited,
+syntax for titles of structured programming articles, followed by yet
+another member of that very class.  My mirth, unfortunately, did not last
+long when I began to wonder about whether the whole thing was at all
+funny.  There has been a forum going on for quite some time in an effort to
+define structured programming. A number of articles have been written in
+the style of Dijkstra's original goto letter in an attempt to banish
+particular language constructs. Counter-articles have been written
+defending these constructs. I would like to present a statement which has
+needed presenting for a while.  I like to regard it as an axiom because I
+firmly believe both in the statement itself and the hopelessness of trying
+to prove it.
+
+
+
+*Axiom*
+
+*There does not now, nor will there ever, exist a programming language in
+which it is the least bit hard to write bad programs. *
+
+
+
+Not only is it possible to misuse goto's, global variables, and
+conditionals, but the possibilities for misuse of block structure,
+procedures, macros, pointers, and everything else are endless. Too many
+textually nested blocks can make an ALGOL program hopelessly unreadable, as
+can procedures or macros with too many parameters. A set of procedures
+whose functions are badly partitioned are not only difficult to understand
+but hard to modify. Syntax macros which do not themselves parse to
+non-terminal or terminal symbols (e.g. those with unbalanced parentheses or
+begin-end pairs) are prone to causing hard-to-find syntax errors.
+Unrestricted pointers (as in PL/I) cause a proclivity of disastrous bugs.
+These are the seeds for at least four more "considered harmful" papers
+which I will not write and hope no one else does.
+
+
+
+I would like to see the S.P. forum re-directed towards a less hopeless task
+than finding the perfect programming language or formally defining S.P.
+itself. If we take the definition to be simply the construction of
+efficient, readable, understandable, modifiable, and verifiable programs,
+we can then begin to discuss ways to *globally* reach these goals by
+*educating* the people who do the programming.  Since it follows from the
+axiom that no amount of construct-clipping will make the typical graduate
+of a "data processing" school even a potentially good programmer, we must
+find something that will: What can be said to be the *proper* use of
+goto's, conditionals, and global variables (and block structure, pointers,
+etc.)? What are the general guidelines to follow with respect to
+procedures? How does one go about modularizing a task, anyway?
+
+
+
+Answering these questions and so many more is what structured programming
+research should be about. What good is debating the if-then-else construct
+when half the world is programming in (and will continue to program in)
+FORTRAN? Let us see articles on the-way-to-do-it-right in *any* language;
+articles which programming managers can show their programmers which will
+improve the quality of software where it is most needed - not in
+universities and research centers, but in banks and insurance companies.
+
+
+
+​
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160901/60d35c3d/attachment.html>
+
+From tfb at tfeb.org  Fri Sep  2 07:47:15 2016
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Thu, 1 Sep 2016 22:47:15 +0100
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <20160901091746.1F3734422E@lignose.oclsc.org>
+References: <20160901091746.1F3734422E@lignose.oclsc.org>
+Message-ID: <267C9862-54F7-4A38-B59C-7FC59C7BD0F1@tfeb.org>
+
+On 1 Sep 2016, at 10:17, Norman Wilson <norman at oclsc.org> wrote:
+
+> Flon's
+> Axiom, for 35 years my favourite one-liner about
+> programming and languages:
+> 
+>  There does not now, nor will there ever, exist a
+>  programming language in which it is the least bit
+>  hard to write bad programs.
+
+I think this is almost trivially true (in the same sense that, say, general relativity is almost trivially true once you see it): if there are complicated problems to solve, then programming languages are either powerful enough to represent the solution or they can't solve the problem.  If they are powerful enough then that power can be used to write horrid programs, if they're not then they die out, at least as general-purpose languages.
+
+To turn my earlier comment around, Lisp is a fantastic example of this: modern Lisps (really, Scheme) mandate tail-call elimination as part of the language, which is clearly this lovely pure thing to do which can only make programs better.  Well, in a language with tail-call elimination, some (but, of course, not all) function calls can be treated as gotos which pass arguments, and isn't goto meant to be bad?  So now add full continuations and any half-educated person like me can write the sort of tiny opaque horror which it would take someone really deep understanding to write in C, say.
+
+That being said (and note I *like* C, a lot), what proportion of security problems are undetected buffer overflows?  Less than it used to be, I hope.
+
+From mah at mhorton.net  Fri Sep  2 10:11:16 2016
+From: mah at mhorton.net (Mary Ann Horton)
+Date: Thu, 1 Sep 2016 17:11:16 -0700
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <267C9862-54F7-4A38-B59C-7FC59C7BD0F1@tfeb.org>
+References: <20160901091746.1F3734422E@lignose.oclsc.org>
+ <267C9862-54F7-4A38-B59C-7FC59C7BD0F1@tfeb.org>
+Message-ID: <a7a0dfaf-44df-bba7-afb5-9aa5733ef54e@mhorton.net>
+
+Of course it's possible to write terrible programs in powerful languages!
+
+How else could we have the wonders of the International Obfuscated C 
+Code Contest?
+
+
+On 09/01/2016 02:47 PM, Tim Bradshaw wrote:
+> On 1 Sep 2016, at 10:17, Norman Wilson <norman at oclsc.org> wrote:
+>
+>> Flon's
+>> Axiom, for 35 years my favourite one-liner about
+>> programming and languages:
+>>
+>>   There does not now, nor will there ever, exist a
+>>   programming language in which it is the least bit
+>>   hard to write bad programs.
+> I think this is almost trivially true (in the same sense that, say, general relativity is almost trivially true once you see it): if there are complicated problems to solve, then programming languages are either powerful enough to represent the solution or they can't solve the problem.  If they are powerful enough then that power can be used to write horrid programs, if they're not then they die out, at least as general-purpose languages.
+>
+> To turn my earlier comment around, Lisp is a fantastic example of this: modern Lisps (really, Scheme) mandate tail-call elimination as part of the language, which is clearly this lovely pure thing to do which can only make programs better.  Well, in a language with tail-call elimination, some (but, of course, not all) function calls can be treated as gotos which pass arguments, and isn't goto meant to be bad?  So now add full continuations and any half-educated person like me can write the sort of tiny opaque horror which it would take someone really deep understanding to write in C, say.
+>
+> That being said (and note I *like* C, a lot), what proportion of security problems are undetected buffer overflows?  Less than it used to be, I hope.
+
+
+
+From steve at quintile.net  Fri Sep  2 17:10:51 2016
+From: steve at quintile.net (Steve Simon)
+Date: Fri, 2 Sep 2016 08:10:51 +0100
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <a7a0dfaf-44df-bba7-afb5-9aa5733ef54e@mhorton.net>
+References: <20160901091746.1F3734422E@lignose.oclsc.org>
+ <267C9862-54F7-4A38-B59C-7FC59C7BD0F1@tfeb.org>
+ <a7a0dfaf-44df-bba7-afb5-9aa5733ef54e@mhorton.net>
+Message-ID: <053035F6-0766-4478-A8B9-B5A6DF88D1B7@quintile.net>
+
+I find this a very interesting conversation.
+
+my bugbear is languages and tools that help you do the the easy stuff, IDEs that
+suggest arguments for the read() function, syntax highlighting that show which text
+comments etc.
+
+this is not stuff I find hard, it helps me with the easy stuff! working out what to write - I.e. reading and digesting chip data sheets and protocol specs, that is what I need help with and there is no royal road to this.
+
+I have long felt that solving complex problems requires complex code, but a well designed program can spread a little of this complexity as a thinner layer rather than having a great clump of it in one place. some languages can encourage this practice - OO is the obvious example of this, but it is not a requirement. I still remember the versatec printer driver written in beautiful FORTRAN 4 (yes it can be done).
+
+-Steve
+
+
+
+
+-Steve
+
+
+> On 2 Sep 2016, at 01:11, Mary Ann Horton <mah at mhorton.net> wrote:
+> 
+> Of course it's possible to write terrible programs in powerful languages!
+> 
+> How else could we have the wonders of the International Obfuscated C Code Contest?
+> 
+> 
+>> On 09/01/2016 02:47 PM, Tim Bradshaw wrote:
+>>> On 1 Sep 2016, at 10:17, Norman Wilson <norman at oclsc.org> wrote:
+>>> 
+>>> Flon's
+>>> Axiom, for 35 years my favourite one-liner about
+>>> programming and languages:
+>>> 
+>>>  There does not now, nor will there ever, exist a
+>>>  programming language in which it is the least bit
+>>>  hard to write bad programs.
+>> I think this is almost trivially true (in the same sense that, say, general relativity is almost trivially true once you see it): if there are complicated problems to solve, then programming languages are either powerful enough to represent the solution or they can't solve the problem.  If they are powerful enough then that power can be used to write horrid programs, if they're not then they die out, at least as general-purpose languages.
+>> 
+>> To turn my earlier comment around, Lisp is a fantastic example of this: modern Lisps (really, Scheme) mandate tail-call elimination as part of the language, which is clearly this lovely pure thing to do which can only make programs better.  Well, in a language with tail-call elimination, some (but, of course, not all) function calls can be treated as gotos which pass arguments, and isn't goto meant to be bad?  So now add full continuations and any half-educated person like me can write the sort of tiny opaque horror which it would take someone really deep understanding to write in C, say.
+>> 
+>> That being said (and note I *like* C, a lot), what proportion of security problems are undetected buffer overflows?  Less than it used to be, I hope.
+
+
+
+From usotsuki at buric.co  Fri Sep  2 20:02:47 2016
+From: usotsuki at buric.co (Steve Nickolas)
+Date: Fri, 2 Sep 2016 06:02:47 -0400 (EDT)
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <053035F6-0766-4478-A8B9-B5A6DF88D1B7@quintile.net>
+References: <20160901091746.1F3734422E@lignose.oclsc.org>
+ <267C9862-54F7-4A38-B59C-7FC59C7BD0F1@tfeb.org>
+ <a7a0dfaf-44df-bba7-afb5-9aa5733ef54e@mhorton.net>
+ <053035F6-0766-4478-A8B9-B5A6DF88D1B7@quintile.net>
+Message-ID: <alpine.BSF.2.02.1609020557550.82361@frieza.hoshinet.org>
+
+My language of choice is C, and has been for a decade and a half.
+
+I write some really FUGLY C code when I need to get down and dirty, like 
+in my emulators - though they're not OO by a longshot, they're written as 
+sort-of modular, one of them has an emulation of a 6847/6883 which is 
+implemented in clearly marked functions, but the functions are terribly 
+coded.  Comments are sparse, and usually only mark where I needed to 
+actually think about what I was doing.
+
+I implemented a couple Unix commands as part of a never-finished project - 
+I wanted to write a userland for a Unix clone, where the utilities could 
+also run on MS-DOS.
+
+(...something like "Does DOS have the Unix nature?" "Mu!" comes to 
+mind...)
+
+-uso.
+
+
+From random832 at fastmail.com  Sat Sep  3 00:13:14 2016
+From: random832 at fastmail.com (Random832)
+Date: Fri, 02 Sep 2016 10:13:14 -0400
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <053035F6-0766-4478-A8B9-B5A6DF88D1B7@quintile.net>
+References: <20160901091746.1F3734422E@lignose.oclsc.org>
+ <267C9862-54F7-4A38-B59C-7FC59C7BD0F1@tfeb.org>
+ <a7a0dfaf-44df-bba7-afb5-9aa5733ef54e@mhorton.net>
+ <053035F6-0766-4478-A8B9-B5A6DF88D1B7@quintile.net>
+Message-ID: <1472825594.1543544.713915105.35C5069E@webmail.messagingengine.com>
+
+On Fri, Sep 2, 2016, at 03:10, Steve Simon wrote:
+> I find this a very interesting conversation.
+> 
+> my bugbear is languages and tools that help you do the the easy stuff,
+> IDEs that suggest arguments for the read() function, syntax
+> highlighting that show which text comments etc.
+> 
+> this is not stuff I find hard, it helps me with the easy stuff!
+
+Sure, but help with the easy [and medium - not every function's
+signature is as simple as read()] stuff helps you not break your
+concentration to go look at documentation if you're not 100% sure you
+remember the signature correctly, so you can use your brain more
+efficiently for the hard stuff.
+
+I use a Java IDE that will, with a single command, generate a
+declaration corresponding to the type of an expression I just assigned
+to an undeclared variable. This saves typing [in the easy cases] and it
+saves thinking about return types [in the medium cases].
+
+
+From dave at horsfall.org  Sat Sep  3 07:23:56 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sat, 3 Sep 2016 07:23:56 +1000 (EST)
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <20160901091746.1F3734422E@lignose.oclsc.org>
+References: <20160901091746.1F3734422E@lignose.oclsc.org>
+Message-ID: <alpine.BSF.2.11.1609030701590.78806@aneurin.horsfall.org>
+
+On Thu, 1 Sep 2016, Norman Wilson wrote:
+
+> Programming well requires a lot of thought and care and careful 
+> rereading, and often throwing half the code out and re-doing it better, 
+> and until we can have a programming community the majority of whom are 
+> up to those challenges, we will continue to have crashes and security 
+> vulnerabilities and other embarrassing bugs aplenty, no matter what 
+> language is used.
+
+I think I saw that in CACM: "Prepare to throw out half your code, because 
+you will anyway".
+
+Then there was the time I saw a Uni student, when, ambling down the 
+corridor at UNSW Comp Sci, he tripped and spilled the entire deck of 
+cards; after laughing for a while, I helped him to put them through the 
+reader-sorter (fortunately, they were sequenced, I think).
+
+When I think back on some of the code I wrote, I still shudder...  Mind 
+you, this was back in the days of the IBM-360 and the PDP-11, and I'd only 
+just graduated, m'lud.
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From scj at yaccman.com  Mon Sep  5 03:03:15 2016
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Sun, 4 Sep 2016 10:03:15 -0700
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <alpine.BSF.2.11.1609030701590.78806@aneurin.horsfall.org>
+References: <20160901091746.1F3734422E@lignose.oclsc.org>
+ <alpine.BSF.2.11.1609030701590.78806@aneurin.horsfall.org>
+Message-ID: <d56e080af9cdc376a0a5916207b033bb.squirrel@webmail.yaccman.com>
+
+Before I headed off to my first summer job, my mother, who was working as
+a programmer, gave me some good advice: "before you throw away a deck of
+cards, put a rubber band around it...".   Saved my butt twice that
+summer...
+
+Incidentally, I figured the other day that a Petabyte of data, if punched
+onto punched cards, would make a deck that was 6 times higher than the
+distance to the moon...
+
+Steve
+
+
+> On Thu, 1 Sep 2016, Norman Wilson wrote:
+>
+>> Programming well requires a lot of thought and care and careful
+>> rereading, and often throwing half the code out and re-doing it better,
+>> and until we can have a programming community the majority of whom are
+>> up to those challenges, we will continue to have crashes and security
+>> vulnerabilities and other embarrassing bugs aplenty, no matter what
+>> language is used.
+>
+> I think I saw that in CACM: "Prepare to throw out half your code, because
+> you will anyway".
+>
+> Then there was the time I saw a Uni student, when, ambling down the
+> corridor at UNSW Comp Sci, he tripped and spilled the entire deck of
+> cards; after laughing for a while, I helped him to put them through the
+> reader-sorter (fortunately, they were sequenced, I think).
+>
+> When I think back on some of the code I wrote, I still shudder...  Mind
+> you, this was back in the days of the IBM-360 and the PDP-11, and I'd only
+> just graduated, m'lud.
+>
+> --
+> Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will
+> suffer."
+>
+
+
+
+
+From cym224 at gmail.com  Mon Sep  5 08:24:15 2016
+From: cym224 at gmail.com (Nemo)
+Date: Sun, 4 Sep 2016 18:24:15 -0400
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <alpine.BSF.2.11.1609030701590.78806@aneurin.horsfall.org>
+References: <20160901091746.1F3734422E@lignose.oclsc.org>
+ <alpine.BSF.2.11.1609030701590.78806@aneurin.horsfall.org>
+Message-ID: <CAJfiPzwXW1bixHEX8zoFAcePh=S8RkTcOQR3J7Q4DS5y3GwHWA@mail.gmail.com>
+
+On 2 September 2016 at 17:23, Dave Horsfall <dave at horsfall.org> wrote:
+[...]
+> I think I saw that in CACM: "Prepare to throw out half your code, because
+> you will anyway".
+
+There is Brook's law: Plan to throw one away, you will anyways [MMM
+Chapt. 11].  (There is also Writh's advice not to be afraid of tossing
+it and starting again) but I do'nt recall the 50% rule.
+
+
+From ron at ronnatalie.com  Mon Sep  5 23:07:49 2016
+From: ron at ronnatalie.com (Ron Natalie)
+Date: Mon, 5 Sep 2016 09:07:49 -0400
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <d56e080af9cdc376a0a5916207b033bb.squirrel@webmail.yaccman.com>
+References: <20160901091746.1F3734422E@lignose.oclsc.org>
+ <alpine.BSF.2.11.1609030701590.78806@aneurin.horsfall.org>
+ <d56e080af9cdc376a0a5916207b033bb.squirrel@webmail.yaccman.com>
+Message-ID: <004b01d20776$817af4e0$8470dea0$@ronnatalie.com>
+
+Many of us who got started early learned that the value of nothing was p&P6.
+
+You can write bad (I'm not going to even to begin with sustainable) code in
+any language.
+C's biggest defect was it dates from an era where people didn't much care.
+Type 120 characters into a field expecting 10, well you deserved what you
+got.
+It was more the issue with C's utility functions than with the language
+itself.     Most of that has been cleaned up.
+
+One piece of aracane programming did come in handy later on.    Our
+highschool didn't have any computers.   Your choices were to call the
+timeshare system across the county using the Bell 103 Dataphones or punch
+your cards and send them down to the county seat to run on the 370 mainframe
+(me and a friend were writing a computer dating program in COBOL until
+someone at the County looked at our printouts and caught what we were up to.
+Still we'd joke each other by inserting random JCL commands like //OPTIONS
+ASSHOLE into each other's deck.   With a two day turnaround time, that was
+painful).
+
+What we did have is a bunch of old IBM card processing machines:   401
+accounting machine, 514 reproducing punch, 085 colator, 082 sorter.    On
+the shelf in that room was a bunch of self-paced training manuals on how to
+program these units via large punchboards full of wires.   Being a geek, I
+went through these (the 402/514 was an interesting combination, it had the
+ability via a big 12x80 pin plug to punch the output of calculations on
+cards).
+
+Anyway, years later I was sitting around a  university computer center and
+these guys came in with a problem.    They had a whole deck of IBM cards
+that had patent information on them.    What was neat about these cards is
+that in addition to the punched information, there was a window in the card
+with a small piece of microfilm with some imagers on it.    The problem is
+that all the card readers they tried to read this deck in would spaz when
+the optical sensor hit the microfilm part.    No problem.    Give me the
+columns you're interested in and I set about programming the 402 to print
+out what they were interested in knowing.    I believe it was the only
+useful thing I ever did with that machine.
+
+
+
+From blake at mcbride.name  Thu Sep  8 11:19:14 2016
+From: blake at mcbride.name (Blake McBride)
+Date: Wed, 7 Sep 2016 20:19:14 -0500
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <20160829004237.GC14366@mcvoy.com>
+References: <alpine.BSF.2.11.1608290416020.74486@aneurin.horsfall.org>
+ <CAOkr1zXkmRx7p1sET=a+1ffh=nSeh0G-vTDipiZPAjTbVVYQ_Q@mail.gmail.com>
+ <20160829004237.GC14366@mcvoy.com>
+Message-ID: <CABwHSOtvOrs7rhWf+fv+8JN-EY1pKhMAWk7WbvqqZkE0hPXZew@mail.gmail.com>
+
+After about 30 years of C, there are only three things I would have liked
+to see:
+
+1.  Computed goto
+
+2.  goto a line in a different function (more than setjmp/longjmp)
+
+3.  Easy / standard access to registers
+
+Computed goto's are good for interpreters.
+
+Goto a line in a different function makes it easier to implement languages
+with tail recursion without a trampoline.  (Or perhaps require C to support
+tail recursion.)
+
+Some sort of standard way to access registers makes it easier to implement
+garbage collectors without resorting to assembler.
+
+Blake McBride
+
+
+On Sun, Aug 28, 2016 at 7:42 PM, Larry McVoy <lm at mcvoy.com> wrote:
+
+> I'm with Marc.  I think the C syntax is really pleasant, and while I
+> enjoyed
+> writing PDP-11 assembler (by far my favorite out the ones I've done which
+> include VAX, m68k, 32032, z80, sparc, some x86 but not much), I don't want
+> go back to writing assembler unless I have to.  C is a pleasant language
+> that easily compiles to assembler.
+>
+> I happen to like it so much I made a scripting language that looks very
+> C like, with some perl pleasantness tossed in (without all the dollar
+> signs).  Check it out at
+>
+> http://www.little-lang.org
+>
+> 100% open source, actively developed, yada, yada.
+>
+> On Sun, Aug 28, 2016 at 06:37:21PM -0600, Marc Rochkind wrote:
+> > Yeah, OK, another one of those clever glib UNIXy aphorisms.
+> >
+> > But, as anyone who's actually programmed seriously in assembly language
+> > knows, C is not assembler. It is a system programming language low enough
+> > to be used for things that were once done in assembler, the most
+> important
+> > of which is an OS.
+> >
+> > So, for most of us, we no longer had to write in assembler. But that
+> > doesn't mean C is assembler.
+> >
+> > So, are we just having fun over a few beers, or talking seriously? I like
+> > both!
+> >
+> > --Marc Rochkind
+> >
+> > On Sun, Aug 28, 2016 at 12:21 PM, Dave Horsfall <dave at horsfall.org>
+> wrote:
+> >
+> > > Seen on another list...  And I got quoted by Steve Bellovin :-)
+> > >
+> > > --
+> > > Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will
+> > > suffer."
+> > >
+> > > ---------- Forwarded message ----------
+> > > From: Kent Borg
+> > > To: cryptography at metzdowd.com
+> > > Subject: Re: [Cryptography]
+> > >     "NSA-linked Cisco exploit poses bigger threat than previously
+> thought"
+> > >
+> > > On 08/25/2016 06:06 PM, Steven M. Bellovin wrote:
+> > >
+> > > > I first heard more or less that line from Doug McIlroy himself; he
+> > > > called C the best assembler language he'd ever used.
+> > >
+> > > Ancient fun-fact: Years ago there was an article in Byte magazine
+> > > describing how a useful subset of C could be directly assembled into
+> 68000
+> > > code. Not compiled, assembled.
+> > >
+> > > C is a stunning assembly language. When those wild-eyed nerds at AT&T
+> > > decided to write Unix not in assembly but in C (where was
+> management!?),
+> > > it was radical. But C was up to (down to?) the task, it was pioneering
+> > > then and is still doing useful things decades later: From the fastest
+> > > supercomputers to some pretty slim microcontrollers (plus a hell of a
+> lot
+> > > of Android devices) multitudes of computers run a Linux kernel compiled
+> > > from the *same* C source code, with almost no assembly. Big-endian,
+> > > little-endian: no matter. Different word lengths: no matter.
+> > >
+> > > That is one impressive cross-platform assembly language!
+> > >
+> > > Unfortunately, C is also a dangerous language that mortal programmers
+> > > cannot reliably wield.
+> > >
+> > > -kb, the Kent who knows he is pressing his luck on a moderated
+> > > cryptography mailing list, but C deserves a lot of respect, as it also
+> > > deserves to be efficiently sent into a dignified retirement.
+> > >
+> > > _______________________________________________
+> > > The cryptography mailing list
+> > > cryptography at metzdowd.com
+> > > http://www.metzdowd.com/mailman/listinfo/cryptography
+> > >
+> > >
+>
+> --
+> ---
+> Larry McVoy                  lm at mcvoy.com
+> http://www.mcvoy.com/lm
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160907/3f23527d/attachment.html>
+
+From jnc at mercury.lcs.mit.edu  Thu Sep  8 23:30:38 2016
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Thu,  8 Sep 2016 09:30:38 -0400 (EDT)
+Subject: [TUHS] Comments on "C"
+Message-ID: <20160908133038.CF61818C0CB@mercury.lcs.mit.edu>
+
+    > From: Blake McBride
+
+    > After about 30 years of C, there are only three things I would have
+    > liked to see:
+
+    > 1.  Computed goto
+
+Can't you make a switch statement do what you need there? 
+
+The two things I really missed were:
+
+- BCPL's ValOf/ResultIs, for making more complex macros (although with the
+	latest modern compilers, which inline small functions, this is less
+	of an issue)
+- The ability to 'break' out of more than one level of nesting; one either
+	has to stand on one's head (code-wise), or use a goto
+
+	Noel
+
+
+From dot at dotat.at  Fri Sep  9 00:22:54 2016
+From: dot at dotat.at (Tony Finch)
+Date: Thu, 8 Sep 2016 15:22:54 +0100
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <20160908133038.CF61818C0CB@mercury.lcs.mit.edu>
+References: <20160908133038.CF61818C0CB@mercury.lcs.mit.edu>
+Message-ID: <alpine.DEB.2.11.1609081518370.14525@grey.csi.cam.ac.uk>
+
+Noel Chiappa <jnc at mercury.lcs.mit.edu> wrote:
+>
+>     > 1.  Computed goto
+>
+> Can't you make a switch statement do what you need there?
+
+Interesting comments on how effectively CPUs and compilers handle inner
+loops of interpreters:
+
+http://article.gmane.org/gmane.comp.lang.lua.general/75426
+
+Lots more research on interpreter efficiency:
+
+http://www.complang.tuwien.ac.at/projects/interpreters.html
+
+Tony.
+-- 
+f.anthony.n.finch  <dot at dotat.at>  http://dotat.at/  -  I xn--zr8h punycode
+German Bight, Humber, Thames: Southwest 4 or 5, increasing 6 at times. Smooth
+or slight, occasionally moderate. Mainly fair. Good, occasionally poor.
+
+
+From ron at ronnatalie.com  Fri Sep  9 05:20:31 2016
+From: ron at ronnatalie.com (Ron Natalie)
+Date: Thu, 8 Sep 2016 15:20:31 -0400
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <alpine.DEB.2.11.1609081518370.14525@grey.csi.cam.ac.uk>
+References: <20160908133038.CF61818C0CB@mercury.lcs.mit.edu>
+ <alpine.DEB.2.11.1609081518370.14525@grey.csi.cam.ac.uk>
+Message-ID: <008601d20a06$11aa2310$34fe6930$@ronnatalie.com>
+
+Efficiency isn't always the issue.   Even with the single layer break (and
+certainly with the local goto) you can break structure.
+The language, in my opinion, doesn't need further ways to break structure.
+
+
+I'd have settled for a more robust preprocessor language, but such is life
+with what was a ground breaking language back in the  70's.
+
+Most of my complaints about C are because it's "standard" library was awful
+back in the seventies and it really didn't improve much over the years.
+
+-----Original Message-----
+From: TUHS [mailto:tuhs-bounces at minnie.tuhs.org] On Behalf Of Tony Finch
+Sent: Thursday, September 8, 2016 10:23 AM
+To: Noel Chiappa
+Cc: tuhs at minnie.tuhs.org
+Subject: Re: [TUHS] Comments on "C"
+
+Noel Chiappa <jnc at mercury.lcs.mit.edu> wrote:
+>
+>     > 1.  Computed goto
+>
+> Can't you make a switch statement do what you need there?
+
+Interesting comments on how effectively CPUs and compilers handle inner
+loops of interpreters:
+
+http://article.gmane.org/gmane.comp.lang.lua.general/75426
+
+Lots more research on interpreter efficiency:
+
+http://www.complang.tuwien.ac.at/projects/interpreters.html
+
+Tony.
+--
+f.anthony.n.finch  <dot at dotat.at>  http://dotat.at/  -  I xn--zr8h punycode
+German Bight, Humber, Thames: Southwest 4 or 5, increasing 6 at times.
+Smooth or slight, occasionally moderate. Mainly fair. Good, occasionally
+poor.
+
+
+
+From dave at horsfall.org  Fri Sep  9 08:06:04 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Fri, 9 Sep 2016 08:06:04 +1000 (EST)
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <008601d20a06$11aa2310$34fe6930$@ronnatalie.com>
+References: <20160908133038.CF61818C0CB@mercury.lcs.mit.edu>
+ <alpine.DEB.2.11.1609081518370.14525@grey.csi.cam.ac.uk>
+ <008601d20a06$11aa2310$34fe6930$@ronnatalie.com>
+Message-ID: <alpine.BSF.2.11.1609090804350.78806@aneurin.horsfall.org>
+
+On Thu, 8 Sep 2016, Ron Natalie wrote:
+
+> Most of my complaints about C are because it's "standard" library was 
+> awful back in the seventies and it really didn't improve much over the 
+> years.
+
+That "portable I/O" library was certainly atrocious, but at least STDIO 
+was an improvement.
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From doug at cs.dartmouth.edu  Fri Sep  9 12:43:35 2016
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Thu, 08 Sep 2016 22:43:35 -0400
+Subject: [TUHS] Comments on "C"
+Message-ID: <201609090243.u892hZnO042852@tahoe.cs.Dartmouth.EDU>
+
+I sent a similar message some time ago, but I haven't
+seen it appear in the mailing list, so here goes again.
+Apologies if it ends up as a duplicate.
+
+> After about 30 years of C, there are only three things I would have liked
+> to see:
+> 
+> 1.  Computed goto
+> ...
+> Computed goto's are good for interpreters.
+
+A computed goto is an optimized switch, and that optimization
+goes back to the original C compiler. Mostly driven by
+considerations of size and speed of the Unix kernel, Dennis
+quite early on taught the compiler to choose among three
+compilation strategies for a switch: a chain of comparisons, 
+a tree of comparisons, or a computed goto, depending on the
+number and density of alternatives.
+
+The compilation of the system-call dispatch table was
+a perfect example of "good for interpreters."
+
+I have always assumed that other mainline compilers behave
+similarly, but I have no solid knowledge about that.
+
+doug
+
+
+From ron at ronnatalie.com  Fri Sep  9 13:02:59 2016
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Thu, 8 Sep 2016 23:02:59 -0400
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <alpine.BSF.2.11.1609090804350.78806@aneurin.horsfall.org>
+References: <20160908133038.CF61818C0CB@mercury.lcs.mit.edu>
+ <alpine.DEB.2.11.1609081518370.14525@grey.csi.cam.ac.uk>
+ <008601d20a06$11aa2310$34fe6930$@ronnatalie.com>
+ <alpine.BSF.2.11.1609090804350.78806@aneurin.horsfall.org>
+Message-ID: <B977CD6B-17FB-4B2C-A503-0DE3F40F6E42@ronnatalie.com>
+
+
+> On Sep 8, 2016, at 6:06 PM, Dave Horsfall <dave at horsfall.org> wrote:
+> 
+> On Thu, 8 Sep 2016, Ron Natalie wrote:
+> 
+>> Most of my complaints about C are because it's "standard" library was 
+>> awful back in the seventies and it really didn't improve much over the 
+>> years.
+> 
+> That "portable I/O" library was certainly atrocious, but at least STDIO 
+> was an improvement.
+
+Not much.   The functions have all of their portable IO library ugliness.   Don’t get me started on fread/fwrite.
+Ane why gets and fgets have different semantics and all the various functions take the stream parameter in
+different places.
+
+My other C gripe is when they fixed the semantics of structure typing (somewhere between V6 and V7) that they
+didn’t also make arrays full fledged types at the same time.    The silent treatment of array as a pointer to element when used as function parameters/return is just ludicrous.
+
+
+
+From dds at aueb.gr  Fri Sep  9 16:06:41 2016
+From: dds at aueb.gr (Diomidis Spinellis)
+Date: Fri, 9 Sep 2016 09:06:41 +0300
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <B977CD6B-17FB-4B2C-A503-0DE3F40F6E42@ronnatalie.com>
+References: <20160908133038.CF61818C0CB@mercury.lcs.mit.edu>
+ <alpine.DEB.2.11.1609081518370.14525@grey.csi.cam.ac.uk>
+ <008601d20a06$11aa2310$34fe6930$@ronnatalie.com>
+ <alpine.BSF.2.11.1609090804350.78806@aneurin.horsfall.org>
+ <B977CD6B-17FB-4B2C-A503-0DE3F40F6E42@ronnatalie.com>
+Message-ID: <4a7fc027-ad96-29c4-99c7-042fcc204caf@aueb.gr>
+
+On 09/09/2016 06:02, Ronald Natalie wrote:
+>> On Sep 8, 2016, at 6:06 PM, Dave Horsfall <dave at horsfall.org> wrote:
+>> On Thu, 8 Sep 2016, Ron Natalie wrote:
+>>> Most of my complaints about C are because it's "standard" library was
+>>> awful back in the seventies and it really didn't improve much over the
+>>> years.
+>>
+>> That "portable I/O" library was certainly atrocious, but at least STDIO
+>> was an improvement.
+>
+> Not much.   The functions have all of their portable IO library ugliness.   Don’t get me started on fread/fwrite.
+> Ane why gets and fgets have different semantics and all the various functions take the stream parameter in
+> different places.
+
+Let's put things into perspective.  A rarely talked-about innovation of 
+C was that the language was separate from the libraries.  At the time 
+each language came with built-in commands for performing I/O and (if you 
+were lucky) handling strings.  These were part of the language's syntax 
+and semantics;  any additional facilities provided through libraries 
+were second class citizens.  C gave us a lean language that could be 
+implemented and run without the overhead of its "library" facilities. 
+This made it suitable for writing an OS kernel and later for writing 
+embedded systems applications and for porting to other operating 
+systems.  It also made any add-on library a first class citizen.  In a 
+program there's no difference between calls to the "standard" stdio.h or 
+string.h functions and calls to add-on libraries such as those in dbm.h 
+or mp.h.
+
+The C library may be deficient, but when its interfaces were devised it 
+was not "The C Library", but a number of functions and headers that (I 
+guess) the people at Bell Labs whipped together to simplify their life 
+when writing application code.  It doesn't show the careful design that 
+went into other places (the C language, the Unix system calls, the 
+shell), because I think it was expected that people would quickly come 
+up with better alternatives.  In the end this "good enough" design 
+spread widely and then got standardized (by removing Unix-specific 
+functionality and a few rough edges) into what we now call the C 
+Standard Library.
+
+My complaint is that some APIs that were designed later, such as the C++ 
+STL and the Python libraries, didn't adopt more consistent naming 
+conventions.
+
+
+
+From doug at cs.dartmouth.edu  Thu Sep  8 22:35:28 2016
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Thu, 08 Sep 2016 08:35:28 -0400
+Subject: [TUHS] Comments on "C"
+Message-ID: <201609081235.u88CZS8W017103@coolidge.cs.Dartmouth.EDU>
+
+> After about 30 years of C, there are only three things I would
+have liked to see:
+
+> 1.  Computed goto
+
+...
+
+> Computed goto's are good for interpreters.
+
+A computed goto, of course, is merely an optimized switch.
+Dennis installed this optimization early in the evolution of C. The
+main driving force was the performance and size of the PDP-11 Unix
+kernel. As functionality grew, resource usage was repeatedly tamped
+down by improving C's code generation.
+
+The switch optimizer chose among three strategies: naive, binary
+decision tree, and computed goto, depending on the number and density
+of switch alternatives. Hybrid strategies may have been used, too,
+but my memory is hazy on this point. In particular the optimization
+improved system-call dispatch--thus achieving the objective,
+"good for interpreters". I assume (I hope not unrealistically)
+that this optimization has been in the repertoire of mainline C
+compilers ever since.
+
+> (Or perhaps require C to support tail recursion.)
+
+I can imagine making a strong recommendation in the standard for
+optimizing switches and (at least direct) tail recursion.
+
+Doug
+
+
+From scj at yaccman.com  Sat Sep 10 03:07:20 2016
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Fri, 9 Sep 2016 10:07:20 -0700
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <201609081235.u88CZS8W017103@coolidge.cs.Dartmouth.EDU>
+References: <201609081235.u88CZS8W017103@coolidge.cs.Dartmouth.EDU>
+Message-ID: <a0ac163678cfeb29cb52935e1f703218.squirrel@webmail.yaccman.com>
+
+Well, I have a list too -- unfortunately, I had a hand in a couple of
+these...
+
+The first is the syntax for casts.  When we were porting Unix from the
+PDP-11 to the Interdata (32-bits) we discovered we needed casts badly, but
+all of the proposals for syntax sucked.  Since the C grammar was in Yacc
+by then, I played around with various ideas, and hit on the "simple"
+notion that you just can make a declaration and remove the variable, and
+voila, you had something that was unambiguous and, in simple cases, rather
+nice -- (int), (int *).  Unfortunately, the sometimes awkward syntax for
+declarations got all of its grottiness magnified when condensed into a
+cast.  It turned out to be one of those things that was easy to write and
+impossible to read.  That said, I'm not a great fan of
+static_cast<xxx>(yyy) either...
+
+Another issue is bit fields.  The question is how to lay out the bit
+fields in a word -- if you say
+
+union {
+    short ss;
+    struct {
+        int sgn:1;
+        int man:15;
+    }
+};
+
+does sgn refer to the sign bit of ss or the low-order bit?  The answer in
+PCC was that it depended on whether the machine was big-endian or
+little-endian...    (remember big-endian machines?).
+
+On the one hand, we had little choice, because we wanted int a:8 to act
+like char a in a structure.  But the problem was, it made it difficult to
+design things, like network protocols, that might communicate between
+machines with different byte orders.  Machines like the MIPS, that could
+do a sex change with the press of a button, were particularly painful...
+
+With respect to the I/O library, indeed the decision to keep I/O out of
+the language was the correct one, especially because I/O in those days
+meant tape drives, line printers and punched cards for most machines.  But
+the basic library was already there in B, and I believe was lifted, at
+least in part, from BCPL.
+
+It tends to be forgotten, but one of the most innovative things in Unix
+was the conception of files as arrays of bytes that, because of their
+simplicity, could be created almost as afterthoughts.  The mainframes of
+the day, and even the time sharing systems built on them, treated file
+creation as a big deal.  In the Honeywell time sharing system, you created
+files by entering a file-creation subsystem, where you were interactively
+asked 10 questions, including the device name, initial size, maximum size,
+record size, blocking factor (don't ask!) and who was allowed to write the
+file and who was not allowed to read it.  After answering these questions,
+the subsystem begged the OS to create a file -- much of the time, it was
+allergic to one of the answers, and required you to go through all the
+questions again.  If you got through the process unscathed, the system
+printed out "Successful!"
+(yes, the exclamation point was there).
+
+I remember in early days showing someone Unix and typing
+    echo hello >foo
+and showing them that foo was now a file.  The usual response was a gasp
+and a dropped jaw, followed by confusion...
+
+Steve
+
+
+
+
+
+
+
+
+
+
+
+
+>> After about 30 years of C, there are only three things I would
+> have liked to see:
+>
+
+
+
+
+From mah at mhorton.net  Sat Sep 10 07:15:29 2016
+From: mah at mhorton.net (Mary Ann Horton)
+Date: Fri, 09 Sep 2016 14:15:29 -0700
+Subject: [TUHS] Comments on "C"
+In-Reply-To: <20160908133038.CF61818C0CB@mercury.lcs.mit.edu>
+References: <20160908133038.CF61818C0CB@mercury.lcs.mit.edu>
+Message-ID: <5ebf745233cd51fbdbe56a4faf2216b3@mhorton.net>
+
+When I was at Berkeley working on my dissertation, I wrote a tool that 
+would let you edit a text file written in any language you could define 
+with a grammar, with syntax and semantic error checking while you 
+edited.  I had grammars for several popular (in 1980) languages.  The 
+only one I couldn't properly create a grammar for was C.
+
+There were two problems:
+1) typedef, which lets you create new words with syntax implications, 
+and
+2) the preprocessor, which lets you get into all kinds of syntax trouble
+
+   Mary Ann
+
+
+
+From cym224 at gmail.com  Sat Sep 10 11:59:26 2016
+From: cym224 at gmail.com (Nemo)
+Date: Fri, 9 Sep 2016 21:59:26 -0400
+Subject: [TUHS] Popular 1980 languages [Was: Comments on "C"]
+Message-ID: <CAJfiPzzxspQfiTg6ARtZo0HG1Di9C4V49mWu2u5LrqBaPyFRPA@mail.gmail.com>
+
+On 9 September 2016 at 17:15, Mary Ann Horton <mah at mhorton.net> wrote (in part):
+> When I was at Berkeley working on my dissertation, I wrote a tool that would
+> let you edit a text file written in any language you could define with a
+> grammar, with syntax and semantic error checking while you edited.  I had
+> grammars for several popular (in 1980) languages.
+
+My curiosity is piqued.  What were these languages?
+
+N.
+
+
+From lm at mcvoy.com  Sat Sep 10 12:01:22 2016
+From: lm at mcvoy.com (Larry McVoy)
+Date: Fri, 9 Sep 2016 19:01:22 -0700
+Subject: [TUHS] Popular 1980 languages [Was: Comments on "C"]
+In-Reply-To: <CAJfiPzzxspQfiTg6ARtZo0HG1Di9C4V49mWu2u5LrqBaPyFRPA@mail.gmail.com>
+References: <CAJfiPzzxspQfiTg6ARtZo0HG1Di9C4V49mWu2u5LrqBaPyFRPA@mail.gmail.com>
+Message-ID: <20160910020122.GU16830@mcvoy.com>
+
+On Fri, Sep 09, 2016 at 09:59:26PM -0400, Nemo wrote:
+> On 9 September 2016 at 17:15, Mary Ann Horton <mah at mhorton.net> wrote (in part):
+> > When I was at Berkeley working on my dissertation, I wrote a tool that would
+> > let you edit a text file written in any language you could define with a
+> > grammar, with syntax and semantic error checking while you edited.  I had
+> > grammars for several popular (in 1980) languages.
+> 
+> My curiosity is piqued.  What were these languages?
+
+My guess is Pascal and Lisp but that's just a guess.  Oh, Fortran for sure.
+Cobal maybe?
+
+
+From lars at nocrew.org  Sat Sep 10 15:57:34 2016
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: Sat, 10 Sep 2016 07:57:34 +0200
+Subject: [TUHS] Popular 1980 languages [Was: Comments on "C"]
+In-Reply-To: <20160910020122.GU16830@mcvoy.com> (Larry McVoy's message of
+ "Fri, 9 Sep 2016 19:01:22 -0700")
+References: <CAJfiPzzxspQfiTg6ARtZo0HG1Di9C4V49mWu2u5LrqBaPyFRPA@mail.gmail.com>
+ <20160910020122.GU16830@mcvoy.com>
+Message-ID: <861t0smh4h.fsf@molnjunk.nocrew.org>
+
+Larry McVoy wrote:
+> Nemo wrote:
+>> Mary Ann Horton wrote:
+>>> I had grammars for several popular (in 1980) languages.
+>> My curiosity is piqued.  What were these languages?
+> My guess is Pascal and Lisp but that's just a guess.  Oh, Fortran for sure.
+> Cobal maybe?
+
+Forth?
+
+
+From dnied at tiscali.it  Sat Sep 10 17:45:08 2016
+From: dnied at tiscali.it (Dario Niedermann)
+Date: Sat, 10 Sep 2016 09:45:08 +0200
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <1468585644.26769.for-standards-violators@oclsc.org>
+References: <1468585644.26769.for-standards-violators@oclsc.org>
+Message-ID: <20160910074508.GE5970@dnied%tiscali.it>
+
+Il 15/07/2016 alle 14:27, Norman Wilson ha scritto:
+
+> Just for the record, Fedora 21 supplies /bin/cd, as part
+> of package bash-4.3.42-1.  Interestingly, it is a shell
+> script:
+> 
+> lu$ cat /bin/cd
+> #!/bin/sh
+> builtin cd "$@"
+> lu$ 
+
+But doesn't this change the current dir only in the child shell?
+Which then exits right after the second line, parent shell's $PWD
+unaffected. I really don't see how this script is useful.
+
+
+From michael at kjorling.se  Sat Sep 10 19:13:07 2016
+From: michael at kjorling.se (Michael =?utf-8?B?S2rDtnJsaW5n?=)
+Date: Sat, 10 Sep 2016 09:13:07 +0000
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <20160910074508.GE5970@dnied%tiscali.it>
+References: <1468585644.26769.for-standards-violators@oclsc.org>
+ <20160910074508.GE5970@dnied%tiscali.it>
+Message-ID: <20160910091307.GE14636@yeono.kjorling.se>
+
+On 10 Sep 2016 09:45 +0200, from dnied at tiscali.it (Dario Niedermann):
+> Il 15/07/2016 alle 14:27, Norman Wilson ha scritto:
+>> lu$ cat /bin/cd
+>> #!/bin/sh
+>> builtin cd "$@"
+>> lu$ 
+> 
+> But doesn't this change the current dir only in the child shell?
+> Which then exits right after the second line, parent shell's $PWD
+> unaffected. I really don't see how this script is useful.
+
+It does appear rather useless. Curiously, Debian (checked on Wheezy =
+bash 4.2+dfsg-0.1+deb7u3 and Jessie = bash 4.3-11+b1) seems to not
+supply anything like that, so it would appear to be some kind of
+Fedora-ism rather than a part of anything upstream; that, or the
+Debian folks are actually paying attention to what they ship onto
+users' systems.
+
+Even more curious, check this out from Debian Wheezy (I suspect the
+Jessie system would behave identically):
+
+$ cat > /michael/home/bin/cd
+#!/bin/sh
+builtin cd "$@"
+^D
+$ chmod +x bin/cd
+$ echo $PATH
+/michael/home/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+$ type cd
+cd is a shell builtin
+$
+
+so not even the shell will use the script in the first place!
+
+If I force the shell to use the script I created (by saying ~/bin/cd
+instead of just cd), after fixing /bin/sh to /bin/bash because when
+run as sh the shell has no concept of "builtin", it behaves like you'd
+expect: the working directory changes _within_ the script, but $PWD is
+unchanged in the parent shell once the script finishes, turning it
+into a somewhat expensive no-op.
+
+Unless Fedora's shell has been specifically modified to pay attention
+to the child process' $PWD, of course...
+
+-- 
+Michael Kjörling • https://michael.kjorling.se • michael at kjorling.se
+                 “People who think they know everything really annoy
+                 those of us who know we don’t.” (Bjarne Stroustrup)
+
+
+From schily at schily.net  Sat Sep 10 19:41:06 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Sat, 10 Sep 2016 11:41:06 +0200
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <20160910091307.GE14636@yeono.kjorling.se>
+References: <1468585644.26769.for-standards-violators@oclsc.org>
+ <20160910074508.GE5970@dnied%tiscali.it>
+ <20160910091307.GE14636@yeono.kjorling.se>
+Message-ID: <57d3d532.4U8eX8vgS2k6hIod%schily@schily.net>
+
+Michael Kjörling <michael at kjorling.se> wrote:
+
+> On 10 Sep 2016 09:45 +0200, from dnied at tiscali.it (Dario Niedermann):
+> > Il 15/07/2016 alle 14:27, Norman Wilson ha scritto:
+> >> lu$ cat /bin/cd
+> >> #!/bin/sh
+> >> builtin cd "$@"
+> >> lu$ 
+> > 
+> > But doesn't this change the current dir only in the child shell?
+> > Which then exits right after the second line, parent shell's $PWD
+> > unaffected. I really don't see how this script is useful.
+>
+> It does appear rather useless. Curiously, Debian (checked on Wheezy =
+> bash 4.2+dfsg-0.1+deb7u3 and Jessie = bash 4.3-11+b1) seems to not
+> supply anything like that, so it would appear to be some kind of
+> Fedora-ism rather than a part of anything upstream; that, or the
+> Debian folks are actually paying attention to what they ship onto
+> users' systems.
+
+POSIX requires some commands to be callable via exec().
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+From cym224 at gmail.com  Sun Sep 11 00:57:15 2016
+From: cym224 at gmail.com (Nemo)
+Date: Sat, 10 Sep 2016 10:57:15 -0400
+Subject: [TUHS] Shell control through external commands
+Message-ID: <CAJfiPzzhwpZ5p-QvXeK23V6auTrP29HtusOb_48Pg1gspmmm9g@mail.gmail.com>
+
+On 10 September 2016 at 05:41, Joerg Schilling <schily at schily.net> wrote:
+> Michael Kjörling <michael at kjorling.se> wrote:
+>
+>> On 10 Sep 2016 09:45 +0200, from dnied at tiscali.it (Dario Niedermann):
+>> > Il 15/07/2016 alle 14:27, Norman Wilson ha scritto:
+>> >> lu$ cat /bin/cd
+>> >> #!/bin/sh
+>> >> builtin cd "$@"
+>> >> lu$
+>> >
+>> > But doesn't this change the current dir only in the child shell?
+>> > Which then exits right after the second line, parent shell's $PWD
+>> > unaffected. I really don't see how this script is useful.
+>>
+>> It does appear rather useless. Curiously, Debian (checked on Wheezy =
+>> bash 4.2+dfsg-0.1+deb7u3 and Jessie = bash 4.3-11+b1) seems to not
+>> supply anything like that, so it would appear to be some kind of
+>> Fedora-ism rather than a part of anything upstream; that, or the
+>> Debian folks are actually paying attention to what they ship onto
+>> users' systems.
+>
+> POSIX requires some commands to be callable via exec().
+
+Solaris 10 has the following amusing implementation (/usr/bin/cd):
+
+#!/bin/ksh -p
+#
+#ident  "@(#)alias.sh   1.2     00/02/15 SMI"
+#
+# Copyright (c) 1995 by Sun Microsystems, Inc.
+#
+cmd=`basename $0`
+$cmd "$@"
+
+N.
+
+
+From charles.unix.pro at gmail.com  Sun Sep 11 02:06:39 2016
+From: charles.unix.pro at gmail.com (Charles Anthony)
+Date: Sat, 10 Sep 2016 09:06:39 -0700
+Subject: [TUHS] Popular 1980 languages [Was: Comments on "C"]
+In-Reply-To: <861t0smh4h.fsf@molnjunk.nocrew.org>
+References: <CAJfiPzzxspQfiTg6ARtZo0HG1Di9C4V49mWu2u5LrqBaPyFRPA@mail.gmail.com>
+ <20160910020122.GU16830@mcvoy.com> <861t0smh4h.fsf@molnjunk.nocrew.org>
+Message-ID: <CANV78LT-AaOD00rd=LxMfXJAqzCCwj-Qnbq=6Q+p62MHHrFdQw@mail.gmail.com>
+
+On Fri, Sep 9, 2016 at 10:57 PM, Lars Brinkhoff <lars at nocrew.org> wrote:
+
+> Larry McVoy wrote:
+> > Nemo wrote:
+> >> Mary Ann Horton wrote:
+> >>> I had grammars for several popular (in 1980) languages.
+> >> My curiosity is piqued.  What were these languages?
+> > My guess is Pascal and Lisp but that's just a guess.  Oh, Fortran for
+> sure.
+> > Cobal maybe?
+>
+> Forth?
+>
+
+FORTH? Grammer?
+
+--  Charles
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160910/f7e4f2a4/attachment.html>
+
+From random832 at fastmail.com  Sun Sep 11 03:06:56 2016
+From: random832 at fastmail.com (Random832)
+Date: Sat, 10 Sep 2016 13:06:56 -0400
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <20160910091307.GE14636@yeono.kjorling.se>
+References: <1468585644.26769.for-standards-violators@oclsc.org>
+ <20160910074508.GE5970@dnied%tiscali.it>
+ <20160910091307.GE14636@yeono.kjorling.se>
+Message-ID: <1473527216.2633960.721672049.702FC02A@webmail.messagingengine.com>
+
+On Sat, Sep 10, 2016, at 05:13, Michael Kjörling wrote:
+> On 10 Sep 2016 09:45 +0200, from dnied at tiscali.it (Dario Niedermann):
+> > Il 15/07/2016 alle 14:27, Norman Wilson ha scritto:
+> >> lu$ cat /bin/cd
+> >> #!/bin/sh
+> >> builtin cd "$@"
+> >> lu$ 
+> > 
+> > But doesn't this change the current dir only in the child shell?
+> > Which then exits right after the second line, parent shell's $PWD
+> > unaffected. I really don't see how this script is useful.
+
+I've wondered about this in the past, the conclusion was that it is
+something that is technically required by POSIX. There is a general
+requirement that "regular builtin" commands [with no exception for cd]
+"shall be implemented in a manner so that they can be accessed via the
+exec family of functions as defined in the System Interfaces volume of
+POSIX.1-2008 and can be invoked directly by those standard utilities
+that require it (env, find, nice, nohup, time, xargs)."
+
+
+From dnied at tiscali.it  Sun Sep 11 03:40:11 2016
+From: dnied at tiscali.it (Dario Niedermann)
+Date: Sat, 10 Sep 2016 19:40:11 +0200
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+Message-ID: <20160910174011.GF5970@dnied%tiscali.it>
+
+Il 15/07/2016 alle 18:47, Doug McIlroy ha scritto:
+
+> Gerard Holzmann took the true and false commands as
+> the jumping-off point for "Code Inflation", an
+> installment of his "Reliable Code" blog and column
+> in IEE Software. An informative, but depressing, read:
+> http://spinroot.com/gerard/pdf/Code_Inflation.pdf
+
+I just reclaimed 56K of disk space by replacing the GNU versions of
+/bin/true and /bin/false with hand-made reproductions of the earliest
+versions.
+
+I never knew that a shell script could work without a shebang line.
+
+
+From dnied at tiscali.it  Sun Sep 11 03:45:55 2016
+From: dnied at tiscali.it (Dario Niedermann)
+Date: Sat, 10 Sep 2016 19:45:55 +0200
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <1473527216.2633960.721672049.702FC02A@webmail.messagingengine.com>
+References: <1468585644.26769.for-standards-violators@oclsc.org>
+ <20160910074508.GE5970@dnied%tiscali.it>
+ <20160910091307.GE14636@yeono.kjorling.se>
+ <1473527216.2633960.721672049.702FC02A@webmail.messagingengine.com>
+Message-ID: <20160910174555.GG5970@dnied%tiscali.it>
+
+Il 10/09/2016 alle 11:41, Joerg Schilling ha scritto:
+
+> POSIX requires some commands to be callable via exec().
+
+
+Il 10/09/2016 alle 19:06, Random832 ha scritto:
+
+> something that is technically required by POSIX. There is a general
+> requirement that "regular builtin" commands [with no exception for cd]
+> "shall be implemented in a manner so that they can be accessed via the
+> exec family of functions as defined in the System Interfaces volume of
+> POSIX.1-2008 and can be invoked directly by those standard utilities
+> that require it (env, find, nice, nohup, time, xargs)."
+
+
+TIL! Still, it seems to me that there is no way the `cd' script can
+actually accomplish anything, even when called by exec().
+
+
+From mah at mhorton.net  Sun Sep 11 04:40:11 2016
+From: mah at mhorton.net (Mary Ann Horton)
+Date: Sat, 10 Sep 2016 11:40:11 -0700
+Subject: [TUHS] Popular 1980 languages [Was: Comments on "C"]
+In-Reply-To: <CAJfiPzzxspQfiTg6ARtZo0HG1Di9C4V49mWu2u5LrqBaPyFRPA@mail.gmail.com>
+References: <CAJfiPzzxspQfiTg6ARtZo0HG1Di9C4V49mWu2u5LrqBaPyFRPA@mail.gmail.com>
+Message-ID: <01140660-e944-defb-a878-3a12a653dfc9@mhorton.net>
+
+Well, the list is a fuzzy memory, but thanks to a great guy who read in 
+my magtapes, I was able to go back and UTSL.
+
+Here is the list, minus the various copies and stubs.  The definitions 
+were written in a notation I made up called Language Description 
+Language (LDL)
+
+  * ada.ldl (DOD language for embedded systems)
+  * asple.ldl (A Simple Programming Language Example, ACM Computing
+    Surveys 6/76.  This was useful for getting the semantic checking
+    working.)
+  * c.ldl   (no typedef or cpp)
+  * expr.ldl (a simple expression language)
+  * ldl.ldl (the Language Description Language itself)
+  * lisp.ldl
+  * pascal.ldl
+  * rigel.ldl (a database language from UCB)
+  * text.ldl (plain text)
+
+One of these days in My Copious Free Time, I hope to get this beast 
+"BABEL" running again.  It was painfully slow on a Vax, but it might be 
+OK on today's hardware.
+
+     Mary Ann
+
+
+On 09/09/2016 06:59 PM, Nemo wrote:
+> On 9 September 2016 at 17:15, Mary Ann Horton <mah at mhorton.net> wrote (in part):
+>> When I was at Berkeley working on my dissertation, I wrote a tool that would
+>> let you edit a text file written in any language you could define with a
+>> grammar, with syntax and semantic error checking while you edited.  I had
+>> grammars for several popular (in 1980) languages.
+> My curiosity is piqued.  What were these languages?
+>
+> N.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160910/7cc01c35/attachment.html>
+
+From crossd at gmail.com  Sun Sep 11 05:53:56 2016
+From: crossd at gmail.com (Dan Cross)
+Date: Sat, 10 Sep 2016 15:53:56 -0400
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <20160910174555.GG5970@dnied%tiscali.it>
+References: <1468585644.26769.for-standards-violators@oclsc.org>
+ <20160910074508.GE5970@dnied%tiscali.it>
+ <20160910091307.GE14636@yeono.kjorling.se>
+ <1473527216.2633960.721672049.702FC02A@webmail.messagingengine.com>
+ <20160910174555.GG5970@dnied%tiscali.it>
+Message-ID: <CAEoi9W6exFEad9uVXi6MZg2L_yT-K5U2FupHv9j-Aj06VHnmYA@mail.gmail.com>
+
+On Sat, Sep 10, 2016 at 1:45 PM, Dario Niedermann <dnied at tiscali.it> wrote:
+
+> Il 10/09/2016 alle 11:41, Joerg Schilling ha scritto:
+>
+> > POSIX requires some commands to be callable via exec().
+>
+> Il 10/09/2016 alle 19:06, Random832 ha scritto:
+>
+> > something that is technically required by POSIX. There is a general
+> > requirement that "regular builtin" commands [with no exception for cd]
+> > "shall be implemented in a manner so that they can be accessed via the
+> > exec family of functions as defined in the System Interfaces volume of
+> > POSIX.1-2008 and can be invoked directly by those standard utilities
+> > that require it (env, find, nice, nohup, time, xargs)."
+>
+>
+> TIL! Still, it seems to me that there is no way the `cd' script can
+> actually accomplish anything, even when called by exec().
+>
+
+It can return an exit status: this makes it mostly equivalent to something
+like 'test -d /foo && test -x /foo'.
+
+        - Dan C.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160910/e92e2ced/attachment.html>
+
+From arnold at skeeve.com  Sun Sep 11 05:22:48 2016
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Sat, 10 Sep 2016 13:22:48 -0600
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <20160910174011.GF5970@dnied%tiscali.it>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+ <20160910174011.GF5970@dnied%tiscali.it>
+Message-ID: <201609101922.u8AJMmtq024477@freefriends.org>
+
+Dario Niedermann <dnied at tiscali.it> wrote:
+
+> I never knew that a shell script could work without a shebang line.
+
+That was the simplicity of the original system, where you just made the
+file executable. The shell would fork and exec as usual.  When the exec
+failed, the shell noticed that errno was ENOEXEC (not a runnable file)
+and started interpreting the script itself.
+
+This broke down as soon as there were two shells (/bin/sh and csh) since
+if you tried to run a csh script from the Bourne shell or vice versa,
+things weirded out pretty quickly.
+
+IIRC #! originated at Bell Labs but it got out to the world via BSD.
+Perhaps Dr. McIlroy could confirm / deny / expand upon the details (please?)
+
+Thanks,
+
+Arnold
+
+
+From chet.ramey at case.edu  Sun Sep 11 06:02:17 2016
+From: chet.ramey at case.edu (Chet Ramey)
+Date: Sat, 10 Sep 2016 16:02:17 -0400
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <20160910174555.GG5970@dnied%tiscali.it>
+References: <1468585644.26769.for-standards-violators@oclsc.org>
+ <20160910074508.GE5970@dnied%tiscali.it>
+ <20160910091307.GE14636@yeono.kjorling.se>
+ <1473527216.2633960.721672049.702FC02A@webmail.messagingengine.com>
+ <20160910174555.GG5970@dnied%tiscali.it>
+Message-ID: <da3aca37-03ce-c304-1bcd-033475aef938@case.edu>
+
+On 9/10/16 1:45 PM, Dario Niedermann wrote:
+
+> 
+> TIL! Still, it seems to me that there is no way the `cd' script can
+> actually accomplish anything, even when called by exec().
+
+Use it as a permissions check.
+
+-- 
+``The lyf so short, the craft so long to lerne.'' - Chaucer
+		 ``Ars longa, vita brevis'' - Hippocrates
+Chet Ramey, UTech, CWRU    chet at case.edu    http://cnswww.cns.cwru.edu/~chet/
+
+
+From dnied at tiscali.it  Sun Sep 11 06:27:25 2016
+From: dnied at tiscali.it (Dario Niedermann)
+Date: Sat, 10 Sep 2016 22:27:25 +0200
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <da3aca37-03ce-c304-1bcd-033475aef938@case.edu>
+References: <1468585644.26769.for-standards-violators@oclsc.org>
+ <20160910074508.GE5970@dnied%tiscali.it>
+ <20160910091307.GE14636@yeono.kjorling.se>
+ <1473527216.2633960.721672049.702FC02A@webmail.messagingengine.com>
+ <20160910174555.GG5970@dnied%tiscali.it>
+ <da3aca37-03ce-c304-1bcd-033475aef938@case.edu>
+Message-ID: <20160910202725.GA27312@dnied%tiscali.it>
+
+Il 10/09/2016 alle 22:02, Chet Ramey ha scritto:
+
+> Use it as a permissions check.
+
+
+Il 10/09/2016 alle 21:53, Dan Cross ha scritto:
+
+> It can return an exit status: this makes it mostly equivalent to something
+> like 'test -d /foo && test -x /foo'.
+
+
+Yeah, good point.
+
+
+From dave at horsfall.org  Sun Sep 11 08:43:34 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sun, 11 Sep 2016 08:43:34 +1000 (EST)
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <20160910174011.GF5970@dnied%tiscali.it>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+ <20160910174011.GF5970@dnied%tiscali.it>
+Message-ID: <alpine.BSF.2.11.1609110842190.78806@aneurin.horsfall.org>
+
+On Sat, 10 Sep 2016, Dario Niedermann wrote:
+
+> I never knew that a shell script could work without a shebang line.
+
+I believe it was used to specify an interpreter other than /bin/sh (the 
+default).
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From ron at ronnatalie.com  Sun Sep 11 11:24:37 2016
+From: ron at ronnatalie.com (Ron Natalie)
+Date: Sat, 10 Sep 2016 21:24:37 -0400
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <alpine.BSF.2.11.1609110842190.78806@aneurin.horsfall.org>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+ <20160910174011.GF5970@dnied%tiscali.it>
+ <alpine.BSF.2.11.1609110842190.78806@aneurin.horsfall.org>
+Message-ID: <006301d20bcb$43ae03b0$cb0a0b10$@ronnatalie.com>
+
+Traditionally, the shell recognized shell scripts and ran them in a new
+instance of the shell rather than calling exec on them.
+It was a Berkeley hack to add a new exec magic number that happened to
+correspond to the characters #!.    The shells typically still recognized
+scripts (the #!   was syntactically a comment) and invoked them, but if they
+were passed to exec (i.e., from something other than the shell that was to
+interpret the), the kernel recognized the magic number and invoked what
+followed as the name of an interpreter to handle the file.
+
+Not only did this allow arbitrary interpretters (other than /bin/sh or any
+shell), but it also allowed things like setuid bits to work, and scripts to
+be invoked by things that didn't just feed the file name to a shell to
+invoke.
+
+-----Original Message-----
+From: TUHS [mailto:tuhs-bounces at minnie.tuhs.org] On Behalf Of Dave Horsfall
+Sent: Saturday, September 10, 2016 6:44 PM
+To: The Eunuchs Hysterical Society
+Subject: Re: [TUHS] Shell control through external commands
+
+On Sat, 10 Sep 2016, Dario Niedermann wrote:
+
+> I never knew that a shell script could work without a shebang line.
+
+I believe it was used to specify an interpreter other than /bin/sh (the
+default).
+
+--
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will
+suffer."
+
+
+
+From arnold at skeeve.com  Sun Sep 11 12:39:42 2016
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Sat, 10 Sep 2016 20:39:42 -0600
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <006301d20bcb$43ae03b0$cb0a0b10$@ronnatalie.com>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+ <20160910174011.GF5970@dnied%tiscali.it>
+ <alpine.BSF.2.11.1609110842190.78806@aneurin.horsfall.org>
+ <006301d20bcb$43ae03b0$cb0a0b10$@ronnatalie.com>
+Message-ID: <201609110239.u8B2dgDJ010272@freefriends.org>
+
+"Ron Natalie" <ron at ronnatalie.com> wrote:
+
+> Traditionally, the shell recognized shell scripts and ran them in a new
+> instance of the shell rather than calling exec on them.
+
+I think that the way the shell "recognized" scripts was by having
+exec fail, otherwise how would it know?  I think we'll have to go
+grubbing in the source archives to be sure.
+
+> It was a Berkeley hack to add a new exec magic number that happened to
+> correspond to the characters #!.
+
+ISTR reading on this list that #! was a post-V7 Bell Labs invention
+that the BSD guys went and implemented themselves...
+
+Can someone who was there please clarify?
+
+Thanks,
+
+Arnold
+
+
+From ron at ronnatalie.com  Sun Sep 11 12:41:52 2016
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Sat, 10 Sep 2016 22:41:52 -0400
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <201609110239.u8B2dgDJ010272@freefriends.org>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+ <20160910174011.GF5970@dnied%tiscali.it>
+ <alpine.BSF.2.11.1609110842190.78806@aneurin.horsfall.org>
+ <006301d20bcb$43ae03b0$cb0a0b10$@ronnatalie.com>
+ <201609110239.u8B2dgDJ010272@freefriends.org>
+Message-ID: <FDB393E1-2F0F-43D1-A711-AE8740AAB6A2@ronnatalie.com>
+
+
+> On Sep 10, 2016, at 10:39 PM, arnold at skeeve.com wrote:
+> 
+> "Ron Natalie" <ron at ronnatalie.com> wrote:
+> 
+>> Traditionally, the shell recognized shell scripts and ran them in a new
+>> instance of the shell rather than calling exec on them.
+> 
+> I think that the way the shell "recognized" scripts was by having
+> exec fail, otherwise how would it know?  I think we'll have to go
+> grubbing in the source archives to be sure.
+You are correct.
+
+> 
+>> It was a Berkeley hack to add a new exec magic number that happened to
+>> correspond to the characters #!.
+> 
+> ISTR reading on this list that #! was a post-V7 Bell Labs invention
+> that the BSD guys went and implemented themselves...
+
+That’s possible.   We jumped from V7 to the BSD distributions because about the same time we were going from PDP-11’s to VAXen of various flavors
+(actually our first VAX was a copy of one of the George Gobel dual processor 780’s).
+
+
+
+From dave at horsfall.org  Sun Sep 11 14:07:48 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sun, 11 Sep 2016 14:07:48 +1000 (EST)
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <201609110239.u8B2dgDJ010272@freefriends.org>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+ <20160910174011.GF5970@dnied%tiscali.it>
+ <alpine.BSF.2.11.1609110842190.78806@aneurin.horsfall.org>
+ <006301d20bcb$43ae03b0$cb0a0b10$@ronnatalie.com>
+ <201609110239.u8B2dgDJ010272@freefriends.org>
+Message-ID: <alpine.BSF.2.11.1609111404230.78806@aneurin.horsfall.org>
+
+On Sat, 10 Sep 2016, arnold at skeeve.com wrote:
+
+> I think that the way the shell "recognized" scripts was by having exec 
+> fail, otherwise how would it know?  I think we'll have to go grubbing in 
+> the source archives to be sure.
+
+Correct; if the exec failed then the invoking shell assumed that it was a 
+shell script, and spawned a shell to run it.
+
+With the #! hack, it had to be followed by the full path name (white space 
+optional) and the kernel ran it directly.
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From arnold at skeeve.com  Sun Sep 11 15:01:49 2016
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Sat, 10 Sep 2016 23:01:49 -0600
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <alpine.BSF.2.11.1609111404230.78806@aneurin.horsfall.org>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+ <20160910174011.GF5970@dnied%tiscali.it>
+ <alpine.BSF.2.11.1609110842190.78806@aneurin.horsfall.org>
+ <006301d20bcb$43ae03b0$cb0a0b10$@ronnatalie.com>
+ <201609110239.u8B2dgDJ010272@freefriends.org>
+ <alpine.BSF.2.11.1609111404230.78806@aneurin.horsfall.org>
+Message-ID: <201609110501.u8B51nCK016335@freefriends.org>
+
+Dave Horsfall <dave at horsfall.org> wrote:
+
+> On Sat, 10 Sep 2016, arnold at skeeve.com wrote:
+>
+> > I think that the way the shell "recognized" scripts was by having exec 
+> > fail, otherwise how would it know?  I think we'll have to go grubbing in 
+> > the source archives to be sure.
+>
+> Correct; if the exec failed then the invoking shell assumed that it was a 
+> shell script, and spawned a shell to run it.
+
+I think this happened in the "spawned" shell - so the exec would fail and
+then this child shell would just run the script.
+
+	if ((pid = fork()) != 0)
+		wait for pid
+	else {
+		/* in the child */
+		exec /path/to/program
+		if (errno == ENOEXEC)	/* or whatever it is, I don't remember */
+			interpret the script directly
+	}
+
+Arnold
+
+
+From dds at aueb.gr  Sun Sep 11 20:03:25 2016
+From: dds at aueb.gr (Diomidis Spinellis)
+Date: Sun, 11 Sep 2016 13:03:25 +0300
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <20160910174555.GG5970@dnied%tiscali.it>
+References: <1468585644.26769.for-standards-violators@oclsc.org>
+ <20160910074508.GE5970@dnied%tiscali.it>
+ <20160910091307.GE14636@yeono.kjorling.se>
+ <1473527216.2633960.721672049.702FC02A@webmail.messagingengine.com>
+ <20160910174555.GG5970@dnied%tiscali.it>
+Message-ID: <eb9c4fe0-8266-06ef-92ac-d8c550d54a38@gmail.com>
+
+On 10/09/2016 20:45, Dario Niedermann wrote:
+> TIL! Still, it seems to me that there is no way the `cd' script can
+> actually accomplish anything, even when called by exec().
+
+# Time directory access
+/usr/bin/time cd /mounts/foo
+
+# Verify that directories can be cd'd
+find /mounts/foo -type d -exec cd '{}' \; && echo OK
+
+
+
+From doug at cs.dartmouth.edu  Mon Sep 12 03:39:02 2016
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Sun, 11 Sep 2016 13:39:02 -0400
+Subject: [TUHS] Shell control through external commands
+Message-ID: <201609111739.u8BHd2pV146715@tahoe.cs.Dartmouth.EDU>
+
+> IIRC #! originated at Bell Labs but it got out to the world via BSD.
+> Perhaps Dr. McIlroy could confirm / deny / expand upon the details (please?)
+
+I recall Dennis discussing the feature at some length before installing it.
+So the exact semantics, especially the injected argument, are almost]
+certainly his. I don't know whether he built on a model from elsewhere.
+#! appeared between v7 (1979) and v8 (1985). As v8 was never released,
+it clearly made its way into the world via BSD and USG. BSD, being
+more nimble, was likely first.
+
+doug
+
+
+From clemc at ccc.com  Mon Sep 12 04:11:38 2016
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 11 Sep 2016 14:11:38 -0400
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <201609111739.u8BHd2pV146715@tahoe.cs.Dartmouth.EDU>
+References: <201609111739.u8BHd2pV146715@tahoe.cs.Dartmouth.EDU>
+Message-ID: <CAC20D2Ou_TfPkkt+VYKiH0jKxkfv=DvQPOAKVYgihd45Gb_EAw@mail.gmail.com>
+
+On Sun, Sep 11, 2016 at 1:39 PM, Doug McIlroy <doug at cs.dartmouth.edu> wrote:
+
+> I recall Dennis discussing the feature at some length before installing it.
+> So the exact semantics, especially the injected argument, are almost]
+> certainly his. I don't know whether he built on a model from elsewhere.
+> #! appeared between v7 (1979) and v8 (1985). As v8 was never released,
+> it clearly made its way into the world via BSD and USG. BSD, being
+> more nimble, was likely first.
+>
+
+​Well that tracks my memory. I also thought it was from BSD, although it
+might have come from some place else like Harvard, MIT, Ill, Rice or the
+like.  It is not in the V7 sources in Warren's code repository but I do
+remember it in my customized V7 (polite form of hacking)​ at Tektronix on
+our 11/70 and 11/44 in late 1979/early 1980 before I went to UCB.  But I do
+not remember that extension @ CMU (the tapes which I have had a hard time
+getting read so I can not check).
+
+I'm a little hazy, but I think it means that Mark Bales/Jim Kleckner gave
+it to me with BSD stuff when we picked up csh, vi and pas @ Tek - which we
+originally did in drips and drabs - during their time as summer students.
+ (I would not get an official set of 1BSD or 2BSD tapes for Tek until right
+before I left for Berkeley a couple of years later).
+
+BTW: It's also possible that's how fsck originally made it back to UCB (but
+tjk might have given it to Joy directly), as Mark and Jim took back my
+collection of CMU hacks at the end of that summer which was either 79 or
+80.  I do remember Mark being impressed with fsck.
+
+Clem
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160911/837222fd/attachment.html>
+
+From crossd at gmail.com  Mon Sep 12 04:27:48 2016
+From: crossd at gmail.com (Dan Cross)
+Date: Sun, 11 Sep 2016 14:27:48 -0400
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <201609111739.u8BHd2pV146715@tahoe.cs.Dartmouth.EDU>
+References: <201609111739.u8BHd2pV146715@tahoe.cs.Dartmouth.EDU>
+Message-ID: <CAEoi9W62QMprW=AqXJ4aJuwxKnjydWfUgEpr7bRBQsWoc-gtkw@mail.gmail.com>
+
+On Sun, Sep 11, 2016 at 1:39 PM, Doug McIlroy <doug at cs.dartmouth.edu> wrote:
+
+> > IIRC #! originated at Bell Labs but it got out to the world via BSD.
+> > Perhaps Dr. McIlroy could confirm / deny / expand upon the details
+> (please?)
+>
+> I recall Dennis discussing the feature at some length before installing it.
+> So the exact semantics, especially the injected argument, are almost]
+> certainly his. I don't know whether he built on a model from elsewhere.
+> #! appeared between v7 (1979) and v8 (1985). As v8 was never released,
+> it clearly made its way into the world via BSD and USG. BSD, being
+> more nimble, was likely first.
+>
+
+Also, 8th edition was essentially a re-port of 4.1c BSD, correct? If it
+were already in BSD, it could conceivably come back into 8th edition via
+that route. I found the following in /usr/src/sys/sys/TODO for 4.0BSD:
+
+6. Exec fixes
+>         Implement dmr's #! feature; pass string arguments through faster.
+
+
+That would strongly imply that the feature originated with Dennis and was
+known in Berkeley around the time for 4BSD.
+
+4.0's 'getxfile()' in /usr/src/sys/sys/sys1.c does not recognize the '#!'
+sequence as a magic number, but 'exece()' in /usr/src/sys/newsys/sys1.c
+does. No mention of it came up in my cursory scan of 3bsd. So it was
+certain present by the time of 4.1c, but not before 4BSD that I found.
+
+        - Dan C.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160911/0110691d/attachment.html>
+
+From mascheck at in-ulm.de  Mon Sep 12 04:50:53 2016
+From: mascheck at in-ulm.de (Sven Mascheck)
+Date: Sun, 11 Sep 2016 20:50:53 +0200
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <CAEoi9W62QMprW=AqXJ4aJuwxKnjydWfUgEpr7bRBQsWoc-gtkw@mail.gmail.com>
+References: <201609111739.u8BHd2pV146715@tahoe.cs.Dartmouth.EDU>
+ <CAEoi9W62QMprW=AqXJ4aJuwxKnjydWfUgEpr7bRBQsWoc-gtkw@mail.gmail.com>
+Message-ID: <20160911185053.GA901858@lisa.in-ulm.de>
+
+On Sun, Sep 11, 2016 at 02:27:48PM -0400, Dan Cross wrote:
+> On Sun, Sep 11, 2016 at 1:39 PM, Doug McIlroy <doug at cs.dartmouth.edu> wrote:
+> 
+> > > IIRC #! originated at Bell Labs but it got out to the world via BSD.
+> > > Perhaps Dr. McIlroy could confirm / deny / expand upon the details
+> > (please?)
+> >
+> > I recall Dennis discussing the feature at some length before installing it.
+> > So the exact semantics, especially the injected argument, are almost]
+> > certainly his. I don't know whether he built on a model from elsewhere.
+> > #! appeared between v7 (1979) and v8 (1985). As v8 was never released,
+> > it clearly made its way into the world via BSD and USG. BSD, being
+> > more nimble, was likely first.
+> 
+> Also, 8th edition was essentially a re-port of 4.1c BSD, correct? If it
+> were already in BSD, it could conceivably come back into 8th edition via
+> that route. I found the following in /usr/src/sys/sys/TODO for 4.0BSD:
+> 
+> 6. Exec fixes
+> >         Implement dmr's #! feature; pass string arguments through faster.
+
+See 4.0BSD /usr/src/sys/newsys/sys1.c
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=4BSD/usr/src/sys/newsys/sys1.c
+for two mails from Dennis to Berkeley, sending the info and code.
+
+> >From dmr Thu Jan 10 04:25:49 1980 remote from research
+> The system has been changed so that if a file being executed
+> begins with the magic characters #! , [...]
+
+I tried to follow all the traces of #! and collected the results on
+http://www.in-ulm.de/~mascheck/various/shebang/
+I'd be happy to add and fix stuff, if somebody spots anything.
+
+Warren, one has to be careful not to have trailing slashes in web archive URLs.
+(e.g., after modifying URLs by hand). Example: calling
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=4BSD/usr/src/sys/
+eventually results in the link
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=4BSD/usr/src/sys//sys/TODO
+which yields "...is not a known file.", while
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=4BSD/usr/src/sys/sys/TODO
+is valid.
+
+-Sven
+
+
+From random832 at fastmail.com  Mon Sep 12 08:13:19 2016
+From: random832 at fastmail.com (Random832)
+Date: Sun, 11 Sep 2016 18:13:19 -0400
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <20160911185053.GA901858@lisa.in-ulm.de>
+References: <201609111739.u8BHd2pV146715@tahoe.cs.Dartmouth.EDU>
+ <CAEoi9W62QMprW=AqXJ4aJuwxKnjydWfUgEpr7bRBQsWoc-gtkw@mail.gmail.com>
+ <20160911185053.GA901858@lisa.in-ulm.de>
+Message-ID: <1473631999.3825346.722456001.70CCA0C8@webmail.messagingengine.com>
+
+On Sun, Sep 11, 2016, at 14:50, Sven Mascheck wrote:
+> I tried to follow all the traces of #! and collected the results on
+> http://www.in-ulm.de/~mascheck/various/shebang/
+> I'd be happy to add and fix stuff, if somebody spots anything.
+
+DEMOS (the soviet version of Unix) seems to have an independent
+implementation that supports some features no-one else does
+
+- use $* to define where the passed-in arguments [including the script
+name] go between the interpreter-arguments specified on the #!-line
+- alternate magic "/*#!"
+
+I don't remember where I downloaded it from, I think maybe someone
+posted it here a few years ago.
+
+Relevant bits from sys1.c:
+
+# define SCRMAG  "#!"
+# define SCRMAG2 "/*#!"
+# define ARGPLACE "$*"
+
+     /* формат:
+         пусть есть файл   /.../.../x
+         со следующим содержимым:
+         -------------------------------
+         |#!CMD A1 A2 A3
+         | .......
+
+        Вызываем команду:
+                x B1 B2
+
+        Запустится на самом деле такая команда:
+                CMD A1 A2 A3 /.../.../x B1 B2
+
+        Один из аргументов Ai может иметь вид $*
+        Тогда аргументы запуска подставятся на это место, а не в конец:
+         -------------------------------
+         |#!CMD A1 $* A2 A3
+         | .......
+
+        Вызываем:
+                x B1 B2
+
+        Запустится:
+                CMD A1 /.../.../x B1 B2 A2 A3
+     */
+
+There's no comment describing the SCRMAG2 feature but you can see it
+used in code:
+
+        if (indir < NSYMLNK && u.u_offset > (off_t)2 ){
+            cp = (char *) &u.u_exdata;
+            if( !bcmp(cp, SCRMAG, 2 ))
+                off = (off_t) 2;
+            else if( u.u_offset > (off_t)4 && !bcmp( cp, SCRMAG2, 4))
+                off = (off_t) 4;
+
+
+Sole uses of these features in the source tree:
+
+cmd/OPQRS/spline.c,v:@/*#!/bin/cc -O $* -o spline
+cmd/EFGHIJK/glob.c,v:@/*#!/bin/cc -o glob
+
+
+From doug at cs.dartmouth.edu  Mon Sep 12 10:27:19 2016
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Sun, 11 Sep 2016 20:27:19 -0400
+Subject: [TUHS] Shell control through external commands
+Message-ID: <201609120027.u8C0RJVR009650@tahoe.cs.Dartmouth.EDU>
+
+
+> 8th edition was essentially a re-port of 4.1c BSD, correct?
+
+"Re-port" may be a bit strong. Internet stuff from Berkeley
+was folded into the research code (for a huge increase in
+kernel size). But I think it was done by pasting Berkeley
+code into local source, rather than the other way around.
+But, since much of the rest of the BSD kernel was Bell
+Labs code, it's probably right that the result of the
+merge had more code in common with BSD than with Research.
+If you ask, though, what fraction of Research code
+survived the merge, it was probably larger than the
+surviving fraction of the total BSD code.
+
+Doug
+
+
+From sl at stanleylieber.com  Mon Sep 12 10:43:32 2016
+From: sl at stanleylieber.com (stanley lieber)
+Date: Sun, 11 Sep 2016 20:43:32 -0400
+Subject: [TUHS] BSD mail(1) line addressing
+Message-ID: <20160912004332.4362323.94475.6921@stanleylieber.com>
+
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160911/2c46329a/attachment.html>
+
+From norman at oclsc.org  Mon Sep 12 11:31:10 2016
+From: norman at oclsc.org (Norman Wilson)
+Date: Sun, 11 Sep 2016 21:31:10 -0400 (EDT)
+Subject: [TUHS] Shell control through external commands
+Message-ID: <20160912013110.ECB3B4422E@lignose.oclsc.org>
+
+Doug McIlroy:
+
+  "Re-port" may be a bit strong. Internet stuff from Berkeley
+  was folded into the research code (for a huge increase in
+  kernel size). But I think it was done by pasting Berkeley
+  code into local source, rather than the other way around.
+
+====
+
+Actually it was more nearly:
+
+-- Adopt 4.1c BSD kernel
+-- Graft in Research-specific things it was important to
+keep: in particular Dennis's stream subsystem, Tom Killian's
+original /proc, Peter Weinberger's early network file system
+client code (the server was just a user-mode program) and
+simple hackery to speed up the file system without great
+fuss (make the block size 4KiB and move the free list to
+a bitmap; no cylinder groups or other radical changes).
+Also device drivers to support Datakit, at the time our
+workhorse network.  I think a file-system switch went
+in early as well, spurred by having both /proc and
+pjw's network file system; it wasn't used to support
+multiple disk-file-system layouts, though it could have
+been.
+-- Outside the kernel, keep pretty much the then-current
+Research commands, including Blit/5620 support, the
+cleaned up and slightly-extended Bourne shell, and whatnot.
+
+I don't think the BSD kernel when adopted had much, if any,
+of sockets, Berkeley's TCP/IP, McKusick's FFS; if it did,
+they were excised.  Likewise any remaining trace of V7's
+mpx(2) multiplexed-file IPC.
+
+I'm going by the state the system was in when I arrived
+in August 1984, plus a short note written by Weinberger
+that I came across later.
+
+TCP/IP support didn't show up until later, I think summer
+1985, though it might have been a year later.  The first
+cut was done by Robert T. Morris (later famous for a buggy
+program that broke the Internet), who did several summers
+as an intern; he took the code from (I think) 4.2 BSD,
+and constructed some shims to fit it into the stream world.
+Paul Glick later cleaned it up a lot, removing the need
+for most of the shimmery.
+
+Further evolution followed, of course, including a
+complete rewrite of the interface between drivers
+(device, file system, and stream) and the rest of the
+system, which made configuration much more straightforward.
+Also a rampage on my part to identify code that was no
+longer useful and kick it out; I took special pleasure
+in removing ptrace(2) (even though I had to change adb
+and sdb first to use /proc).
+
+But that was all later.
+
+Norman Wilson
+Toronto ON
+
+
+From norman at oclsc.org  Mon Sep 12 11:43:34 2016
+From: norman at oclsc.org (Norman Wilson)
+Date: Sun, 11 Sep 2016 21:43:34 -0400 (EDT)
+Subject: [TUHS] Shell control through external commands
+Message-ID: <20160912014334.434304422E@lignose.oclsc.org>
+
+I remember reading about #! in the early 1980s, and
+having mixed feelings about it, as I still do.  The
+basic idea is fine, if annoyingly limited; but that
+the kernel has to decide, in effect, whether to treat
+a header as binary or text bothers me.  Were I designing
+a new system from scratch today, I'd just make the
+header all text; the small extra space and time for
+the kernel to parse that for binaries doesn't matter
+any more.  It certainly did when #! was invented,
+though.
+
+I had the impression at the time that it came from
+Berkeley, but I think I later heard from the horse's
+mouth that it was originally Dennis's idea.
+
+I don't think anyone has yet laid out the complete
+story of what came before:
+
+1.  Originally, the shell would exec(file), and if
+exec returned ENOEXEC, would open the file and treat
+it as shell commands.
+
+2.  Then came the C shell, and a problem: did file
+contain commands for csh or sh?  A hack emerged:
+if csh encountered a script file, it would read
+the first character; if that was '#' it was a
+csh script, otherwise it handed off to /bin/sh.
+
+None of this helped when some program other than
+the shell called exec on a shell script.  That's one
+reason execlp and execvp appeared.  (The other is that
+they observe $PATH if the command pathname has a
+single element.)
+
+I don't know offhand whether there was ever an execlp/vp
+that implemented the #-means-csh convention.  Anyone
+else remember?
+
+Norman Wilson
+Toronto ON
+
+
+From grog at lemis.com  Mon Sep 12 14:44:32 2016
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Mon, 12 Sep 2016 14:44:32 +1000
+Subject: [TUHS] BSD/v8 TCP/IP (was Shell control through external commands)
+In-Reply-To: <20160912013110.ECB3B4422E@lignose.oclsc.org>
+References: <20160912013110.ECB3B4422E@lignose.oclsc.org>
+Message-ID: <20160912044432.GA74856@eureka.lemis.com>
+
+On Sunday, 11 September 2016 at 21:31:10 -0400, Norman Wilson wrote:
+>
+> -- Adopt 4.1c BSD kernel
+> ...
+>
+> I don't think the BSD kernel when adopted had much, if any,
+> of sockets, Berkeley's TCP/IP, McKusick's FFS; if it did,
+> they were excised.
+>
+> ...
+>
+> TCP/IP support didn't show up until later, I think summer 1985,
+> though it might have been a year later.
+
+I'm confused.  4.1c has gone down in history as the first version with
+Internet code, and looking at the sources (from mckusick's CD set), I
+see the network files in /sys/netinet with names very reminiscent of
+current FreeBSD file names.  The files have timestamps between
+November 1982 and May 1983.  Why should they have been removed?  I
+would have thought that exactly this functionality would have been the
+reason why you adopted 4.1c.
+
+Similarly, it also included FFS and (not surprisingly sockets.
+
+I checked further back, but unfortunately the previous version on the
+CDs is 4.1a, and it has no kernel code.
+
+Greg
+--
+Sent from my desktop computer.
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft mail program
+reports problems, please read http://lemis.com/broken-MUA
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 181 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160912/ecc4d68b/attachment.sig>
+
+From imp at bsdimp.com  Mon Sep 12 15:24:47 2016
+From: imp at bsdimp.com (Warner Losh)
+Date: Sun, 11 Sep 2016 23:24:47 -0600
+Subject: [TUHS] BSD/v8 TCP/IP (was Shell control through external
+	commands)
+In-Reply-To: <20160912044432.GA74856@eureka.lemis.com>
+References: <20160912013110.ECB3B4422E@lignose.oclsc.org>
+ <20160912044432.GA74856@eureka.lemis.com>
+Message-ID: <CANCZdfpUicqxu-x-3AFo-h+0X-Grfje-74Kd0Ht0J60Q-zBxhw@mail.gmail.com>
+
+On Sun, Sep 11, 2016 at 10:44 PM, Greg 'groggy' Lehey <grog at lemis.com> wrote:
+> On Sunday, 11 September 2016 at 21:31:10 -0400, Norman Wilson wrote:
+>>
+>> -- Adopt 4.1c BSD kernel
+>> ...
+>>
+>> I don't think the BSD kernel when adopted had much, if any,
+>> of sockets, Berkeley's TCP/IP, McKusick's FFS; if it did,
+>> they were excised.
+>>
+>> ...
+>>
+>> TCP/IP support didn't show up until later, I think summer 1985,
+>> though it might have been a year later.
+>
+> I'm confused.  4.1c has gone down in history as the first version with
+> Internet code, and looking at the sources (from mckusick's CD set), I
+> see the network files in /sys/netinet with names very reminiscent of
+> current FreeBSD file names.  The files have timestamps between
+> November 1982 and May 1983.  Why should they have been removed?  I
+> would have thought that exactly this functionality would have been the
+> reason why you adopted 4.1c.
+>
+> Similarly, it also included FFS and (not surprisingly sockets.
+>
+> I checked further back, but unfortunately the previous version on the
+> CDs is 4.1a, and it has no kernel code.
+
+I don't think they are talking about BSD4.1a having these things, but
+rather Research Unix Edition 8 having these things. Bell labs didn't
+integrate them until later. I recall reading articles at the time (1983
+or 1984) that they had their own notion of what networking to use
+that wasn't TCP/IP due to some perceived failings of TCP/IP that
+they fixed with their stuff. I recall that I read it in the library in
+high school.  Wish I'd forgotten that and recalled what the network
+protocol was they implemented instead...
+
+Warner
+
+
+From b4 at gewt.net  Mon Sep 12 15:38:27 2016
+From: b4 at gewt.net (Cory Smelosky)
+Date: Sun, 11 Sep 2016 22:38:27 -0700
+Subject: [TUHS] BSD/v8 TCP/IP (was Shell control through external
+	commands)
+In-Reply-To: <CANCZdfpUicqxu-x-3AFo-h+0X-Grfje-74Kd0Ht0J60Q-zBxhw@mail.gmail.com>
+References: <20160912013110.ECB3B4422E@lignose.oclsc.org>
+ <20160912044432.GA74856@eureka.lemis.com>
+ <CANCZdfpUicqxu-x-3AFo-h+0X-Grfje-74Kd0Ht0J60Q-zBxhw@mail.gmail.com>
+Message-ID: <9E04568D-9E90-4A3F-B584-C5A16871DAE0@gewt.net>
+
+Do any copies of 8th Edition exist anywhere? ;)
+
+That's one way to check!
+
+Sent from my iPhone
+
+> On Sep 11, 2016, at 22:24, Warner Losh <imp at bsdimp.com> wrote:
+> 
+>> On Sun, Sep 11, 2016 at 10:44 PM, Greg 'groggy' Lehey <grog at lemis.com> wrote:
+>>> On Sunday, 11 September 2016 at 21:31:10 -0400, Norman Wilson wrote:
+>>> 
+>>> -- Adopt 4.1c BSD kernel
+>>> ...
+>>> 
+>>> I don't think the BSD kernel when adopted had much, if any,
+>>> of sockets, Berkeley's TCP/IP, McKusick's FFS; if it did,
+>>> they were excised.
+>>> 
+>>> ...
+>>> 
+>>> TCP/IP support didn't show up until later, I think summer 1985,
+>>> though it might have been a year later.
+>> 
+>> I'm confused.  4.1c has gone down in history as the first version with
+>> Internet code, and looking at the sources (from mckusick's CD set), I
+>> see the network files in /sys/netinet with names very reminiscent of
+>> current FreeBSD file names.  The files have timestamps between
+>> November 1982 and May 1983.  Why should they have been removed?  I
+>> would have thought that exactly this functionality would have been the
+>> reason why you adopted 4.1c.
+>> 
+>> Similarly, it also included FFS and (not surprisingly sockets.
+>> 
+>> I checked further back, but unfortunately the previous version on the
+>> CDs is 4.1a, and it has no kernel code.
+> 
+> I don't think they are talking about BSD4.1a having these things, but
+> rather Research Unix Edition 8 having these things. Bell labs didn't
+> integrate them until later. I recall reading articles at the time (1983
+> or 1984) that they had their own notion of what networking to use
+> that wasn't TCP/IP due to some perceived failings of TCP/IP that
+> they fixed with their stuff. I recall that I read it in the library in
+> high school.  Wish I'd forgotten that and recalled what the network
+> protocol was they implemented instead...
+> 
+> Warner
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160911/02a63b7a/attachment.html>
+
+From dave at horsfall.org  Mon Sep 12 15:49:54 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Mon, 12 Sep 2016 15:49:54 +1000 (EST)
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <201609110501.u8B51nCK016335@freefriends.org>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+ <20160910174011.GF5970@dnied%tiscali.it>
+ <alpine.BSF.2.11.1609110842190.78806@aneurin.horsfall.org>
+ <006301d20bcb$43ae03b0$cb0a0b10$@ronnatalie.com>
+ <201609110239.u8B2dgDJ010272@freefriends.org>
+ <alpine.BSF.2.11.1609111404230.78806@aneurin.horsfall.org>
+ <201609110501.u8B51nCK016335@freefriends.org>
+Message-ID: <alpine.BSF.2.11.1609121548320.78806@aneurin.horsfall.org>
+
+On Sat, 10 Sep 2016, arnold at skeeve.com wrote:
+
+> > Correct; if the exec failed then the invoking shell assumed that it 
+> > was a shell script, and spawned a shell to run it.
+> 
+> I think this happened in the "spawned" shell - so the exec would fail and
+> then this child shell would just run the script.
+
+Oops - you're right.  My organic bit-rot is worse than I thought...
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From fair-tuhs at netbsd.org  Mon Sep 12 15:48:29 2016
+From: fair-tuhs at netbsd.org (Erik E. Fair)
+Date: Sun, 11 Sep 2016 22:48:29 -0700
+Subject: [TUHS] BSD/v8 TCP/IP (was Shell control through external
+	commands)
+In-Reply-To: <CANCZdfpUicqxu-x-3AFo-h+0X-Grfje-74Kd0Ht0J60Q-zBxhw@mail.gmail.com>
+References: <20160912044432.GA74856@eureka.lemis.com>
+Message-ID: <10251.1473659309@cesium.clock.org>
+
+Two big debates I recall:
+
+	Datagram (packets) versus virtual circuits (telephone calls).
+
+	Berkeley (BSD) sockets versus Bell Labs (dmr) "streams" APIs.
+	https://cseweb.ucsd.edu/classes/fa01/cse221/papers/ritchie-stream-io-belllabs84.pdf
+
+It is important to note that the STREAMS stuff that eventually was foisted on
+unfortunates from USG in System V was  - despite being derived from Ritchie's
+work - yet another ... thing.
+
+https://en.wikipedia.org/wiki/STREAMS
+
+dmr was trying to replace the abomination that the tty drivers had become (and
+I still wish we'd adopted his APIs and work for that purpose to this day),
+but trying to force everything into a connection-oriented framework for a
+datagram/packet network has conceptual limitations, and to AT&T's chagrin,
+the Internet is not an X.25 or Datakit network.
+
+Plan 9 also had some interesting work in it that I wish we'd adopted.
+
+	Erik Fair
+
+
+From grog at lemis.com  Mon Sep 12 17:20:52 2016
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Mon, 12 Sep 2016 17:20:52 +1000
+Subject: [TUHS] BSD/v8 TCP/IP (was Shell control through external
+ commands)
+In-Reply-To: <CANCZdfpUicqxu-x-3AFo-h+0X-Grfje-74Kd0Ht0J60Q-zBxhw@mail.gmail.com>
+References: <20160912013110.ECB3B4422E@lignose.oclsc.org>
+ <20160912044432.GA74856@eureka.lemis.com>
+ <CANCZdfpUicqxu-x-3AFo-h+0X-Grfje-74Kd0Ht0J60Q-zBxhw@mail.gmail.com>
+Message-ID: <20160912072052.GB74856@eureka.lemis.com>
+
+On Sunday, 11 September 2016 at 23:24:47 -0600, Warner Losh wrote:
+> On Sun, Sep 11, 2016 at 10:44 PM, Greg 'groggy' Lehey <grog at lemis.com> wrote:
+>> On Sunday, 11 September 2016 at 21:31:10 -0400, Norman Wilson wrote:
+>>>
+>>> -- Adopt 4.1c BSD kernel
+>>> ...
+>>>
+>>> I don't think the BSD kernel when adopted had much, if any,
+>>> of sockets, Berkeley's TCP/IP, McKusick's FFS; if it did,
+>>> they were excised.
+>>>
+>>> ...
+>>>
+>>> TCP/IP support didn't show up until later, I think summer 1985,
+>>> though it might have been a year later.
+>>
+>> I'm confused.  4.1c has gone down in history as the first version with
+>> Internet code, and looking at the sources (from mckusick's CD set), I
+>> see the network files in /sys/netinet with names very reminiscent of
+>> current FreeBSD file names.  The files have timestamps between
+>> November 1982 and May 1983.  Why should they have been removed?  I
+>> would have thought that exactly this functionality would have been the
+>> reason why you adopted 4.1c.
+>>
+>> Similarly, it also included FFS and (not surprisingly sockets.
+>>
+>> I checked further back, but unfortunately the previous version on the
+>> CDs is 4.1a, and it has no kernel code.
+>
+> I don't think they are talking about BSD4.1a having these things,
+
+Right, the discussion was about 4.1c.  I just wanted to confirm that
+it was, in fact, the first version with TCP/IP.
+
+> but rather Research Unix Edition 8 having these things.
+
+Yes, that's what Norman said:
+
+>>> if it did, they were excised.
+
+> Bell labs didn't integrate them until later. I recall reading
+> articles at the time (1983 or 1984) that they had their own notion
+> of what networking to use that wasn't TCP/IP due to some perceived
+> failings of TCP/IP that they fixed with their stuff.
+
+I think the perceived "failings" were with sockets, not with TCP/IP.
+That was what led to the misimplementation of STREAMS.  My real
+confusion was what they really wanted from 4.1c, but I suppose it was
+the VM implementation.  Can anybody comment?
+
+Greg
+--
+Sent from my desktop computer.
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft mail program
+reports problems, please read http://lemis.com/broken-MUA
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 181 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160912/82b56f53/attachment.sig>
+
+From meillo at marmaro.de  Mon Sep 12 18:35:37 2016
+From: meillo at marmaro.de (markus schnalke)
+Date: Mon, 12 Sep 2016 10:35:37 +0200
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <201609101922.u8AJMmtq024477@freefriends.org>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+ <20160910174011.GF5970@dnied%tiscali.it>
+ <201609101922.u8AJMmtq024477@freefriends.org>
+Message-ID: <1bjMiH-10N-00@marmaro.de>
+
+[2016-09-10 13:22] arnold at skeeve.com
+> Dario Niedermann <dnied at tiscali.it> wrote:
+> >
+> > I never knew that a shell script could work without a shebang line.
+>
+> That was the simplicity of the original system, where you just made the
+> file executable. The shell would fork and exec as usual.  When the exec
+> failed, the shell noticed that errno was ENOEXEC (not a runnable file)
+> and started interpreting the script itself.
+
+I think I've seen many eary (pre-Shebang and even pre-#-comment)
+shell scripts start with a colon. Is this only a coincidence with
+having a comment at the beginning or was the colon character magic
+in some way?
+
+
+meillo
+
+
+From meillo at marmaro.de  Mon Sep 12 19:02:19 2016
+From: meillo at marmaro.de (markus schnalke)
+Date: Mon, 12 Sep 2016 11:02:19 +0200
+Subject: [TUHS] BSD mail(1) line addressing
+In-Reply-To: <20160912004332.4362323.94475.6921@stanleylieber.com>
+References: <20160912004332.4362323.94475.6921@stanleylieber.com>
+Message-ID: <1bjN87-1Lm-00@marmaro.de>
+
+[2016-09-11 20:43] stanley lieber <sl at stanleylieber.com>
+>
+> Anyone know what considerations informed the decision (way back when) to eschew
+> ed-like line addressing and switch to the currently entrenched, reversed form?
+> 
+> EXAMPLES
+> 
+> ‎V8 mail:
+> 
+> 1,5p        # prints messages one through five
+> 
+> BSD mail:
+> 
+> p1-5        # prints messages one through five
+
+Maybe there was an influence from MH, where it would be written:
+
+	show 1-5
+
+This snippet from FreeBSD's manpage for mail(1) could have been
+part of some MH documentation as well:
+
+   Specifying Messages
+     Commands such as print and delete can be given a list of message numbers
+     as arguments to apply to a number of messages at once.  Thus ``delete 1
+     2'' deletes messages 1 and 2, while ``delete 1-5'' deletes messages 1
+     through 5. [...]
+
+
+MH was created at RAND Corporation in 1977/78. In the early eighties,
+the University of California at Irvine took over the development.
+
+But as BSD Mail was created already in 1978, it doesn't sound too
+valid ...
+
+Maybe someone else can provide better information than my guessing.
+;-)
+
+
+meillo
+
+
+P.S.
+In our development of mmh (a modern version of MH) we currently happen
+to feel limited with the ``1-5'' specification, because it hinders us
+doing calculations as the ed-like ``1,20-4'' (from one to twenty minus
+four). Or more real-life-oriented with symbolic names: ``l-2'' -- the
+second to last message. As the minus sign is already taken for ranges,
+we have to invent some new syntax or break compatibility or rely on
+guessing what seems to have been meant. The MH guys would better have
+done it the ed way, back then!
+
+
+From schily at schily.net  Mon Sep 12 19:18:23 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Mon, 12 Sep 2016 11:18:23 +0200
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <20160912014334.434304422E@lignose.oclsc.org>
+References: <20160912014334.434304422E@lignose.oclsc.org>
+Message-ID: <57d672df.GfhHyvXLZPyNb0yx%schily@schily.net>
+
+norman at oclsc.org (Norman Wilson) wrote:
+
+> I don't know offhand whether there was ever an execlp/vp
+> that implemented the #-means-csh convention.  Anyone
+> else remember?
+
+
+I've never seen such a userland implementation outside csh, but UNOS did 
+implement the #! feature in the command interpreter (not in the kernel) around 
+1983/84.
+
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+From schily at schily.net  Mon Sep 12 19:22:37 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Mon, 12 Sep 2016 11:22:37 +0200
+Subject: [TUHS] BSD/v8 TCP/IP (was Shell control through external
+ commands)
+In-Reply-To: <10251.1473659309@cesium.clock.org>
+References: <20160912044432.GA74856@eureka.lemis.com>
+ <10251.1473659309@cesium.clock.org>
+Message-ID: <57d673dd.P8trNROkC31YMyR9%schily@schily.net>
+
+"Erik E. Fair" <fair-tuhs at netbsd.org> wrote:
+
+> https://en.wikipedia.org/wiki/STREAMS
+>
+> dmr was trying to replace the abomination that the tty drivers had become (and
+> I still wish we'd adopted his APIs and work for that purpose to this day),
+
+I am not aware of any streams based tty driver implementation that predates 
+SunOS-4.0.
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+From schily at schily.net  Mon Sep 12 19:33:48 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Mon, 12 Sep 2016 11:33:48 +0200
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <20160912013110.ECB3B4422E@lignose.oclsc.org>
+References: <20160912013110.ECB3B4422E@lignose.oclsc.org>
+Message-ID: <57d6767c.7pfP2O2V65oxiHRp%schily@schily.net>
+
+norman at oclsc.org (Norman Wilson) wrote:
+
+> I don't think the BSD kernel when adopted had much, if any,
+> of sockets, Berkeley's TCP/IP, McKusick's FFS; if it did,
+> they were excised.  Likewise any remaining trace of V7's
+> mpx(2) multiplexed-file IPC.
+
+>From looking at the CSRG sources, it seems that the filesystem project has been 
+founded by Bill Joy and Kirk approached the project a year (or more) later and 
+imlemented ony the parts that are related to the block allocation.
+
+Does someone know more?
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+From schily at schily.net  Mon Sep 12 19:25:34 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Mon, 12 Sep 2016 11:25:34 +0200
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <1bjMiH-10N-00@marmaro.de>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+ <20160910174011.GF5970@dnied%tiscali.it>
+ <201609101922.u8AJMmtq024477@freefriends.org>
+ <1bjMiH-10N-00@marmaro.de>
+Message-ID: <57d6748e.CNiWgn0QxOuugldp%schily@schily.net>
+
+markus schnalke <meillo at marmaro.de> wrote:
+
+> I think I've seen many eary (pre-Shebang and even pre-#-comment)
+> shell scripts start with a colon. Is this only a coincidence with
+> having a comment at the beginning or was the colon character magic
+> in some way?
+
+The colon was introduced by AT&T around 1983. It was used for Bourne Shell 
+scripts. Some of these scripts made it into SVr4 and caused problems with 
+non-Bourne compatible other shells.
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+From dugo at xs4all.nl  Mon Sep 12 20:05:32 2016
+From: dugo at xs4all.nl (Jacob Goense)
+Date: Mon, 12 Sep 2016 12:05:32 +0200
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <20160910174555.GG5970@dnied%tiscali.it>
+References: <1468585644.26769.for-standards-violators@oclsc.org>
+ <20160910074508.GE5970@dnied%tiscali.it>
+ <20160910091307.GE14636@yeono.kjorling.se>
+ <1473527216.2633960.721672049.702FC02A@webmail.messagingengine.com>
+ <20160910174555.GG5970@dnied%tiscali.it>
+Message-ID: <fe2a1f2e6a45db4b5091481e230a5485@xs4all.nl>
+
+On 2016-09-10 19:45, Dario Niedermann wrote:
+> TIL! Still, it seems to me that there is no way the `cd' script can
+> actually accomplish anything, even when called by exec().
+
+It can give you a useful return code.
+
+
+From schily at schily.net  Mon Sep 12 21:00:05 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Mon, 12 Sep 2016 13:00:05 +0200
+Subject: [TUHS] BSD/v8 TCP/IP (was Shell control through external
+ commands)
+In-Reply-To: <A7990717-F36F-439E-A51F-079043D23F31@me.com>
+References: <20160912044432.GA74856@eureka.lemis.com>
+ <10251.1473659309@cesium.clock.org>
+ <57d673dd.P8trNROkC31YMyR9%schily@schily.net>
+ <A7990717-F36F-439E-A51F-079043D23F31@me.com>
+Message-ID: <57d68ab5.GH44OJE/x7Hw4DKN%schily@schily.net>
+
+Brantley Coile <brantleycoile at me.com> wrote:
+
+> SunOS-4.0 was released in December of 1988, if I remember correctly. I had a streams based tty driver sometime in 1987 and I was just duplicating what Dennis et al has done in the Labs.
+
+IIRC, I had a copy of SunOS-4.0 sometime in autumn 1987. It (and the Sun AT&T 
+deal based on the code) definitely was the top topic in the Sun User Group 
+meeting in December 1987.
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+From brantleycoile at me.com  Mon Sep 12 21:16:50 2016
+From: brantleycoile at me.com (Brantley Coile)
+Date: Mon, 12 Sep 2016 07:16:50 -0400
+Subject: [TUHS] BSD/v8 TCP/IP (was Shell control through external
+	commands)
+In-Reply-To: <57d68ab5.GH44OJE/x7Hw4DKN%schily@schily.net>
+References: <20160912044432.GA74856@eureka.lemis.com>
+ <10251.1473659309@cesium.clock.org>
+ <57d673dd.P8trNROkC31YMyR9%schily@schily.net>
+ <A7990717-F36F-439E-A51F-079043D23F31@me.com>
+ <57d68ab5.GH44OJE/x7Hw4DKN%schily@schily.net>
+Message-ID: <14DDB012-4240-458B-AA72-5D166050F1FF@me.com>
+
+http://articles.latimes.com/1988-01-07/business/fi-33970_1_sun-microsystems
+
+You might have the year wrong. The agreement between AT&T and Sun was announced in 1988. A year would be about right to incorporate some of the new stuff.
+
+But getting back to your original comment that you are not aware of any streams implementation before SunOS-4.0, do you mean that it was the first you became aware of? Certainly System V, from whence it came, predated SunOS-4.0 and 8th Edition predated that. My copy of the tty_ld(4) man page was printed Feb 10, 1985.
+
+  Brantley
+  bwc at coraid.com
+  http://coraid.com
+
+> On Sep 12, 2016, at 7:00 AM, Joerg Schilling <schily at schily.net> wrote:
+> 
+> Brantley Coile <brantleycoile at me.com> wrote:
+> 
+>> SunOS-4.0 was released in December of 1988, if I remember correctly. I had a streams based tty driver sometime in 1987 and I was just duplicating what Dennis et al has done in the Labs.
+> 
+> IIRC, I had a copy of SunOS-4.0 sometime in autumn 1987. It (and the Sun AT&T 
+> deal based on the code) definitely was the top topic in the Sun User Group 
+> meeting in December 1987.
+> 
+> Jörg
+> 
+> -- 
+> EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+>       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+> URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+
+From brantleycoile at me.com  Mon Sep 12 20:25:55 2016
+From: brantleycoile at me.com (Brantley Coile)
+Date: Mon, 12 Sep 2016 06:25:55 -0400
+Subject: [TUHS] BSD/v8 TCP/IP (was Shell control through external
+	commands)
+In-Reply-To: <57d673dd.P8trNROkC31YMyR9%schily@schily.net>
+References: <20160912044432.GA74856@eureka.lemis.com>
+ <10251.1473659309@cesium.clock.org>
+ <57d673dd.P8trNROkC31YMyR9%schily@schily.net>
+Message-ID: <A7990717-F36F-439E-A51F-079043D23F31@me.com>
+
+SunOS-4.0 was released in December of 1988, if I remember correctly. I had a streams based tty driver sometime in 1987 and I was just duplicating what Dennis et al has done in the Labs.
+
+But I brag. Dennis' streams paper was publicshed in the BTJ in October 1984.
+
+Regarding Plan 9, the system I use today. In the 3rd edition the streams mechanisms were reduced to the Block structure to hold and pass data, and the Queue. The dynamic aspects removed because they were never used. There’s no tty in Plan 9 so no need for a tty line discipline .
+
+  Brantley
+  bwc at coraid.com
+  http://coraid.com
+
+
+> On Sep 12, 2016, at 5:22 AM, Joerg Schilling <schily at schily.net> wrote:
+> 
+> "Erik E. Fair" <fair-tuhs at netbsd.org> wrote:
+> 
+>> https://en.wikipedia.org/wiki/STREAMS
+>> 
+>> dmr was trying to replace the abomination that the tty drivers had become (and
+>> I still wish we'd adopted his APIs and work for that purpose to this day),
+> 
+> I am not aware of any streams based tty driver implementation that predates 
+> SunOS-4.0.
+> 
+> Jörg
+> 
+> -- 
+> EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+>       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+> URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+
+From brantleycoile at me.com  Mon Sep 12 21:42:43 2016
+From: brantleycoile at me.com (Brantley Coile)
+Date: Mon, 12 Sep 2016 07:42:43 -0400
+Subject: [TUHS] BSD/v8 TCP/IP (was Shell control through external
+	commands)
+In-Reply-To: <14DDB012-4240-458B-AA72-5D166050F1FF@me.com>
+References: <20160912044432.GA74856@eureka.lemis.com>
+ <10251.1473659309@cesium.clock.org>
+ <57d673dd.P8trNROkC31YMyR9%schily@schily.net>
+ <A7990717-F36F-439E-A51F-079043D23F31@me.com>
+ <57d68ab5.GH44OJE/x7Hw4DKN%schily@schily.net>
+ <14DDB012-4240-458B-AA72-5D166050F1FF@me.com>
+Message-ID: <802FE8F3-D0F0-4187-8635-954EA6AEF5A6@me.com>
+
+Clarification. “From whence it came” meant where SunOS-4.0 got STREAMS not from where streams came from.
+
+
+> On Sep 12, 2016, at 7:16 AM, Brantley Coile <brantleycoile at me.com> wrote:
+> 
+> http://articles.latimes.com/1988-01-07/business/fi-33970_1_sun-microsystems
+> 
+> You might have the year wrong. The agreement between AT&T and Sun was announced in 1988. A year would be about right to incorporate some of the new stuff.
+> 
+> But getting back to your original comment that you are not aware of any streams implementation before SunOS-4.0, do you mean that it was the first you became aware of? Certainly System V, from whence it came, predated SunOS-4.0 and 8th Edition predated that. My copy of the tty_ld(4) man page was printed Feb 10, 1985.
+> 
+>  Brantley
+>  bwc at coraid.com
+>  http://coraid.com
+> 
+>> On Sep 12, 2016, at 7:00 AM, Joerg Schilling <schily at schily.net> wrote:
+>> 
+>> Brantley Coile <brantleycoile at me.com> wrote:
+>> 
+>>> SunOS-4.0 was released in December of 1988, if I remember correctly. I had a streams based tty driver sometime in 1987 and I was just duplicating what Dennis et al has done in the Labs.
+>> 
+>> IIRC, I had a copy of SunOS-4.0 sometime in autumn 1987. It (and the Sun AT&T 
+>> deal based on the code) definitely was the top topic in the Sun User Group 
+>> meeting in December 1987.
+>> 
+>> Jörg
+>> 
+>> -- 
+>> EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+>>      joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+>> URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+> 
+
+
+
+From schily at schily.net  Mon Sep 12 21:42:54 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Mon, 12 Sep 2016 13:42:54 +0200
+Subject: [TUHS] BSD/v8 TCP/IP (was Shell control through external
+ commands)
+In-Reply-To: <14DDB012-4240-458B-AA72-5D166050F1FF@me.com>
+References: <20160912044432.GA74856@eureka.lemis.com>
+ <10251.1473659309@cesium.clock.org>
+ <57d673dd.P8trNROkC31YMyR9%schily@schily.net>
+ <A7990717-F36F-439E-A51F-079043D23F31@me.com>
+ <57d68ab5.GH44OJE/x7Hw4DKN%schily@schily.net>
+ <14DDB012-4240-458B-AA72-5D166050F1FF@me.com>
+Message-ID: <57d694be.ctsUTitjhmDlofic%schily@schily.net>
+
+Brantley Coile <brantleycoile at me.com> wrote:
+
+> http://articles.latimes.com/1988-01-07/business/fi-33970_1_sun-microsystems
+>
+> You might have the year wrong. The agreement between AT&T and Sun was announced in 1988. A year would be about right to incorporate some of the new stuff.
+
+Well, maybe I was mistaken and 1987 was the year of NeWS and 1988 was the year 
+of SunOS-4.0.
+
+> But getting back to your original comment that you are not aware of any streams implementation before SunOS-4.0, do you mean that it was the first you became aware of? Certainly System V, from whence it came, predated SunOS-4.0 and 8th Edition predated that. My copy of the tty_ld(4) man page was printed Feb 10, 1985.
+
+
+SVr4 was the first "SystemV" with a streams based tty driver and this driver 
+was the driver taken from SunOS-4.0. You can verify this by looking at the 
+bug-fix that was needed to make it work at all.
+
+The AT&T concept had a bug as it did not allow to switch from raw mode to cooked mode
+mode without loosing all characters in the buffer. Sun fixed this by 
+introducing a new mesage that says: Someone is going to read 5 chars, so 
+transfer 5 chars from the edit-buffer upstream but keep the rest.
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+From steffen at sdaoden.eu  Mon Sep 12 22:34:56 2016
+From: steffen at sdaoden.eu (Steffen Nurpmeso)
+Date: Mon, 12 Sep 2016 14:34:56 +0200
+Subject: [TUHS] BSD mail(1) line addressing
+In-Reply-To: <20160912004332.4362323.94475.6921@stanleylieber.com>
+References: <20160912004332.4362323.94475.6921@stanleylieber.com>
+Message-ID: <20160912123456.6xQx8sec1%steffen@sdaoden.eu>
+
+stanley lieber <sl at stanleylieber.com> wrote:
+ |Anyone know what considerations informed the decision (way back when) \
+ |to eschew ed-like line addressing and switch to the currently entrenched, \
+ |reversed 
+ |form?
+ |
+ |EXAMPLES
+ |
+ |V8 mail:
+ |
+ |1,5p # prints messages one through five
+ |
+ |BSD mail:
+ |
+ |p1-5 # prints messages one through five
+
+I cannot see any code that would parse the command line, let aside
+an ed-style one, in V7 usr/src/cmd/mail.c.  But interesting
+question, why that prefix-based command syntax has been thrown
+over board.  Maybe, even likely i would say, Kurt Shoens didn't
+even do so, what the question implies, but instead the message
+specification is the actual argument for the command, instead of
+being just an address constrained of it.
+
+For some commands this is a restriction, however, which is why the
+laststring() (former getcmd()) has been introduced in the nail
+fork.  It backward parses something off the end of the command
+line, to overcome ambiguities that would otherwise arise, e.g.,
+the `pipe' command takes a message-list and a command.  This is of
+course a very bad hack.  Parsing the message-list should be
+prepared for not failing once the shell command is reached, and
+the shell long has the "--" mechanism for such separating
+purposes.  nail(1) has not, maybe mailx(1) will, one day.
+
+--steffen
+
+
+From dot at dotat.at  Mon Sep 12 22:41:10 2016
+From: dot at dotat.at (Tony Finch)
+Date: Mon, 12 Sep 2016 13:41:10 +0100
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <57d6748e.CNiWgn0QxOuugldp%schily@schily.net>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+ <20160910174011.GF5970@dnied%tiscali.it>
+ <201609101922.u8AJMmtq024477@freefriends.org> <1bjMiH-10N-00@marmaro.de>
+ <57d6748e.CNiWgn0QxOuugldp%schily@schily.net>
+Message-ID: <alpine.DEB.2.11.1609121337110.28546@grey.csi.cam.ac.uk>
+
+Joerg Schilling <schily at schily.net> wrote:
+>
+> The colon was introduced by AT&T around 1983.
+
+It's a builtin in the v7 Bourne shell - see SYSNULL in msg.c (which
+has the command name table) and in xec.c (which has the implementation)
+
+http://www.tuhs.org/Archive/PDP-11/Trees/V7/usr/src/cmd/sh/
+
+Tony.
+-- 
+f.anthony.n.finch  <dot at dotat.at>  http://dotat.at/  -  I xn--zr8h punycode
+Southeast Fitzroy: Southerly becoming cyclonic, 5 to 7, occasionally 4 later.
+Moderate or rough, occasionally very rough at first. Rain or showers. Good,
+occasionally poor.
+
+
+From schily at schily.net  Mon Sep 12 22:50:10 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Mon, 12 Sep 2016 14:50:10 +0200
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <alpine.DEB.2.11.1609121337110.28546@grey.csi.cam.ac.uk>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+ <20160910174011.GF5970@dnied%tiscali.it>
+ <201609101922.u8AJMmtq024477@freefriends.org>
+ <1bjMiH-10N-00@marmaro.de>
+ <57d6748e.CNiWgn0QxOuugldp%schily@schily.net>
+ <alpine.DEB.2.11.1609121337110.28546@grey.csi.cam.ac.uk>
+Message-ID: <57d6a482.xj2/kMA3y0vR9uVo%schily@schily.net>
+
+Tony Finch <dot at dotat.at> wrote:
+
+> Joerg Schilling <schily at schily.net> wrote:
+> >
+> > The colon was introduced by AT&T around 1983.
+>
+> It's a builtin in the v7 Bourne shell - see SYSNULL in msg.c (which
+> has the command name table) and in xec.c (which has the implementation)
+
+You are missinterpeting things.
+
+The colon in line one as a hint to a modified csh to call the Bourne Shell  
+first appeared around 1983.
+
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+From norman at oclsc.org  Mon Sep 12 22:56:44 2016
+From: norman at oclsc.org (Norman Wilson)
+Date: Mon, 12 Sep 2016 08:56:44 -0400
+Subject: [TUHS] BSD/v8 TCP/IP (was Shell control through external
+ commands)
+Message-ID: <1473685007.9047.for-standards-violators@oclsc.org>
+
+I'm not sure of the point of this mine-is-bigger-than-yours argument, but:
+
+The earliest stream-I/O-system-based tty driver I'm aware of was
+already in the Research kernel when I interviewed at Bell Labs
+in early 1984.  I have a vague memory that it was a couple of
+years older than that, and was first implemented in a post-V7
+PDP-11 system; also that I had heard about it first at a USENIX
+conference in 1982 or 1983; but I cannot find any citations to
+back up either of those memories.
+
+I do know that I'd heard of it while I was still working at Caltech,
+because I remember thinking about what a good idea it was and
+about possibly trying to do my own version of it, but I never did.
+I left Caltech at the end of June 1984, spent the following month
+touring nearly the entire Amtrak long-distance network in a single
+long reservation (it was possible to do that with surprisingly few
+overnight stops off the train in those days), and started at Bell
+Labs at the beginning of August.
+
+Norman Wilson
+Toronto ON
+
+
+From norman at oclsc.org  Mon Sep 12 22:56:56 2016
+From: norman at oclsc.org (Norman Wilson)
+Date: Mon, 12 Sep 2016 08:56:56 -0400
+Subject: [TUHS] Shell control through external commands
+Message-ID: <1473685021.9119.for-standards-violators@oclsc.org>
+
+Joerg Schilling:
+
+  The colon was introduced by AT&T around 1983. It was used for Bourne Shell
+  scripts. Some of these scripts made it into SVr4 and caused problems with
+  non-Bourne compatible other shells.
+
+====
+
+Interesting.  I never knew of that convention.  I remember seeing
+shell scripts with a : at the front, but thought that was just to
+make sure the first character wasn't # even if the script began with
+a comment.
+
+Since some here had never heard of the #-means-csh convention, I
+should perhaps explain about :.  In pre-Bourne shells that used the
+simple external control-flow mechanisms that I think were discussed
+here a few months ago, : was used to mark a label: goto(1) would
+seek to the beginning of its standard input, then read until it
+encountered a line of the form
+	: label
+with the desired label, then exit with the seek pointer at the first
+character of the following line.
+
+: was a no-op command; I forget whether it was implemented within the
+shell or externally.  Either way, that made it useful as a comment
+character, but somewhat clumsy: it was just a command, with no
+special parsing rules attached.  A comment using : had to begin at
+a command boundary, and its arguments were parsed in the normal way:
+	rm -rf * : you don't want to do this
+was probably not what you wanted, instead you had to type
+	rm -rf * ; : "you don't want to do this"
+or the like.
+
+csh used # as a comment character from the beginning.  Bourne
+adopted it too.
+
+Norman Wilson
+Toronto ON
+
+
+From norman at oclsc.org  Mon Sep 12 22:57:12 2016
+From: norman at oclsc.org (Norman Wilson)
+Date: Mon, 12 Sep 2016 08:57:12 -0400
+Subject: [TUHS] Shell control through external commands
+Message-ID: <1473685036.9213.for-standards-violators@oclsc.org>
+
+It sounds like my understanding of the different 4.1x versions is
+just mistaken.  If 4.1c had FFS and sockets, the kernel on which
+V8 was built must have been an earlier 4.1x.
+
+I believe the reason for adopting that kernel, rather than sticking
+with 32/V, was exactly to get paging support.  There was a competing
+32/V descendant with paging, written by John Reiser at Holmdel, which
+I gather was thought by many to be much cleaner technically; e.g. he
+unified the block-device buffer cache and the memory-page cache, and
+implemented copy-on-write paging rather than resorting to the messy
+vfork.  I have heard that there was considerable argument and
+hand-wringing over whether to use Reiser's kernel or the BSD one.
+It all happened well before I arrived, and I don't know what the
+tradeoffs were, though one was certainly that Reiser's management
+didn't support his work and nobody in 1127 was keen to have to take
+it over.
+
+Norman Wilson
+Toronto ON
+
+
+From schily at schily.net  Tue Sep 13 01:27:03 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Mon, 12 Sep 2016 17:27:03 +0200
+Subject: [TUHS] BSD/v8 TCP/IP (was Shell control through external
+ commands)
+In-Reply-To: <1473685007.9047.for-standards-violators@oclsc.org>
+References: <1473685007.9047.for-standards-violators@oclsc.org>
+Message-ID: <57d6c947.hh0AnWl1uvortcSr%schily@schily.net>
+
+Norman Wilson <norman at oclsc.org> wrote:
+
+> I'm not sure of the point of this mine-is-bigger-than-yours argument, but:
+>
+> The earliest stream-I/O-system-based tty driver I'm aware of was
+> already in the Research kernel when I interviewed at Bell Labs
+> in early 1984.  I have a vague memory that it was a couple of
+> years older than that, and was first implemented in a post-V7
+> PDP-11 system; also that I had heard about it first at a USENIX
+> conference in 1982 or 1983; but I cannot find any citations to
+> back up either of those memories.
+
+Because of the design bug I mentioned, I searched for UNIX sources from AT&T 
+that include streams support, but could never find any.
+
+Sun fixed the bug aprox. one year after introducing SunOS-4.0. I am sure that 
+if someone did use a streams based system written from the AT&T specs together 
+with a modern shell with an integrated history editor, the character loss would 
+have been detected.
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+From norman at oclsc.org  Tue Sep 13 01:41:09 2016
+From: norman at oclsc.org (Norman Wilson)
+Date: Mon, 12 Sep 2016 11:41:09 -0400
+Subject: [TUHS] BSD/v8 TCP/IP (was Shell control through external
+ commands)
+Message-ID: <1473694872.12045.for-standards-violators@oclsc.org>
+
+  Because of the design bug I mentioned, I searched for UNIX sources from AT&T
+  that include streams support, but could never find any.
+
+=====
+
+None of the Research systems after 32/V was ever distributed except
+to a handful of sites under site-specific letter agreements that
+forbade redistribution.
+
+This is a bug, not a feature, but there it is.  It was easy to get
+approval to write a paper, much harder to get permission to distribute
+code, especially when the code in some way overlapped the Official
+Product.
+
+Warren and I (and Dennis, when he was still alive) hoped to do
+something about some years back, but it's a lot harder than it used
+to be because it is harder to find a corporate entity that is
+confident enough to give permission, even for stuff that is so old
+that it is unlikely to have a trumppenceworth of commercial value.
+Then IBM vs SCO intervened, and now things are even more fragmented.
+
+There may be other efforts under way now and then to negotiate the
+legal minefield.  I wish them all well, and will help them where I
+can.
+
+Norman Wilson
+Toronto ON
+
+
+From clemc at ccc.com  Tue Sep 13 04:32:43 2016
+From: clemc at ccc.com (Clem Cole)
+Date: Mon, 12 Sep 2016 14:32:43 -0400
+Subject: [TUHS] BSD/v8 TCP/IP (was Shell control through external
+	commands)
+In-Reply-To: <20160912072052.GB74856@eureka.lemis.com>
+References: <20160912013110.ECB3B4422E@lignose.oclsc.org>
+ <20160912044432.GA74856@eureka.lemis.com>
+ <CANCZdfpUicqxu-x-3AFo-h+0X-Grfje-74Kd0Ht0J60Q-zBxhw@mail.gmail.com>
+ <20160912072052.GB74856@eureka.lemis.com>
+Message-ID: <CAC20D2O-vtSHvqAVS9C5qSD1Lt-rkiBE4tt_hFZiNS3h-aFudw@mail.gmail.com>
+
+On Mon, Sep 12, 2016 at 3:20 AM, Greg 'groggy' Lehey <grog at lemis.com> wrote:
+
+> Right, the discussion was about 4.1c.  I just wanted to confirm that
+> it was, in fact, the first version with TCP/IP.
+>
+
+I'll take a side trip to answer this question....   4.1A was the first BSD
+version that had the beginning of the wnj rewrite of the BBN code, but did
+have an IP stack based on the BBN but with the beginnings of a new API.
+(Again, if I can get some tapes read, I used to have 4.1A and 4.1B tapes).
+
+FYI: straight 4.1 (GA code if you will) did have a IP stack - just not from
+UCB nor a new API to use it.   Please remember, UCB *did not have the
+contract* for networking support for DARPA, BBN did.  For an API, the BBN
+code used the Chaosnet trick in nami of leaving text chars at the next of
+the open call as parameters - i.e. open ("/dev/tcp/mumble") and the TCP
+device would take if their.  Hence with that hack, no new system calls were
+used (just the traditional open/close/read/write).
+
+Joy would create sockets/bind et al in response to the CMU Accent System
+that they were building for DARPA on the triple-drip PERQs.   But the IP
+stack itself was from BBN (Gurwitz code).  BTW: That's were the dreadful
+mbuf's code came from.  Bill also tried to get some other stacks besides IP
+inside of the sockets framework, such as XNS and the ISO code, but in fact
+that would take much hacking to sockets before it worked (in a sense).
+
+That said, it was the release of 4.1C to the DARPA contractors and some
+other specific places (such as Sun, Apollo, and Masscomp that I know) and
+later the GA of 4.2BSD that made the IP stack for UNIX spread.   With
+BSD4.2 came two things for networking the full sockets API and sendmail as
+its SMTP implementation (the BBN smtp was not used or released).
+
+FYI: BBN (Rob) had written a somewhat OS independant IP/TCP stack (mbufs
+were created so he could be independant of any specific OS kernel's memory
+scheme).  It ran in HP's 1000s and 3000's IIRC and a few other systems.
+This was the code that was spliced in 4.1, as was the user level code
+(telnet, ftp and smtp -- this without hacking BSD's delivermail stuff).
+BBN would take 4.2 back and do an update beyond that but for whatever
+reasons, few places ever really picked that code base up (we used it in
+Stellix as we found it easier to make it parallel then the BSD code base).
+
+Also, Eric Cooper and I put the BBN stack on the original 4.1 UCB CAD
+systems on a Xerox 3M ethernet before 4.1A was available.  IIRC Sam Leffler
+was actually using the BBN code base to write the rcp/rsh/rexec and routed
+stuff after seeing some of the XNS/PUP stuff at Xerox (routed is pretty
+much a direct "rip-off" of the XNS way of doing routing) and that got
+spliced into the wnj's stuff later.
+
+Clem
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160912/102fca9f/attachment.html>
+
+From dave at horsfall.org  Tue Sep 13 06:12:23 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Tue, 13 Sep 2016 06:12:23 +1000 (EST)
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <1bjMiH-10N-00@marmaro.de>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+ <20160910174011.GF5970@dnied%tiscali.it>
+ <201609101922.u8AJMmtq024477@freefriends.org> <1bjMiH-10N-00@marmaro.de>
+Message-ID: <alpine.BSF.2.11.1609130610130.78806@aneurin.horsfall.org>
+
+On Mon, 12 Sep 2016, markus schnalke wrote:
+
+> I think I've seen many eary (pre-Shebang and even pre-#-comment) shell 
+> scripts start with a colon. Is this only a coincidence with having a 
+> comment at the beginning or was the colon character magic in some way?
+
+Minor nit: ":" is not precisely a comment, but an empty label.  Ano no, 
+it's not particularly magic in any way, as I recall.
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From doug at cs.dartmouth.edu  Tue Sep 13 06:16:20 2016
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Mon, 12 Sep 2016 16:16:20 -0400
+Subject: [TUHS] BSD/v8 TCP/IP
+Message-ID: <201609122016.u8CKGKiA040696@tahoe.cs.Dartmouth.EDU>
+
+Norman wrote
+
+The earliest stream-I/O-system-based tty driver I'm aware of was
+already in the Research kernel when I interviewed at Bell Labs
+in early 1984.  I have a vague memory that it was a couple of
+years older than that, but I cannot find any citations to
+back up either of those memories.
+
+Dennis described streams in the special Unix issue of the
+BSTJ, Oct 1984, and noted that "it runs on about 20 machines in
+... Research ... Although it is being investigated in other
+parts of AT&T Bell Laboratories, it is not generally available."
+The manuscript was received October 18, 1983.
+
+Doug
+
+Doug
+
+
+From lm at mcvoy.com  Tue Sep 13 06:27:29 2016
+From: lm at mcvoy.com (Larry McVoy)
+Date: Mon, 12 Sep 2016 13:27:29 -0700
+Subject: [TUHS] BSD/v8 TCP/IP
+In-Reply-To: <201609122016.u8CKGKiA040696@tahoe.cs.Dartmouth.EDU>
+References: <201609122016.u8CKGKiA040696@tahoe.cs.Dartmouth.EDU>
+Message-ID: <20160912202729.GA15811@mcvoy.com>
+
+I worked on the STREAMS based TCP/IP stack (at the time at Lachman
+Associates but I think the code came from Convergent, not sure).
+I ported it to the ETA-10 (weird machine) and also to SCO (yeah,
+sorry if you have to use that mess).
+
+I had quite a few conversations with dmr about it and he educated me
+that there was STREAMS and there was streams.  His was the latter 
+and it was like it was in the paper plus a few fixes.  The STREAMS
+stuff was god awful.  I'm so glad that I've almost forgotten about
+how awful.
+
+On Mon, Sep 12, 2016 at 04:16:20PM -0400, Doug McIlroy wrote:
+> Norman wrote
+> 
+> The earliest stream-I/O-system-based tty driver I'm aware of was
+> already in the Research kernel when I interviewed at Bell Labs
+> in early 1984.  I have a vague memory that it was a couple of
+> years older than that, but I cannot find any citations to
+> back up either of those memories.
+> 
+> Dennis described streams in the special Unix issue of the
+> BSTJ, Oct 1984, and noted that "it runs on about 20 machines in
+> ... Research ... Although it is being investigated in other
+> parts of AT&T Bell Laboratories, it is not generally available."
+> The manuscript was received October 18, 1983.
+> 
+> Doug
+> 
+> Doug
+
+-- 
+---
+Larry McVoy            	     lm at mcvoy.com             http://www.mcvoy.com/lm 
+
+
+From schily at schily.net  Tue Sep 13 06:42:08 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Mon, 12 Sep 2016 22:42:08 +0200
+Subject: [TUHS] BSD/v8 TCP/IP
+In-Reply-To: <201609122016.u8CKGKiA040696@tahoe.cs.Dartmouth.EDU>
+References: <201609122016.u8CKGKiA040696@tahoe.cs.Dartmouth.EDU>
+Message-ID: <57d71320.AhWuYhd/6WC7l8Eu%schily@schily.net>
+
+Doug McIlroy <doug at cs.dartmouth.edu> wrote:
+
+> Dennis described streams in the special Unix issue of the
+> BSTJ, Oct 1984, and noted that "it runs on about 20 machines in
+> ... Research ... Although it is being investigated in other
+> parts of AT&T Bell Laboratories, it is not generally available."
+> The manuscript was received October 18, 1983.
+
+Interesting, but then nobody did run a modern shell on one of these machines or 
+everybody did type slowly, so the character lossage problem did not occur.
+
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/
+
+
+From lyndon at orthanc.ca  Tue Sep 13 06:36:12 2016
+From: lyndon at orthanc.ca (Lyndon Nerenberg)
+Date: Mon, 12 Sep 2016 13:36:12 -0700 (PDT)
+Subject: [TUHS] BSD/v8 TCP/IP
+In-Reply-To: <20160912202729.GA15811@mcvoy.com>
+References: <201609122016.u8CKGKiA040696@tahoe.cs.Dartmouth.EDU>
+ <20160912202729.GA15811@mcvoy.com>
+Message-ID: <alpine.BSF.2.20.1609121331590.38801@orthanc.ca>
+
+> I worked on the STREAMS based TCP/IP stack (at the time at Lachman
+> Associates but I think the code came from Convergent, not sure).
+
+My memory of CTIX was that it was a native in-kernel BSD(-ish) 
+implementation.  At least for the SVR2-derived CTIX kernels.  I don't ever 
+recall a STREAMS-based implementation from Convergent, but I stopped using 
+CTIX in the fall of 1988.
+
+--lyndon
+
+
+
+From dave at horsfall.org  Tue Sep 13 07:36:35 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Tue, 13 Sep 2016 07:36:35 +1000 (EST)
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <alpine.BSF.2.11.1609130610130.78806@aneurin.horsfall.org>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+ <20160910174011.GF5970@dnied%tiscali.it>
+ <201609101922.u8AJMmtq024477@freefriends.org> <1bjMiH-10N-00@marmaro.de>
+ <alpine.BSF.2.11.1609130610130.78806@aneurin.horsfall.org>
+Message-ID: <alpine.BSF.2.11.1609130734490.78806@aneurin.horsfall.org>
+
+On Tue, 13 Sep 2016, Dave Horsfall wrote:
+
+> Minor nit: ":" is not precisely a comment, but an empty label.  Ano no, 
+> it's not particularly magic in any way, as I recall.
+
+Oops - I didn't know that CSH treated it specially...  I'm not a CSH 
+programmer, never have been, and never will be (it ought to attract the 
+death penalty).
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From doug at cs.dartmouth.edu  Tue Sep 13 07:39:46 2016
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Mon, 12 Sep 2016 17:39:46 -0400
+Subject: [TUHS] BSD/v8 TCP/IP
+Message-ID: <201609122139.u8CLdkQc043283@tahoe.cs.Dartmouth.EDU>
+
+> Interesting, but then nobody did run a modern shell on one of these machines or
+> everybody did type slowly, so the character lossage problem did not occur.
+
+I'm afraid I don't get the point, apparently something about the
+relative performance of stream- and non-stream tty drivers. How
+do shells get into the act? And didn't uucp, which was certainly
+not a slow typist, appear like any dial-up connection and thus
+use /dev/ttyxx? (I cannot recollect, though, when dial-up uucp
+finally ceased.)
+
+DOug
+
+
+From dave at horsfall.org  Tue Sep 13 07:48:34 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Tue, 13 Sep 2016 07:48:34 +1000 (EST)
+Subject: [TUHS] BSD/v8 TCP/IP
+In-Reply-To: <201609122139.u8CLdkQc043283@tahoe.cs.Dartmouth.EDU>
+References: <201609122139.u8CLdkQc043283@tahoe.cs.Dartmouth.EDU>
+Message-ID: <alpine.BSF.2.11.1609130747050.78806@aneurin.horsfall.org>
+
+On Mon, 12 Sep 2016, Doug McIlroy wrote:
+
+> (I cannot recollect, though, when dial-up uucp finally ceased.)
+
+I'd not be surprised if in some obscure corner of the world it's still 
+being used.
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From schily at schily.net  Tue Sep 13 07:53:45 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Mon, 12 Sep 2016 23:53:45 +0200
+Subject: [TUHS] BSD/v8 TCP/IP
+In-Reply-To: <201609122139.u8CLdkQc043283@tahoe.cs.Dartmouth.EDU>
+References: <201609122139.u8CLdkQc043283@tahoe.cs.Dartmouth.EDU>
+Message-ID: <57d723e9.8xNcmlVDu6NtFK0V%schily@schily.net>
+
+Doug McIlroy <doug at cs.dartmouth.edu> wrote:
+
+> > Interesting, but then nobody did run a modern shell on one of these machines or
+> > everybody did type slowly, so the character lossage problem did not occur.
+>
+> I'm afraid I don't get the point, apparently something about the
+> relative performance of stream- and non-stream tty drivers. How
+> do shells get into the act? And didn't uucp, which was certainly
+> not a slow typist, appear like any dial-up connection and thus
+> use /dev/ttyxx? (I cannot recollect, though, when dial-up uucp
+> finally ceased.)
+
+In 1982, I created a conceptional implementation and in 1984, I integrated a 
+cursor editable history into my shell.
+
+As a result, this shell needed to switch the tty between raw and cooked mode.
+With the traditional UNIX tty driver, this was no problem, but with the unfixed
+AT&T strams based tty driver, this causes character loss.
+
+With such a shell, the conceptional bug in the original AT&T streams caused 
+character loss when you type fast while the last command is going to terminate 
+and the shell takes the input while switching the tty into raw mode.
+
+With the fix from Sun from around 1989, there is a new streams message that 
+informs the lower side of the stream about how many characters re going to be 
+read in raw mode. This permits to keep the other caracters in the edit buffer 
+and avoids the character loss seen with the original AT&T streams driver 
+concept.
+
+All modern shells use such an integrated history editor....
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/
+
+
+From crossd at gmail.com  Tue Sep 13 09:49:58 2016
+From: crossd at gmail.com (Dan Cross)
+Date: Mon, 12 Sep 2016 19:49:58 -0400
+Subject: [TUHS] BSD/v8 TCP/IP
+In-Reply-To: <57d723e9.8xNcmlVDu6NtFK0V%schily@schily.net>
+References: <201609122139.u8CLdkQc043283@tahoe.cs.Dartmouth.EDU>
+ <57d723e9.8xNcmlVDu6NtFK0V%schily@schily.net>
+Message-ID: <CAEoi9W7fp1Wxd=eB6dSAV_y20kKczK1t3z7sGt2jSJjhsuWAGQ@mail.gmail.com>
+
+On Mon, Sep 12, 2016 at 5:53 PM, Joerg Schilling <schily at schily.net> wrote:
+
+> Doug McIlroy <doug at cs.dartmouth.edu> wrote:
+>
+> > > Interesting, but then nobody did run a modern shell on one of these
+> machines or
+> > > everybody did type slowly, so the character lossage problem did not
+> occur.
+> >
+> > I'm afraid I don't get the point, apparently something about the
+> > relative performance of stream- and non-stream tty drivers. How
+> > do shells get into the act? And didn't uucp, which was certainly
+> > not a slow typist, appear like any dial-up connection and thus
+> > use /dev/ttyxx? (I cannot recollect, though, when dial-up uucp
+> > finally ceased.)
+>
+> In 1982, I created a conceptional implementation and in 1984, I integrated
+> a
+> cursor editable history into my shell.
+>
+> As a result, this shell needed to switch the tty between raw and cooked
+> mode.
+> With the traditional UNIX tty driver, this was no problem, but with the
+> unfixed
+> AT&T strams based tty driver, this causes character loss.
+>
+> With such a shell, the conceptional bug in the original AT&T streams caused
+> character loss when you type fast while the last command is going to
+> terminate
+> and the shell takes the input while switching the tty into raw mode.
+>
+> With the fix from Sun from around 1989, there is a new streams message that
+> informs the lower side of the stream about how many characters re going to
+> be
+> read in raw mode. This permits to keep the other caracters in the edit
+> buffer
+> and avoids the character loss seen with the original AT&T streams driver
+> concept.
+>
+
+AT&T STREAMS and research streams (note difference in case and specificity
+of origin) were two separate things. v8 would have had the latter; you are
+presumably referring to systems using the former. It is unsurprising that
+bugs in the two would, in many cases, be disjoint: that is, the bug you are
+referring to in AT&T STREAMS quite possibly wasn't in the research streams.
+
+All modern shells use such an integrated history editor....
+>
+
+There is considerable difference on the meaning of "modern" with respect to
+this facility in recent shells, but this isn't the place for a holy war.
+
+        - Dan C.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160912/605c1a0b/attachment.html>
+
+From mascheck at in-ulm.de  Tue Sep 13 10:17:55 2016
+From: mascheck at in-ulm.de (Sven Mascheck)
+Date: Tue, 13 Sep 2016 02:17:55 +0200
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <57d6a482.xj2/kMA3y0vR9uVo%schily@schily.net>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+ <20160910174011.GF5970@dnied%tiscali.it>
+ <201609101922.u8AJMmtq024477@freefriends.org>
+ <1bjMiH-10N-00@marmaro.de>
+ <57d6748e.CNiWgn0QxOuugldp%schily@schily.net>
+ <alpine.DEB.2.11.1609121337110.28546@grey.csi.cam.ac.uk>
+ <57d6a482.xj2/kMA3y0vR9uVo%schily@schily.net>
+Message-ID: <20160913001755.GA266082@lisa.in-ulm.de>
+
+On Mon, Sep 12, 2016 at 02:50:10PM +0200, Joerg Schilling wrote:
+> > > The colon was introduced by AT&T around 1983.
+> > 
+> > It's a builtin in the v7 Bourne shell - see SYSNULL in msg.c (which
+> > has the command name table) and in xec.c (which has the implementation)
+> 
+> You are missinterpeting things.
+> 
+> The colon in line one as a hint to a modified csh to call the Bourne Shell  
+> first appeared around 1983.
+
+I'm still confused (you're short with context): what does "introduced by AT&T" mean?
+
+I only know the #-hacked csh from 2BSD+ ('79), and the #-hacked sh from 3BSD+ ('80).
+How would ":" as a hint in this respect show up on other systems?
+
+
+BTW: academic but funny side effect of : as no-op instead of real comment:
+
+: `echo output 1>&2`
+
+actually writes to stderr.
+
+
+Normal Wilson wrote:
+
+> [...] A hack emerged: if csh encountered a script file, it would read the
+> first character; if that was '#' it was a csh script, otherwise it handed
+> off to /bin/sh.
+
+lesser known fact: even sh was hacked on BSDs (since 3BSD) with this #-csh magic,
+and also exec'ed to csh. This then co-existed with the soon coming implementation
+of "#" as comment character.
+
+-Sven
+
+
+From mascheck at in-ulm.de  Tue Sep 13 11:45:51 2016
+From: mascheck at in-ulm.de (Sven Mascheck)
+Date: Tue, 13 Sep 2016 03:45:51 +0200
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <20160913001755.GA266082@lisa.in-ulm.de>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+ <20160910174011.GF5970@dnied%tiscali.it>
+ <201609101922.u8AJMmtq024477@freefriends.org>
+ <1bjMiH-10N-00@marmaro.de>
+ <57d6748e.CNiWgn0QxOuugldp%schily@schily.net>
+ <alpine.DEB.2.11.1609121337110.28546@grey.csi.cam.ac.uk>
+ <57d6a482.xj2/kMA3y0vR9uVo%schily@schily.net>
+ <20160913001755.GA266082@lisa.in-ulm.de>
+Message-ID: <20160913014551.GA285265@lisa.in-ulm.de>
+
+Sven Mascheck wrote:
+> Joerg Schilling wrote:
+
+> > > > The colon was introduced by AT&T around 1983.
+> [...]
+> I'm still confused (you're short with context): what does "introduced by AT&T" mean?
+
+Ok, so they included csh with SysV, but SVR1 had no #! yet.
+Less confused but still curious: what problems did show up with : then?
+
+-Sven
+
+
+From lyndon at orthanc.ca  Tue Sep 13 11:52:02 2016
+From: lyndon at orthanc.ca (Lyndon Nerenberg)
+Date: Mon, 12 Sep 2016 18:52:02 -0700
+Subject: [TUHS] BSD/v8 TCP/IP
+In-Reply-To: <201609122139.u8CLdkQc043283@tahoe.cs.Dartmouth.EDU>
+References: <201609122139.u8CLdkQc043283@tahoe.cs.Dartmouth.EDU>
+Message-ID: <A56F577C-B39E-4D1A-AB2A-C4B939D2B3F7@orthanc.ca>
+
+>> I cannot recollect, though, when dial-up uucp
+> finally ceased.)
+
+The final posts to comp.mail.maps went out in September, 2000.  Although by then the majority of UUCP traffic was on TCP port 540.
+
+In Canada at least, cable modems started rolling out in late 1996 or early 1997.  I dropped my dialup links in the summer of 1997, so I would think by the end of 1998 the majority of UUCP was over TCP (if not moved to SMTP).
+
+--{ihnp4!alberta,pyramid,uunet,uwvax}!ncc!lyndon,auvax!lyndon,canada!lyndon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 801 bytes
+Desc: Message signed with OpenPGP using GPGMail
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160912/92348955/attachment.sig>
+
+From lm at mcvoy.com  Tue Sep 13 12:37:06 2016
+From: lm at mcvoy.com (Larry McVoy)
+Date: Mon, 12 Sep 2016 19:37:06 -0700
+Subject: [TUHS] BSD/v8 TCP/IP
+In-Reply-To: <A56F577C-B39E-4D1A-AB2A-C4B939D2B3F7@orthanc.ca>
+References: <201609122139.u8CLdkQc043283@tahoe.cs.Dartmouth.EDU>
+ <A56F577C-B39E-4D1A-AB2A-C4B939D2B3F7@orthanc.ca>
+Message-ID: <20160913023706.GD15811@mcvoy.com>
+
+On Mon, Sep 12, 2016 at 06:52:02PM -0700, Lyndon Nerenberg wrote:
+> --{ihnp4!alberta,pyramid,uunet,uwvax}!ncc!lyndon,auvax!lyndon,canada!lyndon
+
+Ahh, the memories.  I was 
+
+{ihnp4!alberta,pyramid,uunet,uwvax}!geophys!geowhiz!lm
+
+and then I was super stoked when I was 
+
+...!uwvax!lm
+
+I think.  Might have been a uw-research or something like that in there.
+
+Loved the Geophysics department but found my home at the Comp Sci department.
+
+--lm
+
+
+From brantleycoile at me.com  Tue Sep 13 18:12:50 2016
+From: brantleycoile at me.com (Brantley Coile)
+Date: Tue, 13 Sep 2016 04:12:50 -0400
+Subject: [TUHS] BSD/v8 TCP/IP
+In-Reply-To: <20160913023706.GD15811@mcvoy.com>
+References: <201609122139.u8CLdkQc043283@tahoe.cs.Dartmouth.EDU>
+ <A56F577C-B39E-4D1A-AB2A-C4B939D2B3F7@orthanc.ca>
+ <20160913023706.GD15811@mcvoy.com>
+Message-ID: <865FC468-D9D3-42E6-BA42-BF1D57614631@me.com>
+
+...!akgua!ganehd!bwc. 1983, the same week as "The Right Stuff" was released. In 1988 it was ..!research!dtscp1!bwc. 
+
+Sent from my iPad
+
+> On Sep 12, 2016, at 10:37 PM, Larry McVoy <lm at mcvoy.com> wrote:
+> 
+>> On Mon, Sep 12, 2016 at 06:52:02PM -0700, Lyndon Nerenberg wrote:
+>> --{ihnp4!alberta,pyramid,uunet,uwvax}!ncc!lyndon,auvax!lyndon,canada!lyndon
+> 
+> Ahh, the memories.  I was 
+> 
+> {ihnp4!alberta,pyramid,uunet,uwvax}!geophys!geowhiz!lm
+> 
+> and then I was super stoked when I was 
+> 
+> ...!uwvax!lm
+> 
+> I think.  Might have been a uw-research or something like that in there.
+> 
+> Loved the Geophysics department but found my home at the Comp Sci department.
+> 
+> --lm
+
+
+From schily at schily.net  Tue Sep 13 19:16:57 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Tue, 13 Sep 2016 11:16:57 +0200
+Subject: [TUHS] BSD/v8 TCP/IP
+In-Reply-To: <CAEoi9W7fp1Wxd=eB6dSAV_y20kKczK1t3z7sGt2jSJjhsuWAGQ@mail.gmail.com>
+References: <201609122139.u8CLdkQc043283@tahoe.cs.Dartmouth.EDU>
+ <57d723e9.8xNcmlVDu6NtFK0V%schily@schily.net>
+ <CAEoi9W7fp1Wxd=eB6dSAV_y20kKczK1t3z7sGt2jSJjhsuWAGQ@mail.gmail.com>
+Message-ID: <57d7c409.CAXBeKfBxosryqgB%schily@schily.net>
+
+Dan Cross <crossd at gmail.com> wrote:
+
+> All modern shells use such an integrated history editor....
+> >
+>
+> There is considerable difference on the meaning of "modern" with respect to
+> this facility in recent shells, but this isn't the place for a holy war.
+
+>From what I could read in the net (I was not able to get an old ksh source)
+older ksh versions did call "vi" as external program to edit the history. 
+
+This is why there still is the idiosyncratic "fc" command in ksh. With this 
+interface, you could not type ahead as you first need to call "fc" to be able 
+to edit a command line. Without type aead, there is no character loss with the 
+original AT&T streams concept.
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/
+
+
+From schily at schily.net  Tue Sep 13 19:20:28 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Tue, 13 Sep 2016 11:20:28 +0200
+Subject: [TUHS] Shell control through external commands
+In-Reply-To: <20160913001755.GA266082@lisa.in-ulm.de>
+References: <201607151647.u6FGlqvW037575@tahoe.cs.Dartmouth.EDU>
+ <20160910174011.GF5970@dnied%tiscali.it>
+ <201609101922.u8AJMmtq024477@freefriends.org>
+ <1bjMiH-10N-00@marmaro.de>
+ <57d6748e.CNiWgn0QxOuugldp%schily@schily.net>
+ <alpine.DEB.2.11.1609121337110.28546@grey.csi.cam.ac.uk>
+ <57d6a482.xj2/kMA3y0vR9uVo%schily@schily.net>
+ <20160913001755.GA266082@lisa.in-ulm.de>
+Message-ID: <57d7c4dc.7Y3jjTU+LJEvP73+%schily@schily.net>
+
+Sven Mascheck <mascheck at in-ulm.de> wrote:
+
+> On Mon, Sep 12, 2016 at 02:50:10PM +0200, Joerg Schilling wrote:
+> > > > The colon was introduced by AT&T around 1983.
+> > > 
+> > > It's a builtin in the v7 Bourne shell - see SYSNULL in msg.c (which
+> > > has the command name table) and in xec.c (which has the implementation)
+> > 
+> > You are missinterpeting things.
+> > 
+> > The colon in line one as a hint to a modified csh to call the Bourne Shell  
+> > first appeared around 1983.
+>
+> I'm still confused (you're short with context): what does "introduced by AT&T" mean?
+>
+> I only know the #-hacked csh from 2BSD+ ('79), and the #-hacked sh from 3BSD+ ('80).
+> How would ":" as a hint in this respect show up on other systems?
+
+This is long ago, so my memory is not good anymore.
+
+Aprox. 30 years ago, I ported my shell to a svr3 system and discovered problems.
+AFAIR, this system had special treatment for scripts starting with ":".
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/
+
+
+From schily at schily.net  Tue Sep 13 19:29:25 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Tue, 13 Sep 2016 11:29:25 +0200
+Subject: [TUHS] BSD/v8 TCP/IP
+In-Reply-To: <20160913023706.GD15811@mcvoy.com>
+References: <201609122139.u8CLdkQc043283@tahoe.cs.Dartmouth.EDU>
+ <A56F577C-B39E-4D1A-AB2A-C4B939D2B3F7@orthanc.ca>
+ <20160913023706.GD15811@mcvoy.com>
+Message-ID: <57d7c6f5.jh508GbJrbv2cOCP%schily@schily.net>
+
+Larry McVoy <lm at mcvoy.com> wrote:
+
+> On Mon, Sep 12, 2016 at 06:52:02PM -0700, Lyndon Nerenberg wrote:
+> > --{ihnp4!alberta,pyramid,uunet,uwvax}!ncc!lyndon,auvax!lyndon,canada!lyndon
+>
+> Ahh, the memories.  I was 
+>
+> {ihnp4!alberta,pyramid,uunet,uwvax}!geophys!geowhiz!lm
+>
+> and then I was super stoked when I was 
+>
+> ...!uwvax!lm
+
+In the 1980s I routed our whole companies (H. Berthold AG) mail traffic 
+through "sun" ;-), so you could reach me via sun!berthold!joerg
+
+Well, we sold about 1/4 of all sun3 machines ever made, so Sun had an interest 
+to support us....
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/
+
+
+From dot at dotat.at  Tue Sep 13 20:52:31 2016
+From: dot at dotat.at (Tony Finch)
+Date: Tue, 13 Sep 2016 11:52:31 +0100
+Subject: [TUHS] BSD/v8 TCP/IP (was Shell control through external
+ commands)
+In-Reply-To: <CAC20D2O-vtSHvqAVS9C5qSD1Lt-rkiBE4tt_hFZiNS3h-aFudw@mail.gmail.com>
+References: <20160912013110.ECB3B4422E@lignose.oclsc.org>
+ <20160912044432.GA74856@eureka.lemis.com>
+ <CANCZdfpUicqxu-x-3AFo-h+0X-Grfje-74Kd0Ht0J60Q-zBxhw@mail.gmail.com>
+ <20160912072052.GB74856@eureka.lemis.com>
+ <CAC20D2O-vtSHvqAVS9C5qSD1Lt-rkiBE4tt_hFZiNS3h-aFudw@mail.gmail.com>
+Message-ID: <alpine.DEB.2.11.1609131150460.14525@grey.csi.cam.ac.uk>
+
+Clem Cole <clemc at ccc.com> wrote:
+>
+> Joy would create sockets/bind et al in response to the CMU Accent System
+> that they were building for DARPA on the triple-drip PERQs.
+
+Is "triple-drip" a joke on Three Rivers?
+
+Tony.
+-- 
+f.anthony.n.finch  <dot at dotat.at>  http://dotat.at/  -  I xn--zr8h punycode
+Lundy, Fastnet, Irish Sea: North 4 or 5, increasing 6 or 7 for a time.
+Moderate or rough. Thundery showers. Good, occasionally poor.
+
+
+From clemc at ccc.com  Tue Sep 13 22:54:14 2016
+From: clemc at ccc.com (Clem Cole)
+Date: Tue, 13 Sep 2016 08:54:14 -0400
+Subject: [TUHS] BSD/v8 TCP/IP (was Shell control through external
+	commands)
+In-Reply-To: <alpine.DEB.2.11.1609131150460.14525@grey.csi.cam.ac.uk>
+References: <20160912013110.ECB3B4422E@lignose.oclsc.org>
+ <20160912044432.GA74856@eureka.lemis.com>
+ <CANCZdfpUicqxu-x-3AFo-h+0X-Grfje-74Kd0Ht0J60Q-zBxhw@mail.gmail.com>
+ <20160912072052.GB74856@eureka.lemis.com>
+ <CAC20D2O-vtSHvqAVS9C5qSD1Lt-rkiBE4tt_hFZiNS3h-aFudw@mail.gmail.com>
+ <alpine.DEB.2.11.1609131150460.14525@grey.csi.cam.ac.uk>
+Message-ID: <CAC20D2OZqu=-SgDg4m=8daELhNPk7eyYgzcb++efzcRCquLVDw@mail.gmail.com>
+
+below
+
+On Tue, Sep 13, 2016 at 6:52 AM, Tony Finch <dot at dotat.at> wrote:
+
+> Clem Cole <clemc at ccc.com> wrote:
+> >
+> > Joy would create sockets/bind et al in response to the CMU Accent System
+> > that they were building for DARPA on the triple-drip PERQs.
+>
+> Is "triple-drip" a joke on Three Rivers?
+
+​Sorry - yes, force of habit of many years ago, ​
+
+​   I suppose I should be happy that my fingers did not call the Perq by
+it's sometimes (CMU) name, the "PascAlto."​   A number of my friends and
+colleagues in those days made money by working over there.
+
+That said, I do miss the GPD - aka the Graphics Wonder which was, IMHO,
+their best product.   A vector graphics system with a dedicated PDP-11.
+Some of the coolest programs I ever ran on the CMU PDP-10's displayed on
+the "GDPs."   I still have a technical manual for it and have had a private
+dream of trying to put it into simh to try to resurrect some of those old
+codes (ah yes -- something else for my retirement "bucket list" - real work
+gets in the way).
+
+Clem
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160913/9ce99808/attachment.html>
+
+From lm at mcvoy.com  Wed Sep 14 00:35:20 2016
+From: lm at mcvoy.com (Larry McVoy)
+Date: Tue, 13 Sep 2016 07:35:20 -0700
+Subject: [TUHS] BSD/v8 TCP/IP
+In-Reply-To: <57d7c6f5.jh508GbJrbv2cOCP%schily@schily.net>
+References: <201609122139.u8CLdkQc043283@tahoe.cs.Dartmouth.EDU>
+ <A56F577C-B39E-4D1A-AB2A-C4B939D2B3F7@orthanc.ca>
+ <20160913023706.GD15811@mcvoy.com>
+ <57d7c6f5.jh508GbJrbv2cOCP%schily@schily.net>
+Message-ID: <20160913143520.GF15811@mcvoy.com>
+
+On Tue, Sep 13, 2016 at 11:29:25AM +0200, Joerg Schilling wrote:
+> Larry McVoy <lm at mcvoy.com> wrote:
+> 
+> > On Mon, Sep 12, 2016 at 06:52:02PM -0700, Lyndon Nerenberg wrote:
+> > > --{ihnp4!alberta,pyramid,uunet,uwvax}!ncc!lyndon,auvax!lyndon,canada!lyndon
+> >
+> > Ahh, the memories.  I was 
+> >
+> > {ihnp4!alberta,pyramid,uunet,uwvax}!geophys!geowhiz!lm
+> >
+> > and then I was super stoked when I was 
+> >
+> > ...!uwvax!lm
+> 
+> In the 1980s I routed our whole companies (H. Berthold AG) mail traffic 
+> through "sun" ;-), so you could reach me via sun!berthold!joerg
+> 
+> Well, we sold about 1/4 of all sun3 machines ever made, so Sun had an interest 
+> to support us....
+
+I'll bet.  By the late 1980's I left all this ! stuff behind and was
+lm at sun.com, I loved having that email (and had to do some begging to
+get it, everyone else was first.last at sun.com or something like that,
+but I knew Guy Harris and he knew whoever ran sun.com so there ya go).
+
+
+From arnold at skeeve.com  Sun Sep 18 05:17:50 2016
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Sat, 17 Sep 2016 22:17:50 +0300
+Subject: [TUHS] [ off topic ] Looking for old versions of mawk ...
+Message-ID: <201609171917.u8HJHowG004239@skeeve.com>
+
+Hi All.
+
+I'm looking for old tarballs of mawk. Specifically all versions of
+mawk 1.2 and mawk 1.3 prior to 1.3.2.  I found a 1.3.2 tarball on the
+net (not sure how authentic it is ; if you have a real one, please let
+me know) and I have 1.3.3.
+
+Much thanks,
+
+Arnold Robbins
+
+
+From random832 at fastmail.com  Sun Sep 18 05:50:52 2016
+From: random832 at fastmail.com (Random832)
+Date: Sat, 17 Sep 2016 15:50:52 -0400
+Subject: [TUHS] [ off topic ] Looking for old versions of mawk ...
+In-Reply-To: <201609171917.u8HJHowG004239@skeeve.com>
+References: <201609171917.u8HJHowG004239@skeeve.com>
+Message-ID: <1474141852.279225.728831529.23F1890F@webmail.messagingengine.com>
+
+On Sat, Sep 17, 2016, at 15:17, Aharon Robbins wrote:
+> Hi All.
+> 
+> I'm looking for old tarballs of mawk. Specifically all versions of
+> mawk 1.2 and mawk 1.3 prior to 1.3.2.  I found a 1.3.2 tarball on the
+> net (not sure how authentic it is ; if you have a real one, please let
+> me know) and I have 1.3.3.
+
+There are some shars of 1.0 and 1.1 available on comp.sources.reviewed
+through google groups. I also found a (not clean) Debian tarball of
+"1.2.2-1", and a Red Hat SRPM [which is a cpio archive that contains an
+apparently clean tarball as a file inside it] of "1.2.2-7".
+
+http://www.ibiblio.org/pub/historic-linux/distributions/debian-1.1/i386/buzz/source/misc/mawk-1.2.2-1.tar.gz
+http://www.ibiblio.org/pub/historic-linux/distributions/redhat-5.0/src/SRPMS/mawk-1.2.2-7.src.rpm
+
+
+From reed at reedmedia.net  Sun Sep 18 06:27:58 2016
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Sat, 17 Sep 2016 15:27:58 -0500 (CDT)
+Subject: [TUHS] [ off topic ] Looking for old versions of mawk ...
+In-Reply-To: <201609171917.u8HJHowG004239@skeeve.com>
+References: <201609171917.u8HJHowG004239@skeeve.com>
+Message-ID: <alpine.NEB.2.11.1609171526050.10423@t1.m.reedmedia.net>
+
+1.1 is in NetBSD 0.8.
+I have a copy of it if needed.
+
+$ tail -4 /home/reed/book/bsd-history/archives/1990s/netbsd/NetBSD-0.8-EXTRACTED/usr/src/usr.bin/awk/ACKNOWLEDGMENT 
+Arnold Robbins kept me current on POSIX standards for AWK, and
+explained some of the "dark corners".
+
+
+
+
+
+From usotsuki at buric.co  Sun Sep 18 07:19:08 2016
+From: usotsuki at buric.co (Steve Nickolas)
+Date: Sat, 17 Sep 2016 17:19:08 -0400 (EDT)
+Subject: [TUHS] [ off topic ] Looking for old versions of mawk ...
+In-Reply-To: <201609171917.u8HJHowG004239@skeeve.com>
+References: <201609171917.u8HJHowG004239@skeeve.com>
+Message-ID: <alpine.BSF.2.02.1609171718001.40313@frieza.hoshinet.org>
+
+On Sat, 17 Sep 2016, Aharon Robbins wrote:
+
+> Hi All.
+>
+> I'm looking for old tarballs of mawk. Specifically all versions of
+> mawk 1.2 and mawk 1.3 prior to 1.3.2.  I found a 1.3.2 tarball on the
+> net (not sure how authentic it is ; if you have a real one, please let
+> me know) and I have 1.3.3.
+>
+> Much thanks,
+>
+> Arnold Robbins
+>
+
+http://www.ibiblio.org/pub/micro/pc-stuff/freedos/gnuish/mawk122s.zip
+
+This any use?  I think it's the source to an MS-DOS port, but the layout 
+suggests it might just be a converted tarball.
+
+-uso.
+
+
+From arnold at skeeve.com  Mon Sep 19 12:43:48 2016
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Sun, 18 Sep 2016 20:43:48 -0600
+Subject: [TUHS] [ off topic ] Looking for old versions of mawk ...
+In-Reply-To: <alpine.BSF.2.02.1609171718001.40313@frieza.hoshinet.org>
+References: <201609171917.u8HJHowG004239@skeeve.com>
+ <alpine.BSF.2.02.1609171718001.40313@frieza.hoshinet.org>
+Message-ID: <201609190243.u8J2hmeF029457@freefriends.org>
+
+Steve Nickolas <usotsuki at buric.co> wrote:
+
+> On Sat, 17 Sep 2016, Aharon Robbins wrote:
+>
+> > Hi All.
+> >
+> > I'm looking for old tarballs of mawk. Specifically all versions of
+> > mawk 1.2 and mawk 1.3 prior to 1.3.2.  I found a 1.3.2 tarball on the
+> > net (not sure how authentic it is ; if you have a real one, please let
+> > me know) and I have 1.3.3.
+> >
+> > Much thanks,
+> >
+> > Arnold Robbins
+> >
+>
+> http://www.ibiblio.org/pub/micro/pc-stuff/freedos/gnuish/mawk122s.zip
+>
+> This any use?  I think it's the source to an MS-DOS port, but the layout 
+> suggests it might just be a converted tarball.
+>
+> -uso.
+
+I've pulled it down and will look at it.
+
+Thanks!
+
+Arnold
+
+
+From arnold at skeeve.com  Mon Sep 19 12:43:15 2016
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Sun, 18 Sep 2016 20:43:15 -0600
+Subject: [TUHS] [ off topic ] Looking for old versions of mawk ...
+In-Reply-To: <alpine.NEB.2.11.1609171526050.10423@t1.m.reedmedia.net>
+References: <201609171917.u8HJHowG004239@skeeve.com>
+ <alpine.NEB.2.11.1609171526050.10423@t1.m.reedmedia.net>
+Message-ID: <201609190243.u8J2hFk0029421@freefriends.org>
+
+"Jeremy C. Reed" <reed at reedmedia.net> wrote:
+
+> 1.1 is in NetBSD 0.8.
+> I have a copy of it if needed.
+>
+> $ tail -4 /home/reed/book/bsd-history/archives/1990s/netbsd/NetBSD-0.8-EXTRACTED/usr/src/usr.bin/awk/ACKNOWLEDGMENT 
+> Arnold Robbins kept me current on POSIX standards for AWK, and
+> explained some of the "dark corners".
+>
+>
+
+Sure, please send it on.
+
+Arnold
+
+
+From jnc at mercury.lcs.mit.edu  Tue Sep 20 00:53:42 2016
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon, 19 Sep 2016 10:53:42 -0400 (EDT)
+Subject: [TUHS] Memory mapping device used on PDP-11/20 Unix
+Message-ID: <20160919145342.29E9618C0C3@mercury.lcs.mit.edu>
+
+So the "Odd Comments and Strange Doings in Unix" page:
+
+  http://www.bell-labs.com/usr/dmr/www/odd.html
+
+mentions (at the bottom) a "PDP-11/20 with KS-11 add-on". I'm trying
+to find info about the KS11, but haven't been able to locate anything.
+
+Does anyone have info on it, or, failing that, is there source for an early
+version of Unix that uses it? (I can create something of a User's Manual for
+it by reverse engineering from the source.)
+
+Thanks!
+
+	Noel
+
+
+From ron at ronnatalie.com  Tue Sep 20 03:22:32 2016
+From: ron at ronnatalie.com (Ron Natalie)
+Date: Mon, 19 Sep 2016 13:22:32 -0400
+Subject: [TUHS] Memory mapping device used on PDP-11/20 Unix
+In-Reply-To: <20160919145342.29E9618C0C3@mercury.lcs.mit.edu>
+References: <20160919145342.29E9618C0C3@mercury.lcs.mit.edu>
+Message-ID: <063a01d2129a$684b6200$38e22600$@ronnatalie.com>
+
+You have two things.   First was the 11/20 memory extension option, the MX11
+and then the memory protection system the KS11.   Both came out of the DEC
+CSS (the Kludge department).     I believe the MX was the same as the other
+non-split I/D memory extensions (like the 34/40).   Don't know about the KS.
+
+
+
+
+
+
+From grog at lemis.com  Tue Sep 20 09:43:47 2016
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Tue, 20 Sep 2016 09:43:47 +1000
+Subject: [TUHS] BSD History Was: Shell control through external commands
+In-Reply-To: <201609181607.u8IG7jj4042387@chez.mckusick.com>
+References: <201609181607.u8IG7jj4042387@chez.mckusick.com>
+Message-ID: <20160919234345.GB1067@eureka.lemis.com>
+
+Forwarded with permission.
+
+On Sunday, 18 September 2016 at  9:07:45 -0700, Kirk McKusick wrote:
+> On Monday, 12 September 2016 at 11:33:48 +0200, Joerg Schilling wrote:
+>> norman at oclsc.org (Norman Wilson) wrote:
+>>
+>>> I don't think the BSD kernel when adopted had much, if any,
+>>> of sockets, Berkeley's TCP/IP, McKusick's FFS; if it did,
+>>> they were excised.  Likewise any remaining trace of V7's
+>>> mpx(2) multiplexed-file IPC.
+>>
+>> From looking at the CSRG sources, it seems that the filesystem
+>> project has been founded by Bill Joy and Kirk approached the project
+>> a year (or more) later and implemented only the parts that are
+>> related to the block allocation.
+>>
+>> Does someone know more?
+>>
+>> Joerg
+>
+> The 4.1a distribution had the initial socket interface with a
+> prerelease of the BBN TCP/IP under it. There was wide distribution
+> of 4.1a. The 4.1b distribution had the fast filesystem added and
+> a more mature socket interface (notably the listen/accept model
+> added by Sam Leffler). There was very limited distribution of 4.1b.
+> The 4.1c distribution had the finishing touches on the socket
+> interface and added the rename system call to the filesystem.
+> It also added the reliable signal interface. There was very wide
+> distribution of 4.1c as there was a 9-month delay in the distribution
+> of 4.2BSD while DARPA, BBN, and Berkeley debated whether the prerelease
+> of BBN's TCP/IP should be replaced with BBN's finished version. In
+> the end the TCP/IP was not replaced as it had had so much field
+> testing and improvement by the folks running the BSD releases that
+> it was deemed more performant and reliable. There had been a plan
+> to release 4.1d that would have the new virtual memory (mmap)
+> interface, but the delay in getting out 4.2BSD caused that addition
+> to be delayed for the 4.3BSD release.
+>
+> As far as the filesystem is concerned, Bill Joy had done an initial
+> design primarily coming up with the idea of cylinder groups as a
+> way to distribute the block and inode bitmaps across the disk in
+> manageable size pieces. When he handed the project off to me I
+> received a single header file that defined his prototype for the
+> superblock and the cylinder group structures. I did all of the
+> coding from there with Bill doing design review. My feedback from
+> the folks at the labs was that they were not interested in incorporating
+> the fast filesystem because it tripled the size of the filesystem
+> code (from 400 to 1200 lines) and because it needlessly put
+> functionality into the kernel that could be done in userland
+> (mkdir/rmdir/rename which together were 400 of the 1200 lines of code).
+>
+> 	Kirk McKusick
+
+--
+Sent from my desktop computer.
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft mail program
+reports problems, please read http://lemis.com/broken-MUA
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 181 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160920/19c94a8e/attachment.sig>
+

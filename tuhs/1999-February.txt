@@ -1,0 +1,2181 @@
+From dave at fgh.geac.com.au  Mon Feb  1 21:21:28 1999
+From: dave at fgh.geac.com.au (Dave Horsfall)
+Date: Mon, 1 Feb 1999 22:21:28 +1100 (EST)
+Subject: Old UNIX file system formats
+In-Reply-To: <199902010020.TAA29097@math.uwaterloo.ca>
+Message-ID: <Pine.GSO.4.03.9902012214270.10349-100000@fgh>
+
+On Sun, 31 Jan 1999, Ken Wellsch wrote:
+
+> I didn't see mention of the flag "HUGE" WRT the V6 file format.
+> Now I may be being mislead from my memory of Venix 1.x which is
+> a derivative of V6 (while Venix 2.x is SysIII I think).  If the
+> HUGE bit is set in the i-node, then and only then is the 8th
+> index pointer treated as the indirection variety.  Thus 8 block
+> or less files I think are directly indexed.  -- Ken
+
+I think you're confusing LARGE with HUGE.  I don't have my Edition 5
+manual handy, but in my Edition 6 manual if the LARGE bit is set then
+the first seven inode pointers are indirect blocks (otherwise all
+eight blocks are direct), and the eighth block is a double-indirect block.
+
+-- 
+Dave Horsfall VK2KFU  dave at geac.com.au  Ph: +61 2 9978-7493 Fx: +61 2 9978-7422
+Geac Computers P/L (FGH Division) 2/57 Christie St, St Leonards 2065, Australia
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id EAA29200
+	for pups-liszt; Tue, 2 Feb 1999 04:57:31 +1100 (EST)
+
+From erin at coffee.corliss.net  Tue Feb  2 04:01:14 1999
+From: erin at coffee.corliss.net (Erin W. Corliss)
+Date: Mon, 1 Feb 1999 10:01:14 -0800 (PST)
+Subject: Old UNIX file system formats
+In-Reply-To: <199902010020.TAA29097@math.uwaterloo.ca>
+Message-ID: <Pine.LNX.3.96.990201095832.20104A-100000@coffee.corliss.net>
+
+> I didn't see mention of the flag "HUGE" WRT the V6 file format.
+> Now I may be being mislead from my memory of Venix 1.x which is
+> a derivative of V6 (while Venix 2.x is SysIII I think).  If the
+> HUGE bit is set in the i-node, then and only then is the 8th
+> index pointer treated as the indirection variety.  Thus 8 block
+> or less files I think are directly indexed.  -- Ken
+
+Hmm...  I wrote a disk image editor in Visual Basic without knowing the
+specs for the filesystem -- I set it up so that if the 9th pointer is zero
+and the filesize is greater than one block, then it assumed the block
+pointed to by the 8th pointer was a list of blocks in the file.
+
+
+
+From mxs46 at k2.scl.cwru.edu  Tue Feb  2 15:22:10 1999
+From: mxs46 at k2.scl.cwru.edu (Michael Sokolov)
+Date: Tue, 2 Feb 1999 00:22:10 -0500
+Subject: Hardware free to a good home
+Message-ID: <199902020522.AAA07686@skybridge.scl.cwru.edu>
+
+Dear Ladies and Gentlemen,
+
+I have got some hardware I have to get rid of by the end of February, and it's
+free to any of you guys if you are willing to come and pick it up in Cleveland,
+Ohio, USA.
+
+Last November I received a load of equipment from one company here in
+Cleveland. It was a complicated network of CPUs and peripherals of all makes
+and models put together by Xerox and intended to be used as a dedicated
+document processing system. The CPUs included one VAX, three unidentifiable
+towers, and a bunch of PCs. I'm using the VAX and all disk and tape drives
+myself for my own purposes, and I'm selling the PCs, but still I've got those
+three unidentifiable towers and three very funky monitors that were attached to
+them. There is also a very funky laser printer attached to one of them. Given
+that the VAX and all disk and tape drives have been taken out of the equation,
+it's unlikely that the rest of the stuff can still be used for that dedicated
+document processing whatever thing, but the towers have some apparently generic
+controller boards in them (VME or something like that) and other parts that can
+be raided for. Who knows, maybe even the CPUs are standard (probably some 68K),
+in which case someone who knows more about this than I do (NULL) may be able to
+actually use these machines for something.
+
+The only identification on this equipment are the Xerox model numbers. One of
+the towers was called NS8090 File Server. It had an external SCSI hard disk and
+an Exabyte tape drive, but I've reused these for my own purposes. The other two
+towers were called 6085 workstations, and they were diskless from the beginning
+(as far as I can tell they don't have any mass storage controllers). All three
+have monitors with very funny connectors. Aside from the Xerox model numbers
+which tell me absolutely nothing, there are no hints whatsoever as to what the
+CPU architecture is and all that. All towers have AUI Ethernet ports.
+
+The laser printer is called NS8000 Laser CP, and it was attached to the tower
+that was called the NS8090 File Server. The connectors are 25-pin like the
+serial and parallel ones, but they have slide locks like on AUI. These slide
+locks and the fact that the printer was apparently never intended to be
+connected to anything except an "NS8090 File Server" suggest that the printer's
+interface is not parallel or serial, but something very funny.
+
+It has been suggested to me that I take the boxes apart, ID as many boards as
+possible, and try to sell/donate them to whoever finds them useful (and the
+cabinets and such would probably have to be scrapped). However, the thing is,
+I don't really have time for all this, and it's naive to think that any of this
+stuff has any significant cash value.
+
+Right now I'm in the process of moving to another (cheaper) apartment in
+another part of Cleveland, and really don't feel like hauling that junk around
+with me. I have got these three CPU towers, three monitors, and one laser
+printer, all absolutely unidentifiable, that I have to get rid of. Given what a
+great job I've done at identifying and describing this stuff, it would be naive
+for me to expect to sell it. Therefore, I'm giving it away for free to anyone
+who is willing to come and pick it up. I have to vacate this apartment by the
+end of February, and if no one picks this stuff up, I will have no choice but
+to throw it in the big dumpster, which would be a great pity if this stuff is
+actually useful for something.
+
+Once again, I'm in Cleveland, Ohio, USA.
+
+Michael Sokolov
+TUHS 4BSD Coordinator
+4.3BSD-* Maintainer
+Quasijarus Project Principal Architect & Developer
+Phone: 440-449-0299 or 216-217-2579
+ARPA Internet SMTP mail: mxs46 at k2.scl.cwru.edu
+TUHS WWW page: http://minnie.cs.adfa.edu.au/TUHS/
+Quasijarus WWW page: http://minnie.cs.adfa.edu.au/Quasijarus/
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id BAA03045
+	for pups-liszt; Wed, 3 Feb 1999 01:53:24 +1100 (EST)
+
+From kcwellsc at math.uwaterloo.ca  Wed Feb  3 00:52:35 1999
+From: kcwellsc at math.uwaterloo.ca (Ken Wellsch)
+Date: Tue, 2 Feb 1999 09:52:35 -0500 (EST)
+Subject: Old UNIX file system formats
+In-Reply-To: <Pine.LNX.3.96.990201095832.20104A-100000@coffee.corliss.net> from "Erin W. Corliss" at Feb 1, 99 10:01:14 am
+Message-ID: <199902021452.JAA29320@math.uwaterloo.ca>
+
+I shouldn't have posted without doing the proper research.  I took a
+gander at PUPS/Tools/Filesys/traverse.c.gz which I'm quite sure is one
+of the tools I wrote when I was finally able to figure out the contents
+of that V6 tape I had (also with no docs - it was such irony to look
+at the setup document on the tape *after* figuring the format out that
+clearly describes the block layout 8-).  I notice traverse.c.gz does
+indeed use the LARG flag, not HUGE.  Since few care, I'll not bother
+extracting enough of Venix 1.x to see whether that is where I met the
+HUGE flag or it is just my faulty memory...  -- Ken
+
+| From owner-pups at minnie.cs.adfa.edu.au  Mon Feb  1 13:06:04 1999
+| 
+| Hmm...  I wrote a disk image editor in Visual Basic without knowing the
+| specs for the filesystem -- I set it up so that if the 9th pointer is zero
+| and the filesize is greater than one block, then it assumed the block
+| pointed to by the 8th pointer was a list of blocks in the file.
+
+
+From bdc at world.std.com  Thu Feb  4 05:11:56 1999
+From: bdc at world.std.com (Brian D Chase)
+Date: Wed, 3 Feb 1999 11:11:56 -0800 (PDT)
+Subject: MicroVAX I console port question.
+Message-ID: <Pine.SGI.3.95.990203104445.22510A-100000@world.std.com>
+
+Off-topic, but maybe somewhat related to MicroPDP-11's... I've got a
+MicroVAX I in a BA23 enclosure.  I'm presently a bit thrown by the serial
+console port.  I'm used to the 9pin MicroVAX II ports.  From what I've
+been told, the DB25-M connector for the console requires a special serial
+cable for connecting the MicroVAX I up to a terminal.  A null modem cable
+is not adequate. 
+
+First, I just wanted to verify that this is correct.  So far I haven't
+been able to access a console prompt using either a null modem cable, or a
+straight through cable.  So either the system isn't working correctly, or
+I need to get the cable right. Secondly, if it does require a special
+cable, then what are the pinouts for that cable?
+
+I'm guessing that aside from the processor itself, the MicroVAX I is
+probably a lot closer in design to its contemporary MicroPDP-11 systems.
+So I'm hoping that the 25pin console port is simillar to what some of you
+have worked with on your Q-bus PDP-11's. 
+
+-brian.
+---
+Brian "JARAI" Chase | http://world.std.com/~bdc/ | VAXZilla LIVES!!!
+
+
+
+
+From cdl at mpl.ucsd.edu  Thu Feb  4 06:37:53 1999
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Wed, 3 Feb 1999 12:37:53 -0800 (PST)
+Subject: MicroVAX I console port question.
+Message-ID: <199902032037.MAA03843@mpl.ucsd.edu>
+
+> From owner-pups at minnie.cs.adfa.edu.au Wed Feb  3 11:35 PST 1999
+> Date: Wed, 3 Feb 1999 11:11:56 -0800 (PDT)
+> From: Brian D Chase <bdc at world.std.com>
+> To: PUPS Mailing List <pups at minnie.cs.adfa.oz.au>
+> Subject: MicroVAX I console port question.
+> Mime-Version: 1.0
+> 
+> Off-topic, but maybe somewhat related to MicroPDP-11's... I've got a
+> MicroVAX I in a BA23 enclosure.  I'm presently a bit thrown by the serial
+> console port.  I'm used to the 9pin MicroVAX II ports.  From what I've
+> been told, the DB25-M connector for the console requires a special serial
+> cable for connecting the MicroVAX I up to a terminal.  A null modem cable
+> is not adequate. 
+
+My MicroVax (I and only) handbook vintage 1984 says the cable is a "BC22D-10".
+
+VAX Systems and Options Catalog Oct 1984 describes the BC22D-10 as
+"A fully shielded null modem cable".  Two DB25F connectors, 6 wires.
+
+The pins in use are 1,2,3,6,7,20.  I would expect that "null modem"
+means (from one end to the other) connect 2-3, 3-2, 7-7, 6-20, 20-6.
+
+The implication is that the computer might need to see DTR asserted
+before it talks to the terminal.
+
+    carl
+
+        carl lowenstein         marine physical lab     u.c. san diego
+        {decvax|ucbvax} !ucsd!mpl!cdl                 cdl at mpl.ucsd.edu
+                                                  clowenstein at ucsd.edu
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id IAA08853
+	for pups-liszt; Thu, 4 Feb 1999 08:25:02 +1100 (EST)
+
+From bdc at world.std.com  Thu Feb  4 07:24:36 1999
+From: bdc at world.std.com (Brian D Chase)
+Date: Wed, 3 Feb 1999 13:24:36 -0800 (PDT)
+Subject: MicroVAX I console port question.
+In-Reply-To: <199902032037.MAA03843@mpl.ucsd.edu>
+Message-ID: <Pine.SGI.3.95.990203132057.7730C-100000@world.std.com>
+
+On Wed, 3 Feb 1999, Carl Lowenstein wrote:
+
+> My MicroVax (I and only) handbook vintage 1984 says the cable is a "BC22D-10".
+> 
+> VAX Systems and Options Catalog Oct 1984 describes the BC22D-10 as
+> "A fully shielded null modem cable".  Two DB25F connectors, 6 wires.
+> 
+> The pins in use are 1,2,3,6,7,20.  I would expect that "null modem"
+> means (from one end to the other) connect 2-3, 3-2, 7-7, 6-20, 20-6.
+> 
+> The implication is that the computer might need to see DTR asserted
+> before it talks to the terminal.
+
+Or given that everything seems to be fine on my end null modem cable-wise,
+it's possible that something more serious is wrong with my MicroVAX I.
+Does your handbook list what a flashing "1" LED error code means?  
+I'll double-check my cabling as well.
+
+-brian.
+---
+Brian "JARAI" Chase | http://world.std.com/~bdc/ | VAXZilla LIVES!!!
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id GAA13300
+	for pups-liszt; Fri, 5 Feb 1999 06:08:49 +1100 (EST)
+
+From bqt at Update.UU.SE  Fri Feb  5 05:07:56 1999
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Thu, 4 Feb 1999 20:07:56 +0100 (MET)
+Subject: Memory Management
+In-Reply-To: <Pine.LNX.3.96.990121163113.412A-100000@coffee.corliss.net>
+Message-ID: <Pine.VUL.3.93.990204192532.4375B-100000@Zeke.Update.UU.SE>
+
+On Thu, 21 Jan 1999, Erin W. Corliss wrote:
+
+> The documentation that Warren gave me describes the memory management
+> scheme.  It says that when the machine is first started, the memory
+> management unit is disabled -- anyone know how to enable it, and where the
+> segmentation registers are (I'm assuming they are in the 0160000-0177777
+> range somewhere)?
+
+I haven't seen anyone answering this, so here I go...
+
+Reg.	Addr.
+
+MMR0	777572
+MMR1	777574
+MMR2	777576
+MMR3	772516
+UIPAR	777640-777656
+UDPAR	777660-777676
+UIPDR	777600-777616
+UDPDR	777620-777636
+SIPAR	772240-772256
+SDPAR	772260-772276
+SIPDR	772200-772216
+SDPDR	772220-772236
+KIPAR	772340-772356
+KDPAR	772360-772376
+KIPDR	772300-772316
+KDPDR	772320-772336
+
+xy in xyP?R is:
+
+x:	U - User
+	S - Supervisor
+	K - Kernel
+y:	I - Instruction
+	D - Data
+
+PAR is Page Address Register
+PDR is Page Description Register
+
+Okay, so for the layout of the registers...
+
+MMR0:
+
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ ! ! ! !     ! ! ! \-/ ! \---/ +-- Enable relocation
+ ! ! ! !     ! ! !  !  !   +------ Page number
+ ! ! ! !     ! ! !  !  +---------- Page address space I/D
+ ! ! ! !     ! ! !  +------------- Page mode
+ ! ! ! !     ! ! +---------------- Instruction completed
+ ! ! ! !     ! +------------------ Maintenance mode
+ ! ! ! !     +-------------------- Enable memory management trap
+ ! ! ! +-------------------------- Trap-Memory management
+ ! ! +---------------------------- Abort-Read only access violation
+ ! +------------------------------ Abort-Page length error
+ +-------------------------------- Abort-Non resident
+
+The page info is for when a trap/fault occurs, and tells in which page it
+occured.The rest should be pretty obvious.
+
+MMR1:
+
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ \-------/ \---/ \-------/ \---/
+     !       !       !       +---- Register number
+     !       !       +------------ Amount changed (2 compl.)
+     !       +-------------------- Register numbe
+     +---------------------------- Amount changed (2 compl.)
+
+Low byte is written first, and this register tells how much registers have
+changed part way through an instruction, which needs to be undone to start
+the intruction again.
+
+MMR2:
+
+Virtual address of instruction where fault occured.
+
+MMR3:
+
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                     ! !   ! ! +--- Enable user D space
+                     ! !   ! +----- Enable supervisor D space
+                     ! !   +------- Enable kernel D space
+                     ! +----------- Enable 22-bit mapping
+                     +------------- Enable unibus map
+
+If 22-bit mapping isn't enabled, the machine will be in 18-bit addressign
+when MMU is enabled. Unibus-mapping is something I'll skip for now. You
+need it for DMA on a 22-bit unibus machine only.
+
+Note that at the end of a MMU trap/abort, MMR0 bit 15-12 must be cleared
+for MMR1 and MMR2 to become active again.
+
+
+>From a virtual address (VA), you get to the physical address (PA) like
+this:
+
+APF=VA[15:13]
+DF=VA[12:0]
+
+PA=PAR(APF)*64+DF
+
+
+The PDR looks loke this:
+
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   \-----------/ ! !     ! \---/
+         !       ! !     !   +----- ACF
+         !       ! !     +--------- ED
+         !       ! +--------------- W
+         !       +----------------- A
+         +------------------------- PLF
+
+ACF - Access Control Field
+	000 - Non resident; abort on all accesses
+	001 - Read only; abort on write attempt, memory mgmt trap on read
+	010 - Read only; abort on write attempt
+	011 - Unused; abort on all accesses - reserved for future use
+	100 - Read/Write; memory mgmt trap upon completion of read or write
+	101 - Read/Write; memory mgmt trap upon completion of write
+	110 - Read/Write; no system trap/abort action
+	111 - Unused; abort on all accesses - reserved for future use
+
+A - Access to page has been made.
+W - Page has been written to since PAR/PDR was loaded
+ED - Expansion direction
+PLF - Page length field
+
+Now, have fun...
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From mxs46 at k2.scl.cwru.edu  Mon Feb  8 06:55:35 1999
+From: mxs46 at k2.scl.cwru.edu (Michael Sokolov)
+Date: Sun, 7 Feb 1999 15:55:35 -0500
+Subject: Special Agent Michael Sokolov has moved
+Message-ID: <199902072055.PAA09064@skybridge.scl.cwru.edu>
+
+My new address is:
+
+13444 Euclid Ave. Apt. 215
+East Cleveland, OH  44112
+USA
+
+My new phone # is 216-761-3656 (voice mail not set up yet, will be done in a
+couple of days).
+
+I'm still not quite done with all move-related work, so it will be a few more
+days before I catch up with my E-mail.
+
+My hardware is laid out a lot better at the new place than at the old one, so
+when I'm done hooking everything up, I'll have much better work conditions for
+my Project. Also the new place is physically closer to the building where all
+Cleveland ISPs are located, reducing the cost of leased lines and increasing
+the probability of me getting one some day.
+
+With the hardware taking up most of the space, I originally thought that my
+apartment would look like Agent Mulder's, but it actually ended up being more
+like Agent Scully's. Oh well, her place is pretty nice too, and so is mine now.
+
+Just a reminder to all Quasijarus Project folks living in the USA, be sure to
+watch the X-Files this evening. They'll finally tell us what really happened to
+Mulder's sister, who is the cigarette-smoking man, and all the other cool
+stuff.
+
+Special Agent Michael Sokolov
+TUHS 4BSD Coordinator
+4.3BSD-* Maintainer
+Quasijarus Project Principal Architect & Developer
+Phone: 216-761-3656
+ARPA Internet SMTP mail: mxs46 at k2.scl.cwru.edu
+TUHS WWW page: http://minnie.cs.adfa.edu.au/TUHS/
+Quasijarus WWW page: http://minnie.cs.adfa.edu.au/Quasijarus/
+
+
+From entropy at zippy.bernstein.com  Wed Feb 17 14:23:11 1999
+From: entropy at zippy.bernstein.com (maximum entropy)
+Date: Tue, 16 Feb 1999 23:23:11 -0500 (EST)
+Subject: 2.9BSD:  mbuf.h
+Message-ID: <199902170423.XAA24481@zippy.bernstein.com>
+
+I'm trying to compile a 2.9BSD kernel using the distribution from the
+pups archive.
+
+"make unix" failed:
+Make:  Don't know how to make /usr/include/sys/mbuf.h.  Stop.
+
+I looked in the usr.tar from the distribution, and I don't see mbuf.h
+anywhere.
+
+Does anyone know where I can find a copy of this file?
+
+Cheers,
+entropy
+
+--
+entropy -- it's not just a good idea, it's the second law.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id QAA11005
+	for pups-liszt; Wed, 17 Feb 1999 16:17:41 +1100 (EST)
+
+From sms at moe.2bsd.com  Wed Feb 17 15:15:02 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Tue, 16 Feb 1999 21:15:02 -0800 (PST)
+Subject: 2.9BSD:  mbuf.h
+Message-ID: <199902170515.VAA23159@moe.2bsd.com>
+
+Hi -
+
+> I'm trying to compile a 2.9BSD kernel using the distribution from the
+> pups archive.
+> 
+> "make unix" failed:
+> Make:  Don't know how to make /usr/include/sys/mbuf.h.  Stop.
+> 
+> I looked in the usr.tar from the distribution, and I don't see mbuf.h
+> anywhere.
+> 
+> Does anyone know where I can find a copy of this file?
+
+	That's not _all_ your missing ;-)
+
+	Unless you have the 1985 Seismo (or Harvard - depends where you
+	got the tape from) update tape to 2.9 the networking code won't
+	compile much less run.  Been there, done that.  It was a fun couple
+	weeks coming to the realization that the networking code hadn't
+	been fully integrated and compiled in 2.9
+
+	I believe the 2.9-Seismo update is in the PUPS archive (should be
+	on the CD but my memory isn't ECC these days ;-)).  It's a fairly
+	painful upgrade process because it changes the a.out header format
+	for overlaid processes (goes from 7 to 15 overlays).  If you're not
+	real careful you'll have (as I did ;-)) a real mess:  can't finish
+	the upgrade because the old kernel doesn't support the new overlaid
+	processes but you can't build a new kernel because doing so needs
+	those processes.  Something like that.  It was "interesting" ;)
+
+	Steven Schultz
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id QAA11030
+	for pups-liszt; Wed, 17 Feb 1999 16:24:28 +1100 (EST)
+
+From wkt at henry.cs.adfa.edu.au  Wed Feb 17 15:26:09 1999
+From: wkt at henry.cs.adfa.edu.au (Warren Toomey)
+Date: Wed, 17 Feb 1999 16:26:09 +1100 (EST)
+Subject: 2.9BSD:  mbuf.h
+In-Reply-To: <199902170515.VAA23159@moe.2bsd.com> from "Steven M. Schultz" at "Feb 16, 1999  9:15: 2 pm"
+Message-ID: <199902170526.QAA14818@henry.cs.adfa.edu.au>
+
+In article by Steven M. Schultz:
+> Hi -
+> 
+> > I'm trying to compile a 2.9BSD kernel using the distribution from the
+> > pups archive.
+> > Make:  Don't know how to make /usr/include/sys/mbuf.h.  Stop.
+> > Does anyone know where I can find a copy of this file?
+> 
+> 	That's not _all_ your missing ;-)
+> 
+> 	Unless you have the 1985 Seismo (or Harvard - depends where you
+> 	got the tape from) update tape to 2.9 the networking code won't
+> 	compile much less run.  Been there, done that.  It was a fun couple
+> 	weeks coming to the realization that the networking code hadn't
+> 	been fully integrated and compiled in 2.9
+> 
+> 	I believe the 2.9-Seismo update is in the PUPS archive (should be
+> 	on the CD but my memory isn't ECC these days ;-)).  It's a fairly
+> 	painful upgrade process because it changes the a.out header format
+> 	for overlaid processes (goes from 7 to 15 overlays).  If you're not
+> 	real careful you'll have (as I did ;-)) a real mess:  can't finish
+> 	the upgrade because the old kernel doesn't support the new overlaid
+> 	processes but you can't build a new kernel because doing so needs
+> 	those processes.  Something like that.  It was "interesting" ;)
+> 
+> 	Steven Schultz
+
+Don't worry, Nicholas is trying to patch 2.9 to get it to run on a Pro. 
+I'm sure he will keep us informed :-)
+
+'Night!
+
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id RAA11134
+	for pups-liszt; Wed, 17 Feb 1999 17:01:58 +1100 (EST)
+
+From djenner at halcyon.com  Wed Feb 17 16:00:45 1999
+From: djenner at halcyon.com (David C. Jenner)
+Date: Tue, 16 Feb 1999 22:00:45 -0800
+Subject: 2.9BSD:  mbuf.h
+References: <199902170526.QAA14818@henry.cs.adfa.edu.au>
+Message-ID: <36CA5B0D.8A2B2629@halcyon.com>
+
+Speaking of the Pro, I have one and have been trying to get Venix
+to run on it.  The rub is, there are two versions: one directly from
+VenturCom (Venix/Pro) and one licensed through DEC (Pro/Venix).
+
+Venix/Pro is freely available on the Internet at ftp.update.uu.se,
+but Pro/Venix seems to be a little harder to find.  Pro/Venix is
+much to be preferred because you can reconfigure the kernel (in
+binary) to include different drivers, etc.
+
+I've been able to acquire all the documentation and all (almost) the
+disks for Pro/Venix 2.0.  A couple of the disks are apparently
+unusable or missing in the set I have.
+
+It seems to me that Pro/Venix is a potential candidate for the PUPS
+archive, the snag being DEC/Compaq residual interests in it.  PUPS
+covers the AT&T part, VenturCom has "given away" their part, and
+DEC/Compaq is all that's left.
+
+So:
+	1) Could this be a PUPS addition, if a good copy be found?
+	2) If someone has a copy, but worries about the DEC/Compaq
+	   aspects, can a good copy of the disks I have be acquired?
+	   (Anyone in this category might want to respond directly
+	    to me instead of posting to the mailing lists.)  After
+	   all a PUPS licensee is 99.999% covered, and DEC/Compaq
+	   objections are probably to worry about the AT&T part,
+	   which the Ancient Unix license covers...
+
+Actually, I'm amazed I've gotten as far as I have with this, because
+I've been pretty passive about finding it.  It's only taken 2 years
+so far.
+
+Dave
+
+Warren Toomey wrote:
+> 
+> In article by Steven M. Schultz:
+> > Hi -
+> >
+> > > I'm trying to compile a 2.9BSD kernel using the distribution from the
+> > > pups archive.
+> > > Make:  Don't know how to make /usr/include/sys/mbuf.h.  Stop.
+> > > Does anyone know where I can find a copy of this file?
+> >
+> >       That's not _all_ your missing ;-)
+> >
+> >       Unless you have the 1985 Seismo (or Harvard - depends where you
+> >       got the tape from) update tape to 2.9 the networking code won't
+> >       compile much less run.  Been there, done that.  It was a fun couple
+> >       weeks coming to the realization that the networking code hadn't
+> >       been fully integrated and compiled in 2.9
+> >
+> >       I believe the 2.9-Seismo update is in the PUPS archive (should be
+> >       on the CD but my memory isn't ECC these days ;-)).  It's a fairly
+> >       painful upgrade process because it changes the a.out header format
+> >       for overlaid processes (goes from 7 to 15 overlays).  If you're not
+> >       real careful you'll have (as I did ;-)) a real mess:  can't finish
+> >       the upgrade because the old kernel doesn't support the new overlaid
+> >       processes but you can't build a new kernel because doing so needs
+> >       those processes.  Something like that.  It was "interesting" ;)
+> >
+> >       Steven Schultz
+> 
+> Don't worry, Nicholas is trying to patch 2.9 to get it to run on a Pro.
+> I'm sure he will keep us informed :-)
+> 
+> 'Night!
+> 
+>         Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id RAA11133
+	for pups-liszt; Wed, 17 Feb 1999 17:01:50 +1100 (EST)
+
+From djenner at halcyon.com  Wed Feb 17 16:00:45 1999
+From: djenner at halcyon.com (David C. Jenner)
+Date: Tue, 16 Feb 1999 22:00:45 -0800
+Subject: 2.9BSD:  mbuf.h
+References: <199902170526.QAA14818@henry.cs.adfa.edu.au>
+Message-ID: <36CA5B0D.8A2B2629@halcyon.com>
+
+Speaking of the Pro, I have one and have been trying to get Venix
+to run on it.  The rub is, there are two versions: one directly from
+VenturCom (Venix/Pro) and one licensed through DEC (Pro/Venix).
+
+Venix/Pro is freely available on the Internet at ftp.update.uu.se,
+but Pro/Venix seems to be a little harder to find.  Pro/Venix is
+much to be preferred because you can reconfigure the kernel (in
+binary) to include different drivers, etc.
+
+I've been able to acquire all the documentation and all (almost) the
+disks for Pro/Venix 2.0.  A couple of the disks are apparently
+unusable or missing in the set I have.
+
+It seems to me that Pro/Venix is a potential candidate for the PUPS
+archive, the snag being DEC/Compaq residual interests in it.  PUPS
+covers the AT&T part, VenturCom has "given away" their part, and
+DEC/Compaq is all that's left.
+
+So:
+	1) Could this be a PUPS addition, if a good copy be found?
+	2) If someone has a copy, but worries about the DEC/Compaq
+	   aspects, can a good copy of the disks I have be acquired?
+	   (Anyone in this category might want to respond directly
+	    to me instead of posting to the mailing lists.)  After
+	   all a PUPS licensee is 99.999% covered, and DEC/Compaq
+	   objections are probably to worry about the AT&T part,
+	   which the Ancient Unix license covers...
+
+Actually, I'm amazed I've gotten as far as I have with this, because
+I've been pretty passive about finding it.  It's only taken 2 years
+so far.
+
+Dave
+
+Warren Toomey wrote:
+> 
+> In article by Steven M. Schultz:
+> > Hi -
+> >
+> > > I'm trying to compile a 2.9BSD kernel using the distribution from the
+> > > pups archive.
+> > > Make:  Don't know how to make /usr/include/sys/mbuf.h.  Stop.
+> > > Does anyone know where I can find a copy of this file?
+> >
+> >       That's not _all_ your missing ;-)
+> >
+> >       Unless you have the 1985 Seismo (or Harvard - depends where you
+> >       got the tape from) update tape to 2.9 the networking code won't
+> >       compile much less run.  Been there, done that.  It was a fun couple
+> >       weeks coming to the realization that the networking code hadn't
+> >       been fully integrated and compiled in 2.9
+> >
+> >       I believe the 2.9-Seismo update is in the PUPS archive (should be
+> >       on the CD but my memory isn't ECC these days ;-)).  It's a fairly
+> >       painful upgrade process because it changes the a.out header format
+> >       for overlaid processes (goes from 7 to 15 overlays).  If you're not
+> >       real careful you'll have (as I did ;-)) a real mess:  can't finish
+> >       the upgrade because the old kernel doesn't support the new overlaid
+> >       processes but you can't build a new kernel because doing so needs
+> >       those processes.  Something like that.  It was "interesting" ;)
+> >
+> >       Steven Schultz
+> 
+> Don't worry, Nicholas is trying to patch 2.9 to get it to run on a Pro.
+> I'm sure he will keep us informed :-)
+> 
+> 'Night!
+> 
+>         Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id TAA11461
+	for pups-liszt; Wed, 17 Feb 1999 19:23:34 +1100 (EST)
+
+From entropy at zippy.bernstein.com  Wed Feb 17 18:22:50 1999
+From: entropy at zippy.bernstein.com (maximum entropy)
+Date: Wed, 17 Feb 1999 03:22:50 -0500 (EST)
+Subject: Venix (was Re: 2.9BSD:  mbuf.h)
+In-Reply-To: <36CA5B0D.8A2B2629@halcyon.com> (djenner@halcyon.com)
+Message-ID: <199902170822.DAA24861@zippy.bernstein.com>
+
+>Date: Tue, 16 Feb 1999 22:00:45 -0800
+>From: "David C. Jenner" <djenner at halcyon.com>
+>
+>Speaking of the Pro, I have one and have been trying to get Venix
+>to run on it.  The rub is, there are two versions: one directly from
+>VenturCom (Venix/Pro) and one licensed through DEC (Pro/Venix).
+
+Interesting...I know there's a Venix 1.0 and a Venix 2.0.  I thought
+they were both from Venturcom, with 1.0 being for the Pro-350 and 2.0
+for the Pro-380.  I never heard of a distinction between Venix/Pro
+vs. Pro/Venix.  Then again, I got into this game fairly late...I
+bought my used Pro-350 around 1993 for US$100, with Venix 1.0 already
+installed (also with original install media and docs).
+
+>Venix/Pro is freely available on the Internet at ftp.update.uu.se,
+>but Pro/Venix seems to be a little harder to find.  Pro/Venix is
+>much to be preferred because you can reconfigure the kernel (in
+>binary) to include different drivers, etc.
+>
+>I've been able to acquire all the documentation and all (almost) the
+>disks for Pro/Venix 2.0.  A couple of the disks are apparently
+>unusable or missing in the set I have.
+
+I have the following archives of Venix-related stuff that I snagged
+from the net a few years back.  If you think any of them might contain
+what you're looking for, let me know and I'll give more detail about
+their contents.
+
+-rw-r--r--   1 entropy  user         3833 Oct 17  1997 README
+-rw-r--r--   1 entropy  user          532 Oct 17  1997 README.VAX
+-rw-r--r--   1 entropy  user        30819 Oct 17  1997 RX50.notes
+-rw-r--r--   1 entropy  user      2530759 Oct 17  1997 Venix1.tar.Z
+-rw-r--r--   1 entropy  user      2503931 Oct 17  1997 Venix2.tar.Z
+-rw-r--r--   1 entropy  user        15817 Oct 17  1997 cathang.txt
+-rw-r--r--   1 entropy  user       332543 Oct 17  1997 mopimage.tar.Z
+-rw-r--r--   1 entropy  user          443 Oct 17  1997 nbsdrx50.readme
+-rw-r--r--   1 entropy  user       897510 Oct 17  1997 nbsdrx50.zip
+-rw-r--r--   1 entropy  user       155648 Oct 17  1997 pppd
+-rw-r--r--   1 entropy  user       193536 Oct 17  1997 pr0801eng.sys
+-rw-r--r--   1 entropy  user        14153 Oct 17  1997 raind112.zip
+-rw-r--r--   1 entropy  user         6621 Oct 17  1997 rx50.zip
+-rw-r--r--   1 entropy  user        81152 Oct 17  1997 teledisk.zip
+-rw-r--r--   1 entropy  user        61440 Oct 17  1997 venix.tar
+-rw-r--r--   1 entropy  user          116 Oct 17  1997 venix1.readme
+-rw-r--r--   1 entropy  user      1119490 Oct 17  1997 venix1s.zip
+-rw-r--r--   1 entropy  user      1095824 Oct 17  1997 venix1u.zip
+-rw-r--r--   1 entropy  user          424 Oct 17  1997 venix2.readme
+-rw-r--r--   1 entropy  user      1058970 Oct 17  1997 venix2s.zip
+-rw-r--r--   1 entropy  user      1145720 Oct 17  1997 venix2u.zip
+-rw-r--r--   1 entropy  user       332362 Oct 17  1997 vnx2u2u5.zip
+
+--
+entropy -- it's not just a good idea, it's the second law.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id TAA11492
+	for pups-liszt; Wed, 17 Feb 1999 19:33:00 +1100 (EST)
+
+From entropy at zippy.bernstein.com  Wed Feb 17 18:32:05 1999
+From: entropy at zippy.bernstein.com (maximum entropy)
+Date: Wed, 17 Feb 1999 03:32:05 -0500 (EST)
+Subject: 2.9BSD:  mbuf.h
+In-Reply-To: <199902170515.VAA23159@moe.2bsd.com> (sms@moe.2bsd.com)
+Message-ID: <199902170832.DAA24878@zippy.bernstein.com>
+
+>Date: Tue, 16 Feb 1999 21:15:02 -0800 (PST)
+>From: "Steven M. Schultz" <sms at moe.2bsd.com>
+>
+>	I believe the 2.9-Seismo update is in the PUPS archive (should be
+>	on the CD but my memory isn't ECC these days ;-)).  It's a fairly
+>	painful upgrade process because it changes the a.out header format
+>	for overlaid processes (goes from 7 to 15 overlays).  If you're not
+>	real careful you'll have (as I did ;-)) a real mess:  can't finish
+>	the upgrade because the old kernel doesn't support the new overlaid
+>	processes but you can't build a new kernel because doing so needs
+>	those processes.  Something like that.  It was "interesting" ;)
+
+Sounds like fun.  Any hints on the correct upgrade path to avoid this
+lossage?
+
+Better yet, would you be willing and able to upload a disk image or
+tar file of an upgraded system to the PUPS archive (or directly to me
+if it's not of general interest), so I could use that as a starting
+point?
+
+Cheers,
+entropy
+
+--
+entropy -- it's not just a good idea, it's the second law.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id TAA11533
+	for pups-liszt; Wed, 17 Feb 1999 19:43:19 +1100 (EST)
+
+From entropy at zippy.bernstein.com  Wed Feb 17 18:42:40 1999
+From: entropy at zippy.bernstein.com (maximum entropy)
+Date: Wed, 17 Feb 1999 03:42:40 -0500 (EST)
+Subject: 2.11BSD, non-split i/d issues
+Message-ID: <199902170842.DAA24887@zippy.bernstein.com>
+
+
+As already mentioned in previous messages, I'm working on getting
+2.9BSD onto a Pro 350.  I'm using 2.9BSD as a starting point because
+it claims to support machines without split i/d.  The 350 uses the
+F-11 chipset, which I have read does not support split i/d.
+
+I would prefer to use 2.11BSD because I understand it's still actively
+used, and not as buggy as 2.9.  But everything I've read about 2.11BSD
+says that it needs split i/d to run.  Can anyone give me more detail
+about this?  Was support for machines without split i/d removed from
+the kernel, or is it just that some of the programs are too big to fit
+in a single 64k segment?
+
+--
+entropy -- it's not just a good idea, it's the second law.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id BAA12587
+	for pups-liszt; Thu, 18 Feb 1999 01:36:09 +1100 (EST)
+
+From kcwellsc at math.uwaterloo.ca  Thu Feb 18 00:35:30 1999
+From: kcwellsc at math.uwaterloo.ca (Ken Wellsch)
+Date: Wed, 17 Feb 1999 09:35:30 -0500 (EST)
+Subject: Venix (was Re: 2.9BSD:  mbuf.h)
+In-Reply-To: <199902170822.DAA24861@zippy.bernstein.com> from "maximum entropy" at Feb 17, 99 03:22:50 am
+Message-ID: <199902171435.JAA12462@math.uwaterloo.ca>
+
+| Interesting...I know there's a Venix 1.0 and a Venix 2.0.  I thought
+| they were both from Venturcom, with 1.0 being for the Pro-350 and 2.0
+| for the Pro-380.  I never heard of a distinction between Venix/Pro
+| vs. Pro/Venix.  Then again, I got into this game fairly late...I
+| bought my used Pro-350 around 1993 for US$100, with Venix 1.0 already
+| installed (also with original install media and docs).
+
+My time playing with Pro's faded out before Venix 2 was available (free)
+for me to try.  I've played a fair bit with Venix 1.1 on both Pro 350's
+and Pro 380's.  The Venix 1 series I feel is basically V6 derived while
+I understood the Venix 2 series was derived from Sys III.
+
+About a year ago Rick Macklem that did a port to the Pro series mailed
+me his "Pro stuff" which included a tape and floppies.  I've forgotten
+what all is in that stash, but taking a peek at some old mail he mentions:
+
+> The stuff I did went out on a Usenix distribution tape in about 1983/84
+> and had to be merged into a 2.9BSD distribution. I did generate floppy
+> sets for a few people, because that was the only easy way to get it
+> installed. (The first install here was actually done by downloading the
+> kernel over the serial port talking to the PDP 11 prom (ODS?).)
+
+I had thought his set of patches were in the PUPS archive.  In fact I
+see the patches under PUPS/Distributions/ucb/2.9-pro350.
+
+-- Ken
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id BAA12654
+	for pups-liszt; Thu, 18 Feb 1999 01:42:25 +1100 (EST)
+
+From kcwellsc at math.uwaterloo.ca  Thu Feb 18 00:42:05 1999
+From: kcwellsc at math.uwaterloo.ca (Ken Wellsch)
+Date: Wed, 17 Feb 1999 09:42:05 -0500 (EST)
+Subject: 2.11BSD, non-split i/d issues
+In-Reply-To: <199902170842.DAA24887@zippy.bernstein.com> from "maximum entropy" at Feb 17, 99 03:42:40 am
+Message-ID: <199902171442.JAA15916@math.uwaterloo.ca>
+
+| I would prefer to use 2.11BSD because I understand it's still actively
+| used, and not as buggy as 2.9.  But everything I've read about 2.11BSD
+| says that it needs split i/d to run.  Can anyone give me more detail
+| about this?  Was support for machines without split i/d removed from
+| the kernel, or is it just that some of the programs are too big to fit
+| in a single 64k segment?
+
+Have you been able to acquire the documentation for the DECNA card?  I
+think that is roughly what it is called.  The Pro Ethernet card.  A few
+old timers like myself and Dan Lanciani talked years ago about running
+things on a Pro and no-one seems to know much about this relatively
+critical bit of documentation.  Again referring to Rick Macklem's
+correspondence (I believe I was asking him, again, about these docs):
+
+> Well, the short answer is "I'm not sure what the answers are". At one
+> point someone mentioned they were putting the Pro stuff into 2BSD, but
+> I'm not sure if they actually did it. (The guys that used it the most
+> had it running on a lab of Pro380s at Columbia U. (I think. It's the
+> one right in NY city.)) His name was Charlie Kim (again, I think?) and
+> did some stuff to it so that it worked reasonably well on a Pro380, but
+> I have no idea how you might find him now. (It was a real dog on a Pro350
+> because it didn't have separate I and D space.)
+
+The rumors we were able to find all pointed to this place and person
+WRT documentation for the ethernet card.
+
+-- Ken
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id CAA12725
+	for pups-liszt; Thu, 18 Feb 1999 02:12:16 +1100 (EST)
+
+From entropy at zippy.bernstein.com  Thu Feb 18 01:11:36 1999
+From: entropy at zippy.bernstein.com (maximum entropy)
+Date: Wed, 17 Feb 1999 10:11:36 -0500 (EST)
+Subject: Venix (was Re: 2.9BSD:  mbuf.h)
+In-Reply-To: <199902171435.JAA12462@math.uwaterloo.ca> (message from Ken
+	Wellsch on Wed, 17 Feb 1999 09:35:30 -0500 (EST))
+Message-ID: <199902171511.KAA25176@zippy.bernstein.com>
+
+>From: Ken Wellsch <kcwellsc at math.uwaterloo.ca>
+>Date: Wed, 17 Feb 1999 09:35:30 -0500 (EST)
+>
+>About a year ago Rick Macklem that did a port to the Pro series mailed
+>me his "Pro stuff" which included a tape and floppies.  I've forgotten
+>what all is in that stash, but taking a peek at some old mail he mentions:
+
+Would you be able to send images (rx50 teledisk, or plain dd dumps) of
+these disks to me or to the archive?
+
+>I had thought his set of patches were in the PUPS archive.  In fact I
+>see the patches under PUPS/Distributions/ucb/2.9-pro350.
+
+Those files aren't 100% complete.  Excerpt of a mail I sent last night
+to Warren Toomey:
+
+#The instructions in boot.doc are mangled.
+#The patches included are reversed, and didn't apply cleanly to one of
+#the files (/usr/src/net/sys/sys/machdep.c).  Also, it looks like the
+#guy that produced that set of changes forgot to include his
+#modifications to /usr/src/sys/conf/config, but I managed to hack
+#together something that might work.
+
+Then there's the fact that the 2.9 distribution won't even compile,
+and the 2.9 upgrade patches are a nightmare...
+
+Maybe I'll just stick to venix :-)
+
+Cheers,
+entropy
+
+--
+entropy -- it's not just a good idea, it's the second law.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id CAA12848
+	for pups-liszt; Thu, 18 Feb 1999 02:44:50 +1100 (EST)
+
+From entropy at zippy.bernstein.com  Thu Feb 18 01:44:04 1999
+From: entropy at zippy.bernstein.com (maximum entropy)
+Date: Wed, 17 Feb 1999 10:44:04 -0500 (EST)
+Subject: Venix (was Re: 2.9BSD:  mbuf.h)
+In-Reply-To: <199902171435.JAA12462@math.uwaterloo.ca> (message from Ken
+	Wellsch on Wed, 17 Feb 1999 09:35:30 -0500 (EST))
+Message-ID: <199902171544.KAA25215@zippy.bernstein.com>
+
+>From: Ken Wellsch <kcwellsc at math.uwaterloo.ca>
+>Date: Wed, 17 Feb 1999 09:35:30 -0500 (EST)
+>
+>About a year ago Rick Macklem that did a port to the Pro series mailed
+>me his "Pro stuff" which included a tape and floppies.  I've forgotten
+>what all is in that stash, but taking a peek at some old mail he mentions:
+
+Would you be able to send images (rx50 teledisk, or plain dd dumps) of
+these disks to me or to the archive?
+
+>I had thought his set of patches were in the PUPS archive.  In fact I
+>see the patches under PUPS/Distributions/ucb/2.9-pro350.
+
+Those files aren't 100% complete.  Excerpt of a mail I sent last night
+to Warren Toomey:
+
+#The instructions in boot.doc are mangled.d
+#The patches included are reversed, and didn't apply cleanly to one of
+#the files (/usr/src/net/sys/sys/machdep.c).  Also, it looks like the
+#guy that produced that set of changes forgot to include his
+#modifications to /usr/src/sys/conf/config, but I managed to hack
+#together something that might work.
+
+Then there's the fact that the 2.9 distribution won't even compile,
+and the 2.9 upgrade patches are a nightmare...
+
+Maybe I'll just stick to venix :-)
+
+Cheers,
+entropy
+
+--
+entropy -- it's not just a good idea, it's the second law.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id DAA12922
+	for pups-liszt; Thu, 18 Feb 1999 03:12:05 +1100 (EST)
+
+From entropy at zippy.bernstein.com  Thu Feb 18 02:11:24 1999
+From: entropy at zippy.bernstein.com (maximum entropy)
+Date: Wed, 17 Feb 1999 11:11:24 -0500 (EST)
+Subject: 2.11BSD, non-split i/d issues
+In-Reply-To: <199902171442.JAA15916@math.uwaterloo.ca> (message from Ken
+	Wellsch on Wed, 17 Feb 1999 09:42:05 -0500 (EST))
+Message-ID: <199902171611.LAA25258@zippy.bernstein.com>
+
+>From: Ken Wellsch <kcwellsc at math.uwaterloo.ca>
+>Date: Wed, 17 Feb 1999 09:42:05 -0500 (EST)
+>
+>Have you been able to acquire the documentation for the DECNA card?  I
+
+I haven't looked for it.  The DECNA is optional, and my Pro doesn't
+have it.  All Pro's came with an AUI port, but without the card it
+doesn't do anything.
+
+--
+entropy -- it's not just a good idea, it's the second law.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id DAA12934
+	for pups-liszt; Thu, 18 Feb 1999 03:12:18 +1100 (EST)
+
+From djenner at halcyon.com  Thu Feb 18 02:11:12 1999
+From: djenner at halcyon.com (David C. Jenner)
+Date: Wed, 17 Feb 1999 08:11:12 -0800
+Subject: Venix (was Re: 2.9BSD:  mbuf.h)
+References: <199902171435.JAA12462@math.uwaterloo.ca>
+Message-ID: <36CAEA1F.D5D7C838@halcyon.com>
+
+I haven't tried the 2.9 stuff at all on a Pro.  I have had it
+running on an 11/23+ (w/binary license) for 10 years.  The
+problem is the networking, as you have found.
+
+Venix/Pro 1.1 and 2.0 run just fine on the Pro 380, and it's
+pretty painless to install.  I have distribution disks for
+Pro/Venix 1.1, but the install disk has apparently been
+overwritten with the 2.0 installation disk.  And my distribution
+for 2.0 is missing a couple of original disks; I have copies of
+those disks, but they get read errors.
+
+I guess the 2.9 stuff would be interesting if you got it to
+work on the Pro, especially if you got networking to work.
+I don't have any docs on the DECNA, but they must exist.  It's
+probably pretty close to the DEQNA.
+
+Dave
+
+Ken Wellsch wrote:
+> 
+> | Interesting...I know there's a Venix 1.0 and a Venix 2.0.  I thought
+> | they were both from Venturcom, with 1.0 being for the Pro-350 and 2.0
+> | for the Pro-380.  I never heard of a distinction between Venix/Pro
+> | vs. Pro/Venix.  Then again, I got into this game fairly late...I
+> | bought my used Pro-350 around 1993 for US$100, with Venix 1.0 already
+> | installed (also with original install media and docs).
+> 
+> My time playing with Pro's faded out before Venix 2 was available (free)
+> for me to try.  I've played a fair bit with Venix 1.1 on both Pro 350's
+> and Pro 380's.  The Venix 1 series I feel is basically V6 derived while
+> I understood the Venix 2 series was derived from Sys III.
+> 
+> About a year ago Rick Macklem that did a port to the Pro series mailed
+> me his "Pro stuff" which included a tape and floppies.  I've forgotten
+> what all is in that stash, but taking a peek at some old mail he mentions:
+> 
+> > The stuff I did went out on a Usenix distribution tape in about 1983/84
+> > and had to be merged into a 2.9BSD distribution. I did generate floppy
+> > sets for a few people, because that was the only easy way to get it
+> > installed. (The first install here was actually done by downloading the
+> > kernel over the serial port talking to the PDP 11 prom (ODS?).)
+> 
+> I had thought his set of patches were in the PUPS archive.  In fact I
+> see the patches under PUPS/Distributions/ucb/2.9-pro350.
+> 
+> -- Ken
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id DAA12957
+	for pups-liszt; Thu, 18 Feb 1999 03:17:55 +1100 (EST)
+
+From sms at moe.2bsd.com  Thu Feb 18 02:15:01 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Wed, 17 Feb 1999 08:15:01 -0800 (PST)
+Subject: 2.9BSD:  mbuf.h
+Message-ID: <199902171615.IAA02324@moe.2bsd.com>
+
+Hi
+
+> Sounds like fun.  Any hints on the correct upgrade path to avoid this
+> lossage?
+
+	Oh, it's not _completely_ irrecoverable and is "fun" in a perverse
+	way.
+
+	First go thru all of the executable directories (/bin, /usr/bin,...)
+	and identify all of the overlaid executables and save copies of them.
+	Shouldn't be too many but the important one is 'ex'/'vi'.  A number
+	of programs rely on using 'ex' scripts to edit generated files (the
+	kernel makefiles are _good_ examples;)), and so on.  Having an older
+	copy of 'ex'/'vi' is the main thing I remember as saving the day.
+
+> Better yet, would you be willing and able to upload a disk image or
+> tar file of an upgraded system to the PUPS archive (or directly to me
+
+	Oh, I have no 2.9 systems - this was all done 10 years ago.  The
+	systems I run now use MSCP/TMSCP devices and 2.9 lacks support
+	for those.
+
+	Steve
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id DAA13020
+	for pups-liszt; Thu, 18 Feb 1999 03:32:46 +1100 (EST)
+
+From sms at moe.2bsd.com  Thu Feb 18 02:32:00 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Wed, 17 Feb 1999 08:32:00 -0800 (PST)
+Subject: 2.11BSD, non-split i/d issues
+Message-ID: <199902171632.IAA02404@moe.2bsd.com>
+
+Hi -
+
+> From: maximum entropy <entropy at zippy.bernstein.com>
+> I would prefer to use 2.11BSD because I understand it's still actively
+> used, and not as buggy as 2.9.  But everything I've read about 2.11BSD
+> says that it needs split i/d to run.  Can anyone give me more detail
+> about this?  Was support for machines without split i/d removed from
+> the kernel, or is it just that some of the programs are too big to fit
+> in a single 64k segment?
+
+	Oh, support was NOT removed.  Non-split executables (magic number
+	0407 and 0410) will still run.  
+
+	The kernel will not fit - without split I/D it is impossible to
+	create a /unix image that fits within a single 64kb (actually 48kb
+	since the kernel stack takes 1 segment and the 'u' area takes
+	another) address space.
+
+	I actually went thru the exercise once (2.10 era) of creating a bare 
+	bones kernel that would fit in - at least the linker said it would.
+	That was only done by ripping out lots of stuff - no networking, no
+	statistics gathering, almost no drivers, etc.  Never 'ran' it though
+	since there seemed to be little point in such a stripped down system.
+
+	Even V7 was hard pressed to run on a non-split machine!  In fact there
+	was a paper written about shoehorning V7 onto an 11/40 and the hoops
+	that needed to be jumped thru.  Not sure but that document might be
+	in the /usr/doc tree of one of the PUPS Distributions hierarchy.
+
+	Steven
+
+
+From wkt at henry.cs.adfa.edu.au  Thu Feb 18 08:25:47 1999
+From: wkt at henry.cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 18 Feb 1999 09:25:47 +1100 (EST)
+Subject: Pro/Venix
+In-Reply-To: <36CA5B0D.8A2B2629@halcyon.com> from "David C. Jenner" at "Feb 16, 1999 10: 0:45 pm"
+Message-ID: <199902172225.JAA16961@henry.cs.adfa.edu.au>
+
+In article by David C. Jenner:
+> It seems to me that Pro/Venix is a potential candidate for the PUPS
+> archive, the snag being DEC/Compaq residual interests in it.  PUPS
+> covers the AT&T part, VenturCom has "given away" their part, and
+> DEC/Compaq is all that's left.
+> 
+> So:
+> 	1) Could this be a PUPS addition, if a good copy be found?
+> 	2) If someone has a copy, but worries about the DEC/Compaq
+> 	   aspects, can a good copy of the disks I have be acquired?
+> 	   (Anyone in this category might want to respond directly
+> 	    to me instead of posting to the mailing lists.)  After
+> 	   all a PUPS licensee is 99.999% covered, and DEC/Compaq
+> 	   objections are probably to worry about the AT&T part,
+> 	   which the Ancient Unix license covers...
+> 
+> Dave
+
+If we could get DEC/Compaq to allow access to Pro/Venix by UNIX source
+license holders, then yes I would certainly add it to the Archive. If
+there's no source code, and SCO are happy, then it could go up for anon ftp.
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id KAA14692
+	for pups-liszt; Thu, 18 Feb 1999 10:21:58 +1100 (EST)
+
+From wkt at henry.cs.adfa.edu.au  Thu Feb 18 09:18:40 1999
+From: wkt at henry.cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 18 Feb 1999 10:18:40 +1100 (EST)
+Subject: Help with regs on Pro serial ports
+Message-ID: <199902172318.KAA18083@henry.cs.adfa.edu.au>
+
+I'm trying to help get the kernel for the version of 2.9BSD ported to the
+Pro-350. The patches supplied by Rick Macklem are slightly incomplete, e.g
+there is no config shell script which knows about the new device drivers etc.
+
+Anyway, one vital missing file is pcreg.h, which holds the structure
+describing the registers of the serial ports on the Pro-350. By perusing
+the file dev/pc.c, I've worked out that the struct looks something like:
+
+
+struct pcdevice {
+	??? baud;
+	??? cdb;
+	??? csa;
+	??? csb;
+	??? csr;
+	??? dbuf;
+	??? mc0;
+	??? mc1;
+	??? mode;
+	??? stat;
+}
+
+where the fields are not in the correct order, and I have no idea what
+C type each is. If anybody can help recreate this file, could they
+email me?!
+
+I've included below the C comments at the top of dev/pc.c.
+
+If anybody has Rick Macklem's email address, could they pass that on too?
+I will email him and see if he's got a more complete set of patches somewhere.
+
+Many thanks in advance,
+
+	Warren
+
+/*
+ * This driver handles the two serial ports on the back of the
+ * pro3xx system unit. Although not software compatible, they
+ * are handled as minor device 0 & 1 respectively, for the printer
+ * and communication port. Modem control is included but no sync
+ * serial support for the com. port.
+ * NOTE: The DSR line in the printer port is used for carrier
+ * detect so terminals or modems should be cabled accordingly.
+ * Local terminal cables should jumper DTR-CDT so that the carrier
+ * will appear to be up or PC_SOFTCAR defined and devs or'd with 0200.
+ * NOTE2: The interrupt service routines are as follows:
+ *      plrint - printer port receive
+ *      plxint - printer port transmit
+ *      cmintr - communication port com. interrupt
+ * Modem transition interrupts are NOT used.
+ */
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id LAA15025
+	for pups-liszt; Thu, 18 Feb 1999 11:31:53 +1100 (EST)
+
+From allisonp at world.std.com  Thu Feb 18 10:31:29 1999
+From: allisonp at world.std.com (Allison J Parent)
+Date: Wed, 17 Feb 1999 19:31:29 -0500
+Subject: 2.9BSD:  mbuf.h
+Message-ID: <199902180031.AA13175@world.std.com>
+
+
+<Venix/Pro is freely available on the Internet at ftp.update.uu.se,
+<but Pro/Venix seems to be a little harder to find.  Pro/Venix is
+<much to be preferred because you can reconfigure the kernel (in
+<binary) to include different drivers, etc.
+
+The UU.SE and gatway.dec.com version of it I ahve running on my PRO-350
+for the last year or more.
+
+I'd like to have SLIP/PPP running on it or even be able to tweek it.
+
+<	1) Could this be a PUPS addition, if a good copy be found?
+
+Oh hand I'd say yes.  
+
+Allison
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id LAA15035
+	for pups-liszt; Thu, 18 Feb 1999 11:32:11 +1100 (EST)
+
+From allisonp at world.std.com  Thu Feb 18 10:31:41 1999
+From: allisonp at world.std.com (Allison J Parent)
+Date: Wed, 17 Feb 1999 19:31:41 -0500
+Subject: 2.11BSD, non-split i/d issues
+Message-ID: <199902180031.AA13305@world.std.com>
+
+<As already mentioned in previous messages, I'm working on getting
+<2.9BSD onto a Pro 350.  I'm using 2.9BSD as a starting point because
+<it claims to support machines without split i/d.  The 350 uses the
+<F-11 chipset, which I have read does not support split i/d.
+
+The F11 does not do I&D split but does have user/system.  
+
+<I would prefer to use 2.11BSD because I understand it's still actively
+<used, and not as buggy as 2.9.  But everything I've read about 2.11BSD
+<says that it needs split i/d to run.  Can anyone give me more detail
+<about this?  Was support for machines without split i/d removed from
+<the kernel, or is it just that some of the programs are too big to fit
+<in a single 64k segment?
+
+It's my understanding that 2.11 will run on F11 systems (pro350 and 11/23)
+if properly configured but the only binaries loose are for split I&D.
+So if properly configured you can get 2.11 to utilize the user/system
+spaces.
+
+Allison
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id MAA15404
+	for pups-liszt; Thu, 18 Feb 1999 12:32:52 +1100 (EST)
+
+From sms at moe.2bsd.com  Thu Feb 18 11:25:53 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Wed, 17 Feb 1999 17:25:53 -0800 (PST)
+Subject: 2.11BSD, non-split i/d issues
+Message-ID: <199902180125.RAA05895@moe.2bsd.com>
+
+Hi -
+
+> From: allisonp at world.std.com (Allison J Parent)
+> The F11 does not do I&D split but does have user/system.  
+
+	Correct.  Some systems also have an 18bit only MMU which restricts
+	memory to 248kb max (others have a 22bit MMU and can physically
+	have more memory).
+
+> It's my understanding that 2.11 will run on F11 systems (pro350 and 11/23)
+> if properly configured but the only binaries loose are for split I&D.
+
+	Not likely.  The kernel won't fit in 48kb that I know of.  And there
+	will be no networking support since that requires supervisor mode
+	which non-split I/D systems don't have.
+
+> So if properly configured you can get 2.11 to utilize the user/system spaces.
+
+	The skeleton of a Makefile for non-split a kernel exists but it 
+	will take much work (it is essentially just a list of file that may
+	or may not be 100% current) to kick into shape.  Also, remember that
+	programs like 'csh', 'vi' and so on are not only split I/D but 
+	overlaid - they will not run on a non-split machine. 
+
+	Steven Schultz
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id MAA15443
+	for pups-liszt; Thu, 18 Feb 1999 12:44:04 +1100 (EST)
+
+From kcwellsc at math.uwaterloo.ca  Thu Feb 18 11:43:27 1999
+From: kcwellsc at math.uwaterloo.ca (Ken Wellsch)
+Date: Wed, 17 Feb 1999 20:43:27 -0500 (EST)
+Subject: Venix (was Re: 2.9BSD:  mbuf.h)
+In-Reply-To: <36CAEA1F.D5D7C838@halcyon.com> from "David C. Jenner" at Feb 17, 99 08:11:12 am
+Message-ID: <199902180143.UAA01509@math.uwaterloo.ca>
+
+| I don't have any docs on the DECNA, but they must exist.  It's
+| probably pretty close to the DEQNA.
+
+The DECNA uses one of the earlier Intel network chips.  It lives
+on the CTI bus, a bus like no other.  I believe the DEQNA is T-11
+based and lives on the vastly better known Q-bus...  -- Ken
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id FAA18371
+	for pups-liszt; Fri, 19 Feb 1999 05:47:10 +1100 (EST)
+
+From kcwellsc at math.uwaterloo.ca  Fri Feb 19 04:46:35 1999
+From: kcwellsc at math.uwaterloo.ca (Ken Wellsch)
+Date: Thu, 18 Feb 1999 13:46:35 -0500 (EST)
+Subject: Venix (was Re: 2.9BSD:  mbuf.h)
+In-Reply-To: <01BE5B64.56247680@SONAR> from "James Lothian" at Feb 18, 99 01:14:51 pm
+Message-ID: <199902181846.NAA05766@math.uwaterloo.ca>
+
+I'm going to give up as I seem to remember nothing anymore... sigh.
+Allison also sent e-mail saying the DEQNA is not T-11 based.  I guess
+I'm thinking of an RQDX3.  I've had no place to unpack my old iron in
+over three years and certainly miss being able to pick up the part in
+question before foaming at the mouth spouting nonsense. Many apologies
+for suggesting such major inaccuracies.  -- Ken
+
+P.S.  Allison describe the DEQNA as a state-driven device with PALs
+      (I think) and that "big F" may the the gate array also mentioned.
+
+| From simul8 at simul8.demon.co.uk  Thu Feb 18 12:27:23 1999
+| 
+| Just for the sake of being picky... the DEQNA is based on an Intel 
+| microcontroller chip (something 8085-ish, I think). The ethernet chipset
+| seems to be Fairchild (it's certainly got a big F on it.)
+| 
+| James
+
+
+From erin at coffee.corliss.net  Fri Feb 19 06:39:35 1999
+From: erin at coffee.corliss.net (Erin W. Corliss)
+Date: Thu, 18 Feb 1999 12:39:35 -0800 (PST)
+Subject: VaxMate
+Message-ID: <Pine.LNX.3.96.990218123109.5732A-100000@coffee.corliss.net>
+
+
+My local computer junk store has a VaxMate for sale.  I'm not sure of the
+model -- It has a DB-25 serial port, 10-base-2 ethernet, and a phone-jack
+like printer port on the back, as well as an internal ST-225 hard drive
+and a 5.25 inch floppy drive.  
+
+Anyway, when I turn it on it tries to boot up -- the graphical slider
+thing on the screen gets about 90% of the way across and it displays the
+number 83, which I assume is an eeror code since the number changes if you
+boot it up with no keyboard.  Anyone know what the 83 means or where I can
+get a list of VaxMate error codes?  Also, how intelligent is this machine
+compared to a terminal?  Will it actually run a Vax operating system or
+does it need a server?
+
+--------------------------------------------------------
+"...color flashing thunder crashing dynamite machine..."
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id KAA19267
+	for pups-liszt; Fri, 19 Feb 1999 10:25:25 +1100 (EST)
+
+From bqt at Update.UU.SE  Fri Feb 19 09:24:43 1999
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Fri, 19 Feb 1999 00:24:43 +0100 (MET)
+Subject: Venix (was Re: 2.9BSD:  mbuf.h)
+In-Reply-To: <199902181846.NAA05766@math.uwaterloo.ca>
+Message-ID: <Pine.VUL.3.93.990219002351.1502D-100000@Zeke.Update.UU.SE>
+
+On Thu, 18 Feb 1999, Ken Wellsch wrote:
+
+> I'm going to give up as I seem to remember nothing anymore... sigh.
+> Allison also sent e-mail saying the DEQNA is not T-11 based.  I guess
+> I'm thinking of an RQDX3.  I've had no place to unpack my old iron in
+> over three years and certainly miss being able to pick up the part in
+> question before foaming at the mouth spouting nonsense. Many apologies
+> for suggesting such major inaccuracies.  -- Ken
+> 
+> P.S.  Allison describe the DEQNA as a state-driven device with PALs
+>       (I think) and that "big F" may the the gate array also mentioned.
+
+You might not be totally out. I also thought the DEQNA was T-11 based,
+since the DEUNA is. :-)
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id LAA19430
+	for pups-liszt; Fri, 19 Feb 1999 11:22:47 +1100 (EST)
+
+From allisonp at world.std.com  Fri Feb 19 10:22:33 1999
+From: allisonp at world.std.com (Allison J Parent)
+Date: Thu, 18 Feb 1999 19:22:33 -0500
+Subject: Venix (was Re: 2.9BSD:  mbuf.h)
+Message-ID: <199902190022.AA25325@world.std.com>
+
+<> I'm going to give up as I seem to remember nothing anymore... sigh.
+<> Allison also sent e-mail saying the DEQNA is not T-11 based.  I guess
+<> I'm thinking of an RQDX3.  I've had no place to unpack my old iron in
+<> over three years and certainly miss being able to pick up the part in
+<> question before foaming at the mouth spouting nonsense. Many apologies
+<> for suggesting such major inaccuracies.  -- Ken
+<> 
+<> P.S.  Allison describe the DEQNA as a state-driven device with PALs
+<>       (I think) and that "big F" may the the gate array also mentioned.
+<
+<You might not be totally out. I also thought the DEQNA was T-11 based,
+<since the DEUNA is. :-)
+
+I have a DEQNA in front of me.  There is a micro and that is a 8751 8bitter.
+The big chip is a LSI ASIC that is a linked list DMA controller.  No t-11.
+The RQDXn(n={1,2,3} uses a t-11.  The DELQA also does not use a T-11.
+Both use lots of logic in PALs and ASICs to perform several state machines
+needed for eithenet.  At the time of development there were few complete
+and fast enough chipsets for eithernet.  The DEQNA is mid 80s design and
+quite old.
+
+The DEUNA is quite different.
+
+Allison
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id LAA19476
+	for pups-liszt; Fri, 19 Feb 1999 11:40:24 +1100 (EST)
+
+From johnh at psych.usyd.edu.au  Fri Feb 19 10:40:17 1999
+From: johnh at psych.usyd.edu.au (johnh at psych.usyd.edu.au)
+Date: Fri, 19 Feb 1999 11:40:17 +1100 (EST)
+Subject: DEQNA (was was Re: 2.9BSD:  mbuf.h)
+Message-ID: <199902190040.LAA27443@psychwarp.psych.usyd.edu.au>
+
+
+| Just for the sake of being picky... the DEQNA is based on an Intel
+| microcontroller chip (something 8085-ish, I think). The ethernet chipset
+| seems to be Fairchild (it's certainly got a big F on it.)
+|
+
+The DEQNA uses a Intel 8751 (an EPROM version of 8051 family). I suspect that
+it may deal with the programming protocol and the ring buffers. The
+chip with the F (with bars top and bottom of the letter) is probably
+Fujitsu.
+
+These boards had a fairly bad reputation for lockups and dropped packets.
+There was a 20+ wire ECO along with a PAL chip (with 8 of the pins cut off)
+soldered on top of another chip.
+
+The replacement ethernet controller was the DELQA, which was a complete
+redesign and used a 68000 processor.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id LAA19489
+	for pups-liszt; Fri, 19 Feb 1999 11:41:28 +1100 (EST)
+
+From bqt at Update.UU.SE  Fri Feb 19 10:41:03 1999
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Fri, 19 Feb 1999 01:41:03 +0100 (MET)
+Subject: Venix (was Re: 2.9BSD:  mbuf.h)
+In-Reply-To: <199902190022.AA25325@world.std.com>
+Message-ID: <Pine.VUL.3.93.990219013735.1502E-100000@Zeke.Update.UU.SE>
+
+Hi, Alison.
+
+> <You might not be totally out. I also thought the DEQNA was T-11 based,
+> <since the DEUNA is. :-)
+> 
+> I have a DEQNA in front of me.  There is a micro and that is a 8751 8bitter.
+> The big chip is a LSI ASIC that is a linked list DMA controller.  No t-11.
+
+I'm sorry. I didn't mean to imply that you were wrong, just that I was.
+
+> The RQDXn(n={1,2,3} uses a t-11.  The DELQA also does not use a T-11.
+
+Never looked carefully at RQDX?, but the DELQA uses an M68K, that much I
+*do* know. (As do the DELUA)
+
+> Both use lots of logic in PALs and ASICs to perform several state machines
+> needed for eithenet.  At the time of development there were few complete
+> and fast enough chipsets for eithernet.  The DEQNA is mid 80s design and
+> quite old.
+
+You obviously knows more about this than I do. :-)
+However, as I said, atleast the DELQA have an M68K...
+And the DEQNA is old, yes...
+
+> The DEUNA is quite different.
+
+Obviously. But it is also pretty old. Not as buggy though, which should
+have been a clue. :-)
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id MAA19674
+	for pups-liszt; Fri, 19 Feb 1999 12:57:56 +1100 (EST)
+
+From allisonp at world.std.com  Fri Feb 19 11:57:38 1999
+From: allisonp at world.std.com (Allison J Parent)
+Date: Thu, 18 Feb 1999 20:57:38 -0500
+Subject: Venix (was Re: 2.9BSD:  mbuf.h)
+Message-ID: <199902190157.AA29020@world.std.com>
+
+<I'm sorry. I didn't mean to imply that you were wrong, just that I was.
+
+Not an argument, just posting to the group what went private by error.
+
+<Never looked carefully at RQDX?, but the DELQA uses an M68K, that much I
+<*do* know. (As do the DELUA)
+
+Having two Qbus VAXen and several Qbus PDP-11s it's old turf.  Also I worked 
+for DEC Engineering.  that and I've done a lot of hardware level work on my 
+systems (repaired dead boards) so the designs are more familair.
+
+<You obviously knows more about this than I do. :-)
+<However, as I said, atleast the DELQA have an M68K...
+<And the DEQNA is old, yes...
+
+DELQA is not 68k, The DEUNA is.  The DELQA is a cost reduced version 
+(less buggy too) of the DEQNA and is largely logically the same as the 
+DEQNA.
+
+<> The DEUNA is quite different.
+<
+<Obviously. But it is also pretty old. Not as buggy though, which should
+<have been a clue. :-)
+
+Also The DELUA.
+
+Allison
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id MAA19690
+	for pups-liszt; Fri, 19 Feb 1999 12:59:39 +1100 (EST)
+
+From eekg at ix.netcom.com  Fri Feb 19 11:48:59 1999
+From: eekg at ix.netcom.com (Eric Edwards)
+Date: Thu, 18 Feb 1999 20:48:59 -0500
+Subject: 2.9BSD:  mbuf.h
+Message-ID: <006401be5baa$06ce3da0$33d1b7c7@eric-edwards>
+
+I'm not sure if anyone mentioned this, but you can build a working 2.9
+kernel (sans network) from the sources by just commenting out the references
+to the networking include files.  I think there is an offending reference in
+syslocal.c also.
+
+Eric Edwards
+eekg at ix.netcom.com
+mag at csh.rit.edu
+
+-----Original Message-----
+From: maximum entropy <entropy at zippy.bernstein.com>
+To: pups at minnie.cs.adfa.edu.au <pups at minnie.cs.adfa.edu.au>
+Date: Tuesday, February 16, 1999 11:36 PM
+Subject: 2.9BSD: mbuf.h
+
+
+>"make unix" failed:
+>Make:  Don't know how to make /usr/include/sys/mbuf.h.  Stop.
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id NAA19762
+	for pups-liszt; Fri, 19 Feb 1999 13:14:46 +1100 (EST)
+
+From allisonp at world.std.com  Fri Feb 19 12:14:32 1999
+From: allisonp at world.std.com (Allison J Parent)
+Date: Thu, 18 Feb 1999 21:14:32 -0500
+Subject: DEQNA (was was Re: 2.9BSD:  mbuf.h)
+Message-ID: <199902190214.AA14211@world.std.com>
+
+
+<The DEQNA uses a Intel 8751 (an EPROM version of 8051 family). I suspect th
+<it may deal with the programming protocol and the ring buffers. The
+<chip with the F (with bars top and bottom of the letter) is probably
+<Fujitsu.
+
+Correct on both cases.  
+
+<These boards had a fairly bad reputation for lockups and dropped packets.
+<There was a 20+ wire ECO along with a PAL chip (with 8 of the pins cut off
+<soldered on top of another chip.
+
+Actually there were revs A->n and each rev had a step.  The last one was 
+N-11... it was marginal.  Good one tended to be good and the bad were PITA.
+Also they tended to fail far often than MTBF predictions.
+
+<The replacement ethernet controller was the DELQA, which was a complete
+<redesign and used a 68000 processor.
+
+The DELQA was not 68000. The board was far to small for that and had to be 
+Qbus dual width and compatable with DEQNA. I have a few of them in my vaxen 
+too.  The Unibus versions DEUNA and the later DELUA were 68k and very good. 
+They were partly the reason why 730s and 750s were used for routers long 
+after they were replaced for other tasks.
+
+Allison
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id NAA19811
+	for pups-liszt; Fri, 19 Feb 1999 13:23:12 +1100 (EST)
+
+From allisonp at world.std.com  Fri Feb 19 12:22:56 1999
+From: allisonp at world.std.com (Allison J Parent)
+Date: Thu, 18 Feb 1999 21:22:56 -0500
+Subject: Venix (was Re: 2.9BSD:  mbuf.h)
+Message-ID: <199902190222.AA21412@world.std.com>
+
+<DELQA is not 68k, The DEUNA is.  The DELQA is a cost reduced version 
+<(less buggy too) of the DEQNA and is largely logically the same as the 
+<DEQNA.
+
+Memory parity exception...  Eat foot time.
+
+DELQA M7516 is 68k and lance chip... had to pull mine to check.  The M7504
+however I am correct as I pulled one down from the shelf before dining on 
+foot.  Oh and the reson I forgot it's 68k, was the DELQA is far more 
+reliable!  that and I only open the BA123 one a year to check the fans and 
+clean dust.  It just don't break. ;)
+
+Allison
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id NAA19969
+	for pups-liszt; Fri, 19 Feb 1999 13:36:31 +1100 (EST)
+
+From SHOPPA at trailing-edge.com  Fri Feb 19 12:36:11 1999
+From: SHOPPA at trailing-edge.com (Tim Shoppa)
+Date: Thu, 18 Feb 1999 21:36:11 -0500
+Subject: DEQNA (was was Re: 2.9BSD:  mbuf.h)
+Message-ID: <990218213611.202000b8@trailing-edge.com>
+
+><The replacement ethernet controller was the DELQA, which was a complete
+><redesign and used a 68000 processor.
+>The DELQA was not 68000.
+
+Hate to turn this into a "no it isn't, yet it is" sequence, but all
+my DELQA's have prominent 68000's on 'em.
+
+> The board was far to small for that
+
+No, it isn't.  The 68000 is the quad pack, and is smaller than either
+of the two custom gate arrays that does the Q-bus handshaking.
+
+Tim.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id OAA20047
+	for pups-liszt; Fri, 19 Feb 1999 14:07:20 +1100 (EST)
+
+From wkt at henry.cs.adfa.edu.au  Fri Feb 19 13:06:14 1999
+From: wkt at henry.cs.adfa.edu.au (Warren Toomey)
+Date: Fri, 19 Feb 1999 14:06:14 +1100 (EST)
+Subject: 2.9BSD:  mbuf.h
+In-Reply-To: <006401be5baa$06ce3da0$33d1b7c7@eric-edwards> from Eric Edwards at "Feb 18, 1999  8:48:59 pm"
+Message-ID: <199902190306.OAA02230@henry.cs.adfa.edu.au>
+
+In article by Eric Edwards:
+> I'm not sure if anyone mentioned this, but you can build a working 2.9
+> kernel (sans network) from the sources by just commenting out the references
+> to the networking include files.  I think there is an offending reference in
+> syslocal.c also.
+> 
+> Eric Edwards
+> eekg at ix.netcom.com
+> mag at csh.rit.edu
+
+What is happening is that `make depend' invokes a script which finds
+#includes in the source code, and builds a make dependency. However,
+it's not very intelligent, and doesn't ignore:
+
+#ifdef INET
+#include <stuff>
+
+when INET isn't defined. :-) This bites on several C files.
+You just have to hand-prune the Makefile after make depend :-)
+This is 2.9BSD, BTW, ignore if you're not using it.
+
+Ciao!
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id VAA21635
+	for pups-liszt; Fri, 19 Feb 1999 21:20:30 +1100 (EST)
+
+From bqt at Update.UU.SE  Fri Feb 19 20:19:31 1999
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Fri, 19 Feb 1999 11:19:31 +0100 (MET)
+Subject: Venix (was Re: 2.9BSD:  mbuf.h)
+In-Reply-To: <199902190157.AA29020@world.std.com>
+Message-ID: <Pine.VUL.3.93.990219111730.26158A-100000@Zeke.Update.UU.SE>
+
+On Thu, 18 Feb 1999, Allison J Parent wrote:
+
+> <You obviously knows more about this than I do. :-)
+> <However, as I said, atleast the DELQA have an M68K...
+> <And the DEQNA is old, yes...
+> 
+> DELQA is not 68k, The DEUNA is.  The DELQA is a cost reduced version 
+> (less buggy too) of the DEQNA and is largely logically the same as the 
+> DEQNA.
+
+Really? I have a DELQA sitting right in front of me, and when I look at
+it, the large chip definitely says M68000. What could that be then?
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id VAA21652
+	for pups-liszt; Fri, 19 Feb 1999 21:23:04 +1100 (EST)
+
+From bqt at Update.UU.SE  Fri Feb 19 20:22:35 1999
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Fri, 19 Feb 1999 11:22:35 +0100 (MET)
+Subject: DEQNA (was was Re: 2.9BSD:  mbuf.h)
+In-Reply-To: <199902190214.AA14211@world.std.com>
+Message-ID: <Pine.VUL.3.93.990219112030.26158B-100000@Zeke.Update.UU.SE>
+
+On Thu, 18 Feb 1999, Allison J Parent wrote:
+
+> <The replacement ethernet controller was the DELQA, which was a complete
+> <redesign and used a 68000 processor.
+> 
+> The DELQA was not 68000. The board was far to small for that and had to be 
+> Qbus dual width and compatable with DEQNA. I have a few of them in my vaxen 
+> too.  The Unibus versions DEUNA and the later DELUA were 68k and very good. 
+
+Hate to disagree with you, Alison. The the DELQA really is 68000, take a
+peek inside yourself. It is a dual-width too...
+
+And the DEUNA is T-11, while the DELUA is 68000.
+I have never bothered plugging in any DEUNAs myself, since DELUAs are
+pretty common, and they atleast are pretty good. Never had any problems
+with any of them.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From g4klx at pop.agri.ch  Sun Feb 21 04:10:45 1999
+From: g4klx at pop.agri.ch (Jonathan Naylor)
+Date: Sat, 20 Feb 1999 19:10:45 +0100 (CET)
+Subject: V7 filesystem work
+Message-ID: <Pine.LNX.4.05.9902201906360.1385-100000@g4klx.agri.ch>
+
+Hello All
+
+A couple of weeks ago I hacked the program v7 from the bostic_tools to
+work under all sorts of different Unix versions. It worked great and
+allowed me to snoop around the V7 file system images from native Linux.
+Anyone who wants a copy can send me an e-mail.
+
+Anyway I had a few hours spare today, and decided to try adding the V7
+filesystem to the Linux kernel. Results so far are encouraging:
+
+
+g4klx:/usr/src/linux# ls -l /mnt
+total 333
+drwxrwxrwx   7 root     root          224 Sep 22  1988 .
+drwxr-xr-x  19 root     root         1024 Feb 14 11:55 ..
+drwxrwxr-x   2 3        3            2512 Sep 22  1988 bin
+-rwxr-xr-x   1 3        3            8986 Jun  8  1979 boot
+drwxrwxr-x   2 3        3             160 Sep 22  1988 dev
+drwxrwxr-x   2 3        3             336 Sep 22  1988 etc
+-rwxr-xr-x   1 daemon   daemon      53302 Jun  8  1979 hphtunix
+-rwxr-xr-x   1 daemon   daemon      52850 Jun  8  1979 hptmunix
+drwxrwxr-x   2 3        3             192 Sep 22  1988 lib
+drwxrwxr-x   2 root     lp             96 Sep 22  1988 mdec
+-rwxr-xr-x   1 root     daemon      50990 Jun  8  1979 rkunix
+-rwxr-xr-x   1 root     daemon      51982 Jun  8  1979 rl2unix
+-rwxr-xr-x   1 daemon   daemon      51790 Jun  8  1979 rphtunix
+-rwxr-xr-x   1 daemon   daemon      51274 Jun  8  1979 rptmunix
+g4klx:/usr/src/linux# df
+Filesystem         1024-blocks  Used Available Capacity Mounted on
+/dev/hda1            3031184 1920771   953665     67%   /
+/dev/loop0              1919    1877       42     98%   /mnt
+g4klx:/usr/src/linux#
+
+
+I am using the loop block device to allow me to mount a file as a block
+device, this saves me having to add a new partition to my disc. There
+should be no reason why it won't work with a true disc partition. The V7
+filesystem under Linux is read/write.
+
+Anyone interested ?
+
+Jonathan
+
+
+
+
+From mallison at konnections.com  Sun Feb 21 12:13:38 1999
+From: mallison at konnections.com (Mike Allison)
+Date: Sat, 20 Feb 1999 19:13:38 -0700
+Subject: V7 filesystem work
+Message-ID: <199902210203.TAA18682@mail.konnections.com>
+
+Yeah, I'm interested.  Can you write up what changes the linux port entailed???
+
+-Mike
+
+
+At 07:10 PM 2/20/99 +0100, g4klx at g4klx.demon.co.uk wrote:
+>Hello All
+>
+>A couple of weeks ago I hacked the program v7 from the bostic_tools to
+>work under all sorts of different Unix versions. It worked great and
+>allowed me to snoop around the V7 file system images from native Linux.
+>Anyone who wants a copy can send me an e-mail.
+>
+>Anyway I had a few hours spare today, and decided to try adding the V7
+>filesystem to the Linux kernel. Results so far are encouraging:
+>
+>
+>g4klx:/usr/src/linux# ls -l /mnt
+>total 333
+>drwxrwxrwx   7 root     root          224 Sep 22  1988 .
+>drwxr-xr-x  19 root     root         1024 Feb 14 11:55 ..
+>drwxrwxr-x   2 3        3            2512 Sep 22  1988 bin
+>-rwxr-xr-x   1 3        3            8986 Jun  8  1979 boot
+>drwxrwxr-x   2 3        3             160 Sep 22  1988 dev
+>drwxrwxr-x   2 3        3             336 Sep 22  1988 etc
+>-rwxr-xr-x   1 daemon   daemon      53302 Jun  8  1979 hphtunix
+>-rwxr-xr-x   1 daemon   daemon      52850 Jun  8  1979 hptmunix
+>drwxrwxr-x   2 3        3             192 Sep 22  1988 lib
+>drwxrwxr-x   2 root     lp             96 Sep 22  1988 mdec
+>-rwxr-xr-x   1 root     daemon      50990 Jun  8  1979 rkunix
+>-rwxr-xr-x   1 root     daemon      51982 Jun  8  1979 rl2unix
+>-rwxr-xr-x   1 daemon   daemon      51790 Jun  8  1979 rphtunix
+>-rwxr-xr-x   1 daemon   daemon      51274 Jun  8  1979 rptmunix
+>g4klx:/usr/src/linux# df
+>Filesystem         1024-blocks  Used Available Capacity Mounted on
+>/dev/hda1            3031184 1920771   953665     67%   /
+>/dev/loop0              1919    1877       42     98%   /mnt
+>g4klx:/usr/src/linux#
+>
+>
+>I am using the loop block device to allow me to mount a file as a block
+>device, this saves me having to add a new partition to my disc. There
+>should be no reason why it won't work with a true disc partition. The V7
+>filesystem under Linux is read/write.
+>
+>Anyone interested ?
+>
+>Jonathan
+>
+>
+>
+>
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id NAA02555
+	for pups-liszt; Sun, 21 Feb 1999 13:29:44 +1100 (EST)
+
+From wkt at henry.cs.adfa.edu.au  Sun Feb 21 12:29:29 1999
+From: wkt at henry.cs.adfa.edu.au (Warren Toomey)
+Date: Sun, 21 Feb 1999 13:29:29 +1100 (EST)
+Subject: V7 filesystem work
+In-Reply-To: <Pine.LNX.4.05.9902201906360.1385-100000@g4klx.agri.ch> from Jonathan Naylor at "Feb 20, 1999  7:10:45 pm"
+Message-ID: <199902210229.NAA08687@henry.cs.adfa.edu.au>
+
+In article by Jonathan Naylor:
+> Hello All
+> 
+> A couple of weeks ago I hacked the program v7 from the bostic_tools to
+> work under all sorts of different Unix versions. It worked great and
+> allowed me to snoop around the V7 file system images from native Linux.
+> Anyone who wants a copy can send me an e-mail.
+> 
+> Anyway I had a few hours spare today, and decided to try adding the V7
+> filesystem to the Linux kernel. Results so far are encouraging:
+
+> I am using the loop block device to allow me to mount a file as a block
+> device, this saves me having to add a new partition to my disc. There
+> should be no reason why it won't work with a true disc partition. The V7
+> filesystem under Linux is read/write.
+> 
+> Anyone interested ?
+
+I'd be happy to add any changes etc. into the Tools directory in the PUPS
+Archive.
+
+It's about time Unix could read the Unix filesystem again :-)
+
+Ciao,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id UAA05201
+	for pups-liszt; Sun, 21 Feb 1999 20:23:41 +1100 (EST)
+
+From g4klx at pop.agri.ch  Sun Feb 21 19:07:50 1999
+From: g4klx at pop.agri.ch (Jonathan Naylor)
+Date: Sun, 21 Feb 1999 10:07:50 +0100 (CET)
+Subject: V7 filesystem work
+In-Reply-To: <199902210203.TAA18682@mail.konnections.com>
+Message-ID: <Pine.LNX.4.05.9902210957580.303-100000@g4klx.agri.ch>
+
+Hello Mike and the list
+
+On Sat, 20 Feb 1999, Mike Allison wrote:
+> Yeah, I'm interested.  Can you write up what changes the linux port entailed???
+> 
+> -Mike
+
+I assume you mean the standalone V7 FS program rather than the kernel V7
+FS support ?
+
+The code was written in old C, and from a modern C programmers point of
+view, rather sloppily. The warnings from the compiler were terrible, so I
+added function prototypes, and made the code more ANSI C like. Then I got
+rid of a few bugs, in one place I remember a character pointer being
+assigned to a character.
+
+I then typedef'd the data types so I could use int8, int16 and int32 in
+the code to make it more portable. I stopped using structure overlays onto
+the raw data as that is messy and is not good for (a) byte ordering and
+(b) structure packing. It also allowed me to stop using the original V7
+file headers which would have made a public release of the code
+problematic.
+
+The data is extracted from the raw block data by using special
+architecturally neutral functions into locally held structures. That is a
+particular win with the block number in three bytes trick that is used in
+the inode.
+
+It has been tested on i386/Linux with both glibc 1.0 and glibc 2.0 and
+Alpha/Linux, no changes were needed.
+
+Then I added a few new commands to let me look at the superblock and
+bootblocks and a few other bits.
+
+Then I released it.
+
+I have just sent a copy of the program to Warren for inclusion in the PUPS
+tools section. Its not very big.
+
+Work is progressing on the V7 filesystem in the Linux kernel. Anyone who
+wants the patches for that should send me an e-mail. I hope to get it into
+the mainstream kernel in the Linux 2.3 series.
+
+Jonathan
+
+
+
+From wkt at henry.cs.adfa.edu.au  Tue Feb 23 15:25:51 1999
+From: wkt at henry.cs.adfa.edu.au (Warren Toomey)
+Date: Tue, 23 Feb 1999 16:25:51 +1100 (EST)
+Subject: 2.9BSD & Pro: another version
+Message-ID: <199902230525.QAA00483@henry.cs.adfa.edu.au>
+
+Ken Wellsch has just uploaded a set of RX50 disk images containing
+2.9BSD for the Pro 350 to the PUPS Archive. You can find them in
+
+	Distributions/ucb/2.9bsd4pro350-kcwellsc
+
+He says:
+
+	I believe the RX50 is actually 80 tracks with 10 sectors per track,
+	thus yielding 800 blocks per disk.  I think the first track is
+	reserved and thus Venix would not let me at it.  Hopefully I have
+	not also lost additional information here too.
+
+All the 34 disk images he sent in are 790 blocks long. Can anybody
+tell us if we will need to recover track 0 to make these images useful?
+
+At the very least, I've managed to find the pcreg.h file out of the
+images (cat */*.rx50 | less -B), so I'm getting closer at recompiling
+the 2.9/Pro kernel.
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id DAA23748
+	for pups-liszt; Wed, 24 Feb 1999 03:01:12 +1100 (EST)
+
+From jesper at df.lth.se  Wed Feb 24 02:00:54 1999
+From: jesper at df.lth.se (Jesper Nilsson)
+Date: Tue, 23 Feb 1999 17:00:54 +0100 (CET)
+Subject: SCO Source license tainting?
+Message-ID: <Pine.LNX.4.05-df.9902231646390.8684-100000@bartlet.df.lth.se>
+
+Tjo!
+
+I have a question that I hope someone can help me with:
+
+I'm thinking about getting myself a SCO Source license,
+but I'm worried that I might get "tainted" by this
+since my day job involves writing operating systems...
+My employer would not appreciate getting sued because of
+my hobbies...:-)
+
+Has anyone done research about this aspect of the license?
+
+My goals are twofold, running an older Unix version on my PDP-11's,
+and of course I want to peruse the source of the classic versions.
+
+/^JN - Jesper Nilsson
+--
+              I've heard of UNIseX, but I've never had it.
+                  Jesper Nilsson -- jesper at df.lth.se
+
+
+
+From wkt at henry.cs.adfa.edu.au  Wed Feb 24 07:52:15 1999
+From: wkt at henry.cs.adfa.edu.au (Warren Toomey)
+Date: Wed, 24 Feb 1999 08:52:15 +1100 (EST)
+Subject: SCO Source license tainting?
+In-Reply-To: <Pine.LNX.4.05-df.9902231646390.8684-100000@bartlet.df.lth.se> from Jesper Nilsson at "Feb 23, 1999  5: 0:54 pm"
+Message-ID: <199902232152.IAA04722@henry.cs.adfa.edu.au>
+
+In article by Jesper Nilsson:
+> I'm thinking about getting myself a SCO Source license,
+> but I'm worried that I might get "tainted" by this
+> since my day job involves writing operating systems...
+> My employer would not appreciate getting sued because of
+> my hobbies...:-)
+
+As long as you don't reuse tainted Unix source code in your job, you will
+be ok. There are so many books covering the Unix kernel: Lions, Bach,
+Goodheart, Vahalia etc., that any concerns other than source code reuse
+are negligible.
+
+That's my feelings, anyway.
+
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.1/8.9.1) id LAA25583
+	for pups-liszt; Wed, 24 Feb 1999 11:46:21 +1100 (EST)
+
+From grog at lemis.com  Wed Feb 24 10:46:07 1999
+From: grog at lemis.com (Greg Lehey)
+Date: Wed, 24 Feb 1999 11:16:07 +1030
+Subject: SCO Source license tainting?
+In-Reply-To: <199902232152.IAA04722@henry.cs.adfa.edu.au>; from Warren Toomey on Wed, Feb 24, 1999 at 08:52:15AM +1100
+References: <Pine.LNX.4.05-df.9902231646390.8684-100000@bartlet.df.lth.se> <199902232152.IAA04722@henry.cs.adfa.edu.au>
+Message-ID: <19990224111607.G93492@lemis.com>
+
+On Wednesday, 24 February 1999 at  8:52:15 +1100, Warren Toomey wrote:
+> In article by Jesper Nilsson:
+>> I'm thinking about getting myself a SCO Source license,
+>> but I'm worried that I might get "tainted" by this
+>> since my day job involves writing operating systems...
+>> My employer would not appreciate getting sued because of
+>> my hobbies...:-)
+>
+> As long as you don't reuse tainted Unix source code in your job, you will
+> be ok. There are so many books covering the Unix kernel: Lions, Bach,
+> Goodheart, Vahalia etc., that any concerns other than source code reuse
+> are negligible.
+
+I think this relates to a spectre raised during the USL/BSDI wars.
+Somebody suggested that anybody who had been exposed to AT&T source
+code was ``tainted'' and could thus not legally develop competitive
+systems.  Somewhere I have a button that somebody brought back to me
+from a USENIX, with the text ``mentally contaminated''.
+
+Jesper, I don't think you need to worry about the problem.  That kind
+of restriction would be unenforceable.
+
+Greg
+--
+See complete headers for address, home page and phone numbers
+finger grog at lemis.com for PGP public key
+
+

@@ -1,0 +1,3416 @@
+From w.f.j.mueller at retro11.de  Tue Jun  6 00:12:47 2017
+From: w.f.j.mueller at retro11.de (Walter F.J. Mueller)
+Date: Mon, 5 Jun 2017 16:12:47 +0200
+Subject: [TUHS] 211bsd: kernel panic after a 'here document' in tcsh
+Message-ID: <c5345a44-82e9-7aca-a754-6b09c73e9c44@retro11.de>
+
+Hi,
+
+I'm using 211bsd (Version 447) and found that a 'here document' in tcsh
+leads to a kernel panic. It's absolutely reproducible on my system, both
+when run it on my FPGA PDP-11 or in simh. Just doing
+
+   tcsh
+   cat << EOF
+
+is enough, and I get
+
+     ka6 31333 aps 147472
+     pc 161324 ps 30004
+     ov 4
+     cpuerr 20
+     trap type 0
+     panic: trap
+     syncing disks... done
+
+looking at the crash dump gives
+
+   cd /etc/crash
+   ./why 4
+     Backtrace:
+     0147372: _boot(05000,0100) from    ~panic+072
+     0147414: _etext(011350) from ~trap+0350
+     0147450: ~trap() from call+040
+     0147516: _psignal(0101520,0160750) from ~trap+0364
+     0147554: ~trap() from call+040
+
+so the crash is in psignal, which is afaik the kernel internal
+mechanism to dispatch signals.
+
+Questions:
+   1. has anybody seen this before ?
+   2. any idea what the reason could be ?
+
+
+		With best regards, 	Walter
+
+
+From michael at kjorling.se  Tue Jun  6 02:16:49 2017
+From: michael at kjorling.se (Michael =?utf-8?B?S2rDtnJsaW5n?=)
+Date: Mon, 5 Jun 2017 16:16:49 +0000
+Subject: [TUHS] 211bsd: kernel panic after a 'here document' in tcsh
+In-Reply-To: <c5345a44-82e9-7aca-a754-6b09c73e9c44@retro11.de>
+References: <c5345a44-82e9-7aca-a754-6b09c73e9c44@retro11.de>
+Message-ID: <20170605161649.GL21406@yeono.kjorling.se>
+
+On 5 Jun 2017 16:12 +0200, from w.f.j.mueller at retro11.de (Walter F.J. Mueller):
+> I'm using 211bsd (Version 447) and found that a 'here document' in tcsh
+> leads to a kernel panic. It's absolutely reproducible on my system, both
+> when run it on my FPGA PDP-11 or in simh. Just doing
+> 
+>   tcsh
+>   cat << EOF
+
+I'm curious whether the same thing happens if you try that in some
+other shell? (Not sure how widely here documents were supported back
+then, but I'm asking anyway.)
+
+
+> is enough, and I get
+> 
+>     ka6 31333 aps 147472
+>     pc 161324 ps 30004
+>     ov 4
+>     cpuerr 20
+>     trap type 0
+>     panic: trap
+>     syncing disks... done
+> 
+> looking at the crash dump gives
+> 
+>   cd /etc/crash
+>   ./why 4
+>     Backtrace:
+>     0147372: _boot(05000,0100) from    ~panic+072
+>     0147414: _etext(011350) from ~trap+0350
+>     0147450: ~trap() from call+040
+>     0147516: _psignal(0101520,0160750) from ~trap+0364
+>     0147554: ~trap() from call+040
+> 
+> so the crash is in psignal, which is afaik the kernel internal
+> mechanism to dispatch signals.
+
+The PC value in the panic report ("pc 161324") strikes me as high, but
+161324 octal is 58068 decimal, so it's not excessively so, and perhaps
+in line with what one might expect to see with a kernel pinned near
+top of memory. Are the offsets in the backtrace constant, i.e. does it
+always crash on the same code?
+
+Not knowing what cpuerr 20 is specifically doesn't help, and at least
+http://www.retro11.de/ouxr/29bsd/usr/src/sys/sys/trap.c.html#n:112
+(which doesn't seem to be too far from what you are running) isn't
+terribly enlightening; CPUERR is simply a pointer into a memory-mapped
+register of some kind, as seen at
+http://www.retro11.de/ouxr/29bsd/usr/include/sys/iopage.h.html#m:CPUERR,
+and at least pdp11_cpumod.c from the simh source code at
+http://simh.trailing-edge.com/interim/pdp11_cpumod.c wasn't terribly
+enlightening, though of course I could be looking in entirely the
+wrong place.
+
+-- 
+Michael Kjörling • https://michael.kjorling.se • michael at kjorling.se
+                 “People who think they know everything really annoy
+                 those of us who know we don’t.” (Bjarne Stroustrup)
+
+
+From ron at ronnatalie.com  Tue Jun  6 02:33:22 2017
+From: ron at ronnatalie.com (Ron Natalie)
+Date: Mon, 5 Jun 2017 12:33:22 -0400
+Subject: [TUHS] 211bsd: kernel panic after a 'here document' in tcsh
+In-Reply-To: <20170605161649.GL21406@yeono.kjorling.se>
+References: <c5345a44-82e9-7aca-a754-6b09c73e9c44@retro11.de>
+ <20170605161649.GL21406@yeono.kjorling.se>
+Message-ID: <014101d2de19$7385e870$5a91b950$@ronnatalie.com>
+
+Trap type 0 is bus error.    The two causes of this are either addressing memory location that does not respond (as opposed to being umapped) or an word operation on an odd address.
+
+Since you have a cpuerr print out you have a 44/45/70 CPU.  The 020 value indicates that it was the bus timeout case.
+
+Something touched memory that was mapped in but didn't physically exist.
+
+
+
+
+From jacob.ritorto at gmail.com  Tue Jun  6 08:08:08 2017
+From: jacob.ritorto at gmail.com (Jacob Ritorto)
+Date: Mon, 5 Jun 2017 18:08:08 -0400
+Subject: [TUHS] 211bsd: kernel panic after a 'here document' in tcsh
+In-Reply-To: <014101d2de19$7385e870$5a91b950$@ronnatalie.com>
+References: <c5345a44-82e9-7aca-a754-6b09c73e9c44@retro11.de>
+ <20170605161649.GL21406@yeono.kjorling.se>
+ <014101d2de19$7385e870$5a91b950$@ronnatalie.com>
+Message-ID: <CAHYQbfAgH=iBjQo9NfjwPvyF+iW_k9HmGqoo7f8kafao-qW0Cg@mail.gmail.com>
+
+Nice snipe, Ron!  Where might one find the list of trap_types and cpuerrs?
+
+On Mon, Jun 5, 2017 at 12:33 PM, Ron Natalie <ron at ronnatalie.com> wrote:
+
+> Trap type 0 is bus error.    The two causes of this are either addressing
+> memory location that does not respond (as opposed to being umapped) or an
+> word operation on an odd address.
+>
+> Since you have a cpuerr print out you have a 44/45/70 CPU.  The 020 value
+> indicates that it was the bus timeout case.
+>
+> Something touched memory that was mapped in but didn't physically exist.
+>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170605/37b404c5/attachment.html>
+
+From jnc at mercury.lcs.mit.edu  Tue Jun  6 09:05:23 2017
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon,  5 Jun 2017 19:05:23 -0400 (EDT)
+Subject: [TUHS] 211bsd: kernel panic after a 'here document' in tcsh
+Message-ID: <20170605230523.7A45818C0AA@mercury.lcs.mit.edu>
+
+    > From: Jacob Ritorto
+
+    > Where might one find the list of trap_types
+
+Look in:
+
+  http://minnie.tuhs.org/cgi-bin/utree.pl?file=2.11BSD/sys/pdp/scb.s
+
+which maps from trap vector locations (built into the hardware; consult a
+PDP-11 CPU manual for details) to trap type numbers, which are defined here:
+
+  http://minnie.tuhs.org/cgi-bin/utree.pl?file=2.11BSD/sys/pdp/trap.h
+
+and handled here:
+
+  http://minnie.tuhs.org/cgi-bin/utree.pl?file=2.11BSD/sys/pdp/trap.c
+
+
+    > and cpuerrs?
+
+That just prints the contents of the CPU Error Register; see an appropriate
+PDP-11 CPU manual - 11/70, /44, /73, /83 or /84 for what all the bits mean.
+Also the "KDJ11-A CPU Module User's Guide", which also documents it.
+
+In theory, there's also a KDJ11-B UG, but it's not online. If anyone has one,
+can we please get it scanned? Thanks!
+
+    Noel
+
+
+From ron at ronnatalie.com  Tue Jun  6 21:43:30 2017
+From: ron at ronnatalie.com (Ron Natalie)
+Date: Tue, 6 Jun 2017 07:43:30 -0400
+Subject: [TUHS] 211bsd: kernel panic after a 'here document' in tcsh
+In-Reply-To: <CAHYQbfAgH=iBjQo9NfjwPvyF+iW_k9HmGqoo7f8kafao-qW0Cg@mail.gmail.com>
+References: <c5345a44-82e9-7aca-a754-6b09c73e9c44@retro11.de>
+ <20170605161649.GL21406@yeono.kjorling.se>
+ <014101d2de19$7385e870$5a91b950$@ronnatalie.com>
+ <CAHYQbfAgH=iBjQo9NfjwPvyF+iW_k9HmGqoo7f8kafao-qW0Cg@mail.gmail.com>
+Message-ID: <01ef01d2deba$1f469b50$5dd3d1f0$@ronnatalie.com>
+
+Chapter 3 of the PDP-11 processor handbook.
+
+ 
+
+Crudely scanned copy here:   <http://bitsavers.trailing-edge.com/pdf/dec/pdp11/1170/EK-KB11C-TM-001_1170procMan.pdf> http://bitsavers.trailing-edge.com/pdf/dec/pdp11/1170/EK-KB11C-TM-001_1170procMan.pdf
+
+ 
+
+From: Jacob Ritorto [mailto:jacob.ritorto at gmail.com] 
+Sent: Monday, June 5, 2017 6:08 PM
+To: Ron Natalie
+Cc: Michael Kjörling; tuhs at minnie.tuhs.org
+Subject: Re: [TUHS] 211bsd: kernel panic after a 'here document' in tcsh
+
+ 
+
+Nice snipe, Ron!  Where might one find the list of trap_types and cpuerrs?
+
+ 
+
+On Mon, Jun 5, 2017 at 12:33 PM, Ron Natalie <ron at ronnatalie.com> wrote:
+
+Trap type 0 is bus error.    The two causes of this are either addressing memory location that does not respond (as opposed to being umapped) or an word operation on an odd address.
+
+Since you have a cpuerr print out you have a 44/45/70 CPU.  The 020 value indicates that it was the bus timeout case.
+
+Something touched memory that was mapped in but didn't physically exist.
+
+
+
+ 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170606/3f7f88da/attachment.html>
+
+From bqt at update.uu.se  Wed Jun  7 05:15:23 2017
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Tue, 6 Jun 2017 21:15:23 +0200
+Subject: [TUHS] 211bsd: kernel panic after a 'here document' in tcsh
+In-Reply-To: <mailman.1.1496714401.14870.tuhs@minnie.tuhs.org>
+References: <mailman.1.1496714401.14870.tuhs@minnie.tuhs.org>
+Message-ID: <e6cd2354-8d02-1c5d-4402-9444c11e0677@update.uu.se>
+
+On 2017-06-06 04:00, Michael Kjörling <michael at kjorling.se> wrote:
+>
+> On 5 Jun 2017 16:12 +0200, from w.f.j.mueller at retro11.de (Walter F.J. Mueller):
+>> I'm using 211bsd (Version 447) and found that a 'here document' in tcsh
+>> leads to a kernel panic. It's absolutely reproducible on my system, both
+>> when run it on my FPGA PDP-11 or in simh. Just doing
+>>
+>>   tcsh
+>>   cat << EOF
+> I'm curious whether the same thing happens if you try that in some
+> other shell? (Not sure how widely here documents were supported back
+> then, but I'm asking anyway.)
+
+Not sure if any of the other shells have this. We're basically talking 
+csh, sh and ksh unless I remember wrong.
+But it's a good question. If noone else have tried it by tomorrow, I 
+could check.
+
+>> is enough, and I get
+>>
+>>     ka6 31333 aps 147472
+>>     pc 161324 ps 30004
+>>     ov 4
+>>     cpuerr 20
+>>     trap type 0
+>>     panic: trap
+>>     syncing disks... done
+>>
+>> looking at the crash dump gives
+>>
+>>   cd /etc/crash
+>>   ./why 4
+>>     Backtrace:
+>>     0147372: _boot(05000,0100) from    ~panic+072
+>>     0147414: _etext(011350) from ~trap+0350
+>>     0147450: ~trap() from call+040
+>>     0147516: _psignal(0101520,0160750) from ~trap+0364
+>>     0147554: ~trap() from call+040
+>>
+>> so the crash is in psignal, which is afaik the kernel internal
+>> mechanism to dispatch signals.
+> The PC value in the panic report ("pc 161324") strikes me as high, but
+> 161324 octal is 58068 decimal, so it's not excessively so, and perhaps
+> in line with what one might expect to see with a kernel pinned near
+> top of memory. Are the offsets in the backtrace constant, i.e. does it
+> always crash on the same code?
+
+161324 is way high. This is in kernel mode, and that is in the I/O page. 
+Basically no code lives in the I/O page (some boot roms and hardware 
+diagnostics excepted). This smells like corrupted memory (pointer or 
+stack), or something else very funny.
+
+> Not knowing what cpuerr 20 is specifically doesn't help, and at least
+> http://www.retro11.de/ouxr/29bsd/usr/src/sys/sys/trap.c.html#n:112
+> (which doesn't seem to be too far from what you are running) isn't
+> terribly enlightening; CPUERR is simply a pointer into a memory-mapped
+> register of some kind, as seen at
+> http://www.retro11.de/ouxr/29bsd/usr/include/sys/iopage.h.html#m:CPUERR,
+> and at least pdp11_cpumod.c from the simh source code at
+> http://simh.trailing-edge.com/interim/pdp11_cpumod.c wasn't terribly
+> enlightening, though of course I could be looking in entirely the
+> wrong place.
+
+Like others said - the cpu error register is documented in the processor 
+handbook.
+
+020 means Unibus Timeout, which is consistent with trying to access 
+something in the I/O page, where there is no device configured to 
+respond to that address.
+
+I just tried the same thing on a simh system here, and I do not get a 
+crash. This on 2.11BSD at patch level 449, running on an emulated 11/94.
+
+I do however get tcsh to crash.
+
+simh:/home/bqt> su -
+Password:
+erase, kill ^U, intr ^C
+# tcsh
+simh:/# cat << EOF
+Illegal instruction - core dumped
+#
+Suspended (tty input)
+simh:/home/bqt>
+simh:/home/bqt> cat /VERSION
+Current Patch Level: 448
+Date: January 5, 2010
+
+
+Yes, it says patch level 448, but it really is 449. This was the system 
+where I worked together with Steven when doing the 449 patch set, but I 
+never got around to actually updating the VERSION file itself.
+
+Also, this was while running on the console.
+
+
+
+Could you (Walter) try the latest version of 2.11BSD and see if you 
+still get that crash?
+
+	Johnny
+
+-- 
+Johnny Billquist                  || "I'm on a bus
+                                   ||  on a psychedelic trip
+email: bqt at softjar.se             ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+From ag4ve.us at gmail.com  Wed Jun  7 22:56:48 2017
+From: ag4ve.us at gmail.com (shawn wilson)
+Date: Wed, 7 Jun 2017 08:56:48 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+Message-ID: <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+
+I learned the other day that array indexes in some languages start at 1
+instead of 0. This seems to be an old trend that changed around the 70s?
+Who started this? Why was the change made?
+
+It seems to have come about around the same time as C, but interestingly
+enough Lua is kinda in between (you can start an array at 0 or 1).
+Smalltalk can probably have a 0 base index just by it's nature, but I
+wonder whether that would work in a 40 year old interpreter.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170607/42b0c3ed/attachment.html>
+
+From ron at ronnatalie.com  Wed Jun  7 23:16:33 2017
+From: ron at ronnatalie.com (Ron Natalie)
+Date: Wed, 7 Jun 2017 09:16:33 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+Message-ID: <00d901d2df90$4959c3f0$dc0d4bd0$@ronnatalie.com>
+
+The original FORTRAN and BASIC arrays started indexing at one because everybody other than computer scientists start counting at 1.
+
+These languages were for scientists and the beginner, so you wanted to make things compatible with their normal concepts.
+
+PASCAL on the other hand required you to give the minimum and maximum index for the array.
+
+ 
+
+It was an interesting concept when I got into computers in the early seventies that things would be numbered from zero.   Tape drive 0, TTY0, etc…
+
+ 
+
+Of course, C’s half-assaed implementation of arrays kind of depends on zero-indexing to work.
+
+ 
+
+From: TUHS [mailto:tuhs-bounces at minnie.tuhs.org] On Behalf Of shawn wilson
+Sent: Wednesday, June 7, 2017 8:57 AM
+To: The Eunuchs Hysterical Society
+Subject: [TUHS] Array index history
+
+ 
+
+I learned the other day that array indexes in some languages start at 1 instead of 0. This seems to be an old trend that changed around the 70s? Who started this? Why was the change made? 
+
+ 
+
+It seems to have come about around the same time as C, but interestingly enough Lua is kinda in between (you can start an array at 0 or 1). Smalltalk can probably have a 0 base index just by it's nature, but I wonder whether that would work in a 40 year old interpreter. 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170607/1c5da05c/attachment.html>
+
+From arnold at skeeve.com  Wed Jun  7 23:20:43 2017
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Wed, 07 Jun 2017 07:20:43 -0600
+Subject: [TUHS] Array index history
+In-Reply-To: <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+Message-ID: <201706071320.v57DKhmJ026303@freefriends.org>
+
+shawn wilson <ag4ve.us at gmail.com> wrote:
+
+> I learned the other day that array indexes in some languages start at 1
+> instead of 0. This seems to be an old trend that changed around the 70s?
+> Who started this? Why was the change made?
+>
+> It seems to have come about around the same time as C, but interestingly
+> enough Lua is kinda in between (you can start an array at 0 or 1).
+> Smalltalk can probably have a 0 base index just by it's nature, but I
+> wonder whether that would work in a 40 year old interpreter.
+
+Basically, until C came along, the standard practice was for indices
+to start at 1. Certainly Fortran and Pascal did it that way. I suspect
+that all the Algol family languages did too, but I only did a little
+Algol W programming in colledge and that was long ago. I think Cobol also.
+
+Pascal (IIRC) allowed you to specify upper and lower bounds, something
+like
+
+	foo : array[5..10] of integer;
+
+with runtime bounds checking on array accesses.  (I could be wrong ---
+it's been a LLLLOOONNNGGG time.)
+
+HTH,
+
+Arnold
+
+
+From michael at kjorling.se  Wed Jun  7 23:50:04 2017
+From: michael at kjorling.se (Michael =?utf-8?B?S2rDtnJsaW5n?=)
+Date: Wed, 7 Jun 2017 13:50:04 +0000
+Subject: [TUHS] Array index history
+In-Reply-To: <201706071320.v57DKhmJ026303@freefriends.org>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <201706071320.v57DKhmJ026303@freefriends.org>
+Message-ID: <20170607135004.GB7802@yeono.kjorling.se>
+
+On 7 Jun 2017 07:20 -0600, from arnold at skeeve.com:
+> Basically, until C came along, the standard practice was for indices
+> to start at 1. Certainly Fortran and Pascal did it that way. I suspect
+> that all the Algol family languages did too, but I only did a little
+> Algol W programming in colledge and that was long ago. I think Cobol also.
+
+On the other hand, before C, both B and BCPL used zero-based indexing.
+So if we trace C's family tree, there is certainly precedence for
+zero-based indexing into arrays.
+
+https://www.bell-labs.com/usr/dmr/www/kbman.pdf page 8 (PDF page 10)
+says:
+
+> 7. A vector is a primary expression followed by any expression in []
+> brackets. The two expressions are evaluated to rvalues, added and
+> the result is used as an lvalue. The primary expression can be
+> thought of as a pointer to the base of a vector, while the bracketed
+> expression can be thought of as the offset in the vector. Since
+> E1[E2] is identical to *(E1+E2), and addition is commutative, the
+> base of the vector and teh offset in the vector can swap positions.
+
+And https://www.bell-labs.com/usr/dmr/www/bcpl.pdf page 11 (PDF page
+14) says:
+
+> 4.7 Vector Applications
+> /.../
+> Semantics: A vector is represented by a pointer to a consecutive
+> group of words which are the elements of the vector. The pointer
+> points to the zeroth element.
+
+-- 
+Michael Kjörling • https://michael.kjorling.se • michael at kjorling.se
+                 “People who think they know everything really annoy
+                 those of us who know we don’t.” (Bjarne Stroustrup)
+
+
+From arnold at skeeve.com  Thu Jun  8 00:02:39 2017
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Wed, 07 Jun 2017 08:02:39 -0600
+Subject: [TUHS] Array index history
+In-Reply-To: <20170607135004.GB7802@yeono.kjorling.se>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <201706071320.v57DKhmJ026303@freefriends.org>
+ <20170607135004.GB7802@yeono.kjorling.se>
+Message-ID: <201706071402.v57E2dTs032508@freefriends.org>
+
+Michael Kjörling <michael at kjorling.se> wrote:
+
+> On the other hand, before C, both B and BCPL used zero-based indexing.
+> So if we trace C's family tree, there is certainly precedence for
+> zero-based indexing into arrays.
+
+Ah. OK. I never used either language. I get the impression that BCPL
+wasn't used / known much in the US, but I could be wrong. I was exposed
+to BASIC and FORTRAN (and computer programming) circa 1976 and to C
+in 1980.  Anything before then is before my time ... :-)
+
+Thanks,
+
+Arnold
+
+
+From dot at dotat.at  Thu Jun  8 00:58:50 2017
+From: dot at dotat.at (Tony Finch)
+Date: Wed, 7 Jun 2017 15:58:50 +0100
+Subject: [TUHS] Array index history
+In-Reply-To: <20170607135004.GB7802@yeono.kjorling.se>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <201706071320.v57DKhmJ026303@freefriends.org>
+ <20170607135004.GB7802@yeono.kjorling.se>
+Message-ID: <alpine.DEB.2.11.1706071524340.21595@grey.csi.cam.ac.uk>
+
+Michael Kjörling <michael at kjorling.se> wrote:
+>
+> And https://www.bell-labs.com/usr/dmr/www/bcpl.pdf page 11 (PDF page
+> 14) says:
+>
+> > 4.7 Vector Applications
+> > /.../
+> > Semantics: A vector is represented by a pointer to a consecutive
+> > group of words which are the elements of the vector. The pointer
+> > points to the zeroth element.
+
+That syntax is quite different from the later BCPL that I'm familiar with.
+http://www.cl.cam.ac.uk/~mr10/bcplman.pdf
+
+It has a ! indirection operator which can be both unary and binary, as in
+
+	old BCPL	new BCPL	C
+
+	lv x		@x		&x
+	rv ptr		!ptr		*ptr
+	ptr*[i]		ptr!i		ptr[i]
+
+Richards' 1969 paper uses a down-arrow for binary !
+
+You can use "manifest" constants for laying out a structure, e.g.
+
+	MANIFEST { car; cdr; }
+
+declares car and cdr to have values 0 and 1. This lets you do struct-style
+indirection using the same operator as for array indexing, like in this
+function definition:
+
+	LET cadr(p) = p!cdr!car;
+
+When I saw how ->integ is used in the 6th Edition kernel it felt very BCPL
+to me.
+
+Tony.
+-- 
+f.anthony.n.finch  <dot at dotat.at>  http://dotat.at/  -  I xn--zr8h punycode
+Shannon: Cyclonic becoming southwest, 5 or 6. Moderate or rough. Rain.
+Moderate or poor.
+
+From lyndon at orthanc.ca  Thu Jun  8 02:31:56 2017
+From: lyndon at orthanc.ca (Lyndon Nerenberg)
+Date: Wed, 7 Jun 2017 09:31:56 -0700 (PDT)
+Subject: [TUHS] Array index history
+In-Reply-To: <201706071320.v57DKhmJ026303@freefriends.org>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <201706071320.v57DKhmJ026303@freefriends.org>
+Message-ID: <alpine.BSF.2.21.1706070924150.36213@orthanc.ca>
+
+> Basically, until C came along, the standard practice was for indices
+> to start at 1. Certainly Fortran and Pascal did it that way. I suspect
+> that all the Algol family languages did too, but I only did a little
+> Algol W programming in colledge and that was long ago. I think Cobol also.
+
+APL (excepting some early implementations) lets you set the "index origin" 
+to either 0 or 1, either by assigning a value to the quad-IO system 
+variable, or through the ')ORIGIN' command (varies with the 
+implementation).
+
+Changing quad-IO inside a function at runtime was a trick used to inflict 
+endless terror on many a first-year undergrad ;-)
+
+--lyndon
+
+
+
+From tfb at tfeb.org  Thu Jun  8 03:59:43 2017
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Wed, 7 Jun 2017 18:59:43 +0100
+Subject: [TUHS] Array index history
+In-Reply-To: <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+Message-ID: <B3D23729-DC9E-48F4-A7B8-12F2391735F1@tfeb.org>
+
+On 7 Jun 2017, at 13:56, shawn wilson <ag4ve.us at gmail.com> wrote:
+> 
+> I learned the other day that array indexes in some languages start at 1 instead of 0. This seems to be an old trend that changed around the 70s? Who started this? Why was the change made? 
+
+I was going to make the obvious glib comment about languages which care more about some transient notion of efficiency than usability leading to 0-based indexing.
+
+But I think in fact it must be cultural: FORTRAN was historically 1-based, of course, and although it looks like LISP 1 (1960) didn't have arrays, LISP 1.5 (1962) *did*, and they were 0-based.  It looks to me like ALGOL 58 allowed you to define lower & upper bounds, based on http://www.softwarepreservation.org/projects/ALGOL/report/Algol58_preliminary_report_CACM.pdf/view
+
+So I suspect that languages designed by and for people who actually did a lot of numerical matrix manipulation (ie applied mathematicians, physicists &c) used the conventions of those fields, which were and are 1-based indexing; languages designed by & for formal CS people tended to use zero-based, and languages designed by people who were feeling their oats as regards flexibility allowed user-defined bounds.
+
+--tim
+
+From clemc at ccc.com  Thu Jun  8 04:29:41 2017
+From: clemc at ccc.com (Clem Cole)
+Date: Wed, 7 Jun 2017 14:29:41 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+Message-ID: <CAC20D2N+FqjYXBfqLtfEyNUecRFnYcySo_noP1XkdA=FN-nvYw@mail.gmail.com>
+
+On Wed, Jun 7, 2017 at 8:56 AM, shawn wilson <ag4ve.us at gmail.com> wrote:
+
+> I learned the other day that array indexes in some languages start at 1
+> instead of 0. This seems to be an old trend that changed around the 70s?
+> Who started this? Why was the change made?
+
+​Tastes Change -- but I really think its more "things happen" is the short
+answer.
+
+The longer answer really comes from what you were comfortable.    As has
+been pointed at the 'engineers' and US types that grew up in the world of
+Fortran and Basic in the 50s, and 60s had used 1.   Which made perfect
+sense for them.   Certainly has my father was taught and how he taught me
+in the sixties.   However, the 'formal' mathematician and Europeans types
+from the Algol world ​tended to think 'normal' in terms of counting from 0
+like the HW did during the same time period.
+
+By the late 60s, early 70th, as has been pointed out, some languages
+started to offer some choice.   I remember different professors at CMU
+having different views what was better - and clearly it was a matter of
+taste.   But most took a view of what was most important was to keep *to
+local custom and convention *as the SW engineering rule* of 'least
+amazement' *needed to be high bit.
+
+I think the more interesting note is that Ken has gone on record to state
+he set out to create a Fortran compiler when he created B.  So it is an
+interesting question of why B (and C) ended up with the BCPL (Algol)
+convention of 0 based addresses not the Fortran 1 based?    But I actually
+think the 'zero-ness' of today, we have is less to do with 'Algol-like'
+(Pascal et al) winning and being 'better'  than it was that C ended up as
+the dominant language and for whatever reason Ken picked zero based
+addressing - probably >>I'll guess<< because he was staying close to the HW.
+
+Clem
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170607/14f6918a/attachment.html>
+
+From krewat at kilonet.net  Thu Jun  8 04:46:29 2017
+From: krewat at kilonet.net (Arthur Krewat)
+Date: Wed, 7 Jun 2017 14:46:29 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <CAC20D2N+FqjYXBfqLtfEyNUecRFnYcySo_noP1XkdA=FN-nvYw@mail.gmail.com>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <CAC20D2N+FqjYXBfqLtfEyNUecRFnYcySo_noP1XkdA=FN-nvYw@mail.gmail.com>
+Message-ID: <23afd785-e260-75ca-5c46-77c62fbcf3cd@kilonet.net>
+
+If you think of an array as a memory area of bytes, words, whatever, the 
+simple way to deal with it is the index being 0 is the first in the array.
+
+Why go to the trouble of decrementing the index to retreive the first 
+entry?
+
+ALGOL did indeed have arrays with bounds:
+
+INTEGER ARRAY K,L[0:10,0:10];
+
+Two arrays, K and L with 0 first, 10 last. Total of 11 elements.
+
+Of course, it's a "higher level" language than C. My thinking on the 
+subject is that C is very close to assembler, so if you're using for 
+example Intel X86 instructions:
+
+MOV SI,1
+MOV AL,[SI + ARRAY1]                        ; retrieve the SECOND 
+element (byte)
+
+Likewise, for words, just left-shift SI one bit.
+
+For me having started out in assembler (actually, MACRO-10 on a PDP-10), 
+it's intuitive as to why/how C does arrays.
+
+ak
+
+
+From ron at ronnatalie.com  Thu Jun  8 05:03:02 2017
+From: ron at ronnatalie.com (Ron Natalie)
+Date: Wed, 7 Jun 2017 15:03:02 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <23afd785-e260-75ca-5c46-77c62fbcf3cd@kilonet.net>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <CAC20D2N+FqjYXBfqLtfEyNUecRFnYcySo_noP1XkdA=FN-nvYw@mail.gmail.com>
+ <23afd785-e260-75ca-5c46-77c62fbcf3cd@kilonet.net>
+Message-ID: <016301d2dfc0$b098e250$11caa6f0$@ronnatalie.com>
+
+
+> Why go to the trouble of decrementing the index to retreive the first entry?
+
+What makes you think that you have to decrement the index.    Don't get sucked up in the idiotic C implementation of an array.   Arrays can be efficiently implemented no matter where the index starts.
+
+
+
+
+From krewat at kilonet.net  Thu Jun  8 05:15:05 2017
+From: krewat at kilonet.net (Arthur Krewat)
+Date: Wed, 7 Jun 2017 15:15:05 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <016301d2dfc0$b098e250$11caa6f0$@ronnatalie.com>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <CAC20D2N+FqjYXBfqLtfEyNUecRFnYcySo_noP1XkdA=FN-nvYw@mail.gmail.com>
+ <23afd785-e260-75ca-5c46-77c62fbcf3cd@kilonet.net>
+ <016301d2dfc0$b098e250$11caa6f0$@ronnatalie.com>
+Message-ID: <57dce8ab-153d-89ce-91d6-07d9f01f7d6b@kilonet.net>
+
+On 6/7/2017 3:03 PM, Ron Natalie wrote:
+>> Why go to the trouble of decrementing the index to retreive the first entry?
+> What makes you think that you have to decrement the index.    Don't get sucked up in the idiotic C implementation of an array.   Arrays can be efficiently implemented no matter where the index starts.
+>
+>
+In the days when memory and clock cycles were costly, an extra decrement 
+or subtract was not something to be taken lightly :)
+
+On the other hand, I can see that you could solve this in the 
+preprocessor. In my example, just make it:
+
+MOV AL, [SI + (ARRAY1 - FIRSTELEMENT)]
+
+And let the assembler deal with it.
+
+Still, there's something oddly "artificial" about that, again from the 
+machine language point of view. There's nothing "idiotic" about it IMHO. 
+It's just the way processors actually work.
+
+Of course, if you're really into abstraction, well, to each his own :)
+
+ak
+
+
+From ron at ronnatalie.com  Thu Jun  8 05:49:32 2017
+From: ron at ronnatalie.com (Ron Natalie)
+Date: Wed, 7 Jun 2017 15:49:32 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <57dce8ab-153d-89ce-91d6-07d9f01f7d6b@kilonet.net>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <CAC20D2N+FqjYXBfqLtfEyNUecRFnYcySo_noP1XkdA=FN-nvYw@mail.gmail.com>
+ <23afd785-e260-75ca-5c46-77c62fbcf3cd@kilonet.net>
+ <016301d2dfc0$b098e250$11caa6f0$@ronnatalie.com>
+ <57dce8ab-153d-89ce-91d6-07d9f01f7d6b@kilonet.net>
+Message-ID: <016f01d2dfc7$2f57e0e0$8e07a2a0$@ronnatalie.com>
+
+The memory storage location and the first element offset are effectively constants, you can remove them from the equation.
+
+
+
+
+
+From w.f.j.mueller at retro11.de  Thu Jun  8 06:14:07 2017
+From: w.f.j.mueller at retro11.de (Walter F.J. Mueller)
+Date: Wed, 7 Jun 2017 22:14:07 +0200
+Subject: [TUHS] 211bsd: kernel panic after a 'here document' in tcsh
+Message-ID: <86b6acb7-93ec-0dbd-b5a1-bd566e8c3cef@retro11.de>
+
+Hi,
+
+a few remarks on the feedback on the kernel panic after a 'here document' in tcsh.
+
+To Michael Kjörling question:
+ > I'm curious whether the same thing happens if you try that in some
+ > other shell? (Not sure how widely here documents were supported back
+ > then, but I'm asking anyway.)
+And Johnny Billquist remark
+ > Not sure if any of the other shells have this.
+
+'here documents' are available and work fine in sh and csh.
+And are in fact used, examples
+
+   /usr/adm/daily     (a /bin/sh script)
+     su uucp << EOF
+           /etc/uucp/clean.daily
+     EOF
+
+   /usr/crash/why     (a /bin/csh script)
+     adb -k {unix,core}.$1 << 'EOF'
+     version/sn"Backtrace:"n
+     $c
+     'EOF'
+
+To Michael Kjörling remark
+ > The PC value in the panic report ("pc 161324") strikes me as high
+and Johnny Billquist remark
+ > This is in kernel mode, and that is in the I/O page.
+
+211bsd uses split I/D space and uses all 64 kB I space for code.
+The top 8 kB are in fact  the overlay area, and the crash happened
+in overlay 4 (as indicated by ov 4). With a simple
+
+   nm /unix | sort | grep " 4"
+
+one gets
+
+   161254 t ~psignal 4
+   162302 t ~issignal 4
+
+so the crash is just 050 bytes after the entry point of psignal. So the
+PC address is fine and not the problem. For psignal look at
+
+   http://www.retro11.de/ouxr/211bsd/usr/src/sys/sys/kern_sig.c.html#s:_psignal
+
+the crash must be one of the first lines. psignal is an internal kernel
+function, called from
+
+   http://www.retro11.de/ouxr/211bsd/usr/src/sys/sys/kern_sig.c.html#xref:s:_psignal
+
+and has nothing to do with the libc function psignal
+
+   http://www.retro11.de/ouxr/211bsd/usr/man/cat3/psignal.0.html
+   http://www.retro11.de/ouxr/211bsd/usr/src/lib/libc/gen/psignal.c.html
+
+To Johnny Billquist remark
+ > Could you (Walter) try the latest version of 2.11BSD and see if you
+ > still get that crash?
+
+very interesting that you see a core dump of tcsh rather a kernel panic.
+
+Whatever tcsh does, it should not lead to a kernel panic, and if it does,
+it is primarily a bug of the kernel. It looks like there are two issues,
+one in tcsh, and one in the kernel. I've a hunch were this might come from,
+but that will take a weekend or two to check on.
+
+
+		With best regards,  Walter
+
+
+From dave at horsfall.org  Thu Jun  8 09:57:47 2017
+From: dave at horsfall.org (Dave Horsfall)
+Date: Thu, 8 Jun 2017 09:57:47 +1000 (EST)
+Subject: [TUHS] Array index history
+In-Reply-To: <alpine.DEB.2.11.1706071524340.21595@grey.csi.cam.ac.uk>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <201706071320.v57DKhmJ026303@freefriends.org>
+ <20170607135004.GB7802@yeono.kjorling.se>
+ <alpine.DEB.2.11.1706071524340.21595@grey.csi.cam.ac.uk>
+Message-ID: <alpine.BSF.2.20.1706080956510.52526@aneurin.horsfall.org>
+
+On Wed, 7 Jun 2017, Tony Finch wrote:
+
+> You can use "manifest" constants for laying out a structure, e.g.
+> 
+> 	MANIFEST { car; cdr; }
+> 
+> declares car and cdr to have values 0 and 1. [...]
+
+Which of course led to C's "enum" facility.
+`
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From bakul at bitblocks.com  Thu Jun  8 10:47:33 2017
+From: bakul at bitblocks.com (Bakul Shah)
+Date: Wed, 07 Jun 2017 17:47:33 -0700
+Subject: [TUHS] Array index history
+In-Reply-To: Your message of "Wed, 07 Jun 2017 07:20:43 MDT."
+ <201706071320.v57DKhmJ026303@freefriends.org>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <201706071320.v57DKhmJ026303@freefriends.org>
+Message-ID: <20170608004733.29524124AEC2@mail.bitblocks.com>
+
+On Wed, 07 Jun 2017 07:20:43 MDT arnold at skeeve.com wrote:
+> 
+> Basically, until C came along, the standard practice was for indices
+> to start at 1. Certainly Fortran and Pascal did it that way.
+
+Pascal's array type syntax is
+
+    array-type: "array" "[" index-type "]" "of" type
+
+Index type could be an integer sub-range or scalar type or
+scalar sub-range. Pascal doesn't allow specifying array size
+with a simple integer so the question of default index for
+first element doesn't arise.
+
+In spite of having learned and used Pascal, PL/I, Fortran and
+APL before C, a lower bound of 0 seemed most sensible to me.
+Not because of any efficiency reasons but because of modular
+arithmetic which I learned before C!
+
+
+From arjanen.loic at gmail.com  Thu Jun  8 11:58:25 2017
+From: arjanen.loic at gmail.com (=?UTF-8?Q?ARJANEN_Lo=C3=AFc_Jean_David?=)
+Date: Thu, 8 Jun 2017 08:58:25 +0700
+Subject: [TUHS]  Array index history
+In-Reply-To: <57dce8ab-153d-89ce-91d6-07d9f01f7d6b@kilonet.net>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <CAC20D2N+FqjYXBfqLtfEyNUecRFnYcySo_noP1XkdA=FN-nvYw@mail.gmail.com>
+ <23afd785-e260-75ca-5c46-77c62fbcf3cd@kilonet.net>
+ <016301d2dfc0$b098e250$11caa6f0$@ronnatalie.com>
+ <57dce8ab-153d-89ce-91d6-07d9f01f7d6b@kilonet.net>
+Message-ID: <CAB2q81YGOEi3LZEF+0fR_wJJtJfXx74o7F6heWAREpGeQXg1uQ@mail.gmail.com>
+
+Le jeudi 8 juin 2017, Arthur Krewat <krewat at kilonet.net> a écrit :
+
+> On 6/7/2017 3:03 PM, Ron Natalie wrote:
+>
+>> Why go to the trouble of decrementing the index to retreive the first
+>>> entry?
+>>>
+>> What makes you think that you have to decrement the index.    Don't get
+>> sucked up in the idiotic C implementation of an array.   Arrays can be
+>> efficiently implemented no matter where the index starts.
+>>
+>>
+>> In the days when memory and clock cycles were costly, an extra decrement
+> or subtract was not something to be taken lightly :)
+>
+
+I doubt that avoiding a decrement was really the reason. I mean, it's an
+array: if you're 0-basing it you're still paying a decrement but for bounds
+checking this time. Keeping as close as possible to how the target machine
+worked or following a convention in another hand, that I can see.
+
+Loïc
+
+
+-- 
+ARJANEN Loïc Jean David
+http://blog.luigiscorner.com
+---
+“Computer science is no more about computers than astronomy is about
+telescopes, biology is about microscopes, or chemistry is about beakers and
+test tubes. Science is not about tools. It is about how we use them, and
+what we find out when we do.”
+Michael R. Fellows and Ian Parberry
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170608/ed8bc2da/attachment.html>
+
+From doug at cs.dartmouth.edu  Thu Jun  8 12:27:05 2017
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Wed, 07 Jun 2017 22:27:05 -0400
+Subject: [TUHS] Array index history
+Message-ID: <201706080227.v582R5D9056395@tahoe.cs.Dartmouth.EDU>
+
+>  Who started this? Why was the change made?
+
+Arrays in Fortran and Algol were indexed from 1 by default, but
+Algol (IIRC) generalized that to allow first:last declarations. 
+NPL used first,last for the SUBSTR operation. But first,last 
+begets off-by-one errors. The successor slice begins at last+1.
+The formula for the position of 1-indexed a[i,j] is a mess.
+First,length is much cleaner: the successor begins at
+first+length. I convinced the committee of that, so when
+NPL became PL/I, first,length was the convention. Zero-
+indexing is also a clean first,length notation. BCPL,
+where a[i] was synonymous with rv(a+i), had it. Dennis, who
+knew a good thing when he saw it, took it over. Dijkstra,
+too, often inveighed against 1-indexing, and opined that
+zero was the true computer-science way. 
+
+1-indexing certainly came into programming languages from
+the math tradition for matrix notation. Of course in
+math series are often indexed from zero, so one may
+pick and choose. Off hand I can only think of one CS
+context where 1 comes in handy: heapsort.
+
+Doug
+
+
+From rmswierczek at gmail.com  Thu Jun  8 12:45:08 2017
+From: rmswierczek at gmail.com (Robert Swierczek)
+Date: Wed, 7 Jun 2017 22:45:08 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <016301d2dfc0$b098e250$11caa6f0$@ronnatalie.com>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <CAC20D2N+FqjYXBfqLtfEyNUecRFnYcySo_noP1XkdA=FN-nvYw@mail.gmail.com>
+ <23afd785-e260-75ca-5c46-77c62fbcf3cd@kilonet.net>
+ <016301d2dfc0$b098e250$11caa6f0$@ronnatalie.com>
+Message-ID: <CAAFR5pZHXw5R97tXti6ue2FMCbBzJSmcGxVBCRJSX1PNNJSV0Q@mail.gmail.com>
+
+>
+> Arrays can be efficiently implemented no matter where the index starts.
+>
+
+Keep in mind that C was/is primarily a language to write OS's and
+other system level software.  Hardware such as memory addresses, page
+tables, disk sectors, etc. are all indexed from zero for very good
+reasons.  I would shudder to contemplate an implementation of the Unix
+V6 kernel in a hypothetical C-with-one-based-arrays language.
+
+
+From dave at horsfall.org  Thu Jun  8 14:05:15 2017
+From: dave at horsfall.org (Dave Horsfall)
+Date: Thu, 8 Jun 2017 14:05:15 +1000 (EST)
+Subject: [TUHS] Array index history
+In-Reply-To: <CAAFR5pZHXw5R97tXti6ue2FMCbBzJSmcGxVBCRJSX1PNNJSV0Q@mail.gmail.com>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <CAC20D2N+FqjYXBfqLtfEyNUecRFnYcySo_noP1XkdA=FN-nvYw@mail.gmail.com>
+ <23afd785-e260-75ca-5c46-77c62fbcf3cd@kilonet.net>
+ <016301d2dfc0$b098e250$11caa6f0$@ronnatalie.com>
+ <CAAFR5pZHXw5R97tXti6ue2FMCbBzJSmcGxVBCRJSX1PNNJSV0Q@mail.gmail.com>
+Message-ID: <alpine.BSF.2.20.1706081403050.52526@aneurin.horsfall.org>
+
+On Wed, 7 Jun 2017, Robert Swierczek wrote:
+
+> Keep in mind that C was/is primarily a language to write OS's and other 
+> system level software.  Hardware such as memory addresses, page tables, 
+> disk sectors, etc. are all indexed from zero for very good reasons.  I 
+> would shudder to contemplate an implementation of the Unix V6 kernel in 
+> a hypothetical C-with-one-based-arrays language.
+
+Weren't the Burroughs mainframes implemented in Algol, likely with a 
+1-origin?  Of course, I could be wrong (it was quite a few years ago since 
+I touched a B-1700)...
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From peter at rulingia.com  Thu Jun  8 16:19:51 2017
+From: peter at rulingia.com (Peter Jeremy)
+Date: Thu, 8 Jun 2017 16:19:51 +1000
+Subject: [TUHS] Array index history
+In-Reply-To: <CAAFR5pZHXw5R97tXti6ue2FMCbBzJSmcGxVBCRJSX1PNNJSV0Q@mail.gmail.com>
+References: <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <CAC20D2N+FqjYXBfqLtfEyNUecRFnYcySo_noP1XkdA=FN-nvYw@mail.gmail.com>
+ <23afd785-e260-75ca-5c46-77c62fbcf3cd@kilonet.net>
+ <016301d2dfc0$b098e250$11caa6f0$@ronnatalie.com>
+ <CAAFR5pZHXw5R97tXti6ue2FMCbBzJSmcGxVBCRJSX1PNNJSV0Q@mail.gmail.com>
+Message-ID: <20170608061951.GD83216@server.rulingia.com>
+
+On 2017-Jun-07 22:45:08 -0400, Robert Swierczek <rmswierczek at gmail.com> wrote:
+>Keep in mind that C was/is primarily a language to write OS's and
+>other system level software.  Hardware such as memory addresses, page
+>tables, disk sectors, etc. are all indexed from zero for very good
+>reasons.  I would shudder to contemplate an implementation of the Unix
+>V6 kernel in a hypothetical C-with-one-based-arrays language.
+
+Two counter-examples
+1) CHS numbers sectors starting from 1, not 0.
+2) Pr1meOS was written in Fortran. 
+
+-- 
+Peter Jeremy
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 949 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170608/f0a81b6b/attachment.sig>
+
+From dave at horsfall.org  Thu Jun  8 17:02:01 2017
+From: dave at horsfall.org (Dave Horsfall)
+Date: Thu, 8 Jun 2017 17:02:01 +1000 (EST)
+Subject: [TUHS] Array index history
+In-Reply-To: <20170608061951.GD83216@server.rulingia.com>
+References: <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <CAC20D2N+FqjYXBfqLtfEyNUecRFnYcySo_noP1XkdA=FN-nvYw@mail.gmail.com>
+ <23afd785-e260-75ca-5c46-77c62fbcf3cd@kilonet.net>
+ <016301d2dfc0$b098e250$11caa6f0$@ronnatalie.com>
+ <CAAFR5pZHXw5R97tXti6ue2FMCbBzJSmcGxVBCRJSX1PNNJSV0Q@mail.gmail.com>
+ <20170608061951.GD83216@server.rulingia.com>
+Message-ID: <alpine.BSF.2.20.1706081659570.52526@aneurin.horsfall.org>
+
+On Thu, 8 Jun 2017, Peter Jeremy wrote:
+
+> Two counter-examples
+> 1) CHS numbers sectors starting from 1, not 0.
+
+Ah, those were the days, writing drivers for RK-11s etc...
+
+> 2) Pr1meOS was written in Fortran. 
+
+Ironic, really, considering that "1" is not prime :-)
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From michael at kjorling.se  Thu Jun  8 17:54:38 2017
+From: michael at kjorling.se (Michael =?utf-8?B?S2rDtnJsaW5n?=)
+Date: Thu, 8 Jun 2017 07:54:38 +0000
+Subject: [TUHS] 211bsd: kernel panic after a 'here document' in tcsh
+In-Reply-To: <86b6acb7-93ec-0dbd-b5a1-bd566e8c3cef@retro11.de>
+References: <86b6acb7-93ec-0dbd-b5a1-bd566e8c3cef@retro11.de>
+Message-ID: <20170608075438.GF7802@yeono.kjorling.se>
+
+On 7 Jun 2017 22:14 +0200, from w.f.j.mueller at retro11.de (Walter F.J. Mueller):
+> To Michael Kjörling remark
+>> The PC value in the panic report ("pc 161324") strikes me as high
+> and Johnny Billquist remark
+>> This is in kernel mode, and that is in the I/O page.
+> 
+> 211bsd uses split I/D space and uses all 64 kB I space for code.
+> The top 8 kB are in fact  the overlay area, and the crash happened
+> in overlay 4 (as indicated by ov 4). With a simple
+
+Note what follows in the sentence which you snipped:
+
+> ...but 161324 octal is 58068 decimal, so it's not excessively so,
+> and perhaps in line with what one might expect to see...
+
+-- 
+Michael Kjörling • https://michael.kjorling.se • michael at kjorling.se
+                 “People who think they know everything really annoy
+                 those of us who know we don’t.” (Bjarne Stroustrup)
+
+
+From richard at inf.ed.ac.uk  Thu Jun  8 19:16:52 2017
+From: richard at inf.ed.ac.uk (Richard Tobin)
+Date: Thu,  8 Jun 2017 10:16:52 +0100 (BST)
+Subject: [TUHS] Array index history
+In-Reply-To: arnold@skeeve.com's message of Wed, 07 Jun 2017 07:20:43 -0600
+Message-ID: <20170608091652.639C8130C058@macaroni.inf.ed.ac.uk>
+
+> Basically, until C came along, the standard practice was for indices
+> to start at 1. Certainly Fortran and Pascal did it that way.
+
+Mercury Autocode used 0.
+
+  http://www.homepages.ed.ac.uk/jwp/history/mercury/manual/autocode/4.jpg
+
+-- Richard
+
+-- 
+The University of Edinburgh is a charitable body, registered in
+Scotland, with registration number SC005336.
+
+
+
+From chneukirchen at gmail.com  Thu Jun  8 21:28:28 2017
+From: chneukirchen at gmail.com (Christian Neukirchen)
+Date: Thu, 08 Jun 2017 13:28:28 +0200
+Subject: [TUHS] Array index history
+In-Reply-To: <201706071402.v57E2dTs032508@freefriends.org>
+ (arnold@skeeve.com's message of "Wed, 07 Jun 2017 08:02:39 -0600")
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <201706071320.v57DKhmJ026303@freefriends.org>
+ <20170607135004.GB7802@yeono.kjorling.se>
+ <201706071402.v57E2dTs032508@freefriends.org>
+Message-ID: <87o9tybtwj.fsf@gmail.com>
+
+arnold at skeeve.com writes:
+
+> Michael Kjörling <michael at kjorling.se> wrote:
+>
+>> On the other hand, before C, both B and BCPL used zero-based indexing.
+>> So if we trace C's family tree, there is certainly precedence for
+>> zero-based indexing into arrays.
+>
+> Ah. OK. I never used either language. I get the impression that BCPL
+> wasn't used / known much in the US, but I could be wrong. I was exposed
+> to BASIC and FORTRAN (and computer programming) circa 1976 and to C
+> in 1980.  Anything before then is before my time ... :-)
+
+It may be obvious, but awk(1) uses 1-indexing for arrays and string
+offsets, and shell arguments are indexed from 1 too (which may be
+reasonable given the special behavior of argv[0], but I think this
+resulted in rc(1) being 1-indexed for lists).  pic(1) sensibly uses
+1-indexing in the "Nth" notation.
+
+-- 
+Christian Neukirchen  <chneukirchen at gmail.com>  http://chneukirchen.org
+
+
+From ches at cheswick.com  Thu Jun  8 22:49:51 2017
+From: ches at cheswick.com (William Cheswick)
+Date: Thu, 8 Jun 2017 08:49:51 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <201706080227.v582R5D9056395@tahoe.cs.Dartmouth.EDU>
+References: <201706080227.v582R5D9056395@tahoe.cs.Dartmouth.EDU>
+Message-ID: <40F0B6B0-73C3-48CD-B75F-84CA6095433B@cheswick.com>
+
+When he tests a microphone, Don Knuth says:
+
+“Testing zero, one, two.”
+
+> On 7Jun 2017, at 10:27 PM, Doug McIlroy <doug at cs.dartmouth.edu> wrote:
+> 
+> Dijkstra,
+> too, often inveighed against 1-indexing, and opined that
+> zero was the true computer-science way. 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170608/2d36f742/attachment.html>
+
+From michael at kjorling.se  Thu Jun  8 22:56:44 2017
+From: michael at kjorling.se (Michael =?utf-8?B?S2rDtnJsaW5n?=)
+Date: Thu, 8 Jun 2017 12:56:44 +0000
+Subject: [TUHS] Array index history
+In-Reply-To: <40F0B6B0-73C3-48CD-B75F-84CA6095433B@cheswick.com>
+References: <201706080227.v582R5D9056395@tahoe.cs.Dartmouth.EDU>
+ <40F0B6B0-73C3-48CD-B75F-84CA6095433B@cheswick.com>
+Message-ID: <20170608125644.GG7802@yeono.kjorling.se>
+
+On 8 Jun 2017 08:49 -0400, from ches at cheswick.com (William Cheswick):
+> When he tests a microphone, Don Knuth says:
+> 
+> “Testing zero, one, two.”
+
+As opposed to Niklaus Wirth, who presumably would rather say:
+
+"Testing lower bound, lower bound plus one, lower bound plus two."
+
+-- 
+Michael Kjörling • https://michael.kjorling.se • michael at kjorling.se
+                 “People who think they know everything really annoy
+                 those of us who know we don’t.” (Bjarne Stroustrup)
+
+
+From crossd at gmail.com  Thu Jun  8 23:45:49 2017
+From: crossd at gmail.com (Dan Cross)
+Date: Thu, 8 Jun 2017 09:45:49 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <20170608125644.GG7802@yeono.kjorling.se>
+References: <201706080227.v582R5D9056395@tahoe.cs.Dartmouth.EDU>
+ <40F0B6B0-73C3-48CD-B75F-84CA6095433B@cheswick.com>
+ <20170608125644.GG7802@yeono.kjorling.se>
+Message-ID: <CAEoi9W43Uzjg8thmfvPBWh9sEVnzxd31EFe0nPSVs0+-3cOx0g@mail.gmail.com>
+
+On Thu, Jun 8, 2017 at 8:56 AM, Michael Kjörling <michael at kjorling.se>
+wrote:
+
+> On 8 Jun 2017 08:49 -0400, from ches at cheswick.com (William Cheswick):
+> > When he tests a microphone, Don Knuth says:
+> >
+> > “Testing zero, one, two.”
+>
+> As opposed to Niklaus Wirth, who presumably would rather say:
+>
+> "Testing lower bound, lower bound plus one, lower bound plus two."
+
+
+"Testing: the set N, defined so that there are some elements 'b' and 'e' in
+N with known values taken from the integers and such that b less than or
+equal 'e' and every other element is both the natural successor of an
+element in N and less than or equal to 'e'."
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170608/7b311e3f/attachment.html>
+
+From random832 at fastmail.com  Thu Jun  8 23:49:49 2017
+From: random832 at fastmail.com (Random832)
+Date: Thu, 08 Jun 2017 09:49:49 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <57dce8ab-153d-89ce-91d6-07d9f01f7d6b@kilonet.net>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <CAC20D2N+FqjYXBfqLtfEyNUecRFnYcySo_noP1XkdA=FN-nvYw@mail.gmail.com>
+ <23afd785-e260-75ca-5c46-77c62fbcf3cd@kilonet.net>
+ <016301d2dfc0$b098e250$11caa6f0$@ronnatalie.com>
+ <57dce8ab-153d-89ce-91d6-07d9f01f7d6b@kilonet.net>
+Message-ID: <1496929789.1143160.1002957384.3AD574C4@webmail.messagingengine.com>
+
+On Wed, Jun 7, 2017, at 15:15, Arthur Krewat wrote:
+> On 6/7/2017 3:03 PM, Ron Natalie wrote:
+> >> Why go to the trouble of decrementing the index to retreive the first entry?
+> > What makes you think that you have to decrement the index.    Don't get sucked up in the idiotic C implementation of an array.   Arrays can be efficiently implemented no matter where the index starts.
+>
+> In the days when memory and clock cycles were costly, an extra decrement 
+> or subtract was not something to be taken lightly :)
+
+You wouldn't need a decrement per access, because the base itself could
+still be stored as the address of the "0th" element (i.e. what would be
+the "-1th" in a 0-based system). It might add some extra complexity to
+the relocator, if it's not currently possible to have a reference
+outside the bounds of an object and/or with a negative offset, but
+statically linked programs (the only kind on V7 and earlier) did not do
+any runtime relocation.
+
+
+From ron at ronnatalie.com  Thu Jun  8 23:53:44 2017
+From: ron at ronnatalie.com (Ron Natalie)
+Date: Thu, 8 Jun 2017 09:53:44 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <20170608061951.GD83216@server.rulingia.com>
+References: <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <CAC20D2N+FqjYXBfqLtfEyNUecRFnYcySo_noP1XkdA=FN-nvYw@mail.gmail.com>
+ <23afd785-e260-75ca-5c46-77c62fbcf3cd@kilonet.net>
+ <016301d2dfc0$b098e250$11caa6f0$@ronnatalie.com>
+ <CAAFR5pZHXw5R97tXti6ue2FMCbBzJSmcGxVBCRJSX1PNNJSV0Q@mail.gmail.com>
+ <20170608061951.GD83216@server.rulingia.com>
+Message-ID: <01de01d2e05e$a57d84e0$f0788ea0$@ronnatalie.com>
+
+Original PR1MEOS was a weird beast.   Not just Fortran, but FortranIV which
+is beyond the array index issues is far from a language I'd want to have to
+build a lot of low level contructs in.   No structured aspects of it at all
+(indeed, this was the impetus for RATFOR, though I don't think Prime ever
+saw it).    They didn't stay with Fortran long.   They wrote their own PL/1
+variant called PL/P a scheme also implemented at UNIVAC (PLUS) and IBM
+(PL/S).    I would venture that C was the only systems implementation
+language that made the leap into a general purpose language.
+
+
+
+
+From krewat at kilonet.net  Thu Jun  8 23:55:49 2017
+From: krewat at kilonet.net (Arthur Krewat)
+Date: Thu, 8 Jun 2017 09:55:49 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <1496929789.1143160.1002957384.3AD574C4@webmail.messagingengine.com>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <CAC20D2N+FqjYXBfqLtfEyNUecRFnYcySo_noP1XkdA=FN-nvYw@mail.gmail.com>
+ <23afd785-e260-75ca-5c46-77c62fbcf3cd@kilonet.net>
+ <016301d2dfc0$b098e250$11caa6f0$@ronnatalie.com>
+ <57dce8ab-153d-89ce-91d6-07d9f01f7d6b@kilonet.net>
+ <1496929789.1143160.1002957384.3AD574C4@webmail.messagingengine.com>
+Message-ID: <be75e305-aadf-56ad-8f88-7977b5af9912@kilonet.net>
+
+On 6/8/2017 9:49 AM, Random832 wrote:
+> On Wed, Jun 7, 2017, at 15:15, Arthur Krewat wrote:
+>> In the days when memory and clock cycles were costly, an extra decrement
+>> or subtract was not something to be taken lightly :)
+> You wouldn't need a decrement per access, because the base itself could
+> still be stored as the address of the "0th" element (i.e. what would be
+> the "-1th" in a 0-based system). It might add some extra complexity to
+> the relocator, if it's not currently possible to have a reference
+> outside the bounds of an object and/or with a negative offset, but
+> statically linked programs (the only kind on V7 and earlier) did not do
+> any runtime relocation.
+>
+
+Shortly after making that statement, it occurred to me that the 
+preprocessor or assembler could take care of that easily.
+
+Even better than worrying about whether arrays started at 0 or 1 in C 
+would be to institute bounds checking in the first place :) But again 
+would add lots of extra code that in the days of the origins of C was 
+not something you wanted to add to the memory footprint.
+
+
+
+
+
+
+
+
+From ron at ronnatalie.com  Thu Jun  8 23:57:55 2017
+From: ron at ronnatalie.com (Ron Natalie)
+Date: Thu, 8 Jun 2017 09:57:55 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <CAEoi9W43Uzjg8thmfvPBWh9sEVnzxd31EFe0nPSVs0+-3cOx0g@mail.gmail.com>
+References: <201706080227.v582R5D9056395@tahoe.cs.Dartmouth.EDU>
+ <40F0B6B0-73C3-48CD-B75F-84CA6095433B@cheswick.com>
+ <20170608125644.GG7802@yeono.kjorling.se>
+ <CAEoi9W43Uzjg8thmfvPBWh9sEVnzxd31EFe0nPSVs0+-3cOx0g@mail.gmail.com>
+Message-ID: <01e301d2e05f$3b060190$b11204b0$@ronnatalie.com>
+
+My other favorite Wirth joke (I believe he coined himself) plays fun with the pronunciation of his name:
+
+You can call me by name… VEERTH or by value… WORTH.
+
+ 
+
+ 
+
+From: TUHS [mailto:tuhs-bounces at minnie.tuhs.org] On Behalf Of Dan Cross
+Sent: Thursday, June 8, 2017 9:46 AM
+To: Michael Kjörling
+Cc: TUHS main list
+Subject: Re: [TUHS] Array index history
+
+ 
+
+On Thu, Jun 8, 2017 at 8:56 AM, Michael Kjörling <michael at kjorling.se> wrote:
+
+On 8 Jun 2017 08:49 -0400, from ches at cheswick.com (William Cheswick):
+> When he tests a microphone, Don Knuth says:
+>
+> “Testing zero, one, two.”
+
+As opposed to Niklaus Wirth, who presumably would rather say:
+
+"Testing lower bound, lower bound plus one, lower bound plus two."
+
+ 
+
+"Testing: the set N, defined so that there are some elements 'b' and 'e' in N with known values taken from the integers and such that b less than or equal 'e' and every other element is both the natural successor of an element in N and less than or equal to 'e'."
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170608/9946b599/attachment.html>
+
+From ag4ve.us at gmail.com  Fri Jun  9 00:56:18 2017
+From: ag4ve.us at gmail.com (shawn wilson)
+Date: Thu, 8 Jun 2017 10:56:18 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <87o9tybtwj.fsf@gmail.com>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <201706071320.v57DKhmJ026303@freefriends.org>
+ <20170607135004.GB7802@yeono.kjorling.se>
+ <201706071402.v57E2dTs032508@freefriends.org> <87o9tybtwj.fsf@gmail.com>
+Message-ID: <CAH_OBicUtnqp+aRCnRFaPWtqOJRuOf4jsQ55XCHsyh1jaiOnng@mail.gmail.com>
+
+On Jun 8, 2017 7:29 AM, "Christian Neukirchen" <chneukirchen at gmail.com>
+wrote:
+
+arnold at skeeve.com writes:
+
+> Michael Kjörling <michael at kjorling.se> wrote:
+>
+>> On the other hand, before C, both B and BCPL used zero-based indexing.
+>> So if we trace C's family tree, there is certainly precedence for
+>> zero-based indexing into arrays.
+>
+> Ah. OK. I never used either language. I get the impression that BCPL
+> wasn't used / known much in the US, but I could be wrong. I was exposed
+> to BASIC and FORTRAN (and computer programming) circa 1976 and to C
+> in 1980.  Anything before then is before my time ... :-)
+
+It may be obvious, but awk(1) uses 1-indexing for arrays and string
+offsets, and shell arguments are indexed from 1 too (which may be
+reasonable given the special behavior of argv[0], but I think this
+resulted in rc(1) being 1-indexed for lists).  pic(1) sensibly uses
+1-indexing in the "Nth" notation.
+
+
+I never thought of it like that wrt awk. However, I always thought of $0 as
+"self" in higher level OO languages.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170608/22a874e0/attachment.html>
+
+From dave at horsfall.org  Fri Jun  9 01:04:39 2017
+From: dave at horsfall.org (Dave Horsfall)
+Date: Fri, 9 Jun 2017 01:04:39 +1000 (EST)
+Subject: [TUHS] Array index history
+In-Reply-To: <40F0B6B0-73C3-48CD-B75F-84CA6095433B@cheswick.com>
+References: <201706080227.v582R5D9056395@tahoe.cs.Dartmouth.EDU>
+ <40F0B6B0-73C3-48CD-B75F-84CA6095433B@cheswick.com>
+Message-ID: <alpine.BSF.2.20.1706090040490.52526@aneurin.horsfall.org>
+
+Just to diverge from this thread a little, it probably isn't all that 
+remarkable that programming languages tend to reflect the hardware for 
+which they were designed.
+
+Thus, for example, we have the C construct:
+
+    do { ... } while (--i);
+
+which translated right into the PDP-11's "SOB" instruction (and 
+reminiscent of FORTRAN's insistence that DO loops are run at least once 
+(there was a CACM article about that once; anyone have a pointer to it?)).
+
+And of course the afore-mentioned FORTRAN, which really reflects the 
+underlying IBM 70x architecture (shudder).
+
+I know that Burroughs' iron ran ALGOL; I shudder to think of any box that 
+runs native PERL...
+
+Speaking of Burroughs (which we weren't), their OS was MCP (Master Control 
+Program) which we the great unwashed called Male Chauvinist Pig, no doubt 
+to their distress :-)  Any other examples of poor acronyms designed by 
+ignorant marketoids?
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From pechter at gmail.com  Fri Jun  9 01:09:43 2017
+From: pechter at gmail.com (William Pechter)
+Date: Thu, 8 Jun 2017 11:09:43 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <alpine.BSF.2.20.1706090040490.52526@aneurin.horsfall.org>
+References: <201706080227.v582R5D9056395@tahoe.cs.Dartmouth.EDU>
+ <40F0B6B0-73C3-48CD-B75F-84CA6095433B@cheswick.com>
+ <alpine.BSF.2.20.1706090040490.52526@aneurin.horsfall.org>
+Message-ID: <f2d213a0-7266-45c5-9a6e-780fc4ce5fa7.maildroid@localhost>
+
+DEC Professional Operating System POS. 
+
+Great acronym there...  
+
+-----Original Message----
+
+Speaking of Burroughs (which we weren't), their OS was MCP (Master Control 
+Program) which we the great unwashed called Male Chauvinist Pig, no doubt 
+to their distress :-)  Any other examples of poor acronyms designed by 
+ignorant marketoids?
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From usotsuki at buric.co  Fri Jun  9 02:53:40 2017
+From: usotsuki at buric.co (Steve Nickolas)
+Date: Thu, 8 Jun 2017 12:53:40 -0400 (EDT)
+Subject: [TUHS] Array index history
+In-Reply-To: <alpine.BSF.2.20.1706090040490.52526@aneurin.horsfall.org>
+References: <201706080227.v582R5D9056395@tahoe.cs.Dartmouth.EDU>
+ <40F0B6B0-73C3-48CD-B75F-84CA6095433B@cheswick.com>
+ <alpine.BSF.2.20.1706090040490.52526@aneurin.horsfall.org>
+Message-ID: <alpine.BSF.2.02.1706081252580.81505@frieza.hoshinet.org>
+
+On Fri, 9 Jun 2017, Dave Horsfall wrote:
+
+> Speaking of Burroughs (which we weren't), their OS was MCP (Master Control
+> Program) which we the great unwashed called Male Chauvinist Pig, no doubt
+> to their distress :-)  Any other examples of poor acronyms designed by
+> ignorant marketoids?
+
+Apple had SOS.
+
+-uso.
+
+
+From david at kdbarto.org  Fri Jun  9 04:20:24 2017
+From: david at kdbarto.org (David)
+Date: Thu, 8 Jun 2017 11:20:24 -0700
+Subject: [TUHS] Array index history
+In-Reply-To: <mailman.882.1496854900.3779.tuhs@minnie.tuhs.org>
+References: <mailman.882.1496854900.3779.tuhs@minnie.tuhs.org>
+Message-ID: <09918D02-9DA7-46B8-873E-A60489570400@kdbarto.org>
+
+Arnold gets it right on the Pascal indexing.
+
+In UCSD Pascal you could specify any array bounds you would like and
+the compiler would 0 base them for you by always doing a subtraction,
+or addition if your min was negative, of your min array index. So a little
+run time cost for non-zero based arrays.
+
+I’m not sure how other Pascal compilers did this.
+
+I find it interesting that there are now a slew of testing programs
+(Valgrind, Address Sanitizer, Purify, etc) that will add the ‘missing’
+array bounds checking for C.
+
+	David
+
+> On Jun 7, 2017, at 10:01 AM, tuhs-request at minnie.tuhs.org wrote:
+> 
+> Date: Wed, 07 Jun 2017 07:20:43 -0600
+> From: arnold at skeeve.com
+> To: tuhs at tuhs.org, ag4ve.us at gmail.com
+> Subject: Re: [TUHS] Array index history
+> Message-ID: <201706071320.v57DKhmJ026303 at freefriends.org>
+> Content-Type: text/plain; charset=us-ascii
+> 
+> Pascal (IIRC) allowed you to specify upper and lower bounds, something
+> like
+> 
+> 	foo : array[5..10] of integer;
+> 
+> with runtime bounds checking on array accesses.  (I could be wrong ---
+> it's been a LLLLOOONNNGGG time.)
+> 
+> HTH,
+> 
+> Arnold
+
+
+
+From tfb at tfeb.org  Fri Jun  9 04:41:55 2017
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Thu, 8 Jun 2017 19:41:55 +0100
+Subject: [TUHS] Array index history
+In-Reply-To: <57dce8ab-153d-89ce-91d6-07d9f01f7d6b@kilonet.net>
+References: <CAH_OBiewwwS6kbdWKUO-j3v=Do+Y9AzBn4ZkyVic7LOJN5WX7w@mail.gmail.com>
+ <CAH_OBid5q-YeB6UYeOfjW68s3nb3TX_icC5dFMapfo=7_q5DUQ@mail.gmail.com>
+ <CAH_OBideJeNGiiys=VOEYcU1cffSg+6zDOD39HOU74vumQF0kA@mail.gmail.com>
+ <CAH_OBie_+dQXOC2OaZii5K=j1Ljmv-OvAVXvyypoLJ10jaysWA@mail.gmail.com>
+ <CAH_OBidXd1Lpgp8ttM3sWLfXDT0ms5EGAzEjPH9QkY+bXyev2w@mail.gmail.com>
+ <CAH_OBifge2RrwcDvSV46gwLAc0wHVtH++gdMBhXi-x8C0a_2jw@mail.gmail.com>
+ <CAH_OBic3MTy-20C_T2ciT2x+EjNZvXR2PJ0OzB0qRp1gd2OL-g@mail.gmail.com>
+ <CAH_OBifFdBTOD6xXAhWE61GbvmF_TQ5HBHhUU-SFx=AXn1=J+Q@mail.gmail.com>
+ <CAC20D2N+FqjYXBfqLtfEyNUecRFnYcySo_noP1XkdA=FN-nvYw@mail.gmail.com>
+ <23afd785-e260-75ca-5c46-77c62fbcf3cd@kilonet.net>
+ <016301d2dfc0$b098e250$11caa6f0$@ronnatalie.com>
+ <57dce8ab-153d-89ce-91d6-07d9f01f7d6b@kilonet.net>
+Message-ID: <FE77F042-55D2-4044-A324-D80DC20EA6F3@tfeb.org>
+
+
+> On 7 Jun 2017, at 20:15, Arthur Krewat <krewat at kilonet.net> wrote:
+> 
+> In the days when memory and clock cycles were costly, an extra decrement or subtract was not something to be taken lightly :)
+
+Indeed they weren't, and that's how we know that 1-based indexing doesn't require any overhead given a reasonably good compiler.  If you'd gone to people writing big CFD simulations in 1975 and told them that by using a version of FORTRAN which had 0-based arrays they could save any significant runtime at all then they would have changed to it without a thought.  But they didn't.
+
+From ron at ronnatalie.com  Fri Jun  9 04:55:03 2017
+From: ron at ronnatalie.com (Ron Natalie)
+Date: Thu, 8 Jun 2017 14:55:03 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <09918D02-9DA7-46B8-873E-A60489570400@kdbarto.org>
+References: <mailman.882.1496854900.3779.tuhs@minnie.tuhs.org>
+ <09918D02-9DA7-46B8-873E-A60489570400@kdbarto.org>
+Message-ID: <024101d2e088$bd71eda0$3855c8e0$@ronnatalie.com>
+
+=
+
+> I find it interesting that there are now a slew of testing programs (Valgrind, Address Sanitizer, Purify, etc) that will add the ‘missing’
+> array bounds checking for C.
+
+And nothing prevents a C compiler from doing bounds checking, it's just not obliged to.   There are C compilers that will allow you to enable such checks for debugging purposes.
+
+
+
+
+From lm at mcvoy.com  Fri Jun  9 06:17:05 2017
+From: lm at mcvoy.com (Larry McVoy)
+Date: Thu, 8 Jun 2017 13:17:05 -0700
+Subject: [TUHS] Array index history
+In-Reply-To: <alpine.BSF.2.20.1706090040490.52526@aneurin.horsfall.org>
+References: <201706080227.v582R5D9056395@tahoe.cs.Dartmouth.EDU>
+ <40F0B6B0-73C3-48CD-B75F-84CA6095433B@cheswick.com>
+ <alpine.BSF.2.20.1706090040490.52526@aneurin.horsfall.org>
+Message-ID: <20170608201705.GA24069@mcvoy.com>
+
+> I know that Burroughs' iron ran ALGOL; I shudder to think of any box that 
+> runs native PERL...
+
+Huh?  If I couldn't have C on the iron I'd be ecstatic with perl 4 (I'm old,
+never warmed up to perl 5).  
+
+In fact, while I was at Sun I proposed rewriting a pile of /usr/bin in
+perl 4 just because it would be more maintainable.  I did walk that back
+at some point but I love me some perl.
+
+I've moved on because I created my own C/perl combo language and that's
+what I do most of my programming in these days.
+
+http://mcvoy.com/lm/photos.l
+
+is an example.  I'm in Europe right now, you can see the results of photos.l
+here (warning ~8MB of thumbnails):
+
+http://mcvoy.com/lm/europe
+
+I'm very fond of that language, it's like a scripting version of C,
+has structs, but has all the fun stuff from perl.
+
+Docs here:
+
+http://www.mcvoy.com/lm/L/L.html
+
+
+From bqt at update.uu.se  Fri Jun  9 08:28:54 2017
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Fri, 9 Jun 2017 00:28:54 +0200
+Subject: [TUHS] Array index history
+In-Reply-To: <mailman.890.1496953026.3779.tuhs@minnie.tuhs.org>
+References: <mailman.890.1496953026.3779.tuhs@minnie.tuhs.org>
+Message-ID: <1084a817-e0ff-86b2-06bb-b5738dd4b2ce@update.uu.se>
+
+On 2017-06-08 22:17, Dave Horsfall<dave at horsfall.org> wrote:
+> 
+> Just to diverge from this thread a little, it probably isn't all that
+> remarkable that programming languages tend to reflect the hardware for
+> which they were designed.
+> 
+> Thus, for example, we have the C construct:
+> 
+>      do { ... } while (--i);
+> 
+> which translated right into the PDP-11's "SOB" instruction (and
+> reminiscent of FORTRAN's insistence that DO loops are run at least once
+> (there was a CACM article about that once; anyone have a pointer to it?)).
+> 
+> And of course the afore-mentioned FORTRAN, which really reflects the
+> underlying IBM 70x architecture (shudder).
+
+FORTRAN stopped running the loops at least once already with FORTRAN 77. 
+The last who insisted on running loops at least once was FORTRAN IV.
+
+	Johnny
+
+-- 
+Johnny Billquist                  || "I'm on a bus
+                                   ||  on a psychedelic trip
+email: bqt at softjar.se             ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+From bqt at update.uu.se  Fri Jun  9 08:29:13 2017
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Fri, 9 Jun 2017 00:29:13 +0200
+Subject: [TUHS] 211bsd: kernel panic after a 'here document' in tcsh
+In-Reply-To: <mailman.884.1496866451.3779.tuhs@minnie.tuhs.org>
+References: <mailman.884.1496866451.3779.tuhs@minnie.tuhs.org>
+Message-ID: <078af6e5-fa47-c66f-1d30-b4265277419a@update.uu.se>
+
+On 2017-06-07 22:14, "Walter F.J. Mueller"<w.f.j.mueller at retro11.de> wrote:
+
+> Hi,
+> 
+> a few remarks on the feedback on the kernel panic after a 'here document' in tcsh.
+> 
+> To Michael Kjörling question:
+>   > I'm curious whether the same thing happens if you try that in some
+>   > other shell? (Not sure how widely here documents were supported back
+>   > then, but I'm asking anyway.)
+> And Johnny Billquist remark
+>   > Not sure if any of the other shells have this.
+> 
+> 'here documents' are available and work fine in sh and csh.
+> And are in fact used, examples
+
+Ah. Thanks. Too lazy to check.
+
+> To Michael Kjörling remark
+>   > The PC value in the panic report ("pc 161324") strikes me as high
+> and Johnny Billquist remark
+>   > This is in kernel mode, and that is in the I/O page.
+> 
+> 211bsd uses split I/D space and uses all 64 kB I space for code.
+
+D'oh! Color me stupid. I should have thought of that.
+
+> The top 8 kB are in fact  the overlay area, and the crash happened
+> in overlay 4 (as indicated by ov 4). With a simple
+> 
+>     nm /unix | sort | grep " 4"
+> 
+> one gets
+> 
+>     161254 t ~psignal 4
+>     162302 t ~issignal 4
+> 
+> so the crash is just 050 bytes after the entry point of psignal. So the
+> PC address is fine and not the problem. For psignal look at
+> 
+>     http://www.retro11.de/ouxr/211bsd/usr/src/sys/sys/kern_sig.c.html#s:_psignal
+> 
+> the crash must be one of the first lines. psignal is an internal kernel
+> function, called from
+> 
+>     http://www.retro11.de/ouxr/211bsd/usr/src/sys/sys/kern_sig.c.html#xref:s:_psignal
+> 
+> and has nothing to do with the libc function psignal
+> 
+>     http://www.retro11.de/ouxr/211bsd/usr/man/cat3/psignal.0.html
+>     http://www.retro11.de/ouxr/211bsd/usr/src/lib/libc/gen/psignal.c.html
+
+The libc function would be in user mode, so that one was pretty clear.
+
+Ok. Digging through this a little for real then.
+
+psignal gets called with a signal from the trap handler. The actual 
+signal is weird. It would appear to be 0160750, which would be -7704 if 
+I'm counting right. That does not make sense as a signal.
+
+The psignal code pulls a value based on the signal number, which is the 
+line:
+         prop = sigprop[sig];
+
+which uses the signal number as an index. With a random, weird signal 
+number, this access wherever that might end up. Which is when you get 
+the crash.
+
+On my system, sigprop is at address 0012172, which, with a signal of 
+-7704 ends up at address 0173142, which by (un)luck happens to be in the 
+middle of the diagnostics bootstrap rom space. So I don't get a Unibus 
+timeout error, while you do. Probably because sigprop is at a slightly 
+different address in your kernel.
+
+So, the real question is how trap can be calling psignal with such a 
+broken signal number.
+
+I might dig further down that question another day. But unless you 
+already got this far, I might have saved you a few minutes of digging. I 
+did start looking into the trap code, which is in pdp/trap.c, but this 
+is not entirely straight forward. It goes through a bunch of things 
+trying to decide what signal to send, before actually calling psignal.
+
+> To Johnny Billquist remark
+>   > Could you (Walter) try the latest version of 2.11BSD and see if you
+>   > still get that crash?
+> 
+> very interesting that you see a core dump of tcsh rather a kernel panic.
+
+Indeed.
+
+> Whatever tcsh does, it should not lead to a kernel panic, and if it does,
+> it is primarily a bug of the kernel. It looks like there are two issues,
+> one in tcsh, and one in the kernel. I've a hunch were this might come from,
+> but that will take a weekend or two to check on.
+
+Agree that the kernel should not crash on this.
+
+Also, tcsh should not really crash either, but it's a separate issue, 
+even though one might have triggered the other here.
+But yes, there are two bugs in here.
+If you can recreate the kernel crash on the latest version, that would 
+be good.
+
+But it smells like trap.c have some path where it does not even set what 
+signal to deliver, and then calls psignal with whatever the variable i 
+got at the function start. Which would be some random stuff on the stack.
+
+	Johnny
+
+-- 
+Johnny Billquist                  || "I'm on a bus
+                                   ||  on a psychedelic trip
+email: bqt at softjar.se             ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+From bqt at update.uu.se  Fri Jun  9 08:29:29 2017
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Fri, 9 Jun 2017 00:29:29 +0200
+Subject: [TUHS] Array index history
+In-Reply-To: <mailman.882.1496854900.3779.tuhs@minnie.tuhs.org>
+References: <mailman.882.1496854900.3779.tuhs@minnie.tuhs.org>
+Message-ID: <aefabb70-1bd4-06ae-6bdb-595168dbad74@update.uu.se>
+
+On 2017-06-07 19:01, "Ron Natalie"<ron at ronnatalie.com> wrote:
+> The original FORTRAN and BASIC arrays started indexing at one because everybody other than computer scientists start counting at 1.
+
+FORTRAN, yes. BASIC (which dialect might we be talking about?) normally 
+actually start with 0. However, BASIC is weird, in that the DIM 
+statement is actually specifying the highest usable index, and not the 
+size of the array.
+
+Thus:
+
+DIM X(10)
+
+means you get an array with 11 elements. So, people who wanted to use 
+array starting at 1 would still be happy, and if you wanted to start at 
+0, that also worked. You might unintentionally have a bit of wasted 
+memory, though.
+
+> These languages were for scientists and the beginner, so you wanted to make things compatible with their normal concepts.
+
+True.
+
+> PASCAL on the other hand required you to give the minimum and maximum index for the array.
+
+In a way, PASCAL makes the most sense. You still what range you want, 
+and you get that. Anything works, and it's up to you.
+That said, PASCAL could get a bit ugly when passing arrays as arguments 
+to functions because of this.
+
+> Of course, C’s half-assaed implementation of arrays kind of depends on zero-indexing to work.
+
+:-)
+
+   Johnny
+
+-- 
+Johnny Billquist                  || "I'm on a bus
+                                   ||  on a psychedelic trip
+email: bqt at softjar.se             ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+From ron at ronnatalie.com  Fri Jun  9 09:16:48 2017
+From: ron at ronnatalie.com (Ron Natalie)
+Date: Thu, 8 Jun 2017 19:16:48 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <aefabb70-1bd4-06ae-6bdb-595168dbad74@update.uu.se>
+References: <mailman.882.1496854900.3779.tuhs@minnie.tuhs.org>
+ <aefabb70-1bd4-06ae-6bdb-595168dbad74@update.uu.se>
+Message-ID: <026801d2e0ad$4e13cc10$ea3b6430$@ronnatalie.com>
+
+
+> FORTRAN, yes. BASIC (which dialect might we be talking about?) normally
+actually start with 0. However, BASIC is weird, in that the DIM statement is
+actually specifying the highest usable index, and not the size of the array.
+
+Eh?  Not in any BASIC I ever used.   They all started at 1.   Can't vouch
+for the later Microsoft "visual" variants but the original 1970's era BASIC
+started with 1.
+DIM X(10) gave you ten elements from 1...10
+
+
+
+
+
+
+
+
+From usotsuki at buric.co  Fri Jun  9 09:41:11 2017
+From: usotsuki at buric.co (Steve Nickolas)
+Date: Thu, 8 Jun 2017 19:41:11 -0400 (EDT)
+Subject: [TUHS] Array index history
+In-Reply-To: <026801d2e0ad$4e13cc10$ea3b6430$@ronnatalie.com>
+References: <mailman.882.1496854900.3779.tuhs@minnie.tuhs.org>
+ <aefabb70-1bd4-06ae-6bdb-595168dbad74@update.uu.se>
+ <026801d2e0ad$4e13cc10$ea3b6430$@ronnatalie.com>
+Message-ID: <alpine.BSF.2.02.1706081939540.5634@frieza.hoshinet.org>
+
+On Thu, 8 Jun 2017, Ron Natalie wrote:
+
+>
+>> FORTRAN, yes. BASIC (which dialect might we be talking about?) normally
+> actually start with 0. However, BASIC is weird, in that the DIM statement is
+> actually specifying the highest usable index, and not the size of the array.
+>
+> Eh?  Not in any BASIC I ever used.   They all started at 1.   Can't vouch
+> for the later Microsoft "visual" variants but the original 1970's era BASIC
+> started with 1.
+> DIM X(10) gave you ten elements from 1...10
+
+All M$ dialects that I am aware of start at 0 by default.  Later ones have 
+OPTION BASE to change this or let you do DIM X(5 TO 7) if you want.
+
+-uso.
+
+
+From grog at lemis.com  Fri Jun  9 10:03:08 2017
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Fri, 9 Jun 2017 10:03:08 +1000
+Subject: [TUHS] Array index history
+In-Reply-To: <alpine.BSF.2.20.1706090040490.52526@aneurin.horsfall.org>
+References: <201706080227.v582R5D9056395@tahoe.cs.Dartmouth.EDU>
+ <40F0B6B0-73C3-48CD-B75F-84CA6095433B@cheswick.com>
+ <alpine.BSF.2.20.1706090040490.52526@aneurin.horsfall.org>
+Message-ID: <20170609000308.GB77283@eureka.lemis.com>
+
+On Friday,  9 June 2017 at  1:04:39 +1000, Dave Horsfall wrote:
+>
+> And of course the afore-mentioned FORTRAN, which really reflects the
+> underlying IBM 70x architecture (shudder).
+
+I had promised myself that I wouldn't get involved in this thread, but
+I had to step in here.
+
+Yes, the IBM 704 had the CAS instruction (Compare Accumulator with
+Storage), a three-way skip instruction that easily implemented the
+FORTRAN Arithmetic IF.  But the "index" registers were correctly
+called decrement registers: their content was subtracted from the base
+address.  I assume that this was because the 704 was a ones-complement
+machine whose basic arithmetic operation was subtraction, so this was
+cheaper than adding the registers to the base address.
+
+To implement indexing with the base 704 hardware, FORTRAN would have
+had to have an upper bound of -0 (remember that number?).
+
+Still, there were three decrement registers, and the original FORTRAN
+was limited to three dimensions, evidently as a result.
+
+> Speaking of Burroughs (which we weren't), their OS was MCP (Master
+> Control Program) which we the great unwashed called Male Chauvinist
+> Pig, no doubt to their distress :-)
+
+This name (the original one) cropped up again in the 1982 film "Tron"
+(http://www.imdb.com/title/tt0084827/).  It was singularly
+inappropriate.
+
+Greg
+--
+Sent from my desktop computer.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft mail program
+reports problems, please read http://lemis.com/broken-MUA
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 163 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170609/8e5952a9/attachment.sig>
+
+From bqt at softjar.se  Fri Jun  9 10:21:05 2017
+From: bqt at softjar.se (Johnny Billquist)
+Date: Fri, 09 Jun 2017 02:21:05 +0200
+Subject: [TUHS] Array index history
+In-Reply-To: <026801d2e0ad$4e13cc10$ea3b6430$@ronnatalie.com>
+References: <mailman.882.1496854900.3779.tuhs@minnie.tuhs.org>
+ <aefabb70-1bd4-06ae-6bdb-595168dbad74@update.uu.se>
+ <026801d2e0ad$4e13cc10$ea3b6430$@ronnatalie.com>
+Message-ID: <2F555C00-3202-4844-B0E8-862D016C47CF@softjar.se>
+
+All variants of BASIC by DEC does this. A few others I've tried also do. But since BASIC was not standardized for the longest time, it's hard to claim that BASIC really was one way or another. I have definitely not tried every dialect that has existed.
+
+  Johnny 
+
+
+Ron Natalie <ron at ronnatalie.com> skrev: (9 juni 2017 01:16:48 CEST)
+>
+>> FORTRAN, yes. BASIC (which dialect might we be talking about?)
+>normally
+>actually start with 0. However, BASIC is weird, in that the DIM
+>statement is
+>actually specifying the highest usable index, and not the size of the
+>array.
+>
+>Eh?  Not in any BASIC I ever used.   They all started at 1.   Can't
+>vouch
+>for the later Microsoft "visual" variants but the original 1970's era
+>BASIC
+>started with 1.
+>DIM X(10) gave you ten elements from 1...10
+
+-- 
+Skickat från min Android-enhet med K-9 Mail. Ursäkta min fåordighet.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170609/4064e9af/attachment.html>
+
+From pete at dunnington.plus.com  Fri Jun  9 10:25:04 2017
+From: pete at dunnington.plus.com (Pete Turnbull)
+Date: Fri, 9 Jun 2017 01:25:04 +0100
+Subject: [TUHS] Array index history
+In-Reply-To: <026801d2e0ad$4e13cc10$ea3b6430$@ronnatalie.com>
+References: <mailman.882.1496854900.3779.tuhs@minnie.tuhs.org>
+ <aefabb70-1bd4-06ae-6bdb-595168dbad74@update.uu.se>
+ <026801d2e0ad$4e13cc10$ea3b6430$@ronnatalie.com>
+Message-ID: <fbe38df3-6276-fee6-a26c-67a7ead8411d@dunnington.plus.com>
+
+On 09/06/2017 00:16, Ron Natalie wrote:
+> 
+>> FORTRAN, yes. BASIC (which dialect might we be talking about?) normally
+> actually start with 0. However, BASIC is weird, in that the DIM statement is
+> actually specifying the highest usable index, and not the size of the array.
+> 
+> Eh?  Not in any BASIC I ever used.   They all started at 1.   Can't vouch
+> for the later Microsoft "visual" variants but the original 1970's era BASIC
+> started with 1.
+> DIM X(10) gave you ten elements from 1...10
+
+Well, my experience matches Johnny's.  I used many derivatives of 
+MicroSoft BASIC - PET, Apple INTBASIC, Applesoft, Exidy Sorcerer, and 
+others - and they all start at 0.  AFAIR HP BASIC did so as well.  The 
+original 1960s Dartmouth BASIC (for which I have a copy of the manual) 
+also started at 0 (cf. page 38); indeed if you didn't explicitly DIM an 
+array, you got eleven elements indexed 0...10.
+
+-- 
+Pete
+Pete Turnbull
+
+
+From toby at telegraphics.com.au  Fri Jun  9 11:19:16 2017
+From: toby at telegraphics.com.au (Toby Thain)
+Date: Thu, 8 Jun 2017 21:19:16 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <fbe38df3-6276-fee6-a26c-67a7ead8411d@dunnington.plus.com>
+References: <mailman.882.1496854900.3779.tuhs@minnie.tuhs.org>
+ <aefabb70-1bd4-06ae-6bdb-595168dbad74@update.uu.se>
+ <026801d2e0ad$4e13cc10$ea3b6430$@ronnatalie.com>
+ <fbe38df3-6276-fee6-a26c-67a7ead8411d@dunnington.plus.com>
+Message-ID: <1b557724-cbd5-8602-3b75-5e68df9e7a3f@telegraphics.com.au>
+
+On 2017-06-08 8:25 PM, Pete Turnbull wrote:
+> On 09/06/2017 00:16, Ron Natalie wrote:
+>>
+>>> FORTRAN, yes. BASIC (which dialect might we be talking about?) normally
+>> actually start with 0. However, BASIC is weird, in that the DIM
+>> statement is
+>> actually specifying the highest usable index, and not the size of the
+>> array.
+>>
+>> Eh?  Not in any BASIC I ever used.   They all started at 1.   Can't vouch
+>> for the later Microsoft "visual" variants but the original 1970's era
+>> BASIC
+>> started with 1.
+>> DIM X(10) gave you ten elements from 1...10
+>
+> Well, my experience matches Johnny's.  I used many derivatives of
+> MicroSoft BASIC - PET, Apple INTBASIC, Applesoft, Exidy Sorcerer, and
+> others - and they all start at 0.  AFAIR HP BASIC did so as well.  The
+> original 1960s Dartmouth BASIC (for which I have a copy of the manual)
+> also started at 0 (cf. page 38); indeed if you didn't explicitly DIM an
+> array, you got eleven elements indexed 0...10.
+>
+
+I wrote a lot of BBC BASIC. DIM(9) allocates ten elements, 0..9, 
+according to this:
+
+http://www.riscos.com/support/developers/bbcbasic/part2/arrays.html
+
+--Toby
+
+
+From pete at dunnington.plus.com  Fri Jun  9 12:14:20 2017
+From: pete at dunnington.plus.com (Pete Turnbull)
+Date: Fri, 9 Jun 2017 03:14:20 +0100
+Subject: [TUHS] Array index history
+In-Reply-To: <1b557724-cbd5-8602-3b75-5e68df9e7a3f@telegraphics.com.au>
+References: <mailman.882.1496854900.3779.tuhs@minnie.tuhs.org>
+ <aefabb70-1bd4-06ae-6bdb-595168dbad74@update.uu.se>
+ <026801d2e0ad$4e13cc10$ea3b6430$@ronnatalie.com>
+ <fbe38df3-6276-fee6-a26c-67a7ead8411d@dunnington.plus.com>
+ <1b557724-cbd5-8602-3b75-5e68df9e7a3f@telegraphics.com.au>
+Message-ID: <4031f861-8f47-0b1d-f635-c39ebc4b54e0@dunnington.plus.com>
+
+On 09/06/2017 02:19, Toby Thain wrote:
+> I wrote a lot of BBC BASIC. DIM(9) allocates ten elements, 0..9, 
+
+Yes, all versions (of which there are at least nine, going back to 
+1981), and so too does its predecessor, Atom BASIC.  Indexing from zero 
+was the norm in 1970s/1980s BASICs.
+
+-- 
+Pete
+Pete Turnbull
+
+
+From random832 at fastmail.com  Sat Jun 10 01:12:07 2017
+From: random832 at fastmail.com (Random832)
+Date: Fri, 09 Jun 2017 11:12:07 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <alpine.BSF.2.02.1706081939540.5634@frieza.hoshinet.org>
+References: <mailman.882.1496854900.3779.tuhs@minnie.tuhs.org>
+ <aefabb70-1bd4-06ae-6bdb-595168dbad74@update.uu.se>
+ <026801d2e0ad$4e13cc10$ea3b6430$@ronnatalie.com>
+ <alpine.BSF.2.02.1706081939540.5634@frieza.hoshinet.org>
+Message-ID: <1497021127.379252.1004231632.6AEF6E27@webmail.messagingengine.com>
+
+On Thu, Jun 8, 2017, at 19:41, Steve Nickolas wrote:
+> On Thu, 8 Jun 2017, Ron Natalie wrote:
+> > DIM X(10) gave you ten elements from 1...10
+> 
+> All M$ dialects that I am aware of start at 0 by default.
+
+In fact, they give you eleven elements from 0 to 10, which means that
+code which *uses* 1..10 is compatible but wastes some space.
+
+
+From ron at ronnatalie.com  Sat Jun 10 02:30:11 2017
+From: ron at ronnatalie.com (Ron Natalie)
+Date: Fri, 9 Jun 2017 12:30:11 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <1497021127.379252.1004231632.6AEF6E27@webmail.messagingengine.com>
+References: <mailman.882.1496854900.3779.tuhs@minnie.tuhs.org>
+ <aefabb70-1bd4-06ae-6bdb-595168dbad74@update.uu.se>
+ <026801d2e0ad$4e13cc10$ea3b6430$@ronnatalie.com>
+ <alpine.BSF.2.02.1706081939540.5634@frieza.hoshinet.org>
+ <1497021127.379252.1004231632.6AEF6E27@webmail.messagingengine.com>
+Message-ID: <031201d2e13d$abd3ba00$037b2e00$@ronnatalie.com>
+
+I stand corrected.   I pulled up the original typewritten Dartmouth BASIC manual and indeed the indices start at zero (though many coding examples don't write the zeroth element).   By default arrays were 11 elements long.   You could change that with the DIM statement.   Yes, the value given to DIM is the highest index making a DIM A(20) defining a 21 element array.
+
+-----Original Message-----
+From: TUHS [mailto:tuhs-bounces at minnie.tuhs.org] On Behalf Of Random832
+Sent: Friday, June 9, 2017 11:12 AM
+To: tuhs at minnie.tuhs.org
+Subject: Re: [TUHS] Array index history
+
+On Thu, Jun 8, 2017, at 19:41, Steve Nickolas wrote:
+> On Thu, 8 Jun 2017, Ron Natalie wrote:
+> > DIM X(10) gave you ten elements from 1...10
+> 
+> All M$ dialects that I am aware of start at 0 by default.
+
+In fact, they give you eleven elements from 0 to 10, which means that code which *uses* 1..10 is compatible but wastes some space.
+
+
+
+From scj at yaccman.com  Sat Jun 10 07:21:57 2017
+From: scj at yaccman.com (Steve Johnson)
+Date: Fri, 09 Jun 2017 14:21:57 -0700
+Subject: [TUHS] Array index history
+In-Reply-To: <09918D02-9DA7-46B8-873E-A60489570400@kdbarto.org>
+Message-ID: <e067d88d677a358404d7b561256e6e49c845c81f@webmail.yaccman.com>
+
+I'd like to comment on the technical difficulty of array bounds
+checking.   First of all, there are two kinds.   The simple kind
+computes the index and simply checks that the address is within the
+array.  This can be done fairly easily -- create a pointer to the end
+of the array, and test against it (and with a bit more work,
+"pre-test" loops so you don't need to test each element).  If you
+ignore possible negative subscripts, it's even easier.  And it
+catches a lot of the ugliest bugs.  The harder version checks the
+range of each index in a multidimensional array separately.  This is
+quite a bit more work, although it too can be optimized significantly
+with enough work.  And if C didn't conflate arrays and pointers, I
+suspect this would have been added to C long ago.
+
+But C does conflate arrays and pointers.   When an array is passed
+to a function, all that is passed is the location.  There is no clue
+what the size is.  To even pass in the "end of array" pointer gets
+expensive, since more registers need to be saved and loaded on each
+call.  Correct negative subscripts are not unheard of when passing
+part of an array into a functions.  And utilities like malloc get
+more complicated as well, and for some of malloc's other uses (e.g.,
+in class object creation) the checks would be inappropriate.  And
+finally, because pointers are extensively used in data structures,
+pointer conventions are often used when using arrays (e.g., passing in
+NULL when an array argument is not present or needed).
+
+There is yet another problem.  If array size or shape information
+were somehow passed with arrays, it would be unkind for the language
+to give the programmer no way to find out what the size(s) are.  This
+desire ultimately leads to a rich calling convention like that of
+MATLAB where you can have multiple function outputs, determine how
+many inputs are present, and inputs will disclose their size and shape
+on request.  Good to program in, but function calls are quite a bit
+more expensive.
+
+Realizing that most system code at the time of C's invention was still
+written in assembler and PDP-11's were almost too small in memory to
+do anything interesting (my laptop currently has roughly 243,000 times
+the memory space of a PDP-11!), C's conventions provided a big
+improvement in code correctness with a small cost when compared to
+assembler... 
+
+Steve
+
+----- Original Message -----
+From: david at kdbarto.org
+To:<tuhs at minnie.tuhs.org>
+Cc:
+Sent:Thu, 8 Jun 2017 11:20:24 -0700
+Subject:Re: [TUHS] Array index history
+
+ Arnold gets it right on the Pascal indexing.
+
+ In UCSD Pascal you could specify any array bounds you would like and
+ the compiler would 0 base them for you by always doing a subtraction,
+ or addition if your min was negative, of your min array index. So a
+little
+ run time cost for non-zero based arrays.
+
+ I’m not sure how other Pascal compilers did this.
+
+ I find it interesting that there are now a slew of testing programs
+ (Valgrind, Address Sanitizer, Purify, etc) that will add the
+‘missing’
+ array bounds checking for C.
+
+ David
+
+ > On Jun 7, 2017, at 10:01 AM, tuhs-request at minnie.tuhs.org wrote:
+ > 
+ > Date: Wed, 07 Jun 2017 07:20:43 -0600
+ > From: arnold at skeeve.com
+ > To: tuhs at tuhs.org, ag4ve.us at gmail.com
+ > Subject: Re: [TUHS] Array index history
+ > Message-ID: <201706071320.v57DKhmJ026303 at freefriends.org>
+ > Content-Type: text/plain; charset=us-ascii
+ > 
+ > Pascal (IIRC) allowed you to specify upper and lower bounds,
+something
+ > like
+ > 
+ > foo : array[5..10] of integer;
+ > 
+ > with runtime bounds checking on array accesses. (I could be wrong
+---
+ > it's been a LLLLOOONNNGGG time.)
+ > 
+ > HTH,
+ > 
+ > Arnold
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170609/2cd98147/attachment.html>
+
+From krewat at kilonet.net  Sat Jun 10 07:52:16 2017
+From: krewat at kilonet.net (Arthur Krewat)
+Date: Fri, 9 Jun 2017 17:52:16 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <e067d88d677a358404d7b561256e6e49c845c81f@webmail.yaccman.com>
+References: <e067d88d677a358404d7b561256e6e49c845c81f@webmail.yaccman.com>
+Message-ID: <70047882-7de3-162d-c4b5-6b6f0b4c82fa@kilonet.net>
+
+On 6/9/2017 5:21 PM, Steve Johnson wrote:
+> C's conventions provided a big improvement in code correctness with a 
+> small cost when compared to assembler..
+
+Being an assembler snob for a number of years when I first started 
+programming, having started with MACRO-10 on a PDP-10 in high school, I 
+was reluctant to consider C as an alternative.
+
+At one point early on, I decided I would see what the difference was in 
+actual performance. So, on an IBM-AT, I wrote two programs. Both did a 
+wire-frame rotation of a 3D cube, rotating around both the X and Y axis. 
+They both used my own graphics library written in assembler that used 
+the basic BIOS graphics calls to draw lines in 3D.
+
+One program was written in straight Intel 80286 assembler. The other, in 
+C, C86 from Computer Innovations, Inc.
+
+The straight assembler version, I wrote using double-word integers. One 
+word for everything above the decimal point, one word for everything 
+below the decimal point. Now, because of the loss of precision, and that 
+I defined the matrices for rotation as static integers, after a few 
+hundred iterations, the cube would start to deform but it was a proof of 
+concept.
+
+The C version, I used real sin(), cos(), but - the interesting part is 
+that I didn't have a floating point coprocessor - so the floating point 
+was emulated in the supplied math library.
+
+The assembler version ran at a ratio of 3:4 compared to the C 
+version.Meaning if the assembler version did X rotations in 3 minutes, 
+the C version did it in 4 minutes. BUT - the C version cube didn't 
+deform over time, because the accuracy was intact.
+
+After that, I gave up on assembler except where critical. C as a concept 
+did what I needed it to do ;)
+
+On topic for this conversation is the fact that arrays in C are 
+basically a perfect mapping to assembler. if you moved from assembler to 
+C like I did, there was no concern over "arrays should start at 1". It 
+was just intuitive anyway.
+
+On the other hand, if you went from some other language to C, well, I 
+can understand the alien-ness.
+
+art k.
+
+
+
+
+
+
+
+
+From w.f.j.mueller at retro11.de  Sat Jun 10 22:58:43 2017
+From: w.f.j.mueller at retro11.de (Walter F.J. Mueller)
+Date: Sat, 10 Jun 2017 14:58:43 +0200
+Subject: [TUHS] 211bsd: kernel panic after a 'here document' in tcsh
+Message-ID: <e8cef971-24cb-c233-bfdd-9bca6c29409b@retro11.de>
+
+Hi,
+
+the kernel panic after tcsh here documents is understood.
+And fixed, at least on my system.
+
+The essential hint was Johnny's observation that on his system he gets
+an "Illegal instruction - core dumped" and no kernel panic.
+
+I'm using a self-build PDP 11/70 on an FPGA, see
+   https://github.com/wfjm/w11/
+   https://wfjm.github.io/home/w11/
+which doesn't have a floating point unit. Therefore the kernel is build
+with floating point emulation, thus with
+   FPSIM   YES      # floating point simulator
+
+In a kernel with FPSIM activated the trap handler trap(), see
+   http://www.retro11.de/ouxr/211bsd/usr/src/sys/pdp/trap.c.html
+calls for each user mode illegal instruction trap fpsim(). In case
+it was a floating point instruction fpsim() emulates it, returns 0,
+and trap() simply returns. If not, fpsim() returns the abort signal
+type, and trap() calls psignal() with this signal type, which in
+general will terminate the offending process.
+
+The kernel panic is due to a coding error in mch_fpsim.s. Look in
+   http://www.retro11.de/ouxr/211bsd/usr/src/sys/pdp/mch_fpsim.s.html
+the code after label badins:
+
+    badins:                         / Illegal Instruction
+            mov     $SIGILL.,r0
+            br      2b
+
+The constant SIGILL is defined in assym.h as
+
+    #define SIGILL 4.
+
+Thus after substitution the mov instruction is
+
+            mov     $4..,r0
+
+with *two dots* !!! The 'as' assembler generates from this
+
+            mov #160750,r0
+
+So r0 will contain a invalid signal number, which is returned by fpsim() to
+trap(). This signal number is passed to psignal(), which starts with
+
+      mask = sigmask(sig);
+      prop = sigprop[sig];
+
+The access to sigprop[sig] results into an address in IO space, causes an
+UNIBUS timeout, and in consequence the kernel panic.
+
+After fixing the "$SIGILL." to "$SIGILL"  (removing the extraneous '.') and
+three similar cases the kernel doesn't panic anymore, tcsh crashed with an
+illegal instruction trap.
+
+Remains the question why tcsh runs onto an illegal instruction. Getting now
+a tcsh core dump adb gives the answer
+
+   adb tcsh tcsh.core
+     $c
+       0172774: _rscan(0176024,0174434) from ~heredoc+0246
+       0176040: _heredoc(067676) from ~execute+0234
+       0176126: _execute(067040,01512,0,0) from ~execute+03410
+       0176222: _execute(066754,01512,0,0) from ~process+01224
+       0176274: _process(01) from ~main+06030
+       0177414: _main() from start+0104
+
+heredoc(), which is located in OV1, calls rscan(), which is in OV6 with
+
+    rscan(Dv, Dtestq);
+
+where Dtestq is a function pointer to Dtestq(), which is as heredoc() in OV1.
+rscan(), which has the signature
+
+      rscan(t, f)
+           register Char **t;
+           void    (*f) ();
+
+uses 'f' in the statement
+
+       (*f) (*p++);
+
+The problem is that
+   - heredoc() and Dtestq() are in OV1
+   - that's why in the end ~Dtestq is used a function pointer, like
+     for all overlay internal function invocations
+   - rscan() is in OV6, when it's called, overlay is switched OV1 -> OV6
+   - this invalidates the function pointer, which points to some random
+     code location, which happens to hold '000045', causing a trap.
+
+It is clear that in this context _Dtestq, the forwarder in the base, must
+be used and not ~Dtestq, the entry point in the overlay. The generated
+code for 'rscan(Dv, Dtestq)' is
+
+       ~heredoc+0230:  mov     $0174434,(sp)         # arg Dtestq: uses ~Dtestq
+       ~heredoc+0234:  mov     r5,-(sp)
+       ~heredoc+0236:  add     $0177764,(sp)         # arg Dv
+       ~heredoc+0242:  jsr     pc,*$_rscan
+
+Since rscan() is very small and only used by heredoc() I simply moved the
+code of rscan() from sh.glob.c (OV6) to sh.dol.c where also heredoc() and
+Dtestq() is defined.
+
+After that tcsh works fine with here documents
+   ./tcsh
+   cat >x.x <<EOF
+   1
+   $TERM
+   $PWD
+   EOF
+
+   cat x.x
+     1
+     vt100-long
+     /usr/src/bin/tcsh
+
+Bottom line
+   - fpsim was broken all the time
+   - tcsh was broken all the time
+
+I'm convert this into proper patches and send them to Steven, but this will
+take some time because I've to tidy up my system to be again in the
+position to provide proper and clean patch sets.
+
+             With best regards,       Walter
+
+
+P.S.: debugging the kernel issue was quite easy because the w11a CPU has
+three essential 'build into the cpu' debug tools:
+- a 'cpu monitor', which records 144 bits of processor state for the last 256
+   instructions or vector fetches, see
+     https://github.com/wfjm/w11/blob/master/rtl/w11a/pdp11_dmcmon.vhd
+- a 'breakpoint unit' which allows to set instruction of data breakpoints
+- an 'ibus monitor' which records the last 512 ibus transactions
+After setting a breakpoint on the trap 004/010 handler an inspection of the
+instruction trace gave the essential information. Below a very condensed
+and annotated excerpt
+
+  nc ....pc cprptnzvc ..dsrc ..ddst ..dres      vmaddr vmdata
+#
+# the "(*f) (*p++)" in tcsh, running onto an illegal instruction
+#
+  15 145210 uu00-.... 000105 173052 000105 w  d 173052 000105 mov r0,(sp)
+  25 145212 uu00-.... 173050 174434 174434 w  d 173050 145216 jsr pc, at n(r5)
+  19 174434 uu00-.... 000010 173064 000010 r  i 174434 000045 ?000045?
+   1 174434 uu00-.... 000012 173064 000012 r  d 000010 000045 !VFETCH 010 RIT
+#
+# the "mov $SIGILL.,r0" in fpsim(), load 160750 instead of 000004
+#
+  17 160744 ku00-n..c 160750 000045 160750 r  i 160746 160750 mov #n,r0
+  14 160750 ku00-n..c 160752 160750 160732 r  i 160750 000770 br .-14
+#
+# the "sigprop[sig]" access in psignal(), which accesses 174036
+# which leads to a external bus (or UNIBUS) time out and IIT trap
+#
+  23 161314 ku00-.z.. 000000 147500 000000 w  d 147500 000000 mov r1,n(r5)
+   9 161320 ku00-.z.. 174036 000000 000000 Ebto 174036 013066 movb n(r3),r0
+   3 161320 ku00-.z.. 000006 000000 000006 r  d 000004 013066 !VFETCH 004 IIT
+
+
+From jnc at mercury.lcs.mit.edu  Sun Jun 11 00:24:32 2017
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Sat, 10 Jun 2017 10:24:32 -0400 (EDT)
+Subject: [TUHS] 211bsd: kernel panic after a 'here document' in tcsh
+Message-ID: <20170610142432.8CA3A18C0E4@mercury.lcs.mit.edu>
+
+    > From: "Walter F.J. Mueller"
+
+    > the kernel panic after tcsh here documents is understood.
+
+Very nice detective work!
+
+    > The kernel panic is due to a coding error in mch_fpsim.s. ...  After
+    > fixing the "$SIGILL." ... and three similar cases
+
+I'm fairly amazed that apparently nobody has run across one of these 4 before!
+(Or, at least, not bothered to report it.)
+
+I wonder how long that bug has been in the code?
+
+     Noel
+
+
+From cym224 at gmail.com  Sun Jun 11 07:08:07 2017
+From: cym224 at gmail.com (Nemo)
+Date: Sat, 10 Jun 2017 17:08:07 -0400
+Subject: [TUHS] Array index history
+In-Reply-To: <20170608125644.GG7802@yeono.kjorling.se>
+References: <201706080227.v582R5D9056395@tahoe.cs.Dartmouth.EDU>
+ <40F0B6B0-73C3-48CD-B75F-84CA6095433B@cheswick.com>
+ <20170608125644.GG7802@yeono.kjorling.se>
+Message-ID: <CAJfiPzwWUV7O9JGY27+ayKtynRyo4tZd22bzQ3VWfy7EzKhOfg@mail.gmail.com>
+
+On 08/06/2017, Michael Kjörling <michael at kjorling.se> wrote:
+> On 8 Jun 2017 08:49 -0400, from ches at cheswick.com (William Cheswick):
+>> When he tests a microphone, Don Knuth says:
+>>
+>> “Testing zero, one, two.”
+>
+> As opposed to Niklaus Wirth, who presumably would rather say:
+>
+> "Testing lower bound, lower bound plus one, lower bound plus two."
+
+In his latest language Oberon, all arrays start at zero.
+
+N.
+
+
+From bqt at update.uu.se  Sun Jun 11 20:25:24 2017
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Sun, 11 Jun 2017 12:25:24 +0200
+Subject: [TUHS] 211bsd: kernel panic after a 'here document' in tcsh
+In-Reply-To: <mailman.1.1497146402.26080.tuhs@minnie.tuhs.org>
+References: <mailman.1.1497146402.26080.tuhs@minnie.tuhs.org>
+Message-ID: <e1fa6742-fc40-ea22-bc83-1ccb7c79eecc@update.uu.se>
+
+On 2017-06-11 04:00, "Walter F.J. Mueller" <w.f.j.mueller at retro11.de> wrote:
+
+> Hi,
+>
+> the kernel panic after tcsh here documents is understood.
+> And fixed, at least on my system.
+
+Nice work. Looking forward to patch #250. And to respond to Noels remark 
+about this being around for a long time without reports - since this is 
+in FPSIM, and I believe the notes for 2.11BSD even says that this is an 
+untested piece of code, which are not even know if it works or not, it's 
+not something that have been used for ages. I'm in a way surprised it 
+even worked at all. I think I've seen somewhere that it was last tested 
+around 2.9BSD, and have not been officially tested since.
+
+> The essential hint was Johnny's observation that on his system he gets
+> an "Illegal instruction - core dumped" and no kernel panic.
+
+Well, had I had FPP simulated, I would maybe not have gotten a kernel 
+panic anyway. It would all depend on where the address ended up. With my 
+current build, the kernel would have been able to read the address, 
+since it pointed into the boot diagnostics rom. So it's a dicey error at 
+best.
+
+But the tcsh error was very good that you also figured out. And I guess 
+it means we now have a known working FPSIM. :-)
+
+	Johnny
+
+-- 
+Johnny Billquist                  || "I'm on a bus
+                                   ||  on a psychedelic trip
+email: bqt at softjar.se             ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+From clemc at ccc.com  Tue Jun 13 01:26:31 2017
+From: clemc at ccc.com (Clem Cole)
+Date: Mon, 12 Jun 2017 11:26:31 -0400
+Subject: [TUHS] 211bsd: kernel panic after a 'here document' in tcsh
+In-Reply-To: <20170610142432.8CA3A18C0E4@mercury.lcs.mit.edu>
+References: <20170610142432.8CA3A18C0E4@mercury.lcs.mit.edu>
+Message-ID: <CAC20D2OqWvckR0sfN_r0KRrbHNRn8CTQSkBwbWLW=B5ouTXkAg@mail.gmail.com>
+
+Probably says that that once that most people that ran UNIX purchased the
+FP option and did not run the simulated FP and those that did clearly
+didn't use tcsh ;-)
+
+Fred Brook's bug's curves really are amazing but are so true.  Some really
+major bugs just take years to be discovered because no one ever looked and
+when you do.  It can be like this one -- 'wow!'
+
+Clem
+
+On Sat, Jun 10, 2017 at 10:24 AM, Noel Chiappa <jnc at mercury.lcs.mit.edu>
+wrote:
+
+>     > From: "Walter F.J. Mueller"
+>
+>     > the kernel panic after tcsh here documents is understood.
+>
+> Very nice detective work!
+>
+>     > The kernel panic is due to a coding error in mch_fpsim.s. ...  After
+>     > fixing the "$SIGILL." ... and three similar cases
+>
+> I'm fairly amazed that apparently nobody has run across one of these 4
+> before!
+> (Or, at least, not bothered to report it.)
+>
+> I wonder how long that bug has been in the code?
+>
+>      Noel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170612/09e89a39/attachment.html>
+
+From camille.paloque-berges at lecnam.net  Sat Jun 17 06:21:31 2017
+From: camille.paloque-berges at lecnam.net (Paloque-berges Camille)
+Date: Fri, 16 Jun 2017 22:21:31 +0200
+Subject: [TUHS] International conference: "Unix in Europe : between
+ innovation, diffusion and heritage"
+In-Reply-To: <ef06f3c9-c808-0d7e-7bc8-438384e81ad6@lecnam.net>
+References: <ef06f3c9-c808-0d7e-7bc8-438384e81ad6@lecnam.net>
+Message-ID: <9ff57d45-7b85-f2d4-5c13-d65b68e433c2@lecnam.net>
+
+Dear THUS list,
+
+I am a recent lurker on this list, also a history and communication 
+scholar looking at pieces of Unix history for my research. I hope it is 
+okay if I share with you the news of a historical conference on Unix 
+that we are organizing in France next Fall with fellow humanities 
+scholars and computer scientists and engineers involved in the history 
+and heritage of computing and computers.
+
+You are of course welcomed, even encouraged, to submit a proposal. It 
+will be a pleasure to meet you at this conference in any case.
+
+Best,
+Camille Paloque-Berges
+
+***
+
+Please find enclosed the CFP for the *international conference**"Unix in 
+Europe: between innovation, diffusion and heritage"* that will take 
+place in Cnam (Paris, France), October, 19th, 2017.
+
+A one-page abstract (maximum 500 words) with a short biography is 
+expected for June 30th 2017.
+
+The Cfp is also available at :
+<http://technique-societe.cnam.fr/international-symposium-unix-in-europe-between-innovation-diffusion-and-heritage-913107.kjsp>.
+
+Best regards,
+
+The organization comitee : Isabelle Astic, Raphaël Fournier-S'niehotta,
+Pierre-Eric Mounier-Kuhn, Camille Paloque-Berges, Loïc Petitgirard
+
+
+
+
+    ------------------------------------------------------------
+
+
+    *Call for contributions*
+
+    *International symposium *
+
+    *Unix in Europe: between innovation, diffusion and heritage*
+
+    */Conservatoire National des Arts et Métiers, Paris, France –
+    October 19 2017/*
+
+    **
+
+    Communications and discussions will be held in French or English.
+
+    *
+    *
+
+    *Rationale*
+
+    *
+    *
+
+    **The Unix system was born in the 1970s at the crossroads between
+    two interacting worlds: industry (the Bell Labs at AT&T) and
+    academia (the University of Berkeley computer science network). Its
+    fast adoption throughout computer research and engineering networks
+    across the world signaled the future success of the new system,
+    fostering software experiments within its open, multi-user and
+    multi-tasking system running on mini-computers – and later
+    compatible with a larger part of computer hardware. In the European
+    context, how was this American innovation propagated, adopted and
+    adapted? Why was Unix of so much interest in this context, then and
+    now? A solid culture of Unix users might also explain this success,
+    as well as subsequent processes of appropriation and inheritance,
+    due to the long and complex history of Unix versioning. The memory
+    of Unix users is vivid indeed, fed by early accounts within the
+    computer world (Salus, 1994) as well as preservation initiatives
+    (Toomey, 2010). Moreover, the Unix system is a crucial reference in
+    the history of computing, in particular in the field of free and
+    open source software (Kelty, 2008), computer networks
+    (Paloque-Berges, 2017), as well as in programming language
+    philosophy (Mélès, 2013).
+
+
+    In order to explore the variety of these interrogations, this
+    symposium encourages contributions from historians as well as
+    philosophers, social science researchers, and heritage professionals
+    interested in the history of computer open systems and software with
+    a focus on Unix or who have a wider perspective. It will also
+    welcome protagonists and witnesses of Unix culture and carriers of
+    its memory. We wish to discuss and shed light on several aspects of
+    the development of Unix in Europe (including in comparison or
+    relation with the rest of the world) along three main lines:
+    historical and sociological, philosophical and epistemological, and
+    heritage- and preservation-oriented.
+
+
+    *1/ Historical and sociological perspectives*
+
+    *
+    *
+
+    Historically, the Unix system is linked to the promotion and
+    development in research on open systems and computer networks. How
+    does this fit in the context of industrial, scientific and
+    technological policies defined at the national and European level?
+    The history of Unix thus reaches at least three levels of
+    interrogations: 1/ the forms, places and practices of innovation
+    around Unix in R&D labs and computing centers in companies, schools
+    and universities; 2/ planning, promoting and negotiating open
+    systems (norms and standards) from the perspective of science and/or
+    politics; 3/ international geopolitical relations, whether
+    economical or geopolitical and even geostrategic (for example
+    between Unix users, with users of other computer equipment or other
+    hardware and software companies, the role of embargos in the
+    shipping of mini-computers, of code, and military uses of Unix).
+
+
+    In parallel, how has the world of computer research welcomed,
+    encouraged, negotiated and propagated uses and innovations related
+    to Unix systems? This begs the question of how Unix-related research
+    and development was legitimized - or played a part in the
+    legitimization of computer science experimentalism in the scientific
+    field and beyond. We would also like to highlight practices of
+    resistance, the failure to acknowledge, ignorance of or even the
+    limits of the Unix system, its software tools and hardware
+    environment (beginning with the famous PDP and Vax machines from
+    Digital Equipment where the first Unix versions were implemented).
+    With a focus on occupational computer uses, we call for analysis
+    which aims to explore and clarify:
+
+    - the role of developers, users, and user associations – from the
+    point of view of pioneers as well as helpers, maintainers and other
+    witnesses of the implementation of Unix;
+
+    - the context, process, and people who determined its propagation,
+    appropriation, and development over time;
+
+    - the meaning of concepts of Unix philosophy and ethics such as
+    “openness” and “autonomy”, from a social, political or economic
+    point of view.
+
+
+    *2. Philosophical and epistemological perspectives*
+
+    We will foster research and reflection at the crossroad of the
+    theoretical foundations of computer systems and engineering
+    pragmatism, between the philosophy of computer systems and Unixian
+    practices.
+
+    Protagonists in the conception and diffusion of Unix often claim to
+    have a ‘Unix philosophy’ . But beyond statement of principle, what
+    was the real influence of this idea on the technical choices
+    underlying the system’s developments? What are the ethical, moral,
+    and philosophical motivations – alongside the social, political or
+    economic dimensions discussed earlier – underpinning the adoption of
+    Unix or pretending to extend it (for instance in relation to the
+    notions of sharing, modularity or freedom)? How is the idea of
+    ‘openness’ attached to Unix practices and heritage (free software,
+    open source) conceived? What are the theoretical developments to be
+    drawn from it (for instance with the idea of open software)?
+
+    The logical and mathematical foundations of Unix should be
+    readdressed. Do the fundamental concepts of Unix have an ontological
+    or metaphysical significance beyond the sole research aim of
+    technical efficiency? What role do aesthetics play in the
+    formulation of general principles and technical choices? How can we
+    analyze programming languages such as C and its successors, scripts,
+    software, and generally speaking, the proliferating source codes of
+    Unix? How do we consider the system, the software environment, as
+    well as the hardware in which Unix is implemented and executed?
+
+    Such philosophical questions also cover the modalities of the
+    transmission of Unix, extending to the investigation of the
+    respective roles of theory and practice in the teaching of the
+    system, the teaching of knowledge and tools underlying the system or
+    supporting the system.
+
+    *3. Unix heritage and ‘heritagization’*
+
+    **
+
+    France is now the home to multiple initiatives taking place to build
+    and preserve a material and immaterial heritage of computer science
+    and technology – such as ‘Software Heritage’ at INRIA, a global
+    software archive in progress. The Museum of Arts et Métiers gave
+    impetus to the MINF initiative (‘Pour un Musée de l’informatique et
+    du numérique’) and coordinates the ‘Patstec Mission’ dealing with
+    contemporary scientific and technological heritage preservation,
+    including computer science. At an international scale and with a
+    grassroots perspective carried by the community of Unix users, the
+    TUHS (The Unix Heritage Society) demonstrates the current interest
+    in the specific heritage linked to Unix. We encourage reflections on
+    this heritage and its specific features:
+
+    - What is the place of Unix in the construction of computer science
+    heritage? Is it possible to map Unix systems and their heritage,
+    from the standpoint of machines, languages and software? What has
+    already been collected? What corpus, data bases, and/or platforms
+    with a patrimonial mission are concerned with Unix and to what purpose?
+
+    - How are the questions of training, constitution and diffusion of a
+    Unix culture incorporated in the effort to collect heritage? How do
+    we evaluate and put forward the importance of immaterial heritage
+    attached to Unix, considering the effects of community and memory in
+    its history and for the writing of its history?
+
+    - What are the practices and modalities advocated by the unixian
+    heritage itself? What has been its influence on the field of
+    computer engineering and research as well as diverse fields such as:
+    popularization of science and technology, ‘hacker’ movements and
+    many ‘maker’ practices today (Lallement, 2016)?
+
+
+    *Schedules*
+
+    Please send a one-page abstract (maximum 500 words) with a short
+    biography by June 30, 2017 to: camille.paloque-berges at cnam.fr
+    <mailto:camille.paloque-berges at lecnam.net>and
+    loic.petitgirard at cnam.fr <mailto:loic.petitgirard at cnam.fr>. Accepted
+    contributions and speakers will be notified by July 15, 2017.
+
+
+    *Organizing committee*
+
+    Isabelle Astic (Musée des arts et métiers)
+
+    Raphaël Fournier-S’niehotta (Cédric, Cnam)
+
+    Pierre-Eric Mounier-Kuhn (CRM, Paris 1)
+
+    Camille Paloque-Berges (HT2S, Cnam)
+
+    Loïc Petitgirard (HT2S, Cnam)
+
+
+    *Scientific committee *
+
+    François Anceau (UMPC-LIP6)**
+
+    Pierre Cubaud (Cédric, Cnam)
+
+    Liesbeth de Mol (STL, Lille 3)
+
+    Claudine Fontanon (CAK, EHESS)
+
+    Gérald Kembellec (DICEN, Cnam)
+
+    Baptiste Mélès (Archives Henri Poincaré, CNRS)
+
+    Pierre Paradinas (Cédric, Cnam, SIF)
+
+    Giuseppe Primiero (Middlesex University)
+
+    Lionel Tabourier (LIP6, Paris 6)**
+
+
+    *Institutional partners and support: *
+
+    - Project « Hist.Pat.info.Cnam », HT2S, Cnam – Research program
+    supported by the Excellence laboratory History and Anthropology of
+    Knoweldge, Technics and Beliefs (HASTEC), and in partnership with
+    the laboratories CEDRIC (Cnam), DICEN (Cnam), and the Center
+    Alexandre Koyré (EHESS).
+
+    - « Histoire de l’informatique » (« History of computing » seminar)
+    seminar - (Musée des arts et métiers, CRM, Paris 1, UMPC-LIP6)
+
+    - « Source code » seminar - (CNRS, Cnam, Université Paris 6).
+
+    With support from the DHST/DLMPST for the History and Philosophy of
+    Computing (HAPOC)
+
+
+    *Bibliography *
+
+    Kelty, Christopher M. 2008. /Two Bits: The Cultural Significance of
+    Free Software/. Durham: Duke University Press Books.
+
+    Lallement, Michel. 2016. /L’âge du faire, /Seuil.
+
+    Mélès, Baptiste. 2003. « Unix selon l’ordre des raisons : la
+    philosophie de la pratique informatique ». /Philosophia Scientiæ/17
+    (3): 181‑98.
+
+    Salus, Peter H. 1994. /A quarter century of UNIX/. Addison-Wesley.
+    Reading.
+
+    Toomey, Warren. 2010. « First Edition Unix: Its Creation and
+    Restoration ». /IEEE Annals of the History of Computing/ 32 (3): 74‑82.
+
+    *
+    *
+
+    **
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170616/79c2f57c/attachment.html>
+
+From noel.hunt at gmail.com  Fri Jun 23 15:56:25 2017
+From: noel.hunt at gmail.com (Noel Hunt)
+Date: Fri, 23 Jun 2017 15:56:25 +1000
+Subject: [TUHS] Obscure Blit menu data structure
+Message-ID: <CAGfO01z5weJKwXgRSXM=A+iacp52jcNA4hmYGCq6emCiQYHt=w@mail.gmail.com>
+
+I was hoping someone on the list who remembers 'mhit.c' from
+the Blit library code could shed some light on some members
+of the 'NMitem' structure. I believe that 'mhit' (sometimes
+'hmenunit') was written by Andrew Hume.
+
+The structure in question is this:
+
+typedef struct NMitem
+{
+    char    *text;
+    char    *help;
+    struct NMenu *next;
+    void    (*dfn)(), (*bfn)(), (*hfn)();
+    long    data;        /* user only */
+} NMitem;
+
+The three functions are called at different times when a menu
+is being traversed, but 'dfn' and 'bfn' are only called before
+a submenu is entered, and after a submenu is exited, respectively.
+'hfn' is called whenever an item has been selected.
+
+I have never seen 'dfn' and 'bfn' used in any Bell Labs code so
+I was wondering what the rationale for their existence was.
+
+Noel Hunt
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170623/3eeb1491/attachment.html>
+
+From random832 at fastmail.com  Sun Jun 25 10:50:51 2017
+From: random832 at fastmail.com (Random832)
+Date: Sat, 24 Jun 2017 20:50:51 -0400
+Subject: [TUHS] What did cc -2 do?
+Message-ID: <1498351851.4029367.1020289456.6F4D64BC@webmail.messagingengine.com>
+
+Browsing the source for "cc" in v6 and v7, if invoked with -2 would
+replace crt0.o with crt2.o. If the -2 were followed by another character
+(probably intended to be -20), it would use crt20.o and use -l2 instead
+of -lc.
+
+These options seem to be undocumented, and I can't find any source code
+of these libraries or indication as to what the purpose was.
+
+
+From w.f.j.mueller at retro11.de  Mon Jun 26 02:25:25 2017
+From: w.f.j.mueller at retro11.de (Walter F.J. Mueller)
+Date: Sun, 25 Jun 2017 18:25:25 +0200
+Subject: [TUHS] 211bsd: kernel panic after a 'here document' in tcsh
+Message-ID: <bcb14f39-d341-c438-ab84-d566900aea73@retro11.de>
+
+Hi,
+
+two remarks on the issues around FPSIM and tcsh:
+
+I of course wondered by a line like
+
+    mov     $4..,r0
+
+is accepted by 'as', I naively expected that this should cause an error.
+I didn't locate the 211bsd 'as' manual, so checked 7th Edition manuals,
+which can be found under
+
+   https://wolfram.schneider.org/bsd/7thEdManVol2/
+
+The assembler manual, see
+   https://wolfram.schneider.org/bsd/7thEdManVol2/assembler/assembler.pdf
+
+states
+
+    6.1  Expression  operators
+         The operators are:
+            (blank)     when there  is  no  operand  between  operands,
+                        the  effect  is  exactly  the  same  as  if  a
+                        ‘+’ had  appeared.
+
+So the lexer sees two tokens
+
+   $4.    --> number
+   .      --> symbol for location counter
+
+and, because the default operator is '+', interprets this as
+
+    mov     $4. + . , r0
+
+which ends up being a number in the 160000 to 177777 range.
+
+So 'as' is not to blame, works as designed.
+
+Noel Chippa wrote:
+ > I'm fairly amazed that apparently nobody has run across one of these 4 before!
+ > (Or, at least, not bothered to report it.)
+ > I wonder how long that bug has been in the code?
+
+The answer is: this bug was in 211bsd all the time.
+Steven Schultz told me that that they simply didn't have a way to
+test FPSIM because all machines had FPP, and the only way of testing
+would have been to physically remove the FP11 from a 11/70.
+
+
+		With best regards,   Walter
+
+
+From richard at inf.ed.ac.uk  Tue Jun 27 23:54:06 2017
+From: richard at inf.ed.ac.uk (Richard Tobin)
+Date: Tue, 27 Jun 2017 14:54:06 +0100 (BST)
+Subject: [TUHS] What did cc -2 do?
+In-Reply-To: Random832's message of Sat, 24 Jun 2017 20:50:51 -0400
+Message-ID: <20170627135406.21EAD137A42A@macaroni.inf.ed.ac.uk>
+
+> Browsing the source for "cc" in v6 and v7, if invoked with -2 would
+> replace crt0.o with crt2.o. If the -2 were followed by another character
+> (probably intended to be -20), it would use crt20.o and use -l2 instead
+> of -lc.
+> 
+> These options seem to be undocumented, and I can't find any source code
+> of these libraries or indication as to what the purpose was.
+
+The "scc" man page for System V may be enlightening, as it mentions
+similarly-named files:
+
+  NAME
+    scc - C compiler for stand-alone programs
+
+  SYNOPSIS
+    scc [ +[ lib ] ] [ option ] ... [ file ] ...
+    
+  DESCRIPTION
+    Scc prepares the named files for stand-alone execution.
+    [...]
+    
+  FILES
+    /lib/crt2.o       execution start-off
+    /usr/lib/lib2.a   stand-alone library    
+    /usr/lib/lib2A.a  +A configuration library
+    /usr/lib/lib2B.a  +B configuration library
+
+-- Richard
+
+-- 
+The University of Edinburgh is a charitable body, registered in
+Scotland, with registration number SC005336.
+
+
+
+From david at kdbarto.org  Wed Jun 28 02:19:15 2017
+From: david at kdbarto.org (David)
+Date: Tue, 27 Jun 2017 09:19:15 -0700
+Subject: [TUHS] Adventure shell / Doug Gwyn
+Message-ID: <126A55E2-CCEA-44D7-A0F3-574C9F2002CC@kdbarto.org>
+
+Does anyone here remember the Adventure Shell?
+
+Doug wrote it back in 83, and I just stumbled across a copy in an RCS directory.
+
+Invoked as ‘ash’ it was pretty clever.  I’ve lost the instructions and help files, however I’ve got the main script.
+
+Back when people did weird things because it was fun.
+
+	David
+
+
+
+
+
+From random832 at fastmail.com  Wed Jun 28 03:35:13 2017
+From: random832 at fastmail.com (Random832)
+Date: Tue, 27 Jun 2017 13:35:13 -0400
+Subject: [TUHS] What did cc -2 do?
+In-Reply-To: <20170627135406.21EAD137A42A@macaroni.inf.ed.ac.uk>
+References: <20170627135406.21EAD137A42A@macaroni.inf.ed.ac.uk>
+Message-ID: <1498584913.364854.1023002800.3B8D3CB5@webmail.messagingengine.com>
+
+On Tue, Jun 27, 2017, at 09:54, Richard Tobin wrote:
+> The "scc" man page for System V may be enlightening, as it mentions
+> similarly-named files:
+
+Hmm. It seems that the truth is a little bit more convoluted than that,
+but it was a good starting point.
+
+The equivalent functionality in V7/usr/src/cmd/standalone uses "libsa"
+(in addition to, rather than instead of, libc) and srt0.o, and was used
+with a "cc+ld-stand" script which read as follows:
+cc -c -O -DSTANDALONE ../$1.c
+ld -s -o $1 srt0.o $1.o -lsa -lc
+rm $1.o
+
+The equivalent manpage in System III mentions crt20.o instead.
+
+System III scc invokes cc with "-2x" (System V uses -Z2). So, mystery
+solved, I guess, except for why it appears in the V6 (and V5, and V2) cc
+with no trace of the needed libraries, and V7 with the libraries having
+a different structure.
+
+My guess is that the V7 library structure was a post-V6 change that
+didn't make it into USG Unix. My assumption is that it's dead code at
+that point. The v7 cc+ld-stand script doesn't seem to have been suitable
+for multi-file programs, either - no other version has this script,
+either (Ultrix and BSD seem to both have standalone systems derived from
+it, but both just have the relevant cc and ld commands in their
+makefiles)
+
+So, my theorized timeline: This began as an internal tool in V2*. USG
+Unix and V7 diverged, and V7 effectively abandoned the use of a magic
+flag and hardcoded library names in "cc" (but for some reason retained
+the actual associated functionality in "cc" itself, where it survived
+into Ultrix 3.1 and 3BSD but not 4BSD). Ultrix and BSD took V7's version
+of the functionality.
+
+*specifically, it appears in V2/cmd/cc.c which comes from s1-bits. It
+does not appear in V2/c/ncc.c which comes from last1120c.
+
+>   NAME
+>     scc - C compiler for stand-alone programs
+> 
+>   SYNOPSIS
+>     scc [ +[ lib ] ] [ option ] ... [ file ] ...
+>     
+>   DESCRIPTION
+>     Scc prepares the named files for stand-alone execution.
+>     [...]
+>     
+>   FILES
+>     /lib/crt2.o       execution start-off
+>     /usr/lib/lib2.a   stand-alone library    
+>     /usr/lib/lib2A.a  +A configuration library
+>     /usr/lib/lib2B.a  +B configuration library
+
+
+From chet.ramey at case.edu  Wed Jun 28 03:39:30 2017
+From: chet.ramey at case.edu (Chet Ramey)
+Date: Tue, 27 Jun 2017 13:39:30 -0400
+Subject: [TUHS] Adventure shell / Doug Gwyn
+In-Reply-To: <126A55E2-CCEA-44D7-A0F3-574C9F2002CC@kdbarto.org>
+References: <126A55E2-CCEA-44D7-A0F3-574C9F2002CC@kdbarto.org>
+Message-ID: <236a5f12-a394-ab44-22be-4a3c6f2598f1@case.edu>
+
+On 6/27/17 12:19 PM, David wrote:
+> Does anyone here remember the Adventure Shell?
+
+For a long time (through bash-4.2), I shipped it as one of the scripting
+examples in the bash distribution.
+
+
+-- 
+``The lyf so short, the craft so long to lerne.'' - Chaucer
+		 ``Ars longa, vita brevis'' - Hippocrates
+Chet Ramey, UTech, CWRU    chet at case.edu    http://cnswww.cns.cwru.edu/~chet/
+
+
+From akosela at andykosela.com  Wed Jun 28 09:00:31 2017
+From: akosela at andykosela.com (Andy Kosela)
+Date: Tue, 27 Jun 2017 18:00:31 -0500
+Subject: [TUHS] Adventure shell / Doug Gwyn
+In-Reply-To: <126A55E2-CCEA-44D7-A0F3-574C9F2002CC@kdbarto.org>
+References: <126A55E2-CCEA-44D7-A0F3-574C9F2002CC@kdbarto.org>
+Message-ID: <CALMnNGh4AsbZWc4phL_KzpwRuTza_usYjsK0DtJNaG7VwCptGg@mail.gmail.com>
+
+On Tuesday, June 27, 2017, David <david at kdbarto.org> wrote:
+
+> Does anyone here remember the Adventure Shell?
+>
+> Doug wrote it back in 83, and I just stumbled across a copy in an RCS
+> directory.
+>
+> Invoked as ‘ash’ it was pretty clever.  I’ve lost the instructions and
+> help files, however I’ve got the main script.
+>
+> Back when people did weird things because it was fun.
+>
+>
+There is also the New Adventure Shell project.
+
+   http://nadvsh.sourceforge.net/
+
+--Andy
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20170627/7cce4003/attachment.html>
+
+From dave at horsfall.org  Wed Jun 28 10:07:09 2017
+From: dave at horsfall.org (Dave Horsfall)
+Date: Wed, 28 Jun 2017 10:07:09 +1000 (EST)
+Subject: [TUHS] Adventure shell / Doug Gwyn
+In-Reply-To: <126A55E2-CCEA-44D7-A0F3-574C9F2002CC@kdbarto.org>
+References: <126A55E2-CCEA-44D7-A0F3-574C9F2002CC@kdbarto.org>
+Message-ID: <alpine.BSF.2.20.1706281004211.938@aneurin.horsfall.org>
+
+On Tue, 27 Jun 2017, David wrote:
+
+> Does anyone here remember the Adventure Shell?
+
+I remember it well :-)
+
+"THROW <file> TOWARDS PRINTER" (I think) would print it, "SAY xxx" would
+"echo xxx" etc...
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+

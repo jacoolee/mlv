@@ -1,0 +1,1650 @@
+From dmr at plan9.bell-labs.com  Wed Oct  4 14:31:40 2006
+From: dmr at plan9.bell-labs.com (dmr at plan9.bell-labs.com)
+Date: Wed, 4 Oct 2006 00:31:40 -0400
+Subject: [pups] Issues of AUUGN...
+Message-ID: <baa0f2a3ada12c7b67ac9c34ddb82056@plan9.bell-labs.com>
+
+Dave Horsfall mentioned, about some old editions of AUUGN,
+
+ > It contains the famous Thrust Meter, a few papers by Yours Truly, and I
+ > think it has the short assembly program that would bring a PDP-11/70 to
+ > its knees (the infamous "SPL" firmware bug).
+
+Was this the feature (not really a bug; it's in the manual)
+that SPL suppressed interrupts for one instruction after the SPL?
+I suppose it was indeed a bug that this happened even in user mode
+where SPL was intended to be a no-op.
+
+I remember trying this.  It depends on completely filling
+memory with SPLs, which I could not figure out how to
+do using an instruction sequence.  However, putting
+a bunch of SPLs into a file and reading it in over the program
+did the job.
+
+It was a bit hard to break out of--the halt switch didn't work.
+At first I thought that power-off was the only solution, but it
+turned out that holding down both reset and halt simultaneously did
+the job.
+
+	Dennis
+
+
+From dave at horsfall.org  Wed Oct  4 17:00:16 2006
+From: dave at horsfall.org (Dave Horsfall)
+Date: Wed, 4 Oct 2006 17:00:16 +1000 (EST)
+Subject: [pups] Issues of AUUGN
+Message-ID: <Pine.BSI.4.61.0610041659120.14784@dave.horsfall.org>
+
+[ Meant to go to list, but sent to DMR only by mistake. ]
+
+On Wed, 4 Oct 2006 dmr at plan9.bell-labs.com wrote:
+
+> > It contains the famous Thrust Meter, a few papers by Yours Truly, and 
+> > I think it has the short assembly program that would bring a PDP-11/70 
+> > to its knees (the infamous "SPL" firmware bug).
+> 
+> Was this the feature (not really a bug; it's in the manual) that SPL 
+> suppressed interrupts for one instruction after the SPL?  I suppose it 
+> was indeed a bug that this happened even in user mode where SPL was 
+> intended to be a no-op.
+
+Yep, that's the one.  I regard it as a bug because it indeed happened in 
+user mode...
+
+> I remember trying this.  It depends on completely filling memory with 
+> SPLs, which I could not figure out how to do using an instruction 
+> sequence.  However, putting a bunch of SPLs into a file and reading it 
+> in over the program did the job.
+
+There was a clever assembly program that did it; it relied upon the 
+instruction counter wrapping around (I can't remember in which direction, 
+or whether it first relocated itself).  Anyone, it managed to fill memory 
+with SPLs, so the next instruction after overwriting its last instruction 
+was SPL, and for the foreseeable future after that...
+
+If I find the article I'll post it here; I don't think there are too many 
+11/70s still in public operation.
+
+> It was a bit hard to break out of--the halt switch didn't work. At first 
+> I thought that power-off was the only solution, but it turned out that 
+> holding down both reset and halt simultaneously did the job.
+
+I'll remember that, should I ever see an emulator :-)  I still remember 
+Ian Johnstone cursing me...
+
+-- Dave
+
+
+From dave at horsfall.org  Wed Oct  4 20:22:24 2006
+From: dave at horsfall.org (Dave Horsfall)
+Date: Wed, 4 Oct 2006 20:22:24 +1000 (EST)
+Subject: [pups] Issues of AUUGN
+In-Reply-To: <45236F2B.2050208@softjar.se>
+References: <Pine.BSI.4.61.0610041659120.14784@dave.horsfall.org>
+	<45236F2B.2050208@softjar.se>
+Message-ID: <Pine.BSI.4.61.0610041942420.15033@dave.horsfall.org>
+
+On Wed, 4 Oct 2006, Johnny Billquist wrote:
+
+> > There was a clever assembly program that did it; it relied upon the 
+> > instruction counter wrapping around (I can't remember in which 
+> > direction, or whether it first relocated itself).  Anyone, it managed 
+> > to fill memory with SPLs, so the next instruction after overwriting 
+> > its last instruction was SPL, and for the foreseeable future after 
+> > that...
+> 
+> It would have to wrap forwards. Basically, if you just have a
+> 
+> 	MOV	(PC)+,(R0)+
+> 	SPL	#7
+
+Yes, that's it!  Except it was SPL 0; not that it made any difference, but 
+it was just as devastating in user mode.
+
+Damn; I'm still trying to visualise how it works...  It took me ages, the 
+first time I saw it; I *think* it propagates the MOV throughout memory, 
+leaving a trail of SPLs behind it?
+
+> and make sure that the rest of the memory don't do anything overly 
+> foolish, [...]
+
+Not a problem in user mode?
+
+> However, another way of achieving this, if you have some kind of control 
+> of the MMU is to just fill one page with SPLs, and then remap all of 
+> your memory to be that page. The last page you remap is just the page 
+> that holds all the code doing the setup.
+
+But you'd need kernel mode for that; this is a DoS attack (one of the 
+first?) launched by a user.
+
+> > If I find the article I'll post it here; I don't think there are too 
+> > many 11/70s still in public operation.
+> 
+> Well, ours is occasionally. It's off at the moment, since we're not 
+> allowed to consume that much money anymore, but Magica.Update.UU.SE is 
+> just a key turn away from being online.
+
+Cool :-)
+
+> > I'll remember that, should I ever see an emulator :-)  I still 
+> > remember Ian Johnstone cursing me...
+> 
+> :-)
+
+It was two words: "YOU XXXX!" (an indelicate term for a part of the female 
+anatomy) followed by the phone being slammed down...
+
+> Oh, that would be having the HALT switch down and pressing the START 
+> switch, by the way. That combination will trigger a Unibus reset, and 
+> will bring the CPU out of almost all catatonic states that I've seen, 
+> including serious bus problems.
+
+Interesting.  I knew the HALT switch didn't halt the box right away; bus 
+transfers still completed so we were taught to W/PROT the RK-05s *after* 
+hitting HALT, but I didn't know it worked in combination.
+
+-- Dave
+
+
+From brian at quarterbyte.com  Thu Oct  5 14:17:45 2006
+From: brian at quarterbyte.com (Brian Knittel)
+Date: Wed, 04 Oct 2006 21:17:45 -0700
+Subject: [pups] thrust meter?
+Message-ID: <452424F9.28243.1AB56C7E@brian.quarterbyte.com>
+
+The thrust meter project -- was that an analog meter that displayed % 
+CPU utilization? I remember that Tom Ferrin had one mounted in the 
+middle of a DEC panel filler on the 11/70 at the Computer Graphics 
+Lab at UCSF. It was really delightful having this analog meter 
+bouncing up and down as people worked away.  
+
+Brian
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+_| _| _|  Brian Knittel
+_| _| _|  Quarterbyte Systems, Inc.
+_| _| _|  Tel:   1-510-559-7930
+_| _| _|  Fax: 1-510-525-6889
+_| _| _|  Email: brian at quarterbyte.com
+_| _| _|  http://www.quarterbyte.com
+
+
+
+From dave at horsfall.org  Thu Oct  5 22:15:54 2006
+From: dave at horsfall.org (Dave Horsfall)
+Date: Thu, 5 Oct 2006 22:15:54 +1000 (EST)
+Subject: [pups] thrust meter?
+In-Reply-To: <452424F9.28243.1AB56C7E@brian.quarterbyte.com>
+References: <452424F9.28243.1AB56C7E@brian.quarterbyte.com>
+Message-ID: <Pine.BSI.4.61.0610052143300.19364@dave.horsfall.org>
+
+On Wed, 4 Oct 2006, Brian Knittel wrote:
+
+> The thrust meter project -- was that an analog meter that displayed % 
+> CPU utilization? I remember that Tom Ferrin had one mounted in the 
+> middle of a DEC panel filler on the 11/70 at the Computer Graphics Lab 
+> at UCSF. It was really delightful having this analog meter bouncing up 
+> and down as people worked away.
+
+I believe so...
+
+(Dave leans over to dig out article.)
+
+OK, page 27 of AUUG Vol 2 No 5 (Jun/Jul 1980).
+
+It integrated the BUS BUSY signal over a suitable time constant (and my 
+electronics knowledge is a bit too rusty to figure out Tc, but with a 
+10uF tantalum capacitor I imagine it would be a few seconds).
+
+The credits are:
+
+Designed originally by Pete Madams (Essex), modified by J Feenstra 
+(Nijmegen), and this drawing executed by Paul Griffith (Essex).
+
+-- Dave
+
+
+From milov at uwlax.edu  Thu Oct  5 23:46:13 2006
+From: milov at uwlax.edu (Milo Velimirovic)
+Date: Thu, 5 Oct 2006 08:46:13 -0500
+Subject: [pups] User Mode DoS Attacks (was Re: Issues of AUUGN)
+In-Reply-To: <mailman.1.1160013601.40099.pups@minnie.tuhs.org>
+References: <mailman.1.1160013601.40099.pups@minnie.tuhs.org>
+Message-ID: <E183486F-6903-48DA-BBC2-D35A498B86A6@uwlax.edu>
+
+> But you'd need kernel mode for that; this is a DoS attack (one of the
+> first?) launched by a user.
+
+The userland DoS I remember:
+
+main() {
+	while(1)
+		fork();
+}
+
+And in fact I tried it once on the 11/45 I had access to. Not pretty.  
+It can be made less disastrous by judicious addition of a wait(); call.
+
+--Milo, wondering how contemporary UNIX will deal with such  
+pathological behavior....
+
+--
+Milo Velimirović
+University of Wisconsin - La Crosse
+La Crosse, Wisconsin 54601 USA
+43 48 48 N 91 13 53 W
+--
+There's a reason Dennis Ritchie and Ken Thompson have been awarded  
+the U.S. National Medal of Technology (1998) and are fellows of the  
+Computer History Museum Online. Dave Cutler hasn't and isn't.
+"You are not expected to understand this."
+
+
+
+
+From bill at cs.uofs.edu  Fri Oct  6 00:33:19 2006
+From: bill at cs.uofs.edu (Bill Gunshannon)
+Date: Thu, 5 Oct 2006 10:33:19 -0400 (EDT)
+Subject: [pups] User Mode DoS Attacks (was Re: Issues of AUUGN)
+In-Reply-To: <E183486F-6903-48DA-BBC2-D35A498B86A6@uwlax.edu>
+References: <mailman.1.1160013601.40099.pups@minnie.tuhs.org>
+	<E183486F-6903-48DA-BBC2-D35A498B86A6@uwlax.edu>
+Message-ID: <4672.134.198.172.102.1160058799.squirrel@www.cs.scranton.edu>
+
+
+>> But you'd need kernel mode for that; this is a DoS attack (one of the
+>> first?) launched by a user.
+>
+> The userland DoS I remember:
+>
+> main() {
+> 	while(1)
+> 		fork();
+> }
+
+Typical "Rabbit Program".
+
+>
+> And in fact I tried it once on the 11/45 I had access to. Not pretty.
+> It can be made less disastrous by judicious addition of a wait(); call.
+>
+> --Milo, wondering how contemporary UNIX will deal with such
+> pathological behavior....
+
+Not necessarily pathological.  I have students do it all the time
+in the early parts of the Operating Systems Course.  The only one
+it denies service to on contemorary UNIX is the individual who does
+it.  Process limits are by user, not by system.
+
+bill
+
+-- 
+Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three wolves
+bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+University of Scranton   |
+Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+
+
+
+
+From toresbe at ifi.uio.no  Fri Oct  6 00:51:02 2006
+From: toresbe at ifi.uio.no (Tore Sinding Bekkedal)
+Date: Thu, 05 Oct 2006 16:51:02 +0200
+Subject: [pups] User Mode DoS Attacks (was Re: Issues of AUUGN)
+In-Reply-To: <E183486F-6903-48DA-BBC2-D35A498B86A6@uwlax.edu>
+References: <mailman.1.1160013601.40099.pups@minnie.tuhs.org>
+	<E183486F-6903-48DA-BBC2-D35A498B86A6@uwlax.edu>
+Message-ID: <1160059862.4423.94.camel@localhost.localdomain>
+
+(oops, sent it off-list - sorry, Milo!)
+
+On Thu, 2006-10-05 at 08:46 -0500, Milo Velimirovic wrote:
+> > But you'd need kernel mode for that; this is a DoS attack (one of the
+> > first?) launched by a user.
+> 
+> The userland DoS I remember:
+> 
+> main() {
+> 	while(1)
+> 		fork();
+> }
+> 
+> And in fact I tried it once on the 11/45 I had access to. Not pretty.  
+> It can be made less disastrous by judicious addition of a wait(); call.
+> 
+> --Milo, wondering how contemporary UNIX will deal with such  
+> pathological behavior....
+
+Speaking for Linux, quite badly, though there are some patches that
+allow you to limit forks per user. There's even a bash version,
+":(){ :|:& };:", which will infinitely fork off bash processes. (It
+defines a function calling itself in the background, and then
+immediately launches it)
+
+The max number of processes is not so much a problem as the fact that
+they are all draining the system resources. Besides, one is likely to
+run out of memory before one hits the max process number in Linux
+anyway.
+
+- Tore Sinding Bekkedal
+
+
+
+From bqt at softjar.se  Wed Oct  4 18:22:03 2006
+From: bqt at softjar.se (Johnny Billquist)
+Date: Wed, 04 Oct 2006 10:22:03 +0200
+Subject: [pups] Issues of AUUGN
+In-Reply-To: <Pine.BSI.4.61.0610041659120.14784@dave.horsfall.org>
+References: <Pine.BSI.4.61.0610041659120.14784@dave.horsfall.org>
+Message-ID: <45236F2B.2050208@softjar.se>
+
+Dave Horsfall wrote:
+> [ Meant to go to list, but sent to DMR only by mistake. ]
+> 
+> On Wed, 4 Oct 2006 dmr at plan9.bell-labs.com wrote:
+> 
+>>>It contains the famous Thrust Meter, a few papers by Yours Truly, and 
+>>>I think it has the short assembly program that would bring a PDP-11/70 
+>>>to its knees (the infamous "SPL" firmware bug).
+>>
+>>Was this the feature (not really a bug; it's in the manual) that SPL 
+>>suppressed interrupts for one instruction after the SPL?  I suppose it 
+>>was indeed a bug that this happened even in user mode where SPL was 
+>>intended to be a no-op.
+> 
+> Yep, that's the one.  I regard it as a bug because it indeed happened in 
+> user mode...
+> 
+>>I remember trying this.  It depends on completely filling memory with 
+>>SPLs, which I could not figure out how to do using an instruction 
+>>sequence.  However, putting a bunch of SPLs into a file and reading it 
+>>in over the program did the job.
+> 
+> There was a clever assembly program that did it; it relied upon the 
+> instruction counter wrapping around (I can't remember in which direction, 
+> or whether it first relocated itself).  Anyone, it managed to fill memory 
+> with SPLs, so the next instruction after overwriting its last instruction 
+> was SPL, and for the foreseeable future after that...
+
+It would have to wrap forwards. Basically, if you just have a
+
+	MOV	(PC)+,(R0)+
+	SPL	#7
+
+and make sure that the rest of the memory don't do anything overly 
+foolish, and make sure that R0 starts pointing after this piece, it will 
+eventually fill the whole memory. The final step will be the MOV which 
+overwrites itself with an SPL, and then we're done.
+
+However, another way of achieving this, if you have some kind of control 
+of the MMU is to just fill one page with SPLs, and then remap all of 
+your memory to be that page. The last page you remap is just the page 
+that holds all the code doing the setup.
+
+I'm not sure you can control that under Unix well enough, but in RSX 
+this wouldn't be impossible, I think.
+
+> If I find the article I'll post it here; I don't think there are too many 
+> 11/70s still in public operation.
+
+Well, ours is occasionally. It's off at the moment, since we're not 
+allowed to consume that much money anymore, but Magica.Update.UU.SE is 
+just a key turn away from being online.
+
+>>It was a bit hard to break out of--the halt switch didn't work. At first 
+>>I thought that power-off was the only solution, but it turned out that 
+>>holding down both reset and halt simultaneously did the job.
+> 
+> I'll remember that, should I ever see an emulator :-)  I still remember 
+> Ian Johnstone cursing me...
+
+:-)
+
+Oh, that would be having the HALT switch down and pressing the START 
+switch, by the way. That combination will trigger a Unibus reset, and 
+will bring the CPU out of almost all catatonic states that I've seen, 
+including serious bus problems.
+
+	Johnny
+
+
+From bqt at softjar.se  Wed Oct  4 21:11:30 2006
+From: bqt at softjar.se (Johnny Billquist)
+Date: Wed, 04 Oct 2006 13:11:30 +0200
+Subject: [pups] Issues of AUUGN
+In-Reply-To: <Pine.BSI.4.61.0610041942420.15033@dave.horsfall.org>
+References: <Pine.BSI.4.61.0610041659120.14784@dave.horsfall.org>	<45236F2B.2050208@softjar.se>
+	<Pine.BSI.4.61.0610041942420.15033@dave.horsfall.org>
+Message-ID: <452396E2.8030102@softjar.se>
+
+Dave Horsfall wrote:
+> On Wed, 4 Oct 2006, Johnny Billquist wrote:
+> 
+>>>There was a clever assembly program that did it; it relied upon the 
+>>>instruction counter wrapping around (I can't remember in which 
+>>>direction, or whether it first relocated itself).  Anyone, it managed 
+>>>to fill memory with SPLs, so the next instruction after overwriting 
+>>>its last instruction was SPL, and for the foreseeable future after 
+>>>that...
+>>
+>>It would have to wrap forwards. Basically, if you just have a
+>>
+>>	MOV	(PC)+,(R0)+
+>>	SPL	#7
+> 
+> Yes, that's it!  Except it was SPL 0; not that it made any difference, but 
+> it was just as devastating in user mode.
+
+Interesting thing, though. I didn't know that SPL blocked interrupts for 
+the next instruction. Always something more to learn...
+
+> Damn; I'm still trying to visualise how it works...  It took me ages, the 
+> first time I saw it; I *think* it propagates the MOV throughout memory, 
+> leaving a trail of SPLs behind it?
+
+Nope. That snippet I wrote now just copies the SPL in the instruction 
+after the MOV to wherever R0 is pointing. The key is that both these 
+instructions takes just one word.
+
+Actually, here is an improved version:
+
+	MOV	(PC)+,R0
+	.WORD	FOO
+FOO:	MOV	(PC)+,-(R0)
+	SPL	#0
+	BR	FOO
+
+(Sorry about the DEC syntax, I've never learned as)
+
+This code will work fine no matter what is in memory, and no matter 
+where we have the program.
+
+This code will start by overwriting the .WORD FOO with the SPL, then 
+overwrite the MOV, and then continue backwards, wrap around, write from 
+the end of memory back towards the branch.
+When we overwrite the branch instruction we will no longer be in our 
+tight loop. However all other memory than what we have here is now 
+containing the SPL instruction, so running through that is no problem, 
+and we will wrap to the start of the memory and at a later time once 
+again come to the MOV (PC)+,-(R0), which this time will overwrite the 
+SPL instruction with the SPL instruction. Basically just a decrement of 
+R0. Next time around, it will overwrite the MOV (PC)+,-(R0), which will 
+leave just the SPL instructions left.
+
+My first version will write forwards, without an explicit loop, so it 
+requires that the rest of the memory didn't modify R0 and didn't branch 
+backwards in a never-ending loop not including the MOV.
+
+Perhaps an even more devious piece of code is:
+
+	MOV	-(PC),-(PC)
+
+even though it won't hang the machine. :-)
+
+>>However, another way of achieving this, if you have some kind of control 
+>>of the MMU is to just fill one page with SPLs, and then remap all of 
+>>your memory to be that page. The last page you remap is just the page 
+>>that holds all the code doing the setup.
+> 
+> But you'd need kernel mode for that; this is a DoS attack (one of the 
+> first?) launched by a user.
+
+You wouldn't need kernel mode if you were programming in RSX, since 
+there are system calls to remap your memory in that OS. You cannot remap 
+it arbitrarily, but you can remap it enough to set this up.
+
+>>>If I find the article I'll post it here; I don't think there are too 
+>>>many 11/70s still in public operation.
+>>
+>>Well, ours is occasionally. It's off at the moment, since we're not 
+>>allowed to consume that much money anymore, but Magica.Update.UU.SE is 
+>>just a key turn away from being online.
+> 
+> Cool :-)
+
+Heck, we actually have two. But one is enough to have standing ready. 
+We're a computer club, so we exist at the mercy of our university.
+Our second machine used to run 2.11BSD, but is now in storage. *sigh* 
+Wish we had a little more money designated for our fun. :-)
+
+>>Oh, that would be having the HALT switch down and pressing the START 
+>>switch, by the way. That combination will trigger a Unibus reset, and 
+>>will bring the CPU out of almost all catatonic states that I've seen, 
+>>including serious bus problems.
+> 
+> Interesting.  I knew the HALT switch didn't halt the box right away; bus 
+> transfers still completed so we were taught to W/PROT the RK-05s *after* 
+> hitting HALT, but I didn't know it worked in combination.
+
+Yeah, the HALT switch will stop the machine at the next instruction 
+fetch. That is, unless you have the S.INST/S.CYCLE switch thrown to the 
+S.CYCLE position, which will cause the machine to stop at the next clock 
+cycle.
+
+The thing to realize is that the START switch always performs a bus 
+reset, and then it usually also starts the clocks running in the 
+machine. However, if the HALT switch is active, the clocks won't start 
+running (obviously), so all that remains is the bus reset.
+
+Hmm, thinking about this, I wonder how much the CPU is reset by the 
+start switch as well. Maybe I should check if the CPU registers are 
+cleared and so on... The MMU is definitely cleared.
+
+Another thing is debugging on the front panel. You have START and CONT, 
+which both will start the CPU clocks. The difference is wether a reset 
+of the machine is done or not. If you want to debug a program from the 
+front panel, you keep the HALT switch down, and pull the CONT switch to 
+step a single instruction or single cycle (depending on the switch).
+
+If you raise the HALT switch, CONT will cause the processor to proceed 
+from wherever it is at the moment, while a START also will start the 
+processor, but will reset a number of things so things will not actually 
+be able to proceed as nothing happened.
+
+	Johnny
+
+
+From bqt at softjar.se  Fri Oct  6 00:44:36 2006
+From: bqt at softjar.se (Johnny Billquist)
+Date: Thu, 05 Oct 2006 16:44:36 +0200
+Subject: [pups] User Mode DoS Attacks (was Re: Issues of AUUGN)
+In-Reply-To: <4672.134.198.172.102.1160058799.squirrel@www.cs.scranton.edu>
+References: <mailman.1.1160013601.40099.pups@minnie.tuhs.org>	<E183486F-6903-48DA-BBC2-D35A498B86A6@uwlax.edu>
+	<4672.134.198.172.102.1160058799.squirrel@www.cs.scranton.edu>
+Message-ID: <45251A54.9040601@softjar.se>
+
+Back in those days, there didn't exist any process limits, except for 
+system wide ones... :-)
+
+Another fun exercise that actually hurts systems today, but didn't hurt 
+much back then, are programs that allocate a large chunk of memory and 
+hit on a single address on each page repetedly.
+
+Talk about thrashing the memory system... :-) But on the PDP-11, you 
+don't use demand paging, nor can you allocate that much memory.
+
+	Johnny
+
+Bill Gunshannon wrote:
+>>>But you'd need kernel mode for that; this is a DoS attack (one of the
+>>>first?) launched by a user.
+>>
+>>The userland DoS I remember:
+>>
+>>main() {
+>>	while(1)
+>>		fork();
+>>}
+> 
+> 
+> Typical "Rabbit Program".
+> 
+> 
+>>And in fact I tried it once on the 11/45 I had access to. Not pretty.
+>>It can be made less disastrous by judicious addition of a wait(); call.
+>>
+>>--Milo, wondering how contemporary UNIX will deal with such
+>>pathological behavior....
+> 
+> 
+> Not necessarily pathological.  I have students do it all the time
+> in the early parts of the Operating Systems Course.  The only one
+> it denies service to on contemorary UNIX is the individual who does
+> it.  Process limits are by user, not by system.
+> 
+> bill
+> 
+
+
+From johnh at psych.usyd.edu.au  Tue Oct 10 09:02:08 2006
+From: johnh at psych.usyd.edu.au (John Holden)
+Date: Tue, 10 Oct 2006 09:02:08 +1000
+Subject: [pups] thrust meter?
+In-Reply-To: <Pine.BSI.4.61.0610052143300.19364@dave.horsfall.org>
+References: <452424F9.28243.1AB56C7E@brian.quarterbyte.com>
+	<Pine.BSI.4.61.0610052143300.19364@dave.horsfall.org>
+Message-ID: <1AC552DD-C287-4001-A5BC-95DD1092ACA8@psych.usyd.edu.au>
+
+
+On 05/10/2006, at 10:15 PM, Dave Horsfall wrote:
+
+> On Wed, 4 Oct 2006, Brian Knittel wrote:
+>
+>> The thrust meter project -- was that an analog meter that displayed %
+>> CPU utilization? I remember that Tom Ferrin had one mounted in the
+>> middle of a DEC panel filler on the 11/70 at the Computer Graphics  
+>> Lab
+>> at UCSF. It was really delightful having this analog meter  
+>> bouncing up
+>> and down as people worked away.
+>
+> It integrated the BUS BUSY signal over a suitable time constant  
+> (and my
+> electronics knowledge is a bit too rusty to figure out Tc, but with a
+> 10uF tantalum capacitor I imagine it would be a few seconds).
+
+Um, depends what you mean by thrust. It was originally designed for a  
+11/45
+where bus activity would have been a fare indication of machine load  
+since
+all memory and i/o used the unibus (I'm excluding the effects of fastbus
+memory on 11/50 and 55's).
+
+The 11/70 unibus was actually slower than the 11/45, and generally  
+didn't
+have memory or disk/tape i/o on it (separate memory bus and massbus). So
+'thrust' was probably mainly character i/o (dh and dz's) and older
+disk/tapes (RK05's etc)
+
+Now, where's 11/70 maintenance printset?
+
+Cheers
+John
+
+
+
+From bqt at softjar.se  Tue Oct 10 19:05:30 2006
+From: bqt at softjar.se (Johnny Billquist)
+Date: Tue, 10 Oct 2006 11:05:30 +0200
+Subject: [pups] thrust meter?
+In-Reply-To: <1AC552DD-C287-4001-A5BC-95DD1092ACA8@psych.usyd.edu.au>
+References: <452424F9.28243.1AB56C7E@brian.quarterbyte.com>	<Pine.BSI.4.61.0610052143300.19364@dave.horsfall.org>
+	<1AC552DD-C287-4001-A5BC-95DD1092ACA8@psych.usyd.edu.au>
+Message-ID: <452B625A.1070304@softjar.se>
+
+John Holden wrote:
+> On 05/10/2006, at 10:15 PM, Dave Horsfall wrote:
+> 
+>>On Wed, 4 Oct 2006, Brian Knittel wrote:
+>>
+>>>The thrust meter project -- was that an analog meter that displayed %
+>>>CPU utilization? I remember that Tom Ferrin had one mounted in the
+>>>middle of a DEC panel filler on the 11/70 at the Computer Graphics  
+>>>Lab
+>>>at UCSF. It was really delightful having this analog meter  
+>>>bouncing up
+>>>and down as people worked away.
+>>
+>>It integrated the BUS BUSY signal over a suitable time constant  
+>>(and my
+>>electronics knowledge is a bit too rusty to figure out Tc, but with a
+>>10uF tantalum capacitor I imagine it would be a few seconds).
+> 
+> Um, depends what you mean by thrust. It was originally designed for a  
+> 11/45
+> where bus activity would have been a fare indication of machine load  
+> since
+> all memory and i/o used the unibus (I'm excluding the effects of fastbus
+> memory on 11/50 and 55's).
+> 
+> The 11/70 unibus was actually slower than the 11/45, and generally  
+> didn't
+> have memory or disk/tape i/o on it (separate memory bus and massbus). So
+> 'thrust' was probably mainly character i/o (dh and dz's) and older
+> disk/tapes (RK05's etc)
+> 
+> Now, where's 11/70 maintenance printset?
+
+I got them here. :-)
+
+Hmm, but yeah. Since the bus might be idle even though the CPU is 
+running, you might not get a very good reading by looking at the unibus.
+But I think there are other signals that would be better to integrate 
+over. Such as the MASTER lamp (or is it the CPU lamp perhaps?) of the 
+front panel.
+
+	Johnny
+
+
+From dave at horsfall.org  Tue Oct 10 20:55:45 2006
+From: dave at horsfall.org (Dave Horsfall)
+Date: Tue, 10 Oct 2006 20:55:45 +1000 (EST)
+Subject: [pups] thrust meter?
+In-Reply-To: <1AC552DD-C287-4001-A5BC-95DD1092ACA8@psych.usyd.edu.au>
+References: <452424F9.28243.1AB56C7E@brian.quarterbyte.com>
+	<Pine.BSI.4.61.0610052143300.19364@dave.horsfall.org>
+	<1AC552DD-C287-4001-A5BC-95DD1092ACA8@psych.usyd.edu.au>
+Message-ID: <Pine.BSI.4.61.0610102053050.8153@dave.horsfall.org>
+
+On Tue, 10 Oct 2006, John Holden wrote:
+
+> Um, depends what you mean by thrust. It was originally designed for a 
+> 11/45 where bus activity would have been a fare indication of machine 
+> load since all memory and i/o used the unibus (I'm excluding the effects 
+> of fastbus memory on 11/50 and 55's).
+
+According to the article, it was indeed for the 11/45.
+
+-- Dave
+
+
+From dave at horsfall.org  Tue Oct 10 21:00:02 2006
+From: dave at horsfall.org (Dave Horsfall)
+Date: Tue, 10 Oct 2006 21:00:02 +1000 (EST)
+Subject: [pups] thrust meter?
+In-Reply-To: <452B625A.1070304@softjar.se>
+References: <452424F9.28243.1AB56C7E@brian.quarterbyte.com>
+	<Pine.BSI.4.61.0610052143300.19364@dave.horsfall.org>
+	<1AC552DD-C287-4001-A5BC-95DD1092ACA8@psych.usyd.edu.au>
+	<452B625A.1070304@softjar.se>
+Message-ID: <Pine.BSI.4.61.0610102057430.8153@dave.horsfall.org>
+
+On Tue, 10 Oct 2006, Johnny Billquist wrote:
+
+> Hmm, but yeah. Since the bus might be idle even though the CPU is 
+> running, you might not get a very good reading by looking at the unibus. 
+> But I think there are other signals that would be better to integrate 
+> over. Such as the MASTER lamp (or is it the CPU lamp perhaps?) of the 
+> front panel.
+
+Which reminds me; try holding the light-pen of a GT40 against its own 
+console lights :-)
+
+-- Dave
+
+
+From johnh at psych.usyd.edu.au  Wed Oct 11 08:20:04 2006
+From: johnh at psych.usyd.edu.au (John Holden)
+Date: Wed, 11 Oct 2006 08:20:04 +1000
+Subject: [pups] thrust meter?
+In-Reply-To: <Pine.BSI.4.61.0610102057430.8153@dave.horsfall.org>
+References: <452424F9.28243.1AB56C7E@brian.quarterbyte.com>
+	<Pine.BSI.4.61.0610052143300.19364@dave.horsfall.org>
+	<1AC552DD-C287-4001-A5BC-95DD1092ACA8@psych.usyd.edu.au>
+	<452B625A.1070304@softjar.se>
+	<Pine.BSI.4.61.0610102057430.8153@dave.horsfall.org>
+Message-ID: <47CD212B-FA24-40F9-85D3-0CF325462CC8@psych.usyd.edu.au>
+
+
+On 10/10/2006, at 9:00 PM, Dave Horsfall wrote:
+
+> On Tue, 10 Oct 2006, Johnny Billquist wrote:
+>
+>> Hmm, but yeah. Since the bus might be idle even though the CPU is
+>> running, you might not get a very good reading by looking at the  
+>> unibus.
+>> But I think there are other signals that would be better to integrate
+>> over. Such as the MASTER lamp (or is it the CPU lamp perhaps?) of the
+>> front panel.
+>
+
+The MASTER lamp signifies that the CPU has the unibus, hence a  
+similar problem
+to using BUS BUSY. You could use KERNEL/SUPERVISOR/USER signals as an  
+indication
+of context switches. My favourite is a light chaser using the data  
+display from
+the idle loop. Only works on an 11/45/50/55/60/70 (a bit boring on a  
+11/60 as
+it had a 7 segment display).
+
+> Which reminds me; try holding the light-pen of a GT40 against its own
+> console lights :-)
+>
+
+Got one in my office. The lightpen latches the current x/y  
+coordinates from
+the d/a converters. Aim it at something that will trigger it and you  
+get random
+hits all over the screen
+
+
+
+
+From jigsaw at gmail.com  Mon Oct  2 16:44:58 2006
+From: jigsaw at gmail.com (jigsaw)
+Date: Mon, 2 Oct 2006 09:44:58 +0300
+Subject: [TUHS] Having trouble with V6 source code
+Message-ID: <2051ec920610012344p65949993q9b63a4497446a3e2@mail.gmail.com>
+
+hi all,
+
+I just started to read the source code of V6 with Lion's book.
+
+But before I went far I was stopped by m40.s
+
+0636: mov $USIZE-1/<8|6, (r1)+
+
+What does the slash "/" stand for?
+
+I guess this line should be
+
+mov $USIZE-1<<8|6, (r1)+
+
+Is "/<" the same as "<<"?
+
+I checked in Unix PDP11 Assemble Refrence Manual but didn't find a clue.
+
+Is it the right place to ask such question?
+
+Thanks in advance
+
+Regards,
+
+Qinglai
+
+
+From jigsaw at gmail.com  Mon Oct  2 22:59:25 2006
+From: jigsaw at gmail.com (jigsaw)
+Date: Mon, 2 Oct 2006 15:59:25 +0300
+Subject: [TUHS] Having trouble with V6 source code
+In-Reply-To: <20061002125049.GA1092@grumpf.hope-2000.org>
+References: <2051ec920610012344p65949993q9b63a4497446a3e2@mail.gmail.com>
+	<20061002125049.GA1092@grumpf.hope-2000.org>
+Message-ID: <2051ec920610020559j50b77246ra9365225938713f8@mail.gmail.com>
+
+hi Hans,
+
+It's my mistake - it is \ rather than /
+
+And refer to the assambler manual for UNIX v7, the "/<" stands for
+"shift left", i.e., <<.
+
+Regards,
+
+Qinglai
+
+On 10/2/06, Hans Rosenfeld <rosenfeld at grumpf.hope-2000.org> wrote:
+> On Mon, Oct 02, 2006 at 09:44:58AM +0300, jigsaw wrote:
+> > But before I went far I was stopped by m40.s
+> > 0636: mov $USIZE-1/<8|6, (r1)+
+>
+> In my printed copy it is a \<, not a /<
+>
+> > What does the slash "/" stand for?
+>
+> / would start a comment
+>
+> > I guess this line should be
+> > mov $USIZE-1<<8|6, (r1)+
+>
+> I don't know for sure, but I doubt that the assembler will understand
+> this C syntax.
+>
+> This piece of code is commented on page 6-2:
+>
+> 'The value 007406 is obtained by shifting the octal value 017 eight
+> places to the left and then "or"ing in the value of 6;'
+>
+>
+>
+> --
+> %SYSTEM-F-ANARCHISM, The operating system has been overthrown
+>
+
+
+From rosenfeld at grumpf.hope-2000.org  Mon Oct  2 22:50:49 2006
+From: rosenfeld at grumpf.hope-2000.org (Hans Rosenfeld)
+Date: Mon, 2 Oct 2006 14:50:49 +0200
+Subject: [TUHS] Having trouble with V6 source code
+In-Reply-To: <2051ec920610012344p65949993q9b63a4497446a3e2@mail.gmail.com>
+References: <2051ec920610012344p65949993q9b63a4497446a3e2@mail.gmail.com>
+Message-ID: <20061002125049.GA1092@grumpf.hope-2000.org>
+
+On Mon, Oct 02, 2006 at 09:44:58AM +0300, jigsaw wrote:
+> But before I went far I was stopped by m40.s
+> 0636: mov $USIZE-1/<8|6, (r1)+
+
+In my printed copy it is a \<, not a /<
+
+> What does the slash "/" stand for?
+
+/ would start a comment
+
+> I guess this line should be
+> mov $USIZE-1<<8|6, (r1)+
+
+I don't know for sure, but I doubt that the assembler will understand
+this C syntax. 
+
+This piece of code is commented on page 6-2:
+
+'The value 007406 is obtained by shifting the octal value 017 eight
+places to the left and then "or"ing in the value of 6;'
+
+
+
+-- 
+%SYSTEM-F-ANARCHISM, The operating system has been overthrown
+
+
+From txomsy at yahoo.es  Tue Oct  3 00:22:11 2006
+From: txomsy at yahoo.es (Jose R Valverde)
+Date: Mon, 2 Oct 2006 16:22:11 +0200 (CEST)
+Subject: [TUHS] Having trouble with V6 source code
+Message-ID: <20061002142211.20654.qmail@web26112.mail.ukl.yahoo.com>
+
+No. 
+
+On PDP 11 assembler the left and right shifts were a
+single < and >.
+
+You made a typo when transcribing the source
+statement: you typed
+
+> 0636: mov $USIZE-1/<8|6, (r1)+
+
+but the actual code from m40.s reads
+
+> 0636:         mov     $usize-1\<8|6,(r1)+
+
+However, since < and > where also used to delimit
+strings, there was a
+need to escape them so as to distinguish their usage
+as shifts from the
+string delimiters. The escaping was achieved by \
+which is what you see
+in the code.
+
+See the assembler section of vol 2b of the Unix V7
+manuals for details at
+	http://plan9.bell-labs.com/7thEdMan/v7vol2b.pdf
+or
+	http://web.cuzuco.com/%7Ecuzuco/v7/v7vol2b.pdf
+namely:
+
+6.1 Expression operators
+	The operators are:
+	(blank) when there is no operand between operands,
+the effect is 
+		exactly the same as if a + had appeared.
+	+ addition
+	 subtraction
+	* multiplication
+	\/ division (note that plain  /  starts a
+comment)
+	& bitwise and
+	| bitwise or
+	\> logical right shift
+	\< logical left shift
+	...   ...   ...
+
+				j
+
+On Mon, 2 Oct 2006 09:44:58 +0300
+jigsaw <jigsaw at gmail.com> wrote:
+> hi all,
+> 
+> I just started to read the source code of V6 with
+Lion's book.
+> 
+> But before I went far I was stopped by m40.s
+> 
+> 0636: mov $USIZE-1/<8|6, (r1)+
+> 
+> What does the slash "/" stand for?
+> 
+> I guess this line should be
+> 
+> mov $USIZE-1<<8|6, (r1)+
+> 
+> Is "/<" the same as "<<"?
+> 
+> I checked in Unix PDP11 Assemble Refrence Manual but
+didn't find a clue.
+> 
+> Is it the right place to ask such question?
+> 
+> Thanks in advance
+> 
+> Regards,
+> 
+> Qinglai
+
+
+	
+	
+		
+______________________________________________ 
+LLama Gratis a cualquier PC del Mundo. 
+Llamadas a fijos y móviles desde 1 céntimo por minuto. 
+http://es.voice.yahoo.com
+
+
+From txomsy at yahoo.es  Tue Oct  3 00:24:07 2006
+From: txomsy at yahoo.es (Jose R Valverde)
+Date: Mon, 2 Oct 2006 16:24:07 +0200 (CEST)
+Subject: [TUHS] Having trouble with V6 source code
+Message-ID: <20061002142407.69090.qmail@web26109.mail.ukl.yahoo.com>
+
+No. 
+
+On PDP 11 assembler the left and right shifts were a single < and >.
+
+You made a typo when transcribing the source statement: you typed
+
+> 0636: mov $USIZE-1/<8|6, (r1)+
+
+but the actual code from m40.s reads
+
+> 0636:         mov     $usize-1\<8|6,(r1)+
+
+However, since < and > where also used to delimit strings, there was a
+need to escape them so as to distinguish their usage as shifts from the
+string delimiters. The escaping was achieved by \ which is what you see
+in the code.
+
+See the assembler section of vol 2b of the Unix V7 manuals for details at
+	http://plan9.bell-labs.com/7thEdMan/v7vol2b.pdf
+or
+	http://web.cuzuco.com/%7Ecuzuco/v7/v7vol2b.pdf
+namely:
+
+6.1 Expression operators
+	The operators are:
+	(blank) when there is no operand between operands, the effect is 
+		exactly the same as if a + had appeared.
+	+ addition
+	 subtraction
+	* multiplication
+	\/ division (note that plain  /  starts a comment)
+	& bitwise and
+	| bitwise or
+	\> logical right shift
+	\< logical left shift
+	...   ...   ...
+
+				j
+
+On Mon, 2 Oct 2006 09:44:58 +0300
+jigsaw <jigsaw at gmail.com> wrote:
+> hi all,
+> 
+> I just started to read the source code of V6 with Lion's book.
+> 
+> But before I went far I was stopped by m40.s
+> 
+> 0636: mov $USIZE-1/<8|6, (r1)+
+> 
+> What does the slash "/" stand for?
+> 
+> I guess this line should be
+> 
+> mov $USIZE-1<<8|6, (r1)+
+> 
+> Is "/<" the same as "<<"?
+> 
+> I checked in Unix PDP11 Assemble Refrence Manual but didn't find a clue.
+> 
+> Is it the right place to ask such question?
+> 
+> Thanks in advance
+> 
+> Regards,
+> 
+> Qinglai
+
+
+	
+	
+		
+______________________________________________ 
+LLama Gratis a cualquier PC del Mundo. 
+Llamadas a fijos y móviles desde 1 céntimo por minuto. 
+http://es.voice.yahoo.com
+
+
+From jigsaw at gmail.com  Tue Oct  3 01:24:11 2006
+From: jigsaw at gmail.com (jigsaw)
+Date: Mon, 2 Oct 2006 18:24:11 +0300
+Subject: [TUHS] Having trouble with V6 source code
+In-Reply-To: <20061002142211.20654.qmail@web26112.mail.ukl.yahoo.com>
+References: <20061002142211.20654.qmail@web26112.mail.ukl.yahoo.com>
+Message-ID: <2051ec920610020824x25d55c47pbf8aa8a27705d375@mail.gmail.com>
+
+Yes...thank you for pointing out my typo and what does the back slash mean.
+
+In the v6 assembler manual, the \> is listed as an example of
+escaping, but it doesn't clearly state it equals to logical shift
+right (or left).
+
+Regards,
+
+Qinglai
+
+On 10/2/06, Jose R Valverde <txomsy at yahoo.es> wrote:
+> No.
+>
+> On PDP 11 assembler the left and right shifts were a
+> single < and >.
+>
+> You made a typo when transcribing the source
+> statement: you typed
+>
+> > 0636: mov $USIZE-1/<8|6, (r1)+
+>
+> but the actual code from m40.s reads
+>
+> > 0636:         mov     $usize-1\<8|6,(r1)+
+>
+> However, since < and > where also used to delimit
+> strings, there was a
+> need to escape them so as to distinguish their usage
+> as shifts from the
+> string delimiters. The escaping was achieved by \
+> which is what you see
+> in the code.
+>
+> See the assembler section of vol 2b of the Unix V7
+> manuals for details at
+>         http://plan9.bell-labs.com/7thEdMan/v7vol2b.pdf
+> or
+>         http://web.cuzuco.com/%7Ecuzuco/v7/v7vol2b.pdf
+> namely:
+>
+> 6.1 Expression operators
+>         The operators are:
+>         (blank) when there is no operand between operands,
+> the effect is
+>                 exactly the same as if a ''+'' had appeared.
+>         + addition
+>         – subtraction
+>         * multiplication
+>         \/ division (note that plain '' / '' starts a
+> comment)
+>         & bitwise and
+>         | bitwise or
+>         \> logical right shift
+>         \< logical left shift
+>         ...   ...   ...
+>
+>                                 j
+>
+> On Mon, 2 Oct 2006 09:44:58 +0300
+> jigsaw <jigsaw at gmail.com> wrote:
+> > hi all,
+> >
+> > I just started to read the source code of V6 with
+> Lion's book.
+> >
+> > But before I went far I was stopped by m40.s
+> >
+> > 0636: mov $USIZE-1/<8|6, (r1)+
+> >
+> > What does the slash "/" stand for?
+> >
+> > I guess this line should be
+> >
+> > mov $USIZE-1<<8|6, (r1)+
+> >
+> > Is "/<" the same as "<<"?
+> >
+> > I checked in Unix PDP11 Assemble Refrence Manual but
+> didn't find a clue.
+> >
+> > Is it the right place to ask such question?
+> >
+> > Thanks in advance
+> >
+> > Regards,
+> >
+> > Qinglai
+>
+>
+>
+>
+>
+> ______________________________________________
+> LLama Gratis a cualquier PC del Mundo.
+> Llamadas a fijos y móviles desde 1 céntimo por minuto.
+> http://es.voice.yahoo.com
+>
+
+
+From jigsaw at gmail.com  Tue Oct  3 19:05:27 2006
+From: jigsaw at gmail.com (jigsaw)
+Date: Tue, 3 Oct 2006 12:05:27 +0300
+Subject: [TUHS] Reading UNIX V6: Does eash process has its own user
+	structure, or all the processes share one copy of it?
+Message-ID: <2051ec920610030205j67a6446cv53e6d7a180a43273@mail.gmail.com>
+
+hi All,
+
+Again, I run into problems when reading slp.c and savu/retu.
+
+Actually, I have 3 questions.
+
+First, I doubt whether all processes share one "u" or each process has
+its own "u".
+
+line 0402: One allocated per process.
+
+It seems that each process has its own user structure.
+
+But the "u" is defined as a universal variable (line 0459), and the
+line 0407 clearly states that the "u" resides at virtual kernel loc
+140000.
+
+So isn't it saying that there's only one "u" in the core memory?
+
+
+This concept is very important, because it's bound tightly with
+savu/retu mechanism.
+
+---------------------------------------------------------------------------
+
+Now comes the second question:
+
+The savu procedure is supposed to save r5 and sp to u.u_rsav,
+and the retu is supposed to reset the r5 and sp with the saved values.
+
+If each process has its own u, then savu/retu simply work fine.
+
+But if all processes share one u, the newest call to savu will
+overwrite the previously saved values of r5 and sp, so that retu is
+not able to get back the r5/sp again!
+
+The story is like this:
+1889: r5/sp of process #1 are saved to u.u_rsav
+2189: r5/sp of process #0 are saved! Thus overwriting the values of process #1.
+So when we are coming to 2228, how can retu work in a way as it is expected to?
+
+-----------------------------------------------------------------------------
+
+The final question is about how savu/retu work.
+
+savu:
+line 0729 and line 0730: r5 and sp are saved to (r0) and (r0)+, which
+are the address of u.u_rsav.
+
+retu:
+0746 and 0747: sp and r5 are read from (r0) and (r0)+, which is
+"rp->p_addr" (see line 2228). It looks weird to me. (Okay...I have to
+confess I look stupid here...) When making call to retu, why bother
+"retu(rp->p_addr)"? Why not calling with "retu(u.u_rsav)"? Does it
+mean that rp->p_addr == u.u_rsav?
+
+OMG, I am totally confused...
+
+--------------------------------------------------------------------------------
+
+I guess It's kind of boring to read my question...but hopefully
+someone can give me some hint...Thanks in advance!
+
+Regards,
+
+Qinglai
+
+
+From Hellwig.Geisse at mni.fh-giessen.de  Tue Oct  3 19:33:09 2006
+From: Hellwig.Geisse at mni.fh-giessen.de (Hellwig Geisse)
+Date: Tue, 03 Oct 2006 11:33:09 +0200
+Subject: [TUHS] Reading UNIX V6: Does eash process has its own
+	user	structure, or all the processes share one copy of it?
+In-Reply-To: <2051ec920610030205j67a6446cv53e6d7a180a43273@mail.gmail.com>
+References: <2051ec920610030205j67a6446cv53e6d7a180a43273@mail.gmail.com>
+Message-ID: <1159867990.4933.384.camel@papa>
+
+On Tue, 2006-10-03 at 12:05 +0300, jigsaw wrote:
+> First, I doubt whether all processes share one "u" or each process has
+> its own "u".
+
+Every process has its own u-area.
+They have all at the same virtual kernel address,
+but live in different physical locations.
+
+> So isn't it saying that there's only one "u" in the core memory?
+
+No. The running process' u-area is mapped into
+the virtual address space before executing any
+instructions of the process.
+
+Hellwig
+
+
+
+From jigsaw at gmail.com  Tue Oct  3 20:35:11 2006
+From: jigsaw at gmail.com (jigsaw)
+Date: Tue, 3 Oct 2006 13:35:11 +0300
+Subject: [TUHS] Reading UNIX V6: Does eash process has its own user
+	structure, or all the processes share one copy of it?
+In-Reply-To: <1159867990.4933.384.camel@papa>
+References: <2051ec920610030205j67a6446cv53e6d7a180a43273@mail.gmail.com>
+	<1159867990.4933.384.camel@papa>
+Message-ID: <2051ec920610030335y2ceecac9v8980cd14c1d91b20@mail.gmail.com>
+
+hi Hellwig,
+
+Thank you. Now the first 2 questions are cleared.
+
+I guess the answer to 3rd question is buried in m40.s.....I will check it out.
+
+Thanks again.
+
+Regards,
+
+Qinglai
+
+On 10/3/06, Hellwig Geisse <Hellwig.Geisse at mni.fh-giessen.de> wrote:
+> On Tue, 2006-10-03 at 12:05 +0300, jigsaw wrote:
+> > First, I doubt whether all processes share one "u" or each process has
+> > its own "u".
+>
+> Every process has its own u-area.
+> They have all at the same virtual kernel address,
+> but live in different physical locations.
+>
+> > So isn't it saying that there's only one "u" in the core memory?
+>
+> No. The running process' u-area is mapped into
+> the virtual address space before executing any
+> instructions of the process.
+>
+> Hellwig
+>
+>
+
+
+From helbig at Lehre.BA-Stuttgart.DE  Tue Oct  3 22:25:59 2006
+From: helbig at Lehre.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Tue, 3 Oct 2006 14:25:59 +0200 (MEST)
+Subject: [TUHS] Having trouble with V6 source code
+Message-ID: <200610031240.k93CefN00309@bsd.korb>
+
+Hi,
+
+I'd like to add
+	http://www.ba-stuttgart.de/~helbig/os/v6/doc/as.ps
+as a reference to the assembler of Unix V6.
+
+>See the assembler section of vol 2b of the Unix V7 manuals for details at
+>	http://plan9.bell-labs.com/7thEdMan/v7vol2b.pdf
+>or
+>	http://web.cuzuco.com/%7Ecuzuco/v7/v7vol2b.pdf
+
+Greetings,
+Wolfgang
+--
+"Dijkstra is right, but you don't say such things!"
+(A less courageous programmer)
+
+
+
+From helbig at Lehre.BA-Stuttgart.DE  Tue Oct  3 22:58:43 2006
+From: helbig at Lehre.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Tue, 3 Oct 2006 14:58:43 +0200 (MEST)
+Subject: [TUHS] Reading UNIX V6: Does eash process has its own user
+	structure, or all the processes share one copy of it?
+Message-ID: <200610031313.k93DDON00327@bsd.korb>
+
+Hi,
+at
+	http://www.ba-stuttgart.de/~helbig/os/script/chapt2.2
+I tried to explain the dynamic memory allocation in Unix V6.
+
+Greetings,
+Wolfgang
+--
+"Dijkstra is right, but you don't say such things!"
+(A less courageous programmer)
+
+
+
+From jigsaw at gmail.com  Wed Oct  4 04:23:05 2006
+From: jigsaw at gmail.com (jigsaw)
+Date: Tue, 3 Oct 2006 21:23:05 +0300
+Subject: [TUHS] Reading UNIX V6: Does eash process has its own user
+In-Reply-To: <74f31973c70413b149f1e383bf47dae0@coraid.com>
+References: <2051ec920610030205j67a6446cv53e6d7a180a43273@mail.gmail.com>
+	<74f31973c70413b149f1e383bf47dae0@coraid.com>
+Message-ID: <2051ec920610031123n10d2737cq977af058f98e7149@mail.gmail.com>
+
+hi Brantley,
+
+Now I start to understand what's going on.
+
+But do you mean 0744 by 0743?
+0743    mov    (sp), r0
+0744    mov    $_u, r0
+
+And 2230 should be 2229, which is:
+2229    sureg();
+
+Thanks  &
+Regards,
+
+Qinglai
+
+On 10/3/06, Brantley Coile <brantley at coraid.com> wrote:
+> Rp->p_addr is the address of the swappable image in core.  The process
+> image begins with the user segment for that process.  Line 0743 maps
+> the upage into the current address space (KISA6) and _retu loads
+> previously saved sp and r5 from there.  Notice that on line 2230
+> Ken reloads the other memory mapping registers.
+>
+> Read the section `Memory Management' starting on page 2-4 for background
+> on this.
+>
+>
+> U.u_rsave is just a constant location in memory.  Notice that rp->p_addr
+> isn't a byte address but a core click address in units of 64 bytes.
+>
+> Hope that helps.
+>
+>  Brantley
+>
+> > The final question is about how savu/retu work.
+> >
+> > savu:
+> > line 0729 and line 0730: r5 and sp are saved to (r0) and (r0)+, which
+> > are the address of u.u_rsav.
+> >
+> > retu:
+> > 0746 and 0747: sp and r5 are read from (r0) and (r0)+, which is
+> > "rp->p_addr" (see line 2228). It looks weird to me. (Okay...I have to
+> > confess I look stupid here...) When making call to retu, why bother
+> > "retu(rp->p_addr)"? Why not calling with "retu(u.u_rsav)"? Does it
+> > mean that rp->p_addr == u.u_rsav?
+>
+>
+
+
+From brantley at coraid.com  Wed Oct  4 05:40:07 2006
+From: brantley at coraid.com (Brantley Coile)
+Date: Tue, 3 Oct 2006 15:40:07 -0400
+Subject: [TUHS] Reading UNIX V6: Does eash process has its own user
+In-Reply-To: <2051ec920610031123n10d2737cq977af058f98e7149@mail.gmail.com>
+Message-ID: <2bda8189a5f15f1e8b106e662546b408@coraid.com>
+
+I'm reading from the printed Lion's commentary and I have the 
+following:
+
+0742	mov	(sp)+, r1
+0743	mov	(sp),KISA6
+0744	mov	$_u,r0
+
+What are you looking at?
+
+> hi Brantley,
+> 
+> Now I start to understand what's going on.
+> 
+> But do you mean 0744 by 0743?
+> 0743    mov    (sp), r0
+> 0744    mov    $_u, r0
+> 
+> And 2230 should be 2229, which is:
+> 2229    sureg();
+> 
+> Thanks  &
+> Regards,
+> 
+> Qinglai
+> 
+> On 10/3/06, Brantley Coile <brantley at coraid.com> wrote:
+>> Rp->p_addr is the address of the swappable image in core.  The process
+>> image begins with the user segment for that process.  Line 0743 maps
+>> the upage into the current address space (KISA6) and _retu loads
+>> previously saved sp and r5 from there.  Notice that on line 2230
+>> Ken reloads the other memory mapping registers.
+>>
+>> Read the section `Memory Management' starting on page 2-4 for background
+>> on this.
+>>
+>>
+>> U.u_rsave is just a constant location in memory.  Notice that rp->p_addr
+>> isn't a byte address but a core click address in units of 64 bytes.
+>>
+>> Hope that helps.
+>>
+>>  Brantley
+>>
+>> > The final question is about how savu/retu work.
+>> >
+>> > savu:
+>> > line 0729 and line 0730: r5 and sp are saved to (r0) and (r0)+, which
+>> > are the address of u.u_rsav.
+>> >
+>> > retu:
+>> > 0746 and 0747: sp and r5 are read from (r0) and (r0)+, which is
+>> > "rp->p_addr" (see line 2228). It looks weird to me. (Okay...I have to
+>> > confess I look stupid here...) When making call to retu, why bother
+>> > "retu(rp->p_addr)"? Why not calling with "retu(u.u_rsav)"? Does it
+>> > mean that rp->p_addr == u.u_rsav?
+>>
+>>
+
+
+
+From jigsaw at gmail.com  Wed Oct  4 06:26:51 2006
+From: jigsaw at gmail.com (jigsaw)
+Date: Tue, 3 Oct 2006 23:26:51 +0300
+Subject: [TUHS] Reading UNIX V6: Does eash process has its own user
+	structure, or all the processes share one copy of it?
+In-Reply-To: <200610031313.k93DDON00327@bsd.korb>
+References: <200610031313.k93DDON00327@bsd.korb>
+Message-ID: <2051ec920610031326m249432b7p752d62fd8048c3dc@mail.gmail.com>
+
+hi Wolfgang,
+
+Great lecture! I will read other scripts, too.
+
+Thanks &
+Regards,
+
+Qinglai
+
+On 10/3/06, Wolfgang Helbig <helbig at lehre.ba-stuttgart.de> wrote:
+> Hi,
+> at
+>         http://www.ba-stuttgart.de/~helbig/os/script/chapt2.2
+> I tried to explain the dynamic memory allocation in Unix V6.
+>
+> Greetings,
+> Wolfgang
+> --
+> "Dijkstra is right, but you don't say such things!"
+> (A less courageous programmer)
+>
+>
+
+
+From jigsaw at gmail.com  Tue Oct 17 16:26:54 2006
+From: jigsaw at gmail.com (jigsaw)
+Date: Tue, 17 Oct 2006 14:26:54 +0800
+Subject: [TUHS] UNIX V6 line 3973: Is it really a typo?
+Message-ID: <2051ec920610162326v26712aedw8d38b6fe49b6d20b@mail.gmail.com>
+
+hi all,
+
+It's stated in Lion's book chapter 13.13 that at line 3973, i.e. the
+function psignal, there is a typo where the p_stat should be p_pri.
+
+Is there anyone can confirm it?
+
+If it's really a bug, why it remains p_stat in UNIX V7?
+
+Thanks in advance
+
+Qinglai
+
+
+From Hellwig.Geisse at mni.fh-giessen.de  Tue Oct 17 17:32:48 2006
+From: Hellwig.Geisse at mni.fh-giessen.de (Hellwig Geisse)
+Date: Tue, 17 Oct 2006 09:32:48 +0200
+Subject: [TUHS] UNIX V6 line 3973: Is it really a typo?
+In-Reply-To: <2051ec920610162326v26712aedw8d38b6fe49b6d20b@mail.gmail.com>
+References: <2051ec920610162326v26712aedw8d38b6fe49b6d20b@mail.gmail.com>
+Message-ID: <1161070368.9523.47.camel@papa>
+
+Hi Qinglai,
+
+On Tue, 2006-10-17 at 14:26 +0800, jigsaw wrote:
+> If it's really a bug, why it remains p_stat in UNIX V7?
+
+it was changed in V7 to p_pri (file sig.c, lines 64/65).
+
+Regards,
+Hellwig
+
+
+
+
+From jigsaw at gmail.com  Tue Oct 17 18:17:38 2006
+From: jigsaw at gmail.com (jigsaw)
+Date: Tue, 17 Oct 2006 16:17:38 +0800
+Subject: [TUHS] UNIX V6 line 3973: Is it really a typo?
+In-Reply-To: <1161070086.9523.44.camel@papa>
+References: <2051ec920610162326v26712aedw8d38b6fe49b6d20b@mail.gmail.com>
+	<1161070086.9523.44.camel@papa>
+Message-ID: <2051ec920610170117l5c134db4r34a9f5d7570bd56e@mail.gmail.com>
+
+hi Hellwig,
+
+Thanks for pointing out.
+
+I was viewing actually the V6's source while I had thought it's V7.
+
+Thanks &
+Regards,
+
+Qinglai
+
+On 10/17/06, Hellwig Geisse <Hellwig.Geisse at mni.fh-giessen.de> wrote:
+> Hi Qinglai,
+>
+> On Tue, 2006-10-17 at 14:26 +0800, jigsaw wrote:
+> > If it's really a bug, why it remains p_stat in UNIX V7?
+>
+> it was changed in V7 to p_pri (file sig.c, lines 64/65).
+>
+> Regards,
+> Hellwig
+>
+>
+
+
+From tuhs at cuzuco.com  Thu Oct 19 05:52:58 2006
+From: tuhs at cuzuco.com (Brian S Walden)
+Date: Wed, 18 Oct 2006 15:52:58 -0400 (EDT)
+Subject: [TUHS] UNIX V6 line 3973: Is it really a typo?
+Message-ID: <200610181952.PAA18259@cuzuco.com>
+
+
+See the December 2002 discussion threads "V6: 50 bugs tape"
+and "Patches to improve 6th Edition" in the archive
+(http://minnie.tuhs.org/pipermail/tuhs/2002-December/date.html)
+While not specifically mentioned in those mails it is part
+of the 50 bugs tape -- you'll want to extract usr/sys/v6unix/* from
+http://www.tuhs.org/Archive/Applications/Spencer_Tapes/unsw3.tar.gz
+and you'll see it fixed in usr/sys/v6unix/updat/ken/sig.c
+
+> From: jigsaw <jigsaw at gmail.com>
+> Subject: [TUHS] UNIX V6 line 3973: Is it really a typo?
+> 
+> hi all,
+> 
+> It's stated in Lion's book chapter 13.13 that at line 3973, i.e. the
+> function psignal, there is a typo where the p_stat should be p_pri.
+> 
+> Is there anyone can confirm it?
+> 
+> If it's really a bug, why it remains p_stat in UNIX V7?
+> 
+> Thanks in advance
+> 
+> Qinglai
+
+

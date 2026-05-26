@@ -1,0 +1,906 @@
+From neozeed at gmail.com  Sun Mar 22 14:53:07 2009
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sun, 22 Mar 2009 00:53:07 -0400
+Subject: [TUHS] Uwisc4.3 question...
+Message-ID: <46b366130903212153v7b9dc0f6i2b9313f30a515cf6@mail.gmail.com>
+
+I went ahead and downloaded this [
+http://www.tuhs.org/Archive/4BSD/Distributions/thirdparty/UWisc4.3/ ],
+made up some tape images and installed it on SIMH...  And what I found
+is that as far as I can tell there is *NO* information about this
+thing..
+
+All I can find is that it includes the vfs layer from SunOS and it's
+NFS...  It looks like beta software from the root user being "The Not
+Ready for Prime Time Super User".
+There is also a tadl user, Tad Lebeck which I think is from "Storage
+Confrence"..
+
+Anyways it seems absent from the UNIX tree, and just about anywhere
+from google's search of usenet, other then a single node running this
+back in the UUCP days..
+
+So is this a unique build of 4.3, is it it's own thing?  Should it be
+added to the unix tree? Did it get rolled back into RENO?
+It does appear to be dead end, but I haven't combed that much thru it..
+
+
+FWIW here is the UUCP entry I found...
+------
+#N    eedsp
+#S    Vax 11/780; 4.3+NFS Wisconsin Unix
+#O    School of Electrical Engineering
+#C    Deborah J. Jackson
+#E    gt-eedsp!deb
+#T    +1 404 894 3058
+#P    School of EE, Georgia Tech, Atlanta, GA, 30332
+#L    84 23 43 W / 33 46 30 N
+#W    eedsp!deb (Deb Jackson); Wed Jul 19 11:35:13 EDT 1989
+------
+
+
+And for the heck of it, a bootup log..
+------
+loading ra(0,0)boot
+Boot
+: ra(0,0)vmunix
+290188+89696+102928 start 0x12f8
+4.3 BSD UNIX #3: Mon Dec 29 11:54:56 CST 1986
+    tadl at brie:/usr/src/bsd/4.3/sys/GENERIC
+real mem  = 8388608
+SYSPTSIZE limits number of buffers to 134
+avail mem = 7136256
+using 134 buffers containing 524288 bytes of memory
+mcr0 at tr1
+mcr1 at tr2
+uba0 at tr3
+hk0 at uba0 csr 177440 vec 210, ipl 15
+rk0 at hk0 slave 0
+rk1 at hk0 slave 1
+rk2 at hk0 slave 2
+rk3 at hk0 slave 3
+uda0 at uba0 csr 172150 vec 774, ipl 15
+ra0 at uda0 slave 0
+zs0 at uba0 csr 172520 vec 224, ipl 15
+ts0 at zs0 slave 0
+dz0 at uba0 csr 160100 vec 300, ipl 15
+dz1 at uba0 csr 160110 vec 310, ipl 15
+dz2 at uba0 csr 160120 vec 320, ipl 15
+dz3 at uba0 csr 160130 vec 330, ipl 15
+Changing root device to ra0a
+Automatic reboot in progress...
+Sat Mar 21 16:45:41 PST 1987
+/dev/ra0a: 355 files, 5885 used, 1544 free (8 frags, 192 blocks, 0.1% fragmion)
+/dev/rra0g: 12289 files, 65182 used, 180043 free (275 frags, 22471
+blocks,fragmentation)
+/dev/rra0h: 2 files, 9 used, 138575 free (15 frags, 17320 blocks, 0.0% fragtion)
+Sat Mar 21 16:45:49 PST 1987
+/dev/ra0a mounted on /
+/dev/ra0g mounted on /usr
+/dev/ra0h mounted on /mnt
+starting rpc daemons: portmap rpcd.
+starting system logger
+starting local deamons: routed sendmail biod.
+preserving editor files
+clearing /tmp
+standard daemons: update cron.
+starting network daemons: inetd printer.
+Sat Mar 21 16:45:54 PST 1987
+
+
+Wisconsin UNIX (myname console)
+4.3+NFS > V.*
+
+login: root
+Last login: Sat Mar 21 16:44:51 on console
+4.3 BSD UNIX #3: Mon Dec 29 11:54:56 CST 1986
+You have mail.
+Don't login as root, use su
+myname#
+
+
+From lm at bitmover.com  Mon Mar 23 01:31:56 2009
+From: lm at bitmover.com (Larry McVoy)
+Date: Sun, 22 Mar 2009 08:31:56 -0700
+Subject: [TUHS] Uwisc4.3 question...
+In-Reply-To: <46b366130903212153v7b9dc0f6i2b9313f30a515cf6@mail.gmail.com>
+References: <46b366130903212153v7b9dc0f6i2b9313f30a515cf6@mail.gmail.com>
+Message-ID: <20090322153156.GI31390@bitmover.com>
+
+I was around UWisc when people were working on this.  I could track down
+some names.  Last I heard Tad was at Legato as CTO.  Dave Cohrs was
+around then, he might know.
+
+This is a fairly interesting chunk of code because when I like through 
+it, it looks a lot like the SunOS 4.x VFS layer (I worked at Sun in
+the kernel group right after that stuff got done).  A lot of the
+kernel folk at Sun were ex-Wisconsin people, back then Wisconsin
+was quite the hackers school.  The guy who did the VM system at
+Sun, the basis for most modern VM systems, came from Wisconsin.
+I watched him do a BSD port to an HP machine in 2 days once.
+
+On Sun, Mar 22, 2009 at 12:53:07AM -0400, Jason Stevens wrote:
+> I went ahead and downloaded this [
+> http://www.tuhs.org/Archive/4BSD/Distributions/thirdparty/UWisc4.3/ ],
+> made up some tape images and installed it on SIMH...  And what I found
+> is that as far as I can tell there is *NO* information about this
+> thing..
+> 
+> All I can find is that it includes the vfs layer from SunOS and it's
+> NFS...  It looks like beta software from the root user being "The Not
+> Ready for Prime Time Super User".
+> There is also a tadl user, Tad Lebeck which I think is from "Storage
+> Confrence"..
+> 
+> Anyways it seems absent from the UNIX tree, and just about anywhere
+> from google's search of usenet, other then a single node running this
+> back in the UUCP days..
+> 
+> So is this a unique build of 4.3, is it it's own thing?  Should it be
+> added to the unix tree? Did it get rolled back into RENO?
+> It does appear to be dead end, but I haven't combed that much thru it..
+> 
+> 
+> FWIW here is the UUCP entry I found...
+> ------
+> #N    eedsp
+> #S    Vax 11/780; 4.3+NFS Wisconsin Unix
+> #O    School of Electrical Engineering
+> #C    Deborah J. Jackson
+> #E    gt-eedsp!deb
+> #T    +1 404 894 3058
+> #P    School of EE, Georgia Tech, Atlanta, GA, 30332
+> #L    84 23 43 W / 33 46 30 N
+> #W    eedsp!deb (Deb Jackson); Wed Jul 19 11:35:13 EDT 1989
+> ------
+> 
+> 
+> And for the heck of it, a bootup log..
+> ------
+> loading ra(0,0)boot
+> Boot
+> : ra(0,0)vmunix
+> 290188+89696+102928 start 0x12f8
+> 4.3 BSD UNIX #3: Mon Dec 29 11:54:56 CST 1986
+>     tadl at brie:/usr/src/bsd/4.3/sys/GENERIC
+> real mem  = 8388608
+> SYSPTSIZE limits number of buffers to 134
+> avail mem = 7136256
+> using 134 buffers containing 524288 bytes of memory
+> mcr0 at tr1
+> mcr1 at tr2
+> uba0 at tr3
+> hk0 at uba0 csr 177440 vec 210, ipl 15
+> rk0 at hk0 slave 0
+> rk1 at hk0 slave 1
+> rk2 at hk0 slave 2
+> rk3 at hk0 slave 3
+> uda0 at uba0 csr 172150 vec 774, ipl 15
+> ra0 at uda0 slave 0
+> zs0 at uba0 csr 172520 vec 224, ipl 15
+> ts0 at zs0 slave 0
+> dz0 at uba0 csr 160100 vec 300, ipl 15
+> dz1 at uba0 csr 160110 vec 310, ipl 15
+> dz2 at uba0 csr 160120 vec 320, ipl 15
+> dz3 at uba0 csr 160130 vec 330, ipl 15
+> Changing root device to ra0a
+> Automatic reboot in progress...
+> Sat Mar 21 16:45:41 PST 1987
+> /dev/ra0a: 355 files, 5885 used, 1544 free (8 frags, 192 blocks, 0.1% fragmion)
+> /dev/rra0g: 12289 files, 65182 used, 180043 free (275 frags, 22471
+> blocks,fragmentation)
+> /dev/rra0h: 2 files, 9 used, 138575 free (15 frags, 17320 blocks, 0.0% fragtion)
+> Sat Mar 21 16:45:49 PST 1987
+> /dev/ra0a mounted on /
+> /dev/ra0g mounted on /usr
+> /dev/ra0h mounted on /mnt
+> starting rpc daemons: portmap rpcd.
+> starting system logger
+> starting local deamons: routed sendmail biod.
+> preserving editor files
+> clearing /tmp
+> standard daemons: update cron.
+> starting network daemons: inetd printer.
+> Sat Mar 21 16:45:54 PST 1987
+> 
+> 
+> Wisconsin UNIX (myname console)
+> 4.3+NFS > V.*
+> 
+> login: root
+> Last login: Sat Mar 21 16:44:51 on console
+> 4.3 BSD UNIX #3: Mon Dec 29 11:54:56 CST 1986
+> You have mail.
+> Don't login as root, use su
+> myname#
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From neozeed at gmail.com  Mon Mar 23 03:32:33 2009
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sun, 22 Mar 2009 13:32:33 -0400
+Subject: [TUHS] Uwisc4.3 question...
+In-Reply-To: <20090322153156.GI31390@bitmover.com>
+References: <46b366130903212153v7b9dc0f6i2b9313f30a515cf6@mail.gmail.com>
+	<20090322153156.GI31390@bitmover.com>
+Message-ID: <46b366130903221032s43030fe0u110f50ff15ab5191@mail.gmail.com>
+
+If you could find a relase notification, or any docs on this releas
+that'd be cool...
+
+As for the lore of UWisc & SunOS... I've never heard any of that
+before, so it's all interesting to me!
+All I vaugely know about SunOS is that it picked up when Bill Joy
+joined SUN, it involved the 68000 cpu stuff
+prior to the whole SPARC thing..   I've seen that TME thing and seen
+someone get SunOS running under it.. It seemed
+pretty neat, but I've always personally wondered about the fesability
+of somehow emulating a SUN-1.. Eventhough SunOS 0.7
+was just a v7 port by Unisoft (so says wikipedia).. which I highly
+doubt would be open for redistribution..
+
+As for the source to SunOS I had heard in college it was open to
+educational stuff, but my crappy school wasn't interested in asking as
+it would seem like "work"..  Heh, I've always wondered if there were
+ports of SunOS to the vax or something un sunlike...
+
+I guess that is the fate of most unix'y stuff...
+
+
+On Sun, Mar 22, 2009 at 11:31 AM, Larry McVoy <lm at bitmover.com> wrote:
+> I was around UWisc when people were working on this.  I could track down
+> some names.  Last I heard Tad was at Legato as CTO.  Dave Cohrs was
+> around then, he might know.
+>
+> This is a fairly interesting chunk of code because when I like through
+> it, it looks a lot like the SunOS 4.x VFS layer (I worked at Sun in
+> the kernel group right after that stuff got done).  A lot of the
+> kernel folk at Sun were ex-Wisconsin people, back then Wisconsin
+> was quite the hackers school.  The guy who did the VM system at
+> Sun, the basis for most modern VM systems, came from Wisconsin.
+> I watched him do a BSD port to an HP machine in 2 days once.
+>
+> On Sun, Mar 22, 2009 at 12:53:07AM -0400, Jason Stevens wrote:
+>> I went ahead and downloaded this [
+>> http://www.tuhs.org/Archive/4BSD/Distributions/thirdparty/UWisc4.3/ ],
+>> made up some tape images and installed it on SIMH...  And what I found
+>> is that as far as I can tell there is *NO* information about this
+>> thing..
+>>
+>> All I can find is that it includes the vfs layer from SunOS and it's
+>> NFS...  It looks like beta software from the root user being "The Not
+>> Ready for Prime Time Super User".
+>> There is also a tadl user, Tad Lebeck which I think is from "Storage
+>> Confrence"..
+>>
+>> Anyways it seems absent from the UNIX tree, and just about anywhere
+>> from google's search of usenet, other then a single node running this
+>> back in the UUCP days..
+>>
+>> So is this a unique build of 4.3, is it it's own thing?  Should it be
+>> added to the unix tree? Did it get rolled back into RENO?
+>> It does appear to be dead end, but I haven't combed that much thru it..
+>>
+>>
+>> FWIW here is the UUCP entry I found...
+>> ------
+>> #N    eedsp
+>> #S    Vax 11/780; 4.3+NFS Wisconsin Unix
+>> #O    School of Electrical Engineering
+>> #C    Deborah J. Jackson
+>> #E    gt-eedsp!deb
+>> #T    +1 404 894 3058
+>> #P    School of EE, Georgia Tech, Atlanta, GA, 30332
+>> #L    84 23 43 W / 33 46 30 N
+>> #W    eedsp!deb (Deb Jackson); Wed Jul 19 11:35:13 EDT 1989
+>> ------
+>>
+>>
+>> And for the heck of it, a bootup log..
+>> ------
+>> loading ra(0,0)boot
+>> Boot
+>> : ra(0,0)vmunix
+>> 290188+89696+102928 start 0x12f8
+>> 4.3 BSD UNIX #3: Mon Dec 29 11:54:56 CST 1986
+>>     tadl at brie:/usr/src/bsd/4.3/sys/GENERIC
+>> real mem  = 8388608
+>> SYSPTSIZE limits number of buffers to 134
+>> avail mem = 7136256
+>> using 134 buffers containing 524288 bytes of memory
+>> mcr0 at tr1
+>> mcr1 at tr2
+>> uba0 at tr3
+>> hk0 at uba0 csr 177440 vec 210, ipl 15
+>> rk0 at hk0 slave 0
+>> rk1 at hk0 slave 1
+>> rk2 at hk0 slave 2
+>> rk3 at hk0 slave 3
+>> uda0 at uba0 csr 172150 vec 774, ipl 15
+>> ra0 at uda0 slave 0
+>> zs0 at uba0 csr 172520 vec 224, ipl 15
+>> ts0 at zs0 slave 0
+>> dz0 at uba0 csr 160100 vec 300, ipl 15
+>> dz1 at uba0 csr 160110 vec 310, ipl 15
+>> dz2 at uba0 csr 160120 vec 320, ipl 15
+>> dz3 at uba0 csr 160130 vec 330, ipl 15
+>> Changing root device to ra0a
+>> Automatic reboot in progress...
+>> Sat Mar 21 16:45:41 PST 1987
+>> /dev/ra0a: 355 files, 5885 used, 1544 free (8 frags, 192 blocks, 0.1% fragmion)
+>> /dev/rra0g: 12289 files, 65182 used, 180043 free (275 frags, 22471
+>> blocks,fragmentation)
+>> /dev/rra0h: 2 files, 9 used, 138575 free (15 frags, 17320 blocks, 0.0% fragtion)
+>> Sat Mar 21 16:45:49 PST 1987
+>> /dev/ra0a mounted on /
+>> /dev/ra0g mounted on /usr
+>> /dev/ra0h mounted on /mnt
+>> starting rpc daemons: portmap rpcd.
+>> starting system logger
+>> starting local deamons: routed sendmail biod.
+>> preserving editor files
+>> clearing /tmp
+>> standard daemons: update cron.
+>> starting network daemons: inetd printer.
+>> Sat Mar 21 16:45:54 PST 1987
+>>
+>>
+>> Wisconsin UNIX (myname console)
+>> 4.3+NFS > V.*
+>>
+>> login: root
+>> Last login: Sat Mar 21 16:44:51 on console
+>> 4.3 BSD UNIX #3: Mon Dec 29 11:54:56 CST 1986
+>> You have mail.
+>> Don't login as root, use su
+>> myname#
+>> _______________________________________________
+>> TUHS mailing list
+>> TUHS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+> --
+> ---
+> Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+>
+
+
+From aek at bitsavers.org  Mon Mar 23 04:11:27 2009
+From: aek at bitsavers.org (Al Kossow)
+Date: Sun, 22 Mar 2009 11:11:27 -0700
+Subject: [TUHS] Uwisc4.3 question...
+In-Reply-To: <46b366130903221032s43030fe0u110f50ff15ab5191@mail.gmail.com>
+References: <46b366130903212153v7b9dc0f6i2b9313f30a515cf6@mail.gmail.com>	<20090322153156.GI31390@bitmover.com>
+	<46b366130903221032s43030fe0u110f50ff15ab5191@mail.gmail.com>
+Message-ID: <49C67F4F.70105@bitsavers.org>
+
+Jason Stevens wrote:
+
+> All I vaugely know about SunOS is that it picked up when Bill Joy
+> joined SUN, it involved the 68000 cpu stuff
+> prior to the whole SPARC thing..
+
+Rusty Sandberg is the point of contact between UW-Madison and Sun/NFS.
+
+He moved out to work for Sun in '84, and worked in the NFS group.
+Curiosly, he and I ran into each other coming out here when we had
+both stopped on a overlook just west of the Great Salt Lake.
+
+
+
+
+From arnold at skeeve.com  Tue Mar 24 19:14:19 2009
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Tue, 24 Mar 2009 11:14:19 +0200
+Subject: [TUHS] Uwisc4.3 question...
+Message-ID: <200903240914.n2O9EJOa004453@skeeve.com>
+
+> Date: Sun, 22 Mar 2009 00:53:07 -0400
+> From: Jason Stevens <neozeed at gmail.com>
+> To: tuhs at minnie.tuhs.org
+> Subject: [TUHS] Uwisc4.3 question...
+>
+> I went ahead and downloaded this [
+> http://www.tuhs.org/Archive/4BSD/Distributions/thirdparty/UWisc4.3/ ],
+> made up some tape images and installed it on SIMH...  And what I found
+> is that as far as I can tell there is *NO* information about this
+> thing..
+>
+> All I can find is that it includes the vfs layer from SunOS and it's
+> NFS...  It looks like beta software from the root user being "The Not
+> Ready for Prime Time Super User".
+
+Does the code actually say "Sun Microsystems"?  If not, then this might have
+been the VFS and NFS stuff that got folded back into BSD Reno.
+
+I think there were other schools that ran this. At the same time
+as this entry (1989) I was a sysadmin in the computing center
+of Emory University and we were running Mt. Xinu's mixture of
+4.3 BSD with NFS from Sun, and then later their commercial Unix
+on Vax 11/780s, and starting to move to Sparcs running SunOS 4.0.
+
+The comp. center preferred having a vendor with whom there could be
+a support contract - IIRC then otherwise we probably would have
+been running this too.
+
+Ah, those were the days, when men were real men, and computers
+were vaxen. :-)
+
+> FWIW here is the UUCP entry I found...
+> ------
+> #N    eedsp
+> #S    Vax 11/780; 4.3+NFS Wisconsin Unix
+> #O    School of Electrical Engineering
+> #C    Deborah J. Jackson
+> #E    gt-eedsp!deb
+> #T    +1 404 894 3058
+> #P    School of EE, Georgia Tech, Atlanta, GA, 30332
+> #L    84 23 43 W / 33 46 30 N
+> #W    eedsp!deb (Deb Jackson); Wed Jul 19 11:35:13 EDT 1989
+> ------
+
+I knew Deb Jackson and worked with her a little when we were both at GT
+(I was in Information and Computer Science, not EE) and then a lot when
+I suggested that the start-up company I was at hire her (which they
+did). I've not seen her in around 18 years, nor do I know where she is
+now, although presumably she's still in Atlanta somewhere.
+
+Arnold
+
+
+From neozeed at gmail.com  Tue Mar 24 21:00:55 2009
+From: neozeed at gmail.com (Jason Stevens)
+Date: Tue, 24 Mar 2009 07:00:55 -0400
+Subject: [TUHS] Uwisc4.3 question...
+In-Reply-To: <200903240914.n2O9EJOa004453@skeeve.com>
+References: <200903240914.n2O9EJOa004453@skeeve.com>
+Message-ID: <46b366130903240400k5254dc83o9102a5511874d325@mail.gmail.com>
+
+Yeah there is certainly sun code... for example here's the copyright
+bit in a file:
+
+/*
+ * xdr.c, Generic XDR routines implementation.
+ *
+ * Copyright (C) 1984, Sun Microsystems, Inc.
+ *
+ * These are the "generic" xdr routines used to serialize and de-serialize
+ * most common data items.  See xdr.h for more info on the interface to
+ * xdr.
+ */
+
+% egrep -ril 'sun microsystems' *
+h/des.h
+h/dnlc.h
+nfs/nfs_server.c
+nfs/nfs_vfsops.c
+nfs/nfs_vnodeops.c
+rpc/auth.h
+rpc/authunix_prot.c
+rpc/auth_kern.c
+rpc/auth_none.c
+rpc/auth_unix.c
+rpc/auth_unix.h
+rpc/clnt.h
+rpc/clnt_kudp.c
+rpc/clnt_perror.c
+rpc/clnt_raw.c
+rpc/clnt_simple.c
+rpc/clnt_tcp.c
+rpc/clnt_udp.c
+rpc/kudp_fastsend.c
+rpc/pmap_clnt.c
+rpc/pmap_clnt.h
+rpc/pmap_getmaps.c
+rpc/pmap_getport.c
+rpc/pmap_prot.c
+rpc/pmap_prot.h
+rpc/pmap_rmt.c
+rpc/rpc.h
+rpc/rpc_msg.h
+rpc/rpc_prot.c
+rpc/subr_kudp.c
+rpc/svc.c
+rpc/svc.h
+rpc/svc_auth.c
+rpc/svc_auth.h
+rpc/svc_auth_unix.c
+rpc/svc_kudp.c
+rpc/svc_raw.c
+rpc/svc_simple.c
+rpc/svc_tcp.c
+rpc/svc_udp.c
+rpc/xdr.c
+rpc/xdr.h
+rpc/xdr_array.c
+rpc/xdr_float.c
+rpc/xdr_mbuf.c
+rpc/xdr_mem.c
+rpc/xdr_rec.c
+rpc/xdr_reference.c
+rpc/xdr_stdio.c
+sys/heap_kmem.c
+sys/vfs_dnlc.c
+ufs/quota.c
+ufs/quota_syscalls.c
+ufs/quota_ufs.c
+ufs/ufs_dir.c
+
+
+On Tue, Mar 24, 2009 at 5:14 AM, Aharon Robbins <arnold at skeeve.com> wrote:
+>> Date: Sun, 22 Mar 2009 00:53:07 -0400
+>> From: Jason Stevens <neozeed at gmail.com>
+>> To: tuhs at minnie.tuhs.org
+>> Subject: [TUHS] Uwisc4.3 question...
+>>
+>> I went ahead and downloaded this [
+>> http://www.tuhs.org/Archive/4BSD/Distributions/thirdparty/UWisc4.3/ ],
+>> made up some tape images and installed it on SIMH...  And what I found
+>> is that as far as I can tell there is *NO* information about this
+>> thing..
+>>
+>> All I can find is that it includes the vfs layer from SunOS and it's
+>> NFS...  It looks like beta software from the root user being "The Not
+>> Ready for Prime Time Super User".
+>
+> Does the code actually say "Sun Microsystems"?  If not, then this might have
+> been the VFS and NFS stuff that got folded back into BSD Reno.
+>
+> I think there were other schools that ran this. At the same time
+> as this entry (1989) I was a sysadmin in the computing center
+> of Emory University and we were running Mt. Xinu's mixture of
+> 4.3 BSD with NFS from Sun, and then later their commercial Unix
+> on Vax 11/780s, and starting to move to Sparcs running SunOS 4.0.
+One of the uni's I went to made that transition in the mid 90's.. At
+that time I didn't realize how many 'upgrades' they had made to Ultrix
+to make it... usable.  Although I don't think I miss archie/veronica
+but the simplicity of pine/lynx is kind of there.. oh sure they still
+run on 'modern' things but it isn't the same really.
+>
+> The comp. center preferred having a vendor with whom there could be
+> a support contract - IIRC then otherwise we probably would have
+> been running this too.
+>
+> Ah, those were the days, when men were real men, and computers
+> were vaxen. :-)
+>
+>> FWIW here is the UUCP entry I found...
+>> ------
+>> #N    eedsp
+>> #S    Vax 11/780; 4.3+NFS Wisconsin Unix
+>> #O    School of Electrical Engineering
+>> #C    Deborah J. Jackson
+>> #E    gt-eedsp!deb
+>> #T    +1 404 894 3058
+>> #P    School of EE, Georgia Tech, Atlanta, GA, 30332
+>> #L    84 23 43 W / 33 46 30 N
+>> #W    eedsp!deb (Deb Jackson); Wed Jul 19 11:35:13 EDT 1989
+>> ------
+>
+> I knew Deb Jackson and worked with her a little when we were both at GT
+> (I was in Information and Computer Science, not EE) and then a lot when
+> I suggested that the start-up company I was at hire her (which they
+> did). I've not seen her in around 18 years, nor do I know where she is
+> now, although presumably she's still in Atlanta somewhere.
+>
+> Arnold
+>
+
+It's funny the weird things that get left around the internet... and
+the host file from that tape image is MASSIVE.. lol and I thought
+having a DNS zone with that many enteries was crazy...  I did manage
+to hack the networking for it to work... It's not elegant, but
+commenting out the error checking in if_de's derecv procedure seems to
+work... I could ping around for the last 5 hours, and telnet into it.
+I'll have to build some package with simh to run it on windows...
+
+
+From lm at bitmover.com  Wed Mar 25 00:33:29 2009
+From: lm at bitmover.com (Larry McVoy)
+Date: Tue, 24 Mar 2009 07:33:29 -0700
+Subject: [TUHS] Uwisc4.3 question...
+In-Reply-To: <46b366130903240400k5254dc83o9102a5511874d325@mail.gmail.com>
+References: <200903240914.n2O9EJOa004453@skeeve.com>
+	<46b366130903240400k5254dc83o9102a5511874d325@mail.gmail.com>
+Message-ID: <20090324143329.GP1961@bitmover.com>
+
+Look for "SMI" for "Sun Microsystems, Inc".
+
+On Tue, Mar 24, 2009 at 07:00:55AM -0400, Jason Stevens wrote:
+> Yeah there is certainly sun code... 
+
+Yeah, it's the Sun NFS code from the brief look I took.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From neozeed at gmail.com  Wed Mar 25 02:34:53 2009
+From: neozeed at gmail.com (Jason Stevens)
+Date: Tue, 24 Mar 2009 12:34:53 -0400
+Subject: [TUHS] 4.3 BSD under SIMH's 11/780 emulator
+Message-ID: <46b366130903240934s3e679aebnfacf0af9977b75bf@mail.gmail.com>
+
+if anyone is interested, I noticed that if you remove the error
+checking form the recv portion of the if_de driver it seems to work
+for 4.3 BSD & variants...   As far as I know there is no if_de for 4.2
+BSD... But then if there were you would still have it's
+incompatibility problems...
+
+Anyways, here is a diff from 4.3 BSD
+
+*** if_de-orig.c        Mon Mar 24 04:05:10 1986
+--- if_de.c     Mon Mar 24 04:06:09 1986
+***************
+*** 457,466 ****
+                len = (rp->r_lenerr&RERR_MLEN) - sizeof (struct ether_header)
+                        - 4;    /* don't forget checksum! */
+                /* check for errors */
+!               if ((rp->r_flags & (RFLG_ERRS|RFLG_FRAM|RFLG_OFLO|RFLG_CRC)) ||
+                    (rp->r_flags&(RFLG_STP|RFLG_ENP)) != (RFLG_STP|RFLG_ENP) ||
+                    (rp->r_lenerr & (RERR_BUFL|RERR_UBTO|RERR_NCHN)) ||
+                    len < ETHERMIN || len > ETHERMTU) {
+                        ds->ds_if.if_ierrors++;
+                        if (dedebug)
+                        printf("de%d: ierror, flags=%b lenerr=%b (len=%d)\n",
+--- 457,468 ----
+                len = (rp->r_lenerr&RERR_MLEN) - sizeof (struct ether_header)
+                        - 4;    /* don't forget checksum! */
+                /* check for errors */
+! /***          if ((rp->r_flags & (RFLG_ERRS|RFLG_FRAM|RFLG_OFLO|RFLG_CRC)) ||
+                    (rp->r_flags&(RFLG_STP|RFLG_ENP)) != (RFLG_STP|RFLG_ENP) ||
+                    (rp->r_lenerr & (RERR_BUFL|RERR_UBTO|RERR_NCHN)) ||
+                    len < ETHERMIN || len > ETHERMTU) {
++ ***/
++       if(1==5){
+                        ds->ds_if.if_ierrors++;
+                        if (dedebug)
+                        printf("de%d: ierror, flags=%b lenerr=%b (len=%d)\n",
+
+
+I have set it up with my SLiRP patch, and I had it pinging away at
+10.0.2.2 for 5 hours, 100% success, and I had no issues TELNETTing
+into the VM..I think that BSD see's the crc32 on the end and treats
+all inbound packets as bad, dropping them all.. so I just quickly
+sidestepped the error check..  I would imagine this would work with
+SIMH's libpcap support so you can now get your virtual 11/780 onto the
+Internet, and party like it's 1986!
+
+For any windows users out there, I'll package up 4.3 BSD & the
+Wisconsin version up onto sourceforge...
+
+http://sourceforge.net/project/showfiles.php?group_id=204974&package_id=245145
+
+
+From lm at bitmover.com  Wed Mar 25 13:37:16 2009
+From: lm at bitmover.com (Larry McVoy)
+Date: Tue, 24 Mar 2009 20:37:16 -0700
+Subject: [TUHS] Uwisc4.3 question...
+In-Reply-To: <200903240914.n2O9EJOa004453@skeeve.com>
+References: <200903240914.n2O9EJOa004453@skeeve.com>
+Message-ID: <20090325033716.GG25141@bitmover.com>
+
+> Ah, those were the days, when men were real men, and computers
+> were vaxen. :-)
+
+Heh.  When I was in undergrad we were all on an 11/780 with 1MB of ram
+and about 30-40 terminals talking to it.  
+
+As strange as it may sound, to this day I miss that.  Terminal rooms
+were the ultimate communication zone.  Looking over someone's shoulder
+and saying "how did you do that?" when they did !}fmt
+
+Those were the days...  Where is Henry Spencer when you need him?
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From lm at bitmover.com  Wed Mar 25 13:44:19 2009
+From: lm at bitmover.com (Larry McVoy)
+Date: Tue, 24 Mar 2009 20:44:19 -0700
+Subject: [TUHS] Uwisc4.3 question...
+In-Reply-To: <49C67F4F.70105@bitsavers.org>
+References: <46b366130903212153v7b9dc0f6i2b9313f30a515cf6@mail.gmail.com>
+	<20090322153156.GI31390@bitmover.com>
+	<46b366130903221032s43030fe0u110f50ff15ab5191@mail.gmail.com>
+	<49C67F4F.70105@bitsavers.org>
+Message-ID: <20090325034419.GJ25141@bitmover.com>
+
+On Sun, Mar 22, 2009 at 11:11:27AM -0700, Al Kossow wrote:
+> Jason Stevens wrote:
+> 
+> > All I vaugely know about SunOS is that it picked up when Bill Joy
+> > joined SUN, it involved the 68000 cpu stuff
+> > prior to the whole SPARC thing..
+> 
+> Rusty Sandberg is the point of contact between UW-Madison and Sun/NFS.
+
+s/is/was/
+
+Last I heard Rusty was doing a housing project in Santa Cruz and wanted 
+nothing to do with tech.
+
+No offense intended, Rusty sorta got me into Sun.  Long story, not worth
+repeating here.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From arnold at skeeve.com  Fri Mar 27 17:39:33 2009
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Fri, 27 Mar 2009 10:39:33 +0300
+Subject: [TUHS] Uwisc4.3 question...
+Message-ID: <200903270739.n2R7dXUf005515@skeeve.com>
+
+Hi. Most of those files would seem to be the generic XDR and RPC code
+that Sun released for general use.
+
+The three nfs/* files make me curious though, since Sun would license
+their implementation, but not give it away.
+
+It may be that the UWisc dist actually used real Sun code, in which
+case anyone using it would have needed a SunOS license also.
+
+Ah, those were the days.  I remember that the early versions of SunOS 4.1.x
+had both RFS and NFS in them. The original System V Release 4 did too,
+as did early versions of Solaris.  Sometime around Solaris 5.3 or so Sun
+wised up that no-one was using or cared about RFS and they pulled it
+out of Solaris. :-)
+
+Arnold
+
+> Date: Tue, 24 Mar 2009 07:00:55 -0400
+> Subject: Re: [TUHS] Uwisc4.3 question...
+> From: Jason Stevens <neozeed at gmail.com>
+> To: Aharon Robbins <arnold at skeeve.com>, tuhs at minnie.tuhs.org
+> X-MIME-Autoconverted: from quoted-printable to 8bit by f7.net id n2OB0ta22275
+>
+> Yeah there is certainly sun code... for example here's the copyright
+> bit in a file:
+>
+> /*
+>  * xdr.c, Generic XDR routines implementation.
+>  *
+>  * Copyright (C) 1984, Sun Microsystems, Inc.
+>  *
+>  * These are the "generic" xdr routines used to serialize and de-serialize
+>  * most common data items.  See xdr.h for more info on the interface to
+>  * xdr.
+>  */
+>
+> % egrep -ril 'sun microsystems' *
+> h/des.h
+> h/dnlc.h
+> nfs/nfs_server.c
+> nfs/nfs_vfsops.c
+> nfs/nfs_vnodeops.c
+> rpc/auth.h
+> rpc/authunix_prot.c
+> rpc/auth_kern.c
+> rpc/auth_none.c
+> rpc/auth_unix.c
+> rpc/auth_unix.h
+> rpc/clnt.h
+> rpc/clnt_kudp.c
+> rpc/clnt_perror.c
+> rpc/clnt_raw.c
+> rpc/clnt_simple.c
+> rpc/clnt_tcp.c
+> rpc/clnt_udp.c
+> rpc/kudp_fastsend.c
+> rpc/pmap_clnt.c
+> rpc/pmap_clnt.h
+> rpc/pmap_getmaps.c
+> rpc/pmap_getport.c
+> rpc/pmap_prot.c
+> rpc/pmap_prot.h
+> rpc/pmap_rmt.c
+> rpc/rpc.h
+> rpc/rpc_msg.h
+> rpc/rpc_prot.c
+> rpc/subr_kudp.c
+> rpc/svc.c
+> rpc/svc.h
+> rpc/svc_auth.c
+> rpc/svc_auth.h
+> rpc/svc_auth_unix.c
+> rpc/svc_kudp.c
+> rpc/svc_raw.c
+> rpc/svc_simple.c
+> rpc/svc_tcp.c
+> rpc/svc_udp.c
+> rpc/xdr.c
+> rpc/xdr.h
+> rpc/xdr_array.c
+> rpc/xdr_float.c
+> rpc/xdr_mbuf.c
+> rpc/xdr_mem.c
+> rpc/xdr_rec.c
+> rpc/xdr_reference.c
+> rpc/xdr_stdio.c
+> sys/heap_kmem.c
+> sys/vfs_dnlc.c
+> ufs/quota.c
+> ufs/quota_syscalls.c
+> ufs/quota_ufs.c
+> ufs/ufs_dir.c
+>
+>
+> On Tue, Mar 24, 2009 at 5:14 AM, Aharon Robbins <arnold at skeeve.com> wrote:
+> >> Date: Sun, 22 Mar 2009 00:53:07 -0400
+> >> From: Jason Stevens <neozeed at gmail.com>
+> >> To: tuhs at minnie.tuhs.org
+> >> Subject: [TUHS] Uwisc4.3 question...
+> >>
+> >> I went ahead and downloaded this [
+> >> http://www.tuhs.org/Archive/4BSD/Distributions/thirdparty/UWisc4.3/ ],
+> >> made up some tape images and installed it on SIMH... �And what I found
+> >> is that as far as I can tell there is *NO* information about this
+> >> thing..
+> >>
+> >> All I can find is that it includes the vfs layer from SunOS and it's
+> >> NFS... �It looks like beta software from the root user being "The Not
+> >> Ready for Prime Time Super User".
+> >
+> > Does the code actually say "Sun Microsystems"? �If not, then this might have
+> > been the VFS and NFS stuff that got folded back into BSD Reno.
+> >
+> > I think there were other schools that ran this. At the same time
+> > as this entry (1989) I was a sysadmin in the computing center
+> > of Emory University and we were running Mt. Xinu's mixture of
+> > 4.3 BSD with NFS from Sun, and then later their commercial Unix
+> > on Vax 11/780s, and starting to move to Sparcs running SunOS 4.0.
+> One of the uni's I went to made that transition in the mid 90's.. At
+> that time I didn't realize how many 'upgrades' they had made to Ultrix
+> to make it... usable.  Although I don't think I miss archie/veronica
+> but the simplicity of pine/lynx is kind of there.. oh sure they still
+> run on 'modern' things but it isn't the same really.
+> >
+> > The comp. center preferred having a vendor with whom there could be
+> > a support contract - IIRC then otherwise we probably would have
+> > been running this too.
+> >
+> > Ah, those were the days, when men were real men, and computers
+> > were vaxen. :-)
+> >
+> >> FWIW here is the UUCP entry I found...
+> >> ------
+> >> #N � �eedsp
+> >> #S � �Vax 11/780; 4.3+NFS Wisconsin Unix
+> >> #O � �School of Electrical Engineering
+> >> #C � �Deborah J. Jackson
+> >> #E � �gt-eedsp!deb
+> >> #T � �+1 404 894 3058
+> >> #P � �School of EE, Georgia Tech, Atlanta, GA, 30332
+> >> #L � �84 23 43 W / 33 46 30 N
+> >> #W � �eedsp!deb (Deb Jackson); Wed Jul 19 11:35:13 EDT 1989
+> >> ------
+> >
+> > I knew Deb Jackson and worked with her a little when we were both at GT
+> > (I was in Information and Computer Science, not EE) and then a lot when
+> > I suggested that the start-up company I was at hire her (which they
+> > did). I've not seen her in around 18 years, nor do I know where she is
+> > now, although presumably she's still in Atlanta somewhere.
+> >
+> > Arnold
+> >
+>
+> It's funny the weird things that get left around the internet... and
+> the host file from that tape image is MASSIVE.. lol and I thought
+> having a DNS zone with that many enteries was crazy...  I did manage
+> to hack the networking for it to work... It's not elegant, but
+> commenting out the error checking in if_de's derecv procedure seems to
+> work... I could ping around for the last 5 hours, and telnet into it.
+> I'll have to build some package with simh to run it on windows...
+>
+
+

@@ -1,0 +1,1153 @@
+From j.r.engdahl at adelphia.net  Wed Apr  2 13:58:31 2003
+From: j.r.engdahl at adelphia.net (Jonathan Engdahl)
+Date: Tue, 1 Apr 2003 22:58:31 -0500
+Subject: [pups] booting RT11 from alternate controller
+Message-ID: <005901c2f8cc$202c0d90$0f00a8c0@arctura>
+
+I have a PDP-11/53 with a SCSI controller at 172150, and an RQDX3 at 172144.
+There are a couple SCSI drives on the primary controller, and an RX50 on the
+RQDX3. Everything seems to work OK, and I can read the floppies, except I
+cannot boot RT11 from a floppy. From the 11/53 boot ROM you can say
+
+B/A DU0
+
+It will then ask for the address of the alternate controller. It reads from
+the floppy, then it reads from both hard drives, then hangs.
+
+What I hunch is happening is that the boot ROM reads the RT11 boot sector
+from the floppy, but then the boot sector tries to continue booting from the
+hard drives, which isn't going to work, because they are 2.11BSD formatted.
+
+The objective is to have some non-RQDX3 hard drive controller as the
+primary, and a secondary RQDX3 for the floppy, and to be able to boot UNIX
+from the hard drive, and RT11 from the floopy. Any ideas on how to
+accomplish this?
+
+--
+Jonathan Engdahl
+http://users.safeaccess.com/engdahl
+
+"The things which are seen are temporary,
+ but the things which are not seen are eternal."  II Cor. 4:18
+
+
+
+From j.r.engdahl at adelphia.net  Wed Apr  2 23:14:00 2003
+From: j.r.engdahl at adelphia.net (Jonathan Engdahl)
+Date: Wed, 2 Apr 2003 08:14:00 -0500
+Subject: [pups] booting RT11 from alternate controller
+References: <7AD18F04B62B7440BE22E190A3F7721409DBF6@mwsrv04.microwalt.nl>
+Message-ID: <008201c2f919$ba045560$0f00a8c0@arctura>
+
+I'll have to try this with the RQDX3 as primary and the SCSI as secondary.
+Maybe BSD is smart enough to do it right. In any case, I have the source for
+the BSD boot code, and I can fix it. It will be a pain, though, having to
+type the alternate address every time I boot BSD. I'd probably have to
+restructure /dev and /etc/fstab also, and who knows what else. Maybe it
+would be easier to change the jumpers if I needed to run RT11. I don't use
+RT11 that much, but I'd like to have it available.
+
+--
+Jonathan Engdahl
+http://users.safeaccess.com/engdahl
+
+"The things which are seen are temporary,
+ but the things which are not seen are eternal."  II Cor. 4:18
+
+
+----- Original Message -----
+From: "Fred N. van Kempen" <Fred.van.Kempen at microwalt.nl>
+To: "Jonathan Engdahl" <j.r.engdahl at adelphia.net>
+Sent: Wednesday, April 02, 2003 5:58 AM
+Subject: RE: [pups] booting RT11 from alternate controller
+
+
+Jonathan,
+
+> I have a PDP-11/53 with a SCSI controller at 172150, and an
+> RQDX3 at 172144.
+This works for the ROM, but most PDP-11 operating systems will
+refuse to boot from anything but the "default" controller of
+any kind, meaning, an MSCP controller it will only accept at
+172150.  The OS itself can deal with them, but not so for the
+boot-level code that loads them.
+
+I have tried similar setups with an 11/83 using an ESDI disk
+controller at MSCP #0 (doing KDA50 emu), and an RQDX3 at
+MSCP #1 (just for the floppies, indeed) and that didnt work
+either, with RT11, MicroRSX and Ultrix.
+
+--f
+
+
+
+From robin.birch at royalmail.com  Fri Apr  4 21:11:50 2003
+From: robin.birch at royalmail.com (robin.birch at royalmail.com)
+Date: Fri, 4 Apr 2003 11:11:50 +0000
+Subject: [pups] VAX support
+Message-ID: <00256CFE.003D9BB4.00@postoffice.co.uk>
+
+
+Hi All,
+I know that this isn't pdp related but the people are here who know :-).  Is there
+an available unix that supports lance and dssi on a VAX 3400 and/or is there anyone
+working on this.
+
+Regards
+
+Robin
+
+This  email  and  any  attachments  are confidential and intended for the addressee
+only.   If  you are not the named recipient, you must not use, disclose, reproduce,
+copy  or  distribute the contents of this communication.  If you have received this
+in error, please contact the sender and then delete this email from your system.
+
+
+
+
+From bqt at update.uu.se  Sat Apr  5 21:15:51 2003
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Sat, 5 Apr 2003 13:15:51 +0200 (CEST)
+Subject: [pups] VAX support
+In-Reply-To: <00256CFE.003D9BB4.00@postoffice.co.uk>
+Message-ID: <Pine.LNX.4.21.0304051315030.23566-100000@Tempo.Update.UU.SE>
+
+On Fri, 4 Apr 2003 robin.birch at royalmail.com wrote:
+
+> Hi All,
+> I know that this isn't pdp related but the people are here who know :-).
+> Is there an available unix that supports lance and dssi on a VAX 3400
+> and/or is there anyone working on this.
+
+DSSI is definitely Ultrix only.
+NetBSD/vax supports the rest.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Wed Apr 16 13:30:10 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Tue, 15 Apr 2003 23:30:10 -0400
+Subject: [pups] ISO9660 filesystem on 2.11BSD
+Message-ID: <20030415233010.A5833@bcr10.uwaterloo.ca>
+
+  Has anyone tried to do such a thing?  Would anybody care?
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From hansolofalcon at worldnet.att.net  Wed Apr 16 14:10:52 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Wed, 16 Apr 2003 00:10:52 -0400
+Subject: [pups] ISO9660 filesystem on 2.11BSD
+In-Reply-To: <20030415233010.A5833@bcr10.uwaterloo.ca>
+Message-ID: <000d01c303ce$335d3a80$0bc5580c@who5>
+
+Hello again from Gregg C Levine
+I might. Especially since the current population of OSes that we run,
+support it, and the old fellow does not. You might notice the presence
+of a SYSV module for reading media from that time period. 
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]
+On
+> Behalf Of David Evans
+> Sent: Tuesday, April 15, 2003 11:30 PM
+> To: pups at minnie.tuhs.org
+> Subject: [pups] ISO9660 filesystem on 2.11BSD
+> 
+>   Has anyone tried to do such a thing?  Would anybody care?
+> 
+> --
+> David Evans          (NeXTMail/MIME OK)
+dfevans at bbcr.uwaterloo.ca
+> Ph.D. Candidate, Computer/Synth Junkie
+http://bbcr.uwaterloo.ca/~dfevans/
+> University of Waterloo         "Default is the value selected by the
+composer
+> Ontario, Canada           overridden by your command." - Roland
+TR-707 Manual
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+
+From jkunz at unixag-kl.fh-kl.de  Wed Apr 30 07:54:01 2003
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Tue, 29 Apr 2003 23:54:01 +0200
+Subject: [pups] 2.11BSD device config trouble
+Message-ID: <20030429215401.GO1368@oblina>
+
+Hi.
+
+I am preparing my PDP-11/73 for my exhibition at the VCFe. I wane get
+the DHV11 (M3104) and a four port DLV11J colne to work. At the moment I
+get upon boot:
+
+autoconfig: warning: more than three handlers for device cn on line 38.
+dhv ? csr 160440 vector 310 didn't interrupt.
+ra 0 csr 172150 vector 154 vectorset attached
+ra 1 csr 160334 vector 764 vectorset attached
+rx ? csr 177170 vector 264 skipped:  No CSR.
+tms 0 csr 174500 vector 260 vectorset attached
+ts 0 csr 172520 vector 224 attached
+cn 1 csr 176540 vector 344 no address found for kl/dl-11
+
+Extract from /etc/dtab:
+# grep '^[a-zA-Z]' /etc/dtab
+dhv     ? 160440 310    5       dhvrint dhvxint # dhv terminal mux
+ra      ? 172150 154    5       raintr          # uda50, rqdx1/2/3
+ra      ? 160334 764    5       raintr          # uda50, rqdx1/2/3
+rx      ? 177170 264    5       rxintr          # rx01/02
+tms     ? 174500 260    5       tmsintr         # tmscp driver
+ts      ? 172520 224    5       tsintr          # ts11 driver
+cn      1 176540 344    5       cnrint  cnxint
+cn      2 176550 354    5       cnrint  cnxint
+cn      3 176560 364    5       cnrint  cnxint
+
+What is wrong with the "cn" devices? 
+
+I checked the CSRs of the DHV11 and the DLV11J cards with the "show
+qbus" command on a MicroVAX 4000-200 to be sure that the CSRs are where
+I am expecting them:
+>>>sh q
+Scan of Qbus I/O Space
+-20000120 (760440) = 009D DHQ11/DHV11/CXA16/CXB16/CXY08
+-20000122 (760442) = F081
+-20000124 (760444) = 0000
+-20000126 (760446) = 0000
+-20000128 (760450) = 0000
+-2000012A (760452) = 0000
+-2000012C (760454) = 0000
+-2000012E (760456) = 0000
+-20001940 (774500) = 0000 TQK50/TQK70/TU81E/RV20/KFQSA-TAPE
+-20001942 (774502) = 0BC0
+-20001D60 (776540) = 0000 DLV11J
+-20001D62 (776542) = 0000
+-20001D64 (776544) = 0080
+-20001D66 (776546) = 0000
+-20001D68 (776550) = 0000 DLV11J
+-20001D6A (776552) = 0000
+-20001D6C (776554) = 0080
+-20001D6E (776556) = 0000
+-20001D70 (776560) = 0000 DLV11J
+-20001D72 (776562) = 0000
+-20001D74 (776564) = 0080
+-20001D76 (776566) = 0000
+-20001F40 (777500) = 0020 IPCR
+-20001F70 (777560) = 0000
+-20001F72 (777562) = 0000
+-20001F74 (777564) = 0080
+-20001F76 (777566) = 0000
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+
+
+From sms at 2BSD.COM  Wed Apr 30 08:48:48 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Tue, 29 Apr 2003 15:48:48 -0700 (PDT)
+Subject: [pups] 2.11BSD device config trouble
+Message-ID: <200304292248.h3TMmmc08433@moe.2bsd.com>
+
+Hi -
+
+> From: Jochen Kunz <jkunz at unixag-kl.fh-kl.de>
+> I am preparing my PDP-11/73 for my exhibition at the VCFe. I want to get
+> the DHV11 (M3104) and a four port DLV11J clone to work. At the moment I
+> get upon boot:
+> 
+> autoconfig: warning: more than three handlers for device cn on line 38.
+
+	That is not a normal message.  I believe autoconfig is saying that
+	is something wrong with line 38 of /etc/dtab 
+
+> dhv ? csr 160440 vector 310 didn't interrupt.
+> ra 0 csr 172150 vector 154 vectorset attached
+> ra 1 csr 160334 vector 764 vectorset attached
+> rx ? csr 177170 vector 264 skipped:  No CSR.
+> tms 0 csr 174500 vector 260 vectorset attached
+> ts 0 csr 172520 vector 224 attached
+> cn 1 csr 176540 vector 344 no address found for kl/dl-11
+
+> What is wrong with the "cn" devices? 
+
+	Is 'cn 1 ...' line 38 of the /etc/dtab file?
+
+	Did you compile a kernel with NKL set to 5 (1 for the console and
+	4 for the DLV11J)?   
+
+	Cheers,
+	Steven Schultz
+
+
+From jkunz at unixag-kl.fh-kl.de  Wed Apr 30 18:24:22 2003
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Wed, 30 Apr 2003 10:24:22 +0200
+Subject: [pups] 2.11BSD device config trouble
+In-Reply-To: <200304292248.h3TMmmc08433@moe.2bsd.com>; from sms@2BSD.COM on Wed, Apr 30, 2003 at 00:48:48 CEST
+References: <200304292248.h3TMmmc08433@moe.2bsd.com>
+Message-ID: <20030430102422.D196974@MissSophie.unixag-kl.fh-kl.de>
+
+On 2003.04.30 00:48 Steven M. Schultz wrote:
+
+> > cn 1 csr 176540 vector 344 no address found for kl/dl-11
+> > What is wrong with the "cn" devices? 
+> 	Is 'cn 1 ...' line 38 of the /etc/dtab file?
+Yes: 
+cn      1 176540 344    5       cnrint  cnxint
+
+> 	Did you compile a kernel with NKL set to 5 (1 for the console
+> 	and 4 for the DLV11J)?   
+# NKL includes both KL11's and DL11's.
+NKL             4               # KL11, DL11
+The card has four ports, one of them is the console. (The M8192 CPU card
+has no SLU / ROM / ...) 
+
+But I would prefere to get the DHV11 working. It seams that this device
+is more suitable for multi user operation. 
+
+BTW: Never play with the SMD cables when the machine is running. Now I
+get: 
+# fsck
+** /dev/ra0a
+File System: /
+
+** Last Mounted on /
+** Root file system
+** Phase 1 - Check Blocks and Sizes
+** Phase 2 - Check Pathnames
+** Phase 3 - Check Connectivity
+** Phase 4 - Check Reference Counts
+** Phase 5 - Check Free List
+BLK(S) MISSING
+SALVAGE? y
+
+** Phase 6 - Salvage Free List
+1364 files, 11625 used, 2430 free
+
+***** FILE SYSTEM WAS MODIFIED *****
+
+But on the next reboot I get the same when running fsck. Any hints? 
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Wed Apr 30 23:40:32 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Wed, 30 Apr 2003 09:40:32 -0400
+Subject: [pups] 2.11BSD device config trouble
+In-Reply-To: <20030430102422.D196974@MissSophie.unixag-kl.fh-kl.de>; from jkunz@unixag-kl.fh-kl.de on Wed, Apr 30, 2003 at 10:24:22AM +0200
+References: <200304292248.h3TMmmc08433@moe.2bsd.com> <20030430102422.D196974@MissSophie.unixag-kl.fh-kl.de>
+Message-ID: <20030430094032.A7330@bcr10.uwaterloo.ca>
+
+On Wed, Apr 30, 2003 at 10:24:22AM +0200, Jochen Kunz wrote:
+> On 2003.04.30 00:48 Steven M. Schultz wrote:
+> 
+> > > cn 1 csr 176540 vector 344 no address found for kl/dl-11
+> > > What is wrong with the "cn" devices? 
+> > 	Is 'cn 1 ...' line 38 of the /etc/dtab file?
+> Yes: 
+> cn      1 176540 344    5       cnrint  cnxint
+> 
+ 
+  I didn't see my other post go through; have you tried adding some comments
+to the end of this line?  Perhaps the autoconfig parser becomes confused
+if there aren't any.
+
+> But I would prefere to get the DHV11 working. It seams that this device
+> is more suitable for multi user operation. 
+> 
+
+  Mine is at least correctly identified by autoconfig, though I've never
+attached a terminal to it to see whether the ports actually do anything.
+The post that's vanished included my dhv line from /etc/dtab but, except
+for the goofy CSR I used for some reason that I cannot now remember, it
+looked like yours.
+
+> BTW: Never play with the SMD cables when the machine is running. Now I
+> get: 
+
+...
+
+  Is the disk write-inhibited?
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From L.J.Buitinck at let.rug.nl  Thu Apr  3 20:42:41 2003
+From: L.J.Buitinck at let.rug.nl (L.J. Buitinck)
+Date: Thu, 3 Apr 2003 12:42:41 +0200
+Subject: [TUHS] Franz Lisp platforms
+Message-ID: <3E8C2C41.4610.94D49@localhost>
+
+while trying to build Franz Lisp (from 4.3 BSD) on VAX/ULTRIX 4.5,
+I noticed its peculiar list of supported platforms:
+
+use: lispconf type
+  where type is one of
+  vax_4_1 vax_4_1a vax_4_1c vax_4_2 vax_4_3
+  vax_eunice_vms
+  sun_4_1c sun_unisoft dual_unisoft pixel_unisoft
+  sun_4_2beta lisa_unisys3 mc500_2_0
+
+I was especially surprised by "lisa_unisys3".  is that Unisoft SysIII
+for the Apple Lisa?!  and does anyone know what
+{dual,pixel}_unisoft and mc500_2_0 mean?
+
+--
+If I travelled to the end of the rainbow
+As Dame Fortune did intend,
+Murphy would be there to tell me
+The pot's at the other end.
+
+Lars Buitinck
+
+
+From tfb at tfeb.org  Fri Apr  4 01:41:11 2003
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Thu, 3 Apr 2003 16:41:11 +0100
+Subject: [TUHS] Franz Lisp platforms
+In-Reply-To: <3E8C2C41.4610.94D49@localhost>
+References: <3E8C2C41.4610.94D49@localhost>
+Message-ID: <16012.22039.99936.787335@tfeb.org>
+
+[I hope I have set my address right on this one, sorry]
+
+* L J Buitinck wrote:
+
+> I was especially surprised by "lisa_unisys3".  is that Unisoft SysIII
+> for the Apple Lisa?!  and does anyone know what
+> {dual,pixel}_unisoft and mc500_2_0 mean?
+
+You might get a better answer by asking on comp.lang.lisp, but my
+guesses are that mc500_2_0 is a Masscomp 500 (?) running RTU 2.0.
+Dual seem to have been people who made early 68k boards and machines
+and (according to
+http://www.clock.org/~fair/computers/dual-systems.html) were Unisoft's
+first customer.  Didn't Sun use unisoft as well, before the BSD ports
+(so sometime pre SunOS 1 I guess...).
+
+All of these, look like early 68k Unix machines - there must
+have been hundreds of kinds of these, I guess.
+
+--tim
+
+
+
+From tfb at cley.com  Fri Apr  4 01:39:40 2003
+From: tfb at cley.com (Tim Bradshaw)
+Date: Thu, 3 Apr 2003 16:39:40 +0100
+Subject: [TUHS] Franz Lisp platforms
+In-Reply-To: <3E8C2C41.4610.94D49@localhost>
+References: <3E8C2C41.4610.94D49@localhost>
+Message-ID: <16012.21948.183397.79264@cley.com>
+
+* L J Buitinck wrote:
+
+> I was especially surprised by "lisa_unisys3".  is that Unisoft SysIII
+> for the Apple Lisa?!  and does anyone know what
+> {dual,pixel}_unisoft and mc500_2_0 mean?
+
+You might get a better answer by asking on comp.lang.lisp, but my
+guesses are that mc500_2_0 is a Masscomp 500 (?) running RTU 2.0.
+Dual seem to have been people who made early 68k boards and machines
+and (according to
+http://www.clock.org/~fair/computers/dual-systems.html) were Unisoft's
+first customer.  Didn't Sun use unisoft as well, before the BSD ports
+(so sometime pre SunOS 1 I guess...).
+
+All of these, look like early 68k Unix machines - there must
+have been hundreds of kinds of these, I guess.
+
+--tim
+
+
+
+From wkt at minnie.tuhs.org  Fri Apr 11 23:53:50 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Fri, 11 Apr 2003 23:53:50 +1000
+Subject: [TUHS] Did SunOS 3 have mmap(2)?
+Message-ID: <20030411135350.GB54648@minnie.tuhs.org>
+
+Hi all,
+	I just received a query: did SunOS 3 have a working mmap(2)? My
+vague memory says no, but I don't have access to a 3.5 box any more to
+find out. Can anybody help out here?
+
+	Warren
+
+
+From nao at tom-yam.or.jp  Sun Apr 13 18:13:35 2003
+From: nao at tom-yam.or.jp (nao)
+Date: Sun, 13 Apr 2003 17:13:35 +0900 (JST)
+Subject: [TUHS] cross reference tool for pre-K&R C
+Message-ID: <200304130813.h3D8DZR6008291@miffy.tom-yam.or.jp>
+
+Hi,
+
+I really enjoy hacking ancient unix rather seriously and want a cross
+reference tools for them. Since some of them are written in pre-K&R C,
+modern tools are not very useful. Is there any cross reference tool
+for pre-K&R C source codes?
+
+BTW, early UNIX assembler document has bugs which state '>>' and '<<'
+are shift operators despite that really '\>' and '\<' are. I wonder
+where these bugs came from...
+
+Cheers,
+- nao
+
+
+From asbesto at freaknet.org  Tue Apr 15 10:00:37 2003
+From: asbesto at freaknet.org (asbesto)
+Date: Tue, 15 Apr 2003 00:00:37 +0000
+Subject: [TUHS] PDP11/34 boot problems, here i am again :)
+Message-ID: <20030415000037.GC378@freaknet.org>
+
+well, 
+
+some months ago i asked for help booting a pdp11/34 here at
+freaknet medialab :)
+
+well, i think now we have a more complete knowledge of the REAL
+problem !
+
+the M7891 board (128K x 18 bit MOS MEMORY MODULE) have the D2 red 
+led light turned ON when turning on the CPU !
+
+this means PARITY ERROR on this board :(
+
+checking the board we found 2 problems:
+
+1) a 74LS175 chip named E15 on our schematic diagram, that seem
+   phisically BROKEN on an edge (there is a fessure on the plastic
+   DIP package). i can't change it now because i don't have a 
+   soldering station here to do a nice job, but looking the chip i
+   think it may work...
+
+2) a 5 Kohm 4-resistor bridge named R22 on our diagram, that is phisically
+   BROKEN. this bridge give +5V on signals named DATA OC L, CSR OC L, OC L
+   and X ADD OC L. i changed it with a 4.7Kohm 4-resistor bridge, without
+   any result. (maybe the 74ls175 is really broken :)
+
+an other ipothesys may be: some electrolitic capacitor in short circuit.
+we had this problem on a decwriter III ! :)
+
+the real problem is: if we aren't able to repair the M7891 board, where
+can we find a "new" one ???
+
+can somebody help us ? it's a shame for us to have our pdp11/34 offline :((
+
+any help is appreciated ! *:)
+
+-- 
+[asbesto : freaknet medialab : radio#cybernet : GPG key on  keyservers]
+[ MAIL ATTACH, SPAM, HTML, WORD, and msgs larger than 95K > /dev/null ]
+[http://www.freaknet.org/asbesto :::::: http://kyuzz.org/radiocybernet]
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030415/87fd7925/attachment.sig>
+
+From GOOI at oce.nl  Tue Apr 15 16:37:20 2003
+From: GOOI at oce.nl (Gooijen H)
+Date: Tue, 15 Apr 2003 08:37:20 +0200
+Subject: [TUHS] PDP11/34 boot problems, here i am again :)
+Message-ID: <1A9EACFF5B9EB9489F00104C00ECF6410CBC02@hqvenlomail.oce.nl>
+
+"asbesto" wrote:
+> 1) a 74LS175 chip named E15 on our schematic diagram, that seem
+>    phisically BROKEN on an edge (there is a fessure on the plastic
+>    DIP package). i can't change it now because i don't have a 
+>    soldering station here to do a nice job, but looking the chip i
+>    think it may work...
+
+I never remove IC's in *one* go. The chances that you damage the
+multi-layer board beyond repair are real. This is what I do.
+I use a dremel tool (small motor with sharp rotating blade) to
+cut the pins of the IC one by one.
+Don't use a cutting tool to cut the pins because the side force
+might push the remainder of the pin through the solder joint
+thus damaging the board.
+After you have cut all the pins the IC just falls of the board.
+Now, you can use a fine hot soldering iron and remove the pins
+one by one use a pair of squeezers.
+
+  good luck with your repairs,
+
+- Henk.
+
+
+From asbesto at freaknet.org  Tue Apr 15 18:50:11 2003
+From: asbesto at freaknet.org (asbesto)
+Date: Tue, 15 Apr 2003 08:50:11 +0000
+Subject: [TUHS] PDP11/34 boot problems, here i am again :)
+In-Reply-To: <1A9EACFF5B9EB9489F00104C00ECF6410CBC02@hqvenlomail.oce.nl>
+References: <1A9EACFF5B9EB9489F00104C00ECF6410CBC02@hqvenlomail.oce.nl>
+Message-ID: <20030415085011.GC992@freaknet.org>
+
+Il Tue, Apr 15, 2003 at 08:37:20AM +0200, Gooijen H rigurgitava:
+
+> > 1) a 74LS175 chip named E15 on our schematic diagram, that seem
+> >    phisically BROKEN on an edge (there is a fessure on the plastic
+
+> I never remove IC's in *one* go. The chances that you damage the
+> multi-layer board beyond repair are real. This is what I do.
+> I use a dremel tool (small motor with sharp rotating blade) to
+> cut the pins of the IC one by one.
+
+yep. me too. i prefer this way. :)))
+
+pray for me ! :)))
+
+-- 
+[asbesto : freaknet medialab : radio#cybernet : GPG key on  keyservers]
+[ MAIL ATTACH, SPAM, HTML, WORD, and msgs larger than 95K > /dev/null ]
+[http://www.freaknet.org/asbesto :::::: http://kyuzz.org/radiocybernet]
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030415/bdf637b8/attachment.sig>
+
+From cdl at mpl.ucsd.edu  Wed Apr 16 05:42:24 2003
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Tue, 15 Apr 2003 12:42:24 -0700 (PDT)
+Subject: [TUHS] PDP11/34 boot problems, here i am again :)
+Message-ID: <200304151942.h3FJgO900113@opihi.ucsd.edu>
+
+> From: asbesto <asbesto at freaknet.org>
+> To: tuhs at tuhs.org
+> Subject: [TUHS] PDP11/34 boot problems, here i am again :)
+> 
+> well, i think now we have a more complete knowledge of the REAL
+> problem !
+> 
+> the M7891 board (128K x 18 bit MOS MEMORY MODULE) have the D2 red=20
+> led light turned ON when turning on the CPU !
+> 
+> this means PARITY ERROR on this board :(
+> 
+> checking the board we found 2 problems:
+> 
+> 1) a 74LS175 chip named E15 on our schematic diagram, that seem
+>    phisically BROKEN on an edge (there is a fessure on the plastic
+>    DIP package). i can't change it now because i don't have a=20
+>    soldering station here to do a nice job, but looking the chip i
+>    think it may work...
+
+While you probably _do_ have a real hardware problem with the broken
+IC, I think that the red Parity Error light on first turn-on is normal
+behavior.  The MOS memory comes up with random values, and about half
+of them will have the wrong parity.  Some software routine must turn
+off parity error detection and write a known data pattern (all 0's) to
+each memory location.  I don't remember whether this is something that
+is done by the boot ROM of an 11/34.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+
+
+From asbesto at freaknet.org  Wed Apr 16 07:22:42 2003
+From: asbesto at freaknet.org (asbesto)
+Date: Tue, 15 Apr 2003 21:22:42 +0000
+Subject: [TUHS] PDP11/34 boot problems, here i am again :)
+In-Reply-To: <200304151942.h3FJgO900113@opihi.ucsd.edu>
+References: <200304151942.h3FJgO900113@opihi.ucsd.edu>
+Message-ID: <20030415212242.GA2131@freaknet.org>
+
+Il Tue, Apr 15, 2003 at 12:42:24PM -0700, Carl Lowenstein rigurgitava:
+
+> While you probably _do_ have a real hardware problem with the broken
+> IC, I think that the red Parity Error light on first turn-on is normal
+> behavior.  The MOS memory comes up with random values, and about half
+> of them will have the wrong parity.  Some software routine must turn
+> off parity error detection and write a known data pattern (all 0's) to
+> each memory location.  I don't remember whether this is something that
+> is done by the boot ROM of an 11/34.
+
+hmmm
+but running any code on the pdp11/34 (specifically, some boot 
+code) will also result in the red light turn off and on again :(
+
+-- 
+[asbesto : freaknet medialab : radio#cybernet : GPG key on  keyservers]
+[ MAIL ATTACH, SPAM, HTML, WORD, and msgs larger than 95K > /dev/null ]
+[http://www.freaknet.org/asbesto :::::: http://kyuzz.org/radiocybernet]
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030415/9482d4fa/attachment.sig>
+
+From jkunz at unixag-kl.fh-kl.de  Mon Apr 14 18:43:33 2003
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Mon, 14 Apr 2003 10:43:33 +0200
+Subject: [TUHS] Did SunOS 3 have mmap(2)?
+In-Reply-To: <20030411135350.GB54648@minnie.tuhs.org>; from wkt@minnie.tuhs.org on Fri, Apr 11, 2003 at 15:53:50 %z
+References: <20030411135350.GB54648@minnie.tuhs.org>
+Message-ID: <20030414084333.GI1359@oblina>
+
+On 2003.04.11 15:53 Warren Toomey wrote:
+
+> I just received a query: did SunOS 3 have a working mmap(2)?
+I don't know. But you may ask Peter Koch, the director of the Sun3 Zoo:
+http://www.sun3zoo.de/
+Peter knows everything about Sun 3 hardware and has some in deep
+knowledge of SunOS. 
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+
+
+From tfb at cley.com  Thu Apr 17 07:56:48 2003
+From: tfb at cley.com (Tim Bradshaw)
+Date: Wed, 16 Apr 2003 22:56:48 +0100
+Subject: [TUHS] Did SunOS 3 have mmap(2)?
+In-Reply-To: <20030414084333.GI1359@oblina>
+References: <20030411135350.GB54648@minnie.tuhs.org>
+	<20030414084333.GI1359@oblina>
+Message-ID: <16029.53664.37717.64377@cley.com>
+
+* Jochen Kunz wrote:
+> I don't know. 
+
+I've just asked someone who knows, and he elaborated my very vague
+memory: yes it did, and in fact there was mmap right back, and beyond,
+the start of SunOS.  *But* it only mapped devices, particularly
+framebuffers, where it was obviously very useful.  SunOS 4 had a
+fully-fledged mmap.
+
+I am fairly sure that 4.2BSD had manual pages for mmap, but it didn't
+work.
+
+--tim
+
+
+
+From lm at bitmover.com  Thu Apr 17 13:45:00 2003
+From: lm at bitmover.com (Larry McVoy)
+Date: Wed, 16 Apr 2003 20:45:00 -0700
+Subject: [TUHS] Re: TUHS digest, Vol 1 #145 - 2 msgs
+In-Reply-To: <200304170249.h3H2nQJ8001840@minnie.tuhs.org>
+References: <200304170249.h3H2nQJ8001840@minnie.tuhs.org>
+Message-ID: <20030417034500.GK26145@work.bitmover.com>
+
+> I am fairly sure that 4.2BSD had manual pages for mmap, but it didn't
+> work.
+
+Right.  Joy left Berkeley and joined Sun and the work got done at Sun.
+I'm pretty sure that SunOS 4.0 was the first release with mmap working
+as it was described.  I was at Sun for the 4.1 release; 4.0 was the new 
+VM system, and it wasn't "new" like "we changed some stuff", it was new
+as in everything was rewritten.  The 4.0 VM system had segmap, read/write
+were implemented with segmap in the kernel (you did a read, the kernel
+mapped page, started a bcopy and would fault on itself if the page wasn't
+there or had no TLB entry).  Etc.  I have postscript of the papers on
+that, still very good reading if someone wants them.
+-- 
+---
+Larry McVoy              lm at bitmover.com          http://www.bitmover.com/lm
+
+
+From jkunz at unixag-kl.fh-kl.de  Thu Apr 17 17:49:29 2003
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Thu, 17 Apr 2003 09:49:29 +0200
+Subject: [TUHS] Did SunOS 3 have mmap(2)?
+In-Reply-To: <16029.53664.37717.64377@cley.com>; from tfb@cley.com on Wed, Apr 16, 2003 at 23:56:48 CEST
+References: <20030411135350.GB54648@minnie.tuhs.org> <20030414084333.GI1359@oblina> <16029.53664.37717.64377@cley.com>
+Message-ID: <20030417094929.C173457@MissSophie.unixag-kl.fh-kl.de>
+
+On 2003.04.16 23:56 Tim Bradshaw wrote:
+
+> I've just asked someone who knows, and he elaborated my very vague
+> memory: yes it did, and in fact there was mmap right back, and beyond,
+> the start of SunOS. 
+Wasn't some mmap like functionality a central concept of MULTICS long
+bevore UNIX was born? (I should read that article about MULTICS on the
+web again.) 
+
+> *But* it only mapped devices, particularly
+> framebuffers, where it was obviously very useful. 
+> SunOS 4 had a fully-fledged mmap.
+... mostly for implementing shared libs. (?)
+
+> I am fairly sure that 4.2BSD had manual pages for mmap, but it didn't
+> work.
+AFAIK BSD got a mmap with the MACH-VM in 4.3BSD-Reno. The old VAX-VM had
+no mmap.
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+
+
+From tfb at cley.com  Fri Apr 18 11:10:33 2003
+From: tfb at cley.com (Tim Bradshaw)
+Date: Fri, 18 Apr 2003 02:10:33 +0100
+Subject: [TUHS] Re: TUHS digest, Vol 1 #145 - 2 msgs
+In-Reply-To: <20030417034500.GK26145@work.bitmover.com>
+References: <200304170249.h3H2nQJ8001840@minnie.tuhs.org>
+	<20030417034500.GK26145@work.bitmover.com>
+Message-ID: <16031.20617.522109.587474@cley.com>
+
+* Larry McVoy wrote:
+> Right.  Joy left Berkeley and joined Sun and the work got done at Sun.
+> I'm pretty sure that SunOS 4.0 was the first release with mmap working
+> as it was described.  
+
+yes, i think so.  I think 3.x had a special-purpose thing which would
+only map devices (and maybe only framebuffers...)
+
+> I was at Sun for the 4.1 release; 4.0 was the new 
+> VM system, and it wasn't "new" like "we changed some stuff", it was new
+> as in everything was rewritten.  
+
+Or alternatively "new" as in "didn't work very well yet".  I remember
+there were things you could do (and do quite easily) in 4.0.1 and
+4.0.3 which left the system in a state where it thought it had several
+K of memory for paging (and a lot of unused file buffers).
+
+--tim
+
+
+
+
+
+From lm at bitmover.com  Fri Apr 18 11:35:33 2003
+From: lm at bitmover.com (Larry McVoy)
+Date: Thu, 17 Apr 2003 18:35:33 -0700
+Subject: [TUHS] Re: TUHS digest, Vol 1 #145 - 2 msgs
+In-Reply-To: <16031.20617.522109.587474@cley.com>
+References: <200304170249.h3H2nQJ8001840@minnie.tuhs.org> <20030417034500.GK26145@work.bitmover.com> <16031.20617.522109.587474@cley.com>
+Message-ID: <20030418013533.GN26145@work.bitmover.com>
+
+On Fri, Apr 18, 2003 at 02:10:33AM +0100, Tim Bradshaw wrote:
+> * Larry McVoy wrote:
+> > Right.  Joy left Berkeley and joined Sun and the work got done at Sun.
+> > I'm pretty sure that SunOS 4.0 was the first release with mmap working
+> > as it was described.  
+> 
+> yes, i think so.  I think 3.x had a special-purpose thing which would
+> only map devices (and maybe only framebuffers...)
+
+Right.
+
+> > I was at Sun for the 4.1 release; 4.0 was the new 
+> > VM system, and it wasn't "new" like "we changed some stuff", it was new
+> > as in everything was rewritten.  
+> 
+> Or alternatively "new" as in "didn't work very well yet".  I remember
+> there were things you could do (and do quite easily) in 4.0.1 and
+> 4.0.3 which left the system in a state where it thought it had several
+> K of memory for paging (and a lot of unused file buffers).
+
+Yeah, I know.  So in SunOS 4.x, the buffer cache still existed but it was
+used only for inodes and directories, not for file pages.  There were 
+problems for sure with the new VM system.  But remember, it was the first
+system that gave you mmap() and it really worked.  I remember sales calls
+(I was engineering but I could speak "customer") against HP where they
+claimed they had mmap but all that meant was that they malloc-ed the 
+memory and copied it.  So if you had N processes mapping the same file
+it cost N*P in memory.  SunOS got it right.  And we fixed it as we learned
+what was broken.  I'm the guy that made sure we didn't dirty 100% of memory
+from one process doing
+	
+	dd if=/dev/zero of=XXX 
+
+There were a lot of other tuning efforts going on at the same time.
+
+Forgive me for getting all maudlin on you, but at the time, Sun was
+the *only* place that was doing real OS work.  Nobody else came close.
+I fought to get in there and then I walked around for three years saying
+"I'd work here for free if I had more money" before I realized that saying
+that had a bad effect on my salary :-)  It really was a fantastic time to
+be at Sun.  They were doing anything that was cool in OS, everyone else
+was just playing catchup, to this day I have not seen anything like it.
+Look around today, is Microsoft doing anything cool?  Sure, they understand
+UI and they do a fantastic job at it, but in the OS area they can't begin
+to compare with Sun.  Microsoft OS engineers at their best are nowhere near
+as good as Sun OS engineers at their worst.  
+
+It was one hell of an education.  It's not clear to me where a new engineer
+could go today to get a better education.
+-- 
+---
+Larry McVoy              lm at bitmover.com          http://www.bitmover.com/lm
+
+
+From sobrado at string1.ciencias.uniovi.es  Sat Apr 19 02:56:16 2003
+From: sobrado at string1.ciencias.uniovi.es (Igor Sobrado)
+Date: Fri, 18 Apr 2003 18:56:16 +0200
+Subject: [TUHS] 2.11BSD license question: porting software to NetBSD
+Message-ID: <200304181656.h3IGuGfC028575@string1.ciencias.uniovi.es>
+
+Hello.
+
+I have just finished porting diction(1) and style(1) from 2.11BSD
+to the NetBSD operating system.  Those utilities are a part of the
+AT&T Documenter's Workbench (DWB), and are not available on the v7
+and 32V UNIX releases.
+
+I asked to the people of the NetBSD Foundation about the possibility
+of adding those commands to the base system (as a part of the tarball
+with documentation tools) but they think that it is not possible,
+as a consequence of a licensing issue.  I supposed that all the
+software provided in the 2.11BSD was under a BSD license, but it
+looks like 2.11BSD is a closed source release.
+
+Can someone, please, helping me on this matter?  What should I do?
+Should I just drop this software?
+
+Cheers,
+Igor.
+
+-- 
+Igor Sobrado, UK34436 - sobrado at acm.org
+
+
+From grog at lemis.com  Sat Apr 19 13:55:37 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Sat, 19 Apr 2003 13:25:37 +0930
+Subject: [TUHS] 2.11BSD license question: porting software to NetBSD
+In-Reply-To: <200304181656.h3IGuGfC028575@string1.ciencias.uniovi.es>
+References: <200304181656.h3IGuGfC028575@string1.ciencias.uniovi.es>
+Message-ID: <20030419035537.GJ61510@wantadilla.lemis.com>
+
+On Friday, 18 April 2003 at 18:56:16 +0200, Igor Sobrado wrote:
+> Hello.
+>
+> I have just finished porting diction(1) and style(1) from 2.11BSD
+> to the NetBSD operating system.  Those utilities are a part of the
+> AT&T Documenter's Workbench (DWB), and are not available on the v7
+> and 32V UNIX releases.
+>
+> I asked to the people of the NetBSD Foundation about the possibility
+> of adding those commands to the base system (as a part of the tarball
+> with documentation tools) but they think that it is not possible,
+> as a consequence of a licensing issue.  I supposed that all the
+> software provided in the 2.11BSD was under a BSD license, but it
+> looks like 2.11BSD is a closed source release.
+
+That's not correct any more.  Who were you talking to at the NetBSD
+project?
+
+> Can someone, please, helping me on this matter?  What should I do?
+> Should I just drop this software?
+
+We discussed the Caldera release of "ancient UNIX" on this mailing
+list recently.  Caldera (now SCO again) was supposed to make some kind
+of official statement, but it's taking its time.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030419/aa7955d9/attachment.sig>
+
+From firebug at apk.net  Sat Apr 19 16:33:41 2003
+From: firebug at apk.net (Derrik Walker v2.0)
+Date: Sat, 19 Apr 2003 02:33:41 -0400
+Subject: [TUHS] 2.11BSD license question: porting software to NetBSD
+In-Reply-To: <20030419035537.GJ61510@wantadilla.lemis.com>
+Message-ID: <DCC9CF52-7230-11D7-A9FA-003065C1AC88@apk.net>
+
+On Friday, April 18, 2003, at 11:55 PM, Greg 'groggy' Lehey wrote:
+
+> On Friday, 18 April 2003 at 18:56:16 +0200, Igor Sobrado wrote:
+>
+>> Can someone, please, helping me on this matter?  What should I do?
+>> Should I just drop this software?
+>
+> We discussed the Caldera release of "ancient UNIX" on this mailing
+> list recently.  Caldera (now SCO again) was supposed to make some kind
+> of official statement, but it's taking its time.
+>
+>
+
+I have been porting some old UNIX stuff to OS X, but am holding off on  
+putting it on line till this "official statement" comes out.
+
+Seems to be the safest thing to do.
+
+- Derrik
+
+firebug at apk.net                                                    
+http://junior.apk.net/~firebug
+------------------------------------------------------------------------ 
+---------------------------
+Microsoft is a lot better at making money then making good software
+         -- Linus Torvalds
+
+
+
+From sobrado at string1.ciencias.uniovi.es  Sat Apr 19 17:23:43 2003
+From: sobrado at string1.ciencias.uniovi.es (Igor Sobrado)
+Date: Sat, 19 Apr 2003 09:23:43 +0200
+Subject: [TUHS] 2.11BSD license question: porting software to NetBSD
+In-Reply-To: Message from Greg 'groggy' Lehey <grog@lemis.com>
+ "of Sat, 19 Apr 2003 13:25:37 +0930."
+ <20030419035537.GJ61510@wantadilla.lemis.com>
+Message-ID: <200304190723.h3J7NhfC029828@string1.ciencias.uniovi.es>
+
+> On Friday, 18 April 2003 at 18:56:16 +0200, Igor Sobrado wrote:
+> >
+> > I asked to the people of the NetBSD Foundation about the possibility
+> > of adding those commands to the base system (as a part of the tarball
+> > with documentation tools) but they think that it is not possible,
+> > as a consequence of a licensing issue.  I supposed that all the
+> > software provided in the 2.11BSD was under a BSD license, but it
+> > looks like 2.11BSD is a closed source release.
+> 
+> That's not correct any more.  Who were you talking to at the NetBSD
+> project?
+
+Hi Greg.
+
+I am worried with possible licensing issues with AT&T's Documenter's
+Workbench (DWB).  In fact, AT&T retained the copyright and distribution
+rights on those parts of the UNIX documentation tools they developed
+some years ago.  That is the reason we have [nt]roff, but not
+diction (diction(1), explain(1), suggest(1)) and style(1).
+
+Last days, Perry E. Metzger observed that 2.11BSD was closed source:
+
+"And it is closed source. Sorry. We aren't allowed to use code that did
+not originate in V7/32V. If Caldera did not specifically release the
+sources, we cannot use them. If your claim is that diction and style
+were not in 32V, then we have no rights to them."
+
+Well, in a previous email Perry observed that:
+
+"I appreciate all this and I thank you for doing the work, but please
+do your work against a version we have clear ability to use."
+
+In short, he does not says that "we cannot add diction(1) and style(1)
+to NetBSD" only that *license terms are NOT clear*.
+
+What I do *not* want to do, is asking for adding a piece of code
+that will report problems to the NetBSD Foundation.  They are
+doing a superb job, and I do not want to start a legal problem
+adding some tools whose license is not clear.
+
+On the other hand, Steven M. Schultz observed that "Not 100% - much of
+it is covered by the BSD license and the Caldera/SCO/whatever license(s)".
+I believe that diction(1) and style(1) are covered by a different
+license agreement, but I did not find it in the source code.
+
+> > Can someone, please, helping me on this matter?  What should I do?
+> > Should I just drop this software?
+> 
+> We discussed the Caldera release of "ancient UNIX" on this mailing
+> list recently.  Caldera (now SCO again) was supposed to make some kind
+> of official statement, but it's taking its time.
+
+Well, there are some operating systems under Caldera's agreement
+(a BSD-style license), including v7 and 32V, but looks like 2.11BSD
+is *not* under those terms.  In fact, it is not available through
+Caldera, it is in tuhs, not covered by Caldera's license agreement.
+(at least I think that it is right...)
+
+I am not a lawyer, only a Physics grad student working on a Ph. D.
+on CS.  I have no idea about the legal status of 2.11BSD or, to
+be more precise, about the status of diction(1) and style(1).
+
+Cheers,
+Igor.
+
+-- 
+Igor Sobrado, UK34436 - sobrado at acm.org
+
+
+From nao at tom-yam.or.jp  Sun Apr 20 12:27:56 2003
+From: nao at tom-yam.or.jp (nao)
+Date: Sun, 20 Apr 2003 11:27:56 +0900 (JST)
+Subject: [TUHS] cross reference tool for pre-K&R C
+In-Reply-To: nao's message of "Sun, 13 Apr 2003 17:13:35 +0900 (JST)"	<200304130813.h3D8DZR6008291@miffy.tom-yam.or.jp>
+References: <200304130813.h3D8DZR6008291@miffy.tom-yam.or.jp>
+Message-ID: <200304200227.h3K2Ruh4059092@miffy.tom-yam.or.jp>
+
+Hi,
+
+I found the answer myself. V6 itself has a nifty cref binary and its
+source! It is quite impressive how things were neat at that time.
+
+In message "[TUHS] cross reference tool for pre-K&R C"
+    on 03/04/13, nao <nao at tom-yam.or.jp> writes:
+>I really enjoy hacking ancient unix rather seriously and want a cross
+>reference tools for them. Since some of them are written in pre-K&R C,
+>modern tools are not very useful. Is there any cross reference tool
+>for pre-K&R C source codes?
+
+Regars,
+
+Naoki Hamada
+
+

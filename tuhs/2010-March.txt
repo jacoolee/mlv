@@ -1,0 +1,1593 @@
+From wkt at tuhs.org  Mon Mar  1 14:37:56 2010
+From: wkt at tuhs.org (Warren Toomey)
+Date: Mon, 1 Mar 2010 14:37:56 +1000
+Subject: [TUHS] New Unix Tree website
+Message-ID: <20100301043756.GA23969@minnie.tuhs.org>
+
+All, I've spent a bit of time re-writing my "Unix Tree" website, where
+you can browse the source code trees and compare related files. The
+file comparison now uses colour to show similar lines.
+
+The initial version is at http://minnie.tuhs.org/cgi-bin/utree.pl
+but I will probably move the URL at some point.
+
+Have a look and see what you think. I would gladly accept suggestions on
+better or more accurate descriptions for each of the releases, also checking
+of dates and other information.
+
+Cheers,
+	Warren
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From grog at lemis.com  Mon Mar  1 14:57:16 2010
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Mon, 1 Mar 2010 15:57:16 +1100
+Subject: [TUHS] New Unix Tree website
+In-Reply-To: <20100301043756.GA23969@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+Message-ID: <20100301045716.GD37747@dereel.lemis.com>
+
+On Monday,  1 March 2010 at 14:37:56 +1000, Warren Toomey wrote:
+> All, I've spent a bit of time re-writing my "Unix Tree" website, where
+> you can browse the source code trees and compare related files. The
+> file comparison now uses colour to show similar lines.
+
+Great stuff!
+
+> Have a look and see what you think. I would gladly accept
+> suggestions on better or more accurate descriptions for each of the
+> releases, also checking of dates and other information.
+
+I'm interested to see that you've put nsys in as the Fourth Edition,
+and that the timestamps are 1973-8-31.  I've had this code on my
+machine for years (almost certainly from you), but I thought it was
+the Third Edition, and the time stamps are 1973-1-22.  Have you found
+reason to change the timestamps and the version?
+
+Greg
+--
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft MUA reports
+problems, please read http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 195 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100301/19035d97/attachment.sig>
+
+From grog at lemis.com  Mon Mar  1 14:57:16 2010
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Mon, 1 Mar 2010 15:57:16 +1100
+Subject: [TUHS] New Unix Tree website
+In-Reply-To: <20100301043756.GA23969@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+Message-ID: <20100301045716.GD37747@dereel.lemis.com>
+
+On Monday,  1 March 2010 at 14:37:56 +1000, Warren Toomey wrote:
+> All, I've spent a bit of time re-writing my "Unix Tree" website, where
+> you can browse the source code trees and compare related files. The
+> file comparison now uses colour to show similar lines.
+
+Great stuff!
+
+> Have a look and see what you think. I would gladly accept
+> suggestions on better or more accurate descriptions for each of the
+> releases, also checking of dates and other information.
+
+I'm interested to see that you've put nsys in as the Fourth Edition,
+and that the timestamps are 1973-8-31.  I've had this code on my
+machine for years (almost certainly from you), but I thought it was
+the Third Edition, and the time stamps are 1973-1-22.  Have you found
+reason to change the timestamps and the version?
+
+Greg
+--
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft MUA reports
+problems, please read http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 195 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100301/19035d97/attachment-0001.sig>
+-------------- next part --------------
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+From wkt at tuhs.org  Mon Mar  1 15:21:49 2010
+From: wkt at tuhs.org (Warren Toomey)
+Date: Mon, 1 Mar 2010 15:21:49 +1000
+Subject: [TUHS] New Unix Tree website
+In-Reply-To: <20100301045716.GD37747@dereel.lemis.com>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	<20100301045716.GD37747@dereel.lemis.com>
+Message-ID: <20100301052149.GA27407@minnie.tuhs.org>
+
+On Mon, Mar 01, 2010 at 03:57:16PM +1100, Greg 'groggy' Lehey wrote:
+> I'm interested to see that you've put nsys in as the Fourth Edition,
+> and that the timestamps are 1973-8-31.  I've had this code on my
+> machine for years (almost certainly from you), but I thought it was
+> the Third Edition, and the time stamps are 1973-1-22.  Have you found
+> reason to change the timestamps and the version?
+
+It's a hard one to categorise, so here is my opinion:
+
+4th Edition, released November 1973, was the first edition with a kernel
+written in C; 3rd Edition's kernel was still in assembly. The nsys kernel
+has timestamps up to August 31, 1973, so it's only a few months away from
+4th Edition, and nsys is a kernel written in C. Therefore, I decided to
+categorise nsys under 4th Edition.
+
+Dennis and I had an ongoing discussion about the timestamps in the original
+nsys tape. He originally thought the files were dated 22 Jan, 1973. We
+worked out that there was a nuxi problem in interpreting the dates, and
+Jan 1973 was too early, as the C compiler at that time did not support
+structs. So the August 31, 1973 timestamp for the files seems to be correct.
+
+Anyway, I could either put it in V3 or V4, but either way it needs a long
+explanation as to why it is placed there.
+
+Cheers,
+	Warren
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From cowan at ccil.org  Mon Mar  1 15:32:26 2010
+From: cowan at ccil.org (John Cowan)
+Date: Mon, 1 Mar 2010 00:32:26 -0500
+Subject: [TUHS] New Unix Tree website
+In-Reply-To: <20100301045716.GD37747@dereel.lemis.com>
+References: <20100301043756.GA23969@minnie.tuhs.org> <20100301045716.GD37747@dereel.lemis.com>
+Message-ID: <20100301053225.GC11579@mercury.ccil.org>
+
+Greg 'groggy' Lehey scripsit:
+
+> I'm interested to see that you've put nsys in as the Fourth Edition,
+> and that the timestamps are 1973-8-31.  I've had this code on my
+> machine for years (almost certainly from you), but I thought it was
+> the Third Edition, and the time stamps are 1973-1-22.  Have you found
+> reason to change the timestamps and the version?
+
+As I've pointed out before, Editions are snapshots of the manual, and
+there's no particular reason to suppose that a given snapshot of the
+code corresponds exactly to any one of them.
+
+-- 
+At the end of the Metatarsal Age, the dinosaurs     John Cowan
+abruptly vanished. The theory that a single         cowan at ccil.org
+catastrophic event may have been responsible        http://www.ccil.org/~cowan
+has been strengthened by the recent discovery of
+a worldwide layer of whipped cream marking the
+Creosote-Tutelary boundary.             --Science Made Stupid
+
+
+From cowan at ccil.org  Mon Mar  1 15:32:26 2010
+From: cowan at ccil.org (John Cowan)
+Date: Mon, 1 Mar 2010 00:32:26 -0500
+Subject: [TUHS] New Unix Tree website
+In-Reply-To: <20100301045716.GD37747@dereel.lemis.com>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	<20100301045716.GD37747@dereel.lemis.com>
+Message-ID: <20100301053225.GC11579@mercury.ccil.org>
+
+Greg 'groggy' Lehey scripsit:
+
+> I'm interested to see that you've put nsys in as the Fourth Edition,
+> and that the timestamps are 1973-8-31.  I've had this code on my
+> machine for years (almost certainly from you), but I thought it was
+> the Third Edition, and the time stamps are 1973-1-22.  Have you found
+> reason to change the timestamps and the version?
+
+As I've pointed out before, Editions are snapshots of the manual, and
+there's no particular reason to suppose that a given snapshot of the
+code corresponds exactly to any one of them.
+
+-- 
+At the end of the Metatarsal Age, the dinosaurs     John Cowan
+abruptly vanished. The theory that a single         cowan at ccil.org
+catastrophic event may have been responsible        http://www.ccil.org/~cowan
+has been strengthened by the recent discovery of
+a worldwide layer of whipped cream marking the
+Creosote-Tutelary boundary.             --Science Made Stupid
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From grog at lemis.com  Mon Mar  1 16:49:08 2010
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Mon, 1 Mar 2010 17:49:08 +1100
+Subject: [TUHS] New Unix Tree website
+In-Reply-To: <20100301052149.GA27407@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org> <20100301045716.GD37747@dereel.lemis.com> <20100301052149.GA27407@minnie.tuhs.org>
+Message-ID: <20100301064908.GE37747@dereel.lemis.com>
+
+On Monday,  1 March 2010 at 15:21:49 +1000, Warren Toomey wrote:
+> On Mon, Mar 01, 2010 at 03:57:16PM +1100, Greg 'groggy' Lehey wrote:
+>> I'm interested to see that you've put nsys in as the Fourth Edition,
+>> and that the timestamps are 1973-8-31.  I've had this code on my
+>> machine for years (almost certainly from you), but I thought it was
+>> the Third Edition, and the time stamps are 1973-1-22.  Have you found
+>> reason to change the timestamps and the version?
+>
+> It's a hard one to categorise, so here is my opinion:
+>
+> ...
+
+Yes, I thought it might be something like that.
+
+> Anyway, I could either put it in V3 or V4, but either way it needs a
+> long explanation as to why it is placed there.
+
+It looks to me as if you've made the right choice, but it wouldn't
+harm to add your explanation to the web pages.
+
+Greg
+--
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft MUA reports
+problems, please read http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 195 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100301/0be44cc1/attachment.sig>
+
+From grog at lemis.com  Mon Mar  1 16:49:08 2010
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Mon, 1 Mar 2010 17:49:08 +1100
+Subject: [TUHS] New Unix Tree website
+In-Reply-To: <20100301052149.GA27407@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	<20100301045716.GD37747@dereel.lemis.com>
+	<20100301052149.GA27407@minnie.tuhs.org>
+Message-ID: <20100301064908.GE37747@dereel.lemis.com>
+
+On Monday,  1 March 2010 at 15:21:49 +1000, Warren Toomey wrote:
+> On Mon, Mar 01, 2010 at 03:57:16PM +1100, Greg 'groggy' Lehey wrote:
+>> I'm interested to see that you've put nsys in as the Fourth Edition,
+>> and that the timestamps are 1973-8-31.  I've had this code on my
+>> machine for years (almost certainly from you), but I thought it was
+>> the Third Edition, and the time stamps are 1973-1-22.  Have you found
+>> reason to change the timestamps and the version?
+>
+> It's a hard one to categorise, so here is my opinion:
+>
+> ...
+
+Yes, I thought it might be something like that.
+
+> Anyway, I could either put it in V3 or V4, but either way it needs a
+> long explanation as to why it is placed there.
+
+It looks to me as if you've made the right choice, but it wouldn't
+harm to add your explanation to the web pages.
+
+Greg
+--
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft MUA reports
+problems, please read http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 195 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100301/0be44cc1/attachment-0001.sig>
+-------------- next part --------------
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+From cyrille.lefevre-lists at laposte.net  Sun Mar  7 00:27:01 2010
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Sat, 06 Mar 2010 15:27:01 +0100
+Subject: [TUHS] New Unix Tree website
+In-Reply-To: <20100301043756.GA23969@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+Message-ID: <4B926635.5030102@laposte.net>
+
+
+Warren Toomey a écrit :
+> All, I've spent a bit of time re-writing my "Unix Tree" website, where
+> you can browse the source code trees and compare related files. The
+> file comparison now uses colour to show similar lines.
+> 
+> The initial version is at http://minnie.tuhs.org/cgi-bin/utree.pl
+> but I will probably move the URL at some point.
+> 
+> Have a look and see what you think. I would gladly accept suggestions on
+> better or more accurate descriptions for each of the releases, also checking
+> of dates and other information.
+
+Hi,
+
+would it be possible to have a side-by-side colored diff instead of the 
+scrollable one ? such as the one of cvsweb ?
+
+ex. :
+
+http://cvsweb.netbsd.org/bsdweb.cgi/src/bin/cat/cat.c.diff?r1=1.2&r2=1.46.12.1&f=h
+
+Regards,
+
+Cyrille Lefevre
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+
+From cyrille.lefevre-lists at laposte.net  Sun Mar  7 00:27:01 2010
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Sat, 06 Mar 2010 15:27:01 +0100
+Subject: [TUHS] New Unix Tree website
+In-Reply-To: <20100301043756.GA23969@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+Message-ID: <4B926635.5030102@laposte.net>
+
+
+Warren Toomey a écrit :
+> All, I've spent a bit of time re-writing my "Unix Tree" website, where
+> you can browse the source code trees and compare related files. The
+> file comparison now uses colour to show similar lines.
+> 
+> The initial version is at http://minnie.tuhs.org/cgi-bin/utree.pl
+> but I will probably move the URL at some point.
+> 
+> Have a look and see what you think. I would gladly accept suggestions on
+> better or more accurate descriptions for each of the releases, also checking
+> of dates and other information.
+
+Hi,
+
+would it be possible to have a side-by-side colored diff instead of the 
+scrollable one ? such as the one of cvsweb ?
+
+ex. :
+
+http://cvsweb.netbsd.org/bsdweb.cgi/src/bin/cat/cat.c.diff?r1=1.2&r2=1.46.12.1&f=h
+
+Regards,
+
+Cyrille Lefevre
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From wkt at tuhs.org  Sun Mar  7 08:33:09 2010
+From: wkt at tuhs.org (Warren Toomey)
+Date: Sun, 7 Mar 2010 08:33:09 +1000
+Subject: [TUHS] New Unix Tree website
+In-Reply-To: <4B926635.5030102@laposte.net>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	<4B926635.5030102@laposte.net>
+Message-ID: <20100306223309.GA11796@minnie.tuhs.org>
+
+On Sat, Mar 06, 2010 at 03:27:01PM +0100, Cyrille Lefevre wrote:
+> would it be possible to have a side-by-side colored diff instead of the  
+> scrollable one ? such as the one of cvsweb ?
+
+I'll see what I can do :)
+	Warren
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From wkt at tuhs.org  Sun Mar  7 12:14:07 2010
+From: wkt at tuhs.org (Warren Toomey)
+Date: Sun, 7 Mar 2010 12:14:07 +1000
+Subject: [TUHS] Unix Tree: side scrolling
+In-Reply-To: <4B926635.5030102@laposte.net>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	<4B926635.5030102@laposte.net>
+Message-ID: <20100307021407.GA18028@minnie.tuhs.org>
+
+On Sat, Mar 06, 2010 at 03:27:01PM +0100, Cyrille Lefevre wrote:
+> would it be possible to have a side-by-side colored diff instead of the  
+> scrollable one ?
+
+I've added side scrolling now. Please have a look at it and see what you think.
+My HTML skills are limited, so if someone can suggest some better HTML code,
+I'd be happy to try it out. All the HTML is in template form, so it should be
+easy enough to try alternatives.
+
+The URL is now officially 	http://minnie.tuhs.org/UnixTree
+
+I also want to add these other releases:
+        4BSD
+        4.1BSD which one?
+        4.2BSD
+        4.4BSD
+        LSX
+        Ultrix-32 which one?
+        Venix?
+
+If there are any other ones you'd like to see in the tree, let me know.
+Now's the time to ask for any other donations to the Heritage Society.
+If you have any releases which are not yet in the Unix Archive, I'd love
+to know. I still seriously want to get a copy of SysVR4.2, which will go
+into the hidden vault to keep the bits safe until some day when they can
+be let out.
+
+Thanks,
+	Warren
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From neozeed at gmail.com  Sun Mar  7 12:30:42 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sat, 6 Mar 2010 21:30:42 -0500
+Subject: [TUHS] Unix Tree: side scrolling
+In-Reply-To: <20100307021407.GA18028@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	 <4B926635.5030102@laposte.net>
+	 <20100307021407.GA18028@minnie.tuhs.org>
+Message-ID: <46b366131003061830ue9112bcjf0b8989fb2c05a71@mail.gmail.com>
+
+I'd probably ask about that 4.3 Uwisc the wisconson one with the SUN NFS
+stuff... and maybe the soviet DEMOS stuff...?
+
+On Sat, Mar 6, 2010 at 9:14 PM, Warren Toomey <wkt at tuhs.org> wrote:
+
+> On Sat, Mar 06, 2010 at 03:27:01PM +0100, Cyrille Lefevre wrote:
+> > would it be possible to have a side-by-side colored diff instead of the
+> > scrollable one ?
+>
+> I've added side scrolling now. Please have a look at it and see what you
+> think.
+> My HTML skills are limited, so if someone can suggest some better HTML
+> code,
+> I'd be happy to try it out. All the HTML is in template form, so it should
+> be
+> easy enough to try alternatives.
+>
+> The URL is now officially       http://minnie.tuhs.org/UnixTree
+>
+> I also want to add these other releases:
+>        4BSD
+>        4.1BSD which one?
+>        4.2BSD
+>        4.4BSD
+>        LSX
+>        Ultrix-32 which one?
+>        Venix?
+>
+> If there are any other ones you'd like to see in the tree, let me know.
+> Now's the time to ask for any other donations to the Heritage Society.
+> If you have any releases which are not yet in the Unix Archive, I'd love
+> to know. I still seriously want to get a copy of SysVR4.2, which will go
+> into the hidden vault to keep the bits safe until some day when they can
+> be let out.
+>
+> Thanks,
+>        Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100306/16e8c986/attachment.html>
+
+From neozeed at gmail.com  Sun Mar  7 12:30:42 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sat, 6 Mar 2010 21:30:42 -0500
+Subject: [TUHS] Unix Tree: side scrolling
+In-Reply-To: <20100307021407.GA18028@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	<4B926635.5030102@laposte.net>
+	<20100307021407.GA18028@minnie.tuhs.org>
+Message-ID: <46b366131003061830ue9112bcjf0b8989fb2c05a71@mail.gmail.com>
+
+I'd probably ask about that 4.3 Uwisc the wisconson one with the SUN NFS
+stuff... and maybe the soviet DEMOS stuff...?
+
+On Sat, Mar 6, 2010 at 9:14 PM, Warren Toomey <wkt at tuhs.org> wrote:
+
+> On Sat, Mar 06, 2010 at 03:27:01PM +0100, Cyrille Lefevre wrote:
+> > would it be possible to have a side-by-side colored diff instead of the
+> > scrollable one ?
+>
+> I've added side scrolling now. Please have a look at it and see what you
+> think.
+> My HTML skills are limited, so if someone can suggest some better HTML
+> code,
+> I'd be happy to try it out. All the HTML is in template form, so it should
+> be
+> easy enough to try alternatives.
+>
+> The URL is now officially       http://minnie.tuhs.org/UnixTree
+>
+> I also want to add these other releases:
+>        4BSD
+>        4.1BSD which one?
+>        4.2BSD
+>        4.4BSD
+>        LSX
+>        Ultrix-32 which one?
+>        Venix?
+>
+> If there are any other ones you'd like to see in the tree, let me know.
+> Now's the time to ask for any other donations to the Heritage Society.
+> If you have any releases which are not yet in the Unix Archive, I'd love
+> to know. I still seriously want to get a copy of SysVR4.2, which will go
+> into the hidden vault to keep the bits safe until some day when they can
+> be let out.
+>
+> Thanks,
+>        Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100306/16e8c986/attachment-0001.html>
+-------------- next part --------------
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+From lm at bitmover.com  Sun Mar  7 15:15:14 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Sat, 6 Mar 2010 21:15:14 -0800
+Subject: [TUHS] Unix Tree: side scrolling
+In-Reply-To: <46b366131003061830ue9112bcjf0b8989fb2c05a71@mail.gmail.com>
+References: <20100301043756.GA23969@minnie.tuhs.org> <4B926635.5030102@laposte.net> <20100307021407.GA18028@minnie.tuhs.org> <46b366131003061830ue9112bcjf0b8989fb2c05a71@mail.gmail.com>
+Message-ID: <20100307051514.GC24920@bitmover.com>
+
+On Sat, Mar 06, 2010 at 09:30:42PM -0500, Jason Stevens wrote:
+> I'd probably ask about that 4.3 Uwisc the wisconson one with the SUN NFS
+
+Heh.  I was at Uwisc when that work was being done.  That was a pretty
+cool time.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From lm at bitmover.com  Sun Mar  7 15:14:08 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Sat, 6 Mar 2010 21:14:08 -0800
+Subject: [TUHS] Unix Tree: side scrolling
+In-Reply-To: <20100307021407.GA18028@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org> <4B926635.5030102@laposte.net> <20100307021407.GA18028@minnie.tuhs.org>
+Message-ID: <20100307051407.GB24920@bitmover.com>
+
+> I also want to add these other releases:
+>         4BSD
+>         4.1BSD which one?
+
+4.1c was the one that worked, right?
+
+>         4.2BSD
+
+No 4.3?  That was a nice one.
+
+>         4.4BSD
+>         LSX
+>         Ultrix-32 which one?
+>         Venix?
+> 
+> If there are any other ones you'd like to see in the tree, let me know.
+> Now's the time to ask for any other donations to the Heritage Society.
+> If you have any releases which are not yet in the Unix Archive, I'd love
+> to know. I still seriously want to get a copy of SysVR4.2, which will go
+
+SysVR4.2 was never my favorite.  System V in general was a poor excuse
+for a Unix release.  We still have SCO running here and it's pretty 
+close to Sys V and, well, yuck.  And I speak as the guy who added
+TCP/IP networking to SCO.  If I had any fondness for it I'd be showing it.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From lm at bitmover.com  Sun Mar  7 15:15:14 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Sat, 6 Mar 2010 21:15:14 -0800
+Subject: [TUHS] Unix Tree: side scrolling
+In-Reply-To: <46b366131003061830ue9112bcjf0b8989fb2c05a71@mail.gmail.com>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	<4B926635.5030102@laposte.net>
+	<20100307021407.GA18028@minnie.tuhs.org>
+	<46b366131003061830ue9112bcjf0b8989fb2c05a71@mail.gmail.com>
+Message-ID: <20100307051514.GC24920@bitmover.com>
+
+On Sat, Mar 06, 2010 at 09:30:42PM -0500, Jason Stevens wrote:
+> I'd probably ask about that 4.3 Uwisc the wisconson one with the SUN NFS
+
+Heh.  I was at Uwisc when that work was being done.  That was a pretty
+cool time.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From lm at bitmover.com  Sun Mar  7 15:14:08 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Sat, 6 Mar 2010 21:14:08 -0800
+Subject: [TUHS] Unix Tree: side scrolling
+In-Reply-To: <20100307021407.GA18028@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	<4B926635.5030102@laposte.net>
+	<20100307021407.GA18028@minnie.tuhs.org>
+Message-ID: <20100307051407.GB24920@bitmover.com>
+
+> I also want to add these other releases:
+>         4BSD
+>         4.1BSD which one?
+
+4.1c was the one that worked, right?
+
+>         4.2BSD
+
+No 4.3?  That was a nice one.
+
+>         4.4BSD
+>         LSX
+>         Ultrix-32 which one?
+>         Venix?
+> 
+> If there are any other ones you'd like to see in the tree, let me know.
+> Now's the time to ask for any other donations to the Heritage Society.
+> If you have any releases which are not yet in the Unix Archive, I'd love
+> to know. I still seriously want to get a copy of SysVR4.2, which will go
+
+SysVR4.2 was never my favorite.  System V in general was a poor excuse
+for a Unix release.  We still have SCO running here and it's pretty 
+close to Sys V and, well, yuck.  And I speak as the guy who added
+TCP/IP networking to SCO.  If I had any fondness for it I'd be showing it.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From grog at lemis.com  Sun Mar  7 16:02:16 2010
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Sun, 7 Mar 2010 17:02:16 +1100
+Subject: [TUHS] More versions in the tree (was: Unix Tree: side scrolling)
+In-Reply-To: <20100307051407.GB24920@bitmover.com>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	<4B926635.5030102@laposte.net>
+	<20100307021407.GA18028@minnie.tuhs.org>
+	<20100307051407.GB24920@bitmover.com>
+Message-ID: <20100307060216.GE98136@dereel.lemis.com>
+
+On Saturday,  6 March 2010 at 21:14:08 -0800, Larry McVoy wrote:
+>> I also want to add these other releases:
+>>         4BSD
+>>         4.1BSD which one?
+>
+> 4.1c was the one that worked, right?
+
+Well, it's interesting as the first operating system with support for
+TCP/IP, so I'd vote for that too.
+
+>> I still seriously want to get a copy of SysVR4.2, which will go ...
+>
+> SysVR4.2 was never my favorite.  System V in general was a poor
+> excuse for a Unix release.
+
+Heh.  All the more reason to have a representative of the branch, so
+that people can see for themselves.
+
+> We still have SCO running here and it's pretty close to Sys V
+
+Possibly it would look that way revisited now.  It certainly didn't to
+us 20 years ago.  We were running, well, System V.2, and we wanted a
+UNIX for our PCs.  We ended up with Interactive, which was a whole lot
+better than SCO.
+
+Greg
+--
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft MUA reports
+problems, please read http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 195 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100307/bc81c6a9/attachment.sig>
+-------------- next part --------------
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+From jkunz at unixag-kl.fh-kl.de  Sun Mar  7 18:50:04 2010
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Sun, 7 Mar 2010 09:50:04 +0100
+Subject: [TUHS] First TCP/IP implementation (was: Re: More versions in the
+ tree (was: Unix Tree: side scrolling))
+In-Reply-To: <20100307060216.GE98136@dereel.lemis.com>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	<4B926635.5030102@laposte.net>
+	<20100307021407.GA18028@minnie.tuhs.org>
+	<20100307051407.GB24920@bitmover.com>
+	<20100307060216.GE98136@dereel.lemis.com>
+Message-ID: <20100307095004.2dd6a928.jkunz@unixag-kl.fh-kl.de>
+
+On Sun, 7 Mar 2010 17:02:16 +1100
+Greg 'groggy' Lehey <grog at lemis.com> wrote:
+
+> > 4.1c was the one that worked, right?
+> Well, it's interesting as the first operating system with support for
+> TCP/IP, so I'd vote for that too.
+Wasn't the first TCP/IP implementation done at BBN on a PDP-10 running
+TOPS-10?
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From cyrille.lefevre-lists at laposte.net  Sun Mar  7 22:08:56 2010
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Sun, 07 Mar 2010 13:08:56 +0100
+Subject: [TUHS] New Unix Tree website
+In-Reply-To: <20100306223309.GA11796@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org> <4B926635.5030102@laposte.net> <20100306223309.GA11796@minnie.tuhs.org>
+Message-ID: <4B939758.4010000@laposte.net>
+
+
+Warren Toomey a écrit :
+> On Sat, Mar 06, 2010 at 03:27:01PM +0100, Cyrille Lefevre wrote:
+>> would it be possible to have a side-by-side colored diff instead of the  
+>> scrollable one ? such as the one of cvsweb ?
+> 
+> I'll see what I can do :)
+> 	Warren
+
+thanks, see you.
+
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+
+From neozeed at gmail.com  Mon Mar  8 03:17:26 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sun, 7 Mar 2010 12:17:26 -0500
+Subject: [TUHS] Unix Tree: demos
+In-Reply-To: <20100307134709.GA2730@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	 <4B926635.5030102@laposte.net>
+	 <20100307021407.GA18028@minnie.tuhs.org>
+	 <46b366131003061830ue9112bcjf0b8989fb2c05a71@mail.gmail.com>
+	 <20100307134709.GA2730@minnie.tuhs.org>
+Message-ID: <46b366131003070917w312d20bbj8fda064b9f8b7fd4@mail.gmail.com>
+
+I found some disk images online that say it's for the PDP-11 version... let
+me see what I can pull from them for you.
+
+The UWISC stuff is here:
+
+http://minnie.tuhs.org/Archive/4BSD/Distributions/thirdparty/UWisc4.3/
+
+<http://minnie.tuhs.org/Archive/4BSD/Distributions/thirdparty/UWisc4.3/>
+
+On Sun, Mar 7, 2010 at 8:47 AM, Warren Toomey <wkt at tuhs.org> wrote:
+
+> On Sat, Mar 06, 2010 at 09:30:42PM -0500, Jason Stevens wrote:
+> > I'd probably ask about that 4.3 Uwisc the wisconson one with the SUN NFS
+> > stuff... and maybe the soviet DEMOS stuff...?
+>
+> Do you have the demos stuff? I have a pile of files, but it's all a jumble.
+> If you have it, could you sit down a create a sensible tree of text-only
+> files (i.e. no binary files) which I could add to the Unix Tree?
+>
+> I'll see if I have 4.3 Uwisc here too.
+>
+> Thanks,
+>         Warren
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100307/46418bc8/attachment.html>
+
+From neozeed at gmail.com  Mon Mar  8 10:06:28 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sun, 7 Mar 2010 19:06:28 -0500
+Subject: [TUHS] Unix Tree: demos
+In-Reply-To: <20100307220030.GA14913@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	 <4B926635.5030102@laposte.net>
+	 <20100307021407.GA18028@minnie.tuhs.org>
+	 <46b366131003061830ue9112bcjf0b8989fb2c05a71@mail.gmail.com>
+	 <20100307134709.GA2730@minnie.tuhs.org>
+	 <46b366131003070917w312d20bbj8fda064b9f8b7fd4@mail.gmail.com>
+	 <20100307220030.GA14913@minnie.tuhs.org>
+Message-ID: <46b366131003071606i32fb3ea0n9cbccfd834514ef9@mail.gmail.com>
+
+I hate to say it but the demos stuff I found here
+http://pdp-11.ru/mybk/pdp11/DEMOS.RAR
+
+Seems to not include full source... I haven't gotten SIMH to boot the thing,
+nor some of the... "interesting" Russian PDP-11 emulators..  I ran strings
+through the disks, and I got some basic header files, oddly all in English,
+but no kernel or system source code, just some Fortran example....
+
+I'll have to ask someone in Russia if they have any real solid leads on
+DEMOS... It seems that once the Soviet Union fell, everyone abandoned DEMOS
+for any of the BSD's...
+
+On Sun, Mar 7, 2010 at 5:00 PM, Warren Toomey <wkt at tuhs.org> wrote:
+
+> On Sun, Mar 07, 2010 at 12:17:26PM -0500, Jason Stevens wrote:
+> > I found some disk images online that say it's for the PDP-11 version...
+> let
+> > me see what I can pull from them for you.
+> > The UWISC stuff is here:
+> > http://minnie.tuhs.org/Archive/4BSD/Distributions/thirdparty/UWisc4.3/
+>
+> Thanks Jason!
+>         Warren
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100307/e54e4847/attachment.html>
+
+From neozeed at gmail.com  Mon Mar  8 10:26:42 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sun, 7 Mar 2010 19:26:42 -0500
+Subject: [TUHS] Unix Tree: demos
+In-Reply-To: <20100308002343.GA19216@minnie.tuhs.org>
+Message-ID: <4b94445a.47c1f10a.7312.18d0@mx.google.com>
+
+Yeah, that'd be great! I've heard it's v6 with lots of bsd.. But it'd be cool to look at it!
+
+
+
+-- Sent from my Palm Prē
+On Mar 7, 2010 7:23 PM, Warren Toomey &lt;wkt at tuhs.org&gt; wrote: 
+
+On Sun, Mar 07, 2010 at 07:06:28PM -0500, Jason Stevens wrote:
+
+&gt; Seems to not include full source... I haven't gotten SIMH to boot the thing,
+
+&gt; nor some of the... "interesting" Russian PDP-11 emulators..  I ran strings
+
+&gt; through the disks, and I got some basic header files, oddly all in English,
+
+&gt; but no kernel or system source code, just some Fortran example....
+
+&gt; I'll have to ask someone in Russia if they have any real solid leads on
+
+&gt; DEMOS... It seems that once the Soviet Union fell, everyone abandoned DEMOS
+
+&gt; for any of the BSD's...
+
+
+
+I can put up a tarball of the stuff I have for you, if you want.
+
+	Warren
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100307/dccbf3ff/attachment.html>
+
+From neozeed at gmail.com  Mon Mar  8 10:34:11 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sun, 7 Mar 2010 19:34:11 -0500
+Subject: [TUHS] Unix Tree: demos
+In-Reply-To: <20100308002622.GA19400@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	 <4B926635.5030102@laposte.net>
+	 <20100307021407.GA18028@minnie.tuhs.org>
+	 <46b366131003061830ue9112bcjf0b8989fb2c05a71@mail.gmail.com>
+	 <20100307134709.GA2730@minnie.tuhs.org>
+	 <46b366131003070917w312d20bbj8fda064b9f8b7fd4@mail.gmail.com>
+	 <20100307220030.GA14913@minnie.tuhs.org>
+	 <46b366131003071606i32fb3ea0n9cbccfd834514ef9@mail.gmail.com>
+	 <20100308002622.GA19400@minnie.tuhs.org>
+Message-ID: <46b366131003071634q3f00b347i8ee590e1ebccdade@mail.gmail.com>
+
+Cool just downloaded it.... seems whoever put it together really liked
+gzip... ;)
+
+
+
+On Sun, Mar 7, 2010 at 7:26 PM, Warren Toomey <wkt at tuhs.org> wrote:
+
+> http://minnie.tuhs.org/Z/demos.tar.gz
+>
+> Let me know when you got it.
+>         Warren
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100307/84e30957/attachment.html>
+
+From wkt at tuhs.org  Mon Mar  8 11:48:30 2010
+From: wkt at tuhs.org (Warren Toomey)
+Date: Mon, 8 Mar 2010 11:48:30 +1000
+Subject: [TUHS]  hyphen.c, was Unix Tree
+In-Reply-To: <20100307021407.GA18028@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	<4B926635.5030102@laposte.net>
+	<20100307021407.GA18028@minnie.tuhs.org>
+Message-ID: <20100308014830.GA21992@minnie.tuhs.org>
+
+As an interesting side-note, last year when we were trying to recover
+the Second Edition commands source code from the s1-bits.gz DECtape image,
+there was a leftover file which I labelled unknown.c.
+
+The Unix tree now shows that V2 unknown.c is actually hyphen.c, which
+reappears in System III:
+
+	http://minnie.tuhs.org/cgi-bin/utree.pl?file=V2/cmd/unknown.c
+
+Now, does anybody know what happened to hyphen.c between mid-1972 and
+mid-1980? There is a hyphen(1) V3 manual and a hyphen(6) V4 manual.
+
+Could it have gone off towards PWB or CB UNIX or UNIX/TS?
+
+I wish we could get copies of CB UNIX or UNIX/TS or MERT :-S
+
+Cheers,
+	Warren
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From dpeschel at eskimo.com  Mon Mar  8 14:25:34 2010
+From: dpeschel at eskimo.com (Derek Peschel)
+Date: Sun, 7 Mar 2010 20:25:34 -0800
+Subject: [TUHS]  hyphen.c, was Unix Tree
+In-Reply-To: <20100308014830.GA21992@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org> <4B926635.5030102@laposte.net> <20100307021407.GA18028@minnie.tuhs.org> <20100308014830.GA21992@minnie.tuhs.org>
+Message-ID: <5272AFCB-C6BE-4B68-AFD8-03531796377B@eskimo.com>
+
+On Mar 7, 2010, at 5:48 PM, Warren Toomey wrote:
+> I wish we could get copies of CB UNIX or UNIX/TS or MERT :-S
+
+Absolutely!  Even MERT documentation would be interesting.  The other  
+two systems you mention are probably interesting too, except that I've  
+never even heard about them so I can't say.
+
+For the record, I've posted a couple of times to the list asking  
+various esoteric questions about virtualization.  That's why I'm  
+interested in MERT in particular.
+
+-- Derek
+
+
+From iking at killthewabbit.org  Mon Mar  8 15:59:29 2010
+From: iking at killthewabbit.org (Ian King)
+Date: Sun, 7 Mar 2010 21:59:29 -0800
+Subject: [TUHS]  hyphen.c, was Unix Tree
+In-Reply-To: <20100308014830.GA21992@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org> <4B926635.5030102@laposte.net> <20100307021407.GA18028@minnie.tuhs.org> <20100308014830.GA21992@minnie.tuhs.org>
+Message-ID: <5F3D8F71-A6B1-4AD5-BC14-28ED5BECD965@killthewabbit.org>
+
+Hey Warren, you know what they say: wish in one hand, do something  
+else in the other....  :-)
+
+Speaking of wishing: any news from Mr. Ritchie on PDP-7 UNIX  
+fragments?  We're getting closer to having our -7 running, likely  
+before summer here in the Other Hemisphere.  BTW, do you know  
+anything of the whereabouts of LISP for the -7?  I know it existed,  
+as a descendant of the PDP-1 interpreter, but I have had no luck so  
+far finding it.  I may just write one of my own, premised on the  
+functionality of the -1 version, but for history's sake I'd love to  
+find a paper tape (or image thereof) of the original -7  
+implementation.  Wishing in my one hand....  Cheers -- Ian
+
+On Mar 7, 2010, at 5:48 PM, Warren Toomey wrote:
+
+> As an interesting side-note, last year when we were trying to recover
+> the Second Edition commands source code from the s1-bits.gz DECtape  
+> image,
+> there was a leftover file which I labelled unknown.c.
+>
+> The Unix tree now shows that V2 unknown.c is actually hyphen.c, which
+> reappears in System III:
+>
+> 	http://minnie.tuhs.org/cgi-bin/utree.pl?file=V2/cmd/unknown.c
+>
+> Now, does anybody know what happened to hyphen.c between mid-1972 and
+> mid-1980? There is a hyphen(1) V3 manual and a hyphen(6) V4 manual.
+>
+> Could it have gone off towards PWB or CB UNIX or UNIX/TS?
+>
+> I wish we could get copies of CB UNIX or UNIX/TS or MERT :-S
+>
+> Cheers,
+> 	Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From newsham at lava.net  Tue Mar  9 06:59:54 2010
+From: newsham at lava.net (Tim Newsham)
+Date: Mon, 8 Mar 2010 10:59:54 -1000 (HST)
+Subject: [TUHS] mnos and demos
+Message-ID: <Pine.BSI.4.64.1003081057530.27466@malasada.lava.net>
+
+Do repositories of MNOS and DEMOS operating system source
+code or binaries exist?  Do either of these run on simh
+or other simulators?  (were the PDP11 and VAX11 knockoffs
+close enough matches to the originals?)
+
+Tim Newsham | www.thenewsh.com/~newsham | thenewsh.blogspot.com
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From neozeed at gmail.com  Tue Mar  9 07:22:59 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Mon, 8 Mar 2010 16:22:59 -0500
+Subject: [TUHS] mnos and demos
+In-Reply-To: <Pine.BSI.4.64.1003081057530.27466@malasada.lava.net>
+References: <Pine.BSI.4.64.1003081057530.27466@malasada.lava.net>
+Message-ID: <46b366131003081322p675d1a75sc96db2694e6497aa@mail.gmail.com>
+
+There is this..
+
+http://pdp-11.ru/mybk/pdp11/DEMOS.RAR
+
+which looks like a bunch of disk images, but they didn't boot for me either
+in SIMH or a few russian pdp-11 emulators.....
+
+Although a little bit of googleing seems to reveal that the soviet pdp-11's
+had video cards, and were geared more as "PC's" then as mini computers...
+
+On Mon, Mar 8, 2010 at 3:59 PM, Tim Newsham <newsham at lava.net> wrote:
+
+> Do repositories of MNOS and DEMOS operating system source
+> code or binaries exist?  Do either of these run on simh
+> or other simulators?  (were the PDP11 and VAX11 knockoffs
+> close enough matches to the originals?)
+>
+> Tim Newsham | www.thenewsh.com/~newsham | thenewsh.blogspot.com
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100308/d797bfda/attachment.html>
+-------------- next part --------------
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+From newsham at lava.net  Tue Mar  9 07:48:31 2010
+From: newsham at lava.net (Tim Newsham)
+Date: Mon, 8 Mar 2010 11:48:31 -1000 (HST)
+Subject: [TUHS] mnos and demos
+In-Reply-To: <46b366131003081322p675d1a75sc96db2694e6497aa@mail.gmail.com>
+References: <Pine.BSI.4.64.1003081057530.27466@malasada.lava.net>
+	<46b366131003081322p675d1a75sc96db2694e6497aa@mail.gmail.com>
+Message-ID: <Pine.BSI.4.64.1003081147210.27466@malasada.lava.net>
+
+> http://pdp-11.ru/mybk/pdp11/DEMOS.RAR
+
+Interesting!
+
+$ (cat ../U[12345].DK) | tar -xf -
+tar: Removing leading '/' from member names
+$ ls
+./              READ_GRAF       bin/            lib/            usr/
+../             READ_LP         dev/            mnt/
+.cshrc          TEST/           etc/            tmp/
+
+
+Tim Newsham | www.thenewsh.com/~newsham | thenewsh.blogspot.com
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From lbickley at bickleywest.com  Tue Mar  9 08:03:36 2010
+From: lbickley at bickleywest.com (Lyle Bickley)
+Date: Mon, 8 Mar 2010 14:03:36 -0800
+Subject: [TUHS] mnos and demos
+In-Reply-To: <46b366131003081322p675d1a75sc96db2694e6497aa@mail.gmail.com>
+References: <Pine.BSI.4.64.1003081057530.27466@malasada.lava.net>
+	<46b366131003081322p675d1a75sc96db2694e6497aa@mail.gmail.com>
+Message-ID: <201003081403.36912.lbickley@bickleywest.com>
+
+On Monday 08 March 2010, Jason Stevens wrote:
+> There is this..
+> 
+> http://pdp-11.ru/mybk/pdp11/DEMOS.RAR
+
+After extracting the *.DK from the RAR archive, I found that U1.DK is a tar.
+the bin directory contains:
+
+[    cc     cp    df       echo   file  ln     make   nice    ps     restor  size   su    time    wf
+adb  chgrp  cpfd  diff     ed     find  login  man    nm      pstat  rm      sleep  sync  touch
+ar   chmod  csh   du       expr   grep  ls     mkdir  nroff   pwd    rmail   sort   tail  true
+as   chown  date  dump     false  kill  lx     mount  od      re     rmdir   strip  tee   umount
+cat  cmp    dd    dumpdir  fgrep  ld    mail   mv     passwd  red    rpl     stty   test  wc
+
+All of the above are PDP-11 executables.
+
+A "TEST" directory contains:
+
+ctest.c:    ISO-8859 C program text
+f77test1.f: ASCII text
+f77test2.f: ISO-8859 text
+hdr:        ISO-8859 text
+kcgd:       PDP-11 executable not stripped
+main:       ISO-8859 text
+primer:     ISO-8859 text
+printend:   ISO-8859 text
+PROT:       ISO-8859 text, with escape sequences
+run_test:   POSIX shell script text
+t1:         ISO-8859 text
+t2:         ISO-8859 text
+t3:         C shell script text
+t4:         ISO-8859 text
+t5:         ISO-8859 text
+t6:         ISO-8859 text
+test1.sc:   ISO-8859 text
+test2.sc:   ISO-8859 text
+test3.sc:   ISO-8859 text
+test4.sc:   ISO-8859 text
+text:       ISO-8859 C program text
+text.std:   ISO-8859 text
+
+Will futz around with the other .DK files when I have more time...
+
+> which looks like a bunch of disk images, but they didn't boot for me either
+> in SIMH or a few russian pdp-11 emulators.....
+
+Perhaps they are Dectape or other tape type???
+
+--snip--
+
+Cheers,
+Lyle
+-- 
+Lyle Bickley, KF6ZGI
+Bickley Consulting West Inc.
+http://bickleywest.com
+"Black holes are where God is dividing by zero"
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From wkt at tuhs.org  Tue Mar  9 11:37:23 2010
+From: wkt at tuhs.org (Warren Toomey)
+Date: Tue, 9 Mar 2010 11:37:23 +1000
+Subject: [TUHS] Unix Tree: 4BSDs now in
+In-Reply-To: <20100307021407.GA18028@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	<4B926635.5030102@laposte.net>
+	<20100307021407.GA18028@minnie.tuhs.org>
+Message-ID: <20100309013723.GA25661@minnie.tuhs.org>
+
+On Sun, Mar 07, 2010 at 12:14:07PM +1000, Warren Toomey wrote:
+> I also want to add these other releases:
+>         4BSD
+>         4.1BSD which one?
+>         4.2BSD
+>         4.4BSD
+>         LSX
+
+A fair sampling of the 4BSDs and LSX are now in the Unix Tree.
+I haven't put 4.3-Tahoe in, but 4.3 and 4.3-Reno are in. What do
+you think, is -Tahoe different enough to be a useful addition?
+
+Thanks,
+	Warren
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From cyrille.lefevre-lists at laposte.net  Tue Mar  9 19:38:39 2010
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Tue, 09 Mar 2010 10:38:39 +0100
+Subject: [TUHS] Unix Tree: side scrolling
+In-Reply-To: <20100307021407.GA18028@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org>	<4B926635.5030102@laposte.net>
+	<20100307021407.GA18028@minnie.tuhs.org>
+Message-ID: <4B96171F.5070104@laposte.net>
+
+
+Warren Toomey a écrit :
+> If there are any other ones you'd like to see in the tree, let me know.
+> Now's the time to ask for any other donations to the Heritage Society.
+> If you have any releases which are not yet in the Unix Archive, I'd love
+> to know. I still seriously want to get a copy of SysVR4.2, which will go
+> into the hidden vault to keep the bits safe until some day when they can
+> be let out.
+
+Hi,
+
+things I have :
+
+irix 6.5.5
+osf1 1.0.0
+solaris 2.6
+sunos 4.1.3
+sunos 4.1.4
+ultrix 2.0
+ultrix 4.2
+ultrix 4.3
+usl 4.2 aka SVR4.2
+
+most in source and binary form.
+
+things I want :
+
+hp-ux 9.x, 10.x and 11.x
+aix 4.3 and 5.2
+
+deal :-)
+
+Regards,
+
+Cyrille Lefevre
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From madcrow.maxwell at gmail.com  Tue Mar  9 23:22:01 2010
+From: madcrow.maxwell at gmail.com (Michael Kerpan)
+Date: Tue, 9 Mar 2010 08:22:01 -0500
+Subject: [TUHS] Unix Tree: side scrolling
+In-Reply-To: <20100307021407.GA18028@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	 <4B926635.5030102@laposte.net>
+	 <20100307021407.GA18028@minnie.tuhs.org>
+Message-ID: <8dd2d95c1003090522icdb2bf4o15316c442173235a@mail.gmail.com>
+
+On Sat, Mar 6, 2010 at 9:14 PM, Warren Toomey <wkt at tuhs.org> wrote:
+> I've added side scrolling now. Please have a look at it and see what you think.
+> My HTML skills are limited, so if someone can suggest some better HTML code,
+> I'd be happy to try it out. All the HTML is in template form, so it should be
+> easy enough to try alternatives.
+>
+> The URL is now officially       http://minnie.tuhs.org/UnixTree
+>
+> I also want to add these other releases:
+>        4BSD
+>        4.1BSD which one?
+>        4.2BSD
+>        4.4BSD
+>        LSX
+>        Ultrix-32 which one?
+>        Venix?
+>
+> If there are any other ones you'd like to see in the tree, let me know.
+> Now's the time to ask for any other donations to the Heritage Society.
+> If you have any releases which are not yet in the Unix Archive, I'd love
+> to know. I still seriously want to get a copy of SysVR4.2, which will go
+> into the hidden vault to keep the bits safe until some day when they can
+> be let out.
+
+How about addid a couple of modern FOSS Unix descendants like FreeBSD
+and NetBSD and OpenSolaris. It would be great to see just how much V7
+code still lives in these newer systems.
+
+Anyway, I don't have anything new to offer except for my words of
+gratitude. The source comparison feature is just plain awesome. It
+makes me feel like one of those scientists who figures out family
+trees by doing DNA comparisons ;)
+
+Mike
+
+
+From wkt at tuhs.org  Wed Mar 10 07:05:19 2010
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 10 Mar 2010 07:05:19 +1000
+Subject: [TUHS] Unix Tree: what else?
+In-Reply-To: <8dd2d95c1003090522icdb2bf4o15316c442173235a@mail.gmail.com>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	<4B926635.5030102@laposte.net>
+	<20100307021407.GA18028@minnie.tuhs.org>
+	<8dd2d95c1003090522icdb2bf4o15316c442173235a@mail.gmail.com>
+Message-ID: <20100309210519.GB21946@minnie.tuhs.org>
+
+On Tue, Mar 09, 2010 at 08:22:01AM -0500, Michael Kerpan wrote:
+> How about addid a couple of modern FOSS Unix descendants like FreeBSD
+> and NetBSD and OpenSolaris. It would be great to see just how much V7
+> code still lives in these newer systems.
+
+Good idea. I might do a subset of OpenSolaris and FreeBSD: they are just
+way too big :)
+
+Maybe also Minix and an early Linux.
+
+Thanks,
+	Warren
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From wkt at tuhs.org  Wed Mar 17 13:43:11 2010
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 17 Mar 2010 13:43:11 +1000
+Subject: [TUHS] New Unix Tree website
+In-Reply-To: <20100301043756.GA23969@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+Message-ID: <20100317034311.GA26452@minnie.tuhs.org>
+
+I've added a better assembly parser, and a manpage/textfile parser to the
+Unix Tree, and I've also imported the plaintext from the 1st Edition manuals
+which Dennis Ritchie scanned in. Some interesting results:
+
+There are still some vestiges of the 1st Edition manuals in 4.4BSD:
+
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=V1/man/manintro.txt
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=V1/man/man1/ed.1
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=V1/man/man1/ld.1
+
+among others.
+
+Cheers,
+	Warren
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From lm at bitmover.com  Wed Mar 17 13:56:33 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Tue, 16 Mar 2010 20:56:33 -0700
+Subject: [TUHS] New Unix Tree website
+In-Reply-To: <20100317034311.GA26452@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org> <20100317034311.GA26452@minnie.tuhs.org>
+Message-ID: <20100317035633.GB19006@bitmover.com>
+
+Doesn't suprise me at all.  I looked at the code when the BSD fuss 
+was going on and bmap() was still the same.  After all those years and 
+all that fuss.  Jolitz was right.
+
+On Wed, Mar 17, 2010 at 01:43:11PM +1000, Warren Toomey wrote:
+> I've added a better assembly parser, and a manpage/textfile parser to the
+> Unix Tree, and I've also imported the plaintext from the 1st Edition manuals
+> which Dennis Ritchie scanned in. Some interesting results:
+> 
+> There are still some vestiges of the 1st Edition manuals in 4.4BSD:
+> 
+> http://minnie.tuhs.org/cgi-bin/utree.pl?file=V1/man/manintro.txt
+> http://minnie.tuhs.org/cgi-bin/utree.pl?file=V1/man/man1/ed.1
+> http://minnie.tuhs.org/cgi-bin/utree.pl?file=V1/man/man1/ld.1
+> 
+> among others.
+> 
+> Cheers,
+> 	Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From lm at bitmover.com  Wed Mar 17 13:56:33 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Tue, 16 Mar 2010 20:56:33 -0700
+Subject: [TUHS] New Unix Tree website
+In-Reply-To: <20100317034311.GA26452@minnie.tuhs.org>
+References: <20100301043756.GA23969@minnie.tuhs.org>
+	<20100317034311.GA26452@minnie.tuhs.org>
+Message-ID: <20100317035633.GB19006@bitmover.com>
+
+Doesn't suprise me at all.  I looked at the code when the BSD fuss 
+was going on and bmap() was still the same.  After all those years and 
+all that fuss.  Jolitz was right.
+
+On Wed, Mar 17, 2010 at 01:43:11PM +1000, Warren Toomey wrote:
+> I've added a better assembly parser, and a manpage/textfile parser to the
+> Unix Tree, and I've also imported the plaintext from the 1st Edition manuals
+> which Dennis Ritchie scanned in. Some interesting results:
+> 
+> There are still some vestiges of the 1st Edition manuals in 4.4BSD:
+> 
+> http://minnie.tuhs.org/cgi-bin/utree.pl?file=V1/man/manintro.txt
+> http://minnie.tuhs.org/cgi-bin/utree.pl?file=V1/man/man1/ed.1
+> http://minnie.tuhs.org/cgi-bin/utree.pl?file=V1/man/man1/ld.1
+> 
+> among others.
+> 
+> Cheers,
+> 	Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From lehmann at ans-netz.de  Sun Mar 21 23:09:11 2010
+From: lehmann at ans-netz.de (Oliver Lehmann)
+Date: Sun, 21 Mar 2010 14:09:11 +0100
+Subject: [TUHS] TCP/IP on a System III?
+Message-ID: <20100321140911.284b64b4.lehmann@ans-netz.de>
+
+Hi,
+
+has someone ever tried to grab the old BSD sources where TCP/IP showed up
+first and tried to use them to implement TCP/IP support for an old SYSIII
+UNIX (ZEUS comp.)?
+I tried this but I got scared by so much things which would need to be
+done, inter-process communication, pseudo terminal support are just the
+"starting points" and at the end it is also the kinda old C compiler
+which has problems with the BSD sources (#defs to long for the cpp for
+example)...
+
+Has someone experience with this kind of topic?
+
+-- 
+ Oliver Lehmann
+  http://www.pofo.de/
+  http://wishlist.ans-netz.de/
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From neozeed at gmail.com  Mon Mar 22 00:08:31 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sun, 21 Mar 2010 10:08:31 -0400
+Subject: [TUHS] TCP/IP on a System III?
+In-Reply-To: <20100321140911.284b64b4.lehmann@ans-netz.de>
+References: <20100321140911.284b64b4.lehmann@ans-netz.de>
+Message-ID: <46b366131003210708i574da1e6p18f66c6a624b0ee2@mail.gmail.com>
+
+I was looking down this road for Xenix as a matter of fact, and looking
+through some old news groups they all mention to use the free KA9Q stuff...
+
+http://www.ka9q.net/code/ka9qnos/
+
+<http://www.ka9q.net/code/ka9qnos/>I haven't even begun to look at what
+needs to be done.....  But it's my understanding it's all done in user
+space.
+
+On Sun, Mar 21, 2010 at 9:09 AM, Oliver Lehmann <lehmann at ans-netz.de> wrote:
+
+> Hi,
+>
+> has someone ever tried to grab the old BSD sources where TCP/IP showed up
+> first and tried to use them to implement TCP/IP support for an old SYSIII
+> UNIX (ZEUS comp.)?
+> I tried this but I got scared by so much things which would need to be
+> done, inter-process communication, pseudo terminal support are just the
+> "starting points" and at the end it is also the kinda old C compiler
+> which has problems with the BSD sources (#defs to long for the cpp for
+> example)...
+>
+> Has someone experience with this kind of topic?
+>
+> --
+>  Oliver Lehmann
+>  http://www.pofo.de/
+>  http://wishlist.ans-netz.de/
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100321/12c21c00/attachment.html>
+-------------- next part --------------
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+From lehmann at ans-netz.de  Mon Mar 22 16:51:36 2010
+From: lehmann at ans-netz.de (Oliver Lehmann)
+Date: Mon, 22 Mar 2010 07:51:36 +0100
+Subject: [TUHS] TCP/IP on a System III?
+In-Reply-To: <46b366131003210708i574da1e6p18f66c6a624b0ee2@mail.gmail.com>
+References: <20100321140911.284b64b4.lehmann@ans-netz.de>
+	<46b366131003210708i574da1e6p18f66c6a624b0ee2@mail.gmail.com>
+Message-ID: <20100322065136.46622.qmail@avocado.salatschuessel.net>
+
+Re: [TUHS] TCP/IP on a System III? writes: 
+
+> I was looking down this road for Xenix as a matter of fact, and looking
+> through some old news groups they all mention to use the free KA9Q stuff... 
+> 
+> http://www.ka9q.net/code/ka9qnos/
+
+Yeah, I got this running a year ago on that system but only with SLIP.
+Data transfer rates via SLIP are horrible and we are planning to build a 
+network card. But for that I definitly want TCP/IP in the kernel. There are 
+also chips out which are doing all the TCP/IP and UDP stuff on their own. 
+Maybe this is an option too as it for example stresses the system not so 
+much which should be good in a matter of performance too.
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+

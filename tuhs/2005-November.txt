@@ -1,0 +1,2216 @@
+From bob at jfcl.com  Tue Nov  1 02:33:37 2005
+From: bob at jfcl.com (Robert Armstrong)
+Date: Mon, 31 Oct 2005 08:33:37 -0800
+Subject: [pups] Can't get a second DZQ11 to configure?!
+Message-ID: <002601c5de38$dbe5ea20$0401a8c0@jfcl.com>
+
+Hi Guys,
+
+  I've got a 11/73 with 2.11BSD.  The hardware configuration is pretty
+typical - RQDX3, DEQNA, TK50, and one DZQ11.  Everything runs fine, but now
+I need to install a second DZQ.  The first DZQ has csr 160100 and vector
+300, so according to my calculations the second should be at 160110 and
+vector 310.  I set the switches, install the card, and then edit my system
+configuration to change NDZ to be 2, rebuild the kernel, reboot, and, ....
+Disappointment!
+
+  When it gets up to init, it says:
+
+	init: configure system
+	dz 0 csr 160100 vector 300 attached
+	ra 0 .... 172150 .... 154
+	tms 0 .... 174500 ... 260
+	... etc ...
+
+nothing about the second DZQ.  Everything else still works, including the
+original DZQ11, and it boots up just fine except that there's no sign of the
+second DZQ11.
+
+  I figured I made a mistake building the kernel, so I double check my
+kernel configuration and yes, the file dz.h contains "#define NDZ 2".  Just
+to be safe I delete all the objects from my machine's configuration
+directory and rebuild the entire kernel from sources (takes a couple of
+hours on a 11/73!).  Still no joy - init only finds one DZ...  And I'm sure
+I'm booting the new kernel because of the timestamp it prints out when you
+boot it.
+
+  At this point I figured it's a hardware problem.  Just to be sure, I
+pulled out both DZQs and swapped the switch settings on the two cards.  This
+makes the original DZQ card now the "second" one at 160110/310 and the new
+card the "first" DZQ at 160100/300.  Put it all back together and boot it up
+again - same results!  Init finds the first DZ but not the second!
+Moreover, all the serial ports on the back that are now connected to dz0
+(which is the card that used to be the second dz) still work!  Of course,
+the ports on dz 1 (which is the card that used to work) are now dead.  It
+seems like the two DZQ11 cards must be OK.
+
+  Oh, and BTW, I even used the 11/73's console ODT to verify that all
+addresses from 17760100 to 17760117 respond.
+
+  The only explanation I'm left with is a configuration problem.  Is there
+something I don't know about rebuilding the 2.11bsd kernel?  Is 160110/310
+the wrong location for the second DZQ11?
+
+  Thanks much, any suggestions are appreciated.
+
+Bob Armstrong
+
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Tue Nov  1 04:13:26 2005
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Mon, 31 Oct 2005 13:13:26 -0500
+Subject: [pups] Can't get a second DZQ11 to configure?!
+In-Reply-To: <002601c5de38$dbe5ea20$0401a8c0@jfcl.com>
+References: <002601c5de38$dbe5ea20$0401a8c0@jfcl.com>
+Message-ID: <20051031181326.GA21303@bcr10.uwaterloo.ca>
+
+On Mon, Oct 31, 2005 at 08:33:37AM -0800, Robert Armstrong wrote:
+> I set the switches, install the card, and then edit my system
+> configuration to change NDZ to be 2, rebuild the kernel, reboot, and, ....
+> Disappointment!
+> 
+
+  I can't remember but does this require fiddling /etc/devtab or whatever
+it's called?
+
+-- 
+David Evans
+Faculty of Computer Science                     dfevans at bbcr.uwaterloo.ca
+Dalhousie University, Halifax, Canada  http://bbcr.uwaterloo.ca/~dfevans/
+
+
+From bob at jfcl.com  Tue Nov  1 05:32:01 2005
+From: bob at jfcl.com (Robert Armstrong)
+Date: Mon, 31 Oct 2005 11:32:01 -0800
+Subject: [pups] Can't get a second DZQ11 to configure?!
+In-Reply-To: <tkBb$pAcnmZDFw5J@falstaf.demon.co.uk>
+Message-ID: <005801c5de51$c51a7590$0401a8c0@jfcl.com>
+
+
+  /etc/dtab ...  Yes, that does fix the problem!
+
+  Thanks very, very much ...
+
+Bob
+
+
+> -----Original Message-----
+> From: Robin Birch [mailto:robinb at ruffnready.co.uk] 
+> Sent: Monday, October 31, 2005 11:01 AM
+> To: bob at jfcl.com
+> Cc: pups at minnie.tuhs.org
+> Subject: Re: [pups] Can't get a second DZQ11 to configure?!
+> 
+> 
+> If it is what I think it is then you will need to add the device to 
+> /etc/devtab (I think that's the file).  2.11 doesn't just 
+> detect what's 
+> there.  The kernel build puts the drivers in place but it's 
+> devtab that 
+> switches them on.
+> 
+> Cheers
+> 
+> Robin
+> 
+> In message <002601c5de38$dbe5ea20$0401a8c0 at jfcl.com>, Robert 
+> Armstrong 
+> <bob at jfcl.com> writes
+> >Hi Guys,
+> >
+> >  I've got a 11/73 with 2.11BSD.  The hardware configuration 
+> is pretty 
+> >typical - RQDX3, DEQNA, TK50, and one DZQ11.  Everything 
+> runs fine, but 
+> >now I need to install a second DZQ.  The first DZQ has csr 
+> 160100 and 
+> >vector 300, so according to my calculations the second should be at 
+> >160110 and vector 310.  I set the switches, install the 
+> card, and then 
+> >edit my system configuration to change NDZ to be 2, rebuild 
+> the kernel, 
+> >reboot, and, .... Disappointment!
+> >
+> >  When it gets up to init, it says:
+> >
+> >       init: configure system
+> >       dz 0 csr 160100 vector 300 attached
+> >       ra 0 .... 172150 .... 154
+> >       tms 0 .... 174500 ... 260
+> >       ... etc ...
+> >
+> >nothing about the second DZQ.  Everything else still works, 
+> including 
+> >the original DZQ11, and it boots up just fine except that there's no 
+> >sign of the second DZQ11.
+> >
+> >  I figured I made a mistake building the kernel, so I 
+> double check my 
+> >kernel configuration and yes, the file dz.h contains 
+> "#define NDZ 2".  
+> >Just to be safe I delete all the objects from my machine's 
+> >configuration directory and rebuild the entire kernel from sources 
+> >(takes a couple of hours on a 11/73!).  Still no joy - init 
+> only finds 
+> >one DZ...  And I'm sure I'm booting the new kernel because of the 
+> >timestamp it prints out when you boot it.
+> >
+> >  At this point I figured it's a hardware problem.  Just to 
+> be sure, I 
+> >pulled out both DZQs and swapped the switch settings on the 
+> two cards.  
+> >This makes the original DZQ card now the "second" one at 
+> 160110/310 and 
+> >the new card the "first" DZQ at 160100/300.  Put it all back 
+> together 
+> >and boot it up again - same results!  Init finds the first 
+> DZ but not 
+> >the second! Moreover, all the serial ports on the back that are now 
+> >connected to dz0 (which is the card that used to be the second dz) 
+> >still work!  Of course, the ports on dz 1 (which is the card 
+> that used 
+> >to work) are now dead.  It seems like the two DZQ11 cards must be OK.
+> >
+> >  Oh, and BTW, I even used the 11/73's console ODT to verify 
+> that all 
+> >addresses from 17760100 to 17760117 respond.
+> >
+> >  The only explanation I'm left with is a configuration problem.  Is 
+> >there something I don't know about rebuilding the 2.11bsd 
+> kernel?  Is 
+> >160110/310 the wrong location for the second DZQ11?
+> >
+> >  Thanks much, any suggestions are appreciated.
+> >
+> >Bob Armstrong
+> >
+> >
+> >_______________________________________________
+> >PUPS mailing list
+> >PUPS at minnie.tuhs.org http://minnie.tuhs.org/mailman/listinfo/pups
+> >
+> 
+> -- 
+> Robin Birch
+> 
+> 
+
+
+
+
+From bqt at Update.UU.SE  Tue Nov  1 05:23:40 2005
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Mon, 31 Oct 2005 20:23:40 +0100 (CET)
+Subject: [pups] Can't get a second DZQ11 to configure?!
+In-Reply-To: <002601c5de38$dbe5ea20$0401a8c0@jfcl.com>
+References: <002601c5de38$dbe5ea20$0401a8c0@jfcl.com>
+Message-ID: <Pine.LNX.4.64.0510312023010.14775@Psilocybe.Update.UU.SE>
+
+On Mon, 31 Oct 2005, Robert Armstrong wrote:
+
+Hmm. As far as I know, BSD don't do automatic detection, so you have to
+tell the CSR of all devices. Have you told the config where to find the
+second DZA?
+
+	Johnny
+
+> Hi Guys,
+>
+>   I've got a 11/73 with 2.11BSD.  The hardware configuration is pretty
+> typical - RQDX3, DEQNA, TK50, and one DZQ11.  Everything runs fine, but now
+> I need to install a second DZQ.  The first DZQ has csr 160100 and vector
+> 300, so according to my calculations the second should be at 160110 and
+> vector 310.  I set the switches, install the card, and then edit my system
+> configuration to change NDZ to be 2, rebuild the kernel, reboot, and, ....
+> Disappointment!
+>
+>   When it gets up to init, it says:
+>
+> 	init: configure system
+> 	dz 0 csr 160100 vector 300 attached
+> 	ra 0 .... 172150 .... 154
+> 	tms 0 .... 174500 ... 260
+> 	... etc ...
+>
+> nothing about the second DZQ.  Everything else still works, including the
+> original DZQ11, and it boots up just fine except that there's no sign of the
+> second DZQ11.
+>
+>   I figured I made a mistake building the kernel, so I double check my
+> kernel configuration and yes, the file dz.h contains "#define NDZ 2".  Just
+> to be safe I delete all the objects from my machine's configuration
+> directory and rebuild the entire kernel from sources (takes a couple of
+> hours on a 11/73!).  Still no joy - init only finds one DZ...  And I'm sure
+> I'm booting the new kernel because of the timestamp it prints out when you
+> boot it.
+>
+>   At this point I figured it's a hardware problem.  Just to be sure, I
+> pulled out both DZQs and swapped the switch settings on the two cards.  This
+> makes the original DZQ card now the "second" one at 160110/310 and the new
+> card the "first" DZQ at 160100/300.  Put it all back together and boot it up
+> again - same results!  Init finds the first DZ but not the second!
+> Moreover, all the serial ports on the back that are now connected to dz0
+> (which is the card that used to be the second dz) still work!  Of course,
+> the ports on dz 1 (which is the card that used to work) are now dead.  It
+> seems like the two DZQ11 cards must be OK.
+>
+>   Oh, and BTW, I even used the 11/73's console ODT to verify that all
+> addresses from 17760100 to 17760117 respond.
+>
+>   The only explanation I'm left with is a configuration problem.  Is there
+> something I don't know about rebuilding the 2.11bsd kernel?  Is 160110/310
+> the wrong location for the second DZQ11?
+>
+>   Thanks much, any suggestions are appreciated.
+>
+> Bob Armstrong
+>
+>
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+>
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+From robinb at ruffnready.co.uk  Tue Nov  1 05:00:44 2005
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Mon, 31 Oct 2005 19:00:44 +0000
+Subject: [pups] Can't get a second DZQ11 to configure?!
+In-Reply-To: <002601c5de38$dbe5ea20$0401a8c0@jfcl.com>
+References: <002601c5de38$dbe5ea20$0401a8c0@jfcl.com>
+Message-ID: <tkBb$pAcnmZDFw5J@falstaf.demon.co.uk>
+
+If it is what I think it is then you will need to add the device to 
+/etc/devtab (I think that's the file).  2.11 doesn't just detect what's 
+there.  The kernel build puts the drivers in place but it's devtab that 
+switches them on.
+
+Cheers
+
+Robin
+
+In message <002601c5de38$dbe5ea20$0401a8c0 at jfcl.com>, Robert Armstrong 
+<bob at jfcl.com> writes
+>Hi Guys,
+>
+>  I've got a 11/73 with 2.11BSD.  The hardware configuration is pretty
+>typical - RQDX3, DEQNA, TK50, and one DZQ11.  Everything runs fine, but now
+>I need to install a second DZQ.  The first DZQ has csr 160100 and vector
+>300, so according to my calculations the second should be at 160110 and
+>vector 310.  I set the switches, install the card, and then edit my system
+>configuration to change NDZ to be 2, rebuild the kernel, reboot, and, ....
+>Disappointment!
+>
+>  When it gets up to init, it says:
+>
+>       init: configure system
+>       dz 0 csr 160100 vector 300 attached
+>       ra 0 .... 172150 .... 154
+>       tms 0 .... 174500 ... 260
+>       ... etc ...
+>
+>nothing about the second DZQ.  Everything else still works, including the
+>original DZQ11, and it boots up just fine except that there's no sign of the
+>second DZQ11.
+>
+>  I figured I made a mistake building the kernel, so I double check my
+>kernel configuration and yes, the file dz.h contains "#define NDZ 2".  Just
+>to be safe I delete all the objects from my machine's configuration
+>directory and rebuild the entire kernel from sources (takes a couple of
+>hours on a 11/73!).  Still no joy - init only finds one DZ...  And I'm sure
+>I'm booting the new kernel because of the timestamp it prints out when you
+>boot it.
+>
+>  At this point I figured it's a hardware problem.  Just to be sure, I
+>pulled out both DZQs and swapped the switch settings on the two cards.  This
+>makes the original DZQ card now the "second" one at 160110/310 and the new
+>card the "first" DZQ at 160100/300.  Put it all back together and boot it up
+>again - same results!  Init finds the first DZ but not the second!
+>Moreover, all the serial ports on the back that are now connected to dz0
+>(which is the card that used to be the second dz) still work!  Of course,
+>the ports on dz 1 (which is the card that used to work) are now dead.  It
+>seems like the two DZQ11 cards must be OK.
+>
+>  Oh, and BTW, I even used the 11/73's console ODT to verify that all
+>addresses from 17760100 to 17760117 respond.
+>
+>  The only explanation I'm left with is a configuration problem.  Is there
+>something I don't know about rebuilding the 2.11bsd kernel?  Is 160110/310
+>the wrong location for the second DZQ11?
+>
+>  Thanks much, any suggestions are appreciated.
+>
+>Bob Armstrong
+>
+>
+>_______________________________________________
+>PUPS mailing list
+>PUPS at minnie.tuhs.org
+>http://minnie.tuhs.org/mailman/listinfo/pups
+>
+
+-- 
+Robin Birch
+
+
+
+From robinb at ruffnready.co.uk  Tue Nov  1 09:31:14 2005
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Mon, 31 Oct 2005 23:31:14 +0000
+Subject: [pups] Can't get a second DZQ11 to configure?!
+In-Reply-To: <005801c5de51$c51a7590$0401a8c0@jfcl.com>
+References: <tkBb$pAcnmZDFw5J@falstaf.demon.co.uk>
+	<005801c5de51$c51a7590$0401a8c0@jfcl.com>
+Message-ID: <PImTEoCClqZDFw+t@falstaf.demon.co.uk>
+
+In message <005801c5de51$c51a7590$0401a8c0 at jfcl.com>, Robert Armstrong 
+<bob at jfcl.com> writes
+>
+>  /etc/dtab ...  Yes, that does fix the problem!
+>
+That's the name - thought devtab wasn't right.
+
+Glad it works now
+
+Robin
+>  Thanks very, very much ...
+>
+>Bob
+>
+>
+>> -----Original Message-----
+>> From: Robin Birch [mailto:robinb at ruffnready.co.uk]
+>> Sent: Monday, October 31, 2005 11:01 AM
+>> To: bob at jfcl.com
+>> Cc: pups at minnie.tuhs.org
+>> Subject: Re: [pups] Can't get a second DZQ11 to configure?!
+>>
+>>
+>> If it is what I think it is then you will need to add the device to
+>> /etc/devtab (I think that's the file).  2.11 doesn't just
+>> detect what's
+>> there.  The kernel build puts the drivers in place but it's
+>> devtab that
+>> switches them on.
+>>
+>> Cheers
+>>
+>> Robin
+>>
+>> In message <002601c5de38$dbe5ea20$0401a8c0 at jfcl.com>, Robert
+>> Armstrong
+>> <bob at jfcl.com> writes
+>> >Hi Guys,
+>> >
+>> >  I've got a 11/73 with 2.11BSD.  The hardware configuration
+>> is pretty
+>> >typical - RQDX3, DEQNA, TK50, and one DZQ11.  Everything
+>> runs fine, but
+>> >now I need to install a second DZQ.  The first DZQ has csr
+>> 160100 and
+>> >vector 300, so according to my calculations the second should be at
+>> >160110 and vector 310.  I set the switches, install the
+>> card, and then
+>> >edit my system configuration to change NDZ to be 2, rebuild
+>> the kernel,
+>> >reboot, and, .... Disappointment!
+>> >
+>> >  When it gets up to init, it says:
+>> >
+>> >       init: configure system
+>> >       dz 0 csr 160100 vector 300 attached
+>> >       ra 0 .... 172150 .... 154
+>> >       tms 0 .... 174500 ... 260
+>> >       ... etc ...
+>> >
+>> >nothing about the second DZQ.  Everything else still works,
+>> including
+>> >the original DZQ11, and it boots up just fine except that there's no
+>> >sign of the second DZQ11.
+>> >
+>> >  I figured I made a mistake building the kernel, so I
+>> double check my
+>> >kernel configuration and yes, the file dz.h contains
+>> "#define NDZ 2".
+>> >Just to be safe I delete all the objects from my machine's
+>> >configuration directory and rebuild the entire kernel from sources
+>> >(takes a couple of hours on a 11/73!).  Still no joy - init
+>> only finds
+>> >one DZ...  And I'm sure I'm booting the new kernel because of the
+>> >timestamp it prints out when you boot it.
+>> >
+>> >  At this point I figured it's a hardware problem.  Just to
+>> be sure, I
+>> >pulled out both DZQs and swapped the switch settings on the
+>> two cards.
+>> >This makes the original DZQ card now the "second" one at
+>> 160110/310 and
+>> >the new card the "first" DZQ at 160100/300.  Put it all back
+>> together
+>> >and boot it up again - same results!  Init finds the first
+>> DZ but not
+>> >the second! Moreover, all the serial ports on the back that are now
+>> >connected to dz0 (which is the card that used to be the second dz)
+>> >still work!  Of course, the ports on dz 1 (which is the card
+>> that used
+>> >to work) are now dead.  It seems like the two DZQ11 cards must be OK.
+>> >
+>> >  Oh, and BTW, I even used the 11/73's console ODT to verify
+>> that all
+>> >addresses from 17760100 to 17760117 respond.
+>> >
+>> >  The only explanation I'm left with is a configuration problem.  Is
+>> >there something I don't know about rebuilding the 2.11bsd
+>> kernel?  Is
+>> >160110/310 the wrong location for the second DZQ11?
+>> >
+>> >  Thanks much, any suggestions are appreciated.
+>> >
+>> >Bob Armstrong
+>> >
+>> >
+>> >_______________________________________________
+>> >PUPS mailing list
+>> >PUPS at minnie.tuhs.org http://minnie.tuhs.org/mailman/listinfo/pups
+>> >
+>>
+>> --
+>> Robin Birch
+>>
+>>
+>
+>
+>
+
+-- 
+Robin Birch
+
+
+
+From bob at jfcl.com  Thu Nov  3 14:40:25 2005
+From: bob at jfcl.com (Robert Armstrong)
+Date: Wed, 2 Nov 2005 20:40:25 -0800
+Subject: [pups] "/unix is not the running version." ??
+Message-ID: <000001c5e030$b68f64f0$0401010a@jfcl.com>
+
+Guys,
+
+  Thanks for the help with my dzq11 problem - I'm glad to see that there are
+still people around running PDP-11 Unix.  Now that I've actually started
+using my 11/73, I've run into several things that I just don't know how to
+fix.
+
+  Like this one - I built a non-networking kernel (my normal /unix kernel
+has DEQNA and TCP/IP support) using the NONET example that comes with
+2.11BSD.  No particular problems there.
+
+  Since I don't actually want to overwrite my /unix file, I can't use "make
+install" to install the nonet kernel, and so I just say "cp unix /nonet" and
+then chmod /nonet to set the protections.  This might have been my mistake,
+but I don't know any other way to do it without trashing my real /unix
+kernel.
+
+  To boot the nonet kernel, at the ":" boot prompt I type "nonet".  All is
+well until we get up to init, and then it says
+
+	autoconfig: /unix is not the running version
+	init: configuration setup error
+
+And then I'm stuck in single user mode with no devices configured.  Not
+especially useful.
+
+  Is my mistake in just "cp"ing the nonet kernel, or is there some
+limitation on booting files other than /unix?
+
+Thanks again,
+Bob Armstrong
+
+
+
+
+From bob at jfcl.com  Fri Nov  4 01:58:20 2005
+From: bob at jfcl.com (Robert Armstrong)
+Date: Thu, 3 Nov 2005 07:58:20 -0800
+Subject: [pups] "/unix is not the running version." ??
+Message-ID: <005901c5e08f$6aa153f0$0401010a@jfcl.com>
+
+> Unfortunately the autoconfig stuff has /unix hard coded into 
+> it and will only look for this file.
+
+  Thanks, guys, for the answer.  I've got to admit that I'm disappointed.
+If you have to decide, before the old system goes down, via a series of
+moves or copies or hard links or whatever, which kernel you're going to use
+the next time the system comes up, then it doesn't seem all that useful.
+
+  I guess if I build a kernel that just doesn't work at all, I can always
+boot the old kernel far enough to get to single user mode where I can remove
+the dud /unix, put the old one back, and then reboot.  That's something.
+
+  Anyway, if that's the way it is, then that's the way it is :-)  Thanks
+again.
+
+Bob
+
+
+
+
+From robinb at ruffnready.co.uk  Fri Nov  4 01:09:31 2005
+From: robinb at ruffnready.co.uk (robinb at ruffnready.co.uk)
+Date: Thu, 03 Nov 2005 15:09:31 +0000
+Subject: [pups] "/unix is not the running version." ??
+In-Reply-To: <000001c5e030$b68f64f0$0401010a@jfcl.com>
+Message-ID: <S616746AbVKCPJq/20051103151003Z+1001445@anchor-fallback-96.mail.demon.net>
+
+Right idea, wrong way round :-)
+
+Copy your /unix to something like /unix.save and then call your new image /unix.
+
+Unfortunately the autoconfig stuff has /unix hard coded into it and will only look for this file.
+
+Cheers
+
+Robin
+
+bob at jfcl.com wrote:
+> Guys,
+> 
+>   Thanks for the help with my dzq11 problem - I'm glad to see that there are
+> still people around running PDP-11 Unix.  Now that I've actually started
+> using my 11/73, I've run into several things that I just don't know how to
+> fix.
+> 
+>   Like this one - I built a non-networking kernel (my normal /unix kernel
+> has DEQNA and TCP/IP support) using the NONET example that comes with
+> 2.11BSD.  No particular problems there.
+> 
+>   Since I don't actually want to overwrite my /unix file, I can't use "make
+> install" to install the nonet kernel, and so I just say "cp unix /nonet" and
+> then chmod /nonet to set the protections.  This might have been my mistake,
+> but I don't know any other way to do it without trashing my real /unix
+> kernel.
+> 
+>   To boot the nonet kernel, at the ":" boot prompt I type "nonet".  All is
+> well until we get up to init, and then it says
+> 
+> 	autoconfig: /unix is not the running version
+> 	init: configuration setup error
+> 
+> And then I'm stuck in single user mode with no devices configured.  Not
+> especially useful.
+> 
+>   Is my mistake in just "cp"ing the nonet kernel, or is there some
+> limitation on booting files other than /unix?
+> 
+> Thanks again,
+> Bob Armstrong
+> 
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+> 
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Fri Nov  4 02:10:14 2005
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Thu, 3 Nov 2005 11:10:14 -0500
+Subject: [pups] "/unix is not the running version." ??
+In-Reply-To: <005901c5e08f$6aa153f0$0401010a@jfcl.com>
+References: <005901c5e08f$6aa153f0$0401010a@jfcl.com>
+Message-ID: <20051103161014.GA21054@bcr10.uwaterloo.ca>
+
+On Thu, Nov 03, 2005 at 07:58:20AM -0800, Robert Armstrong wrote:
+> > Unfortunately the autoconfig stuff has /unix hard coded into 
+> > it and will only look for this file.
+> 
+
+...
+
+>   Anyway, if that's the way it is, then that's the way it is :-)  Thanks
+> again.
+> 
+
+  I suppose some enterprising soul could "fix it"...
+
+-- 
+David Evans
+Faculty of Computer Science                     dfevans at bbcr.uwaterloo.ca
+Dalhousie University, Halifax, Canada  http://bbcr.uwaterloo.ca/~dfevans/
+
+
+From asbesto at freaknet.org  Wed Nov  9 08:34:06 2005
+From: asbesto at freaknet.org (asbesto)
+Date: Tue, 8 Nov 2005 22:34:06 +0000
+Subject: [TUHS] What UNIX on a PDP-11/34 ?
+Message-ID: <20051108223406.GA10659@freaknet.org>
+
+
+Hi all, 
+
+here at freaknet medialab we made some images of our
+RL02 disk packs with RT-11 and GAMMA-11 software 
+(specific for a Nuclear Camera, this pdp-11 was used
+for medical exams) :)
+
+those images are very funny, we can use them under
+simh emulator! :)
+
+So, now that we have the backups, we're wondering about
+installing UNIX in this pdp11/34.
+
+what can we install? any hint ? 
+
+please help! :)
+
+p.s. something about our restoration and the disk image of
+our rt-11 system is online at http://zaverio.net/pdp11, under
+the "stuff" directory. :)
+
+-- 
+[ asbesto : IW9HGS : freaknet medialab : radiocybernet : poetry ]
+[ http://freaknet.org/asbesto http://papuasia.org/radiocybernet ]
+[ http://www.emergelab.org :: NON SCRIVERMI USANDO LE ACCENTATE ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC, SPAM ]
+
+
+
+From wb at freebie.xs4all.nl  Wed Nov  9 09:35:08 2005
+From: wb at freebie.xs4all.nl (Wilko Bulte)
+Date: Wed, 9 Nov 2005 00:35:08 +0100
+Subject: [TUHS] What UNIX on a PDP-11/34 ?
+In-Reply-To: <20051108223406.GA10659@freaknet.org>
+References: <20051108223406.GA10659@freaknet.org>
+Message-ID: <20051108233508.GA5727@freebie.xs4all.nl>
+
+On Tue, Nov 08, 2005 at 10:34:06PM +0000, asbesto wrote..
+> 
+> Hi all, 
+> 
+> here at freaknet medialab we made some images of our
+> RL02 disk packs with RT-11 and GAMMA-11 software 
+> (specific for a Nuclear Camera, this pdp-11 was used
+> for medical exams) :)
+
+I have colleagues at work that used to service these GAMMA-11
+machines.  Kinda special it seems.
+
+> those images are very funny, we can use them under
+> simh emulator! :)
+> 
+> So, now that we have the backups, we're wondering about
+> installing UNIX in this pdp11/34.
+> 
+> what can we install? any hint ? 
+
+I had Ultrix-11 on ours, using 2 RK05 drives. But only briefly, as
+the lack of split I/D makes an 11/34 with Ultrix-11 about as fast
+as tar flowing uphill :-)
+
+My guess would be some V6-ish version ??  Never tried that..
+
+Wilko
+
+
+From hansolofalcon at worldnet.att.net  Wed Nov  9 14:04:24 2005
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Tue, 8 Nov 2005 23:04:24 -0500
+Subject: [TUHS] UNIX and relatives and SSH
+Message-ID: <000001c5e4e2$b23e5b20$6401a8c0@who7>
+
+Hello from Gregg C Levine
+One of my less then familiar with UNIX and its relatives, friend,
+wants to explore a system running UNIX.
+
+Probably BSD for the PDP-11 I should think. Since I view telnet, from
+the Internet to me anyway, as a security risk can someone check this
+assertion?
+
+The last version of BSD for the PDP-11 that I am aware of, and have
+seen on the site, 2.11 does not have the capability to run SSH,
+because it does not have the ability to compile it from source. SSH
+wasn't added to the operating systems that we use until much later. I
+freely admit that part of my assertion may not be correct however.
+(Regarding the ability to build SSH natively.) 
+
+For example, I am aware that the BSD base, such as FreeBSD, and
+NetBSD, and OpenBSD, all have SSH included. It certainly is in Linux. 
+
+What I am planning on doing is configuring the Linux version of E11 to
+run the chosen BSD pointing its Ethernet connection, to the one my
+Linux box in question uses. And have a second one also running the
+same release work as a gateway for the first. You'd run SSH to the
+gateway, login as a "guest" and via an appropriate password, and then
+telnet to the product. Of course to risk damage to the baseboard
+Ethernet connection, I'd probably put a cheap card in the computer,
+and run that over to my router. Pointing it of course to the
+E11instance.
+
+Warren, just for the sake of double checking my facts, are the
+instructions regarding the BSD family for the PDP-11 up to date?
+---
+Gregg C Levine hansolofalcon at worldnet.att.net
+---
+"Remember the Force will be with you. Always." Obi-Wan Kenobi 
+
+
+
+
+From wkt at tuhs.org  Wed Nov  9 15:58:33 2005
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 9 Nov 2005 15:58:33 +1000
+Subject: [TUHS] UNIX and relatives and SSH
+In-Reply-To: <000001c5e4e2$b23e5b20$6401a8c0@who7>
+References: <000001c5e4e2$b23e5b20$6401a8c0@who7>
+Message-ID: <20051109055833.GA62580@minnie.tuhs.org>
+
+On Tue, Nov 08, 2005 at 11:04:24PM -0500, Gregg C Levine wrote:
+> Warren, just for the sake of double checking my facts, are the
+> instructions regarding the BSD family for the PDP-11 up to date?
+
+They are probably close, but if someone with more knowledge
+wants to update them, then let me know :)
+
+I doubt that you'd get SSH compiled into the 64K data space available to
+a PDP-11 process. So, I think an SSH to telnet proxy would be the best
+solution.
+
+	Warren
+
+
+From asbesto at freaknet.org  Wed Nov  9 23:16:45 2005
+From: asbesto at freaknet.org (asbesto)
+Date: Wed, 9 Nov 2005 13:16:45 +0000
+Subject: [TUHS] What UNIX on a PDP-11/34 ?
+In-Reply-To: <20051108233508.GA5727@freebie.xs4all.nl>
+References: <20051108223406.GA10659@freaknet.org>
+	<20051108233508.GA5727@freebie.xs4all.nl>
+Message-ID: <20051109131645.GA7608@freaknet.org>
+
+Wed, Nov 09, 2005 at 12:35:08AM +0100, Wilko Bulte wrote:
+
+> > here at freaknet medialab we made some images of our
+> > RL02 disk packs with RT-11 and GAMMA-11 software 
+> > (specific for a Nuclear Camera, this pdp-11 was used
+> > for medical exams) :)
+
+> > what can we install? any hint ? 
+> I had Ultrix-11 on ours, using 2 RK05 drives. But only briefly, as
+
+but, can we install a RK05 image into an RL02 drive ? :%
+
+or, maybe a V6 ?
+
+-- 
+[ asbesto : IW9HGS : freaknet medialab : radiocybernet : poetry ]
+[ http://freaknet.org/asbesto http://papuasia.org/radiocybernet ]
+[ http://www.emergelab.org :: NON SCRIVERMI USANDO LE ACCENTATE ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC, SPAM ]
+
+
+
+From lbyoopp at gmail.com  Thu Nov 10 00:10:53 2005
+From: lbyoopp at gmail.com (benyuan liu)
+Date: Wed, 9 Nov 2005 22:10:53 +0800
+Subject: [TUHS] TUHS Digest, Vol 27, Issue 1
+In-Reply-To: <mailman.5.1131501601.54427.tuhs@minnie.tuhs.org>
+References: <mailman.5.1131501601.54427.tuhs@minnie.tuhs.org>
+Message-ID: <6f2d4a540511090610q750f3233w@mail.gmail.com>
+
+hi all:
+currently i am reading the mit 6.828 course, and i am wondering
+how to creat a rk05 image from the ground up?just like the one mentioned in
+the course v6root v6src v6doc?
+thanks in advance~
+------------------------------
+lucky buggy
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20051109/a356c009/attachment.html>
+
+From iking at killthewabbit.org  Thu Nov 10 02:22:00 2005
+From: iking at killthewabbit.org (Ian King)
+Date: Wed, 9 Nov 2005 08:22:00 -0800
+Subject: [TUHS] What UNIX on a PDP-11/34 ?
+In-Reply-To: <20051109131645.GA7608@freaknet.org>
+Message-ID: <006901c5e549$b655b250$2a0010ac@killthewabbit.org>
+
+Weirdness - my original reply to your mail never showed up....
+
+First of all, YES to v6!  That's what I have on my 11/34, with 192k of
+MOS memory and two RK05 drives.  You can regen the whole system with no
+problem.  I'm only running the console on it, but in multiuser mode.  
+
+One of the images on the PUPS site is a v6 distribution tape.  But even
+if you don't have a tape drive, it seems you could build a disk image on
+an emulator, then stream that over to your RL with vtserver.  I've had
+some success doing this with other machines (fortunately, the archives
+contained RK05 images and I have RKs).  -- Ian 
+
+------
+It's not junk, it's history!
+Ian S. King <iking at KillTheWabbit.org>
+
+
+-----Original Message-----
+From: tuhs-bounces at minnie.tuhs.org [mailto:tuhs-bounces at minnie.tuhs.org]
+On Behalf Of asbesto
+Sent: Wednesday, November 09, 2005 5:17 AM
+To: tuhs at tuhs.org
+Subject: Re: [TUHS] What UNIX on a PDP-11/34 ?
+
+
+Wed, Nov 09, 2005 at 12:35:08AM +0100, Wilko Bulte wrote:
+
+> > here at freaknet medialab we made some images of our
+> > RL02 disk packs with RT-11 and GAMMA-11 software
+> > (specific for a Nuclear Camera, this pdp-11 was used
+> > for medical exams) :)
+
+> > what can we install? any hint ?
+> I had Ultrix-11 on ours, using 2 RK05 drives. But only briefly, as
+
+but, can we install a RK05 image into an RL02 drive ? :%
+
+or, maybe a V6 ?
+
+-- 
+[ asbesto : IW9HGS : freaknet medialab : radiocybernet : poetry ]
+[ http://freaknet.org/asbesto http://papuasia.org/radiocybernet ]
+[ http://www.emergelab.org :: NON SCRIVERMI USANDO LE ACCENTATE ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC, SPAM ]
+
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From LyricalNanoha at dosius.net  Thu Nov 10 03:26:32 2005
+From: LyricalNanoha at dosius.net (Lyrical Nanoha)
+Date: Wed, 9 Nov 2005 12:26:32 -0500 (EST)
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+Message-ID: <Pine.LNX.4.62.0511091221220.6113@static-141-149-129-16.buff.east.verizon.net>
+
+I've thought, since there doesn't seem to be a working "V6on286", maybe I 
+should try porting it myself though I'm not very familiar with the Ancient 
+Unix sources or with the ancient C used.  The oldest compiler I've got 
+that will compile is Turbo C++ 1.01 from 1990 and it's an ANSI C compiler. 
+(I do think it'll compile late K&R, but there's weirdnesses in the C used 
+by V6.)
+
+Having an emulator like QEMU handy is a nice plus.  I could prolly build 
+everything onto a 1.44 MB disk image and boot it in emulation.  I'm 
+thinking I'd want to create tools for transferring files into and out of 
+disk images, and a bootloader to put on the first sector of the disk 
+(though, 512 bytes is awful small...)
+
+Any ideas?
+
+-uso.
+
+
+From carl.lowenstein at gmail.com  Thu Nov 10 02:47:37 2005
+From: carl.lowenstein at gmail.com (Carl Lowenstein)
+Date: Wed, 9 Nov 2005 08:47:37 -0800
+Subject: [TUHS] What UNIX on a PDP-11/34 ?
+In-Reply-To: <006901c5e549$b655b250$2a0010ac@killthewabbit.org>
+References: <20051109131645.GA7608@freaknet.org>
+	<006901c5e549$b655b250$2a0010ac@killthewabbit.org>
+Message-ID: <5904d5730511090847jfc167ect21b9dd852778583d@mail.gmail.com>
+
+On 11/9/05, Ian King <iking at killthewabbit.org> wrote:
+> Weirdness - my original reply to your mail never showed up....
+>
+> First of all, YES to v6!  That's what I have on my 11/34, with 192k of
+> MOS memory and two RK05 drives.  You can regen the whole system with no
+> problem.  I'm only running the console on it, but in multiuser mode.
+>
+> One of the images on the PUPS site is a v6 distribution tape.  But even
+> if you don't have a tape drive, it seems you could build a disk image on
+> an emulator, then stream that over to your RL with vtserver.  I've had
+> some success doing this with other machines (fortunately, the archives
+> contained RK05 images and I have RKs).  -- Ian
+>
+> -----Original Message-----
+> From: tuhs-bounces at minnie.tuhs.org [mailto:tuhs-bounces at minnie.tuhs.org]
+> On Behalf Of asbesto
+> Sent: Wednesday, November 09, 2005 5:17 AM
+> To: tuhs at tuhs.org
+> Subject: Re: [TUHS] What UNIX on a PDP-11/34 ?
+>
+>
+> Wed, Nov 09, 2005 at 12:35:08AM +0100, Wilko Bulte wrote:
+>
+> > > here at freaknet medialab we made some images of our
+> > > RL02 disk packs with RT-11 and GAMMA-11 software
+> > > (specific for a Nuclear Camera, this pdp-11 was used
+> > > for medical exams) :)
+>
+> > > what can we install? any hint ?
+> > I had Ultrix-11 on ours, using 2 RK05 drives. But only briefly, as
+>
+> but, can we install a RK05 image into an RL02 drive ? :%
+>
+> or, maybe a V6 ?
+
+6th Edition Unix predates RL02 drives by a few years.  I would try for
+DEC's V7m.
+
+    carl
+--
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+
+From imp at bsdimp.com  Thu Nov 10 07:54:14 2005
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Wed, 09 Nov 2005 14:54:14 -0700 (MST)
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+In-Reply-To: <Pine.LNX.4.62.0511091221220.6113@static-141-149-129-16.buff.east.verizon.net>
+References: <Pine.LNX.4.62.0511091221220.6113@static-141-149-129-16.buff.east.verizon.net>
+Message-ID: <20051109.145414.102576081.imp@bsdimp.com>
+
+: disk images, and a bootloader to put on the first sector of the disk 
+: (though, 512 bytes is awful small...)
+
+It is a very useful excersize to concentrate on the small.  512 bytes
+is plenty to play with...  Although many boot loaders are boring and
+just load the next boot stage or two and jump to that.
+
+Warner
+
+
+From brantley at coraid.com  Thu Nov 10 08:03:07 2005
+From: brantley at coraid.com (Brantley Coile)
+Date: Wed, 9 Nov 2005 17:03:07 -0500
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+In-Reply-To: <Pine.LNX.4.62.0511091221220.6113@static-141-149-129-16.buff.east.verizon.net>
+Message-ID: <849b04683754b84f7e42810d761db3bd@coraid.com>
+
+my suggestions are as follows (i assume you really mean 8086 mode):
+
+use a pdp emulator to run a donor system and do the port from there.
+
+using a floppy to boot is a great idea.  i've written several boot
+straps to boot from the floppy that configure the serial port, and put
+the processor in 32-bit mode.  it's tight, but not too hard.  you have
+a great advantage in that you're going to stick to 16 bit so you can
+use the bios.  512 bytes in that case is tons of space.
+
+first job is to get an assembler and compiler for the 8086.  i would
+use the mit's compilers/assembler from the 1980's.  if you can't find
+a copy, i have one.
+
+next, figure out how you are going to manage memory.  avoiding
+protected memory would make things much easier.  just have each
+process use a full 64K of memory for the data segment.  for text you
+don't have to worry about stepping on anything, so they don't have to
+be a full 64k.  that'll give you 10 processes worth of processes.  you
+can just swap if you want any more.
+
+the routines you'll need to fix are in /usr/sys/ken/main.c.
+
+then you need to rewrite the trap code to use the pc's interrupts.
+this is very straight forward.  you'll have to write some small
+assembler code to setup the stack frames to get into trap.c.
+
+next you'll need to write device drivers for the screen/keyboard, the
+clock, and the floppy.  later you can write an ATA driver and get a
+mbr and hard disk boot strap.
+
+
+if you want to do a 32-bit version, then things are a little
+different.  but this should give you the v6 in about as little
+work as can be.
+
+
+ Brantley Coile
+-------------- next part --------------
+An embedded message was scrubbed...
+From: unknown sender
+Subject: no subject
+Date: no date
+Size: 38
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20051109/86c19884/attachment.mht>
+
+From LyricalNanoha at dosius.net  Thu Nov 10 03:26:32 2005
+From: LyricalNanoha at dosius.net (Lyrical Nanoha)
+Date: Wed, 9 Nov 2005 12:26:32 -0500 (EST)
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+Message-ID: <Pine.LNX.4.62.0511091221220.6113@static-141-149-129-16.buff.east.verizon.net>
+
+I've thought, since there doesn't seem to be a working "V6on286", maybe I 
+should try porting it myself though I'm not very familiar with the Ancient 
+Unix sources or with the ancient C used.  The oldest compiler I've got 
+that will compile is Turbo C++ 1.01 from 1990 and it's an ANSI C compiler. 
+(I do think it'll compile late K&R, but there's weirdnesses in the C used 
+by V6.)
+
+Having an emulator like QEMU handy is a nice plus.  I could prolly build 
+everything onto a 1.44 MB disk image and boot it in emulation.  I'm 
+thinking I'd want to create tools for transferring files into and out of 
+disk images, and a bootloader to put on the first sector of the disk 
+(though, 512 bytes is awful small...)
+
+Any ideas?
+
+-uso.
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+http://minnie.tuhs.org/mailman/listinfo/tuhs
+--upas-evinlmwyknuftcyjuaszbykcud--
+
+
+From iking at killthewabbit.org  Thu Nov 10 09:56:47 2005
+From: iking at killthewabbit.org (Ian King)
+Date: Wed, 9 Nov 2005 15:56:47 -0800
+Subject: [TUHS] What UNIX on a PDP-11/34 ?
+In-Reply-To: <5904d5730511090847jfc167ect21b9dd852778583d@mail.gmail.com>
+Message-ID: <008301c5e589$3eb819a0$2a0010ac@killthewabbit.org>
+
+Oh bugger, I'd forgotten about device drivers...  my bad.  
+
+-----Original Message-----
+From: tuhs-bounces at minnie.tuhs.org [mailto:tuhs-bounces at minnie.tuhs.org]
+On Behalf Of Carl Lowenstein
+Sent: Wednesday, November 09, 2005 8:48 AM
+To: tuhs at tuhs.org
+Subject: Re: [TUHS] What UNIX on a PDP-11/34 ?
+
+
+On 11/9/05, Ian King <iking at killthewabbit.org> wrote:
+> Weirdness - my original reply to your mail never showed up....
+>
+> First of all, YES to v6!  That's what I have on my 11/34, with 192k of
+
+> MOS memory and two RK05 drives.  You can regen the whole system with 
+> no problem.  I'm only running the console on it, but in multiuser 
+> mode.
+>
+> One of the images on the PUPS site is a v6 distribution tape.  But 
+> even if you don't have a tape drive, it seems you could build a disk 
+> image on an emulator, then stream that over to your RL with vtserver.
+
+> I've had some success doing this with other machines (fortunately, the
+
+> archives contained RK05 images and I have RKs).  -- Ian
+>
+> -----Original Message-----
+> From: tuhs-bounces at minnie.tuhs.org 
+> [mailto:tuhs-bounces at minnie.tuhs.org]
+> On Behalf Of asbesto
+> Sent: Wednesday, November 09, 2005 5:17 AM
+> To: tuhs at tuhs.org
+> Subject: Re: [TUHS] What UNIX on a PDP-11/34 ?
+>
+>
+> Wed, Nov 09, 2005 at 12:35:08AM +0100, Wilko Bulte wrote:
+>
+> > > here at freaknet medialab we made some images of our
+> > > RL02 disk packs with RT-11 and GAMMA-11 software (specific for a 
+> > > Nuclear Camera, this pdp-11 was used for medical exams) :)
+>
+> > > what can we install? any hint ?
+> > I had Ultrix-11 on ours, using 2 RK05 drives. But only briefly, as
+>
+> but, can we install a RK05 image into an RL02 drive ? :%
+>
+> or, maybe a V6 ?
+
+6th Edition Unix predates RL02 drives by a few years.  I would try for
+DEC's V7m.
+
+    carl
+--
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From hansolofalcon at worldnet.att.net  Thu Nov 10 15:04:20 2005
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Thu, 10 Nov 2005 00:04:20 -0500
+Subject: [TUHS] Networking and the UNIX versions or releases for the PDP-11
+Message-ID: <000b01c5e5b4$3f9f36c0$6401a8c0@who7>
+
+Hello from Gregg C Levine
+Still working on my ideas regarding E11 and the usual OSes for the
+PDP-11. Would anyone of you know when networking via Ethernet was
+added to the capabilities of regular UNIX? It seems to be available in
+the releases of BSD that I've explored.
+
+For those that missed it, I can reiterate my plans concerning the
+Linux variety of E-11, and those operating systems, but only upon
+request.
+---
+Gregg C Levine hansolofalcon at worldnet.att.net
+---
+"Remember the Force will be with you. Always." Obi-Wan Kenobi 
+
+
+
+
+From txomsy at yahoo.es  Thu Nov 10 18:20:42 2005
+From: txomsy at yahoo.es (Jose R Valverde)
+Date: Thu, 10 Nov 2005 09:20:42 +0100 (CET)
+Subject: [TUHS] UNIX and relatives and SSH
+Message-ID: <20051110082042.78512.qmail@web26104.mail.ukl.yahoo.com>
+
+Hi Gregg,
+
+
+
+
+		
+______________________________________________ 
+Renovamos el Correo Yahoo! 
+Nuevos servicios, más seguridad 
+http://correo.yahoo.es
+
+
+From txomsy at yahoo.es  Thu Nov 10 18:45:09 2005
+From: txomsy at yahoo.es (Jose R Valverde)
+Date: Thu, 10 Nov 2005 09:45:09 +0100 (CET)
+Subject: [TUHS]  UNIX and relatives and SSH
+Message-ID: <20051110084509.86499.qmail@web26107.mail.ukl.yahoo.com>
+
+Sorry for my previous aborted message. I'm using
+webmail which is an alien sort of thing to me.
+
+What I wanted to say is that you may as well let them 
+'telnet' to the PDP11-2.11BSD through SSH.
+
+I mean, you may have the PDP behind a firewall with
+all 
+ports blocked, and another machine (linux, *bsd,
+whatever) with SSH open.
+
+Then all that would be needed is that your friend uses
+an
+SSH tunnel to the telnet port of the PDP. 
+
+For instance, let's say you open an account for your
+friend on the intermediate machine: s/he may use this
+machine to forward one of his local ports (say 2300)
+to 
+port 23 on the PDP11 system (say
+pdp11-2bsd.example.net) as
+
+ssh -L 2300:pdp11-2bsd.example.net:23 hop.example.net
+
+This would forward his local port 2300 to port 23
+of pdp11-2bsd.example.net, using the host 
+hop.example.net as an intermediate SSH step.
+
+Then all that your friend needs to do is issue a
+
+telnet localhost 2300
+
+and that would connect him to the telnet port of the
+PDP11 using SSH.
+
+If s/he uses windows, most SSH clients have a port 
+forwarding tool that makes introducing this
+information
+very easy.
+
+So, to sumamrize:
+
+- you open an account on an intermediate host that has
+SSH
+
+- your friend creates a tunnel from his own computer
+to
+the PDP using the intermediate host with his
+user/pswd.
+
+- your friend telnets his/her own local computer at
+the
+chosen port
+
+All communications will be encrypted between his/her
+computer and the intermediate host, and go in the
+clear
+between the intermediate host and the PDP.
+
+If the intermediate host is behind a firewall, then
+that would be no problem.
+
+                         j
+
+
+
+	
+	
+		
+______________________________________________ 
+Renovamos el Correo Yahoo! 
+Nuevos servicios, más seguridad 
+http://correo.yahoo.es
+
+
+From barron at telerama.com  Fri Nov 11 03:49:10 2005
+From: barron at telerama.com (Pat Barron)
+Date: Thu, 10 Nov 2005 12:49:10 -0500
+Subject: [TUHS] What UNIX on a PDP-11/34 ?
+In-Reply-To: <20051108223406.GA10659@freaknet.org>
+References: <20051108223406.GA10659@freaknet.org>
+Message-ID: <43738816.1020703@telerama.com>
+
+asbesto wrote:
+
+>Hi all, 
+>
+>here at freaknet medialab we made some images of our
+>RL02 disk packs with RT-11 and GAMMA-11 software 
+>(specific for a Nuclear Camera, this pdp-11 was used
+>for medical exams) :)
+>
+>those images are very funny, we can use them under
+>simh emulator! :)
+>
+>So, now that we have the backups, we're wondering about
+>installing UNIX in this pdp11/34.
+>
+>what can we install? any hint ? 
+>
+>please help! :)
+>
+>p.s. something about our restoration and the disk image of
+>our rt-11 system is online at http://zaverio.net/pdp11, under
+>the "stuff" directory. :)
+>
+>  
+>
+V7m should work for you.  I used to run it on an 11/40 (which is not 
+much different from the 11/34, as far as the software goes) and it 
+worked well.
+
+--Pat.
+
+
+
+From acahalan at gmail.com  Sat Nov 12 16:13:47 2005
+From: acahalan at gmail.com (Albert Cahalan)
+Date: Sat, 12 Nov 2005 01:13:47 -0500
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+In-Reply-To: <849b04683754b84f7e42810d761db3bd@coraid.com>
+References: <Pine.LNX.4.62.0511091221220.6113@static-141-149-129-16.buff.east.verizon.net>
+	<849b04683754b84f7e42810d761db3bd@coraid.com>
+Message-ID: <787b0d920511112213q7156614cv2fe3c5d00852f45c@mail.gmail.com>
+
+On 11/9/05, Brantley Coile <brantley at coraid.com> wrote:
+> my suggestions are as follows (i assume you really mean 8086 mode):
+
+That wouldn't be a good match. I believe you want this:
+
+* 16-bit
+* protected mode
+* no paging
+* 8 or 16 segments
+* 128 kB of the memory
+* no FPU
+
+> using a floppy to boot is a great idea.  i've written several boot
+> straps to boot from the floppy that configure the serial port, and put
+> the processor in 32-bit mode.  it's tight, but not too hard.  you have
+> a great advantage in that you're going to stick to 16 bit so you can
+> use the bios.  512 bytes in that case is tons of space.
+
+512 is easy until you try to handle more than one machine. :-(
+
+> next you'll need to write device drivers for the screen/keyboard, the
+> clock, and the floppy.  later you can write an ATA driver and get a
+> mbr and hard disk boot strap.
+
+I think you need a 4 MB disk and a 10 MB disk. :-)
+
+> if you want to do a 32-bit version, then things are a little
+> different.  but this should give you the v6 in about as little
+> work as can be.
+
+You might use a 32-bit CPU in 16-bit mode. Then you could use
+a 32-bit limit on the FS or GS segment for easier physical memory
+access from the kernel. (use an opcode prefix as needed)
+
+
+From brantley at coraid.com  Sat Nov 12 23:18:50 2005
+From: brantley at coraid.com (Brantley Coile)
+Date: Sat, 12 Nov 2005 08:18:50 -0500
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+In-Reply-To: <787b0d920511112213q7156614cv2fe3c5d00852f45c@mail.gmail.com>
+Message-ID: <e82a1c07e297628c639705226ded3f56@coraid.com>
+
+> I believe you want this:
+> 
+> * 16-bit
+> * protected mode
+> * no paging
+> * 8 or 16 segments
+> * 128 kB of the memory
+> * no FPU
+
+i may be wrong, but i don't think you want the segments.  pdp-11
+segments divided the address space into eight, well, segments.  each
+could be grow up or grow down and had a physical base and a limit.
+intel segments don't work that way.  the major difference is that the
+segment selector, instead of being the upper most three bits of the
+virtual address, is not even in the address space at all.
+
+so the eight, for a pdp-11/40 say, or the sixteen for the 11/70 don't
+really apply.  instead just give each data segment the whole 64k
+address space and it'll not klobber anybody else.  just itself.
+
+there's not really any reason not to use the whole 640K.
+
+> 
+>> using a floppy to boot is a great idea.  i've written several boot
+>> straps to boot from the floppy that configure the serial port, and put
+>> the processor in 32-bit mode.  it's tight, but not too hard.  you have
+>> a great advantage in that you're going to stick to 16 bit so you can
+>> use the bios.  512 bytes in that case is tons of space.
+> 
+> 512 is easy until you try to handle more than one machine. :-(
+
+didn't quit understand this.  the boot sector is a short driver for
+the media you're booting.  the floopy or the harddisk.  it has to know
+about the file system enough to pull out /boot.  it can use the
+drivers in the bios.
+
+> 
+>> next you'll need to write device drivers for the screen/keyboard, the
+>> clock, and the floppy.  later you can write an ATA driver and get a
+>> mbr and hard disk boot strap.
+> 
+> I think you need a 4 MB disk and a 10 MB disk. :-)
+
+you're correct to imply that v6 takes up MUCH less space than other
+systems.  it's amazing how small you can run this.  the root in the
+6th edition system is only 1.4MB.  and that includes the normal
+binaries, libraries and the source to the kernel.  it'll run great on
+a floopy.
+
+> 
+>> if you want to do a 32-bit version, then things are a little
+>> different.  but this should give you the v6 in about as little
+>> work as can be.
+> 
+> You might use a 32-bit CPU in 16-bit mode. Then you could use
+> a 32-bit limit on the FS or GS segment for easier physical memory
+> access from the kernel. (use an opcode prefix as needed)
+
+you could.  i still think that just plain old native mode would
+be a great way to run 6th Ed.
+
+ bc
+ 1011 1100 
+
+
+
+From peter.jeremy at alcatel.com.au  Mon Nov 14 06:16:09 2005
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Mon, 14 Nov 2005 07:16:09 +1100
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+In-Reply-To: <e82a1c07e297628c639705226ded3f56@coraid.com>
+References: <787b0d920511112213q7156614cv2fe3c5d00852f45c@mail.gmail.com>
+	<e82a1c07e297628c639705226ded3f56@coraid.com>
+Message-ID: <20051113201609.GW6574@gsmx07.alcatel.com.au>
+
+
+I've also looked at this in the past.  I lost interest when my
+intended target box died (and I realised I didn't have the free time).
+
+On 2005-Nov-12 08:18:50 -0500, Brantley Coile <brantley at coraid.com> wrote:
+>i may be wrong, but i don't think you want the segments.  pdp-11
+>segments divided the address space into eight, well, segments.  each
+>could be grow up or grow down and had a physical base and a limit.
+>intel segments don't work that way.  the major difference is that the
+>segment selector, instead of being the upper most three bits of the
+>virtual address, is not even in the address space at all.
+
+Actually the 286 MMU is very primitive compared to the PDP-11.  One
+crucial difference is that Unix has the implicit assumption that the
+stack is in the data space - which is not true on the 286.  This
+difference is fairly critical to Unix and makes it impossible to
+accurately reproduce the traditional Unix memory protection.
+
+>so the eight, for a pdp-11/40 say, or the sixteen for the 11/70 don't
+>really apply.  instead just give each data segment the whole 64k
+>address space and it'll not klobber anybody else.  just itself.
+
+This is fairly wasteful of RAM.  Keep in mind that V6 cannot page -
+a process is either entirely in memory or entirely on disk.  If you
+limit yourself to 640K RAM, you are probably restricting yourself
+to about 6 resident processes.  And swapping means moving 64K of
+data to/from disk.
+
+This approach also makes brk(2) a no-op.  There's nothing to prevent a
+process using as much heap as it wants (or crashing into the stack).
+(No SIGSEGV or SIGBUS errors).
+
+>you're correct to imply that v6 takes up MUCH less space than other
+>systems.  it's amazing how small you can run this.  the root in the
+>6th edition system is only 1.4MB.  and that includes the normal
+>binaries, libraries and the source to the kernel.  it'll run great on
+>a floopy.
+
+You will need to have a swap partition.  And if each process has a
+64K data segment, you'll need a comparatively large amount of swap.
+The biggest disadvantage of a floppy will be performance - latency
+of about 80msec, I/O of about 40KB/sec.
+
+Have you identified a suitable C compiler?  There aren't many open
+source 16-bit x86 compilers, especially ones that can run in 16-bit
+mode.  None of the ones I found generated particularly good code.
+This may impact you ability to get the larger utilities (and maybe
+the kernel) to fit into 64K I-space.
+
+-- 
+Peter Jeremy
+
+This email may contain privileged/confidential information. You may not copy or disclose this email to anyone without the written permission of the sender.  If you have received this email in error please kindly delete this message and notify the sender.  Opinions expressed in this email are those of the sender and not necessarily the opinions of the employer. 
+
+This email and any attached files should be scanned to detect viruses.  No liability will be accepted by the employer for loss or damage (whether caused by negligence or not) as a result of email transmission.
+
+
+From wes.parish at paradise.net.nz  Mon Nov 14 19:38:31 2005
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Mon, 14 Nov 2005 22:38:31 +1300
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+In-Reply-To: <20051113201609.GW6574@gsmx07.alcatel.com.au>
+References: <787b0d920511112213q7156614cv2fe3c5d00852f45c@mail.gmail.com>
+	<e82a1c07e297628c639705226ded3f56@coraid.com>
+	<20051113201609.GW6574@gsmx07.alcatel.com.au>
+Message-ID: <200511142238.31662.wes.parish@paradise.net.nz>
+
+On Mon, 14 Nov 2005 09:16, Peter Jeremy wrote:
+> I've also looked at this in the past.  I lost interest when my
+> intended target box died (and I realised I didn't have the free time).
+>
+> On 2005-Nov-12 08:18:50 -0500, Brantley Coile <brantley at coraid.com> wrote:
+> >i may be wrong, but i don't think you want the segments.  pdp-11
+> >segments divided the address space into eight, well, segments.  each
+> >could be grow up or grow down and had a physical base and a limit.
+> >intel segments don't work that way.  the major difference is that the
+> >segment selector, instead of being the upper most three bits of the
+> >virtual address, is not even in the address space at all.
+>
+> Actually the 286 MMU is very primitive compared to the PDP-11.  One
+> crucial difference is that Unix has the implicit assumption that the
+> stack is in the data space - which is not true on the 286.  This
+> difference is fairly critical to Unix and makes it impossible to
+> accurately reproduce the traditional Unix memory protection.
+>
+> >so the eight, for a pdp-11/40 say, or the sixteen for the 11/70 don't
+> >really apply.  instead just give each data segment the whole 64k
+> >address space and it'll not klobber anybody else.  just itself.
+>
+> This is fairly wasteful of RAM.  Keep in mind that V6 cannot page -
+> a process is either entirely in memory or entirely on disk.  If you
+> limit yourself to 640K RAM, you are probably restricting yourself
+> to about 6 resident processes.  And swapping means moving 64K of
+> data to/from disk.
+>
+> This approach also makes brk(2) a no-op.  There's nothing to prevent a
+> process using as much heap as it wants (or crashing into the stack).
+> (No SIGSEGV or SIGBUS errors).
+>
+> >you're correct to imply that v6 takes up MUCH less space than other
+> >systems.  it's amazing how small you can run this.  the root in the
+> >6th edition system is only 1.4MB.  and that includes the normal
+> >binaries, libraries and the source to the kernel.  it'll run great on
+> >a floopy.
+>
+> You will need to have a swap partition.  And if each process has a
+> 64K data segment, you'll need a comparatively large amount of swap.
+> The biggest disadvantage of a floppy will be performance - latency
+> of about 80msec, I/O of about 40KB/sec.
+>
+> Have you identified a suitable C compiler?  There aren't many open
+> source 16-bit x86 compilers, especially ones that can run in 16-bit
+> mode.  None of the ones I found generated particularly good code.
+> This may impact you ability to get the larger utilities (and maybe
+> the kernel) to fit into 64K I-space.
+
+Would it be possible to use some of the DOS ones?  At least to bootstrap a 
+more true-to-Unix one?
+
+I'm thinking of the likes of bcc, available plus source at the FreeDOS web 
+archive.  Or OpenWatcom's DOS 16-bit.
+
+Wesley Parish
+
+-- 
+Clinersterton beademung, with all of love - RIP James Blish
+-----
+Mau e ki, he aha te mea nui?
+You ask, what is the most important thing?
+Maku e ki, he tangata, he tangata, he tangata.
+I reply, it is people, it is people, it is people.
+
+
+From brantley at coraid.com  Tue Nov 15 01:45:13 2005
+From: brantley at coraid.com (Brantley Coile)
+Date: Mon, 14 Nov 2005 10:45:13 -0500
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+In-Reply-To: <20051113201609.GW6574@gsmx07.alcatel.com.au>
+Message-ID: <1e2d15ad255da36efddd83024d07003e@coraid.com>
+
+this is a nice conversation.  you're observations are all correct.
+see my additional comments below.
+
+> Actually the 286 MMU is very primitive compared to the PDP-11.  One
+> crucial difference is that Unix has the implicit assumption that the
+> stack is in the data space - which is not true on the 286.  This
+> difference is fairly critical to Unix and makes it impossible to
+> accurately reproduce the traditional Unix memory protection.
+
+absolutely correct.  in fact, i've never really figured out
+what intel was thinking with the stack segment in protect mode.
+you can't use it in C, you can't even use it in a Pascal like language,
+or any other language that uses call-by-reference procedure
+parameters.
+> 
+>>so the eight, for a pdp-11/40 say, or the sixteen for the 11/70 don't
+>>really apply.  instead just give each data segment the whole 64k
+>>address space and it'll not klobber anybody else.  just itself.
+> 
+> This is fairly wasteful of RAM.  Keep in mind that V6 cannot page -
+> a process is either entirely in memory or entirely on disk.  If you
+> limit yourself to 640K RAM, you are probably restricting yourself
+> to about 6 resident processes.  And swapping means moving 64K of
+> data to/from disk.
+
+true, but your numbers are a bit off.  640k / 64k = 10 not 6.  the kernel
+will take only 2, so you should have 8.  the shared segment for the shell
+is about 32k, so maybe you're not that far of.
+
+if the objective is to have a system that is real and has the feel of what
+it was like to use a 6th Edition Unix system, this isn't a big deal.  you
+and edit, compile and run programs on it.
+> 
+> This approach also makes brk(2) a no-op.  There's nothing to prevent a
+> process using as much heap as it wants (or crashing into the stack).
+> (No SIGSEGV or SIGBUS errors).
+
+ture enough.  but that's the case if you use the 286 segmens as well.
+either that or you make the data==stack segment a little short,
+then set the stack to a fixed size near the bottom of the data segment.
+if you run off the end or grow the stack too deep, you wrap around
+and hit the limit of the segment.
+> 
+>>you're correct to imply that v6 takes up MUCH less space than other
+>>systems.  it's amazing how small you can run this.  the root in the
+>>6th edition system is only 1.4MB.  and that includes the normal
+>>binaries, libraries and the source to the kernel.  it'll run great on
+>>a floopy.
+> 
+> You will need to have a swap partition.  And if each process has a
+> 64K data segment, you'll need a comparatively large amount of swap.
+> The biggest disadvantage of a floppy will be performance - latency
+> of about 80msec, I/O of about 40KB/sec.
+
+i wouldn't bother with a swap device on the floopy version.  you'd just
+just use this version to get the disk driver working so you could
+have real swap.  swaping to modern disks is pretty fast.  i can swap
+an entire 64k segment in less than a millisecond, so it would seem
+much faster than the original.
+> 
+> Have you identified a suitable C compiler?  There aren't many open
+> source 16-bit x86 compilers, especially ones that can run in 16-bit
+> mode.  None of the ones I found generated particularly good code.
+> This may impact you ability to get the larger utilities (and maybe
+> the kernel) to fit into 64K I-space.
+
+the mit x86 stuff would be where i'd start.  i haven't looked to see
+if you need to tweak the assignment operators to avoid having
+to s/=+/+=/, but it might already be done.
+
+it's all 16 bit stuff: port of PCC, assembler and loader.
+
+
+an enjoyable discussion.  wish i had time to work on it.
+
+ bc
+
+
+
+From brantley at coraid.com  Tue Nov 15 06:31:31 2005
+From: brantley at coraid.com (Brantley Coile)
+Date: Mon, 14 Nov 2005 15:31:31 -0500
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+In-Reply-To: <20051114194946.GE6574@gsmx07.alcatel.com.au>
+Message-ID: <516f1c8b7d12b350914dd4da655f4e41@coraid.com>
+
+> On 2005-Nov-14 10:45:13 -0500, Brantley Coile <brantley at coraid.com> wrote:
+> I was assuming split I+D, with the data segment fixed at 64K.  This
+> means that you have (64K + code) per process.  If you have code plus
+> data in 64K then you can fit more, but I think that was getting to
+> be a squeeze even on V6.  (And would definitely write off something
+> like 2BSD).
+
+i don't know that it's a squese.  a version of v6 ran on an lsi-11
+with very little ram.  there is only two process required to run in
+v6, init and the shell.  sched doesn't count; it has no user space.
+> 
+>>the mit x86 stuff would be where i'd start.  i haven't looked to see
+>>if you need to tweak the assignment operators to avoid having
+>>to s/=+/+=/, but it might already be done.
+> 
+> Given an open-source compiler, it would be fairly easy to retrofit the
+> =+ operators into the lexer.  (Probably easier than cleaning up the
+> code).  The alternative is to start with something later (eg 2BSD) but
+> code quality then becomes far more of an issue (because 2BSD tends to
+> push the I-space limits in lots of areas).
+
+very good point.  it'll be easier that i thought.
+> 
+>>it's all 16 bit stuff: port of PCC, assembler and loader.
+> 
+> The x86 instruction set and registers are nothing like as regular and
+> orthogonal as the PDP-11.  In particular, there are _no_ general
+> purpose registers - every register has has a particular purpose and
+> either you need to do data-flow analysis to work out what register to
+> load something into, or you (basically) give up and load from memory
+> as needed.  You could port PCC but this would be much more difficult
+> than (say) a M68K port.  You'd probably need a fairly decent peep-hole
+> optimiser to get good results.
+
+the mit is already ported.  every thing you said about how ugly
+the x86 is and how nice the pdp-11 was, i agree with.  i have lived
+with both of them and with the 68k.  although the 68k's A and D registers
+are kind of a hacky.  but not mater, mit's already done the work.
+
+as far as trying to optimize the register use, i think that for modern
+pentium processors it's not that important.  L1 caches are very fast
+and function about as fast as local registers anyway.  this the the good
+thing about a very bad instruction set with too few registers.  the 
+vendor has to invent very clever ways to stay competitive with better
+systems.  in a way the hardware is doing all the optimzation for us.
+
+> 
+> Wesley Parish mentioned bcc and OpenWatcom.  I looked into the former
+> and it's probably the best starting point (though, with due respect to
+> BDE, the code it generates could be better).  Assuming that Unix fits
+> into the C subset implemented by bcc, you'd be better off spending the
+> effort on improving bcc than porting PCC.  At the time I looked,
+> OpenWatcom was either still vapourware or not self-hosting.
+
+again, no port required.  the mit x86 stuff has already done that.
+i have code with the following readme.
+
+---
+Directory setup:
+   c86, lib86:	for 8087-equiped systems.
+  nc86,nlib86:	for non-8087 systems.
+
+You should install the following files into some directory on your
+search path (on our system we use /usr/local):
+
+	cc86		; shell script implements "cc" but for 8086
+	a86/a86		; the assembler
+	a86/ld86	; the loader
+	a86/cvt86	; .ld output to .com file (a la IBM DOS) conversion
+	c86/c86		; the C compiler
+
+Regular 4.1BSD programs used:
+
+	ar		; used for preparing loader libraries
+	/lib/cpp	; C preprocessor
+
+The cc86 script expects to find the libc.a and crt files in
+/projects/compilers/8086/lib86 -- if you don't put them there, you'll
+have to update cc86...
+
+The compiler produces assembly language output suitable for a86.
+It is a 16-bit compiler; output code does not touch the segment
+regs, so it is possible to have separate instruction and data
+segments (see lib86/csu/crt0.a86 for the start up routine we use
+on our IBM Personal computer to set up the segment regs, etc. from
+info in the .com file).  Currently floating point and long arithmetic
+is implemented using 8087 instructions.
+
+Although the assembler produces ".b" files, they have exactly the
+same format as ".o" files under 4.1BSD -- things like nm and size will
+work, and, most importantly, ld.  Using ld with the -N, -X and -r
+options (see cc86 for an example) will produce a file that cvt86 can
+convert into an IBM DOS format .com file for the IBM Personal Computer.
+---
+
+looking at the source files, it's definitly PCC.
+(and it already does the =+ stuff.)
+
+
+you keep tempting me!  (get behind me, Satan!)
+
+> 
+>>an enjoyable discussion.  wish i had time to work on it.
+> 
+> Agreed.
+> 
+> -- 
+> Peter Jeremy
+> 
+> This email may contain privileged/confidential information. You may not copy or disclose this email to anyone without the written permission of the sender.  If you have received this email in error please kindly delete this message and notify the sender.  Opinions expressed in this email are those of the sender and not necessarily the opinions of the employer. 
+> 
+> This email and any attached files should be scanned to detect viruses.  No liability will be accepted by the employer for loss or damage (whether caused by negligence or not) as a result of email transmission.
+
+
+
+From peter.jeremy at alcatel.com.au  Tue Nov 15 05:49:47 2005
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Tue, 15 Nov 2005 06:49:47 +1100
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+In-Reply-To: <8a61b612cf43394f33e6531339fe4263@coraid.com>
+References: <20051113201609.GW6574@gsmx07.alcatel.com.au>
+	<8a61b612cf43394f33e6531339fe4263@coraid.com>
+Message-ID: <20051114194946.GE6574@gsmx07.alcatel.com.au>
+
+
+On 2005-Nov-14 10:45:13 -0500, Brantley Coile <brantley at coraid.com> wrote:
+>> This is fairly wasteful of RAM.  Keep in mind that V6 cannot page -
+>> a process is either entirely in memory or entirely on disk.  If you
+>> limit yourself to 640K RAM, you are probably restricting yourself
+>> to about 6 resident processes.  And swapping means moving 64K of
+>> data to/from disk.
+>
+>true, but your numbers are a bit off.  640k / 64k = 10 not 6.
+
+I realise that.
+
+>  the kernel will take only 2, so you should have 8.
+
+I was assuming split I+D, with the data segment fixed at 64K.  This
+means that you have (64K + code) per process.  If you have code plus
+data in 64K then you can fit more, but I think that was getting to
+be a squeeze even on V6.  (And would definitely write off something
+like 2BSD).
+
+>the mit x86 stuff would be where i'd start.  i haven't looked to see
+>if you need to tweak the assignment operators to avoid having
+>to s/=+/+=/, but it might already be done.
+
+Given an open-source compiler, it would be fairly easy to retrofit the
+=+ operators into the lexer.  (Probably easier than cleaning up the
+code).  The alternative is to start with something later (eg 2BSD) but
+code quality then becomes far more of an issue (because 2BSD tends to
+push the I-space limits in lots of areas).
+
+>it's all 16 bit stuff: port of PCC, assembler and loader.
+
+The x86 instruction set and registers are nothing like as regular and
+orthogonal as the PDP-11.  In particular, there are _no_ general
+purpose registers - every register has has a particular purpose and
+either you need to do data-flow analysis to work out what register to
+load something into, or you (basically) give up and load from memory
+as needed.  You could port PCC but this would be much more difficult
+than (say) a M68K port.  You'd probably need a fairly decent peep-hole
+optimiser to get good results.
+
+Wesley Parish mentioned bcc and OpenWatcom.  I looked into the former
+and it's probably the best starting point (though, with due respect to
+BDE, the code it generates could be better).  Assuming that Unix fits
+into the C subset implemented by bcc, you'd be better off spending the
+effort on improving bcc than porting PCC.  At the time I looked,
+OpenWatcom was either still vapourware or not self-hosting.
+
+>an enjoyable discussion.  wish i had time to work on it.
+
+Agreed.
+
+-- 
+Peter Jeremy
+
+This email may contain privileged/confidential information. You may not copy or disclose this email to anyone without the written permission of the sender.  If you have received this email in error please kindly delete this message and notify the sender.  Opinions expressed in this email are those of the sender and not necessarily the opinions of the employer. 
+
+This email and any attached files should be scanned to detect viruses.  No liability will be accepted by the employer for loss or damage (whether caused by negligence or not) as a result of email transmission.
+
+
+From norman at nose.cs.utoronto.ca  Tue Nov 15 07:34:16 2005
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Mon, 14 Nov 2005 16:34:16 -0500
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+Message-ID: <20051114213446.69396F7@minnie.tuhs.org>
+
+Brantley Coile:
+
+  i don't know that it's a squese.  a version of v6 ran on an lsi-11
+  with very little ram.
+
+=======
+
+If you're thinking of Mini-UNIX, it's a bit of a stretch to call
+it `V6 running on an LSI-11.'  I think the original LSI-11 had no
+memory management; in any case, Mini-UNIX didn't use it, but was
+a throwback to the early days of the PDP-7 and the 11/20 (neither
+of which had memory management).  Only one process could be in
+memory at a time; to let another process run meant swapping the
+first completely out of memory.
+
+I believe there's a paper in the 1978 all-UNIX issue of the Bell
+Systems Technical Journal about Mini-UNIX or its immediate
+predecessor.  As I recall, there were additional compromises;
+e.g. the shell quietly translated
+	a | b
+to
+	a >tempfile; b <tempfile; rm tempfile
+because that was much faster than the thrashing that often
+resulted from trying to let a and b run concurrently.
+
+Mini-UNIX might be a simpler starting point to get a system
+running on a 286.  Just don't think of it as full V6; it's not.
+
+Norman Wilson
+Toronto ON
+
+
+From brantley at coraid.com  Tue Nov 15 08:59:09 2005
+From: brantley at coraid.com (Brantley Coile)
+Date: Mon, 14 Nov 2005 17:59:09 -0500
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+In-Reply-To: <20051114213446.69396F7@minnie.tuhs.org>
+Message-ID: <7f751188511736b493ffdb538b5b0505@coraid.com>
+
+you're right.  i was thinking of mini-Unix.  my point was just
+that you can do a lot with very little.
+
+> Brantley Coile:
+> 
+>   i don't know that it's a squese.  a version of v6 ran on an lsi-11
+>   with very little ram.
+> 
+> =======
+> 
+> If you're thinking of Mini-UNIX, it's a bit of a stretch to call
+> it `V6 running on an LSI-11.'  I think the original LSI-11 had no
+> memory management; in any case, Mini-UNIX didn't use it, but was
+> a throwback to the early days of the PDP-7 and the 11/20 (neither
+> of which had memory management).  Only one process could be in
+> memory at a time; to let another process run meant swapping the
+> first completely out of memory.
+> 
+> I believe there's a paper in the 1978 all-UNIX issue of the Bell
+> Systems Technical Journal about Mini-UNIX or its immediate
+> predecessor.  As I recall, there were additional compromises;
+> e.g. the shell quietly translated
+> 	a | b
+> to
+> 	a >tempfile; b <tempfile; rm tempfile
+> because that was much faster than the thrashing that often
+> resulted from trying to let a and b run concurrently.
+> 
+> Mini-UNIX might be a simpler starting point to get a system
+> running on a 286.  Just don't think of it as full V6; it's not.
+> 
+> Norman Wilson
+> Toronto ON
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From greg at censoft.com  Tue Nov 15 13:08:52 2005
+From: greg at censoft.com (Greg Haerr)
+Date: Mon, 14 Nov 2005 19:08:52 -0800
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+References: <787b0d920511112213q7156614cv2fe3c5d00852f45c@mail.gmail.com><e82a1c07e297628c639705226ded3f56@coraid.com>
+	<20051113201609.GW6574@gsmx07.alcatel.com.au>
+Message-ID: <04fd01c5e991$e8d06b70$6401a8c0@gregnewport>
+
+>  One
+> crucial difference is that Unix has the implicit assumption that the
+> stack is in the data space - which is not true on the 286.  This
+> difference is fairly critical to Unix and makes it impossible to
+> accurately reproduce the traditional Unix memory protection.
+
+I don't understand this.  If SS is set to DS, in any 16 bit mode,
+then doesn't this accomplish the accurate reproduction?  I realize
+that a 32-bit mode would be required for limit checking.
+
+Regards,
+
+Greg
+
+
+
+From peter.jeremy at alcatel.com.au  Tue Nov 15 13:40:24 2005
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Tue, 15 Nov 2005 14:40:24 +1100
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+In-Reply-To: <04fd01c5e991$e8d06b70$6401a8c0@gregnewport>
+References: <20051113201609.GW6574@gsmx07.alcatel.com.au>
+	<04fd01c5e991$e8d06b70$6401a8c0@gregnewport>
+Message-ID: <20051115034024.GJ6574@gsmx07.alcatel.com.au>
+
+
+On 2005-Nov-14 19:08:52 -0800, Greg Haerr <greg at censoft.com> wrote:
+>>  One
+>> crucial difference is that Unix has the implicit assumption that the
+>> stack is in the data space - which is not true on the 286.  This
+>> difference is fairly critical to Unix and makes it impossible to
+>> accurately reproduce the traditional Unix memory protection.
+>
+>I don't understand this.  If SS is set to DS, in any 16 bit mode,
+>then doesn't this accomplish the accurate reproduction?  I realize
+>that a 32-bit mode would be required for limit checking.
+
+You can make SS and DS the same but this means that there's nothing
+stopping the stack growing down into the heap or vice versa.  This
+makes the stack accessible from the data space but gives no protection
+(note that I was referring to reproducing Unix protection).
+
+-- 
+Peter Jeremy
+
+This email may contain privileged/confidential information. You may not copy or disclose this email to anyone without the written permission of the sender.  If you have received this email in error please kindly delete this message and notify the sender.  Opinions expressed in this email are those of the sender and not necessarily the opinions of the employer. 
+
+This email and any attached files should be scanned to detect viruses.  No liability will be accepted by the employer for loss or damage (whether caused by negligence or not) as a result of email transmission.
+
+
+From brantley at coraid.com  Tue Nov 15 23:30:43 2005
+From: brantley at coraid.com (Brantley Coile)
+Date: Tue, 15 Nov 2005 08:30:43 -0500
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+In-Reply-To: <20051115034024.GJ6574@gsmx07.alcatel.com.au>
+Message-ID: <c8fa453012cb6e746f42f07b63514827@coraid.com>
+
+> On 2005-Nov-14 19:08:52 -0800, Greg Haerr <greg at censoft.com> wrote:
+>>>  One
+>>> crucial difference is that Unix has the implicit assumption that the
+>>> stack is in the data space - which is not true on the 286.  This
+>>> difference is fairly critical to Unix and makes it impossible to
+>>> accurately reproduce the traditional Unix memory protection.
+>>
+>>I don't understand this.  If SS is set to DS, in any 16 bit mode,
+>>then doesn't this accomplish the accurate reproduction?  I realize
+>>that a 32-bit mode would be required for limit checking.
+> 
+> You can make SS and DS the same but this means that there's nothing
+> stopping the stack growing down into the heap or vice versa.  This
+> makes the stack accessible from the data space but gives no protection
+> (note that I was referring to reproducing Unix protection).
+
+sorry this message is so long.  i wish it was better written, but at
+least it's early in the day, and i've had my diet co-cola (as we say
+here in the south).
+
+
+this mess is why i made the suggestion just to use a full 64k for the
+data segments.  but there is a way to get protection of a sort.
+
+Peter's right.  setting ss==ds will work but it leaves the data
+segment unprotected.  in protect mode, data segments can be configured
+to be valid above a limit or below.  for stacks you can make them
+valid above a limit and move the limit down as the stack grows.  (by
+above i mean address with larger values and by down i mean addresses
+with smaller values.) but one can't easily use this when implementing
+C.
+
+when the processor does a stack operation, a push, pop, call, return
+and so on, it uses the stack segment.  when the processor feteches or
+stores an operand or a result, it uses the data segment.  even if the
+data segment and stack segments had the same base register, you
+couldn't use the grow-down feature to protect the data from the stack
+growing into it.  the problem is local varibles and call by reference.
+
+local varibles live on the stack, but if you tried to access them with
+using the data segment selector, you would get a protection violation
+because you're doing a data fetch above the data limit.  since it's a
+data fetch it's using the data segment.  you might think that the
+compiler could know where the variable is and use an instruction
+prefix to override the data segment and use the stack segment instead.
+that would work for the simple case, but what do you do when you take
+the address of the variable?  you loose the information that it's a
+local variable on the stack and don't know which segment to use
+when dereferencing the pointer.
+
+when the protect mode was designed in intel, Pascal was all the rage
+in schools of higher learning.  C had yet to become the ubiquitous
+notation.  since Pascal didn't allow addresses to be taken of
+arbitrary varibles, for years i just assumed the intel design was an
+arifact of designing hardware to run Pascal.  (intel indeed includes a
+feature that is only useful for Algol like languages that have nested
+procedures.  look at the definition of the `enter' instruction.) but i
+was wrong.
+
+Pascal, (and Modula, and Oberon) allow procedure parameters to be
+either call by value or call by reference.  a call by reference
+parameter is a kind of pointer.  there is no way to know if you've
+been called with a pointer to a global variable, a variable allocated
+on the heap or a local variable, without including more information
+than just the address.
+
+so, what were they thinking?  i've no idea.  all other segmented
+architectures include the segment selector in the high bits of the
+virtual address, as does the pdp-11, as did Multics.  in fact, what
+intel calls a page directory is called a segment table in many other
+systems.  but of course the word segment was already taken.
+
+in the mid 1980's we used intel compilers with different memory models.
+the small model did much as i'm suggesting.  just give'm 64k and
+have at it.  there was also a middle model with 64k data and more than
+one code segment.  large model allowed more than 64k of data, but 
+a single array was limited to 64k.  there was also a huge model.
+
+as you went from small to huge, the code generated by the compiler
+would include more and more load segment selector instructions.  while
+this looks bad, it's really quite worse than it looks.  when one loads
+a selector, a 16-bit value, into the segment register it causes the
+processor to load a 64 bit segment descriptor.  and it does this for
+every varible access in large and huge models.  yuck!
+
+
+all that is why i suggest just giving the process 64k and be done with
+it.  it's 6th edition after all.  but last night i thought of a couple
+of reasons to turn on protect mode.  first, there is a way to use it to limit
+the stack growth and stop it from growing into the data.
+
+you must decide how large a stack you want to allow.  then put the
+base of your static data just above the stack and have the stack grow
+down to the bottom of your data segment.  you use protect mode to
+allow 64k-N, so you can't just wrap around the data segment.  if the
+stack grow down and wraps around to the top of the data segment, it
+will touch the area that isn't allowed in the segment.  there some
+issues with the value of N, but i won't go into that.
+
+like so:
+
++----------+
+| heap     |
++----------+
+| data/bss |
++----------+
+| stack    |
++----------+
+
+this has the disadvantage of having to set the stack limit when
+you link the load module, but it will keep one from crashing into the
+heap.
+
+i don't think this is worth the effort.
+
+
+the second reason to turn on the segment protection is to make use of
+more of the memory in the system.  you can have more than the six to
+eight processes.  again, i don't think it's worth it, even thought is
+hard to `waste' that other 512M.
+
+anyway, again i'm sorry for the long message.  if anyone has a better
+answer as to WHY intel designed the segments the way they did in
+protect mode, if you know what language they were thinking of, please
+let me know.
+
+ bc
+ 1011 1100
+
+
+
+
+From LyricalNanoha at dosius.net  Thu Nov 17 07:41:38 2005
+From: LyricalNanoha at dosius.net (Lyrical Nanoha)
+Date: Wed, 16 Nov 2005 16:41:38 -0500 (EST)
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+In-Reply-To: <20051114194946.GE6574@gsmx07.alcatel.com.au>
+References: <20051113201609.GW6574@gsmx07.alcatel.com.au>
+	<8a61b612cf43394f33e6531339fe4263@coraid.com>
+	<20051114194946.GE6574@gsmx07.alcatel.com.au>
+Message-ID: <Pine.LNX.4.62.0511161637001.14020@static-141-149-129-16.buff.east.verizon.net>
+
+I'm the original poster of this thread.
+
+On Tue, 15 Nov 2005, Peter Jeremy wrote:
+
+> Wesley Parish mentioned bcc and OpenWatcom.  I looked into the former
+> and it's probably the best starting point (though, with due respect to
+> BDE, the code it generates could be better).  Assuming that Unix fits
+> into the C subset implemented by bcc, you'd be better off spending the
+> effort on improving bcc than porting PCC.  At the time I looked,
+> OpenWatcom was either still vapourware or not self-hosting.
+
+I don't think everything needs to be bootstrapped with an open-source 
+compiler.  I have Turbo C++ 1.01 which is a more than adequate C compiler 
+for anything I've done with it (ranging from clones of Unix tools to a 
+COMMAND.COM to an Apple //e emulator).  Whatever does the job is fine for 
+me.
+
+So getting the kernel up and getting files in and out of the image until a 
+native C compiler is ready (pcc?) can be done with anything, practically. 
+QEMU is a good enough testbed, and gives you well-defined hardware.  Once 
+everything is up and running, then maybe one can migrate on to newer 
+systems (V7, 2BSD), though V6 should be simple enough as a starting point, 
+provided most of it is in C (I haven't really looked).
+
+-uso.
+
+
+From LyricalNanoha at dosius.net  Sat Nov 19 03:59:55 2005
+From: LyricalNanoha at dosius.net (Lyrical Nanoha)
+Date: Fri, 18 Nov 2005 12:59:55 -0500 (EST)
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+In-Reply-To: <17277.62390.986234.433543@hod.localdomain>
+References: <20051113201609.GW6574@gsmx07.alcatel.com.au>
+	<8a61b612cf43394f33e6531339fe4263@coraid.com>
+	<20051114194946.GE6574@gsmx07.alcatel.com.au>
+	<Pine.LNX.4.62.0511161637001.14020@static-141-149-129-16.buff.east.verizon.net>
+	<17277.62390.986234.433543@hod.localdomain>
+Message-ID: <Pine.LNX.4.62.0511181259100.21811@static-141-149-129-16.buff.east.verizon.net>
+
+On Fri, 18 Nov 2005, Markus E Leypold wrote:
+
+> I wonder, wether you realize that getting pcc "ready" would mean
+> writing a x86 backend for it. Or does it already have one?
+
+>From what I heard it does, unless I misremembered...
+
+-uso.
+
+
+From brantley at coraid.com  Sat Nov 19 14:17:04 2005
+From: brantley at coraid.com (Brantley Coile)
+Date: Fri, 18 Nov 2005 23:17:04 -0500
+Subject: [TUHS] Redoing "V6on286" or porting V7...?
+In-Reply-To: <Pine.LNX.4.62.0511181259100.21811@static-141-149-129-16.buff.east.verizon.net>
+References: <20051113201609.GW6574@gsmx07.alcatel.com.au>	<8a61b612cf43394f33e6531339fe4263@coraid.com>	<20051114194946.GE6574@gsmx07.alcatel.com.au>	<Pine.LNX.4.62.0511161637001.14020@static-141-149-129-16.buff.east.verizon.net>	<17277.62390.986234.433543@hod.localdomain>
+	<Pine.LNX.4.62.0511181259100.21811@static-141-149-129-16.buff.east.verizon.net>
+Message-ID: <437EA740.8030109@coraid.com>
+
+the mit stuff already has the back end and the assembler/loader.
+the assembler for the pdp-11 was written by Dennis Ritchie and
+is a wonder to behold.
+
+   Brantley
+
+Lyrical Nanoha wrote:
+> On Fri, 18 Nov 2005, Markus E Leypold wrote:
+> 
+> 
+>>I wonder, wether you realize that getting pcc "ready" would mean
+>>writing a x86 backend for it. Or does it already have one?
+> 
+> 
+>>From what I heard it does, unless I misremembered...
+> 
+> -uso.
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/t uhs
+
+

@@ -1,0 +1,4966 @@
+From norman at nose.cs.utoronto.ca  Sun Mar  2 00:06:37 2003
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Sat, 01 Mar 2003 09:06:37 -0500
+Subject: [pups] 2.11 on an 11/44
+Message-ID: <200303011407.h21E7Fn42846@minnie.tuhs.org>
+
+It seems to me it's time to go back to basics:
+
+Tell us what happens if you do
+	ls -l /dev/rl2a
+and, if that file exists (as seems likely),
+	od /dev/rl2a
+
+Diagnosing a problem of this sort solely by the mutterings
+of the mount command is a bit like trying to decide what
+is causing your back pain and therefore how to treat it
+by the tone of your voice when you say `ouch.'  (Hmm,
+perhaps I have just invented a lucrative new paramedical
+discipline, on a par with chiropractic and cold-laser
+therapy and homeopathy and software consulting.)
+
+Norman Wilson
+Toronto ON
+
+
+From cmcnabb at vt.edu  Sun Mar  2 01:01:50 2003
+From: cmcnabb at vt.edu (Christopher McNabb)
+Date: 01 Mar 2003 10:01:50 -0500
+Subject: [pups] 2.11BSD and Top
+Message-ID: <1046530910.10110.11.camel@www.4mcnabb.net>
+
+Does anyone know if there is a command like 'top' for 2.11 BSD?
+
+-- 
+Christopher L McNabb              Tel:   540 231 7554
+Operating Systems Analyst         Email: cmcnabb at vt.edu
+Virginia Tech                     ICBM:  37.205622N 80.414595W
+GMRS: WPSR255                     ARS:   N2UX  Grid Sq: EM97SD
+
+
+From robinb at ruffnready.co.uk  Sun Mar  2 07:36:05 2003
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Sat, 1 Mar 2003 21:36:05 +0000
+Subject: [pups] 2.11 on an 11/44
+In-Reply-To: <20030227093041.Y43050-100000@server1.cs.uofs.edu>
+References: <20030227093041.Y43050-100000@server1.cs.uofs.edu>
+Message-ID: <EX8aXECFfSY+EwAC@falstaf.demon.co.uk>
+
+I haven't got a live 2.11 system anywhere near but the following occurs 
+to me.
+
+1) I think that the GENERIC kernel only has 2 RL02s configured and will 
+expect these on device selects 0 and 1.  The idea is to get the generic 
+going and then rebuild for your specific config.
+
+2) Are all of your RL02s on one controller?.  If not then two things 
+occur. The first is that I think the GENERIC kernel is only configured 
+for one controller.  Secondly, if the second drive is on the second 
+controller then the physical select will probably be 8 and the device 
+will probably be rl8a.
+
+3) If the SCSI controller emulates an MSCP device then I think that 2 
+MSCP discs are configured for the GENERIC kernel.  Again, if you need 
+more then you will need to rebuild the kernel.
+
+Although the generic kernel is configured for a lot of devices they will 
+not necessarily be attached if the appropriate file in /etc doesn't have 
+the rems taken out.  Can't remember the file name but that will need the 
+appropriate controllers to have the rems taken out.
+
+I assume that you can mount rl0 and rl1 from your note.  Load the kernel 
+sources onto these two discs, You should be able to get everything 
+except the usr src onto the two rl02s.  Then create a kernel that has 
+only the devices that you need and then you should see everything that 
+you have.
+
+The autoconfig system is not as informative as newer OS's but it will 
+tell you if something is detected that the kernel is configured for.  If 
+it exists but the kernel knows nothing about it then autoconfig will not 
+display it.
+
+If I am attempting to teach my grandmother to suck eggs then forgive me.
+
+Cheers
+
+Robin
+
+
+In message <20030227093041.Y43050-100000 at server1.cs.uofs.edu>, Bill 
+Gunshannon <bill at cs.scranton.edu> writes
+>
+>I am trying to put 2.11 on one of my 11/44's.  I picked up the RL02/RK
+>images from the archive.  I put the RL02 images on real RL02's (Yes,
+>some of us still have and use them!! :-)  My intent was to boot this
+>and then use it to build a system on a bigger disk and then go on from
+>there.
+>
+>Here's my configuration:
+>
+>  11/44 CPU
+>  CIS
+>  EIS
+>  FP11
+>  4M memory (actually 3840KB)
+>  MMU
+>
+>  3 RL02 disks
+>  A CDU/720-TM SCSI Controller with 4 MAXTOR 340M disks and a QIC tape
+>
+>Now the problem.
+>The system boots fine.  And it will mount /dev/rl1a.  But it won't mount
+>/dev/rl2a.  I get "/dev/rl2a on /vol2: No such device or address".
+>I get the same error when I try to do a disklabel.  What's more, I also
+>get this same error when I try to access any of the RA devices.  I am
+>using the GENERIC Kernel which I assume has all the devices in it.
+>
+>Anybody have any suggestions??
+>
+>Of course, if I find that the SCSI Controller isn't going to work
+>I have another controller and a FUJI Eagle I could use too. But I
+>am certain I will need to get all three RL's working in order to
+>have enough of a system to do this.
+>
+>Thanks in advance,
+>
+>bill
+>
+
+-- 
+Robin Birch
+
+
+
+From j.r.engdahl at adelphia.net  Mon Mar  3 05:36:09 2003
+From: j.r.engdahl at adelphia.net (Jonathan Engdahl)
+Date: Sun, 2 Mar 2003 14:36:09 -0500
+Subject: [pups] max hard drive size in 2.11BSD
+References: <1046530910.10110.11.camel@www.4mcnabb.net>
+Message-ID: <000f01c2e0f2$f9d3ccf0$8a00a8c0@arctura>
+
+I looked around a little, but couldn't find this easily: is there a limit on
+the size of hard drive I can hook up to a PDP-11 running 2.11BSD? The
+proposed configuration is a Qbus SCSI controller and a 10 gig HD.
+
+--
+Jonathan Engdahl
+http://users.safeaccess.com/engdahl
+
+"The things which are seen are temporary,
+ but the things which are not seen are eternal."  II Cor. 4:18
+
+
+
+From sms at 2BSD.COM  Mon Mar  3 16:42:00 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Sun, 2 Mar 2003 22:42:00 -0800 (PST)
+Subject: [pups] 2.11 on an 11/44
+Message-ID: <200303030642.h236g0011874@moe.2bsd.com>
+
+Hi -
+
+> From: Bill Gunshannon <bill at cs.scranton.edu>
+> Well, the fun continues. I guess it's not going to be as simple as
+> 
+> When I try to build a custom kernel I get this:
+> 
+> cc -O -DKERNEL -DUOFS -I. -I../h -S ../sys/kern_clock.c
+> /bin/ed - < SPLFIX kern_clock.s
+> ?
+> ?
+> ?
+> ?
+> ?
+> ----------------------
+
+> And the "?" go on forever. Can't even break out of it.  Have to
+> kill the simulation and start all over.  Anybody run into this??
+
+	I have an extremely vague memory I might have seen it eons upon 
+	eons ago but I might be imaginging it.
+
+> Seems to be in the clock code.  Is there something I might have
+
+	Hmmm, '?' is "ed"s error indication.   I wonder if the '?' is
+	coming out of ed and not SIMH?
+
+> missed in the CONFIG file that could cause this??  All I basicly
+
+	Not at this stage of the build - a config file error wouldn't allow
+	the first few compiles to succeed and then start causing errors
+	on kern_clock.c
+
+	One thing I did notice though was the use of 'ed' - that tells me
+	the patchlevel of the system is very low (i.e. old).   'ed' was
+	replaced with 'sed' which sped things up a _lot_ - and that took
+	place back around #325 in 1996.
+
+	Have you tried P11 instead of SIMH?  When I'm too lazy to fire up
+	the 11/73 I use P11 to do the testing/patching and so on.   It's a
+	bit a pain to configure (really arcane configfile syntax) but it works
+	very well - never had a problem with it.
+
+	Good Luck.
+
+	Steven Schultz
+
+
+From cdl at mpl.ucsd.edu  Tue Mar  4 03:38:23 2003
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Mon, 3 Mar 2003 09:38:23 -0800 (PST)
+Subject: [pups] CDROM drives and PDP-11s
+Message-ID: <200303031738.JAA01869@opihi.ucsd.edu>
+
+> From: "Ian King" <iking at killthewabbit.org>
+> To: "Gregg C Levine" <hansolofalcon at worldnet.att.net>, <pups at minnie.tuhs.org>
+> Subject: Re: [pups] CDROM drives and PDP-11s
+> Date: Thu, 27 Feb 2003 08:52:54 -0800
+> 
+> John Wilson's PUTR program might be jut the tool - http://www.dbit.com.  I'm
+> guessing it might be ODS-2; worst case, I have an InfoServer that can read
+> that, and a TK-50 I could dump it to...  :-)  -- Ian
+> ----- Original Message -----
+> From: "Gregg C Levine" <hansolofalcon at worldnet.att.net>
+> To: <pups at minnie.tuhs.org>
+> Sent: Wednesday, February 26, 2003 11:46 PM
+> Subject: [pups] CDROM drives and PDP-11s
+> 
+> Hello from Gregg C Levine
+> Here's the problem. I have several CDs containing programs, and such
+> like from Tim Shoppa. Two of them say they contain portions which are
+> readable only by a CDROM Drive attached to a PDP-11. One of them is
+> split in half. Half is readable on either of the two computers here,
+> the other half, is in a format that's native to the PDP-11. The other
+> is all in that proprietary format. So, has anyone managed to get them
+> read to their machines? Or failing that to the appropriate simulators,
+> or even emulators? Any suggestions?
+
+When I look at "readme.txt" on my RT11 disk from Tim Shoppa I find the
+following paragraph:
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+The second part of the disk is seven RT-11 partitions.  Each is a 65536
+block RT-11 device that is accessible on a PDP-11 machine with a SCSI
+host adapter and a SCSI CD-ROM drive.  They appear as RT-11
+DU partitions 13 through 19.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+The implication to me is that any of these partitions could be copied
+to a 32MB file on a hard drive, and then attached to the PDP11 simulator
+of your choice and read as an RT-11 drive.
+
+The tool I would use for copying the partition is dd(1).
+
+	dd if=/mnt/cdrom bs=32M skip=13 count=1 of=dskimg
+
+This requires that you have 32MB available RAM for the dd "copy in"
+and 32MB available disk space for the dd "copy out".  You could
+trade off a smaller "bs" for a more complicated calculation of the "skip".
+I suppose I am making the assumption that this work is being done on
+a Unix-like system, which seems reasonable in the PUPS context.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+
+From hansolofalcon at worldnet.att.net  Wed Mar  5 10:23:33 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Tue, 4 Mar 2003 19:23:33 -0500
+Subject: [pups] Blinky lights, and E-11
+Message-ID: <002101c2e2ad$75301460$16c7580c@who5>
+
+Hello from Gregg C Levine
+In the documentation for E-11, John Wilson, describes the "blinky
+lights", essentially eight LEDs attached to the printer port of an
+IBM-PC that's running his emulator. 
+
+Has anyone ever built one of those things, using either a PC board
+blank from John Wilson, or decided to build one on his own? For that
+matter, has anyone actually used it, to assist in the debugging of a
+program, running on his emulator?
+
+I'll probably e-mail John Wilson about this one directly, but, has
+anyone written a custom plug-in, that would have the printer port,
+pose as an I/O port for the emulator?
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+From djenner at earthlink.net  Wed Mar  5 11:13:55 2003
+From: djenner at earthlink.net (David C. Jenner)
+Date: Tue, 04 Mar 2003 17:13:55 -0800
+Subject: [pups] Blinky lights, and E-11
+References: <002101c2e2ad$75301460$16c7580c@who5>
+Message-ID: <3E654F53.A6125017@earthlink.net>
+
+Gregg,
+
+See the ultimate case of blinking the lights
+  at http://home.hetnet.nl/~tshaj/pdpsite/pdpstartpage.html
+Click on the "Homebrew PDP-11" in the left frame.
+
+Also, see the KY11 interface
+  at http://www.sparetimegizmos.com/Hardware/KY11_Interface.htm
+
+John has a lot of friends!
+
+Dave
+
+Gregg C Levine wrote:
+> 
+> Hello from Gregg C Levine
+> In the documentation for E-11, John Wilson, describes the "blinky
+> lights", essentially eight LEDs attached to the printer port of an
+> IBM-PC that's running his emulator.
+> 
+> Has anyone ever built one of those things, using either a PC board
+> blank from John Wilson, or decided to build one on his own? For that
+> matter, has anyone actually used it, to assist in the debugging of a
+> program, running on his emulator?
+> 
+> I'll probably e-mail John Wilson about this one directly, but, has
+> anyone written a custom plug-in, that would have the printer port,
+> pose as an I/O port for the emulator?
+> -------------------
+> Gregg C Levine hansolofalcon at worldnet.att.net
+> ------------------------------------------------------------
+> "The Force will be with you...Always." Obi-Wan Kenobi
+> "Use the Force, Luke."  Obi-Wan Kenobi
+> (This company dedicates this E-Mail to General Obi-Wan Kenobi )
+> (This company dedicates this E-Mail to Master Yoda )
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+-- 
+David C. Jenner
+djenner at earthlink.net
+
+
+From hansolofalcon at worldnet.att.net  Wed Mar  5 14:56:32 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Tue, 4 Mar 2003 23:56:32 -0500
+Subject: [pups] Blinky lights, and E-11
+In-Reply-To: <3E654F53.A6125017@earthlink.net>
+Message-ID: <000001c2e2d3$981fe880$89c4580c@who5>
+
+Hello again from Gregg C Levine
+Looks good. However, I meant to use the printer-port as an I/O port,
+as one would use one of the dedicate boards that the original PDP-11
+wore. 
+
+Granted, it would be difficult to apply it, but according to a book on
+the subject of PC interfacing, it can be done.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]
+On
+> Behalf Of David C. Jenner
+> Sent: Tuesday, March 04, 2003 8:14 PM
+> To: Gregg C Levine
+> Cc: pups at minnie.tuhs.org
+> Subject: Re: [pups] Blinky lights, and E-11
+> 
+> Gregg,
+> 
+> See the ultimate case of blinking the lights
+>   at http://home.hetnet.nl/~tshaj/pdpsite/pdpstartpage.html
+> Click on the "Homebrew PDP-11" in the left frame.
+> 
+> Also, see the KY11 interface
+>   at http://www.sparetimegizmos.com/Hardware/KY11_Interface.htm
+> 
+> John has a lot of friends!
+> 
+> Dave
+> 
+> Gregg C Levine wrote:
+> >
+> > Hello from Gregg C Levine
+> > In the documentation for E-11, John Wilson, describes the "blinky
+> > lights", essentially eight LEDs attached to the printer port of an
+> > IBM-PC that's running his emulator.
+> >
+> > Has anyone ever built one of those things, using either a PC board
+> > blank from John Wilson, or decided to build one on his own? For
+that
+> > matter, has anyone actually used it, to assist in the debugging of
+a
+> > program, running on his emulator?
+> >
+> > I'll probably e-mail John Wilson about this one directly, but, has
+> > anyone written a custom plug-in, that would have the printer port,
+> > pose as an I/O port for the emulator?
+> > -------------------
+> > Gregg C Levine hansolofalcon at worldnet.att.net
+> > ------------------------------------------------------------
+> > "The Force will be with you...Always." Obi-Wan Kenobi
+> > "Use the Force, Luke."  Obi-Wan Kenobi
+> > (This company dedicates this E-Mail to General Obi-Wan Kenobi )
+> > (This company dedicates this E-Mail to Master Yoda )
+> >
+> > _______________________________________________
+> > PUPS mailing list
+> > PUPS at minnie.tuhs.org
+> > http://minnie.tuhs.org/mailman/listinfo/pups
+> 
+> --
+> David C. Jenner
+> djenner at earthlink.net
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From franco.tassone at inwind.it  Fri Mar 14 08:30:08 2003
+From: franco.tassone at inwind.it (Franco Tassone)
+Date: Thu, 13 Mar 2003 23:30:08 +0100
+Subject: [pups] Installing Venix or 2.9bsdpro on a DEC PRO350
+Message-ID: <001301c2e9b0$1b6f7380$32d7623e@tassone>
+
+Hi all,
+
+after having downloaded both distributions from a PUPS mirror, I was trying
+to install Venix or 2.9bsd modified for the PRO350.
+I've created for both distributions the installations floppy using a mvaxII
+with an rx50 floppy. The mvaxII actually runs netbsd, so I did a dd
+if=floppy.img of=/dev/rx0a for all the floppy images of the distributions,
+but when I go and try to boot the bot floppies of venix (and 2.9bsd too) on
+the PRO350, they fail to boot. The drive seems to try a little then the
+machine hangs, no messages on the console, except a nice capital DIGITAL, no
+messages on the serial terminale connected to the printer port with the
+maintenance cable.
+With venix floppy instead, after failing to boot, after a litle P/OS starts
+from hd.
+What am I missing, what did I wrong ?
+Any hint will be greatly appreciated.
+P.S. I definitively want to install an ancient unix on my dec pro350...,
+help me !
+...
+Franco Tassone
+
+
+
+From bpechter at monmouth.com  Sat Mar 15 02:01:09 2003
+From: bpechter at monmouth.com (Bill Pechter)
+Date: Fri, 14 Mar 2003 11:01:09 -0500
+Subject: [pups] Re: PUPS digest, Vol 1 #148 - 1 msg
+In-Reply-To: <200303140207.h2E275n38901@minnie.tuhs.org>
+References: <200303140207.h2E275n38901@minnie.tuhs.org>
+Message-ID: <3E71FCC5.8010705@monmouth.com>
+
+pups-request at minnie.tuhs.org wrote:
+
+>Send PUPS mailing list submissions to
+>	pups at minnie.tuhs.org
+>
+>To subscribe or unsubscribe via the World Wide Web, visit
+>	http://minnie.tuhs.org/mailman/listinfo/pups
+>or, via email, send a message with subject or body 'help' to
+>	pups-request at minnie.tuhs.org
+>
+>You can reach the person managing the list at
+>	pups-admin at minnie.tuhs.org
+>
+>When replying, please edit your Subject line so it is more specific
+>than "Re: Contents of PUPS digest..."
+>
+>
+>Today's Topics:
+>
+>   1. Installing Venix or 2.9bsdpro on a DEC PRO350 (Franco Tassone)
+>
+>--__--__--
+>
+>Message: 1
+>From: "Franco Tassone" <franco.tassone at inwind.it>
+>To: <pups at minnie.tuhs.org>
+>Date: Thu, 13 Mar 2003 23:30:08 +0100
+>Subject: [pups] Installing Venix or 2.9bsdpro on a DEC PRO350
+>
+>Hi all,
+>
+>after having downloaded both distributions from a PUPS mirror, I was trying
+>to install Venix or 2.9bsd modified for the PRO350.
+>I've created for both distributions the installations floppy using a mvaxII
+>with an rx50 floppy. The mvaxII actually runs netbsd, so I did a dd
+>if=floppy.img of=/dev/rx0a for all the floppy images of the distributions,
+>but when I go and try to boot the bot floppies of venix (and 2.9bsd too) on
+>the PRO350, they fail to boot. The drive seems to try a little then the
+>machine hangs, no messages on the console, except a nice capital DIGITAL, no
+>messages on the serial terminale connected to the printer port with the
+>maintenance cable.
+>With venix floppy instead, after failing to boot, after a litle P/OS starts
+>from hd.
+>What am I missing, what did I wrong ?
+>Any hint will be greatly appreciated.
+>P.S. I definitively want to install an ancient unix on my dec pro350...,
+>help me !
+>...
+>Franco Tassone
+>  
+>
+
+I think those may be teledisk images so DD probably wouldn't work.
+You need an IBM PC with 80 track drives, IIRC to recreate the images...
+
+It's been a long time since I looked at those images.
+
+Bill
+
+
+
+From hansolofalcon at worldnet.att.net  Sat Mar 15 04:00:47 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Fri, 14 Mar 2003 13:00:47 -0500
+Subject: Subject: [pups] Installing Venix or 2.9bsdpro on a DEC PRO350
+In-Reply-To: <3E71FCC5.8010705@monmouth.com>
+Message-ID: <001101c2ea53$a4be1120$60a1580c@who5>
+
+Hello again from Gregg C Levine
+If the Venix images, are indeed the same ones that I saw roosting on
+the server formerly known as Sunsite, then yes they are, and yes you
+will. I don't know about the ones for 2.9bsdpro. That's a special
+case, and I'm not too clear on that.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]
+On
+> Behalf Of Bill Pechter
+> Sent: Friday, March 14, 2003 11:01 AM
+> To: pups at minnie.tuhs.org
+> Subject: [pups] Re: PUPS digest, Vol 1 #148 - 1 msg
+> 
+> pups-request at minnie.tuhs.org wrote:
+> 
+> >Send PUPS mailing list submissions to
+> >	pups at minnie.tuhs.org
+> >
+> >To subscribe or unsubscribe via the World Wide Web, visit
+> >	http://minnie.tuhs.org/mailman/listinfo/pups
+> >or, via email, send a message with subject or body 'help' to
+> >	pups-request at minnie.tuhs.org
+> >
+> >You can reach the person managing the list at
+> >	pups-admin at minnie.tuhs.org
+> >
+> >When replying, please edit your Subject line so it is more specific
+> >than "Re: Contents of PUPS digest..."
+> >
+> >
+> >Today's Topics:
+> >
+> >   1. Installing Venix or 2.9bsdpro on a DEC PRO350 (Franco
+Tassone)
+> >
+> >--__--__--
+> >
+> >Message: 1
+> >From: "Franco Tassone" <franco.tassone at inwind.it>
+> >To: <pups at minnie.tuhs.org>
+> >Date: Thu, 13 Mar 2003 23:30:08 +0100
+> >Subject: [pups] Installing Venix or 2.9bsdpro on a DEC PRO350
+> >
+> >Hi all,
+> >
+> >after having downloaded both distributions from a PUPS mirror, I
+was trying
+> >to install Venix or 2.9bsd modified for the PRO350.
+> >I've created for both distributions the installations floppy using
+a mvaxII
+> >with an rx50 floppy. The mvaxII actually runs netbsd, so I did a dd
+> >if=floppy.img of=/dev/rx0a for all the floppy images of the
+distributions,
+> >but when I go and try to boot the bot floppies of venix (and 2.9bsd
+too) on
+> >the PRO350, they fail to boot. The drive seems to try a little then
+the
+> >machine hangs, no messages on the console, except a nice capital
+DIGITAL, no
+> >messages on the serial terminale connected to the printer port with
+the
+> >maintenance cable.
+> >With venix floppy instead, after failing to boot, after a litle
+P/OS starts
+> >from hd.
+> >What am I missing, what did I wrong ?
+> >Any hint will be greatly appreciated.
+> >P.S. I definitively want to install an ancient unix on my dec
+pro350...,
+> >help me !
+> >...
+> >Franco Tassone
+> >
+> >
+> 
+> I think those may be teledisk images so DD probably wouldn't work.
+> You need an IBM PC with 80 track drives, IIRC to recreate the
+images...
+> 
+> It's been a long time since I looked at those images.
+> 
+> Bill
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From iking at killthewabbit.org  Mon Mar 17 16:13:55 2003
+From: iking at killthewabbit.org (Ian King)
+Date: Sun, 16 Mar 2003 22:13:55 -0800
+Subject: [pups] 2BSD build problem - unix.o not too big
+Message-ID: <000a01c2ec4c$63e5cf30$450010ac@dawabbit>
+
+Steven,
+
+I'm building a 2.11BSD kernel on my 11/73 (so I can include the networking
+code and put my machine on the LAN!), and I'm seeing the error "too big for
+type 431".  Through the wonders of Google, I saw your discussion of this
+error and followed your advice (from 1996!).  However, when I ask 'size
+unix.o', I get a size comfortably within the limits for base - 50112, well
+below the 57344 you cite.  None of the overlays exceeds 8192, and the 'total
+text' figure is well below your example, too.  FWIW, I did a 'naive build'
+first, copying GENERIC and changing a few parameters; after seeing the error
+'text segment too big' I went through the config file with a little more
+thought and eliminated drivers I clearly didn't need (I don't have RL01/02s,
+for instance).  Then I started getting this error.  I did a 'make clean'
+just to be sure, but still make gives me the 'too big for type 431' error.
+(Yes, I RTFM on ld.)
+
+I am standing here beside myself.  :-)  And I am humbly soliciting
+suggestions....  -- Ian
+
+PS: I'm at patch level 431, per the VERSION file.
+
+
+
+From sms at 2BSD.COM  Mon Mar 17 17:36:02 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Sun, 16 Mar 2003 23:36:02 -0800 (PST)
+Subject: [pups] 2BSD build problem - unix.o not too big
+Message-ID: <200303170736.h2H7a2w22625@moe.2bsd.com>
+
+> From: "Ian King" <iking at killthewabbit.org>
+> I'm building a 2.11BSD kernel on my 11/73 (so I can include the networking
+> code and put my machine on the LAN!), and I'm seeing the error "too big for
+> type 431".  Through the wonders of Google, I saw your discussion of this
+> error and followed your advice (from 1996!).  However, when I ask 'size
+
+	I'd have, up to now, sworn that the overlay setup was in the 
+	documentation (one of the appendices) but it could well be that it's
+	still off in a file somewhere in the mess I call my filesystem ;)
+
+> unix.o', I get a size comfortably within the limits for base - 50112, well
+> below the 57344 you cite.  None of the overlays exceeds 8192, and the 'total
+> text' figure is well below your example, too.  FWIW, I did a 'naive build'
+
+	Do you have any 0 length overlays?   There can't be any gaps in the
+	overlay structure.
+
+	For example, this is legal:
+
+		overlays: 8128,7552,8000,7296,8192,7424,5824,6784,3520
+
+	but this is not:
+		
+		overlays: 8128,7552,8000,7296,8192,0,5824,6784,3520
+
+> first, copying GENERIC and changing a few parameters; after seeing the error
+> 'text segment too big' I went through the config file with a little more
+> thought and eliminated drivers I clearly didn't need (I don't have RL01/02s,
+
+	You might need to go thru the Makefile too.  Good idea to eliminate
+	drivers you don't have (save their D-space requirements) but that
+	can create empty overlays and that does not work.
+
+> for instance).  Then I started getting this error.  I did a 'make clean'
+> just to be sure, but still make gives me the 'too big for type 431' error.
+> (Yes, I RTFM on ld.)
+
+	Hmmm, patch level 431 is recent enough I'd have thought to avoid
+	a 'ld' problem (current is 444 but nothing recently has touched
+	ld).
+
+	What is the output from 'size unix.o'?
+
+	Cheers,
+	Steven Schultz
+
+
+From dfevans at bbcr.uwaterloo.ca  Tue Mar 18 00:45:39 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Mon, 17 Mar 2003 09:45:39 -0500
+Subject: [pups] 2BSD build problem - unix.o not too big
+In-Reply-To: <200303170736.h2H7a2w22625@moe.2bsd.com>; from sms@2BSD.COM on Sun, Mar 16, 2003 at 11:36:02PM -0800
+References: <200303170736.h2H7a2w22625@moe.2bsd.com>
+Message-ID: <20030317094539.B16260@bcr10.uwaterloo.ca>
+
+On Sun, Mar 16, 2003 at 11:36:02PM -0800, Steven M. Schultz wrote:
+> 	I'd have, up to now, sworn that the overlay setup was in the 
+> 	documentation (one of the appendices) but it could well be that it's
+> 	still off in a file somewhere in the mess I call my filesystem ;)
+> 
+
+  I don't recall seeing any overlay info when I set up my 11/73 back in
+January.  I even asked the dreaded overlay FAQ here!  :)  I was also at
+431.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From sms at 2BSD.COM  Tue Mar 18 02:38:06 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Mon, 17 Mar 2003 08:38:06 -0800 (PST)
+Subject: [pups] 2BSD build problem - unix.o not too big
+Message-ID: <200303171638.h2HGc6401078@moe.2bsd.com>
+
+Hi -
+
+> From: David Evans <dfevans at bbcr.uwaterloo.ca>
+> 
+>   I don't recall seeing any overlay info when I set up my 11/73 back in
+> January.  I even asked the dreaded overlay FAQ here!  :)  I was also at 431.
+
+	Ok, I probably only thought about including the writeup in the
+	documentation.   I know I did write up a moderately lengthy 
+	article about dealing with the overlay setup in response to a
+	problem someone was having.  I just never went and incorporated it 
+	into the setup/installatino documentation ;(
+
+	One thing, obvious now that I think of it, I forgot to mention last
+	night is that "too big for type 431" can also happen if the D space
+	total is too large.   If 'MAXUSERS' is set too high for example
+	then more than 48KB of D space will be needed and the linker will
+	complain.    Look at the sum of the DATA and BSS segments (it might
+	be necessary to sum up the .o files individually) - if it's pushing
+	48KB then that's the problem.
+
+	Cheers,
+	Steven Schultz
+
+
+From j.r.engdahl at adelphia.net  Wed Mar 19 12:24:34 2003
+From: j.r.engdahl at adelphia.net (Jonathan Engdahl)
+Date: Tue, 18 Mar 2003 21:24:34 -0500
+Subject: [pups] 2.11BSD "make unix" aborts Error 141
+References: <200303171638.h2HGc6401078@moe.2bsd.com>
+Message-ID: <00be01c2edbe$aea2cff0$b800a8c0@arctura>
+
+I'm running essentially the CURLY 2.11BSD system with networking on a
+PDP-11/53. When I go to rebuild unix with "make all", the build will run for
+a while, then quit with "Error 141". If I type "make all" again, it keeps on
+going for a while. After several iterations of this, eventually the make
+completes, and the system will boot the result. What is this "Error 141"
+business?
+
+I've not looked for the cause of this yet. I'm being lazy, and hoping
+someone has seen this before and can give me a quick answer, before I go
+digging.
+
+--
+Jonathan Engdahl
+http://users.safeaccess.com/engdahl
+
+"The things which are seen are temporary,
+ but the things which are not seen are eternal."  II Cor. 4:18
+
+
+
+From iking at killthewabbit.org  Wed Mar 19 17:44:58 2003
+From: iking at killthewabbit.org (Ian King)
+Date: Tue, 18 Mar 2003 23:44:58 -0800
+Subject: [pups] Progress on 2.11BSD kernel
+Message-ID: <000901c2edeb$70942650$450010ac@dawabbit>
+
+Well, given the excellent advice I received here (especially from Steven
+Schultz), I got the networking kernel to build after moving a few modules
+around between overlays.  It was indeed the overage on DATA/BSS that was
+killing my build.  I did a 'make install' and sync'ed, then restarted.
+
+<sigh>
+
+Now, when I respond to the boot prompt with 'ra(0,0)unix', I'm getting the
+following:
+
+<banner for the image, date, time, etc.>
+panic: iinit
+no fs on 5/0
+
+I'm booting from an RD54, and checking both 'ls -l /dev/ra*' and
+/dev/MAKEDEV, it sure looks to me that the major device number for this
+drive is 5 - am I missing anything yet?  That's what I called out as the
+ROOTDEV in my config file (in sys/conf), with '5,1' as the SWAPDEV.  (I
+snuck a peek at the CURLY config file as well, and it shows major device 5
+for ra.)  Note that this is exactly the same device as I have been using all
+along with the GENERIC kernel, so I know there's really a filesystem there.
+(FWIW, I didn't define an autoboot device.)  In ufs_subr.c, I see where this
+message is apparently generated in the getfs() function, but I can't really
+tell from that where it's biting me.
+
+Hey, if it wasn't a challenge, it wouldn't be fun, right?  Right?  TIA --
+Ian
+
+PS: I'm really glad I followed the advice to copy my old (GENERIC) kernel
+image to 'oldunix' - so I can still boot!
+
+
+
+From sms at 2BSD.COM  Thu Mar 20 02:29:34 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Wed, 19 Mar 2003 08:29:34 -0800 (PST)
+Subject: [pups] 2.11BSD "make unix" aborts Error 141
+Message-ID: <200303191629.h2JGTYY02048@moe.2bsd.com>
+
+Hi -
+
+> From: "Jonathan Engdahl" <j.r.engdahl at adelphia.net>
+> I'm running essentially the CURLY 2.11BSD system with networking on a
+
+	Ah, yes - the 'master reference 2.11BSD system' ('SHEMP' is a virtual
+	pdp-11 running under P11 ;)).
+
+> PDP-11/53. When I go to rebuild unix with "make all", the build will run for
+> a while, then quit with "Error 141". If I type "make all" again, it keeps on
+
+	Yep, I've been seeing that for years and aside from some kernel
+	hackery to assist in the debugging I haven't done much other than
+	to come up with a workaround.
+
+> going for a while. After several iterations of this, eventually the make
+> completes, and the system will boot the result. What is this "Error 141"
+> business?
+
+	It's the exit status of the assembler.   On _some_ modules, the 
+	assembler ('as') jumps off into the weeds and executes an 'exit'
+	system call with a non-zero value in R0.   141 is a lower case 'a'
+	as I recall.
+
+	Now for the interesting part.  If you do something like
+
+		setenv FOOBAR abcdef
+
+	and run the make the assembler won't "exit 'a".   ALSO, if you run
+	the pipeline of the failing command manually, using temp files, it
+	won't fail.  Makes it very hard to debug.
+	
+> I've not looked for the cause of this yet. I'm being lazy, and hoping
+> someone has seen this before and can give me a quick answer, before I go
+
+	I'm lazy too (I hear that being lazy is a virtue in programmers ;))
+	so I just pad the environment with "FOO abc" or something and the
+	make works.
+
+	The only idea I've come up with to try and track the problem down
+	is a hack to the 'exit' logic in the kernel to create a coredump
+	of a program that exits with 'non-zero' status.  Then at least
+	there'd be something to postmortem.   An added complication is that
+	the assembler has this nasty habit of using 'jmp' to move around
+	rather than 'jsr' so it's hard to find out where the program was
+	at times.   A long time ago I did make a few changes to 'as' to reduce
+	the usage of 'jmp' in an attempt to track this down but then, when
+	even I ran the program under the debugger it never failed - a typical
+	Heisenberg type of bug ;(
+
+	Good Luck.
+
+	Steven Schultz
+
+
+From dfevans at bbcr.uwaterloo.ca  Thu Mar 20 02:38:15 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Wed, 19 Mar 2003 11:38:15 -0500
+Subject: [pups] 2.11BSD "make unix" aborts Error 141
+In-Reply-To: <200303191629.h2JGTYY02048@moe.2bsd.com>; from sms@2BSD.COM on Wed, Mar 19, 2003 at 08:29:34AM -0800
+References: <200303191629.h2JGTYY02048@moe.2bsd.com>
+Message-ID: <20030319113815.D16906@bcr10.uwaterloo.ca>
+
+On Wed, Mar 19, 2003 at 08:29:34AM -0800, Steven M. Schultz wrote:
+> 	It's the exit status of the assembler.   On _some_ modules, the 
+> 	assembler ('as') jumps off into the weeds and executes an 'exit'
+> 	system call with a non-zero value in R0.   141 is a lower case 'a'
+> 	as I recall.
+> 
+ 
+  Ugh.
+
+  Am I naive to suggest a rewrite of as?  :)
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From norman at nose.cs.utoronto.ca  Thu Mar 20 02:52:24 2003
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Wed, 19 Mar 2003 11:52:24 -0500
+Subject: [pups] 2.11BSD "make unix" aborts Error 141
+Message-ID: <200303191652.h2JGqqVJ025026@minnie.tuhs.org>
+
+Steven M. Schultz:
+
+	It's the exit status of the assembler.   On _some_ modules, the 
+	assembler ('as') jumps off into the weeds and executes an 'exit'
+	system call with a non-zero value in R0.   141 is a lower case 'a'
+	as I recall.
+
+0141 (octal) is 'a.  141 decimal is 0215 octal, i.e. carriage return with
+parity.
+
+What seems more likely is that 141 decimal is 0200 + 13 decimal.  If a
+simple value returned by wait, that means SIGPIPE + core image, which
+seems unlikely.  If an exit status as displayed by the shell, it just
+means SIGPIPE (128 + signal number).  Or is signal 13 different in 2.11
+than in V7?  (That seems even less likely.)
+
+SIGPIPE doesn't seem entirely unreasonable as an accident that could
+happen if something goes wrong in the assembly-language-code-tweaking
+part of the kernel build.
+
+Of course if it's a random value handed to sys exit, all rules are off.
+
+Norman Wilson
+Toronto ON
+
+
+From sms at 2BSD.COM  Thu Mar 20 03:36:58 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Wed, 19 Mar 2003 09:36:58 -0800 (PST)
+Subject: [pups] Progress on 2.11BSD kernel
+Message-ID: <200303191736.h2JHaw302449@moe.2bsd.com>
+
+Hi -
+
+> From: "Ian King" <iking at killthewabbit.org>
+> Well, given the excellent advice I received here (especially from Steven
+> Schultz), I got the networking kernel to build after moving a few modules
+> around between overlays.  It was indeed the overage on DATA/BSS that was
+
+	Hmmm, if it was an overage on the DATA/BSS (which is hard to do unless
+	you overdeclare MAXUSERS or the number of tty devices) then
+	shuffling overlays wouldn't have made any difference since overlays
+	affect only code and not data allocation.
+
+> Now, when I respond to the boot prompt with 'ra(0,0)unix', I'm getting the
+> following:
+> 
+> <banner for the image, date, time, etc.>
+> panic: iinit
+> no fs on 5/0
+
+	That says the kernel was not able to mount the root filesystem.  The
+	earlier messages about the kernel build date, etc appear because 
+	the kernel prints those directly from internal strings  (and the
+	kernel is loaded by /boot who doesn't "mount" the root filesystem).
+
+> I'm booting from an RD54, and checking both 'ls -l /dev/ra*' and
+> /dev/MAKEDEV, it sure looks to me that the major device number for this
+> drive is 5 - am I missing anything yet?  That's what I called out as the
+
+	You're not missing anything so far ;)
+
+	Are there other devices/controllers on the system?   That should work
+	(works on my system) but I'm trying to get a handle on what might be
+	confusing the kernel.
+
+> for ra.)  Note that this is exactly the same device as I have been using all
+> along with the GENERIC kernel, so I know there's really a filesystem there.
+
+	That's the puzzling part - why the old one works but the new one
+	doesn't.   
+
+> (FWIW, I didn't define an autoboot device.)  In ufs_subr.c, I see where this
+> message is apparently generated in the getfs() function, but I can't really
+
+	mountfs() calls getfs().   mountfs() is called out of main() in
+	init_main.c
+
+	The panic "iinit" is in init_main.c after mountfs() has returned
+	NULL
+
+	The times I have seen the 'iinit' panic it's meant that the disklabel
+	was either missing _or_ that the root ('a') partition was not of
+	type FS_V71K.   I SUPPOSE it's far fetched, but possible, that the
+	old kernel predates the check for the filesystem type, thus it ignores
+	the type of partition 'a' and assumes it's a valid filesystem.  
+
+	If you have a copy of the standalone 'disklabel' program installed
+	in / you can boot that with
+
+		ra(0,0)disklabel
+
+	and examine the label that way.   Or boot the tape and load the
+	utility that way.   Using the old kernel and running disklabel
+	would work too.   If the 'type' for the 'a' partition is not 'FS_V71K'
+	that's the problem.
+
+> PS: I'm really glad I followed the advice to copy my old (GENERIC) kernel
+> image to 'oldunix' - so I can still boot!
+
+	Ah, glad to hear that the advice came in handy.   The other thing
+	that comes in useful is a bootable Zip disk (complete 2BSD system
+	fits on a Zip disk if one has a SCSI adaptor around) - came in handy
+	when I corrupted/broke 'init' ...
+
+	Steve
+
+
+From dfevans at bbcr.uwaterloo.ca  Thu Mar 20 03:46:18 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Wed, 19 Mar 2003 12:46:18 -0500
+Subject: [pups] Progress on 2.11BSD kernel
+In-Reply-To: <200303191736.h2JHaw302449@moe.2bsd.com>; from sms@2BSD.COM on Wed, Mar 19, 2003 at 09:36:58AM -0800
+References: <200303191736.h2JHaw302449@moe.2bsd.com>
+Message-ID: <20030319124618.A17077@bcr10.uwaterloo.ca>
+
+On Wed, Mar 19, 2003 at 09:36:58AM -0800, Steven M. Schultz wrote:
+> > PS: I'm really glad I followed the advice to copy my old (GENERIC) kernel
+> > image to 'oldunix' - so I can still boot!
+> 
+> 	Ah, glad to hear that the advice came in handy.
+
+  This came in handy for me too when I went the route of messed up MAXUSERS
+screwage.
+
+> The other thing
+> 	that comes in useful is a bootable Zip disk (complete 2BSD system
+> 	fits on a Zip disk if one has a SCSI adaptor around) - came in handy
+> 	when I corrupted/broke 'init' ...
+> 
+
+  I should track down the half-bezel so that I can mount this SCSI Zip drive I
+have in my BA123.  That would look so weird...
+
+  On another note, were there any SCSI adapters that made use of the BA23/
+BA123 RD disk control buttons?  Would be nifty to swap in a new ra0 by
+simply taking a disk offline/online.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From sms at 2BSD.COM  Thu Mar 20 03:46:51 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Wed, 19 Mar 2003 09:46:51 -0800 (PST)
+Subject: [pups] 2.11BSD "make unix" aborts Error 141
+Message-ID: <200303191746.h2JHkpQ02570@moe.2bsd.com>
+
+Hi -
+
+> From: David Evans <dfevans at bbcr.uwaterloo.ca>
+>   Ugh.
+> 
+>   Am I naive to suggest a rewrite of as?  :)
+
+	Just a little bit <g>
+
+	It's a thought that used to occur to me fairly often a long time 
+	ago.  I cured myself of it though after I did the rewrite into
+	its current form (if you think it's bad now you should have seen it
+	before ;)).
+
+	The biggest problem are the SDI (Span Dependent Instructions).  The
+	PDP-11 has 'jmp' (non conditional but no range limit) and 'br' (many
+	flavors of conditional branches but with a +/- 128 byte range).  
+	The compiler generates pseudo instructions like 'jeq' and leaves it
+	up to the assembler to figure out if a branch will reach or if a
+	branch around a jump is needed.   That's a PITA to handle and is
+	I believe the cause of much ugliness in the assembler.
+
+	So I'm fought the urge to rewrite the assembler and 'won' - I no longer
+	feel the rewrite urges ;)
+
+	Cheers,
+	Steven Schultz
+
+
+From sms at 2BSD.COM  Thu Mar 20 03:40:30 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Wed, 19 Mar 2003 09:40:30 -0800 (PST)
+Subject: [pups] Re: Condition of 2BSD
+Message-ID: <200303191740.h2JHeUf02457@moe.2bsd.com>
+
+Hi -
+
+	I received a mail item from Johnny Billquist but the fine folks
+	at Update.UU.SE don't seem to recognize that networks can be
+	subdivided and that _my_ portion has never sent or relayed spam
+
+	Hope Johnny doesn't mind the reply going here instead.
+
+   ----- The following addresses had permanent fatal errors -----
+bqt at update.uu.se
+    (reason: 553 5.3.0 <bqt at update.uu.se>... SMTP from 64.32.150.18 blocked by Update due to spam sent/relayed from this network;contact postmaster at Update.UU.SE for details)
+
+   ----- Transcript of session follows -----
+... while talking to tempo.update.uu.se.:
+>>> RCPT To:<bqt at update.uu.se>
+<<< 553 5.3.0 <bqt at update.uu.se>... SMTP from 64.32.150.18 blocked by Update due to spam sent/relayed from this network;contact postmaster at Update.UU.SE for details
+550 5.1.1 bqt at update.uu.se... User unknown
+
+Hi!
+
+> I have a small question, which I hope you can clarify for me. I'm in a
+> little argument with a person involved in NetBSD.
+
+	Ummm, I'm not a lawyer of course...
+
+> He claims that NetBSD is the oldest free BSD still alive, which I reacted
+> to since it was my belief that 2BSD now is free.
+
+	But is 2BSD free?   That I don't know.  It is more free than it was
+	a long time ago but 
+
+> This have resulted in the claim that Berkley is the one that is
+> restricting 2BSD, which was news to me. Is this in any way correct? The
+
+> 
+>  * Copyright (c) 1986 Regents of the University of California.
+>  * All rights reserved.  The Berkeley software License Agreement
+>  * specifies the terms and conditions for redistribution.
+
+	That was the earlier version of the BSD license - when you had to have
+	a ATT/USL/BellLabs license in order to obtain BSD at all.
+
+	I am not sure I have a copy of the original UCB license but I think
+	part of it involved having a ATT/USL license.
+
+	The 'BSD' part of the UCB license permitted free sharing of the 
+	UCB portions of the system.    The questionable parts involved
+	the original ATT/USL code.  If the current owners say that the original
+	(non-UCB) portions are free then that means the entire system is
+	free.
+
+> I believed that this was/is more or less the same as the current BSD
+> license (except that it still have the clause that any software
+> incorporating code from BSD must say so).
+
+	At a later time the BSD license agreement added words about 
+	redistributing the code with or without modification as long as
+	credit was given.   
+
+> But appearantly this other guy is claiming that Berkley hasn't let 2BSD
+> free at all.
+
+	I'm not sure UCB even knows what 2BSD is any more.
+
+> Can you clarify this for me, please? :-)
+
+	Does the current state of the Caldera/SCO/whatever license override
+	any existing licenses?   THAT I do not know.   If that is the case
+	then I would say that 2BSD is indeed free, on the other hand if people
+	are still legally constrained by the earlier license then 2BSD is
+	not totally free.    Earlier versions of NetBSD would not be free
+	either because they contain "encumbered code" from the era when a
+	ATT/USL license was required.
+
+	I think it unlikely that anyone is going to send the 'software police'
+	out to kick down a person's door because they're running 2BSD - sounds
+	like that era is over at last.   That's free enough for most people
+	I think.
+
+	Steve
+
+
+From sms at 2BSD.COM  Thu Mar 20 03:51:10 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Wed, 19 Mar 2003 09:51:10 -0800 (PST)
+Subject: [pups] Progress on 2.11BSD kernel
+Message-ID: <200303191751.h2JHpAX02576@moe.2bsd.com>
+
+Howdy -
+
+> From: David Evans <dfevans at bbcr.uwaterloo.ca>
+> This came in handy for me too when I went the route of messed up MAXUSERS 
+> screwage.
+
+	That'll do it too ;)
+
+>   I should track down the half-bezel so that I can mount this SCSI Zip drive I
+> have in my BA123.  That would look so weird...
+
+	It is tight on space but I can get a complete 2.11 system (with sources)
+	and a small swap partition on a 96MB Zip disk.   Not suitable really
+	for going multi-user but as a single user mode system for fixing
+	up /etc/init or building a kernel it's nice.
+
+	Might not look too weird - different of course, who knows but what
+	you might like the new look ;)
+
+>   On another note, were there any SCSI adapters that made use of the BA23/
+> BA123 RD disk control buttons?  Would be nifty to swap in a new ra0 by
+> simply taking a disk offline/online.
+
+	Hmmm, those buttons/cabling are for RD/MSCP devices - not sure if it's
+	possible to use them with SCSI devices.
+
+	Steven Schultz
+
+
+From sms at 2BSD.COM  Thu Mar 20 03:59:03 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Wed, 19 Mar 2003 09:59:03 -0800 (PST)
+Subject: [pups] 2.11BSD "make unix" aborts Error 141
+Message-ID: <200303191759.h2JHx3402619@moe.2bsd.com>
+
+Hi -
+
+> From: norman at nose.cs.utoronto.ca (Norman Wilson)
+> 0141 (octal) is 'a.  141 decimal is 0215 octal, i.e. carriage return with
+> parity.
+
+	And I remembered that (correctly as it turns out) without looking
+	at ascii(7) <g>
+
+> What seems more likely is that 141 decimal is 0200 + 13 decimal.  If a
+> simple value returned by wait, that means SIGPIPE + core image, which
+> seems unlikely.  If an exit status as displayed by the shell, it just
+
+	It's, if I recall, being displayed by 'make'.   There's no coredump
+	so the interpretation of 0141 is that of an exit status.  It's been
+	a while since I've looked into the problem - it was quite annoying
+	to run the sequence (that was causing make to cease) manually and not
+	have it happen the same way.
+	a 'shell'
+
+> means SIGPIPE (128 + signal number).  Or is signal 13 different in 2.11
+> than in V7?  (That seems even less likely.)
+
+	Ah, ok - that makes sense too.  No, SIGPIPE is the same as it's always
+	been since it was first defined as 13
+
+> SIGPIPE doesn't seem entirely unreasonable as an accident that could
+> happen if something goes wrong in the assembly-language-code-tweaking
+> part of the kernel build.
+
+	But something is causing the assembler to exit prematurely and break
+	the pipe in the first place.
+
+	SIGPIPE happens, of course, when a writer process writes to a pipe
+	where the receiving/reading process has exited.   'as' is exiting
+	prematurely - that can be determined by looking at the partially
+	created (or empty) .s file that gets left behind.
+
+> Of course if it's a random value handed to sys exit, all rules are off.
+
+	What might be needed is a decent (or existent ;)) syscall tracing
+	capability.  That combined with the capability to "coredump a non-0
+	exit process) might be enough to track down what's causing 'as'
+	to depart the scene prematurely.
+
+	Cheers,
+	Steven Schultz
+
+
+From dfevans at bbcr.uwaterloo.ca  Thu Mar 20 04:08:16 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Wed, 19 Mar 2003 13:08:16 -0500
+Subject: [pups] Progress on 2.11BSD kernel
+In-Reply-To: <200303191751.h2JHpAX02576@moe.2bsd.com>; from sms@2BSD.COM on Wed, Mar 19, 2003 at 09:51:10AM -0800
+References: <200303191751.h2JHpAX02576@moe.2bsd.com>
+Message-ID: <20030319130816.B17120@bcr10.uwaterloo.ca>
+
+On Wed, Mar 19, 2003 at 09:51:10AM -0800, Steven M. Schultz wrote:
+> Howdy -
+> 
+> > From: David Evans <dfevans at bbcr.uwaterloo.ca>
+> > This came in handy for me too when I went the route of messed up MAXUSERS 
+> > screwage.
+> 
+> 	That'll do it too ;)
+> 
+
+  Fortunately /vmunix & /oldvmunix is a familiar procedure from back in
+my PMAX device driver hacking days.
+
+> >   On another note, were there any SCSI adapters that made use of the BA23/
+> > BA123 RD disk control buttons?  Would be nifty to swap in a new ra0 by
+> > simply taking a disk offline/online.
+> 
+> 	Hmmm, those buttons/cabling are for RD/MSCP devices - not sure if it's
+> 	possible to use them with SCSI devices.
+> 
+
+  I was thinking of a SCSI adapter that plugged into the bulkhead somehow.
+This is plainly rediculous, but a nifty idea nontheless.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From iking at killthewabbit.org  Thu Mar 20 04:24:22 2003
+From: iking at killthewabbit.org (Ian King)
+Date: Wed, 19 Mar 2003 10:24:22 -0800
+Subject: [pups] Progress on 2.11BSD kernel
+References: <200303191736.h2JHaw302449@moe.2bsd.com>
+Message-ID: <001201c2ee44$c3c15790$450010ac@dawabbit>
+
+My MAXUSERS is most modest (the default 4) as is my number of ttys.  I
+followed your advice on this, as the overall size of unix.o wasn't excessive
+but I still got the 'type 431' error; after shuffling some pieces out,
+unix.o linked and the build continued.  Maybe it's FM....  -- Ian
+
+----- Original Message -----
+From: "Steven M. Schultz" <sms at 2BSD.COM>
+To: <pups at minnie.tuhs.org>
+Sent: Wednesday, March 19, 2003 9:36 AM
+Subject: Re: [pups] Progress on 2.11BSD kernel
+
+
+> Hi -
+>
+> > From: "Ian King" <iking at killthewabbit.org>
+> > Well, given the excellent advice I received here (especially from Steven
+> > Schultz), I got the networking kernel to build after moving a few
+modules
+> > around between overlays.  It was indeed the overage on DATA/BSS that was
+>
+> Hmmm, if it was an overage on the DATA/BSS (which is hard to do unless
+> you overdeclare MAXUSERS or the number of tty devices) then
+> shuffling overlays wouldn't have made any difference since overlays
+> affect only code and not data allocation.
+>
+[snip]
+
+
+
+From cdl at mpl.ucsd.edu  Thu Mar 20 04:58:37 2003
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Wed, 19 Mar 2003 10:58:37 -0800 (PST)
+Subject: [pups] 2.11BSD "make unix" aborts Error 141
+Message-ID: <200303191858.h2JIwb726378@opihi.ucsd.edu>
+
+> From: "Steven M. Schultz" <sms at 2BSD.COM>
+> To: pups at minnie.tuhs.org
+> Subject: Re: [pups] 2.11BSD "make unix" aborts Error 141
+> List-Archive: <http://minnie.tuhs.org/pipermail/pups/>
+> Date: Wed, 19 Mar 2003 09:46:51 -0800 (PST)
+> 
+> Hi -
+> 
+> > From: David Evans <dfevans at bbcr.uwaterloo.ca>
+> >   Ugh.
+> > 
+> >   Am I naive to suggest a rewrite of as?  :)
+> 
+> 	Just a little bit <g>
+> 
+> 	It's a thought that used to occur to me fairly often a long time 
+> 	ago.  I cured myself of it though after I did the rewrite into
+> 	its current form (if you think it's bad now you should have seen it
+> 	before ;)).
+> 
+> 	The biggest problem are the SDI (Span Dependent Instructions).  The
+> 	PDP-11 has 'jmp' (non conditional but no range limit) and 'br' (many
+> 	flavors of conditional branches but with a +/- 128 byte range).  
+> 	The compiler generates pseudo instructions like 'jeq' and leaves it
+> 	up to the assembler to figure out if a branch will reach or if a
+> 	branch around a jump is needed.   That's a PITA to handle and is
+> 	I believe the cause of much ugliness in the assembler.
+
+That, of course, is a _neat feature_ of AS.  On the other hand, how
+much code bloat would result if AS always emitted (bne;jmp) pairs for
+'jeq', etc.  Maybe only generate (bne;jmp) for forward 'jeq' where the
+span is not yet known.  I am sure there are pathological instabilities
+in this kind of code generation, where expanding one branch/jump
+instruction makes another one go out of span range.
+
+Answer:  3:1 for each unnecessary pair.  But I have no idea of the
+statistics for real code.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+
+From dfevans at bbcr.uwaterloo.ca  Thu Mar 20 04:59:33 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Wed, 19 Mar 2003 13:59:33 -0500
+Subject: [pups] Progress on 2.11BSD kernel
+In-Reply-To: <001201c2ee44$c3c15790$450010ac@dawabbit>; from iking@killthewabbit.org on Wed, Mar 19, 2003 at 10:24:22AM -0800
+References: <200303191736.h2JHaw302449@moe.2bsd.com> <001201c2ee44$c3c15790$450010ac@dawabbit>
+Message-ID: <20030319135933.A17289@bcr10.uwaterloo.ca>
+
+On Wed, Mar 19, 2003 at 10:24:22AM -0800, Ian King wrote:
+> My MAXUSERS is most modest (the default 4) as is my number of ttys.
+
+  I recall cranking MAXUSERS up a little, though I can't remember to
+what and my PDP-11 is turned off at the monent.  A clarification of
+how the whole Unibus map register business effects Qbus-based systems
+would be nice.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From cdl at mpl.ucsd.edu  Thu Mar 20 05:06:30 2003
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Wed, 19 Mar 2003 11:06:30 -0800 (PST)
+Subject: [pups] Progress on 2.11BSD kernel
+Message-ID: <200303191906.h2JJ6UW26427@opihi.ucsd.edu>
+
+> From: David Evans <dfevans at bbcr.uwaterloo.ca>
+> To: "Steven M. Schultz" <sms at 2BSD.COM>
+> Cc: pups at minnie.tuhs.org
+> Subject: Re: [pups] Progress on 2.11BSD kernel
+> Date: Wed, 19 Mar 2003 13:08:16 -0500
+> 
+> On Wed, Mar 19, 2003 at 09:51:10AM -0800, Steven M. Schultz wrote:
+> > Howdy -
+> > 
+> > > From: David Evans <dfevans at bbcr.uwaterloo.ca>
+> > > This came in handy for me too when I went the route of messed up MAXUSERS 
+> > > screwage.
+> > 
+> > 	That'll do it too ;)
+> > 
+> 
+>   Fortunately /vmunix & /oldvmunix is a familiar procedure from back in
+> my PMAX device driver hacking days.
+> 
+> > >   On another note, were there any SCSI adapters that made use of the BA23/
+> > > BA123 RD disk control buttons?  Would be nifty to swap in a new ra0 by
+> > > simply taking a disk offline/online.
+> > 
+> > 	Hmmm, those buttons/cabling are for RD/MSCP devices - not sure if it's
+> > 	possible to use them with SCSI devices.
+> > 
+> 
+>   I was thinking of a SCSI adapter that plugged into the bulkhead somehow.
+> This is plainly rediculous, but a nifty idea nontheless.
+
+You could put your SCSI drive into one of those pull-out
+"mobile adapter" things.  But you probably should not pull
+it out without idling the SCSI bus first.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+
+From dfevans at bbcr.uwaterloo.ca  Thu Mar 20 05:14:41 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Wed, 19 Mar 2003 14:14:41 -0500
+Subject: [pups] Progress on 2.11BSD kernel
+In-Reply-To: <200303191906.h2JJ6UW26427@opihi.ucsd.edu>; from cdl@mpl.ucsd.edu on Wed, Mar 19, 2003 at 11:06:30AM -0800
+References: <200303191906.h2JJ6UW26427@opihi.ucsd.edu>
+Message-ID: <20030319141441.A17320@bcr10.uwaterloo.ca>
+
+On Wed, Mar 19, 2003 at 11:06:30AM -0800, Carl Lowenstein wrote:
+> > From: David Evans <dfevans at bbcr.uwaterloo.ca>
+> >   I was thinking of a SCSI adapter that plugged into the bulkhead somehow.
+> > This is plainly rediculous, but a nifty idea nontheless.
+> 
+> You could put your SCSI drive into one of those pull-out
+> "mobile adapter" things.  But you probably should not pull
+> it out without idling the SCSI bus first.
+> 
+
+  True.  I'm not actually dying to do this, BTW, but was just wondering
+whether anyone in the past chose to take advantage of the controls.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From sms at 2BSD.COM  Thu Mar 20 05:09:58 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Wed, 19 Mar 2003 11:09:58 -0800 (PST)
+Subject: [pups] Progress on 2.11BSD kernel
+Message-ID: <200303191909.h2JJ9wH03298@moe.2bsd.com>
+
+Hi -
+
+> From: David Evans <dfevans at bbcr.uwaterloo.ca>
+>   I recall cranking MAXUSERS up a little, though I can't remember to
+
+	Good Idea because the default is only suitable for single user mode
+	and building a new/custom kernel.   Quite a few kernel tables
+	are sized based on 'maxusers' - in particular the coremap and swapmap
+	tables (which track the fragments of memory and swap space) will be
+	exhausted easily if you bring up a network'd kernel and start up
+	the various daemons.
+
+> what and my PDP-11 is turned off at the monent.  A clarification of
+> how the whole Unibus map register business effects Qbus-based systems
+> would be nice.
+
+	It really doesn't - not having UMRs to deal with is a Nice Thing about 
+	the Qbus ;)   The kernel (and the standalone utilities of course)
+	need to know if they're on a U or Q-bus system but once a Q system
+	is found then the UMR handling is bypassed.
+
+	Cheers,
+	Steven Schultz
+
+
+From dfevans at bbcr.uwaterloo.ca  Thu Mar 20 05:30:48 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Wed, 19 Mar 2003 14:30:48 -0500
+Subject: [pups] Progress on 2.11BSD kernel
+In-Reply-To: <200303191909.h2JJ9wH03298@moe.2bsd.com>; from sms@2BSD.COM on Wed, Mar 19, 2003 at 11:09:58AM -0800
+References: <200303191909.h2JJ9wH03298@moe.2bsd.com>
+Message-ID: <20030319143048.A17336@bcr10.uwaterloo.ca>
+
+On Wed, Mar 19, 2003 at 11:09:58AM -0800, Steven M. Schultz wrote:
+> 	It really doesn't - not having UMRs to deal with is a Nice Thing about 
+> 	the Qbus ;)   The kernel (and the standalone utilities of course)
+> 	need to know if they're on a U or Q-bus system but once a Q system
+> 	is found then the UMR handling is bypassed.
+> 
+
+  OK.  From what I recall (that turned-off machine again...) the entire
+discussion on tuning MAXUSERS and friends is based on allocation of UMRs.
+Might be a good idea to slip in a note about what to do when you don't have
+them.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From djenner at earthlink.net  Thu Mar 20 06:12:31 2003
+From: djenner at earthlink.net (David C. Jenner)
+Date: Wed, 19 Mar 2003 12:12:31 -0800
+Subject: [pups] Progress on 2.11BSD kernel
+References: <200303191906.h2JJ6UW26427@opihi.ucsd.edu>
+Message-ID: <3E78CF2F.C90A7EAD@earthlink.net>
+
+Carl Lowenstein wrote:
+>
+> You could put your SCSI drive into one of those pull-out
+> "mobile adapter" things.  But you probably should not pull
+> it out without idling the SCSI bus first.
+
+This is exactly what I am doing at the moment for my 11/73.
+I got a "CD SCSI RACK" real cheap surplus that has hardware
+for 8 half-height drives (originally CDs).  I'm putting
+several SCSI "disk trays" into it, as well as a couple of
+fixed harddrives and a tape drive.  I may even try to put my
+RX floppy drives into it, although I'll have to figure out
+how to properly cable the RQDX3 to the drives without a
+BA chassis.
+
+Dave
+-- 
+David C. Jenner
+djenner at earthlink.net
+
+
+
+From wkt at minnie.tuhs.org  Thu Mar 20 07:26:06 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Thu, 20 Mar 2003 07:26:06 +1000
+Subject: [pups] 2.11BSD "make unix" aborts Error 141
+In-Reply-To: <200303191759.h2JHx3402619@moe.2bsd.com>
+References: <200303191759.h2JHx3402619@moe.2bsd.com>
+Message-ID: <20030319212606.GA27436@minnie.tuhs.org>
+
+On Wed, Mar 19, 2003 at 09:59:03AM -0800, Steven M. Schultz wrote:
+[lamenting a difficult bug in as]
+> 	What might be needed is a decent (or existent ;)) syscall tracing
+> 	capability.  That combined with the capability to "coredump a non-0
+> 	exit process) might be enough to track down what's causing 'as'
+> 	to depart the scene prematurely.
+
+This might sound weird, but my Apout user-mode PDP-11 simulator might just
+be the tool for this. It would be trivial to put some syscall tracing code
+into the simulator, and I have rebuilt a 2.11BSD kernel with Apout several
+times.
+
+	Warren
+
+
+From sms at 2BSD.COM  Thu Mar 20 09:08:46 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Wed, 19 Mar 2003 15:08:46 -0800 (PST)
+Subject: [pups] Progress on 2.11BSD kernel
+Message-ID: <200303192308.h2JN8kD04865@moe.2bsd.com>
+
+Hi -
+
+> From: David Evans <dfevans at bbcr.uwaterloo.ca>
+> 
+>   OK.  From what I recall (that turned-off machine again...) the entire
+> discussion on tuning MAXUSERS and friends is based on allocation of UMRs.
+> Might be a good idea to slip in a note about what to do when you don't have
+
+	It is less a matter of MAXUSERS than it is of NBUF.   NBUF sets
+	the number of disc cache buffers.   MAXUSERS affects the size of the
+	proc table, file table, and other tables which are in the permanent
+	(not mapped in/out) portion of the kernel's address space but does 
+	not affect the disc buffer cache which is the entity requiring UMRs
+	on a UNIBUS system.
+
+	The buffer cache must be entirely mapped by UMRs - so if you have a 
+	32KB buffer the kernel will reserve 4 UMRs on a UNIBUS system.   
+	Realistically a 64KB buffer cache is about the maximum a UNIBUS system 
+	can have because that takes 8 of the UMRs.  
+
+	With the old (thankfully no longer in use, etc) 3Com ethernet boards
+	you had to disable 4 UMRs so the system could access the memory in the
+	card - that made for a very tight fit.
+
+	The other constraint, even for Qbus systems, is the D space requirement.
+	The 1KB portion of the disc buffer is "external" to the kernel (is 
+	mapped in/out as needed) but there is a header structure which is
+	part of the kernel's permanent address space.  Each buffer header is
+	24 bytes so even without UMRs around it's not feasible to have a 200KB
+	cache because that'd use 4800 bytes of kernel D space (which is always
+	on the edge of being overflowed it seems).
+
+	On a 11/73 I've used a 100KB buffer cache but when I was using 11/44s
+	and /70s the max was 64KB.
+
+	Cheers,
+	Steven Schultz
+
+
+From dfevans at bbcr.uwaterloo.ca  Thu Mar 20 09:15:16 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Wed, 19 Mar 2003 18:15:16 -0500
+Subject: [pups] Progress on 2.11BSD kernel
+In-Reply-To: <200303192308.h2JN8kD04865@moe.2bsd.com>; from sms@2BSD.COM on Wed, Mar 19, 2003 at 03:08:46PM -0800
+References: <200303192308.h2JN8kD04865@moe.2bsd.com>
+Message-ID: <20030319181516.A18264@bcr10.uwaterloo.ca>
+
+On Wed, Mar 19, 2003 at 03:08:46PM -0800, Steven M. Schultz wrote:
+> >   OK.  From what I recall (that turned-off machine again...) the entire
+> > discussion on tuning MAXUSERS and friends is based on allocation of UMRs.
+> > Might be a good idea to slip in a note about what to do when you don't have
+> 
+> 	It is less a matter of MAXUSERS than it is of NBUF.   NBUF sets
+> 	the number of disc cache buffers.
+
+  Yeah, sorry, it was NBUF that I was thinking of.  It's been aboutn a month
+since I've had a chance to fiddle with my /73.
+
+> 	The other constraint, even for Qbus systems, is the D space requirement.
+> 	The 1KB portion of the disc buffer is "external" to the kernel (is 
+> 	mapped in/out as needed) but there is a header structure which is
+> 	part of the kernel's permanent address space.  Each buffer header is
+> 	24 bytes so even without UMRs around it's not feasible to have a 200KB
+> 	cache because that'd use 4800 bytes of kernel D space (which is always
+> 	on the edge of being overflowed it seems).
+> 
+
+  Cool, thanks.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From bqt at update.uu.se  Thu Mar 20 09:34:21 2003
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Thu, 20 Mar 2003 00:34:21 +0100 (CET)
+Subject: [pups] Progress on 2.11BSD kernel
+In-Reply-To: <200303192308.h2JN8kD04865@moe.2bsd.com>
+Message-ID: <Pine.LNX.4.21.0303200030310.10410-100000@Tempo.Update.UU.SE>
+
+On Wed, 19 Mar 2003, Steven M. Schultz wrote:
+
+> 	The buffer cache must be entirely mapped by UMRs - so if you have a 
+> 	32KB buffer the kernel will reserve 4 UMRs on a UNIBUS system.   
+> 	Realistically a 64KB buffer cache is about the maximum a UNIBUS system 
+> 	can have because that takes 8 of the UMRs.  
+
+Are the UMRs allocated and set up statically?
+(I haven't looked inside 2BSD for a while now, and can't remember much of
+the internals anymore.)
+
+> 	With the old (thankfully no longer in use, etc) 3Com ethernet boards
+> 	you had to disable 4 UMRs so the system could access the memory in the
+> 	card - that made for a very tight fit.
+
+How many UMRs does the system use? 8 for buffer cache, you might expect
+one or two DH11s, that would require a few more, ethernet takes another
+few, but it seems there shouldn't be such a shortage.
+
+What did I miss?
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From sms at 2BSD.COM  Thu Mar 20 09:52:15 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Wed, 19 Mar 2003 15:52:15 -0800 (PST)
+Subject: [pups] Progress on 2.11BSD kernel
+Message-ID: <200303192352.h2JNqFX05261@moe.2bsd.com>
+
+Hi -
+
+> From: Johnny Billquist <bqt at update.uu.se>
+> Are the UMRs allocated and set up statically?
+
+	The clist and buffer cache UMRs are initialized at system boot time.
+
+> (I haven't looked inside 2BSD for a while now, and can't remember much of
+> the internals anymore.)
+
+	And I haven't been around a UNIBUS system for a long time and the
+	memory of having to deal with UMRs has faded.
+
+> How many UMRs does the system use? 8 for buffer cache, you might expect
+> one or two DH11s, that would require a few more, ethernet takes another
+> few, but it seems there shouldn't be such a shortage.
+
+	There are only 31 total - so a few allocated here, a few allocated
+	there could result in not having enough.
+
+> What did I miss?
+
+	Swapping.  The kernel has to always be able to get UMRs to be
+	able to swap out a process.   The memory is fuzzy but I think the
+	kernel reserved 7 as to be able to swap 56KB at a time of a process
+	but it could get by with less.   
+
+	One UMR is 'reserved' by the hardware to cover the "I/O Page".
+
+	The clist takes up 1 UMR for DMA terminal devices.
+
+	Ethernet of course takes a UMR or two.  At one time a couple of the
+	ethernet drivers (DEUNA) were a bit braindamaged and allocated more
+	UMRs than they needed - I fixed that though.
+
+	MSCP and TMSCP devices need UMRs to map their command and response
+	rings.   The initial MSCP driver was definitely suboptimal in that
+	regard - again, something I tended to (the problem showed up when
+	more than 1 controller was present in a system).   Those UMRs are
+	permanently allocated at boot time by the drivers when they initialize.
+
+	Tape drivers need to have UMRs (although I don't know of too many
+	folks with the old TE16 drives around on a UNIBUS system) available.
+
+	It started adding up and on a system with several types of devices
+	each of which wanted to reserve a couple UMRs the available pool for
+	dynamic use (by tapes and swapping) was sometimes too small.
+
+	Cheers,
+	Steven Schultz
+
+
+From grog at lemis.com  Thu Mar 20 10:08:03 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Thu, 20 Mar 2003 10:38:03 +1030
+Subject: [pups] Re: Condition of 2BSD
+In-Reply-To: <200303191740.h2JHeUf02457@moe.2bsd.com>
+References: <200303191740.h2JHeUf02457@moe.2bsd.com>
+Message-ID: <20030320000803.GD47194@wantadilla.lemis.com>
+
+On Wednesday, 19 March 2003 at  9:40:30 -0800, Steven M. Schultz wrote:
+>
+>> I have a small question, which I hope you can clarify for me. I'm in a
+>> little argument with a person involved in NetBSD.
+>
+> 	Ummm, I'm not a lawyer of course...
+>
+>> He claims that NetBSD is the oldest free BSD still alive, which I reacted
+>> to since it was my belief that 2BSD now is free.
+>
+> 	But is 2BSD free?   That I don't know.  It is more free than it was
+> 	a long time ago but
+
+After Caldera released the Ancient UNIX license last January, 2BSD
+must be free, unless I'm missing something.
+
+>> This have resulted in the claim that Berkley is the one that is
+>> restricting 2BSD, which was news to me. Is this in any way correct? The
+>
+>>
+>>  * Copyright (c) 1986 Regents of the University of California.
+>>  * All rights reserved.  The Berkeley software License Agreement
+>>  * specifies the terms and conditions for redistribution.
+>
+> 	That was the earlier version of the BSD license - when you had to have
+> 	a ATT/USL/BellLabs license in order to obtain BSD at all.
+>
+> 	I am not sure I have a copy of the original UCB license but I think
+> 	part of it involved having a ATT/USL license.
+
+Right, but that's what Caldera released.
+
+>> Can you clarify this for me, please? :-)
+>
+> 	Does the current state of the Caldera/SCO/whatever license override
+> 	any existing licenses?   THAT I do not know.
+
+My understanding (and I'm pretty sure it's correct) is that it
+replaces the old AT&T license for the specified products, including
+all AT&T precursors of [1-4]BSD.
+
+>       If that is the case
+> 	then I would say that 2BSD is indeed free, on the other hand if people
+> 	are still legally constrained by the earlier license then 2BSD is
+> 	not totally free.    Earlier versions of NetBSD would not be free
+> 	either because they contain "encumbered code" from the era when a
+> 	ATT/USL license was required.
+
+They should now be free for the same reason.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030320/d0a7d285/attachment.sig>
+
+From migieger at bawue.de  Thu Mar 20 12:27:51 2003
+From: migieger at bawue.de (Michael Giegerich)
+Date: Thu, 20 Mar 2003 07:57:51 +0530
+Subject: [pups] Re: Condition of 2BSD
+In-Reply-To: <20030320000803.GD47194@wantadilla.lemis.com>
+References: <200303191740.h2JHeUf02457@moe.2bsd.com> <20030320000803.GD47194@wantadilla.lemis.com>
+Message-ID: <20030320022751.GA212@luva.home>
+
+On Thu, Mar 20, 2003 at 10:38:03AM +1030, Greg 'groggy' Lehey wrote:
+> On Wednesday, 19 March 2003 at  9:40:30 -0800, Steven M. Schultz wrote:
+...
+> > 	But is 2BSD free?   That I don't know.  It is more free than it was
+> > 	a long time ago but
+> 
+> After Caldera released the Ancient UNIX license last January, 2BSD
+> must be free, unless I'm missing something.
+
+IMHO Caldera/SCO could only release the AT&T part
+of xBSD. To release xBSD completely the UCB would
+have to do this formally...
+
+Caveats: haven't Caldera/SCO pulled back this re-
+lease (IIRC I saw something like that when I vi-
+sited their web site; reason whatever "abuse").
+
+Also these releases from them used to be for per-
+sonal, education/research use and thus would re-
+strict the scope of their release. At least this
+was the case when you had still to apply in wri-
+ting to SCO.
+
+I guess UCB wouldn't like again to test the current
+status quo at court...
+
+...
+> > 	Does the current state of the Caldera/SCO/whatever license override
+> > 	any existing licenses?   THAT I do not know.
+> 
+> My understanding (and I'm pretty sure it's correct) is that it
+> replaces the old AT&T license for the specified products, including
+> all AT&T precursors of [1-4]BSD.
+
+
+From franco.tassone at inwind.it  Thu Mar 20 18:26:11 2003
+From: franco.tassone at inwind.it (Franco Tassone)
+Date: Thu, 20 Mar 2003 09:26:11 +0100
+Subject: [pups] Missing Base Kit Sistem Area Disk 1 in pro/venix 2.0 distribution (by DEC)
+Message-ID: <009301c2eeba$5d53dca0$3b0810ac@emsargroup.com>
+
+Hi all,
+
+I have a Pro/venix 2.0 distribution (the one by DEC) and was going to
+reinstall it on my PRO/350. Unfortunatelly I discoveded that the Base Kit
+Sistem Area Disk 1 was bad.
+Anyone in this list can help me in supplying this floppy image ?
+Thanks in advance.
+
+Franco.
+
+
+From semenov at jet.msk.su  Thu Mar 20 18:49:37 2003
+From: semenov at jet.msk.su (Gleb N. Semenov)
+Date: Thu, 20 Mar 2003 11:49:37 +0300
+Subject: [pups] Missing Base Kit Sistem Area Disk 1 in pro/venix 2.0 
+ distribution (by DEC)
+References: <009301c2eeba$5d53dca0$3b0810ac@emsargroup.com>
+Message-ID: <3E7980A1.B90768C3@jet.msk.su>
+
+Hello Franco!
+
+Franco Tassone wrote:
+> 
+> Hi all,
+> 
+> I have a Pro/venix 2.0 distribution (the one by DEC) and was going to
+> reinstall it on my PRO/350. Unfortunatelly I discoveded that the Base Kit
+> Sistem Area Disk 1 was bad.
+> Anyone in this list can help me in supplying this floppy image ?
+> Thanks in advance.
+> 
+> Franco.
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+Possibly this link will help You:
+
+ftp://ftp.update.uu.se/pub/professional/venix/
+
+Regards!
+GNS
+
+-- 
+Gleb N. Semenov     | 103006, Krasnoproletarskaya St. 6, Moscow, Russia
+Security Specialist | Phone: +7(095)972.1182   Fax: +7(095)972.0791
+Jet Infosystems     | E-mail: semenov at jet.msk.su
+
+
+From franco.tassone at inwind.it  Thu Mar 20 18:53:10 2003
+From: franco.tassone at inwind.it (Franco Tassone)
+Date: Thu, 20 Mar 2003 09:53:10 +0100
+Subject: [pups] Missing Base Kit Sistem Area Disk 1 in pro/venix 2.0  distribution (by DEC)
+References: <009301c2eeba$5d53dca0$3b0810ac@emsargroup.com> <3E7980A1.B90768C3@jet.msk.su>
+Message-ID: <00d501c2eebe$2293be60$3b0810ac@emsargroup.com>
+
+Hi Gleb,
+
+thanks for your pointer, unfortunatelly this is NOT the right one, as there
+was two Venix distributions:
+
+- PRO/Venix 2.0 (this one is by DEC, the one I also own)
+- Venix/PRO 1.x, 2,x (this one by VenturCom).
+
+Your pointer is for the second one, while I'm asking for the first one.
+Thanks a lot for your kind answer.
+
+Franco.
+
+> Possibly this link will help You:
+>
+> ftp://ftp.update.uu.se/pub/professional/venix/
+
+
+
+From iking at killthewabbit.org  Sat Mar 22 04:08:35 2003
+From: iking at killthewabbit.org (Ian King)
+Date: Fri, 21 Mar 2003 10:08:35 -0800
+Subject: [pups] Progress on 2.11BSD kernel
+References: <200303191736.h2JHaw302449@moe.2bsd.com>
+Message-ID: <000401c2efd4$e3ee0f90$450010ac@dawabbit>
+
+Steve,
+
+Now I know I'm missing something.  I tried following your advice, using the
+disklabel utility running under the old kernel.  From what you say below, I
+assume you are referring to the 'fstype' parameter on the partition, not the
+'type' parameter for the drive, correct?  The drive type is MSCP, and the
+partition fstype is 2.11BSD.
+
+I tried changing the partition type with disklabel -e -r but, when I exited
+vi, I got an error message saying that the type I'd provided was not valid.
+Viewing the label (with disklabel -r) showed the fstype set to 'unknown'.
+
+Just for grins, I tried modifying the drive type, too - no success there,
+either.  The disklabel utility isn't having any of that; again it claims
+'unknown'.
+
+Oh well, while I'm waiting for your reply I can rebuild my kernel with a
+higher MAXUSERS parameter.  :-)
+
+Thanks -- Ian
+
+----- Original Message -----
+From: "Steven M. Schultz" <sms at 2BSD.COM>
+To: <pups at minnie.tuhs.org>
+Sent: Wednesday, March 19, 2003 9:36 AM
+Subject: Re: [pups] Progress on 2.11BSD kernel
+
+
+[snip]
+> > Now, when I respond to the boot prompt with 'ra(0,0)unix', I'm getting
+the
+> > following:
+> >
+> > <banner for the image, date, time, etc.>
+> > panic: iinit
+> > no fs on 5/0
+>
+> That says the kernel was not able to mount the root filesystem.  The
+> earlier messages about the kernel build date, etc appear because
+> the kernel prints those directly from internal strings  (and the
+> kernel is loaded by /boot who doesn't "mount" the root filesystem).
+>
+[snip]
+
+> The times I have seen the 'iinit' panic it's meant that the disklabel
+> was either missing _or_ that the root ('a') partition was not of
+> type FS_V71K.   I SUPPOSE it's far fetched, but possible, that the
+> old kernel predates the check for the filesystem type, thus it ignores
+> the type of partition 'a' and assumes it's a valid filesystem.
+>
+> If you have a copy of the standalone 'disklabel' program installed
+> in / you can boot that with
+>
+> ra(0,0)disklabel
+>
+> and examine the label that way.   Or boot the tape and load the
+> utility that way.   Using the old kernel and running disklabel
+> would work too.   If the 'type' for the 'a' partition is not 'FS_V71K'
+> that's the problem.
+>
+
+
+
+
+From sms at 2BSD.COM  Sat Mar 22 04:26:17 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Fri, 21 Mar 2003 10:26:17 -0800 (PST)
+Subject: [pups] Progress on 2.11BSD kernel
+Message-ID: <200303211826.h2LIQH906763@moe.2bsd.com>
+
+Hi -
+
+> From: "Ian King" <iking at killthewabbit.org>
+> Now I know I'm missing something.  I tried following your advice, using the
+> disklabel utility running under the old kernel.  From what you say below, I
+
+	Which part of the advice?   ;)
+
+	The part of the advice that might be most useful was to put a 
+	copy of the standalone disklabel program in / and boot it - NOT
+	run the usermode version while the system is running.
+
+	cd /sys/pdpstand
+	make
+	cp disklabel /
+
+	then reboot the system and at the ':' prompt enter ra(0,0)disklabel
+
+	there are things that can be done with the standalone version that
+	are either impractical under a kernel (because the 'a'/root partition
+	is open/busy) or because the standalone version has no safety checks.
+
+> assume you are referring to the 'fstype' parameter on the partition, not the
+> 'type' parameter for the drive, correct?  The drive type is MSCP, and the
+> partition fstype is 2.11BSD.
+
+	'fstype' is what I had in mind.  
+
+  a:    16720        0   2.11BSD     1024  1024         # (Cyl.    0 - 39)
+
+> I tried changing the partition type with disklabel -e -r but, when I exited
+> vi, I got an error message saying that the type I'd provided was not valid.
+> Viewing the label (with disklabel -r) showed the fstype set to 'unknown'.
+
+	Now I am confused.   2.11BSD is correct - but then it's "unknown" and
+	that would cause the 'iinit' panic that started this thread of
+	discussion.
+
+	Down the path of logic that results in a 'iinit' panic and the 
+	'no fs' there's a check for the filesystem type and "unknown" was the
+	likely cause (or at least that was the hope).
+
+	If the standalone disklabel program says it's "2.11BSD" then there's
+	something else going on - the next likely thought is that 'rootdev'
+	or related entity isn't set to the device that is the actual root
+	filesystem.
+
+> Just for grins, I tried modifying the drive type, too - no success there,
+> either.  The disklabel utility isn't having any of that; again it claims
+> 'unknown'.
+
+	That's not used for anything important.
+
+> Oh well, while I'm waiting for your reply I can rebuild my kernel with a
+> higher MAXUSERS parameter.  :-)
+
+	~12 is a good number - not much need for more than that as a rule.
+
+	Steve
+
+
+From sms at 2BSD.COM  Sat Mar 22 04:33:00 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Fri, 21 Mar 2003 10:33:00 -0800 (PST)
+Subject: [pups] Progress on 2.11BSD kernel
+Message-ID: <200303211833.h2LIX0N06827@moe.2bsd.com>
+
+Hi -
+
+> From: "Ian King" <iking at killthewabbit.org>
+> I tried changing the partition type with disklabel -e -r but, when I exited
+> vi, I got an error message saying that the type I'd provided was not valid.
+> Viewing the label (with disklabel -r) showed the fstype set to 'unknown'.
+
+	"unknown" or "unused"
+
+	On my virtual 11 I see disklabel report:
+
+8 partitions:
+#        size   offset    fstype   [fsize bsize]
+  a:    16720        0   2.11BSD     1024  1024         # (Cyl.    0 - 39)
+  b:     8360    16720      swap                        # (Cyl.   40 - 59)
+  c:   340670        0    unused     1024  1024         # (Cyl.    0 - 814)
+  h:   315590    25080   2.11BSD     1024  1024         # (Cyl.   60 - 814)
+
+> Just for grins, I tried modifying the drive type, too - no success there,
+> either.  The disklabel utility isn't having any of that; again it claims
+> 'unknown'.
+
+	Ah, that says something is corrupt somewhere.
+
+	If you look at /usr/include/sys/disklabel.h you'll see the
+	table of filesystem types:
+
+static char *fstypenames[] = {
+        "unused",
+	"swap",
+	"Version 6",
+	"Version 7",
+	"System V",
+	"2.11BSD",
+	"Eighth Edition",
+	"4.2BSD",
+	"MSDOS",
+	"4.4LFS",
+	"unknown",
+	"HPFS",
+	"ISO9660",
+	0
+};
+
+	So for 'unknown' to appear there would need to be a 10 in the type
+	field instead of a 5 (for "2.11BSD").   'unused' is a 0 obviously.
+
+	Try booting up a standalone disklabel and see what it says without
+	a kernel getting involved.
+
+	Steve
+
+
+From robinb at ruffnready.co.uk  Sat Mar 22 09:04:55 2003
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Fri, 21 Mar 2003 23:04:55 +0000
+Subject: [pups] Totally off topic question
+Message-ID: <Wceu1YAXq5e+Ewjk@falstaf.demon.co.uk>
+
+Hi Everyone,
+Sorry for asking this here but you are probably the best people to ask.
+
+I'm in the process of packing up my house to redecorate it and move to 
+another.  As a result my 11/83 has been packed up and I won't get to 
+play for some time :-(.  However, the question -
+
+I am probably going to get a broadband connection to wherever I end up. 
+I will then network all of the various boxes together and connect 
+everything (including the PDP) to the Internet.  I intend having one box 
+set up as a server for FTP, email and so on and everything else using 
+that.  I will probably use a Linux box for this.  Can I get a pop3 
+system for it that will talk to sendmail (only because sendmail is the 
+only mail system that I have used) or can I get a reasonable pop3 server 
+for Linux.
+
+Anybody else has ideas on how I should do this then hints tips etc. 
+gratefully received.
+
+In case the above seems stupid the idea is to take all email through a 
+server, weed out all incoming rubbish, and route it to various 
+individual's (partner, daughter etc.) PCs.
+
+Cheers
+
+Robin
+-- 
+Robin Birch
+
+
+
+From pete at dunnington.u-net.com  Sat Mar 22 10:31:10 2003
+From: pete at dunnington.u-net.com (Peter Turnbull)
+Date: Sat, 22 Mar 2003 00:31:10 GMT
+Subject: [pups] Totally off topic question
+In-Reply-To: Robin Birch <robinb@ruffnready.co.uk>
+        "[pups] Totally off topic question" (Mar 21, 23:04)
+References: <Wceu1YAXq5e+Ewjk@falstaf.demon.co.uk>
+Message-ID: <10303220031.ZM25050@mindy.dunnington.u-net.com>
+
+On Mar 21, 23:04, Robin Birch wrote:
+
+> I am probably going to get a broadband connection to wherever I end
+up.
+> I will then network all of the various boxes together and connect
+> everything (including the PDP) to the Internet.  I intend having one
+box
+> set up as a server
+[...]
+> In case the above seems stupid the idea is to take all email through
+a
+> server, weed out all incoming rubbish, and route it to various
+> individual's (partner, daughter etc.) PCs.
+
+This is exactly what I do, though I have the sending and receiving
+sides of the email equation separate.  I have one machine that acts as
+a mail hub.  It runs sendmail with a custom sendmail.cf which is
+capable of delivering internal mail either to /var/mail, which is then
+exported to other machines, or via UUCP or SMTP to other machines.  It
+also batches up outgoing mail and sends it to my ISP's mail server
+("Smart Host") at specific times of the day (mine's not an always-on
+connection).
+
+All the other machines either use UUCP, or use sendmail with the
+"nullclient" .cf file, to send mail to my hub machine.  No reason why
+the hub couldn't run a POP3 server for the benefit of Windoze PCs as
+well, but I've never felt the need :-)  If you go that route, I'd
+suggest you think about IMAP rather than POP, though.  As far as
+getting mail from my ISP, I use fetchmail -- but if you do this, be
+sure that your ISP puts something in the headers that makes it easy for
+fetchmail to tell which user it's really for (don't forget about
+mailing lists), and that you have a catchall rule to handle mail you
+didn't think of.
+
+If you have an always-on connection, you could have your DNS MX
+record(s) set to point to your hub machine, and needn't use fetchmail.
+ However, if you do that, be sure to set up sendmail with anti-relaying
+and all the proper security patches.
+
+
+
+-- 
+Pete						Peter Turnbull
+						Network Manager
+						University of York
+
+
+From iking at killthewabbit.org  Sat Mar 22 13:31:19 2003
+From: iking at killthewabbit.org (Ian King)
+Date: Fri, 21 Mar 2003 19:31:19 -0800
+Subject: [pups] Totally off topic question
+References: <Wceu1YAXq5e+Ewjk@falstaf.demon.co.uk> <10303220031.ZM25050@mindy.dunnington.u-net.com>
+Message-ID: <000c01c2f023$80a2cdf0$7f0010ac@pepelepew>
+
+Yup.  I used to do that, but had an older version of sendmail and got
+'co-opted' as a relay host for a spammer.  :-(  But the Linux distribution
+included a pop3 server out of the box, and my Windows machines were able to
+connect to it just fine.
+
+FWIW: rather than update sendmail and hack another .cf, I bought a
+Windows-based mail server from a company called True North Software
+(www.tnsoft.com), and I'm running it on Windows 2000.  It also provides a
+POP3 server that the other machines access (so my family can have email,
+too), and is a complete no-brainer to administer.  Once upon a time I
+thought it was fun to administer a mail server; now I really appreciate this
+'hands-off' solution.  :-)  OK, I paid $150 for a piece of software, but
+when I consider the value (to me) of my free time, that's chump change....
+
+Instead, I use my free time to hack 2.11BSD and UNIX v6!  :-)  Cheers -- Ian
+
+----- Original Message -----
+From: "Peter Turnbull" <pete at dunnington.u-net.com>
+To: "Robin Birch" <robinb at ruffnready.co.uk>; <pups at minnie.tuhs.org>
+Sent: Friday, March 21, 2003 4:31 PM
+Subject: Re: [pups] Totally off topic question
+
+
+> On Mar 21, 23:04, Robin Birch wrote:
+>
+> > I am probably going to get a broadband connection to wherever I end
+> up.
+> > I will then network all of the various boxes together and connect
+> > everything (including the PDP) to the Internet.  I intend having one
+> box
+> > set up as a server
+> [...]
+> > In case the above seems stupid the idea is to take all email through
+> a
+> > server, weed out all incoming rubbish, and route it to various
+> > individual's (partner, daughter etc.) PCs.
+>
+> This is exactly what I do, though I have the sending and receiving
+> sides of the email equation separate.  I have one machine that acts as
+> a mail hub.  It runs sendmail with a custom sendmail.cf which is
+> capable of delivering internal mail either to /var/mail, which is then
+> exported to other machines, or via UUCP or SMTP to other machines.  It
+> also batches up outgoing mail and sends it to my ISP's mail server
+> ("Smart Host") at specific times of the day (mine's not an always-on
+> connection).
+>
+> All the other machines either use UUCP, or use sendmail with the
+> "nullclient" .cf file, to send mail to my hub machine.  No reason why
+> the hub couldn't run a POP3 server for the benefit of Windoze PCs as
+> well, but I've never felt the need :-)  If you go that route, I'd
+> suggest you think about IMAP rather than POP, though.  As far as
+> getting mail from my ISP, I use fetchmail -- but if you do this, be
+> sure that your ISP puts something in the headers that makes it easy for
+> fetchmail to tell which user it's really for (don't forget about
+> mailing lists), and that you have a catchall rule to handle mail you
+> didn't think of.
+>
+> If you have an always-on connection, you could have your DNS MX
+> record(s) set to point to your hub machine, and needn't use fetchmail.
+>  However, if you do that, be sure to set up sendmail with anti-relaying
+> and all the proper security patches.
+>
+>
+>
+> --
+> Pete Peter Turnbull
+> Network Manager
+> University of York
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From pete at dunnington.u-net.com  Sat Mar 22 19:20:15 2003
+From: pete at dunnington.u-net.com (Peter Turnbull)
+Date: Sat, 22 Mar 2003 09:20:15 GMT
+Subject: [pups] Totally off topic question
+In-Reply-To: "Ian King" <iking@killthewabbit.org>
+        "Re: [pups] Totally off topic question" (Mar 21, 19:31)
+References: <Wceu1YAXq5e+Ewjk@falstaf.demon.co.uk> 
+	<10303220031.ZM25050@mindy.dunnington.u-net.com> 
+	<000c01c2f023$80a2cdf0$7f0010ac@pepelepew>
+Message-ID: <10303220920.ZM25308@mindy.dunnington.u-net.com>
+
+On Mar 21, 19:31, Ian King wrote:
+> Yup.  I used to do that, but had an older version of sendmail and got
+> 'co-opted' as a relay host for a spammer.  :-(
+
+I've seen a few attempts to do that.  I should point out that even if
+you only run sendmail for the benefit of machines on your own network,
+and even if you use a dialup (rather than always-on) connection, you
+want the ant-relay stuff.  I see regular attempts to connect to port 25
+on my hub, even though it's behind a dynamic IP address on an ISDN
+dialup (I also see regular attempts to connect to the telnet, ssh, and
+ftp ports, and others, maybe 2-3 times a week.  If you run a common
+operating system, don't assume that a dynamic IP address, or NAT, or
+using a dialup, gives any worthwhile protection).
+
+> FWIW: rather than update sendmail and hack another .cf, I bought a
+> Windows-based mail server
+
+Nowadays, it's easy to use m4 to set up sendmail.cf for the common
+sorts of home use -- just define the settings for masquerading and
+smarthost, and press go (more or less).  The only time you need to hack
+it a bit is if you want something unusual, like some mail going to the
+local machine and some forwarded to other machines on your network, or
+using UUCP.
+
+> Instead, I use my free time to hack 2.11BSD and UNIX v6!  :-)
+
+I have to admit that sounds like a better use of the time :-)
+
+-- 
+Pete						Peter Turnbull
+						Network Manager
+						University of York
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Sun Mar 23 22:32:03 2003
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Sun, 23 Mar 2003 13:32:03 +0100 (MET)
+Subject: [pups] V7 setjmp/longjmp
+Message-ID: <200303231233.h2NCXIg03159@bsd.korb>
+
+>X-Unix-From: michael_davidson at pacbell.net  Tue Dec 31 17:04:50 2002
+>Date: Tue, 31 Dec 2002 08:02:37 -0800
+>From: Michael Davidson <michael_davidson at pacbell.net>
+>User-Agent: Mozilla/5.0 (Windows; U; Win 9x 4.90; en-US; rv:0.9.4) 
+Gecko/20011128 Netscape6/6.2.1
+>X-Accept-Language: en-us
+>MIME-Version: 1.0
+>To: Wolfgang Helbig <helbig at Informatik.BA-Stuttgart.DE>
+>CC: pups at minnie.tuhs.org
+>Subject: Re: [pups] V7 setjmp/longjmp
+>Content-Transfer-Encoding: 7bit
+>
+>Wolfgang Helbig wrote:
+
+>>You can trust register variables when setjmp() returns the second time. Then
+>>the registers are restored to the values they had when the "next" function was 
+>>called, that is the "values as of the time longjmp() was called" (quoted from
+>>longjmp(3)'s man page. Thus any variable behaves the same, regardless of its
+>>storage class.
+>>
+>Yes, you are right - V7 restores the register variables to a state which
+>is consistent with the other auto variables in the function - ie the value
+>which they had when longjmp was called.
+>
+>The caveats about not relying on register variables applied to V6.
+
+Nope, even in V6, register variables are restored to the values they had
+when reset(III) was called! (reset() is the name of longjmp() in V6).
+By the way, reset() is much smaller than longjmp() but provides the same
+functionality.
+
+I wonder why longjmp() was rewritten.
+
+Wolfgang.
+
+
+
+From dmr at plan9.bell-labs.com  Tue Mar 25 15:14:53 2003
+From: dmr at plan9.bell-labs.com (Dennis Ritchie)
+Date: Tue, 25 Mar 2003 00:14:53 -0500
+Subject: [pups] V7 setjmp/longjmp
+Message-ID: <8b42de71c97729c28a22c46456004471@plan9.bell-labs.com>
+
+Helbig remarked (quoting Davidson):
+
+ > >Yes, you are right - V7 restores the register variables to a state which
+ > >is consistent with the other auto variables in the function - ie the value
+ > >which they had when longjmp was called.
+ > >
+ > >The caveats about not relying on register variables applied to V6.
+
+ > Nope, even in V6, register variables are restored to the values they had
+ > when reset(III) was called! (reset() is the name of longjmp() in V6).
+ > By the way, reset() is much smaller than longjmp() but provides the same
+ > functionality.
+
+ > I wonder why longjmp() was rewritten.
+
+Setjmp/longjmp do more (setjmp returns different values
+for the initial call and the longjmp-invoked one).
+But the thing that would become more important
+is that the PDP-11 compiler's calling sequence was
+especially friendly toward restoring register values--
+it just worked automatically.
+
+Other machines and compilers were not so friendly.
+This is why ANSI and ISO had to put in special rules
+about promising to preserve only things marked
+volatile.
+
+We've been through this before.
+
+	Dennis
+
+
+
+
+From johnzulu at yahoo.com  Thu Mar  6 02:33:28 2003
+From: johnzulu at yahoo.com (John Chung)
+Date: Wed, 5 Mar 2003 08:33:28 -0800 (PST)
+Subject: [TUHS] Re: TUHS digest, Vol 1 #128 - 1 msg
+In-Reply-To: <200303040212.h242C8n80999@minnie.tuhs.org>
+Message-ID: <20030305163328.941.qmail@web12805.mail.yahoo.com>
+
+--- tuhs-request at minnie.tuhs.org wrote:
+> Send TUHS mailing list submissions to
+> 	tuhs at minnie.tuhs.org
+> 
+> To subscribe or unsubscribe via the World Wide Web,
+> visit
+> 	http://minnie.tuhs.org/mailman/listinfo/tuhs
+> or, via email, send a message with subject or body
+> 'help' to
+> 	tuhs-request at minnie.tuhs.org
+> 
+> You can reach the person managing the list at
+> 	tuhs-admin at minnie.tuhs.org
+> 
+> When replying, please edit your Subject line so it
+> is more specific
+> than "Re: Contents of TUHS digest..."
+> 
+> 
+> Today's Topics:
+> 
+>    1. Re: compiling festoon (Warren Toomey)
+> 
+> --__--__--
+> 
+> Message: 1
+> From: Warren Toomey <wkt at minnie.tuhs.org>
+> Subject: Re: [TUHS] compiling festoon
+> To: Aharon Robbins <arnold at skeeve.com>
+> Date: Fri, 28 Feb 2003 09:22:49 +1000 (EST)
+> CC: tuhs at minnie.tuhs.org
+> Reply-To: wkt at tuhs.org
+> 
+> In article by Aharon Robbins:
+> > Hi All.
+> > 
+> > The following diff is necessary to use GCC on a
+> linux system.
+> > (Anyone know what gcc's builtin `conj' function
+> is? Beats me.)
+> > 
+> > Warren, you might want to fix that last line in
+> the archive version
+> > of the file.
+> 
+> Um, it compiles fine for me on FreeBSD using gcc
+> version 2.95.3,
+> so I'd say that it's a Linux library. I'll put your
+> suggestion
+> into the README.
+> 
+> 	Warren
+> 
+> 
+  It also compiles fine with me. Using RH 7.2 with gcc
+2.95.
+
+Regards,
+John Chung
+
+> --__--__--
+> 
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+> 
+> 
+> End of TUHS Digest
+
+
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Tax Center - forms, calculators, tips, more
+http://taxes.yahoo.com/
+
+
+From tfb at cley.com  Thu Mar  6 03:28:44 2003
+From: tfb at cley.com (Tim Bradshaw)
+Date: Wed, 5 Mar 2003 17:28:44 +0000
+Subject: [TUHS] compiling festoon
+In-Reply-To: <200302272322.h1RNMop13970@minnie.tuhs.org>
+References: <200302271206.h1RC6HSQ001634@localhost.localdomain>
+	<200302272322.h1RNMop13970@minnie.tuhs.org>
+Message-ID: <15974.13260.138185.519539@cley.com>
+
+* Warren Toomey wrote:
+
+> Um, it compiles fine for me on FreeBSD using gcc version 2.95.3,
+> so I'd say that it's a Linux library. I'll put your suggestion
+> into the README.
+
+I think it may be a gcc 2 / 3 change.  gcc 3.2 on Solaris has a
+similar complaint.
+
+--tim
+
+
+
+From norman at nose.cs.utoronto.ca  Thu Mar  6 09:14:34 2003
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Wed, 05 Mar 2003 18:14:34 -0500
+Subject: [TUHS] compiling festoon
+Message-ID: <200303061138.h26BcRn18785@minnie.tuhs.org>
+
+Since the problem is a new library function that appeared in
+the official header files in C99, it makes sense that newer
+versions of gcc object.  That means that as time goes by, newer
+C compilers everywhere will probably pick up the change.  Any
+documentation stored next to festoon.c should definitely point
+out the problem and its full generality.
+
+We'll leave aside for now the question of whether complex
+conjugation really ought to be public.
+
+Norman Wilson
+Toronto ON
+
+
+From wkt at minnie.tuhs.org  Thu Mar  6 22:16:25 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Thu, 6 Mar 2003 22:16:25 +1000 (EST)
+Subject: [TUHS] compiling festoon
+In-Reply-To: <200303061138.h26BcRn18785@minnie.tuhs.org> from Norman Wilson at
+ "Mar 5, 2003 06:14:34 pm"
+Message-ID: <200303061216.h26CGQDN019224@minnie.tuhs.org>
+
+In article by Norman Wilson:
+> We'll leave aside for now the question of whether complex
+> conjugation really ought to be public.
+
+I guess as long as the numbers are consenting, it's fine.
+Maybe we need a ``don't ask, don't tell'' policy on complex conjugation.
+
+Sorry, it's 11pm here.
+
+	Warren
+
+
+From dmr at plan9.bell-labs.com  Sat Mar  8 16:30:08 2003
+From: dmr at plan9.bell-labs.com (Dennis Ritchie)
+Date: Sat, 8 Mar 2003 01:30:08 -0500
+Subject: [TUHS] compiling festoon
+Message-ID: <3e68b80d9683d61d0d4291a6160eb1f5@plan9.bell-labs.com>
+
+Norman observed (about conj):
+
+ > Since the problem is a new library function that appeared in
+ > the official header files in C99, it makes sense that newer
+ > versions of gcc object.  That means that as time goes by, newer
+ > C compilers everywhere will probably pick up the change.  Any
+ > documentation stored next to festoon.c should definitely point
+ > out the problem and its full generality.
+
+ > We'll leave aside for now the question of whether complex
+ > conjugation really ought to be public.
+
+So far as I can tell from ISO/IEC 9899:1999,
+the panoply of Complex macros and functions
+are supposed to be enabled only after
+
+ #include <complex.h>
+
+gcc looks to be overenthusiastic.
+
+	Dennis
+
+
+
+From lm at bitmover.com  Sun Mar  9 12:22:12 2003
+From: lm at bitmover.com (Larry McVoy)
+Date: Sat, 8 Mar 2003 18:22:12 -0800
+Subject: [TUHS] Re: TUHS digest, Vol 1 #131 - 1 msg
+In-Reply-To: <200303090209.h2929pn68480@minnie.tuhs.org>
+References: <200303090209.h2929pn68480@minnie.tuhs.org>
+Message-ID: <20030309022212.GQ31633@work.bitmover.com>
+
+> gcc looks to be overenthusiastic.
+> 
+> 	Dennis
+
+One for the quotes page, eh?
+-- 
+---
+Larry McVoy            	 lm at bitmover.com           http://www.bitmover.com/lm 
+
+
+From grog at lemis.com  Sun Mar  9 13:20:00 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Sun, 9 Mar 2003 13:50:00 +1030
+Subject: [TUHS] Why is \n 012?
+Message-ID: <20030309032000.GD34634@wantadilla.lemis.com>
+
+A thing that has puzzled me almost for ever is why the newline
+character in C is 012 and not 015.  Does anybody have any insight?
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030309/8ad517aa/attachment.sig>
+
+From greg at censoft.com  Sun Mar  9 13:57:31 2003
+From: greg at censoft.com (Greg Haerr)
+Date: Sat, 8 Mar 2003 19:57:31 -0800
+Subject: [TUHS] Why is \n 012?
+References: <20030309032000.GD34634@wantadilla.lemis.com>
+Message-ID: <040b01c2e5f0$03000580$6401a8c0@gregnewport>
+
+> A thing that has puzzled me almost for ever is why the newline
+> character in C is 012 and not 015.  Does anybody have any insight?
+
+Well, my take on this is that C was developed with UNIX,
+of course, and UNIX early on decided to use a single
+character rather than a two-char (CRLF) sequence for
+end-of-lines.  So, since the CR was already in use for 
+the leading char in the two-char sequence, it made it a lot
+easier to use the LF character for the single newline, so
+programs wouldn't always have to be checking a second
+character...
+
+Regards,
+
+Greg
+
+
+
+From dmr at plan9.bell-labs.com  Sun Mar  9 16:07:07 2003
+From: dmr at plan9.bell-labs.com (Dennis Ritchie)
+Date: Sun, 9 Mar 2003 01:07:07 -0500
+Subject: [TUHS] Why is \n 012?
+Message-ID: <7816891f511016bfdc584185f2a11bb3@plan9.bell-labs.com>
+
+Lehey wondered,
+
+ > A thing that has puzzled me almost for ever is why the newline
+ > character in C is 012 and not 015.  Does anybody have any insight?
+
+And Haerr speculated 
+ > Well, my take on this is that C was developed with UNIX,
+ > of course, and UNIX early on decided to use a single
+ > character rather than a two-char (CRLF) sequence for
+ > end-of-lines...
+
+This came via Unix from Multics.  My Multics
+Programmers' Manual (1969) says, in reference
+to its use of the ASCII character set: "Reference:
+USA Standard X3.4-1967," and describes the LF
+character, with code octal 012, "New Line.
+Move carriage to the left edge of the next
+line.... ASCII LF is used for this function."
+
+I believe that either this or some other version
+of ASCII standard blessed (or condoned) one
+of the interpretations of the 012 character
+for the new-line function.  However, I haven't
+turned up hard evidence of this, despite several
+conversations with Eric Fischer, who has
+kept track of various versions of the standards.
+
+In the event, various of the terminals used early
+on did implement the NL function.  E.g. the
+IBM 1050 and 2741 terminals (decidedly
+non-ASCII) had a new-line function, like
+a typewriter, no CR, but sometimes an
+"Index" character that moved the paper
+but not the printing element.  The TTY 37
+had an optional interpretation of 012 as
+NL.  Of course, other terminals required
+separate CR and LF characters.
+
+The choice of a single character to separate
+lines still seems wise if you're using a byte-stream
+model.
+
+	Dennis
+
+
+
+From imp at bsdimp.com  Sun Mar  9 16:19:22 2003
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Sat, 08 Mar 2003 23:19:22 -0700 (MST)
+Subject: [TUHS] Why is \n 012?
+In-Reply-To: <040b01c2e5f0$03000580$6401a8c0@gregnewport>
+References: <20030309032000.GD34634@wantadilla.lemis.com>
+	<040b01c2e5f0$03000580$6401a8c0@gregnewport>
+Message-ID: <20030308.231922.68546726.imp@bsdimp.com>
+
+In message: <040b01c2e5f0$03000580$6401a8c0 at gregnewport>
+            "Greg Haerr" <greg at censoft.com> writes:
+: > A thing that has puzzled me almost for ever is why the newline
+: > character in C is 012 and not 015.  Does anybody have any insight?
+: 
+: Well, my take on this is that C was developed with UNIX,
+: of course, and UNIX early on decided to use a single
+: character rather than a two-char (CRLF) sequence for
+: end-of-lines.  So, since the CR was already in use for 
+: the leading char in the two-char sequence, it made it a lot
+: easier to use the LF character for the single newline, so
+: programs wouldn't always have to be checking a second
+: character...
+
+Also, it is not possible to do overstriking w/o <BS> if you can't use
+<CR> for the task.
+
+Warner
+
+
+From grog at lemis.com  Mon Mar 10 11:21:47 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Mon, 10 Mar 2003 11:51:47 +1030
+Subject: [TUHS] SCO sues IBM?
+Message-ID: <20030310012147.GB94647@wantadilla.lemis.com>
+
+I'm sure I'm not the only person who sees SCO's recent legal
+activities with dismay.  For those of you still looking for facts,
+take a look at the links off http://www.sco.com/scosource/, and
+particularly the complaint at
+http://www.sco.com/scosource/complaint3.06.03.html.  There are a
+number of things there which concern me, but particularly:
+
+   85.  For example, Linux is currently capable of coordinating the
+        simultaneous performance of 4 computer processors.  UNIX, on
+        the other hand, commonly links 16 processors and can
+        successfully link up to 32 processors for simultaneous
+        operation.  This difference in memory management performance
+        is very significant to enterprise customers who need extremely
+        high computing capabilities for complex tasks.  The ability to
+        accomplish this task successfully has taken AT&T, Novell and
+        SCO at least 20 years, with access to expensive equipment for
+        design and testing, well-trained UNIX engineers and a wealth
+        of experience in UNIX methods and concepts.
+
+Apart from the fact that I can't see any factual evidence that System
+V as licensed from SCO or its predecessors had any competitive SMP
+scalability, the "20 years" concerns me.  That could go back to the
+days of the Seventh Edition.
+
+Which brings me to the real point: a little over a year ago, we
+received a message from Dion Johnson releasing Ancient UNIX under a
+BSD licence.  For those of you who have misplaced it, I'm attaching it
+again.  While none of us doubt that it is genuine, SCO has no record
+of it on their web site, nor (as far as I know) do any of us have this
+in signed form.  In view of SCO's aggression, I think we should
+contact them and ask them to at least put the statement somewhere on
+their web site.
+
+Comments?
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+An embedded message was scrubbed...
+From: unknown sender
+Subject: no subject
+Date: no date
+Size: 100
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030310/8355c19a/attachment.mht>
+
+From djenner at earthlink.net  Mon Mar 10 12:33:34 2003
+From: djenner at earthlink.net (David C. Jenner)
+Date: Sun, 09 Mar 2003 18:33:34 -0800
+Subject: [TUHS] SCO sues IBM?
+References: <20030310012147.GB94647@wantadilla.lemis.com>
+Message-ID: <3E6BF97E.773E2F62@earthlink.net>
+
+Greg,
+
+I can't properly read your pdf attachment.
+
+Some of us have a signed, dated, and numbered license and paid $100 for it!
+
+Dave
+
+Greg 'groggy' Lehey wrote:
+> 
+> I'm sure I'm not the only person who sees SCO's recent legal
+> activities with dismay.  For those of you still looking for facts,
+> take a look at the links off http://www.sco.com/scosource/, and
+> particularly the complaint at
+> http://www.sco.com/scosource/complaint3.06.03.html.  There are a
+> number of things there which concern me, but particularly:
+> 
+>    85.  For example, Linux is currently capable of coordinating the
+>         simultaneous performance of 4 computer processors.  UNIX, on
+>         the other hand, commonly links 16 processors and can
+>         successfully link up to 32 processors for simultaneous
+>         operation.  This difference in memory management performance
+>         is very significant to enterprise customers who need extremely
+>         high computing capabilities for complex tasks.  The ability to
+>         accomplish this task successfully has taken AT&T, Novell and
+>         SCO at least 20 years, with access to expensive equipment for
+>         design and testing, well-trained UNIX engineers and a wealth
+>         of experience in UNIX methods and concepts.
+> 
+> Apart from the fact that I can't see any factual evidence that System
+> V as licensed from SCO or its predecessors had any competitive SMP
+> scalability, the "20 years" concerns me.  That could go back to the
+> days of the Seventh Edition.
+> 
+> Which brings me to the real point: a little over a year ago, we
+> received a message from Dion Johnson releasing Ancient UNIX under a
+> BSD licence.  For those of you who have misplaced it, I'm attaching it
+> again.  While none of us doubt that it is genuine, SCO has no record
+> of it on their web site, nor (as far as I know) do any of us have this
+> in signed form.  In view of SCO's aggression, I think we should
+> contact them and ask them to at least put the statement somewhere on
+> their web site.
+> 
+> Comments?
+> 
+> Greg
+> --
+> Finger grog at lemis.com for PGP public key
+> See complete headers for address and phone numbers
+> 
+>   ------------------------------------------------------------------------------------------
+> 
+> Subject: Liberal license for ancient UNIX sources
+> Date: Wed, 23 Jan 2002 15:03:37 -0800
+> From: Dion Johnson <dionj at caldera.com>
+> To: wht at minnie.tuhs.org
+> CC: dmr at bell-labs.com, ken at plan9.bell-labs.com, grog at lemis.com,
+>      John Terpstra <jht at caldera.com>, drew at caldera.com, maddog at li.org,
+>      evan at starnix.com, phatch at caldera.com, ransom at caldera.com
+> 
+> Dear Warren, and friends,
+> 
+> I'm happy to let you know that Caldera International has placed
+> the ancient UNIX releases (V1-7 and 32V) under a "BSD-style" license.
+> I've attached a PDF of the license letter hereto.  Feel free to
+> propogate it as you see fit.
+> 
+> I apologize that this has taken so long.  We do not have a well
+> regulated archive of these ancient releases, so we must depend
+> upon you UNIX enthusiasts, historians, and original authors to
+> help the community of interested parties figure out exactly what
+> is available, where, and how.
+> 
+> Many thanks to Warren Toomey, of PUPS, and to Caldera's Bill
+> Broderick, director of licensing services here.  Both of these
+> gentlemen were instrumental in making this happen.  And thanks
+> to our CEO, Ransom Love, whose vision for Caldera International
+> prescribes cooperation and mutual respect for the open source
+> communities.
+> 
+> Of course, there are thousands of other people who should be
+> acknowledged.  I regret I do not have time or wisdom to make
+> a list of them all, but maybe someone does, or has.
+> 
+> Anyway, here it is.  Feel free to write to us if you want to
+> understand more about how/why Caldera International has released
+> this code, or you have any other comments that we should hear.
+> 
+> Sincerely,
+> 
+> Dion L. Johnson II - dionj at caldera.com
+> Product Manager and one of many open source enthusiasts in Caldera Intl.
+> 
+> Paul Hatch - phatch at caldera.com
+> Public Relations Manager at Caldera International
+> 
+>   ------------------------------------------------------------------------------------------
+>                              Name: ancient-source-all.pdf
+>    ancient-source-all.pdf    Type: Plain Text (text/plain)
+>                          Encoding: quoted-printable
+> 
+>   ------------------------------------------------------------------------------------------
+>    Part 1.2Type: application/pgp-signature
+
+-- 
+David C. Jenner
+djenner at earthlink.net
+
+
+From michael_davidson at pacbell.net  Mon Mar 10 13:13:01 2003
+From: michael_davidson at pacbell.net (Michael Davidson)
+Date: Sun, 9 Mar 2003 19:13:01 -0800
+Subject: [TUHS] SCO sues IBM?
+References: <20030310012147.GB94647@wantadilla.lemis.com>
+Message-ID: <002501c2e6b2$f8b6ec60$ed8ca140@ca.caldera.com>
+
+----- Original Message ----- 
+From: Greg 'groggy' Lehey <grog at lemis.com>
+To: UNIX Heritage Society <tuhs at tuhs.org>
+Sent: Sunday, March 09, 2003 5:21 PM
+Subject: [TUHS] SCO sues IBM?
+
+
+> 
+> Which brings me to the real point: a little over a year ago, we
+> received a message from Dion Johnson releasing Ancient UNIX under a
+> BSD licence.  For those of you who have misplaced it, I'm attaching it
+> again.  While none of us doubt that it is genuine, SCO has no record
+> of it on their web site, nor (as far as I know) do any of us have this
+> in signed form.  In view of SCO's aggression, I think we should
+> contact them and ask them to at least put the statement somewhere on
+> their web site.
+> 
+
+While I can't comment on the current legal issues, I was involved
+in the decision to release the "Ancient UNIX" source code under a
+BSD style license and I am not aware of anything having changed
+in that area.
+
+I will, however, ask for an "official" statement of SCO's current
+position on "Ancient UNIX" - I expect that this will take a few
+days but I should have an answer by the end of the week.
+
+Michael Davidson
+
+
+
+From peter.jeremy at alcatel.com.au  Mon Mar 10 13:28:28 2003
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Mon, 10 Mar 2003 14:28:28 +1100
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <3E6BF97E.773E2F62@earthlink.net>
+References: <20030310012147.GB94647@wantadilla.lemis.com> <3E6BF97E.773E2F62@earthlink.net>
+Message-ID: <20030310032828.GG90290@gsmx07.alcatel.com.au>
+
+On 2003-Mar-09 18:33:34 -0800, "David C. Jenner" <djenner at earthlink.net> wrote:
+>I can't properly read your pdf attachment.
+
+It was attached as "text/plain" instead of PDF.  If I save it, xpdf
+displays it correctly.
+
+>Some of us have a signed, dated, and numbered license and paid $100 for it!
+
+The critical bit of Greg's mail relates to the release of Ancient UNIX
+under a BSD license.  Your "signed, dated, and numbered license" states
+that Ancient UNIX contains trade secret information.
+
+Peter
+
+
+From arnold at skeeve.com  Tue Mar 11 02:44:43 2003
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Mon, 10 Mar 2003 18:44:43 +0200
+Subject: [TUHS] compiling festoon
+Message-ID: <200303101644.h2AGihXN001569@localhost.localdomain>
+
+DMR remarked:
+> So far as I can tell from ISO/IEC 9899:1999,
+> the panoply of Complex macros and functions
+> are supposed to be enabled only after
+>
+>  #include <complex.h>
+>
+> gcc looks to be overenthusiastic.
+>
+> 	Dennis
+
+I would agree. I plan to file a bug report about it. I built and
+checked the latest gcc, and even this file generates the
+complaint:
+
+	#include <stdio.h>
+
+	int conj(a)
+	int a;
+	{
+		return a;
+	}
+
+	main()
+	{
+		printf("%d\n", conj(1));
+	}
+
+Sigh.
+
+Arnold
+
+
+From jss at subatomix.com  Tue Mar 11 06:21:00 2003
+From: jss at subatomix.com (Jeffrey Sharp)
+Date: Mon, 10 Mar 2003 14:21:00 -0600
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <002501c2e6b2$f8b6ec60$ed8ca140@ca.caldera.com>
+References: <20030310012147.GB94647@wantadilla.lemis.com>
+ <002501c2e6b2$f8b6ec60$ed8ca140@ca.caldera.com>
+Message-ID: <671020867.20030310142100@subatomix.com>
+
+On Sunday, March 9, 2003, Michael Davidson wrote:
+> I will, however, ask for an "official" statement of SCO's current position
+> on "Ancient UNIX"
+
+But once they've released it under a BSD-style license, it is released. They
+simply can't unrelease it. They don't have to continue distributing it, but
+they can't stop me from doing what the license explicitly allows. So their
+current position WRT ancient UNIX may not mave much legal weight. IANAL,
+TINLA.
+
+-- 
+Jeffrey Sharp
+
+
+
+From jss at subatomix.com  Tue Mar 11 06:23:36 2003
+From: jss at subatomix.com (Jeffrey Sharp)
+Date: Mon, 10 Mar 2003 14:23:36 -0600
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <20030310032828.GG90290@gsmx07.alcatel.com.au>
+References: <20030310012147.GB94647@wantadilla.lemis.com>
+ <3E6BF97E.773E2F62@earthlink.net> <20030310032828.GG90290@gsmx07.alcatel.com.au>
+Message-ID: <501177473.20030310142336@subatomix.com>
+
+> Your "signed, dated, and numbered license" states that Ancient UNIX
+> contains trade secret information.
+
+This probably all comes down to whether or not IBM breached any NDAs it had
+with SCO. Trade secrets in and of themselves IIRC do not have any statutory
+protection in the United States. Once they're leaked, they aren't secrets
+any more. IANAL, TINLA.
+
+-- 
+Jeffrey Sharp
+
+
+
+From peter.jeremy at alcatel.com.au  Tue Mar 11 07:15:18 2003
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Tue, 11 Mar 2003 08:15:18 +1100
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <671020867.20030310142100@subatomix.com>
+References: <20030310012147.GB94647@wantadilla.lemis.com> <002501c2e6b2$f8b6ec60$ed8ca140@ca.caldera.com> <671020867.20030310142100@subatomix.com>
+Message-ID: <20030310211518.GL90290@gsmx07.alcatel.com.au>
+
+On 2003-Mar-10 14:21:00 -0600, Jeffrey Sharp <jss at subatomix.com> wrote:
+>On Sunday, March 9, 2003, Michael Davidson wrote:
+>> I will, however, ask for an "official" statement of SCO's current position
+>> on "Ancient UNIX"
+>
+>But once they've released it under a BSD-style license, it is released. They
+>simply can't unrelease it. They don't have to continue distributing it, but
+>they can't stop me from doing what the license explicitly allows. So their
+>current position WRT ancient UNIX may not mave much legal weight. IANAL,
+>TINLA.
+
+AFAIK, the only evidence we have that it is released under a BSD-style
+license is an e-mail allegedly from an authorised person within SCO.
+Warren has not been able to find an equivalent statement on their
+website.  I suspect Warren is concerned that they could claim it was
+never released - ie the e-mail is a faked/forged or the sender didn't
+have the authority to make the claims therein.
+
+What would you do if SCO's lawyers came knocking on your door and
+demanded you cease distributing ancient UNIX or derived products?
+Whilst you could probably prove the authenticity of the e-mail, this
+would cost real money - and SCO probably can afford to spend a lot
+more money than you can.
+
+The date of the e-mail may also be a crucial issue - since IBM would
+presumably have the right to use the code after SCO changed the code
+to a BSD license.
+
+IANAL, TINLA etc.
+
+Peter
+
+
+From djenner at earthlink.net  Tue Mar 11 07:54:37 2003
+From: djenner at earthlink.net (David C. Jenner)
+Date: Mon, 10 Mar 2003 13:54:37 -0800
+Subject: [TUHS] SCO sues IBM?
+References: <20030310012147.GB94647@wantadilla.lemis.com> <002501c2e6b2$f8b6ec60$ed8ca140@ca.caldera.com> <671020867.20030310142100@subatomix.com> <20030310211518.GL90290@gsmx07.alcatel.com.au>
+Message-ID: <3E6D099D.A9F4654D@earthlink.net>
+
+Warren has a signed, dated, and numbered license for Ancient Unix (AU-0).
+I have a signed, dated, and numbered license for Ancient Unix (AU-1).
+I don't see how Warren can't distribute to me any software covered under the license.
+
+Peter Jeremy wrote:
+> 
+> On 2003-Mar-10 14:21:00 -0600, Jeffrey Sharp <jss at subatomix.com> wrote:
+> >On Sunday, March 9, 2003, Michael Davidson wrote:
+> >> I will, however, ask for an "official" statement of SCO's current position
+> >> on "Ancient UNIX"
+> >
+> >But once they've released it under a BSD-style license, it is released. They
+> >simply can't unrelease it. They don't have to continue distributing it, but
+> >they can't stop me from doing what the license explicitly allows. So their
+> >current position WRT ancient UNIX may not mave much legal weight. IANAL,
+> >TINLA.
+> 
+> AFAIK, the only evidence we have that it is released under a BSD-style
+> license is an e-mail allegedly from an authorised person within SCO.
+> Warren has not been able to find an equivalent statement on their
+> website.  I suspect Warren is concerned that they could claim it was
+> never released - ie the e-mail is a faked/forged or the sender didn't
+> have the authority to make the claims therein.
+> 
+> What would you do if SCO's lawyers came knocking on your door and
+> demanded you cease distributing ancient UNIX or derived products?
+> Whilst you could probably prove the authenticity of the e-mail, this
+> would cost real money - and SCO probably can afford to spend a lot
+> more money than you can.
+> 
+> The date of the e-mail may also be a crucial issue - since IBM would
+> presumably have the right to use the code after SCO changed the code
+> to a BSD license.
+> 
+> IANAL, TINLA etc.
+> 
+> Peter
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+David C. Jenner
+djenner at earthlink.net
+
+
+From grog at lemis.com  Tue Mar 11 09:45:48 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Tue, 11 Mar 2003 10:15:48 +1030
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <20030310211518.GL90290@gsmx07.alcatel.com.au>
+References: <20030310012147.GB94647@wantadilla.lemis.com> <002501c2e6b2$f8b6ec60$ed8ca140@ca.caldera.com> <671020867.20030310142100@subatomix.com> <20030310211518.GL90290@gsmx07.alcatel.com.au>
+Message-ID: <20030310234548.GO94647@wantadilla.lemis.com>
+
+On Tuesday, 11 March 2003 at  8:15:18 +1100, Peter Jeremy wrote:
+> On 2003-Mar-10 14:21:00 -0600, Jeffrey Sharp <jss at subatomix.com> wrote:
+>> On Sunday, March 9, 2003, Michael Davidson wrote:
+>>> I will, however, ask for an "official" statement of SCO's current position
+>>> on "Ancient UNIX"
+>>
+>> But once they've released it under a BSD-style license, it is released. They
+>> simply can't unrelease it. They don't have to continue distributing it, but
+>> they can't stop me from doing what the license explicitly allows. So their
+>> current position WRT ancient UNIX may not mave much legal weight. IANAL,
+>> TINLA.
+>
+> AFAIK, the only evidence we have that it is released under a BSD-style
+> license is an e-mail allegedly from an authorised person within SCO.
+> Warren has not been able to find an equivalent statement on their
+> website.  I suspect Warren is concerned that they could claim it was
+> never released - ie the e-mail is a faked/forged or the sender didn't
+> have the authority to make the claims therein.
+
+I think you mean me, not Warren.  Warren hasn't said anything yet.
+
+My concern is not whether it's genuine--I'm convinced it is.  My
+concern is more whether SCO's apparently bone-headed lawyers will
+believe it's genuine.
+
+> What would you do if SCO's lawyers came knocking on your door and
+> demanded you cease distributing ancient UNIX or derived products?
+
+Yes, this is the point.
+
+> Whilst you could probably prove the authenticity of the e-mail, this
+> would cost real money - and SCO probably can afford to spend a lot
+> more money than you can.
+
+It's not clear how much money SCO has.
+
+> The date of the e-mail may also be a crucial issue - since IBM would
+> presumably have the right to use the code after SCO changed the code
+> to a BSD license.
+
+I am very sure that IBM has not put any UNIX code into Linux.  For one
+thing, it's not their style, and in fact they keep the AIX and Linux
+people very separate.  Last year I wrote a clone of AIX's JFS file
+system on Linux for IBM.  This is the old JFS, not the JFS they
+released under GPL.  I was not allowed to see the AIX source code, for
+exactly the reasons of the complaint.  The only information I had were
+the header files they distribute with the development system.
+
+The AIX code wouldn't have helped, anyway.  Linux is not UNIX, as
+anybody who's done kernel programming in both knows.  I had thought
+that this childish superstition about the holiness of source code
+would have been stamped out at the end of the last UNIX wars.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030311/935da425/attachment.sig>
+
+From peter.jeremy at alcatel.com.au  Tue Mar 11 10:22:03 2003
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Tue, 11 Mar 2003 11:22:03 +1100
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <20030310234548.GO94647@wantadilla.lemis.com>
+References: <20030310012147.GB94647@wantadilla.lemis.com> <002501c2e6b2$f8b6ec60$ed8ca140@ca.caldera.com> <671020867.20030310142100@subatomix.com> <20030310211518.GL90290@gsmx07.alcatel.com.au> <20030310234548.GO94647@wantadilla.lemis.com>
+Message-ID: <20030311002203.GS90290@gsmx07.alcatel.com.au>
+
+On 2003-Mar-11 10:15:48 +1030, Greg 'groggy' Lehey <grog at lemis.com> wrote:
+>On Tuesday, 11 March 2003 at  8:15:18 +1100, Peter Jeremy wrote:
+>I think you mean me, not Warren.  Warren hasn't said anything yet.
+
+Oops.  Sorry about that.  "My mind is going...  I can feel it, Dave"
+
+>My concern is not whether it's genuine--I'm convinced it is.  My
+>concern is more whether SCO's apparently bone-headed lawyers will
+>believe it's genuine.
+
+Taking the devil's advocate position, if my lawyers were convinced
+that I'm made a particular statement, based solely on a piece of
+e-mail given to them by my competition, I'd be in the market for
+some new lawyers.
+
+>> Whilst you could probably prove the authenticity of the e-mail, this
+>> would cost real money - and SCO probably can afford to spend a lot
+>> more money than you can.
+>
+>It's not clear how much money SCO has.
+
+Probably more than you or I do...
+
+>I am very sure that IBM has not put any UNIX code into Linux.
+
+I'd be very surprised at this as well.  It would open a legal minefield.
+
+Peter
+
+
+From hansolofalcon at worldnet.att.net  Tue Mar 11 11:14:44 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Mon, 10 Mar 2003 20:14:44 -0500
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <20030311002203.GS90290@gsmx07.alcatel.com.au>
+Message-ID: <000001c2e76b$9a93f560$e3c8580c@who5>
+
+Hello from Gregg C Levine
+You guys will never guess where I first saw this issue raised.
+Personally I don't think IBM would be as stupid as SCO wants them to
+be. If anything SCO is looking at a wash of red ink, because Caldera
+was actually doing badly in the Linux field, and SCO saw its own
+profits waste away, after Linux took off, like a heard of elephants.
+
+And for that matter, having read the PDF that contains the license
+statement, twice now, I am convinced of one thing, okay two. SCO is
+desperate for cash. And some idiot in their legal department thinks
+suing IBM will help.
+
+And those are only opinions mind you, nothing more.
+Besides, I'm convinced SCO should just forget about the versions of
+UNIX that we run on such programs as SIMH, and even E-11, and
+sometimes on a real hardware.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: tuhs-admin at minnie.tuhs.org [mailto:tuhs-admin at minnie.tuhs.org]
+On
+> Behalf Of Peter Jeremy
+> Sent: Monday, March 10, 2003 7:22 PM
+> To: Greg 'groggy' Lehey
+> Cc: UNIX Heritage Society
+> Subject: Re: [TUHS] SCO sues IBM?
+> 
+> On 2003-Mar-11 10:15:48 +1030, Greg 'groggy' Lehey <grog at lemis.com>
+wrote:
+> >On Tuesday, 11 March 2003 at  8:15:18 +1100, Peter Jeremy wrote:
+> >I think you mean me, not Warren.  Warren hasn't said anything yet.
+> 
+> Oops.  Sorry about that.  "My mind is going...  I can feel it, Dave"
+> 
+> >My concern is not whether it's genuine--I'm convinced it is.  My
+> >concern is more whether SCO's apparently bone-headed lawyers will
+> >believe it's genuine.
+> 
+> Taking the devil's advocate position, if my lawyers were convinced
+> that I'm made a particular statement, based solely on a piece of
+> e-mail given to them by my competition, I'd be in the market for
+> some new lawyers.
+> 
+> >> Whilst you could probably prove the authenticity of the e-mail,
+this
+> >> would cost real money - and SCO probably can afford to spend a
+lot
+> >> more money than you can.
+> >
+> >It's not clear how much money SCO has.
+> 
+> Probably more than you or I do...
+> 
+> >I am very sure that IBM has not put any UNIX code into Linux.
+> 
+> I'd be very surprised at this as well.  It would open a legal
+minefield.
+> 
+> Peter
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From wkt at minnie.tuhs.org  Tue Mar 11 11:51:28 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Tue, 11 Mar 2003 11:51:28 +1000
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <000001c2e76b$9a93f560$e3c8580c@who5>
+References: <20030311002203.GS90290@gsmx07.alcatel.com.au> <000001c2e76b$9a93f560$e3c8580c@who5>
+Message-ID: <20030311015128.GA95821@minnie.tuhs.org>
+
+I've just read through the TUHS mail: SCO vs. IBM.
+
+I think we're missing the point a bit. The Caldera license places the
+UNIX research editions 1 to 7, and 32V, under a BSD-style license.
+Later systems such as System III and System V are not covered.
+
+Although the Caldera license helps protect the newer BSDs from license
+infringement, SCO/Caldera can still sue anybody if they believe that
+their IP from System III/System V and on has been violated.
+
+IBM has a source license to System V and has contributed to Linux.
+I think that this is the approach that SCO/Caldera are taking in the
+lawsuit.
+
+The BSDs are more immune here, unless BSDI or Apple also have a System V
+source license. [ Er, um, given the existence of Apples A/UX, they probably
+do. Ah, I should have kept my mouth shut :-) ]
+
+So: I don't think the BSDs or the Unix Archive are under any immediate
+threat. I agree with whoever that suggested that SCO/Caldera are doing
+this as a means of raising revenue.
+
+Just my $0.02 here.
+
+	Warren
+
+
+From grog at lemis.com  Tue Mar 11 11:59:39 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Tue, 11 Mar 2003 12:29:39 +1030
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <20030311015128.GA95821@minnie.tuhs.org>
+References: <20030311002203.GS90290@gsmx07.alcatel.com.au> <000001c2e76b$9a93f560$e3c8580c@who5> <20030311015128.GA95821@minnie.tuhs.org>
+Message-ID: <20030311015939.GN45912@wantadilla.lemis.com>
+
+On Tuesday, 11 March 2003 at 11:51:28 +1000, Warren Toomey wrote:
+> I've just read through the TUHS mail: SCO vs. IBM.
+>
+> I think we're missing the point a bit. The Caldera license places
+> the UNIX research editions 1 to 7, and 32V, under a BSD-style
+> license.  Later systems such as System III and System V are not
+> covered.
+
+Yes, maybe you're missing the point.  My concern was that the Caldera
+license has never been signed, and that they don't have anything about
+it on their web site.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030311/e7e67af9/attachment.sig>
+
+From wkt at minnie.tuhs.org  Tue Mar 11 13:51:04 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Tue, 11 Mar 2003 13:51:04 +1000
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <20030311015939.GN45912@wantadilla.lemis.com>
+References: <20030311002203.GS90290@gsmx07.alcatel.com.au> <000001c2e76b$9a93f560$e3c8580c@who5> <20030311015128.GA95821@minnie.tuhs.org> <20030311015939.GN45912@wantadilla.lemis.com>
+Message-ID: <20030311035104.GA97079@minnie.tuhs.org>
+
+On Tue, Mar 11, 2003 at 12:29:39PM +1030, Greg 'groggy' Lehey wrote:
+> > I think we're missing the point a bit.
+> 
+> Yes, maybe you're missing the point.  My concern was that the Caldera
+> license has never been signed, and that they don't have anything about
+> it on their web site.
+> Greg
+
+Yes, that's true. I hadn't missed it, but I hadn't started to worry
+about it yet. Wait till Uncle Caldera gives me a phone call .....
+
+	Warren
+
+
+
+From michael_davidson at pacbell.net  Tue Mar 11 14:11:20 2003
+From: michael_davidson at pacbell.net (Michael Davidson)
+Date: Mon, 10 Mar 2003 20:11:20 -0800
+Subject: [TUHS] SCO sues IBM?
+References: <20030310012147.GB94647@wantadilla.lemis.com> <002501c2e6b2$f8b6ec60$ed8ca140@ca.caldera.com> <671020867.20030310142100@subatomix.com> <20030310211518.GL90290@gsmx07.alcatel.com.au>
+Message-ID: <008701c2e784$46186b60$e847030a@ca.caldera.com>
+
+----- Original Message -----
+From: Peter Jeremy <peter.jeremy at alcatel.com.au>
+To: Jeffrey Sharp <jss at subatomix.com>
+Cc: UNIX Heritage Society <tuhs at tuhs.org>
+Sent: Monday, March 10, 2003 1:15 PM
+Subject: Re: [TUHS] SCO sues IBM?
+
+
+> On 2003-Mar-10 14:21:00 -0600, Jeffrey Sharp <jss at subatomix.com> wrote:
+> >On Sunday, March 9, 2003, Michael Davidson wrote:
+> >> I will, however, ask for an "official" statement of SCO's current
+position
+> >> on "Ancient UNIX"
+> >
+> >But once they've released it under a BSD-style license, it is released.
+They
+> >simply can't unrelease it. They don't have to continue distributing it,
+but
+> >they can't stop me from doing what the license explicitly allows. So
+their
+> >current position WRT ancient UNIX may not mave much legal weight. IANAL,
+> >TINLA.
+>
+> AFAIK, the only evidence we have that it is released under a BSD-style
+> license is an e-mail allegedly from an authorised person within SCO.
+> Warren has not been able to find an equivalent statement on their
+> website.  I suspect Warren is concerned that they could claim it was
+> never released - ie the e-mail is a faked/forged or the sender didn't
+> have the authority to make the claims therein.
+>
+
+I can assure you that the email from Dion Johnson was and is genuine.
+The release of "Ancient UNIX" under a BSD license was agreed to by
+Ransom Love (then president and CEO of Caldera), Drew Spencer
+(then CTO of Caldera), Dion, myself and others.
+
+I realise that some people are concerned that they can no longer find
+the "Ancient UNIX" license on the SCO web site - I wouldn't read too
+much into that - the "Ancient UNIX" stuff was always tucked away in
+an obscure corner - I suspect that the link to it just got lost when we
+stopped doing free evaluation licenses for the current product.
+
+Anyway, as I said, I will try to get an "official statement" about the
+"Ancient UNIX" license by the end of the week - I expect that statement
+will simply re-affirm what you already know - ie that it has been released
+under a BSD license, and possibly re-emphasize the fact that System III,
+and System V are *NOT* covered by that license.
+(However, I am *not* in a position where I can make such a statement
+on behalf on SCO which is why I'm afraid you will have to wait a few
+days so that I can get you the "official" position).
+
+
+
+
+From wgm at telus.net  Tue Mar 11 13:51:17 2003
+From: wgm at telus.net (Wm. G. McGrath)
+Date: Mon, 10 Mar 2003 19:51:17 -0800
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <20030310012147.GB94647@wantadilla.lemis.com>
+References: <20030310012147.GB94647@wantadilla.lemis.com>
+Message-ID: <20030310195117.06b5fae4.wgm@telus.net>
+
+On Mon, 10 Mar 2003 11:51:47 +1030
+"Greg 'groggy' Lehey" <grog at lemis.com> wrote:
+
+>I'm sure I'm not the only person who sees SCO's recent legal
+>activities with dismay. 
+
+More and more I come to the conclusion that intellectual property is
+a bad idea. Physical property fine, but intellectual
+property/patents etc seems to be a get rich scheme for lawyers,
+executives and investors. This latest exploit is just another proof
+that information needs at least a limited amount of freedom - like
+the human minds that create it.
+
+	bill
+
+
+From dmr at plan9.bell-labs.com  Tue Mar 11 15:25:40 2003
+From: dmr at plan9.bell-labs.com (Dennis Ritchie)
+Date: Tue, 11 Mar 2003 00:25:40 -0500
+Subject: [TUHS] SCO sues IBM?
+Message-ID: <3394dec0a229ed7a184b5282445bb41e@plan9.bell-labs.com>
+
+A working link to the ancient-Unix license exists at
+
+  http://shop.caldera.com/caldera/ancient.html
+
+This is a saved link; I didn't investigate how
+to find it currently from a Caldera or SCO site.
+
+In case anyone is interested, I retrieved
+some fraction of the court papers from
+the early 90s USL suit against BSDI and UCB.
+The case seems in some ways similar to this
+one.  They are at
+
+ http://cm.bell-labs.com/cm/cs/who/dmr/bsdi/bsdisuit.html
+
+In this one, USL pulled back after an injunction
+was denied.  By the time the 1993 ruling was issued,
+USL was being taken over by Novell.
+
+	Dennis
+
+
+From grog at lemis.com  Tue Mar 11 16:01:43 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Tue, 11 Mar 2003 16:31:43 +1030
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <3394dec0a229ed7a184b5282445bb41e@plan9.bell-labs.com>
+References: <3394dec0a229ed7a184b5282445bb41e@plan9.bell-labs.com>
+Message-ID: <20030311060143.GQ45912@wantadilla.lemis.com>
+
+On Tuesday, 11 March 2003 at  0:25:40 -0500, Dennis Ritchie wrote:
+> A working link to the ancient-Unix license exists at
+>
+>   http://shop.caldera.com/caldera/ancient.html
+>
+> This is a saved link; I didn't investigate how
+> to find it currently from a Caldera or SCO site.
+
+This is the prior license.  It contains wording like:
+
+2.1 (a) CALDERA INTERNATIONAL, INC. grants to LICENSEE a personal,
+        nontransferable and nonexclusive right to use, in the
+        AUTHORIZED COUNTRY, each SOURCE CODE PRODUCT identified in
+        Section 3 of this AGREEMENT, solely for personal use (as
+        restricted in Section 2.1(b)) and solely on or in conjunction
+        with DESIGNATED CPUs, and/or Networks of CPUs, licensed by
+        LICENSEE through this SPECIAL SOFTWARE LICENSE AGREEMENT for
+        such SOURCE CODE PRODUCT. Such right to use includes the right
+        to modify such SOURCE CODE PRODUCT and to prepare DERIVED
+        BINARY PRODUCT based on such SOURCE CODE PRODUCT, provided
+        that any such modification or DERIVED BINARY PRODUCT that
+        contains any part of a SOURCE CODE PRODUCT subject to this
+        AGREEMENT is treated hereunder the same as such SOURCE CODE
+        PRODUCT. CALDERA INTERNATIONAL, INC. claims no ownership
+        interest in any portion of such a modification or DERIVED
+        BINARY PRODUCT that is not part of a SOURCE CODE PRODUCT.
+
+That's not the BSD-like license under which they re-released the code
+last year.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030311/0efb01f6/attachment.sig>
+
+From wes.parish at paradise.net.nz  Tue Mar 11 07:52:21 2003
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Tue, 11 Mar 2003 10:52:21 +1300
+Subject: [TUHS] SCO sues IBM?
+Message-ID: <200303111052.21237.wes.parish@paradise.net.nz>
+
+Well, the impression I got from IBM re: AIX and Linux's relationship, was that 
+they were going to give AIX a Linux makeover so that they could maintain an 
+apparently unified Un*xish shop - as far as AIX and Linux _are_ Un*ces, that 
+is!
+
+How that gets interpreted as importing Un*x trade secrets into Linux, I have 
+no idea.
+
+I also thought IBM was going to allow some of their mainframe high 
+availability ideas to influence Linux - not through direct porting of the 
+code - VM/ESA is apparently written in PL/I, and I doubt that most Linux 
+programmers would touch that with a barge-pole.  And a waldo at a workplace 
+on a planet on the other side of the galaxy.  Or universe.
+
+I myself wanted to get some information on the internal structure - ie, the 
+part that gets passed between the SFS client and the Reusable Kernel Server - 
+of the VM/ESA Shared File System way back when, and was told in no uncertain 
+terms, not to bother trying.
+
+I don't see SCO has much chance of doing anything except causing a bit of 
+unwelcome disruption and - I hope - getting bought out at bargain basement 
+prices by IBM and getting the entire Un*x source tree BSDed or LGPLed to stop 
+all this useless nonsense at the "source".  Or at the "sauce", to give it a 
+rather appropriate spin.
+
+Wesley Parish
+
+On Tuesday 11 March 2003 12:45 pm, Greg 'groggy' Lehey wrote:
+<snip>
+>
+> I am very sure that IBM has not put any UNIX code into Linux.  For one
+> thing, it's not their style, and in fact they keep the AIX and Linux
+> people very separate.  Last year I wrote a clone of AIX's JFS file
+> system on Linux for IBM.  This is the old JFS, not the JFS they
+> released under GPL.  I was not allowed to see the AIX source code, for
+> exactly the reasons of the complaint.  The only information I had were
+> the header files they distribute with the development system.
+>
+> The AIX code wouldn't have helped, anyway.  Linux is not UNIX, as
+> anybody who's done kernel programming in both knows.  I had thought
+> that this childish superstition about the holiness of source code
+> would have been stamped out at the end of the last UNIX wars.
+>
+> Greg
+
+-- 
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+
+From arnold at skeeve.com  Tue Mar 11 18:43:20 2003
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Tue, 11 Mar 2003 10:43:20 +0200
+Subject: [TUHS] SCO & Caldera?
+Message-ID: <200303110843.h2B8hKtx002312@localhost.localdomain>
+
+Can someone clarify for me how Caldera fits in the picture?  I thought
+SCO sold Unix to Caldera?  It was Caldera that did the BSD-ing of ancient
+Unix.
+
+FWIW I too paid $100 for an ancient Unix license, and I've got the System III
+stuff that licensees had access to.
+
+Thanks,
+
+Arnold
+
+
+From sven.mascheck at student.uni-ulm.de  Tue Mar 11 19:44:06 2003
+From: sven.mascheck at student.uni-ulm.de (Sven Mascheck)
+Date: Tue, 11 Mar 2003 10:44:06 +0100
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <008701c2e784$46186b60$e847030a@ca.caldera.com>
+References: <20030310012147.GB94647@wantadilla.lemis.com> <002501c2e6b2$f8b6ec60$ed8ca140@ca.caldera.com> <671020867.20030310142100@subatomix.com> <20030310211518.GL90290@gsmx07.alcatel.com.au> <008701c2e784$46186b60$e847030a@ca.caldera.com>
+Message-ID: <20030311094406.GP16218@wega.rz.uni-ulm.de>
+
+On Mon, Mar 10, 2003 at 08:11:20PM -0800, Michael Davidson wrote:
+
+> I realise that some people are concerned that they can no longer find
+> the "Ancient UNIX" license on the SCO web site - I wouldn't read too
+> much into that - the "Ancient UNIX" stuff was always tucked away in
+> an obscure corner - I suspect that the link to it just got lost when we
+> stopped doing free evaluation licenses for the current product.
+
+Concerning the former, "strictly educational" license:
+It doesn't seem to be linked, but is still available at
+<http://shop.caldera.com/caldera/ancient.html>
+It's functional and pointing to downloadable source.
+
+Sven
+
+
+From hansolofalcon at worldnet.att.net  Wed Mar 12 01:40:36 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Tue, 11 Mar 2003 10:40:36 -0500
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <20030311094406.GP16218@wega.rz.uni-ulm.de>
+Message-ID: <001601c2e7e4$9cb89f20$27c7580c@who5>
+
+Hello from Gregg C Levine
+Well if anyone else is interested in my opinions, the pages that
+originate at that link, make a reference to the code that resides at
+Warren's repository, it even calls it by name. A proper one even.
+
+So, I'm in the process of downloading the contents that I am
+interested in, in case the site gets pulled down. I know everything
+will still exist on Warren's site.
+
+I suspect this will get settled out of court. And I still think SCO
+should just give it up, and place everything except their current
+products in the public domain. That is put what we run, and what they
+are concerned about in that legal black hole, and find a public
+administrator who knows computers to manage it.. 
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: tuhs-admin at minnie.tuhs.org [mailto:tuhs-admin at minnie.tuhs.org]
+On
+> Behalf Of Sven Mascheck
+> Sent: Tuesday, March 11, 2003 4:44 AM
+> To: UNIX Heritage Society
+> Subject: Re: [TUHS] SCO sues IBM?
+> 
+> On Mon, Mar 10, 2003 at 08:11:20PM -0800, Michael Davidson wrote:
+> 
+> > I realise that some people are concerned that they can no longer
+find
+> > the "Ancient UNIX" license on the SCO web site - I wouldn't read
+too
+> > much into that - the "Ancient UNIX" stuff was always tucked away
+in
+> > an obscure corner - I suspect that the link to it just got lost
+when we
+> > stopped doing free evaluation licenses for the current product.
+> 
+> Concerning the former, "strictly educational" license:
+> It doesn't seem to be linked, but is still available at
+> <http://shop.caldera.com/caldera/ancient.html>
+> It's functional and pointing to downloadable source.
+> 
+> Sven
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From grog at lemis.com  Wed Mar 12 08:45:00 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Wed, 12 Mar 2003 09:15:00 +1030
+Subject: [TUHS] SCO & Caldera?
+In-Reply-To: <200303110843.h2B8hKtx002312@localhost.localdomain>
+References: <200303110843.h2B8hKtx002312@localhost.localdomain>
+Message-ID: <20030311224500.GV45912@wantadilla.lemis.com>
+
+On Tuesday, 11 March 2003 at 10:43:20 +0200, Aharon Robbins wrote:
+> Can someone clarify for me how Caldera fits in the picture?  I thought
+> SCO sold Unix to Caldera?  It was Caldera that did the BSD-ing of ancient
+> Unix.
+
+Caldera changed its name (back) to SCO about last August.  It's the
+same company.  Take a look at http://www.caldera.com.
+
+> FWIW I too paid $100 for an ancient Unix license, and I've got the
+> System III stuff that licensees had access to.
+
+Hmmm.  That's a point.  Does the Ancient UNIX license cover more than
+last year's release?
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030312/e1c6b44d/attachment.sig>
+
+From wkt at minnie.tuhs.org  Wed Mar 12 09:27:13 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 12 Mar 2003 09:27:13 +1000
+Subject: [TUHS] SCO & Caldera?
+In-Reply-To: <20030311224500.GV45912@wantadilla.lemis.com>
+References: <200303110843.h2B8hKtx002312@localhost.localdomain> <20030311224500.GV45912@wantadilla.lemis.com>
+Message-ID: <20030311232713.GA7295@minnie.tuhs.org>
+
+On Wed, Mar 12, 2003 at 09:15:00AM +1030, Greg 'groggy' Lehey wrote:
+> > FWIW I too paid $100 for an ancient Unix license, and I've got the
+> > System III stuff that licensees had access to.
+> 
+> Hmmm.  That's a point.  Does the Ancient UNIX license cover more than
+> last year's release?
+> Greg
+
+The US$100 SCO Ancient UNIX license had this clause:
+
+    The SOURCE CODE PRODUCTS to which SCO grants rights under this
+    Agreement are restricted to the following UNIX Operating Systems,
+    including SUCCESSOR OPERATING SYSTEMs, that operate on the 16-Bit
+    PDP-11 CPU and early versions of the 32-Bit UNIX Operating System
+    with specific exclusion of UNIX System V and successor operating
+    systems:
+
+    16-Bit  UNIX Editions 1, 2, 3, 4, 5, 6, 7 
+    32-bit  32V
+
+    [ http://minnie.tuhs.org/PUPS/sco_license.txt ]
+
+This implies that System III on the PDP11 is covered by this license,
+as SCO has the legal rights to System III and it is a SUCCESSOR
+OPERATING SYSTEM.
+
+The BSD-style Caldera license has this clause:
+
+   The source code for which Caldera International, Inc. grants rights are
+   limited to the following UNIX Operating Systems that operate on the
+   16-Bit PDP-11 CPU and early versions of the 32-Bit UNIX Operating System,
+   with specific exclusion of UNIX System III and UNIX System V and
+   successor operating systems:
+
+   32-bit  32V UNIX
+   16 bit  UNIX Versions 1, 2, 3, 4, 5, 6, 7
+
+   [ http://www.tuhs.org/Archive/Caldera-license.pdf ]
+
+So the new license specifically prohibits System III, whereas the Ancient UNIX
+license implicitly permitted System III.
+
+	Warren
+
+
+From grog at lemis.com  Wed Mar 12 09:48:33 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Wed, 12 Mar 2003 10:18:33 +1030
+Subject: [TUHS] SCO & Caldera?
+In-Reply-To: <20030311232713.GA7295@minnie.tuhs.org>
+References: <200303110843.h2B8hKtx002312@localhost.localdomain> <20030311224500.GV45912@wantadilla.lemis.com> <20030311232713.GA7295@minnie.tuhs.org>
+Message-ID: <20030311234833.GA78280@wantadilla.lemis.com>
+
+On Wednesday, 12 March 2003 at  9:27:13 +1000, Warren Toomey wrote:
+> On Wed, Mar 12, 2003 at 09:15:00AM +1030, Greg 'groggy' Lehey wrote:
+>>> FWIW I too paid $100 for an ancient Unix license, and I've got the
+>>> System III stuff that licensees had access to.
+>>
+>> Hmmm.  That's a point.  Does the Ancient UNIX license cover more than
+>> last year's release?
+>> Greg
+>
+> The US$100 SCO Ancient UNIX license had this clause:
+>
+>  ...
+>
+> So the new license specifically prohibits System III, whereas the
+> Ancient UNIX license implicitly permitted System III.
+
+Heh.  So we have something to show for our $100 after all :-)
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030312/9ac73d3b/attachment.sig>
+
+From jss at subatomix.com  Wed Mar 12 14:05:56 2003
+From: jss at subatomix.com (Jeffrey Sharp)
+Date: Tue, 11 Mar 2003 22:05:56 -0600
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <001601c2e7e4$9cb89f20$27c7580c@who5>
+References: <001601c2e7e4$9cb89f20$27c7580c@who5>
+Message-ID: <96925989.20030311220556@subatomix.com>
+
+On Tuesday, March 11, 2003, Gregg C Levine wrote:
+> I suspect this will get settled out of court. And I still think SCO should
+> just give it up, and place everything except their current products in the
+> public domain.
+
+A large number of people on Slashdot are saying that SCO's market
+capitalization is around $26 million. If that is correct, settling out of
+court may involve more traders than lawyers. This may simply be SCO's exit
+strategy, designed to get the most money for its investors. And of course,
+if I read it on Slashdot it must be true.
+
+-- 
+Jeffrey Sharp
+
+
+
+From jss at subatomix.com  Wed Mar 12 14:34:47 2003
+From: jss at subatomix.com (Jeffrey Sharp)
+Date: Tue, 11 Mar 2003 22:34:47 -0600
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <3394dec0a229ed7a184b5282445bb41e@plan9.bell-labs.com>
+References: <3394dec0a229ed7a184b5282445bb41e@plan9.bell-labs.com>
+Message-ID: <218657128.20030311223447@subatomix.com>
+
+On Monday, March 10, 2003, Dennis Ritchie wrote:
+> In case anyone is interested, I retrieved some fraction of the court
+> papers from the early 90s USL suit against BSDI and UCB. ... USL pulled
+> back after an injunction was denied. By the time the 1993 ruling was
+> issued, USL was being taken over by Novell.
+
+It seems that all descendants of 4.4BSD-Lite are immune to SCO, due to the
+terms of the settlement. If you're in a hurry, skip to the last paragraph.
+
+Source: Marshall Kirk McKusick, "Twenty Years of Berkeley Unix: From
+AT&T-Owned to Freely Redistributable".
+http://www.oreilly.com/catalog/opensources/book/kirkmck.html
+
+----- BEGIN -----
+
+In addition to the groups organized to freely redistribute systems built
+around the Networking Release 2 tape, a company, Berkeley Software Design,
+Incorporated (BSDI), was formed to develop and distribute a commercially
+supported version of the code. (More information about BSDI can be found at
+http://www.bsdi.com.) Like the other groups, they started by adding the six
+missing files that Bill Jolitz had written for his 386/BSD release. BSDI
+began selling their system including both source and binaries in January
+1992 for $995. They began running advertisements touting their 99% discount
+over the price charged for System V source plus binary systems. Interested
+readers were told to call 1-800-ITS-Unix.
+
+Shortly after BSDI began their sales campaign, they received a letter from
+Unix System Laboratories (USL) (a mostly-owned subsidiary of AT&T spun off
+to develop and sell Unix). The letter demanded that they stop promoting
+their product as Unix and in particular that they stop using the deceptive
+phone number. Although the phone number was promptly dropped and the
+advertisements changed to explain that the product was not Unix, USL was
+still unhappy and filed suit to enjoin BSDI from selling their product. The
+suit alleged that the BSDI product contained proprietary USL code and trade
+secrets. USL sought to get an injunction to halt BSDI's sales until the
+lawsuit was resolved, claiming that they would suffer irreparable harm from
+the loss of their trade secrets if the BSDI distributions continued.
+
+At the preliminary hearing for the injunction, BSDI contended that they were
+simply using the sources being freely distributed by the University of
+California plus six additional files. They were willing to discuss the
+content of any of the six added files, but did not believe that they should
+be held responsible for the files being distributed by the University of
+California. The judge agreed with BSDI's argument and told USL that they
+would have to restate their complaint based solely on the six files or he
+would dismiss it. Recognizing that they would have a hard time making a case
+from just the six files, USL decided to refile the suit against both BSDI
+and the University of California. As before, USL requested an injunction on
+the shipping of Networking Release 2 from the University and on the BSDI
+products.
+
+With the impending injunction hearing just a few short weeks away,
+preparation began in earnest. All the members of the CSRG were deposed as
+were nearly everyone employed at BSDI. Briefs, counter-briefs, and
+counter-counter-briefs flew back and forth between the lawyers. Keith Bostic
+and I personally had to write several hundred pages of material that found
+its way into various briefs.
+
+In December 1992, Dickinson R. Debevoise, a United States District Judge in
+New Jersey, heard the arguments for the injunction. Although judges usually
+rule on injunction requests immediately, he decided to take it under
+advisement. On a Friday about six weeks later, he issued a forty-page
+opinion in which he denied the injunction and threw out all but two of the
+complaints. The remaining two complaints were narrowed to recent copyrights
+and the possibility of the loss of trade secrets. He also suggested that the
+matter should be heard in a state court system before being heard in the
+federal court system.
+
+The University of California took the hint and rushed into California state
+court the following Monday morning with a counter-suit against USL. By
+filing first in California, the University had established the locale of any
+further state court action. Constitutional law requires all state filing to
+be done in a single state to prevent a litigant with deep pockets from
+bleeding an opponent dry by filing fifty cases against them in every state.
+The result was that if USL wanted to take any action against the University
+in state courts, they would be forced to do so in California rather than in
+their home state of New Jersey.
+
+The University's suit claimed that USL had failed in their obligation to
+provide due credit to the University for the use of BSD code in System V as
+required by the license that they had signed with the University. If the
+claim were found to be valid, the University asked that USL be forced to
+reprint all their documentation with the appropriate due credit added, to
+notify all their licensees of their oversight, and to run full-page
+advertisements in major publications such as The Wall Street Journal and
+Fortune magazine notifying the business world of their inadvertent
+oversight.
+
+Soon after the filing in state court, USL was bought from AT&T by Novell.
+The CEO of Novell, Ray Noorda, stated publicly that he would rather compete
+in the marketplace than in court. By the summer of 1993, settlement talks
+had started. Unfortunately, the two sides had dug in so deep that the talks
+proceed slowly. With some further prodding by Ray Noorda on the USL side,
+many of the sticking points were removed and a settlement was finally
+reached in January 1994. The result was that three files were removed from
+the 18,000 that made up Networking Release 2, and a number of minor changes
+were made to other files. In addition, the University agreed to add USL
+copyrights to about 70 files, although those files continued to be freely
+redistributed.
+
+The newly blessed release was called 4.4BSD-Lite and was released in June
+1994 under terms identical to those used for the Networking releases.
+Specifically, the terms allow free redistribution in source and binary form
+subject only to the constraint that the University copyrights remain intact
+and that the University receive credit when others use the code.
+Simultaneously, the complete system was released as 4.4BSD-Encumbered, which
+still required recipients to have a USL source license.
+
+The lawsuit settlement also stipulated that USL would not sue any
+organization using 4.4BSD-Lite as the base for their system. So, all the BSD
+groups that were doing releases at that time, BSDI, NetBSD, and FreeBSD, had
+to restart their code base with the 4.4BSD-Lite sources into which they then
+merged their enhancements and improvements. While this reintegration caused
+a short-term delay in the development of the various BSD systems, it was a
+blessing in disguise since it forced all the divergent groups to
+resynchronize with the three years of development that had occurred at the
+CSRG since the release of Networking Release 2.
+
+----- END -----
+
+-- 
+Jeffrey Sharp
+
+
+
+From jss at subatomix.com  Wed Mar 12 14:46:04 2003
+From: jss at subatomix.com (Jeffrey Sharp)
+Date: Tue, 11 Mar 2003 22:46:04 -0600
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <20030310211518.GL90290@gsmx07.alcatel.com.au>
+References: <20030310012147.GB94647@wantadilla.lemis.com>
+ <002501c2e6b2$f8b6ec60$ed8ca140@ca.caldera.com>
+ <671020867.20030310142100@subatomix.com>
+ <20030310211518.GL90290@gsmx07.alcatel.com.au>
+Message-ID: <1099333580.20030311224604@subatomix.com>
+
+On Monday, March 10, 2003, Peter Jeremy wrote:
+> The date of the e-mail may also be a crucial issue - since IBM would
+> presumably have the right to use the code after SCO changed the code to a
+> BSD license.
+
+Does the suit involve code xor concepts? If the patents are on concepts,
+then any sufficiently similar implementation might infringe upon the patent,
+no matter how untainted its code is. This case has the potential to go
+horribly, horribly awry if a stupid judge sits on the bench.
+
+-- 
+Jeffrey Sharp
+
+
+
+From grog at lemis.com  Wed Mar 12 15:03:12 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Wed, 12 Mar 2003 15:33:12 +1030
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <1099333580.20030311224604@subatomix.com>
+References: <20030310012147.GB94647@wantadilla.lemis.com> <002501c2e6b2$f8b6ec60$ed8ca140@ca.caldera.com> <671020867.20030310142100@subatomix.com> <20030310211518.GL90290@gsmx07.alcatel.com.au> <1099333580.20030311224604@subatomix.com>
+Message-ID: <20030312050312.GU78280@wantadilla.lemis.com>
+
+On Tuesday, 11 March 2003 at 22:46:04 -0600, Jeffrey Sharp wrote:
+> On Monday, March 10, 2003, Peter Jeremy wrote:
+>> The date of the e-mail may also be a crucial issue - since IBM would
+>> presumably have the right to use the code after SCO changed the code to a
+>> BSD license.
+>
+> Does the suit involve code xor concepts? If the patents are on concepts,
+> then any sufficiently similar implementation might infringe upon the patent,
+> no matter how untainted its code is. This case has the potential to go
+> horribly, horribly awry if a stupid judge sits on the bench.
+
+I this subthread is off the mark.  I'm personally convinced that IBM
+never used any licensed UNIX technology in Linux.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030312/7f3fa100/attachment.sig>
+
+From lars at nocrew.org  Wed Mar 12 16:43:34 2003
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: 12 Mar 2003 07:43:34 +0100
+Subject: [TUHS] SCO & Caldera?
+In-Reply-To: <20030311224500.GV45912@wantadilla.lemis.com>
+References: <200303110843.h2B8hKtx002312@localhost.localdomain>
+	<20030311224500.GV45912@wantadilla.lemis.com>
+Message-ID: <85smttgk4p.fsf@junk.nocrew.org>
+
+"Greg 'groggy' Lehey" <grog at lemis.com> writes:
+> On Tuesday, 11 March 2003 at 10:43:20 +0200, Aharon Robbins wrote:
+> > Can someone clarify for me how Caldera fits in the picture?  I
+> > thought SCO sold Unix to Caldera?  It was Caldera that did the
+> > BSD-ing of ancient Unix.
+> Caldera changed its name (back) to SCO about last August.  It's the
+> same company.  Take a look at http://www.caldera.com.
+
+This message explains the history of SCO in more detail:
+http://developers.slashdot.org/comments.pl?sid=56649&cid=5483348
+
+-- 
+Lars Brinkhoff,         Services for Unix, Linux, GCC, PDP-10, HTTP
+Brinkhoff Consulting    http://www.brinkhoff.se/
+
+
+From arnold at skeeve.com  Wed Mar 12 22:14:01 2003
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Wed, 12 Mar 2003 14:14:01 +0200
+Subject: [TUHS] documment it and call it a feature
+Message-ID: <200303121214.h2CCE1du006190@localhost.localdomain>
+
+Sigh. This is the response on gcc and `conj.' Terms of
+disgust elided, since the sentiments are undoubtedly shared.
+
+Arnold
+
+> Date: 11 Mar 2003 15:07:13 -0000
+> To: arnold at skeeve.com, gcc-bugs at gcc.gnu.org, gcc-prs at gcc.gnu.org,
+>    nobody at gcc.gnu.org
+> From: bangerth at dealii.org
+>
+> Synopsis: gcc 3.2.2 recognizes complex functions even without complex.h
+>
+> State-Changed-From-To: open->closed
+> State-Changed-By: bangerth
+> State-Changed-When: Tue Mar 11 15:07:12 2003
+> State-Changed-Why:
+>     This is a gnu extension. The builtin conj function is switched
+>     off if you use -ansi or -std=c89.
+>     
+>     W.
+>
+> http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view%20audit-trail&database=gcc&pr=10025
+
+
+From norman at nose.cs.utoronto.ca  Thu Mar 13 01:07:45 2003
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Wed, 12 Mar 2003 10:07:45 -0500
+Subject: [TUHS] documment it and call it a feature
+Message-ID: <200303121508.h2CF8In16666@minnie.tuhs.org>
+
+Aharon Robbins:
+
+  Sigh. This is the response on gcc and `conj.' Terms of
+  disgust elided, since the sentiments are undoubtedly shared.
+
+This list isn't the right place for a general discussion of
+the matter, but I cannot resist remarking that this is one
+of the best arguments I have ever seen in support of gnu
+control.
+
+Norman Wilson
+Toronto ON
+
+
+From peter.jeremy at alcatel.com.au  Thu Mar 13 06:31:39 2003
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Thu, 13 Mar 2003 07:31:39 +1100
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <20030312050312.GU78280@wantadilla.lemis.com>
+References: <20030310012147.GB94647@wantadilla.lemis.com> <002501c2e6b2$f8b6ec60$ed8ca140@ca.caldera.com> <671020867.20030310142100@subatomix.com> <20030310211518.GL90290@gsmx07.alcatel.com.au> <1099333580.20030311224604@subatomix.com> <20030312050312.GU78280@wantadilla.lemis.com>
+Message-ID: <20030312203139.GE90290@gsmx07.alcatel.com.au>
+
+On 2003-Mar-12 15:33:12 +1030, Greg 'groggy' Lehey <grog at lemis.com> wrote:
+>On Tuesday, 11 March 2003 at 22:46:04 -0600, Jeffrey Sharp wrote:
+>> Does the suit involve code xor concepts? If the patents are on concepts,
+>> then any sufficiently similar implementation might infringe upon the patent,
+>> no matter how untainted its code is. This case has the potential to go
+>> horribly, horribly awry if a stupid judge sits on the bench.
+
+There's no reference anywhere in SCO's suit to patents.  The suit is
+based on misappropriation of trade secrets, breach of contract and
+unfair competition.
+
+The "misappropriation of trade secrets" and "breach of contract" seems
+to be based on the premise that since AIX is based on UNIX, _all_ of
+AIX is therefore covered by the terms of IBM's source code license for
+UNIX.  There are regular whinges about the viral nature of GPL, but
+this is the first time I've seen someone claim the the UNIX license
+was viral - and the USL case pretty well demonstrated the opposite.
+4.4BSD-Lite is clear evidence that it's possible to take a UNIX
+derivative, developed with full access to UNIX source code, and
+produce a product that is not covered by UNIX licenses.
+
+The basis of the "unfair competition" seems to be that IBM can afford
+more staff than SCO can.  IBM's had plenty of practise at defending
+itself against unfair competition claims in the past...
+
+>I this subthread is off the mark.  I'm personally convinced that IBM
+>never used any licensed UNIX technology in Linux.
+
+Agreed.  I don't see that SCO has a leg to stand on.  The only way I
+can see for them to win would be a combination of an incompetent
+judge and managing to bamboozle a not-technically-savvy jury.
+
+IANAL, TINLA etc
+
+Peter
+
+
+From wgm at telus.net  Thu Mar 13 06:33:26 2003
+From: wgm at telus.net (Wm. G. McGrath)
+Date: Wed, 12 Mar 2003 12:33:26 -0800
+Subject: [TUHS] SCO sues IBM?
+In-Reply-To: <20030312050312.GU78280@wantadilla.lemis.com>
+References: <20030310012147.GB94647@wantadilla.lemis.com>
+	<002501c2e6b2$f8b6ec60$ed8ca140@ca.caldera.com>
+	<671020867.20030310142100@subatomix.com>
+	<20030310211518.GL90290@gsmx07.alcatel.com.au>
+	<1099333580.20030311224604@subatomix.com>
+	<20030312050312.GU78280@wantadilla.lemis.com>
+Message-ID: <20030312123326.788f4fff.wgm@telus.net>
+
+On Wed, 12 Mar 2003 15:33:12 +1030
+"Greg 'groggy' Lehey" <grog at lemis.com> wrote:
+
+>> Does the suit involve code xor concepts? If the patents are on
+>> concepts, then any sufficiently similar implementation might
+>> infringe upon the patent, no matter how untainted its code is.
+>> This case has the potential to go horribly, horribly awry if a
+>> stupid judge sits on the bench.
+>
+>I this subthread is off the mark.  I'm personally convinced that
+>IBM never used any licensed UNIX technology in Linux.
+
+Unfortunately, truth and morals often don't count in court. It's
+what your lawyers can prove. That's why SCO engaged David Boies.
+They want to win - just like in the Microsoft case - a true
+miscarriage of justice.
+
+Much will indeed depend on the judge. There isn't a lot of precedent
+to support open source and public interest software, but there is a
+lot to support patent and copyright. It will be difficult for a
+senior citizen (the judge) to understand computers and free
+software, let alone the interaction between IBM and the community.
+
+	bill
+
+
+From wgm at telus.net  Thu Mar 13 06:45:59 2003
+From: wgm at telus.net (Wm. G. McGrath)
+Date: Wed, 12 Mar 2003 12:45:59 -0800
+Subject: [TUHS] Linux Journal article (Doc Searles) on SCO suit
+Message-ID: <20030312124559.7be92c76.wgm@telus.net>
+
+Hi all,
+
+Some will be interested to read Doc Searles take on the SCO suit
+here:
+
+http://www.linuxjournal.com/article.php?sid=6706
+
+	bill
+
+
+From msokolov at ivan.Harhan.ORG  Tue Mar 18 05:18:15 2003
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Mon, 17 Mar 03 11:18:15 PST
+Subject: [TUHS] Russian Ancient UNIX stuff in the Archive
+Message-ID: <0303171918.AA01260@ivan.Harhan.ORG>
+
+Hi there,
+
+I remember seeing in the Unix Archive a few years ago (back when the $100
+licenses just came out and it was called PUPS Archive) some Russian Ancient
+UNIX stuff, some things contributed to the UNIX community by the early Russian
+UNIX users (on Soviet PDP-11s). However, I am now looking for it and cannot
+find it. Would anyone have a pointer?
+
+I am trying to russify my flagship UNIX (4.3BSD-Quasijarus) and I'm adding/
+fixing 8-bit support in various parts of the system, and I got stuck on ex/vi.
+The sucker just won't handle 8-bit chars. Since my job is to maintain Ancient
+UNIX (my flavor thereof) rather than replace it, replacing the original ex/vi
+with one of the modern reimplementations is not an option. I need to massage
+8-bit support into the existing original Berkeley ex/vi with as few changes as
+possible.
+
+A friend of mine told me that Back in The Days the first UNIX users in the then
+USSR were running patched (russified) 2.xBSD on Soviet PDP-11s and had KOI-8
+for Russian. Since the flagship editor on <any>BSD is ex/vi, this makes me
+think that those early Russian users used it and thus their patches
+accomplished just what I need. And so I'm looking for those patches. TIA for
+any help,
+
+MS
+
+
+From wkt at minnie.tuhs.org  Tue Mar 18 10:26:15 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Tue, 18 Mar 2003 10:26:15 +1000
+Subject: [TUHS] Russian Ancient UNIX stuff in the Archive
+In-Reply-To: <0303171918.AA01260@ivan.Harhan.ORG>
+References: <0303171918.AA01260@ivan.Harhan.ORG>
+Message-ID: <20030318002615.GA4329@minnie.tuhs.org>
+
+On Mon, Mar 17, 2003 at 11:18:15AM -0800, Michael Sokolov wrote:
+> I am trying to russify my flagship UNIX (4.3BSD-Quasijarus) and I'm adding/
+> fixing 8-bit support in various parts of the system, and I got stuck on ex/vi.
+> The sucker just won't handle 8-bit chars. Since my job is to maintain Ancient
+> UNIX (my flavor thereof) rather than replace it, replacing the original ex/vi
+> with one of the modern reimplementations is not an option. I need to massage
+> 8-bit support into the existing original Berkeley ex/vi with as few changes as
+> possible.
+> 
+> A friend of mine told me that Back in The Days the first UNIX users in the then
+> USSR were running patched (russified) 2.xBSD on Soviet PDP-11s and had KOI-8
+> for Russian. Since the flagship editor on <any>BSD is ex/vi, this makes me
+> think that those early Russian users used it and thus their patches
+> accomplished just what I need. And so I'm looking for those patches. TIA for
+> any help,
+> MS
+
+I have a thing called Demos in a hidden section of the archive, which is
+a modified 7th Edition (plus other things?) from Russia. I've hidden it as
+the legal status is unclear :-) I'm happy to hand it out to individual
+requestors, though. However, I can't find a vi(1) in there:
+
+/usr/Hidden_PUPS/Miscfiles/Russian: du -a | grep vi
+1       ./cmd/TUVWXYZ/vipw.sh,v.gz
+1       ./cmd/comint/Environment/README.gz
+2       ./cmd/comint/Environment/termcap.gz
+2       ./cmd/comint/Environment/tuner.gz
+3       ./cmd/comint/Environment/minihelp.DEMOS.gz
+9       ./cmd/comint/Environment
+1       ./cmd/uucp/L-devices.gz
+11      ./sys/dev/RCS/video.c,v.gz
+6       ./sys/dev/RCS/vikey.c,v.gz
+7       ./sys/dev/video.c.gz
+1       ./sys/include/video.h.gz
+3       ./sys/stand/libsa/RCS/video.c,v.gz
+2       ./sys/stand/libsa/video.c.gz
+
+and a grep on `ex' gives nothing either.
+
+	Warren
+
+
+
+From sven.mascheck at student.uni-ulm.de  Tue Mar 18 10:52:30 2003
+From: sven.mascheck at student.uni-ulm.de (Sven Mascheck)
+Date: Tue, 18 Mar 2003 01:52:30 +0100
+Subject: [TUHS] Russian Ancient UNIX stuff in the Archive
+In-Reply-To: <20030318002615.GA4329@minnie.tuhs.org>
+References: <0303171918.AA01260@ivan.Harhan.ORG> <20030318002615.GA4329@minnie.tuhs.org>
+Message-ID: <20030318005229.GA13935@wega.rz.uni-ulm.de>
+
+Warren Toomey wrote:
+> Michael Sokolov wrote:
+
+>> I'm adding/fixing 8-bit support in various parts of the system, and
+>> I got stuck on ex/vi.
+>
+> I have a thing called Demos in a hidden section of the archive, which
+> is a modified 7th Edition (plus other things?) from Russia. [...]
+> However, I can't find a vi(1) in there
+
+Then the following might be an option, /UnixArchive/Applications/Ritter_Vi/
+
+"This is basically ex/vi 3.7, 6/7/85, from the 2.11BSD distribution"
+"A larger addition is the ability to handle ISO character sets."
+
+(recent development continued on <http://ex-vi.berlios.de/>)
+
+Sven
+
+
+From szigi at ik.bme.hu  Tue Mar 18 18:12:32 2003
+From: szigi at ik.bme.hu (SZIGETI Szabolcs)
+Date: Tue, 18 Mar 2003 09:12:32 +0100
+Subject: [TUHS] Russian Ancient UNIX stuff in the Archive
+References: <0303171918.AA01260@ivan.Harhan.ORG> <20030318002615.GA4329@minnie.tuhs.org>
+Message-ID: <003501c2ed26$20012000$26f34298@ik.bme.hu>
+
+> A friend of mine told me that Back in The Days the first UNIX users in the
+then
+> USSR were running patched (russified) 2.xBSD on Soviet PDP-11s and had
+KOI-8
+> for Russian. Since the flagship editor on <any>BSD is ex/vi, this makes me
+> think that those early Russian users used it and thus their patches
+
+Hi,
+
+I've got a story about this, which happened in the early '80s, int the then
+communist Hungary. A friend of mine worked at the university as a sysadmin,
+they were using Russian and Hungarian made PDP 11 clones, and mostly 6th ed.
+Unix. (Incidentally, I wish once someone wrote the history of how the
+Eastern Block countries managed to clone western machines and get software
+for it. I've heard a lot of fascionating stories, involving some really
+genious work, which of course the Western countries didn't appreciate at all
+then.)
+
+One day, some really important and secret people come from the interior
+ministry, or military, with a tape, which they wanted to transfer to an
+other tape, and only the university had such a tape drive which could read
+the original. Well, the sysadmins realized, that this is some important
+stuff (BOFHs existed here also :-), so while one kept the officials
+occupied, the other went into the machine room, and hacked the device
+driver, so that the tape would secretly be copied to disk.
+
+They started the transfer, under close supervision, so that no other tape
+copies were done, and so on. When the people left, they examined what they
+had. It was a Russian port of the 7th edition, only maybe a couple of years
+after 7th ed. were created. So they concluded that all the COCOM and other
+export control regulations weren't really effective :-)
+
+Szabolcs
+
+
+
+From ak at synflood.at  Wed Mar 19 03:52:05 2003
+From: ak at synflood.at (Andreas Krennmair)
+Date: Tue, 18 Mar 2003 18:52:05 +0100
+Subject: [TUHS] Russian Ancient UNIX stuff in the Archive
+In-Reply-To: <003501c2ed26$20012000$26f34298@ik.bme.hu>
+Message-ID: <54DDD708-596A-11D7-8EAB-000A956657C6@synflood.at>
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+
+On Tuesday, March 18, 2003, at 09:12  Uhr, SZIGETI Szabolcs wrote:
+> Unix. (Incidentally, I wish once someone wrote the history of how the
+> Eastern Block countries managed to clone western machines and get 
+> software
+> for it. I've heard a lot of fascionating stories, involving some really
+> genious work, which of course the Western countries didn't appreciate 
+> at all
+> then.)
+
+I think the "Communications of the ACM" had some articles about 
+computing in the Eastern Block in June 1991.
+
+> had. It was a Russian port of the 7th edition, only maybe a couple of 
+> years
+> after 7th ed. were created. So they concluded that all the COCOM and 
+> other
+> export control regulations weren't really effective :-)
+
+Are you aware of the "KGB hackers" case in Germany? German hackers 
+broke into systems, downloaded all data they could get, went to East 
+Berlin, and sold it to the Russians. There's a nice German movie about 
+the whole case, called "23". I don't know if it's been synchronized to 
+other languages, but that movie is really worth watching. Full of 
+historic hardware. :-)
+
+Regards,
+Andreas
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (Darwin)
+
+iQEXAwUBPndc2Cw98mPKmtL6FAKE4AP8CwG/IGdgZPzZRCKA4IDvYjJZXiwm8nun
+OeTt7vW0tmWV21VMMk4+PRucZ6Zn29I0RVQ4mJaVPhbcHXVKjs8+OqbxF/aJ2Tws
+pbxlMIv6nK0dIkpYC8cJdePHXyXq/XTz+JIiKOGEo93NmW/+kU881hQuJIwqdCgn
+aQNtC+2HOzQD/1uqejTW9dh/fi5/ZrffoxYIDU6Ub7H7Bhne8Yxo5WthFUkzI/Y1
+zzH9UUPSPrRUixjKDl8O27QarOOexKWmSAGW0b+ZdWNT6pfhqQQyW3o46jTcKRcs
+52/LIMxQZZbx6IJmWLsWQXLMeyzcrVFghvPAdsD19YcJeVm6am04Fj83
+=OpXR
+-----END PGP SIGNATURE-----
+
+
+
+From msokolov at ivan.Harhan.ORG  Wed Mar 19 06:25:30 2003
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Tue, 18 Mar 03 12:25:30 PST
+Subject: [TUHS] Russian Ancient UNIX stuff in the Archive
+Message-ID: <0303182025.AA01836@ivan.Harhan.ORG>
+
+Sven Mascheck <sven.mascheck at student.uni-ulm.de> wrote:
+
+> Then the following might be an option, /UnixArchive/Applications/Ritter_Vi/
+>
+> "This is basically ex/vi 3.7, 6/7/85, from the 2.11BSD distribution"
+> "A larger addition is the ability to handle ISO character sets."
+>
+> (recent development continued on <http://ex-vi.berlios.de/>)
+
+Where can I get the early versions of this effort?
+http://ex-vi.berlios.de/Changes lists at the very bottom:
+
+: Release 31/05/00
+: * String extraction using mkstr and xstr is not longer be done.
+: * An ANSI C preprocessor may be used.
+: * Changes of symbol names due to collisions on newer systems.
+: * Fixed a null pointer reference in ex_tty.c.
+: * Included the 2.11BSD termcap in a subdirectory. Ex could use any
+:   termcap library, however, that does not use malloc().
+: * Support of eight bit characters excluding the range 0200 to 0237 is
+:   enabled with -DISO8859_1. It does not include the regular expression code,
+:   but otherwise works well in practice with the ISO-8859-1 character set.
+
+And all the newer stuff up to late 2002 is porting to "modern UNIX". But I
+don't want "modern UNIX", I'm running the original UNIX in its virgin form, I
+just want the 8-bit fix. The only files downloadable from ex-vi.berlios.de are
+2002 releases and in the UNIX Archive Applications/Ritter_Vi contains only a
+tiny README file pointing to http://ex-vi.berlios.de/. Where are the old 2000
+versions?
+
+MS
+
+
+From wkt at minnie.tuhs.org  Wed Mar 19 07:52:37 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 19 Mar 2003 07:52:37 +1000
+Subject: [TUHS] Russian Ancient UNIX stuff in the Archive
+In-Reply-To: <0303182025.AA01836@ivan.Harhan.ORG>
+References: <0303182025.AA01836@ivan.Harhan.ORG>
+Message-ID: <20030318215237.GA13704@minnie.tuhs.org>
+
+On Tue, Mar 18, 2003 at 12:25:30PM -0800, Michael Sokolov wrote:
+> And all the newer stuff up to late 2002 is porting to "modern UNIX". But I
+> don't want "modern UNIX", I'm running the original UNIX in its virgin form, I
+> just want the 8-bit fix. The only files downloadable from ex-vi.berlios.de are
+> 2002 releases and in the UNIX Archive Applications/Ritter_Vi contains only a
+> tiny README file pointing to http://ex-vi.berlios.de/. Where are the old 2000
+> versions?
+> MS
+
+I have ritter_vi.tar.gz, size 211579, date 2000/06/09 on a backup CD of the
+Unix archive at work. I'll put it back into the Unix Archive in the
+http://www.tuhs.org/Archive/Applications/Ritter_Vi  directory when I get
+in to work in a few hours.
+
+	Warren
+
+
+From cpg at aladdin.de  Wed Mar 19 08:36:11 2003
+From: cpg at aladdin.de (Christian Groessler)
+Date: 18 Mar 2003 23:36:11 +0100
+Subject: [TUHS] SCO & Caldera?
+Message-ID: <87smtkb8v8.fsf@power.cnet.aladdin.de>
+
+Hi,
+
+On 03/12/2003 10:18:33 AM ZE10B "Greg 'groggy' Lehey" wrote:
+>
+>On Wednesday, 12 March 2003 at  9:27:13 +1000, Warren Toomey wrote:
+>>
+>> So the new license specifically prohibits System III, whereas the
+>> Ancient UNIX license implicitly permitted System III.
+>
+>Heh.  So we have something to show for our $100 after all :-)
+
+Is System III somewhere in the archive for us $100 license owners?
+
+regards,
+chris
+
+
+
+From sven.mascheck at student.uni-ulm.de  Wed Mar 19 08:48:16 2003
+From: sven.mascheck at student.uni-ulm.de (Sven Mascheck)
+Date: Tue, 18 Mar 2003 23:48:16 +0100
+Subject: [TUHS] Russian Ancient UNIX stuff in the Archive
+In-Reply-To: <0303182025.AA01836@ivan.Harhan.ORG>
+References: <0303182025.AA01836@ivan.Harhan.ORG>
+Message-ID: <20030318224816.GF13935@wega.rz.uni-ulm.de>
+
+Michael Sokolov wrote:
+> Sven Mascheck wrote:
+
+> > /UnixArchive/Applications/Ritter_Vi/
+>
+> [..] in the UNIX Archive Applications/Ritter_Vi contains only
+> a tiny README file pointing to http://ex-vi.berlios.de/.
+> Where are the old 2000 versions?
+
+Interesting, a desynchronization: ftp.tuhs.org only lists that README,
+
+ftp.cs.tu-berlin.de/pub/bsd/UnixArchive still also lists
+README.NEW . . . . . . . .  May 31  2000      2k
+READ_ME. . . . . . . . . .  Dec 10  1994      1k
+ex-010521.tar.gz . . . . .  Jul 26  2001    186k
+ritter_vi.tar.gz . . . . .  Jun  9  2000    207k
+
+(And in ritter_vi the 8bit changes are surrounded by "#ifdef ISO".)
+
+Sven
+
+
+From hansolofalcon at worldnet.att.net  Wed Mar 19 08:52:00 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Tue, 18 Mar 2003 17:52:00 -0500
+Subject: [TUHS] SCO & Caldera?
+In-Reply-To: <87smtkb8v8.fsf@power.cnet.aladdin.de>
+Message-ID: <000601c2eda0$fd838380$27a3580c@who5>
+
+Hello from Gregg C Levine
+Have you been following all of the messages in that thread? A link was
+posted, that provided an annoying click through license, which would
+then provide the person who did click, with access to such items as
+SYSIII, and V5, and V6, and V7. Also some odd bits, as well. And if
+not, it should be in the archive. Also I can provide it.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: tuhs-admin at minnie.tuhs.org [mailto:tuhs-admin at minnie.tuhs.org]
+On
+> Behalf Of Christian Groessler
+> Sent: Tuesday, March 18, 2003 5:36 PM
+> To: The Unix Heritage Society
+> Cc: cpg at aladdin.de
+> Subject: Re: [TUHS] SCO & Caldera?
+> 
+> Hi,
+> 
+> On 03/12/2003 10:18:33 AM ZE10B "Greg 'groggy' Lehey" wrote:
+> >
+> >On Wednesday, 12 March 2003 at  9:27:13 +1000, Warren Toomey wrote:
+> >>
+> >> So the new license specifically prohibits System III, whereas the
+> >> Ancient UNIX license implicitly permitted System III.
+> >
+> >Heh.  So we have something to show for our $100 after all :-)
+> 
+> Is System III somewhere in the archive for us $100 license owners?
+> 
+> regards,
+> chris
+> 
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From sven.mascheck at student.uni-ulm.de  Wed Mar 19 08:54:51 2003
+From: sven.mascheck at student.uni-ulm.de (Sven Mascheck)
+Date: Tue, 18 Mar 2003 23:54:51 +0100
+Subject: [TUHS] Russian Ancient UNIX stuff in the Archive
+In-Reply-To: <54DDD708-596A-11D7-8EAB-000A956657C6@synflood.at>
+References: <003501c2ed26$20012000$26f34298@ik.bme.hu> <54DDD708-596A-11D7-8EAB-000A956657C6@synflood.at>
+Message-ID: <20030318225451.GG13935@wega.rz.uni-ulm.de>
+
+Andreas Krennmair wrote:
+
+> Are you aware of the "KGB hackers" case in Germany? German hackers 
+> broke into systems, downloaded all data they could get, went to East 
+> Berlin, and sold it to the Russians. There's a nice German movie about 
+> the whole case, called "23".
+
+...just based on The Cockoo's egg from Clifford Stoll.
+One might argue about the amount of truth in the movie version.
+And: AFAIK nobody knows what they had found/sold exactly...
+
+> Full of historic hardware. :-)
+
+That's another point certainly.
+
+
+From wkt at minnie.tuhs.org  Wed Mar 19 09:08:58 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 19 Mar 2003 09:08:58 +1000
+Subject: [TUHS] Ritter vi from year 2000
+In-Reply-To: <20030318215237.GA13704@minnie.tuhs.org>
+References: <0303182025.AA01836@ivan.Harhan.ORG> <20030318215237.GA13704@minnie.tuhs.org>
+Message-ID: <20030318230858.GA15253@minnie.tuhs.org>
+
+> I have ritter_vi.tar.gz, size 211579, date 2000/06/09 on a backup CD of the
+> Unix archive at work. I'll put it back into the Unix Archive in the
+> http://www.tuhs.org/Archive/Applications/Ritter_Vi  directory when I get
+> in to work in a few hours.
+
+It's there now.
+
+	Warren
+
+
+From wkt at minnie.tuhs.org  Wed Mar 19 09:10:12 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 19 Mar 2003 09:10:12 +1000
+Subject: [TUHS] SCO & Caldera?
+In-Reply-To: <87smtkb8v8.fsf@power.cnet.aladdin.de>
+References: <87smtkb8v8.fsf@power.cnet.aladdin.de>
+Message-ID: <20030318231012.GC15253@minnie.tuhs.org>
+
+On Tue, Mar 18, 2003 at 11:36:11PM +0100, Christian Groessler wrote:
+> >Heh.  So we have something to show for our $100 after all :-)
+> Is System III somewhere in the archive for us $100 license owners?
+> chris
+
+Yes, send me a private e-mail and we can work out a transfer process.
+
+	Warren
+
+
+From wkt at minnie.tuhs.org  Wed Mar 19 09:15:03 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 19 Mar 2003 09:15:03 +1000
+Subject: [TUHS] SysIII from SCO/Caldera
+Message-ID: <20030318231503.GD15253@minnie.tuhs.org>
+
+8-)
+
+Looks like Caldera are quite happy for you to obtain SysIII without signing
+any license agreement.
+
+http://www2.caldera.com/offers/ancient001/sysIII/
+
+This is just a FYI. You would have to consider your legal position if
+you did decide to download it.
+
+	Warren
+
+
+From jsnader at ix.netcom.com  Wed Mar 19 09:22:15 2003
+From: jsnader at ix.netcom.com (Jon Snader)
+Date: Tue, 18 Mar 2003 18:22:15 -0500
+Subject: [TUHS] SCO & Caldera?
+In-Reply-To: <87smtkb8v8.fsf@power.cnet.aladdin.de>
+References: <87smtkb8v8.fsf@power.cnet.aladdin.de>
+Message-ID: <20030318232215.GA34435@ix.netcom.com>
+
+On Tue, Mar 18, 2003 at 11:36:11PM +0100, Christian Groessler wrote:
+> Hi,
+> 
+> On 03/12/2003 10:18:33 AM ZE10B "Greg 'groggy' Lehey" wrote:
+> >
+> >On Wednesday, 12 March 2003 at  9:27:13 +1000, Warren Toomey wrote:
+> >>
+> >> So the new license specifically prohibits System III, whereas the
+> >> Ancient UNIX license implicitly permitted System III.
+> >
+> >Heh.  So we have something to show for our $100 after all :-)
+> 
+> Is System III somewhere in the archive for us $100 license owners?
+> 
+
+System III was available even with the free Ancient UNIX license.
+It was still available on the Caldera/SCO site last week, but now
+I am getting 404s.  In any event, anyone with one of the old PUPS
+password should legally be able to get it from PUPS if nowhere
+else.
+
+Jon Snader
+
+
+From hansolofalcon at worldnet.att.net  Wed Mar 19 09:29:44 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Tue, 18 Mar 2003 18:29:44 -0500
+Subject: [TUHS] SCO & Caldera?
+In-Reply-To: <20030318231012.GC15253@minnie.tuhs.org>
+Message-ID: <000701c2eda6$422a07c0$27a3580c@who5>
+
+Hello again from Gregg C Levine
+Warren, ah, I think I missed something someplace. It happens that I
+was able to download it, after clicking through the license that was
+presented several days ago, when the argument regarding the SCO
+lawsuit was part of a thread. Does this mean that I didn't have to go
+through this?
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: tuhs-admin at minnie.tuhs.org [mailto:tuhs-admin at minnie.tuhs.org]
+On
+> Behalf Of Warren Toomey
+> Sent: Tuesday, March 18, 2003 6:10 PM
+> To: The Unix Heritage Society
+> Subject: Re: [TUHS] SCO & Caldera?
+> 
+> On Tue, Mar 18, 2003 at 11:36:11PM +0100, Christian Groessler wrote:
+> > >Heh.  So we have something to show for our $100 after all :-)
+> > Is System III somewhere in the archive for us $100 license owners?
+> > chris
+> 
+> Yes, send me a private e-mail and we can work out a transfer
+process.
+> 
+> 	Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+
+From jsnader at ix.netcom.com  Wed Mar 19 09:22:15 2003
+From: jsnader at ix.netcom.com (Jon Snader)
+Date: Tue, 18 Mar 2003 18:22:15 -0500
+Subject: [TUHS] SCO & Caldera?
+In-Reply-To: <87smtkb8v8.fsf@power.cnet.aladdin.de>
+References: <87smtkb8v8.fsf@power.cnet.aladdin.de>
+Message-ID: <20030318232215.GA34435@ix.netcom.com>
+
+On Tue, Mar 18, 2003 at 11:36:11PM +0100, Christian Groessler wrote:
+> Hi,
+> 
+> On 03/12/2003 10:18:33 AM ZE10B "Greg 'groggy' Lehey" wrote:
+> >
+> >On Wednesday, 12 March 2003 at  9:27:13 +1000, Warren Toomey wrote:
+> >>
+> >> So the new license specifically prohibits System III, whereas the
+> >> Ancient UNIX license implicitly permitted System III.
+> >
+> >Heh.  So we have something to show for our $100 after all :-)
+> 
+> Is System III somewhere in the archive for us $100 license owners?
+> 
+
+System III was available even with the free Ancient UNIX license.
+It was still available on the Caldera/SCO site last week, but now
+I am getting 404s.  In any event, anyone with one of the old PUPS
+password should legally be able to get it from PUPS if nowhere
+else.
+
+Jon Snader
+
+
+From wkt at minnie.tuhs.org  Wed Mar 19 11:22:44 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 19 Mar 2003 11:22:44 +1000
+Subject: [TUHS] SCO & Caldera?
+In-Reply-To: <Pine.LNX.4.44.0303181530250.17703-100000@gladen>
+References: <20030318231012.GC15253@minnie.tuhs.org> <Pine.LNX.4.44.0303181530250.17703-100000@gladen>
+Message-ID: <20030319012244.GA19661@minnie.tuhs.org>
+
+On Tue, Mar 18, 2003 at 03:31:55PM -0800, Andru Luvisi wrote:
+> I don't have the $100 license, but I did get one of the click-through
+> licenses.
+
+Then I assume you would be safe to download SysIII from the SCO/Caldera page,
+as long as the license covers that.
+
+	Warren
+
+
+From wkt at minnie.tuhs.org  Wed Mar 19 11:24:30 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 19 Mar 2003 11:24:30 +1000
+Subject: [TUHS] SCO & Caldera?
+In-Reply-To: <000701c2eda6$422a07c0$27a3580c@who5>
+References: <20030318231012.GC15253@minnie.tuhs.org> <000701c2eda6$422a07c0$27a3580c@who5>
+Message-ID: <20030319012430.GB19661@minnie.tuhs.org>
+
+On Tue, Mar 18, 2003 at 06:29:44PM -0500, Gregg C Levine wrote:
+> Warren, ah, I think I missed something someplace. It happens that I
+> was able to download it, after clicking through the license that was
+> presented several days ago, when the argument regarding the SCO
+> lawsuit was part of a thread. Does this mean that I didn't have to go
+> through this?
+
+I'm saying that you can go directly to the SysIII source on Caldera's
+website without agreeing to the click-through license. I e-mailed them
+about this many many months ago, but they obviously haven't fixed it yet.
+
+	Warren
+
+

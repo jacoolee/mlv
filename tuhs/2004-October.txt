@@ -1,0 +1,802 @@
+From iosglpgc at teleline.es  Fri Oct  1 05:07:46 2004
+From: iosglpgc at teleline.es (Natalia Portillo)
+Date: Thu, 30 Sep 2004 20:07:46 +0100
+Subject: [TUHS] 6-bit, 7-bit and 9-bit byte UNIXes
+Message-ID: <20040930233847.503FB379@minnie.tuhs.org>
+
+Hi!
+
+Was there any UNIX with 6-bit wide, 7-bit wide or 9-bit wide bytes or all
+UNIXes are 8-bit wide bytes?
+
+Regards
+
+
+From jpetts at operamail.com  Fri Oct  1 09:46:52 2004
+From: jpetts at operamail.com (James Petts)
+Date: Thu, 30 Sep 2004 15:46:52 -0800
+Subject: [TUHS] 6-bit, 7-bit and 9-bit byte UNIXes
+Message-ID: <20040930234652.D0E483AA515@ws5-8.us4.outblaze.com>
+
+Natalia
+
+I don't know of any non-8-bit Unix systems, but Multics, on the GE645 at
+least, had a 36-bit word. See
+
+http://en.wikipedia.org/wiki/Multics
+
+James
+
+
+----- Original Message -----
+From: "Natalia Portillo" <iosglpgc at teleline.es>
+Date: Thu, 30 Sep 2004 20:07:46 +0100
+To: <tuhs at tuhs.org>
+Subject: [TUHS] 6-bit, 7-bit and 9-bit byte UNIXes
+
+> Hi!
+> 
+> Was there any UNIX with 6-bit wide, 7-bit wide or 9-bit wide bytes or all
+> UNIXes are 8-bit wide bytes?
+> 
+> Regards
+> 
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From grog at lemis.com  Fri Oct  1 09:57:05 2004
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Fri, 1 Oct 2004 09:27:05 +0930
+Subject: [TUHS] 6-bit, 7-bit and 9-bit byte UNIXes
+In-Reply-To: <20040930233847.503FB379@minnie.tuhs.org>
+References: <20040930233847.503FB379@minnie.tuhs.org>
+Message-ID: <20040930235705.GW46815@wantadilla.lemis.com>
+
+On Thursday, 30 September 2004 at 20:07:46 +0100, Natalia Portillo wrote:
+> Hi!
+>
+> Was there any UNIX with 6-bit wide, 7-bit wide or 9-bit wide bytes
+> or all UNIXes are 8-bit wide bytes?
+
+On page 182 of K&R 1st edition there's a reference to an
+implementation of C on the Honeywell 6000, with 9 bit bytes.  There's
+no mention of whether it was running UNIX.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20041001/c564c016/attachment.sig>
+
+From kstailey at yahoo.com  Fri Oct  1 10:21:46 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Thu, 30 Sep 2004 17:21:46 -0700 (PDT)
+Subject: [TUHS] 6-bit, 7-bit and 9-bit byte UNIXes
+In-Reply-To: <20040930233847.503FB379@minnie.tuhs.org>
+Message-ID: <20041001002146.82422.qmail@web50607.mail.yahoo.com>
+
+
+--- Natalia Portillo <iosglpgc at teleline.es> wrote:
+
+> Hi!
+> 
+> Was there any UNIX with 6-bit wide, 7-bit wide or 9-bit wide bytes or all
+> UNIXes are 8-bit wide bytes?
+> 
+> Regards
+
+Does the PDP-10 port of NetBSD use 9-bit bytes?
+
+http://netbsd.org/Ports/pdp10/
+
+From norman at nose.cs.utoronto.ca  Fri Oct  1 10:47:22 2004
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Thu, 30 Sep 2004 20:47:22 -0400
+Subject: [TUHS] 6-bit, 7-bit and 9-bit byte UNIXes
+Message-ID: <20041001005644.2B3F7373@minnie.tuhs.org>
+
+The very first UNIX ran on the PDP-7, which had 18-bit words.
+
+I happen to have the assembly-language source code to parts
+of that system.  Many programs contain error-handling code
+that does something like this:
+
+	lac d1
+	sys write; 1f; 1
+	jmp somewhere
+
+1:	077012
+
+	...
+
+d1:	1
+
+Evidently the system thought in words in those days
+(the second argument to sys write is presumably a word
+count), but the single word written is a strong clue
+that 9-bit bytes were used, and that a certain concise
+error message that people love to complain about was
+there from the beginning (and why not?).
+
+Norman Wilson
+Toronto ON
+
+From luvisi at andru.sonoma.edu  Fri Oct  1 11:05:05 2004
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Thu, 30 Sep 2004 18:05:05 -0700 (PDT)
+Subject: [TUHS] 6-bit, 7-bit and 9-bit byte UNIXes
+In-Reply-To: <20041001005644.2B3F7373@minnie.tuhs.org>
+Message-ID: <Pine.LNX.4.44.0409301804280.13991-100000@gladen>
+
+On Thu, 30 Sep 2004, Norman Wilson wrote:
+> The very first UNIX ran on the PDP-7, which had 18-bit words.
+>
+> I happen to have the assembly-language source code to parts
+> of that system.
+
+Have you donated this code to any archives?  If so, which ones?  If not,
+please consider doing so!
+
+Andru
+-- 
+Andru Luvisi
+
+Quote Of The Moment:
+  Goto: The apprentice uses it without thinking. 
+        The journeyman avoids it without thinking.
+        The master uses it thoughtfully.
+
+
+From michael_davidson at pacbell.net  Fri Oct  1 10:58:48 2004
+From: michael_davidson at pacbell.net (Michael Davidson)
+Date: Thu, 30 Sep 2004 17:58:48 -0700
+Subject: [TUHS] 6-bit, 7-bit and 9-bit byte UNIXes
+References: <20040930233847.503FB379@minnie.tuhs.org>
+Message-ID: <002901c4a751$cfa01160$0400a8c0@DELL4100>
+
+> 
+> Was there any UNIX with 6-bit wide, 7-bit wide or 9-bit wide bytes or all
+> UNIXes are 8-bit wide bytes?
+> 
+
+BBN had a version of UNIX for the C/70 machine which had 10 bit bytes.
+
+This is memorialized in the "IP/TCP Implementation Status" section of the
+historic RFC 801 which describes the NCP to TCP transition plan, thus:
+
+APPENDIX D.  IP/TCP Implementation Status
+
+   Please note that the information in this section may become quickly
+   dated.  Current information on the status of IP and TCP
+   implementations can be obtained from the file
+   <INTERNET-NOTEBOOK>TCP-IP-STATUS.TXT on ISIF.
+
+   BBN C70 UNIX
+
+      Date:  18 Nov 1981
+      From:  Rob Gurwitz <gurwitz at BBN-RSM>
+
+      The C/70 processor is a BBN-designed system with a native
+      instruction set oriented toward executing the C language.  It
+      supports UNIX Version 7 and provides for user processes with a
+      20-bit address space.  The TCP/IP implementation for the C/70 was
+      ported from the BBN VAX TCP/IP, and shares all of its features.
+
+      This version of TCP/IP is running experimentally at BBN, but is
+      still under development.  Performance tuning is underway, to make
+      it more compatible with the C/70's memory management system.
+
+[ ... ]
+
+From cdl at mpl.ucsd.edu  Fri Oct  1 13:59:43 2004
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Thu, 30 Sep 2004 20:59:43 -0700 (PDT)
+Subject: [TUHS] 6-bit, 7-bit and 9-bit byte UNIXes
+Message-ID: <200410010359.i913xhf16995@opihi.ucsd.edu>
+
+> Subject: Re: [TUHS] 6-bit, 7-bit and 9-bit byte UNIXes
+> From: Norman Wilson <norman at nose.cs.utoronto.ca>
+> To: tuhs at tuhs.org
+> Date: Thu, 30 Sep 2004 20:47:22 -0400
+> 
+> The very first UNIX ran on the PDP-7, which had 18-bit words.
+> 
+> I happen to have the assembly-language source code to parts
+> of that system.  Many programs contain error-handling code
+> that does something like this:
+> 
+> 	lac d1
+> 	sys write; 1f; 1
+> 	jmp somewhere
+> 
+> 1:	077012
+> 
+> 	...
+> 
+> d1:	1
+> 
+> Evidently the system thought in words in those days
+> (the second argument to sys write is presumably a word
+> count), but the single word written is a strong clue
+> that 9-bit bytes were used, and that a certain concise
+> error message that people love to complain about was
+> there from the beginning (and why not?).
+
+?
+
+I would say "the PDP7 computer was word-addressable".  In this
+context, characters seem to have been packed as 9-bit half-words
+in a big-endian fashion.  No 'bytes'.
+
+Maybe tomorrow I will be near my DEC literature archives, and see
+if I can find some clues about PDP7 instructions that might deal
+with half-words.  If it's anything like the PDP8 of similar vintage,
+there aren't any.  Late in its life the PDP8 got a BSW "byte swap"
+instruction to swap the half-words in the AC register.  6 bits,
+of course.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+From slapin at drevlanka.ru  Fri Oct  1 15:14:39 2004
+From: slapin at drevlanka.ru (Sergey Lapin)
+Date: Fri, 1 Oct 2004 09:14:39 +0400 (MSD)
+Subject: [TUHS] TCP/IP implementations
+Message-ID: <2957.217.107.240.249.1096607679.squirrel@217.107.240.249>
+
+Hi, all!!!
+Are there any old TCP/IP implementations like these to work on V7 or V6,
+freely accessible in source form?
+It could be very nice thing to learn from.
+
+And possibly offtopic question - if I want ULTRIX (RISC) source license,
+where should I get it from? (mostly interested in newest source) :)
+
+All the best,
+S.
+
+
+From patv at monmouth.com  Fri Oct  1 20:09:19 2004
+From: patv at monmouth.com (Pat Villani)
+Date: Fri, 01 Oct 2004 06:09:19 -0400
+Subject: [TUHS] TCP/IP implementations
+In-Reply-To: <2957.217.107.240.249.1096607679.squirrel@217.107.240.249>
+References: <2957.217.107.240.249.1096607679.squirrel@217.107.240.249>
+Message-ID: <415D2CCF.1010808@monmouth.com>
+
+Don't know about a TCP/IP stack, but I'm sorry to tell you that Ultrix 
+is still proprietary and now owned by hp.
+
+The source is in danger of being lost unless I'm successful over the 
+next six months.  The Manalapan, NJ site where a great deal of Ultrix 
+work was done will be closing soon and employees moved to other location 
+and otherwise.  I volunteered to take the old tape archives and transfer 
+the source code to CD-ROM for preservation.  I don't know if there are 
+any other copies in Nashua, NH, where the remainder of the work was done.
+
+Pat
+
+
+Sergey Lapin wrote:
+
+>Hi, all!!!
+>Are there any old TCP/IP implementations like these to work on V7 or V6,
+>freely accessible in source form?
+>It could be very nice thing to learn from.
+>
+>And possibly offtopic question - if I want ULTRIX (RISC) source license,
+>where should I get it from? (mostly interested in newest source) :)
+>
+>All the best,
+>S.
+>
+>_______________________________________________
+>TUHS mailing list
+>TUHS at minnie.tuhs.org
+>http://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+>  
+>
+
+
+
+From dmr at plan9.bell-labs.com  Mon Oct  4 11:56:25 2004
+From: dmr at plan9.bell-labs.com (dmr at plan9.bell-labs.com)
+Date: Sun, 3 Oct 2004 21:56:25 -0400
+Subject: [TUHS] re: 6-bit, 7-bit and 9-bit byte UNIXes
+Message-ID: <bd36b44b5457ae02453f86060fc590d1@plan9.bell-labs.com>
+
+Greg Lemis wondered,
+
+ > On page 182 of K&R 1st edition there's a reference to an
+ > implementation of C on the Honeywell 6000, with 9 bit bytes.  There's
+ > no mention of whether it was running UNIX.
+
+That one was a C implementation under GCOS.  There
+was another 9-bit one for the PDP-10 (not using Unix).
+There was a 4x9 bit version of Unix for the Univac 1100
+series, which ran Unix as a guest system over the
+native EXEC OS.
+
+The most exotic version was the BBN C-machine, which
+had 20-bit words, 10-bit bytes.
+
+	Dennis
+
+
+From jrvalverde at cnb.uam.es  Tue Oct  5 23:03:03 2004
+From: jrvalverde at cnb.uam.es (=?ISO-8859-15?Q?Jos=E9?= R. Valverde)
+Date: Tue, 5 Oct 2004 15:03:03 +0200
+Subject: [TUHS] TCP/IP implementations
+In-Reply-To: <415D2CCF.1010808@monmouth.com>
+References: <2957.217.107.240.249.1096607679.squirrel@217.107.240.249>
+	<415D2CCF.1010808@monmouth.com>
+Message-ID: <20041005150303.1d42c47e.jrvalverde@cnb.uam.es>
+
+On Fri, 01 Oct 2004 06:09:19 -0400
+Pat Villani <patv at monmouth.com> wrote:
+> Don't know about a TCP/IP stack, but I'm sorry to tell you that Ultrix 
+> is still proprietary and now owned by hp.
+> 
+> The source is in danger of being lost unless I'm successful over the 
+> next six months.  The Manalapan, NJ site where a great deal of Ultrix 
+> work was done will be closing soon and employees moved to other location 
+> and otherwise.  I volunteered to take the old tape archives and transfer 
+> the source code to CD-ROM for preservation.  I don't know if there are 
+> any other copies in Nashua, NH, where the remainder of the work was done.
+> 
+> Pat
+> 
+While working at the Biomedical Research Institute (Madrid, Spain) I got a
+quote from DEC for access to Ultrix source code. As I remember it, it wasn't
+that expensive (~1000$ for an academic license) and I mused bout acquiring 
+it for some time. My naïvete at the time prevented me from ordering it (that
+and the availability of BSD sources).
+
+But I'd feel pretty sure that at that price many source licenses must have
+been sold. Maybe there are still copies lying around and you can find 
+someone to send you a copy back.
+
+Sure, it would be nicer to maintain the whole development log and versions.
+
+				    j
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20041005/263812b3/attachment.sig>
+
+From patv at monmouth.com  Tue Oct  5 23:41:22 2004
+From: patv at monmouth.com (patv at monmouth.com)
+Date: Tue, 5 Oct 2004 08:41:22 EST
+Subject: [TUHS] TCP/IP implementations
+Message-ID: <200410051341.i95DfMOW016600@wwws.monmouth.com>
+
+It's not a question of it being lost, but rather making sure it doesn't
+become lost.  My first order of business is for the product that was the
+reason for Manalapan's existence -- VAX System V.
+
+The Manalapan, NJ site, after two mergers, is still today known as UNX
+because of it initial charter to port AT&T Unix to VAX.  This dates back
+to the old DEC days where all sites had a 3 character identifier.  I guess
+someone was a private pilot and modeled it after airport designations. 
+Anyway, Manalapan was also frequently used as a hub in a lot of uucp
+activity -- just look for UNXA in the path.
+
+Enough history for today.
+
+Pat
+
+
+
+> On Fri, 01 Oct 2004 06:09:19 -0400
+> Pat Villani <patv at monmouth.com> wrote:
+> > Don't know about a TCP/IP stack, but I'm sorry to tell you that Ultrix
+> > is still proprietary and now owned by hp.
+> >
+> > The source is in danger of being lost unless I'm successful over the
+> > next six months.  The Manalapan, NJ site where a great deal of Ultrix
+> > work was done will be closing soon and employees moved to other
+location> 
+> > and otherwise.  I volunteered to take the old tape archives and
+transfer> 
+> > the source code to CD-ROM for preservation.  I don't know if there are
+> > any other copies in Nashua, NH, where the remainder of the work was done.
+> >
+> > Pat
+> >
+> While working at the Biomedical Research Institute (Madrid, Spain) I got a
+> quote from DEC for access to Ultrix source code. As I remember it, it wasn't
+> that expensive (~1000$ for an academic license) and I mused bout
+acquiring> 
+> it for some time. My na�vete at the time prevented me from ordering it
+(t> hat
+> and the availability of BSD sources).
+>
+> But I'd feel pretty sure that at that price many source licenses must have
+> been sold. Maybe there are still copies lying around and you can find
+> someone to send you a copy back.
+>
+> Sure, it would be nicer to maintain the whole development log and versions.
+>
+>                     j
+> --
+>     These opinions are mine and only mine. Hey man, I saw them first!
+>
+>                 Jos� R. Valverde
+>
+>     De nada sirve la Inteligencia Artificial cuando falta la Natural
+>
+
+
+
+
+---------------------------------------------
+This message was sent using Monmouth Internet MI-Webmail.
+http://www.monmouth.com/
+
+
+
+From msokolov at ivan.Harhan.ORG  Wed Oct  6 01:40:41 2004
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Tue, 5 Oct 04 15:40:41 GMT
+Subject: [TUHS] TCP/IP implementations
+Message-ID: <0410051540.AA09972@ivan.Harhan.ORG>
+
+"=?ISO-8859-15?Q?Jos=E9?= R. Valverde" <jrvalverde at cnb.uam.es> wrote:
+
+> While working at the Biomedical Research Institute (Madrid, Spain) I got a
+> quote from DEC for access to Ultrix source code. As I remember it, it wasn't
+> that expensive (~1000$ for an academic license) and I mused bout acquiring=
+> =20
+> it for some time. My na=EFvete at the time prevented me from ordering it (t=
+> hat
+> and the availability of BSD sources).
+
+Ultrix-32 sources can be found on ifctfvax.Harhan.ORG in
+/pub/UNIX/thirdparty/Ultrix-32/sources available via anonymous FTP.
+
+MS
+
+From newsham at lava.net  Wed Oct  6 14:23:31 2004
+From: newsham at lava.net (Tim Newsham)
+Date: Tue, 5 Oct 2004 18:23:31 -1000 (HST)
+Subject: [TUHS] research unix
+In-Reply-To: <0410051540.AA09972@ivan.Harhan.ORG>
+References: <0410051540.AA09972@ivan.Harhan.ORG>
+Message-ID: <Pine.BSI.4.58.0410051822260.15930@malasada.lava.net>
+
+What has become of the various research unix releases after
+7th edition?  Have any of these ever been released publically?
+Are any of them being archived for historical reasons?  Are any
+of the versions publically available now?
+
+Tim N.
+
+From wkt at tuhs.org  Wed Oct  6 17:06:55 2004
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 6 Oct 2004 17:06:55 +1000
+Subject: [TUHS] research unix
+In-Reply-To: <Pine.BSI.4.58.0410051822260.15930@malasada.lava.net>
+References: <0410051540.AA09972@ivan.Harhan.ORG>
+	<Pine.BSI.4.58.0410051822260.15930@malasada.lava.net>
+Message-ID: <20041006070655.GA37153@minnie.tuhs.org>
+
+On Tue, Oct 05, 2004 at 06:23:31PM -1000, Tim Newsham wrote:
+> What has become of the various research unix releases after
+> 7th edition?  Have any of these ever been released publically?
+> Are any of them being archived for historical reasons?  Are any
+> of the versions publically available now?
+
+I'm sure that Norman Wilson will answer with a more definitive
+answer, but...  2 reasons: there wasn't the concept of a "release"
+with 8th, 9th or 10th Edition, they were purely internal
+always-in-development systems. The other reason is that, as time
+went on, more code from non-AT&T places was incorporated. It will
+be difficult to get the clearance from all the copyright holders
+to let a snapshot of any of these systems out.
+
+	Warren
+
+From wes.parish at paradise.net.nz  Wed Oct  6 17:19:47 2004
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Wed, 06 Oct 2004 20:19:47 +1300
+Subject: [TUHS] research unix
+In-Reply-To: <Pine.BSI.4.58.0410051822260.15930@malasada.lava.net>
+References: <0410051540.AA09972@ivan.Harhan.ORG>
+ <Pine.BSI.4.58.0410051822260.15930@malasada.lava.net>
+Message-ID: <200410062019.47550.wes.parish@paradise.net.nz>
+
+As far as I know, they're still held tightly by whatever part of AT&T 
+inherited them.
+
+They should be released - for a variety of reasons, amongst them the pulling 
+of the teeth of various entities intent on muddying the waters with an 
+outflux of legal venom.
+
+Perhaps someone should set up a petition to that inheriting entity, a la the 
+Ancient Unix petition, asking them on behalf of all interested parties, that 
+they release them under a suitable license - perhaps BSD, it's nice and short 
+and easy to remember - some people out there have very short attention spans 
+and we don't want them confused.
+
+Any comments?
+
+Wesley Parish
+
+On Wed, 06 Oct 2004 17:23, Tim Newsham wrote:
+> What has become of the various research unix releases after
+> 7th edition?  Have any of these ever been released publically?
+> Are any of them being archived for historical reasons?  Are any
+> of the versions publically available now?
+>
+> Tim N.
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+Wesley Parish
+* * *
+Clinersterton beademung - in all of love.  RIP James Blish
+* * *
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+From jr at cnb.uam.es  Wed Oct  6 19:26:21 2004
+From: jr at cnb.uam.es (Jose R. Valverde)
+Date: Wed, 6 Oct 2004 09:26:21 +0000
+Subject: [TUHS] TCP/IP implementations
+In-Reply-To: <0410051540.AA09972@ivan.Harhan.ORG>;
+	from msokolov@ivan.Harhan.ORG on Tue, Oct 05, 2004 at 03:40:41PM +0000
+References: <0410051540.AA09972@ivan.Harhan.ORG>
+Message-ID: <20041006092621.A5477111@bossa-nova.cnb.uam.es>
+
+On Tue, Oct 05, 2004 at 03:40:41PM +0000, Michael Sokolov wrote:
+> "=?ISO-8859-15?Q?Jos=E9?= R. Valverde" <jrvalverde at cnb.uam.es> wrote:
+> Ultrix-32 sources can be found on ifctfvax.Harhan.ORG in
+> /pub/UNIX/thirdparty/Ultrix-32/sources available via anonymous FTP.
+
+Certainly.
+
+But I understood the orioginal post to refer to other Ultrix sources.
+Ultrix had a long -and interesting- life after 32V. It was ported to
+MIPS machines, and was -AFAIK- the first ever port of UNIX to a 64 bit
+machine as the initial Unix for DEC alpha machines. It would later
+be abandoned for Mach-based OSF-1 before going to market.
+
+Those Ultrix sources would be a pity to lose. And those were the one
+I was referring to in my e-mail (and what I understood the original
+poster to mean).
+
+Indeed, OSF/1 aka Tru64 sources and history would also be worthwhile to
+preserve for the historical record (as those from IBM, Sun, HP, etc...)
+Each had at some point novel and highly advanced technologies for their
+time that would be nice to preserve.
+
+				j
+
+-- 
+Jose R. Valverde
+EMBnet/CNB
+
+From jkunz at unixag-kl.fh-kl.de  Thu Oct  7 01:19:53 2004
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Wed, 6 Oct 2004 17:19:53 +0200
+Subject: [TUHS] TCP/IP implementations
+In-Reply-To: <20041006092621.A5477111@bossa-nova.cnb.uam.es>
+References: <0410051540.AA09972@ivan.Harhan.ORG>
+	<20041006092621.A5477111@bossa-nova.cnb.uam.es>
+Message-ID: <20041006171953.01571c96.jkunz@unixag-kl.fh-kl.de>
+
+On Wed, 6 Oct 2004 09:26:21 +0000
+"Jose R. Valverde" <jr at cnb.uam.es> wrote:
+
+> But I understood the orioginal post to refer to other Ultrix sources.
+> Ultrix had a long -and interesting- life after 32V. It was ported to
+> MIPS machines, and was -AFAIK- the first ever port of UNIX to a 64 bit
+> machine as the initial Unix for DEC alpha machines.
+I doubt that Ultrix was ported to Alpha. DEC was working on OSF/1 before
+Alpha machines where available. Initial OSF/1 Versions where MIPS for
+DECstations.
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+From msokolov at ivan.Harhan.ORG  Thu Oct  7 01:42:43 2004
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Wed, 06 Oct 2004 15:42:43 -0000
+Subject: [TUHS] TCP/IP implementations
+Message-ID: <0410061539.AA13050@ivan.Harhan.ORG>
+
+Jose R. Valverde <jr at cnb.uam.es> wrote:
+
+> But I understood the orioginal post to refer to other Ultrix sources.
+> Ultrix had a long -and interesting- life after 32V. It was ported to
+> MIPS machines,
+
+By Ultrix-32 I didn't mean AT&T 32V, I just say Ultrix-32 to distinguish
+it from Ultrix-11.  Ultrix-32 was DEC's product for VAX and MIPS.  On my
+FTP site I have pirate sources for Ultrix-32 V2.00 and V4.20.  The lalter
+runs on all VAX models DEC ever supported Ultrix on and on MIPS.
+
+MS
+
+From txomsy at yahoo.es  Mon Oct 25 06:17:44 2004
+From: txomsy at yahoo.es (Jose R. Valverde)
+Date: Sun, 24 Oct 2004 22:17:44 +0200
+Subject: [TUHS] TCP/IP implementations
+In-Reply-To: <0410051540.AA09972@ivan.Harhan.ORG>
+References: <0410051540.AA09972@ivan.Harhan.ORG>
+Message-ID: <20041024221744.56d0a95f.txomsy@yahoo.es>
+
+Sorry, but I couldn't resist. this has been bothering me for days since my
+previous post.
+
+I knew it happened but was writing from memory. I looked to my ancient mails,
+looked into the net.. (this started to look like the hunting of the snark) and
+then remembered it had been discussed in Usenet. Here is the reference now for
+the record. I know the message is long, but I think it is worth reading.
+
+On Wed Oct 6 17:19:53 EST 2004 Jochen Kunz jkunz at unixag-kl.fh-kl.de wrote:
+>On Wed, 6 Oct 2004 09:26:21 +0000
+>"Jose R. Valverde" <jr at cnb.uam.es> wrote:
+>
+>> But I understood the orioginal post to refer to other Ultrix sources.
+>> Ultrix had a long -and interesting- life after 32V. It was ported to
+>> MIPS machines, and was -AFAIK- the first ever port of UNIX to a 64 bit
+>> machine as the initial Unix for DEC alpha machines.
+>I doubt that Ultrix was ported to Alpha. DEC was working on OSF/1 before
+>Alpha machines where available. Initial OSF/1 Versions where MIPS for
+>DECstations.
+
+There certainly was an Ultrix for Alphas. As I remembered, the first Unix
+port for alphas was that of Ultrix, and it was the first OS to run on Alpha
+but it was an internal, research development in DEC that never saw the light
+of sun. The full thread discussing it can still be found on deja-news: 
+search for ultrix and alpha butnot FAQ.
+
+The URL:
+http://groups.google.com/groups?hl=en&lr=&threadm=3daega%24fld%40lead.zk3.dec.com&rnum=7&prev=/groups%3Fq%3Dultrix%2Balpha%2B-FAQ%26hl%3Den%26lr%3D%26selm%3D3daega%2524fld%2540lead.zk3.dec.com%26rnum%3D7
+
+the significant text:
+
+> From: Allan E Johannesen (aej at mikasa.WPI.EDU)
+> Subject: Re: Ultrix for Alpha (?)
+> Newsgroups: comp.sys.dec
+> Date: 1994-12-21 03:28:52 PST
+> 
+> I heard, from what appeared at the time to be a reliable source, that ULTRIX
+> was the first OS to actually run on an Alpha.  That aside, the only OS
+> controversy was whether OSF/1 would be ported to MIPS.  That project was
+> on-and-off depending on the most recent rumor.  The resolution was a firm _NO_.
+> 
+> I recall no hint that ULTRIX would ever be ported to Alpha.  It seems clear
+> enough that ULTRIX is in a maintenance-only mode on the older platforms.
+ 
+> From: kaiser at acm.org (kaiser at acm.org)
+> Subject: Re: Ultrix for Alpha (?)
+> Newsgroups: comp.sys.dec
+> Date: 1994-12-21 00:15:56 PST
+> 
+> In article <AEJ.94Dec20120833 at mikasa.WPI.EDU>, aej at mikasa.WPI.EDU (Allan E
+> Johannesen) writes:
+> 
+> >I heard, from what appeared at the time to be a reliable source, that ULTRIX
+> >was the first OS to actually run on an Alpha.
+> 
+> True.  ULTRIX was ported to Alpha as a research project, and it was the
+> first OS to run on Alpha.  It's not widely known, but not a secret, that
+> the original big Alpha AD units (they weren't even prototypes, since they
+> were never intended for sale but only for software development) required
+> MIPS ULTRIX systems as consoles and boot devices, even when they ran VMS.
+> None of this, of course, has anything to do with the merits or popularity
+> of the OSes themselves.
+> 
+> ___Pete
+> 
+> kaiser at acm.org
+> +33 92.95.62.97, FAX +33 92.95.50.50
+
+> From: Farrell Woods (ftw at zk3.dec.com)
+> Subject: Re: Ultrix for Alpha (?)
+> Newsgroups: comp.sys.dec
+> Date: 1994-12-22 05:39:30 PST
+> 
+> In article <3d8kqb$dfb at mrnews.mro.dec.com>, kaiser at acm.org writes:
+> |> True.  ULTRIX was ported to Alpha as a research project...
+> 
+> This is correct.  The machines were called ADU's, or Alpha Development Units.
+> They were washing-machine sized boxes with DECstation 5000's sitting atop
+> as a host/IO processor and front-end.  The ADU was in a way a Turbochannel
+> option on the DECstation; that's how they talked.
+> 
+> Ultrix ran on the ADU's initially, then OSF.  Development of OSF for Alpha
+> proceeded on the ADU for quite a while as the first examples of what would be
+> known as the DEC 3000 model 500 started trickling in (this was known internally
+> as the Flamingo.)  Support for the ADU was dropped before the first release
+> of DEC OSF/1 for Alpha shipped, but some intrepid souls within the company
+> managed to keep them going for themselves through the first two releases
+> of the OS.
+> 
+> I don't recall talk of officially supporting Ultrix on the Alpha.  It only
+> ever ran on the ADU and was never carried to the production machines.
+> Alpha/Ultrix was an AD effort.
+> 
+> 
+> -- 
+> Farrell T. Woods, Jr.    Voice:  (603) 881-2948
+> Digital Equipment Corporation   Domain: ftw at zk3.dec.com
+> 110 Spit Brook Rd.    uucp:  ...!decvax!ftw
+> Nashua, NH 03061
+> 
+>   Rule of Acqusition Number 112: Never have sex with the boss' sister.
+> 
+
+				j
+--
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+
+From tg at 66h.42h.de  Tue Oct 26 22:43:32 2004
+From: tg at 66h.42h.de (Thorsten Glaser)
+Date: Tue, 26 Oct 2004 12:43:32 -0000
+Subject: [TUHS] licence of ditroff?
+Message-ID: <Pine.BSO.4.61L.0410261228540.12995@thor.66h.42h.de>
+
+Hi!
+
+I would like to know which licence the files at
+http://medialab.dyndns.org/~martin/tape/stuff/ditroff/
+are under.
+
+If it's http://www.tuhs.org/Archive/Caldera-license.pdf
+that would be nice, if not, is there any way to find
+out whose (c) is on the files, and how to contact them?
+
+Reason: I'm developer of a BSD offspring and already
+integrated 4.4BSD-Alpha nroff, neqn, tbl etc. under the
+Caldera licence above into our operating system in order
+to get rid of the less free, written in C++, GNU groff.
+With success. Now I'm lacking postscript output.
+
+Thanks in advance,
+//mirabile
+

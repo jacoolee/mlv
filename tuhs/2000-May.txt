@@ -1,0 +1,3117 @@
+From sethm at loomcom.com  Tue May  9 08:02:40 2000
+From: sethm at loomcom.com (sjm)
+Date: Mon, 8 May 2000 15:02:40 -0700
+Subject: Good news on the Ancient UNIX License front
+Message-ID: <20000508150240.A7092@loomcom.com>
+
+Hello all,
+
+I've just received this mail from SCO.  I think it's appropriate to
+post here.
+
+Apparently we can expect the Ancient UNIX License available on the
+SCO website by Friday (U.S. Pacific Time, I would suspect).  Very
+good news indeed!
+
+Included message follows:
+
+>To: sethm at loomcom.com
+>From: Paul Kaspian <paulka at sco.COM>
+>Subject: Re: Fwd: Regarding the Ancient UNIX license
+>Content-Type: text/plain; charset="us-ascii"
+>
+>Hi Seth,
+>
+>Sorry for the late reply. We are in the process of adding Ancient UNIX to our
+>web site now that the $100 fee is waived. This should be up on the site by May
+>12th. It will be located at www.sco.com/offers. Please let me know if you have
+>any questions.
+>
+>Sincerely,
+>
+>Paul Kasipan
+>Marketing Manager
+>SCO
+>
+>
+>At 10:25 AM 4/26/00 -0700, you wrote:
+>
+>>Date: Wed, 26 Apr 2000 09:58:24 -0700
+>>From: sjm <sethm at loomcom.com>
+>>To: toms at sco.com
+>>Subject: Regarding the Ancient UNIX license
+>>X-Mailer: Mutt 1.0.1us
+>>
+>>Hello,
+>>
+>>I read your recent press release regarding SCO's new open source
+>>initiatives with some interest.  Specifically, I'm curious what your
+>>plans are regarding the "Ancient" UNIX license which SCO previously
+>>charged $100 for.  Do you know when the new free license will be
+>>available?
+>>
+>>Thank you for your help,
+>>
+>>-Seth Morabito
+>>  sethm at loomcom.com
+
+
+-- 
+"As a general rule, the man in the habit of murdering  | Seth Morabito
+bookbinders, though he performs a distinct service     | sethm at loomcom.com
+to society, only wastes his own time and takes no      |
+personal advantage."  -- Kenneth Grahame (1898)        |   Perth ==> *
+
+
+From lars at nocrew.org  Tue May  9 17:25:55 2000
+From: lars at nocrew.org (lars brinkhoff)
+Date: 09 May 2000 09:25:55 +0200
+Subject: Help: PDP-11 instruction classification
+In-Reply-To: sjm's message of "Mon, 8 May 2000 15:02:40 -0700"
+References: <20000508150240.A7092@loomcom.com>
+Message-ID: <85og6g18xo.fsf@junk.nocrew.org>
+
+I'm adding PDP-11 support to GNU binutils, and I need help on
+classifying the instruction set.
+
+I'm somewhat confused, because:
+
+  PDP-11 FAQ says:
+  11/45 introduced MUL, DIV, ASH, ASHC, SPL.
+  Later, 11/40 introduced SOB, XOR, MARK, SXT, RTT.  MUL, DIV, etc in
+  EIS option.
+
+  GCC pdp11.md and pdp11.c says:
+  11/40 and 11/45 has SOB, SXT, XOR.
+  11/45 has ASHC, MUL, DIV.
+  All models has ASH.
+
+  John Holden writes:
+  11/40 and 11/45 has EIS and FPU instructions.
+  11/40 had several options to add EIS, FIS and a MMU.
+
+Does this mean that an unexpanded 11/40 has no EIS instructions,
+but with the EIS option, it has more instructions than an 11/45?
+
+GCC seems to think that all PDP-11 models has ASH, but this seems
+wrong.  It's only in EIS, right?
+
+So far, this is the classification I've come up with:
+
+  BASIC: the basic instruction set.
+  CIS: commercial instruction set (opcodes 0x7d00..0x7eff).
+  EIS45: 11/45 extended instruction set: MUL, DIV, ASH, ASHC, SPL.
+  EIS40: 11/40 extended instruction set: EIS45 + SOB, XOR, MARK, SXT, RTT.
+  FIS: FADD, FSUB, FMUL, and FDIV (opcodes 0x7a00..0x7bff).
+  FPU: LDF, STF, LDCFF', STCFF', CMPF, LDEXP, STEXP, LDCIF, STCFI, MULF,
+       MODF, ADDF, SUBF, and DIVF (opcodes 0xf000..0xffff).
+
+Would this be correct?
+
+FIS and CIS isn't imlemented in Supnik's simulator, and I haven't
+found any documentation.  Does anyone know more about those?  Why
+is there both an FADD and an ADDF instruction?
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id JAA75480
+	for pups-liszt; Wed, 10 May 2000 09:47:20 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Wed May 10 09:47:01 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Wed, 10 May 2000 09:47:01 +1000 (EST)
+Subject: Good news on the Ancient UNIX License front
+In-Reply-To: <20000508150240.A7092@loomcom.com> from sjm at "May 8, 2000  3: 2:40 pm"
+Message-ID: <200005092347.JAA89501@henry.cs.adfa.edu.au>
+
+In article by sjm:
+> Hello all,
+> 
+> I've just received this mail from SCO.  I think it's appropriate to
+> post here.
+> 
+> Apparently we can expect the Ancient UNIX License available on the
+> SCO website by Friday (U.S. Pacific Time, I would suspect).  Very
+> good news indeed!
+
+I'm just back from a training course. I've seen a preview of the web site.
+You get to click-thru the license agreement, then you have a set of hyperlinks
+to the UNIX versions that SCO owns (5e, 6e, 7e, 32V, SysIII, Mini UNIX).
+
+I'm still trying to work out an access method to the PUPS Archive with them,
+but I think we're getting there.
+
+So, you will get access to some UNIX source code soon, but access to the
+PUPS Archive might be a week or so longer.
+
+Cheers all!
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA75681
+	for pups-liszt; Wed, 10 May 2000 10:27:50 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Wed May 10 10:27:22 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Wed, 10 May 2000 10:27:22 +1000 (EST)
+Subject: PDP land
+In-Reply-To: <20000505191242.A13087@ussenterprise.ufp.org> from Leo Bicknell at "May 5, 2000  7:12:42 pm"
+Message-ID: <200005100027.KAA89955@henry.cs.adfa.edu.au>
+
+In article by Leo Bicknell:
+> 	I don't know if you remember me or not.  I believe we talked
+> before when I was a student at Virginia Tech about Unix on a PDP-11/40
+> that I had.  Alas, I had to let those machines go as I didn't have
+> the time or space to keep them.
+> 
+> 	I went looking for PDP stuff on the web, and ran across your
+> name again.  I thought I'd give you a whirl.  I'm now in a position to
+> give real data center space to one or more of these beasts, and I would
+> love to put a PDP-11 up on the net running old-school unix.
+> 
+> 	Any pointers as to where to find someone giving away or
+> selling one of these beasts?
+> 
+> 	Thanks.
+> Leo Bicknell - bicknell at ufp.org
+
+Leo, I'm punting this on to the PUPS mailing list to see if you get any
+nibbles. Go to http://minnie.cs.adfa.edu.au/PUPS/maillist.html to see
+how to join. You could also try the Usenet newsgroups alt.sys.pdp11 and
+vmsnet.pdp-11.
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA75735
+	for pups-liszt; Wed, 10 May 2000 10:37:58 +1000 (EST)
+
+From johnh at psych.usyd.edu.au  Wed May 10 10:37:51 2000
+From: johnh at psych.usyd.edu.au (johnh at psych.usyd.edu.au)
+Date: Wed, 10 May 2000 10:37:51 +1000 (EST)
+Subject: Help: PDP-11 instruction classification
+Message-ID: <200005100037.KAA11235@psychwarp.psych.usyd.edu.au>
+
+
+The 11/45 has the base instruction set, plus EIS (MUL, DIV, ASH, ASHC, SPL,
+SOB, XOR, MARK, SXT, RTT). This was standard with the CPU, and the optional
+floating point unit (another 4 cards in the backplane) added the floating
+point instruction set.
+
+The 11/40 has billions (Carl Sagans) of options. The minimal processor had
+the base set, plus SOB, MARK, RTT, XOR and SXT. Processor options added extra
+microcode and extra shift registers and counters to the data path.
+
+	Option	Description
+	KE11-E	EIS instruction set (ASH, ASHC, DIV, MUL)
+	KE11-F	FIS instruction set (FDIV, FMUL, FADD, FSUB)
+	KJ11-A	Stack limit register
+	KT11-D	Memory management
+	KW11-L	Line time clock
+
+The processor options had dedicated slots, but lots of jumpers have to be
+changed to enable them. Note that there are just four floating point
+instructions (not directly compatible with any FPP instruction), and they
+are not very PDP-11 like in their behaviour. The instructions have a three bit
+address field to specify a register. The register points to a 'floating point
+stack frame' that contains the arguments for the instruction in memory. The
+floating point number format is the same as FPP.
+
+When the original LSI-11 came out, it was modeled on 11/40, again with the
+base instructions, plus SOB, MARK, RTT, XOR and SXT. EIS and FIS were options
+in 'Microm Chips' (extra microcode). There was no memory management options
+and it lacked an addressable PSW (processor status word) and switch register
+(01777570).
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA75920
+	for pups-liszt; Wed, 10 May 2000 11:36:00 +1000 (EST)
+
+From johnh at psych.usyd.edu.au  Wed May 10 11:35:53 2000
+From: johnh at psych.usyd.edu.au (johnh at psych.usyd.edu.au)
+Date: Wed, 10 May 2000 11:35:53 +1000 (EST)
+Subject: Help: PDP-11 instruction classification (again!)
+Message-ID: <200005100135.LAA02228@psychwarp.psych.usyd.edu.au>
+
+
+> lars brinkhoff wrote :-
+> 
+> I'm adding PDP-11 support to GNU binutils, and I need help on
+> classifying the instruction set.
+
+I forgot to mention a critical point. Any PDP-11 runing Unix (except very
+early versions and Miniunix), and certainly from Edition 6 onwards, MUST have
+EIS. Even the Unix bootstraps used EIS. So binaries built for Unix, will run
+on a 11/34/35/40/44/45/50/53/55/60/70/73/83/84/93/94 !!
+
+Floating point is a bit more problematic. The kernel (see crevat latter) didn't
+require it, but had to save FP status and registers on context switches.
+Quite a few processors had the FPP as an option, and so there was FPP emulation
+build into the kernel (conditionally). There were versions of the C compiler
+that had code tables for the FIS, to suit the 11/35/40.
+
+I have a distant memory, that I have seen FPP instructions used for some
+integer arithmetic for speed. I cannot recall if it was in the kernel or
+C libraries. It was conditional, and may have been in the latter BSD versions,
+but I don't have the source code online.
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA75986
+	for pups-liszt; Wed, 10 May 2000 11:50:48 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Wed May 10 11:50:31 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Wed, 10 May 2000 11:50:31 +1000 (EST)
+Subject: Help: PDP-11 instruction classification
+In-Reply-To: <85og6g18xo.fsf@junk.nocrew.org> from lars brinkhoff at "May 9, 2000  9:25:55 am"
+Message-ID: <200005100150.LAA90764@henry.cs.adfa.edu.au>
+
+In article by lars brinkhoff:
+> So far, this is the classification I've come up with:
+> 
+>   BASIC: the basic instruction set.
+>   CIS: commercial instruction set (opcodes 0x7d00..0x7eff).
+>   EIS45: 11/45 extended instruction set: MUL, DIV, ASH, ASHC, SPL.
+>   EIS40: 11/40 extended instruction set: EIS45 + SOB, XOR, MARK, SXT, RTT.
+>   FIS: FADD, FSUB, FMUL, and FDIV (opcodes 0x7a00..0x7bff).
+>   FPU: LDF, STF, LDCFF', STCFF', CMPF, LDEXP, STEXP, LDCIF, STCFI, MULF,
+>        MODF, ADDF, SUBF, and DIVF (opcodes 0xf000..0xffff).
+> 
+> Would this be correct?
+> 
+> FIS and CIS isn't imlemented in Supnik's simulator, and I haven't
+> found any documentation.  Does anyone know more about those?  Why
+> is there both an FADD and an ADDF instruction?
+
+I've got some details on FADD, FSUB, FMUL, and FDIV. I could fax you the
+relevant details from the processor handbook, and/or give you source code
+from my Apout simulator.
+
+FADD is instruction 07500x, ADDF is 1720xx. They are different.
+
+I don't know enough about the CIS extensions. Can you name some of the
+opcode names, so that I can look in the handbooks I have here: 04, 05, 10, 15,
+20, 34, 35, 40, 45, 55, 60, 70.
+
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id NAA76328
+	for pups-liszt; Wed, 10 May 2000 13:00:15 +1000 (EST)
+
+From sms at moe.2bsd.com  Wed May 10 12:58:25 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Tue, 9 May 2000 19:58:25 -0700 (PDT)
+Subject: Help: PDP-11 instruction classification
+Message-ID: <200005100258.TAA18914@moe.2bsd.com>
+
+> From: Warren Toomey <wkt at cs.adfa.edu.au>
+> I don't know enough about the CIS extensions. Can you name some of the
+> opcode names, so that I can look in the handbooks I have here: 04, 05, 10, 15,
+> 20, 34, 35, 40, 45, 55, 60, 70.
+
+	The CIS was a quite expensive option that was only available (as I
+	recall) on the 11/44 and the later KDJ-11 based systems (11/83 and up 
+	where it occupied another socket on the cpu board).  
+
+	The CIS instructions are:
+
+		L2D
+		L3D
+		ADDP
+		ADDN
+		ADDNI
+		ADDPI
+		ASHN
+		ASHP
+		ASHNI
+		ASHPI
+		CMPC
+		CMPCI
+		CMPN
+		CMPP
+		CMPNI
+		CMPPI
+		CVTLN
+		CVTLP
+		CVTLNI
+		CVTLPI
+		CVTNL
+		CVTPL
+		CVTLNI
+		CVTPLI
+		CVTNP
+		CVTPN
+		CVTNPI
+		CVTPNI
+		DIVP
+		DIVPI
+		LOCC
+		LOCCI
+		MATC
+		MATCI
+		MOVC
+		MOVCI
+		MOVRC
+		MOVRCI
+		MOVTC
+		MOVTCI
+		MULP
+		MULPI
+		SCANC
+		SCANCI
+		SKPC
+		SKPCI
+		SPANC
+		SPANCI
+		SUBN
+		SUBP
+		SUBNI
+		SUBPI
+
+	Try the processor handbook that covers the 11/44+11/70  - I think
+	that's where the CIS is described.
+
+	At one time it looked like where I worked was going to get a CIS
+	board for the 11/44 to help with the COBOL runtime we'd written/ported.
+	It never came to be ;(   But I did add the opcodes to the assembler
+	and did some initial coding in preparation for getting the CIS
+	instructions.   You do a _lot_ of saving and restoring registers because
+	the CIS instructions expect many of their operands to be in R2 thru R5
+	(R0 and R1 were used for returning results).  That's a pretty high
+	percentage (~100) of the available registers ;)
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id NAA76464
+	for pups-liszt; Wed, 10 May 2000 13:30:12 +1000 (EST)
+
+From sms at moe.2bsd.com  Wed May 10 13:22:57 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Tue, 9 May 2000 20:22:57 -0700 (PDT)
+Subject: Help: PDP-11 instruction classification (again!)
+Message-ID: <200005100322.UAA19095@moe.2bsd.com>
+
+Hi --
+
+> From: johnh at psych.usyd.edu.au
+> I forgot to mention a critical point. Any PDP-11 runing Unix (except very
+> early versions and Miniunix), and certainly from Edition 6 onwards, MUST have
+> EIS. Even the Unix bootstraps used EIS. So binaries built for Unix, will run
+> on a 11/34/35/40/44/45/50/53/55/60/70/73/83/84/93/94 !!
+
+	Absolutely correct.  By the time Unix was making its way out of the
+	lab and becoming commercially available (V7 and later for certain)
+	the 11/70 was the target machine and while you could order an 11/70
+	without floating point very few (that I saw) were bought that way.
+
+	Even some of the DEC bootstraps used EIS - at least the later RSX-11D
+	ones did.   At one site we couldn't boot the 11/45 into RSX-11D, it
+	would crash part way thru the boot process.  The DEC folks would
+	bring in their diagnostic disks and they would boot just fine.  Finally
+	I insisted they run full cpu diagnostics and voila - the 'div' (or was
+	it the 'ash' - been a looong time) instruction was failing.  The 
+	diagnostic packs were RT11 based (I believe) and were meant to run
+	on all processors rather than the 45 and up.
+
+>Floating point is a bit more problematic. The kernel (see crevat latter) didn't
+>require it, but had to save FP status and registers on context switches.
+
+	The compiler also checks if any FP is done and generates references
+	to special symbols as needed.   The linker can then link in dummy
+	modules for parts of the 'printf' and int->floating conversion routines
+	and save some space that way.   A kluge but on a small machine every
+	half kb counts.
+
+>Quite a few processors had the FPP as an option, and so there was FPP emulation
+
+	The kernel (at least V7 and later) has special code in it to catch
+	and ignore the illegal instruction 'setd' if no hardware FP is present.
+	This is because the crt0 routine (which receives control from the
+	kernel when a program is run) forces double precision mode in all
+	programs.
+	
+	Some floating point simulators (V7's for example) ran in user mode 
+	and caught the SIGILL signal).   I guess running slow instead of
+	crashing is a plus but wow did that bog down the system immensely.
+	Of course one of the programs that was used a lot was a Fortran
+	one and f77 generates a *lot* of floating point code.  It wasn't just
+	the emulation of the FP instructions (that would not have been too
+	bad) but the overhead of the hundreds of signals and context switches
+	was a system killer.
+
+> build into the kernel (conditionally). There were versions of the C compiler
+> that had code tables for the FIS, to suit the 11/35/40.
+
+	2.10BSD and later have an in-kernel FP emulator - alas it doesn't
+	work.  About the most I did was get it thru the assembler.  All the
+	systems I have come with builtin FP.  At one time Tim Shoppa was
+	going to take a stab at pulling the FP board out of his 11/44 and
+	see about getting the emulator working - copious free time permitting
+	of course ;)
+
+> I have a distant memory, that I have seen FPP instructions used for some
+> integer arithmetic for speed. I cannot recall if it was in the kernel or
+
+	In the C library.   The kernel itself can't (or at least shouldn't)
+	do floating point stuff because that might happen at interrupt level
+	and trash the current user process (if any) context.
+
+	The C library code (at least in 2.11) uses FP to do the 32 bit
+	divide and multiply.  It's a lot faster (and much less code) to
+	convert long to double, do the operations and then store&convert
+	double back to int or long.   There might be one or two other cases
+	but that was the primary use.
+
+	And thereby hangs a bit of a tale.  The KDJ-11{A,B} handle faults
+	during a stack push by a FP instruction differently than the 11/44 or
+	11/70.   If you have access to the 2.11BSD bug archive (I know it's
+	on 'ns.to.gd-es.com' and 'moe.2bsd.com' - not sure of who else is
+	mirroring it) look for update #150 (Subject is "stack expansion bug
+	on KDJ-11 cpus".
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id NAA76504
+	for pups-liszt; Wed, 10 May 2000 13:45:07 +1000 (EST)
+
+From sms at moe.2bsd.com  Wed May 10 13:32:53 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Tue, 9 May 2000 20:32:53 -0700 (PDT)
+Subject: Help: PDP-11 instruction classification
+Message-ID: <200005100332.UAA19137@moe.2bsd.com>
+
+Hi -
+
+> From: lars brinkhoff <lars at nocrew.org>
+> Does this mean that an unexpanded 11/40 has no EIS instructions,
+
+	Quite correct. 
+
+> but with the EIS option, it has more instructions than an 11/45?
+
+	Adding the EIS brings an 11/40 to the same level as an 11/45 without
+	floating point.
+
+> GCC seems to think that all PDP-11 models has ASH, but this seems
+> wrong.  It's only in EIS, right?
+
+	Yes - that's part of the EIS.  Standard on the 11/45, 11/70 (and the
+	later KDJ-11 systems such as the 11/53, 73, 83,etc)
+
+>   CIS: commercial instruction set (opcodes 0x7d00..0x7eff).
+
+	Not a popular option at all.  At the time DEC was trying to make the
+	11 more of a COBOL machine but the CIS option was too little, too late
+	and expensive (plus it wouldn't fit as I recall on a 11/70 - just the
+	11/44 and newer).
+
+	...
+>        MODF, ADDF, SUBF, and DIVF (opcodes 0xf000..0xffff).
+> 
+> Would this be correct?
+
+	Looks right to me.
+
+> FIS and CIS isn't imlemented in Supnik's simulator, and I haven't
+> found any documentation.  Does anyone know more about those?  Why
+> is there both an FADD and an ADDF instruction?
+	
+	Two different machines.  The FADD was part of the FIS option for the 
+	11/40 only (I don't recall ever hearing of someone adding the FIS
+	to a 11/45 or 70).  The 11/45, 70 and later all had the FPU 
+	as an option or standard (the KDJ-11{A,B} had the instructions standard
+	but you could buy (~$600 at the time) an accelerator chip to speed
+	them up).   I don't think there were any models after the 11/70
+	that used the FIS.
+
+	There was also the CSM (Call Supervisor Mode) instruction which was
+	on the 11/44 only (or did it make it into the later KDJ-11 line as
+	well - I forget).
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id QAA77102
+	for pups-liszt; Wed, 10 May 2000 16:56:39 +1000 (EST)
+
+From bqt at Update.UU.SE  Wed May 10 16:56:04 2000
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Wed, 10 May 2000 08:56:04 +0200 (MET DST)
+Subject: Help: PDP-11 instruction classification
+In-Reply-To: <200005100150.LAA90764@henry.cs.adfa.edu.au>
+Message-ID: <Pine.VUL.3.93.1000510085424.22474D-100000@Zeke.Update.UU.SE>
+
+On Wed, 10 May 2000, Warren Toomey wrote:
+
+> I don't know enough about the CIS extensions. Can you name some of the
+> opcode names, so that I can look in the handbooks I have here: 04, 05, 10, 15,
+> 20, 34, 35, 40, 45, 55, 60, 70.
+
+You don't have a handbook for any machine that could have CIS then Warren.
+It was only available for the 11/44 and F-11 based machines. (11/23 11/24)
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id RAA77158
+	for pups-liszt; Wed, 10 May 2000 17:02:53 +1000 (EST)
+
+From lars at nocrew.org  Wed May 10 17:02:40 2000
+From: lars at nocrew.org (lars brinkhoff)
+Date: 10 May 2000 09:02:40 +0200
+Subject: Help: PDP-11 instruction classification
+In-Reply-To: "Steven M. Schultz"'s message of "Tue, 9 May 2000 20:32:53 -0700 (PDT)"
+References: <200005100332.UAA19137@moe.2bsd.com>
+Message-ID: <85g0rqzy3z.fsf@junk.nocrew.org>
+
+"Steven M. Schultz" <sms at moe.2bsd.com> writes:
+>       There was also the CSM (Call Supervisor Mode) instruction which was
+>       on the 11/44 only (or did it make it into the later KDJ-11 line as
+>       well - I forget).
+
+What bit pattern does that instruction have?
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id RAA77208
+	for pups-liszt; Wed, 10 May 2000 17:11:51 +1000 (EST)
+
+From bqt at Update.UU.SE  Wed May 10 17:11:24 2000
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Wed, 10 May 2000 09:11:24 +0200 (MET DST)
+Subject: Help: PDP-11 instruction classification
+In-Reply-To: <200005100332.UAA19137@moe.2bsd.com>
+Message-ID: <Pine.VUL.3.93.1000510090352.22474E-100000@Zeke.Update.UU.SE>
+
+On Tue, 9 May 2000, Steven M. Schultz wrote:
+
+Hi, all.
+
+> > From: lars brinkhoff <lars at nocrew.org>
+...
+> >   CIS: commercial instruction set (opcodes 0x7d00..0x7eff).
+> 
+> 	Not a popular option at all.  At the time DEC was trying to make the
+> 	11 more of a COBOL machine but the CIS option was too little, too late
+> 	and expensive (plus it wouldn't fit as I recall on a 11/70 - just the
+> 	11/44 and newer).
+
+Actually, not even those. It's the 11/44 and the KDF-11 based systems
+only, which means 11/23 and 11/24.
+
+...
+> > FIS and CIS isn't imlemented in Supnik's simulator, and I haven't
+> > found any documentation.  Does anyone know more about those?  Why
+> > is there both an FADD and an ADDF instruction?
+> 	
+> 	Two different machines.  The FADD was part of the FIS option for the 
+> 	11/40 only (I don't recall ever hearing of someone adding the FIS
+> 	to a 11/45 or 70).  The 11/45, 70 and later all had the FPU 
+> 	as an option or standard (the KDJ-11{A,B} had the instructions standard
+> 	but you could buy (~$600 at the time) an accelerator chip to speed
+> 	them up).   I don't think there were any models after the 11/70
+> 	that used the FIS.
+
+FIS is only for 11/35, 11/40 and the LSI-11. And it's a real brain-damaged
+thing too. Lucky us FPU came along.
+
+> 	There was also the CSM (Call Supervisor Mode) instruction which was
+> 	on the 11/44 only (or did it make it into the later KDJ-11 line as
+> 	well - I forget).
+
+Yes, CSM is in the J-11. There is also TSTSET in J11, but I wonder if
+anyone uses it.
+
+Speaking of CSM, by the way. Slighty off-topic perhaps, but in
+RSX-11M-PLUS they used to have a rather complex way of getting to
+supervisor mode in user programs, since the 11/70 didn't have CSM. Then
+came the J-11, and DEC changed things around on systems having CSM to use
+this instruction instead. It turned out that this improved code quite a
+lot, so they implemented the CSM instruction by emulation on the 11/70 as
+well.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id RAA77339
+	for pups-liszt; Wed, 10 May 2000 17:41:47 +1000 (EST)
+
+From lars at nocrew.org  Wed May 10 17:41:31 2000
+From: lars at nocrew.org (lars brinkhoff)
+Date: 10 May 2000 09:41:31 +0200
+Subject: Help: PDP-11 instruction classification
+In-Reply-To: Johnny Billquist's message of "Wed, 10 May 2000 09:11:24 +0200 (MET DST)"
+References: <Pine.VUL.3.93.1000510090352.22474E-100000@Zeke.Update.UU.SE>
+Message-ID: <85bt2ezwb8.fsf@junk.nocrew.org>
+
+Johnny Billquist <bqt at Update.UU.SE> writes:
+> > 	There was also the CSM (Call Supervisor Mode) instruction which was
+> > 	on the 11/44 only (or did it make it into the later KDJ-11 line as
+> > 	well - I forget).
+> 
+> Yes, CSM is in the J-11. There is also TSTSET in J11, but I wonder if
+> anyone uses it.
+
+Ok, so CSM is found in 11/44 and J11 machines?
+
+And TSTSET is found only in J11?
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id RAA77372
+	for pups-liszt; Wed, 10 May 2000 17:47:13 +1000 (EST)
+
+From bqt at Update.UU.SE  Wed May 10 17:46:50 2000
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Wed, 10 May 2000 09:46:50 +0200 (MET DST)
+Subject: Help: PDP-11 instruction classification
+In-Reply-To: <85bt2ezwb8.fsf@junk.nocrew.org>
+Message-ID: <Pine.VUL.3.93.1000510094549.22474H-100000@Zeke.Update.UU.SE>
+
+On 10 May 2000, lars brinkhoff wrote:
+
+> Johnny Billquist <bqt at Update.UU.SE> writes:
+> > > 	There was also the CSM (Call Supervisor Mode) instruction which was
+> > > 	on the 11/44 only (or did it make it into the later KDJ-11 line as
+> > > 	well - I forget).
+> > 
+> > Yes, CSM is in the J-11. There is also TSTSET in J11, but I wonder if
+> > anyone uses it.
+> 
+> Ok, so CSM is found in 11/44 and J11 machines?
+
+Yes.
+
+> And TSTSET is found only in J11?
+
+Yes.
+I think that the J11 had one or two other new instructions as well, but
+I'll have to look it up at home, unless someone beats me to it.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id SAA77434
+	for pups-liszt; Wed, 10 May 2000 18:02:00 +1000 (EST)
+
+From lars at nocrew.org  Wed May 10 18:01:44 2000
+From: lars at nocrew.org (lars brinkhoff)
+Date: 10 May 2000 10:01:44 +0200
+Subject: Help: PDP-11 instruction classification
+In-Reply-To: Johnny Billquist's message of "Wed, 10 May 2000 09:46:50 +0200 (MET DST)"
+References: <Pine.VUL.3.93.1000510094549.22474H-100000@Zeke.Update.UU.SE>
+Message-ID: <857ld2zvdj.fsf@junk.nocrew.org>
+
+Johnny Billquist <bqt at Update.UU.SE> writes:
+> > And TSTSET is found only in J11?
+> Yes.
+> I think that the J11 had one or two other new instructions as well, but
+> I'll have to look it up at home, unless someone beats me to it.
+
+WRTLCK perhaps?
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id UAA77937
+	for pups-liszt; Wed, 10 May 2000 20:55:53 +1000 (EST)
+
+From bqt at Update.UU.SE  Wed May 10 20:55:32 2000
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Wed, 10 May 2000 12:55:32 +0200 (MET DST)
+Subject: Help: PDP-11 instruction classification
+In-Reply-To: <857ld2zvdj.fsf@junk.nocrew.org>
+Message-ID: <Pine.VUL.3.93.1000510125423.22474I-100000@Zeke.Update.UU.SE>
+
+On 10 May 2000, lars brinkhoff wrote:
+
+> Johnny Billquist <bqt at Update.UU.SE> writes:
+> > > And TSTSET is found only in J11?
+> > Yes.
+> > I think that the J11 had one or two other new instructions as well, but
+> > I'll have to look it up at home, unless someone beats me to it.
+> 
+> WRTLCK perhaps?
+
+Yup. That sounds familiar. The J11 have several design features aimed at
+multi-processor systems. None were produced, however.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id XAA78420
+	for pups-liszt; Wed, 10 May 2000 23:02:28 +1000 (EST)
+
+From lars at nocrew.org  Wed May 10 23:02:04 2000
+From: lars at nocrew.org (lars brinkhoff)
+Date: 10 May 2000 15:02:04 +0200
+Subject: Help: PDP-11 instruction classification (again!)
+In-Reply-To: "Steven M. Schultz"'s message of "Tue, 9 May 2000 20:22:57 -0700 (PDT)"
+Message-ID: <85snvqy2wj.fsf@junk.nocrew.org>
+
+Ok, I've tried to collect all information and make a handy table.
+I've also looked quit a bit at the processor feature table at
+http://www.pdp11.org/mirrors/www.psych.usyd.edu.au/pdp-11/table.html
+
+Could you please check that this table is correct?  In particular,
+some features may be optional instead of standard (yes) or missing
+(no), or vice versa.
+
+Some models are listed as (see XXX), where XXX is a CPU model used in
+that machine.  Are there more opportunities for doing that?  It would
+be nice to have two tables: "Machine model 11/NN used CPU models X11 or
+Y11."  "CPU model X11 had features A, B , and C."  Or something like
+that.
+
+Model	EIS	EIS40	CSM	TSTSET,	FPP	CIS	FIS
+				WRTLCK
+
+03	(see LSI11) (LSI-11 or LSI-11/2)
+04	no	no	no	no	no	no	no
+05	no	no	no	no	no	no	no
+10	no	no	no	no	no	no	no
+15	no	no	no	no	no	no	no
+20	no	no	no	no	no	no	no
+21	(see T11)
+23	(see F11)
+24	(see F11)
+34	yes	yes	no	no	yes	no	no
+35	opt	yes	no	no	no?	no	opt
+40	opt	yes	no	no	no	no?	opt
+44	yes	yes	yes	no	opt	opt     no?
+45      (see KB11)
+50      (see KB11)
+53	(see J11) (KDJ-11D?)
+55      (see KB11+) (KB-11D)
+60	yes	yes	no	no	yes[2]	no	no
+70	(see KB11+) (KB-11B or KB-11C)
+73	(see J11) (KDJ-11A or KDJ-11B)
+83	(see J11) (KDJ-11B?C?)
+84	(see J11) (KDJ-11B?C?)
+93	(see J11) (KDJ-11D?)
+94	(see J11) (KDJ-11D?)
+
+KB11	yes	yes	no	no	opt	no	no
+KB11+   yes	yes	no	no	yes[1]	no	no
+J11	yes	yes	yes	yes	yes	opt	no
+LSI11	opt	yes	no	no	no	no	opt
+T11	no	no	no	no	no	no	no
+F11	yes	yes	no	no	opt	opt	no
+
+[1] = really optional, but most shipped with fpp
+[2] = microcoded fpp standard, accelerated hardware fpp optional
+
+EIS = RTT, SPL, MARK, SXT, MUL, DIV, ASH, ASHC, XOR, SOB
+EIS40 = RTT, MARK, SXT, XOR, SOB
+FPP = CFCC, SETF, SETI, SETD, SETL, LDFPS, STFPS, STST, CLRF,
+      TSTF, ABSF, NEGF, MULF, MODF, ADDF, LDF, SUBF, CMPF, STF,
+      DIVF, STEXP, STCFI, STCFF', LDEXP, LDCIF, LDCFF'
+CIS = L2D, L3D, ADDP, ADDN, ADDNI, ADDPI, ASHN, ASHP, ASHNI,
+      ASHPI, CMPC, CMPCI, CMPN, CMPP, CMPNI, CMPPI, CVTLN,
+      CVTLP, CVT, CVTLNI, CVTLPI, CVTNL, CVTPL, CVLNI, CVTPLI,
+      CVTNP, CVTPN, CVTNPI, CVTPNI, DIVP, DIVPI, LOCC, LOCCI,
+      MATC, MATCI, MOVC, MOVCI, MOVRC, MOVRCI, MOVTC, MOVTCI,
+      MULP, MULPI, SCANC, SCANCI, SKPC, SKPCI, SPANC, SPANCI,
+      SUBN, SUBP, SUBNI, SUBPI
+FIS = FADD, FDIV, FMUL, FSUB
+
+KB11 = KB-11
+KB11+ = KB-11B, KB-11C, or KB-11D
+J11 = KDJ-11A or KDJ-11B
+LSI11 = LSI-11 or LSI-11/2
+T11 = ?
+F11 = ?
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id AAA78761
+	for pups-liszt; Thu, 11 May 2000 00:16:18 +1000 (EST)
+
+From bqt at Update.UU.SE  Thu May 11 00:15:55 2000
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Wed, 10 May 2000 16:15:55 +0200 (MET DST)
+Subject: Help: PDP-11 instruction classification (again!)
+In-Reply-To: <85snvqy2wj.fsf@junk.nocrew.org>
+Message-ID: <Pine.VUL.3.93.1000510154632.22474K-100000@Zeke.Update.UU.SE>
+
+On 10 May 2000, lars brinkhoff wrote:
+
+[table deleted...]
+
+First I think it's wrong of you to call the limited EIS stuff implemented
+by default on the 11/40 "EIS40". It's just that parts of the EIS was
+always available, with or without the optional EIS.
+
+Second, the FPU implemented in the 11/60 was a bit special, and not
+compatible with the normal FPU, which was an option. I'm not aware of
+anything that used the 11/60 internal FPU stuff.
+Specifically, it used the normal processor registers for operations, and I
+don't remember exactly if the data format was compatible, but it didn't
+have double precision at all. I can probably dig up specific details if
+you are interested. I think I have a processor handbook for the 11/60
+somewhere.
+
+About processor names:
+
+KA11 was the 11/15 and 11/20.
+KB11-A was the 11/45, 11/50.
+KB11-B was the 11/70.
+KB11-C was the 11/70.
+KB11-D was the 11/55.
+KB11-Cm and KB-11E was the never produced 11/74.
+KD11-A was the 11/35 and 11/40.
+KD11-B was the 11/05 and 11/10.
+KD11-D was the 11/04.
+KD11-E was the 11/34.
+KD11-EA was the 11/34a.
+KD11-[FHQ] was the 11/03.
+KD11-HA was the LSI-11/2.
+KD11-K was the 11/60.
+KD11-Z was the 11/44.
+
+KDF11 is F-11 based.
+KDJ11 is J-11 based.
+
+All as far as I can glean from various sources.
+KE11 is not a processor, but instead different processor options, such as
+EIS, FIS, EAE and such.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id BAA79057
+	for pups-liszt; Thu, 11 May 2000 01:39:06 +1000 (EST)
+
+From pat at transarc.ibm.com  Thu May 11 01:37:51 2000
+From: pat at transarc.ibm.com (Pat Barron)
+Date: Wed, 10 May 2000 11:37:51 -0400 (EDT)
+Subject: Help: PDP-11 instruction classification (again!)
+In-Reply-To: <200005100135.LAA02228@psychwarp.psych.usyd.edu.au>
+Message-ID: <Pine.GSO.3.96.1000510111921.6129B-100000@smithfield.transarc.ibm.com>
+
+On Wed, 10 May 2000 johnh at psych.usyd.edu.au wrote:
+> 
+> Floating point is a bit more problematic. The kernel (see crevat latter) didn't
+> require it, but had to save FP status and registers on context switches.
+> Quite a few processors had the FPP as an option, and so there was FPP emulation
+> build into the kernel (conditionally). There were versions of the C compiler
+> that had code tables for the FIS, to suit the 11/35/40.
+> 
+
+This discussion brings back memories ... I once found a bug in the kernel
+floating-point stuff on V7m on an 11/40 (without FIS).  Turned out that,
+if you took a zero-length file, chmod'ed it to be executable, and then
+tried to run it, the kernel would take a path through the code that it
+didn't normally take, in which it tried to save the *real* FP registers -
+which were not there, and attempting to touch the missing registers would
+panic the machine.
+
+I found this while I was a lab assistant for a computer architecture
+course, taking care of this 11/40 that the department had just aquired
+(another department was about to discard it, so we picked it up ...), and
+which was being used by students learning assembly language programming.
+As you might imagine, these folks generated zero-length a.out files *all
+the time* (since that's what 'as' would sometimes output if your source
+code had errors in it), and sometimes they'd try to execute them.
+Therefore, the machine was crashing a couple of times a day until I found
+and fixed the bug ...
+
+--Pat.
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id CAA79425
+	for pups-liszt; Thu, 11 May 2000 02:30:10 +1000 (EST)
+
+From sms at moe.2bsd.com  Thu May 11 02:20:58 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Wed, 10 May 2000 09:20:58 -0700 (PDT)
+Subject: Help: PDP-11 instruction classification
+Message-ID: <200005101620.JAA28584@moe.2bsd.com>
+
+From: lars brinkhoff <lars at nocrew.org>
+>>       There was also the CSM (Call Supervisor Mode) instruction which was
+
+> What bit pattern does that instruction have?
+
+	070DD
+
+	It's a single operand instruction.
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id DAA79549
+	for pups-liszt; Thu, 11 May 2000 03:06:26 +1000 (EST)
+
+From SHOPPA at trailing-edge.com  Thu May 11 03:06:12 2000
+From: SHOPPA at trailing-edge.com (Tim Shoppa)
+Date: Wed, 10 May 2000 13:06:12 -0400
+Subject: Help: PDP-11 instruction classification (again!)
+Message-ID: <000510130612.202009f2@trailing-edge.com>
+
+>Some models are listed as (see XXX), where XXX is a CPU model used in
+>that machine.  Are there more opportunities for doing that?  It would
+>be nice to have two tables: "Machine model 11/NN used CPU models X11 or
+>Y11."  "CPU model X11 had features A, B , and C."  Or something like
+>that.
+
+It's complicated by the fact that often the same CPU module was used in
+differently DEC-labeled systems.  For example, a late-rev KDJ11B with
+PMI memory in a Q-bus is an 11/83; the exact same CPU board with non-PMI
+memory in a Q-bus is an 11/73.  And the exact same CPU board in a very
+different backplane is an 11/84.
+
+And an 11/73 can also have a KDJ11A in it, a very different module.
+See Micronote #39.
+
+At one point I began writing up a "KDJ11-x" FAQ, but never got it
+finished.  There are many variations between different revs of the
+J11 CPU chip and the boards, especially with respect to whether
+FPJ11's work properly or not.  Many (but not all) of the KDJ11 differences
+are well described in Micronote #39, _KDJ11-A and KDJ11-B Differences_.
+
+(Side hint: everyone should have a copy of the Micronotes.  If you don't
+have a printed set, you can read them online at
+
+  http://metalab.unc.edu/pub/academic/computer-science/history/pdp-11/
+
+by clicking on "Micronotes").
+
+>53     (see J11) (KDJ-11D?)
+
+Yes, the 11/53 is a KDJ11-D.
+
+>93     (see J11) (KDJ-11D?)
+>94     (see J11) (KDJ-11D?)
+
+93's and 94's are KDJ11-E's.
+
+>J11 = KDJ-11A or KDJ-11B
+
+And lots of other systems.  Some DEC peripherals (most noticably the
+early HSC storage controllers for VAXclusters) have J11's, several Xerox
+laserprinters used J11's, DEC PRO380's used J11's.  Many third-party
+CPU boards use J11's, it's not unusual to see them scrounging the used
+market for HSC's to strip the J11 from, as the HSC's generally had late-rev
+J11's.  (And Harris hasn't made the J11 chips for many years now.)
+
+>T11 = ?
+
+Never sold as a "PDP-11" system, though the chip does implement the
+basic PDP-11 instruction set (and some of the add-ons.)  It was sold
+by DEC in the KXT11-CA single board computer, which had a T11, 32K RAM,
+up to 32K of EPROM, 3 serial lines, some parallel I/O, and a Q-bus
+interface.  For more information see
+
+  Micronote #16, _KXT11-CA Development Tools_
+
+  Micronote #18, _KXT11-CA DMA Programming_
+
+  Micronote #32, _KXT11-CA Parallel I/O_
+
+  Micronote #34, _Programming KXT-11C Multi SLU_
+
+You can find T11 chips in several Q-bus and Unibus peripherals, most notably
+the RQDX1, 2, and 3 (the chip labeled "27-17311-01").
+
+>F11 = ?
+
+aka "Fonz-11", the CPU chipset used in 11/23's, 11/24's, the lower-end
+DEC PRO's, etc.
+
+The CPU chipset used in the LSI-11/02 and /03 is a Western Digital chipset,
+and the same set was used (with different microcode) by other CPU makers.
+In particular, the Alpha Micro two-board S-100 set.
+
+-- 
+ Tim Shoppa                        Email: shoppa at trailing-edge.com
+ Trailing Edge Technology          WWW:   http://www.trailing-edge.com/
+ 7328 Bradley Blvd		   Voice: 301-767-5917
+ Bethesda, MD, USA 20817           Fax:   301-767-5927
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id EAA79749
+	for pups-liszt; Thu, 11 May 2000 04:04:13 +1000 (EST)
+
+From allisonp at world.std.com  Thu May 11 04:03:35 2000
+From: allisonp at world.std.com (allisonp at world.std.com)
+Date: Wed, 10 May 2000 14:03:35 -0400 (EDT)
+Subject: Help: PDP-11 instruction classification (again!)
+In-Reply-To: <000510130612.202009f2@trailing-edge.com>
+Message-ID: <Pine.SGI.3.95.1000510135452.6336D-100000@world.std.com>
+
+> 
+> >53     (see J11) (KDJ-11D?)
+> 
+> Yes, the 11/53 is a KDJ11-D.
+
+Not KDF-11B????
+
+> And lots of other systems.  Some DEC peripherals (most noticably the
+> early HSC storage controllers for VAXclusters) have J11's, several Xerox
+
+HSC was F11, J11 or T11???  I thought T11 or f11 in the early models.
+
+> laserprinters used J11's, DEC PRO380's used J11's.  Many third-party
+> CPU boards use J11's, it's not unusual to see them scrounging the used
+> market for HSC's to strip the J11 from, as the HSC's generally had late-rev
+> J11's.  (And Harris hasn't made the J11 chips for many years now.)
+
+> >T11 = ?
+> 
+> Never sold as a "PDP-11" system, though the chip does implement the
+> basic PDP-11 instruction set (and some of the add-ons.)  It was sold
+> by DEC in the KXT11-CA single board computer, which had a T11, 32K RAM,
+> up to 32K of EPROM, 3 serial lines, some parallel I/O, and a Q-bus
+> interface.  For more information see
+> 
+
+You forget the falcon card KXT-11A, That with two MXT11 memory IO combo
+have you 32kw ram, 4 serial, boot and some parallel that would run rt-11.
+
+From SHOPPA at trailing-edge.com  Thu May 11 04:16:15 2000
+From: SHOPPA at trailing-edge.com (Tim Shoppa)
+Date: Wed, 10 May 2000 14:16:15 -0400
+Subject: Help: PDP-11 instruction classification (again!)
+Message-ID: <000510141615.202009f2@trailing-edge.com>
+
+>> Yes, the 11/53 is a KDJ11-D.
+
+>Not KDF-11B????
+
+The KDF11-B (why are people putting the hyphens in all the wrong places?) is
+the quad-height 11/23 with two SLU's and boot ROM.
+
+Tim.
+
+
+From johnh at psych.usyd.edu.au  Thu May 11 09:23:18 2000
+From: johnh at psych.usyd.edu.au (johnh at psych.usyd.edu.au)
+Date: Thu, 11 May 2000 09:23:18 +1000 (EST)
+Subject: PDP-11 Processor features/options (was HELP PDP-11 instruction)
+Message-ID: <200005102323.JAA29607@psychwarp.psych.usyd.edu.au>
+
+
+I have updated my web page, fixing a few typos, and made more distinctions
+between various processors, along with a table of 'obscure instructions'.
+
+	http://www.psych.usyd.edu.au/pdp-11/table.html
+
+Does anyone out there know the internal implementation details of the J11
+chip. I assume it's micro sequenced, but what is the micro word length?
+
+
+PS
+
+I have found the 'PDP-11 Family Differences Table' (in the PDP-11 Architecture
+Handbook and others) to be wrong in several places.
+
+						Regards John
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id PAA82835
+	for pups-liszt; Thu, 11 May 2000 15:56:31 +1000 (EST)
+
+From bqt at Update.UU.SE  Thu May 11 15:56:02 2000
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Thu, 11 May 2000 07:56:02 +0200 (MET DST)
+Subject: Help: PDP-11 instruction classification (again!)
+In-Reply-To: <000510130612.202009f2@trailing-edge.com>
+Message-ID: <Pine.VUL.3.93.1000511075207.6110D-100000@Zeke.Update.UU.SE>
+
+On Wed, 10 May 2000, Tim Shoppa wrote:
+
+> >J11 = KDJ-11A or KDJ-11B
+> 
+> And lots of other systems.  Some DEC peripherals (most noticably the
+> early HSC storage controllers for VAXclusters) have J11's, several Xerox
+> laserprinters used J11's, DEC PRO380's used J11's.  Many third-party
+> CPU boards use J11's, it's not unusual to see them scrounging the used
+> market for HSC's to strip the J11 from, as the HSC's generally had late-rev
+> J11's.  (And Harris hasn't made the J11 chips for many years now.)
+
+Actually, the first HSCs (HSC-50 and HSC-70) have an F11. Hmmm, a bit
+unsure about the HSC-70 come to think of it. The HSC-50 is definitely F-11
+anyway, and that's the oldest one. Boots of DECtape II. Slow as hell
+because of it. :-)
+
+> You can find T11 chips in several Q-bus and Unibus peripherals, most notably
+> the RQDX1, 2, and 3 (the chip labeled "27-17311-01").
+
+What cpu is in the DEUNA and DEQNA? I think those also have a T11.
+
+> The CPU chipset used in the LSI-11/02 and /03 is a Western Digital chipset,
+> and the same set was used (with different microcode) by other CPU makers.
+> In particular, the Alpha Micro two-board S-100 set.
+
+And I think DEC even supported the possibility of writing your own
+microcode for this one.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id QAA82993
+	for pups-liszt; Thu, 11 May 2000 16:21:04 +1000 (EST)
+
+From lars at nocrew.org  Thu May 11 16:20:51 2000
+From: lars at nocrew.org (lars brinkhoff)
+Date: 11 May 2000 08:20:51 +0200
+Subject: Obscure opcodes
+In-Reply-To: johnh@psych.usyd.edu.au's message of "Thu, 11 May 2000 09:23:18 +1000 (EST)"
+Message-ID: <85vh0lwqt8.fsf@junk.nocrew.org>
+
+Does anyone know that bit patterns these instructions use:
+        commercial instruction set,
+        FADD, FDIV, FMUL, FDIV, (and any other FIS instructions if any),
+        LDUB, MED, XFC
+?
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id WAA84068
+	for pups-liszt; Thu, 11 May 2000 22:04:37 +1000 (EST)
+
+From rivie at teraglobal.com  Thu May 11 22:03:35 2000
+From: rivie at teraglobal.com (Roger Ivie)
+Date: Thu, 11 May 2000 06:03:35 -0600
+Subject: Obscure opcodes
+In-Reply-To: <85vh0lwqt8.fsf@junk.nocrew.org>
+References: <85vh0lwqt8.fsf@junk.nocrew.org>
+Message-ID: <v04210103b5404dc720f4@[10.10.50.26]>
+
+>Does anyone know that bit patterns these instructions use:
+>        commercial instruction set,
+
+According to the PDP11/04/34a/44/60/70 processor handbook
+(1979-1980),
+
+addn 076050
+addp 076070
+addni 076150
+addpi 076170
+
+ashn 076056
+ashp 076076
+ashni 076156
+ashpi 076176
+
+cmpc 076044
+cmpci 076144
+
+cmpn 076052
+cmpp 076072
+cmpni 076152
+cmppi 076172
+
+cvtln 076057
+cvtlp 076077
+cvtlni 076157
+cvtlpi 076177
+
+cvtnl 076053
+cvtpl 076073
+cvtnli 076153
+cvtpli 076173
+
+cvtnp 076055
+cvtpn 076054
+cvtnpi 076155
+cvtpni 076154
+
+divp 076075
+divpi 076175
+
+locc 076040
+locci 076140
+
+l2dr 07602r
+
+l3dr 07606r
+
+matc 076045
+matci 076145
+
+movc 076030
+movci 076130
+
+movrc 076031
+movrci 076131
+
+movtc 076032
+movtci 076132
+
+mulp 076074
+mulpi 076174
+
+scanc 076042
+scanci 076142
+
+skpc 076041
+skpci 076141
+
+spanc 076043
+spanci 076143
+
+subn 076051
+subp 076071
+subni 076151
+subpi 076171
+
+>        FADD, FDIV, FMUL, FDIV, (and any other FIS instructions if any),
+
+According to Microcomputer Handbook (1977-1978):
+
+fadd 07500r
+fsub 07501r
+fmul 07502r
+fdiv 07503r
+
+and those are the only instructions listed under FIS.
+
+>        LDUB, MED, XFC
+>?
+
+Back to 11/04/34a/44/60/70:
+
+med 076600
+ldub 170003
+xfc 0767xy
+  - x = "used for initial instruction group determination",
+  - y = "further instruction determination"
+     (this is a user-defined instruction via writable microcode in the 11/60).
+
+-- 
+Roger Ivie
+TeraGlobal Communications Corporation
+1750 North Research Park Way
+North Logan, UT 84341
+Phone: (435)787-0555
+Fax: (435)787-0516
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id WAA84207
+	for pups-liszt; Thu, 11 May 2000 22:38:09 +1000 (EST)
+
+From SHOPPA at trailing-edge.com  Thu May 11 22:37:50 2000
+From: SHOPPA at trailing-edge.com (Tim Shoppa)
+Date: Thu, 11 May 2000 8:37:50 -0400
+Subject: Obscure opcodes
+Message-ID: <000511083750.20203768@trailing-edge.com>
+
+>>        LDUB, MED, XFC
+>>?
+
+>Back to 11/04/34a/44/60/70:
+>
+>med 076600
+
+The MED instruction is used in RT-11 to determine if the machine is an
+11/60.  It's probably also used in the 11/60-specific XXDP diagnostics.
+I don't think that it's used in any of the -11 Unices.
+
+Note that MED is really a two-word-long instruction.
+
+>ldub 170003
+
+My 11/60 Processor Handbook also lists MNS (170004), MNP (170005), and
+MAS (170006).  These are "11/60 FP11-E Maintenance Instructions" and
+"This set together with the LDUB instruction should be used for diagnostic
+purposes only" according to the 11/60 book.
+
+Note that no version of DEC MACRO-11 recognizes MNS, MNP, MAS, or LDUB.
+
+The MED instruction is recognized in MACRO-11 only as MED6X.  The "6X"
+jibes with the rumored existence of experimental variants on the 11/60
+processor, one of which is the multi-processor 11/64.
+
+-- 
+ Tim Shoppa                        Email: shoppa at trailing-edge.com
+ Trailing Edge Technology          WWW:   http://www.trailing-edge.com/
+ 7328 Bradley Blvd		   Voice: 301-767-5917
+ Bethesda, MD, USA 20817           Fax:   301-767-5927
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id WAA84206
+	for pups-liszt; Thu, 11 May 2000 22:38:07 +1000 (EST)
+
+From lars at nocrew.org  Thu May 11 22:37:48 2000
+From: lars at nocrew.org (lars brinkhoff)
+Date: 11 May 2000 14:37:48 +0200
+Subject: Obscure opcodes
+In-Reply-To: Roger Ivie's message of "Thu, 11 May 2000 06:03:35 -0600"
+References: <85vh0lwqt8.fsf@junk.nocrew.org> <v04210103b5404dc720f4@[10.10.50.26]>
+Message-ID: <857ld1w9cz.fsf@junk.nocrew.org>
+
+Thank you all, now I have all the opcode information I need!
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id XAA84380
+	for pups-liszt; Thu, 11 May 2000 23:26:07 +1000 (EST)
+
+From allisonp at world.std.com  Thu May 11 23:25:45 2000
+From: allisonp at world.std.com (allisonp at world.std.com)
+Date: Thu, 11 May 2000 09:25:45 -0400 (EDT)
+Subject: Help: PDP-11 instruction classification (again!)
+In-Reply-To: <Pine.VUL.3.93.1000511075207.6110D-100000@Zeke.Update.UU.SE>
+Message-ID: <Pine.SGI.3.95.1000511092245.25873A-100000@world.std.com>
+
+> > You can find T11 chips in several Q-bus and Unibus peripherals, most notably
+> > the RQDX1, 2, and 3 (the chip labeled "27-17311-01").
+> 
+> What cpu is in the DEUNA and DEQNA? I think those also have a T11.
+
+I thought DEUNA was 68k and DEQNA is definatly state machines and random
+logic no t11.  DELQA is 68k.
+
+> > and the same set was used (with different microcode) by other CPU makers.
+> > In particular, the Alpha Micro two-board S-100 set.
+> 
+> And I think DEC even supported the possibility of writing your own
+> microcode for this one.
+
+Yes there was a WCS that filled the FIS microm spot (and a full board
+under it).
+
+Allison
+
+
+
+
+From wkt at cs.adfa.edu.au  Fri May 12 08:30:56 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Fri, 12 May 2000 08:30:56 +1000 (EST)
+Subject: Also: PUPS mailing list digest
+Message-ID: <200005112230.IAA03356@henry.cs.adfa.edu.au>
+
+Looks like we've got a spurt of email in the PUPS mailing list. For those
+unaccustomed to this, you might prefer to switch over to the digest version
+which comes out at most twice a week. To do this, send mail to
+majordomo at minnie.cs.adfa.edu.au with these lines in the email body:
+
+	unsubscribe pups
+	subscribe pups-digest
+
+Cheers,
+	Warren
+
+
+From wkt at cs.adfa.edu.au  Sat May 13 14:53:14 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Sat, 13 May 2000 14:53:14 +1000 (EST)
+Subject: Some changes forecast for the PUPS Archive & web site
+Message-ID: <200005130453.OAA15226@henry.cs.adfa.edu.au>
+
+[ apologies to those who get this twice ]
+
+Hi all, I just thought I'd let you know that there will be some changes
+with the PUPS Archive and the web site coming along soon.
+
+As you know, SCO has dropped their Ancient UNIX license to $0.00. In a
+matter of days, they will provide a web form on their web site so that
+you can agree to the license. After you have done this, you will be
+able to obtain 5th-7th Edition UNIX, 32V, Mini UNIX and PDP-11 System III
+from their web site.
+
+I am hoping that you will also be able to click through to a CGI script
+on the PUPS web site, where you can put in your full name and e-mail
+address, and you will be granted access to the larger PUPS Archive. I
+need to collect name/e-mail addresses, so that later if you ask for a copy
+of the Archive on CD or other media, we can verify that you have agreed
+to the new SCO license.
+
+I am modifying the PUPS Archive so that it will be accessible via both
+FTP and HTTP. The access mechanism will also allow mirrors of the Archive
+to be set up. SO: if you have a good 24-hr/day network connection and
+about 1G of disk space available, I would be most grateful if you could
+set up a mirror of the PUPS Archive.
+
+The mechanism to request PUPS on CD has been streamlined, but it still
+depends on volunteers to help out with the copying. If you can volunteer
+to do this as well, we would be most grateful. We will be even more
+grateful once the free SCO license gets Slashdotted :-)
+
+One thing I definitely need to do is to tidy up and/or reorganise the
+PUPS web site at http://minnie.cs.adfa.edu.au/PUPS. I'll try to do this
+over the next 6-8 weeks. Any suggestions or comments are welcome!
+
+The PUPS Archive itself needs some attention. For example, some of the
+systems like PWB, 32V and System III are either incomplete or haven't
+been fuly extracted into a portable format like tar. I would welcome any
+offers to help curate & fix up the archive.
+
+When this _does_ get slashdotted, and it will, the first thing people
+will want to do is either view the old source, or bring up the old
+versions. Is there a volunteer who would like to bring the disk
+images in Boot_Images up to date, and provide better instructions so
+that a PDP-newbie can boot V5, V6, V7, 2.11BSD on the common emulators
+such as Ersatz, Supnik, Begemot etc.
+
+And finally, the machine running the PUPS Archive, minnie.cs.adfa.edu.au,
+will be replaced in the next week or two. Currently, minnie is a 486DX100,
+and I have a Celeron 400 with FreeBSD 4.0 installed as her replacement.
+There will be some broken functionality after I switch over, knowing Murphy's
+Law. Please e-mail me with details if you spot something that isn't right.
+
+That's about it. There's a lot to do. I'd love some help :-)
+
+Cheers!
+	Warren
+
+
+From ecollins at outstart.com  Sun May 14 15:46:34 2000
+From: ecollins at outstart.com (Efton Collins)
+Date: Sun, 14 May 2000 01:46:34 -0400
+Subject: SCO site has Unix for download
+Message-ID: <NEBBKFAJOMCEBIKOHMMHKEBMCAAA.ecollins@outstart.com>
+
+Hey,
+
+You may have seen it already, but I haven't seen an announcement on the
+PUPS list -
+
+SCO has got Unix 5th, 6th and 7th Editions, Mini Unix, System III and 32V
+available on their site for download. You can access them by going to
+www.sco.com/offers/ancient.html and accepting the license.
+
+Congratulations PUPS, this is a milestone.
+
+Efton
+
+
+
+From lars at nocrew.org  Mon May 15 17:47:01 2000
+From: lars at nocrew.org (lars brinkhoff)
+Date: 15 May 2000 09:47:01 +0200
+Subject: WWW page for PDP-11 support in GNU binutils
+In-Reply-To: "Efton Collins"'s message of "Sun, 14 May 2000 01:46:34 -0400"
+Message-ID: <85zopss1ai.fsf@junk.nocrew.org>
+
+I created a page to reflect the progress of the PDP-11 support in
+GNU binutils:
+        http://pdp11.nocrew.org/
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id SAA13579
+	for pups-liszt; Mon, 15 May 2000 18:56:39 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Mon May 15 18:56:24 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Mon, 15 May 2000 18:56:24 +1000 (EST)
+Subject: WWW page for PDP-11 support in GNU binutils
+In-Reply-To: <85zopss1ai.fsf@junk.nocrew.org> from lars brinkhoff at "May 15, 2000  9:47: 1 am"
+Message-ID: <200005150856.SAA31129@henry.cs.adfa.edu.au>
+
+In article by lars brinkhoff:
+> I created a page to reflect the progress of the PDP-11 support in
+> GNU binutils:
+>         http://pdp11.nocrew.org/
+
+Thanks Lars. Now that Minix is freely available, some of the applications
+there could be easily ported over to the PDP-11.
+
+Ciao,
+	Warren
+
+
+From wkt at cs.adfa.edu.au  Tue May 16 08:36:49 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Tue, 16 May 2000 08:36:49 +1000 (EST)
+Subject: PUPS Archive access now available
+Message-ID: <200005152236.IAA34383@henry.cs.adfa.edu.au>
+
+All,
+	Access to The PUPS Archive can now be obtained with no human
+intervention. Go to http://www.sco.com/offers/ancient.html, agree to the
+SCO license. On the next page, click on `apply for access to the PUPS Archive'.
+Fill in your full name and e-mail address, and you will be given immediate
+access to the archive.
+
+I'm arranging for at least one mirror of the PUPS Archive in the USA.
+More would be welcome :-) Let me know if you can help!
+
+At present, the PUPS Archive can be accessed by FTP, HTTP and rsync.
+
+No more paper licenses, no more 6 week wait, yayy!!!
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id AAA22778
+	for pups-liszt; Wed, 17 May 2000 00:34:51 +1000 (EST)
+
+From frank at panix.com  Wed May 17 00:34:32 2000
+From: frank at panix.com (Frank Wortner)
+Date: Tue, 16 May 2000 10:34:32 -0400 (EDT)
+Subject: A Public Thank You
+In-Reply-To: <200005142045.GAA10926@minnie.cs.adfa.edu.au>
+Message-ID: <Pine.NEB.4.21.0005160929210.10013-100000@panix6.panix.com>
+
+I just signed up for my free(!) SCO Ancient Unix license.  It's great fun
+to be able to explore again the code I first saw and worked on as a
+student all too many years ago.  It seems only right to thank those who
+gave me access to this resource.
+
+Thank you,  Warren,  for your work in convincing SCO to make this
+possible.  Also thanks for the archives,  the mailing list,  the idea,
+and everything else.
+
+Thank you,  SCO,  for seeing the historic value of the code and generously
+making it available to enthusiasts.  SCO's attitude towards this legacy is
+extremely rare amoung corporations,  and they deserve our gratitude.
+
+Thanks also to everyone who contributed material to the PUPS archive.
+In the face of such generousity I'm sorry I don't have (or think I don't
+have) any material left from the PDP-11 era to add to the collection.
+
+And now,  back to wallowing in PDP-11 nostalgia.  :-)
+
+Frank Wortner
+
+
+
+
+From wkt at cs.adfa.edu.au  Wed May 17 08:19:45 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Wed, 17 May 2000 08:19:45 +1000 (EST)
+Subject: A Public Thank You
+In-Reply-To: <Pine.NEB.4.21.0005160929210.10013-100000@panix6.panix.com> from Frank Wortner at "May 16, 2000 10:34:32 am"
+Message-ID: <200005162219.IAA41705@henry.cs.adfa.edu.au>
+
+In article by Frank Wortner:
+> I just signed up for my free(!) SCO Ancient Unix license.  It's great fun
+> to be able to explore again the code I first saw and worked on as a
+> student all too many years ago.  It seems only right to thank those who
+> gave me access to this resource.
+> Frank Wortner
+
+I'd like to add some thanks to Frank's list.
+
+Thanks to those people who forked out their US$100 for the paper SCO license.
+It's a shame you can't get a refund. At least you have a real, signed,
+license that you can wave at your friends :-)
+
+Our first contact at SCO, Dion Johnson, fought with bureacracy and the legal
+naysayers to get us the first SCO license. Thanks, Dion!
+
+We have a lot of PUPS Volunteers behind the scenes who have been burning CDs
+and other media in the past 2-3 years. With the free license, they're going
+to get much busier, but are still volunteers. Everybody who has received a
+CD should congratulate these people. Soren Jorvang in particular deserves
+thanks.
+
+Hint: if you have a CD burner, YOUR HELP IS URGENTLY REQUIRED. Email me!
+
+Finally, the bulk of the files in the archive were donated by a few people:
+Dennis Ritchie, Henry Spencer, Keith Bostic, Tim Shoppa, Steven Schultz
+and Kirk McKusick are the most notable. Thanks to all those who have
+donated old files and information to the archive!
+
+Some quick stats: 100+ people have obtained for PUPS Archive access in the
+last 24 hours. Web activity was 1.2G, compared to a usual 36M, in the last
+24 hours. Haven't checked ftp yet. Not bad for a 486! I'm switching over to
+the Celeron today, so expect a few hours of downtime and a few glitches.
+
+Cheers,
+	Warren
+
+
+From wkt at cs.adfa.edu.au  Thu May 18 16:52:01 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 18 May 2000 16:52:01 +1000 (EST)
+Subject: test mail for new PUPS list
+Message-ID: <200005180652.QAA50687@henry.cs.adfa.edu.au>
+
+The PUPS list, web site & Archive has migrated to a Celeron. Just some test
+mail to confirm that the mailing list still works. Please ignore. Warren
+
+
+From wkt at cs.adfa.edu.au  Sun May 21 16:10:21 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Sun, 21 May 2000 16:10:21 +1000 (EST)
+Subject: Ultrix V3.1 broken
+Message-ID: <200005210610.QAA72885@henry.cs.adfa.edu.au>
+
+----- Forwarded message from Zane H. Healy -----
+
+	From: "Zane H. Healy" <healyzh at aracnet.com>
+
+While investigating building a Ultrix V3.1 tape I discovered that the file
+on the archive is corrupt.
+
+	Distributions/dec/Ultrix-3.1/ultrix-3.1-bootape.tar.gz
+
+	File 34: The ULTRIX-11 /usr file system in dump/restor format
+
+	Zane
+----- End of forwarded message from Zane H. Healy -----
+
+Wilko Bulte sent that in to the PUPS Archive. Wilko, do you still have the
+tape. Can you try to read it again?!
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id SAA22439
+	for pups-liszt; Sun, 21 May 2000 18:51:57 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From wkb at chello.nl  Sun May 21 20:50:59 2000
+From: wkb at chello.nl (Wilko Bulte)
+Date: Sun, 21 May 2000 10:50:59 +0000
+Subject: Ultrix V3.1 broken
+In-Reply-To: <200005210610.QAA72885@henry.cs.adfa.edu.au>; from wkt@cs.adfa.edu.au on Sun, May 21, 2000 at 04:10:21PM +1000
+References: <200005210610.QAA72885@henry.cs.adfa.edu.au>
+Message-ID: <20000521105059.A21186@freebie.wbnet>
+
+On Sun, May 21, 2000 at 04:10:21PM +1000, Warren Toomey wrote:
+
+
+Warren,
+
+When I untar the .tgz I get files named tapeblock[0-33]
+In tapeblock4 is an index of the original tape, which lists the
+various files on the tape. These are numbered *1* til *34*
+
+I think this is just an off by one thing, because there is no tapeblock34
+at all.
+
+Please check if this is the case. I don't have any PDP operational so I
+cannot verify the contents of tapeblock33. But I'm pretty sure this is /usr
+
+W/
+
+
+> ----- Forwarded message from Zane H. Healy -----
+> 
+> 	From: "Zane H. Healy" <healyzh at aracnet.com>
+> 
+> While investigating building a Ultrix V3.1 tape I discovered that the file
+> on the archive is corrupt.
+> 
+> 	Distributions/dec/Ultrix-3.1/ultrix-3.1-bootape.tar.gz
+> 
+> 	File 34: The ULTRIX-11 /usr file system in dump/restor format
+> 
+> 	Zane
+> ----- End of forwarded message from Zane H. Healy -----
+> 
+> Wilko Bulte sent that in to the PUPS Archive. Wilko, do you still have the
+> tape. Can you try to read it again?!
+> 
+> Cheers,
+> 	Warren
+---end quoted text---
+
+-- 
+Wilko Bulte 	FreeBSD, the power to serve  	http://www.freebsd.org
+
+
+From dave at fgh.geac.com.au  Mon May 22 16:39:32 2000
+From: dave at fgh.geac.com.au (Dave Horsfall)
+Date: Mon, 22 May 2000 16:39:32 +1000 (EST)
+Subject: ACMS, Questions on Internet History. (fwd)
+Message-ID: <Pine.GSO.4.21.0005221634220.26282-100000@fgh.geac.com.au>
+
+Perhaps some of the learned people on this list can help this chappie
+out?  The ACMS is the Australian Computer Museum Society, and could in
+turn be a valuable resource for this list; note that he signs himself
+as a "PDP-11 Support Consultant"...
+
+Replies to him, please, unless deemed of interest to the list.
+
+-- 
+Dave Horsfall VK2KFU  dave at geac.com.au  Ph: +61 2 9978-7493 Fx: +61 2 9978-7422
+Geac Computers P/L (FGH Division) 2/57 Christie St, St Leonards 2065, Australia
+
+---------- Forwarded message ----------
+Date: Sun, 21 May 2000 12:53:26
+From: John  G E R E M I N <megajohn at sneaker.net.au>
+To: ACS NSW List <acsnsw-l at onelist.com>
+Subject: ACMS, Questions on Internet History.
+
+Greetings All,  (from a Netscape v3, Eudora and Win-3.11 system),
+
+The ACMS has been asked about the History Of The Internet In Australia.
+
+This assumes that the 'Internet' is defined as using IP protocols,
+ and the World-Wide-Web that provided permanent (or semi-permanent)
+ connections between major nodes and the end-users.
+
+We also know that DEC had world-wide DECNET for its corporate use.
+We know that U**X systems had FTP, TELNET etc available on systems
+  using fixed line connections (eg within Unis, etc).
+
+We know about the ArpaNet origins (we hope)
+
+We know? that the first Internet users here were the CSIRO and Unis.
+But were they connected initially to the overseas Internet ?
+
+So some questions, designed to sort out some confusions.
+First hand experiences would be good as would pointers to documentation.
+
+	Note - all these relate to Australia (but answers may include 
+		info relating to overseas contexts).
+
+  a1	First use of Fido-Net or other BBS using Dial-up messaging ?
+
+  a2	First use of E-MAIL via FidoNet or other BBS ?
+
+  a3	First use of FreeWare/File Distribution via FidoNet or other BBS ?
+
+  a4	First use of Message/Conference Areas/Groups on BBS ?
+ 
+  b1	First use of permanent IP addresses ?
+
+  b2	First use of E-MAIL via IP addresses ?
+
+  b3	First use of File Transfers via Internet ?
+
+  b4	First use of NewsGroups via Internet ?
+
+  b5	First use of Graphical Displays via Internet ?
+
+  b6	First use of 'http://www' type URL addressing via Internet ?
+
+  b7	First use of two-way (interactive) audio via Internet ?
+
+  b8	First use of two-way (intereactive) video via Internet ?
+
+  c1	Any other major Internet milestones in the Australian environment ?
+
+
+Many thanks, John G. (PS you don't need to answer all questions!) 
+
+ John GEREMIN, megajohn at sneaker.net.au   Ph. 02-9764 4855
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ PDP-11 Support Consultant, MEGATRONICS, Australia.
+http://www.posit.com.au/megatronics/  NEW Mob. => 0427 10 20 60 <=
+
+Hon. Treasurer, Australian COMPUTER MUSEUM Society Inc.
+ http://www.terrigal.net.au/~acms/     Fax: 02-9764 4679
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id XAA75969
+	for pups-liszt; Mon, 22 May 2000 23:57:33 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From jfoust at threedee.com  Mon May 22 23:54:53 2000
+From: jfoust at threedee.com (John Foust)
+Date: Mon, 22 May 2000 08:54:53 -0500
+Subject: ACMS, Questions on Internet History. (fwd)
+In-Reply-To: <Pine.GSO.4.21.0005221634220.26282-100000@fgh.geac.com.au>
+Message-ID: <4.3.0.20000522085035.01c28580@pc>
+
+At 04:39 PM 5/22/00 +1000, Dave Horsfall wrote:
+>   a1    First use of Fido-Net or other BBS using Dial-up messaging ?
+>   a2    First use of E-MAIL via FidoNet or other BBS ?
+>   a3    First use of FreeWare/File Distribution via FidoNet or other BBS ?
+
+Tom Jennings, the creator of FidoNet, is still available at
+<tomj at wps.com> and there's a history at 
+http://wps.com/FidoNet/source/Fido-FidoNet/fhist.html.
+
+Tom is now moderating the Dead Media Project at
+http://wps.com/dead-media/index.html.
+
+But by no means was FidoNet the first BBS.
+
+- John
+
+
+
+From jeff+pups at websitefactory.net  Thu May 25 05:02:07 2000
+From: jeff+pups at websitefactory.net (Jeff Johnson)
+Date: Wed, 24 May 2000 15:02:07 -0400
+Subject: Installing an OS on my little friendly VAX-11.
+Message-ID: <156904.3168169327@kevlar.websitefactory.net>
+
+
+Hey guys.  I've got a VAXstation 2000 with 12MB of RAM, and two RD54 drives,
+one of which is developing bad sectors (the secondary).  I've got the
+eight bitplane graphics card and no terminal available.  I'd really love to
+get a copy of Ultrix 4.2 installed on this machine, but from what I can
+tell it isn't available.  I also don't have a TK50 or any external storage,
+so it looks like I'll be netbooting.
+
+The machine currently has OpenVMS 7.2 on it which I can re-license and get
+running if it would help for an install.  I've had almost no success with
+NetBSD either.  The only kernel that would boot was a 1.3 snapshot release.
+All of the 1.4 kernels crap out immediately upon booting, and nobodys seems
+to be able to help me.
+
+Also, if anyone has a source for additional expansion for this machine, I'd
+be grateful.  Thanks very much for your time.  I really want to get this
+machine up and running again.
+
+--
+Jeffrey H. Johnson - jeff at websitefactory.net - System Administration - TrN
+Barnet Worldwide Enterprises - The Website Factory - www.websitefactory.net
+
+
+From wkt at cs.adfa.edu.au  Thu May 25 10:23:26 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 25 May 2000 10:23:26 +1000 (EST)
+Subject: Installing an OS on my little friendly VAX-11.
+In-Reply-To: <156904.3168169327@kevlar.websitefactory.net> from Jeff Johnson at "May 24, 2000  3: 2: 7 pm"
+Message-ID: <200005250023.KAA01576@henry.cs.adfa.edu.au>
+
+In article by Jeff Johnson:
+> 
+> Hey guys.  I've got a VAXstation 2000 with 12MB of RAM, and two RD54 drives,
+> eight bitplane graphics card and no terminal available.  I'd really love to
+> get a copy of Ultrix 4.2 installed on this machine.
+
+I'd recommend you look into the Quasijarus project at
+http://minnie.cs.adfa.edu.au/Quasijarus/
+
+and join their mailing list by sending a request to Michael Sokolov:
+msokolov at ivan.Harhan.ORG
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id NAA97923
+	for pups-liszt; Thu, 25 May 2000 13:29:00 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From msokolov at ivan.Harhan.ORG  Thu May 25 13:27:42 2000
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Wed, 24 May 00 22:27:42 CDT
+Subject: Installing an OS on my little friendly VAX-11.
+Message-ID: <0005250327.AA15849@ivan.Harhan.ORG>
+
+Jeff Johnson <jeff+pups at websitefactory.net> wrote:
+
+> I've got a VAXstation 2000 with 12MB of RAM, and two RD54 drives,
+> one of which is developing bad sectors (the secondary).  I've got the
+> eight bitplane graphics card and no terminal available.
+
+Two RD54s? At least one of them must be external then, as there's only room for
+one full-height device in the VS2K box itself. I'm going to assume that you
+have the standard DEC configuration with one RD54 internal and an expansion
+adapter (pizza box) at the bottom with the 2nd external RD54 connected to it.
+Hey, except for the lack of TK50Z, you've got pretty much the maximum
+configuration from DEC for VS2K: maximum memory, maximum number of disks of
+top-of-the-line type, expansion adapter, and top-of-the-line graphics card!
+
+On your expansion adapter, right next to the connector for the external RD54,
+you should see a 50-lead Amphenol (aka Centronics) SCSI connector. It is indeed
+real SCSI, but the boot ROM, VMS, and Ultrix only support one SCSI device on
+it, the TK50Z.
+
+> I also don't have a TK50 or any external storage,
+
+Note that if you can get hold of a TK50Z (a box just like your external RD54,
+but with a TK50 drive and a TK50-to-SCSI adapter inside), you can readily plug
+it into the connector I just described. I don't think a TK50Z would be that
+expensive. Here in Dallas, TX, USA I get bare TK50 drives for $75 apiece and
+TK50 drive + TQK50 controller (for Q-bus) pairs for $100 apiece, and I don't
+think a TK50Z would be much more expensive.
+
+> so it looks like I'll be netbooting.
+
+Sorry, can't help you with that, I and netbooting have never been able to
+successfully coexist in the same machine room at the same time.
+
+> The machine currently has OpenVMS 7.2 on it which I can re-license and get
+> running if it would help for an install.
+
+If you have VMS running on one disk, you can use it to install Ultrix on the
+other. Talk to me directly for the instructions.
+
+--
+Michael Sokolov		Harhan Engineering Laboratory
+Public Service Agent	International Free Computing Task Force
+			International Engineering and Science Task Force
+			615 N GOOD LATIMER EXPY STE #4
+			DALLAS TX 75204-5852 USA
+
+Phone: +1-214-824-7693 (Harhan Eng Lab office)
+E-mail: msokolov at ivan.Harhan.ORG (ARPA TCP/SMTP) (UUCP coming soon)
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id NAA97968
+	for pups-liszt; Thu, 25 May 2000 13:46:08 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From msokolov at ivan.Harhan.ORG  Thu May 25 13:44:52 2000
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Wed, 24 May 00 22:44:52 CDT
+Subject: Installing an OS on my little friendly VAX-11.
+Message-ID: <0005250344.AA15967@ivan.Harhan.ORG>
+
+Warren Toomey <wkt at cs.adfa.edu.au> wrote:
+
+> I'd recommend you look into the Quasijarus project at
+> http://minnie.cs.adfa.edu.au/Quasijarus/
+>
+> and join their mailing list by sending a request to Michael Sokolov:
+> msokolov at ivan.Harhan.ORG
+
+Thanks, Warren, for helping me out with awareness-raising! I have to disappoint
+Jeff a little bit, though, that 4.3BSD-Quasijarus support for BabyVAXen is
+still a while away, but trust me, we will get there some day! But my project
+pages and mailing list are definitely a tremendous resource.
+
+--
+Michael Sokolov		Harhan Engineering Laboratory
+Public Service Agent	International Free Computing Task Force
+			International Engineering and Science Task Force
+			615 N GOOD LATIMER EXPY STE #4
+			DALLAS TX 75204-5852 USA
+
+Phone: +1-214-824-7693 (Harhan Eng Lab office)
+E-mail: msokolov at ivan.Harhan.ORG (ARPA TCP/SMTP) (UUCP coming soon)
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id SAA36284
+	for pups-liszt; Thu, 25 May 2000 18:45:11 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From jkunz at unixag-kl.fh-kl.de  Thu May 25 18:43:45 2000
+From: jkunz at unixag-kl.fh-kl.de (jkunz at unixag-kl.fh-kl.de)
+Date: Thu, 25 May 2000 10:43:45 +0200 (CEST)
+Subject: Installing an OS on my little friendly VAX-11.
+In-Reply-To: <0005250344.AA15967@ivan.Harhan.ORG>
+Message-ID: <200005250843.KAA01668@unixag-kl.fh-kl.de>
+
+On 25 May, Michael Sokolov wrote:
+
+> I have to disappoint
+> Jeff a little bit, though, that 4.3BSD-Quasijarus support for BabyVAXen is
+> still a while away, but trust me, we will get there some day! 
+NetBSD runs on the VS2000. A friend is running a Web-server on a VS2000
+(http://wmad93.mathematik.uni-wuerzburg.de/). But the MFM disk support
+is broken since 1.4 due to a DMA code cleanup. Netbooting works and you
+can connect any generic SCSI disk to the tape port. This works but is
+very slow because there is only PIO SCSI on the VS2000... 
+-- 
+
+
+
+tschüß,
+         Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id AAA37463
+	for pups-liszt; Fri, 26 May 2000 00:34:42 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From lars at nocrew.org  Fri May 26 00:33:49 2000
+From: lars at nocrew.org (lars brinkhoff)
+Date: 25 May 2000 16:33:49 +0200
+Subject: PDP-11 MMU docs?
+In-Reply-To: jkunz@unixag-kl.fh-kl.de's message of "Thu, 25 May 2000 10:43:45 +0200 (CEST)"
+Message-ID: <85itw2vgvm.fsf@junk.nocrew.org>
+
+Is there any PDP-11 MMU documentation available?
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id BAA37709
+	for pups-liszt; Fri, 26 May 2000 01:31:42 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From bqt at Update.UU.SE  Fri May 26 01:30:37 2000
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Thu, 25 May 2000 17:30:37 +0200 (MET DST)
+Subject: PDP-11 MMU docs?
+In-Reply-To: <85itw2vgvm.fsf@junk.nocrew.org>
+Message-ID: <Pine.VUL.3.93.1000525173018.7767F-100000@Zeke.Update.UU.SE>
+
+On 25 May 2000, lars brinkhoff wrote:
+
+> Is there any PDP-11 MMU documentation available?
+
+Don't remember seeing any. What do you want to know?
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From jasomill at shaffstall.com  Fri May 26 06:21:20 2000
+From: jasomill at shaffstall.com (Jason T. Miller)
+Date: Thu, 25 May 2000 15:21:20 -0500 (EST)
+Subject: Hello and thanks!
+Message-ID: <Pine.LNX.4.10.10005251459360.7072-100000@guildenstern.shaffstall.com>
+
+After about a week of work (mainly due to a dying RA81 ... see below), I
+have successfully installed 2.11BSD on my 11/83. First and foremost,
+thanks to a) Steven M. Shultz for so carefully maintaining and updating
+(!) CSRG's PDP-11 code to work with hardware such as my MSCP drives and
+TMSCP TK50 and b) everyone involved in prodding SCO to release free
+Ancient UNIX source licenses.
+
+After dealing with a crippled binary-only Micro/RSX lack-of-a-kit, and as
+a FreeBSD user of five-odd years, I decided to bite the bullet and see
+what UNIX was/is like on a PDP. Thanks to the work of Steven and a cast of
+thousands, it's pretty damned impressive.
+
+The only problems I've been having seem to be coming from disk controllers
+without media. More specifically, I get a hard error, followed by an
+endless loop of error indications if I try to access one of my RX50s (on
+an RQDX3 controller), and the only recourse is a reset. Okay, so the
+solution here is simple: don't do it. The bigger problem comes with my
+flake-job of an RA81, which, FWIW, is the only fixed disk storage I have.
+It has a strange habit: the "A" light goes off and the controller can no
+longer access it. If I soft-restart the PDP (under either RSX or UNIX),
+the driver connects back to the drive without a glitch. And this gives me
+the same loop-of-errors syndrome as an empty RX50. Anyone have any
+pointers or sage advice? I figured I may try to modify the MSCP driver to
+re-init the controller on a hard error, and try again. But the MSCP code
+is fairly complicated, and I know nothing of the protocol. Anyone have any
+MSCP documentation which I could beg, borrow, or steal? I'd give the
+specific error codes, but I haven't written any down yet and I'm at work.
+
+Also, I am willing to provide a Good Home for any 19" rackmount MSCP
+drives in the midwest. Let me rephrase that: any one or two; I have a one
+bedroom apartment, and I'm saving a bit of floorspace for a (yet to
+materialize) VAX. Also Qbus thinnet or SCSI would be nice, whilst on cloud
+780...
+
+TIA,
+jasomill
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA39885
+	for pups-liszt; Fri, 26 May 2000 08:30:23 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From jasomill at shaffstall.com  Fri May 26 08:28:09 2000
+From: jasomill at shaffstall.com (Jason T. Miller)
+Date: Thu, 25 May 2000 17:28:09 -0500 (EST)
+Subject: to change without notice
+Message-ID: <Pine.LNX.4.10.10005251726530.20729-100000@guildenstern.shaffstall.com>
+
+After reading the _entire_ archive of PUPS messages, and realizing that,
+no, I'm not crazy and, no, I'm not the only one still interested in old
+hardware and software, I dug up two old 16-bit UNIX distributions and
+promptly archived 'em. Unfortunately, they're binary only and System-V
+based, so I can't just throw 'em in the archive. But when the game is up
+on the System-V codebase, I hope these CD-Rs are still around. They are:
+	- SCO XENIX 286 2.2, complete OS with development system and text
+processing ([tn]roff, etc)
+	- Microport System V/AT Development System (runtimes say both 1.3
+and 2.3, development stuff says 1.3 - don't know, never booted this one)
+
+All the floppies read without errors, and I've actually booted and run the
+XENIX (used it for a tape conversion job a couple years ago) - works as
+long as you have a 5.25" floppy drive and reasonably old hardware - I ran
+it on a 386 but it doesn't grok VGA.
+
+Also, I have the ability to write TK50 tapes along with a wide range of
+other formats (my employer makes tape conversion equipment and software);
+no TK25 (unless the old IBM Tandberg VarBlock format is identical - don't
+know) or TK70, but just about anything else (need PDP UNIX on an HP 9144A 
+cartridge tape; a) why? and b) I can help*!). I'd be happy to cut PDP UNIX
+tapes for media and shipping.
+
+Finally, anyone ever used the mtools package to read MS-DOS disks from an
+RX50 from a DEC Rainbow? I'm working on it (no Rainbow, but I've got a box
+that writes Rainbow disks) and I'd be glad to help anyone interested; I'm
+also working on R/W RX50 on FreeBSD.
+
+Jason T. Miller
+jasomill at shaffstall.com
+
+* but not much, unless someone is willing to replace the rubber roller
+thingy on my HP drive, but, as usual, I digress.
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA39928
+	for pups-liszt; Fri, 26 May 2000 08:34:47 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From wkt at cs.adfa.edu.au  Fri May 26 08:33:51 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Fri, 26 May 2000 08:33:51 +1000 (EST)
+Subject: Dead MicroVAX II :(
+In-Reply-To: <392CE14B.597E81B8@willapabay.org> from "Mike W." at "May 25, 2000  1:16:11 am"
+Message-ID: <200005252233.IAA07703@henry.cs.adfa.edu.au>
+
+In article by Mike W.:
+> I have a digital microvax II in a 'world case'. I was wondering how to
+> hook it up and make it fly. I was told that it runs the Micro VMS OS,
+> but no to get get it on the machine, Model: one of two: VS12W-B2 or
+> V512W-B2. It is an old sticker, could be a 5 or an S. A tape drive is
+> installed, but no tape disk came with it. Is there another OS it can
+> run? I wish I knew what to do. I turn it on and it reads something like
+> 8, 7, 6, 5, 8, B, C, 3 and then after a VERY long pause, it reads E for
+> another long period, then 6 for another long wait and then E forever.
+> How do I hook up the Console to work on it. For that matter, what does
+> the console look like? How do I go to console mode? Is there some kind
+> of manual on it? I have about 8 or 9 monitors and the same amount of
+> keyboards and most of the cables. I would like to bring it back to life
+> and put it in a show room or something. I have no money, the whole thing
+> was given to me. The drives
+> were wiped clean (it was at the Hospital, they upgraded). I take it the
+> E on the readout tells me, "There is no OS installed". After a month or
+> so of searching the internet, I have found a few 'commands' and how to
+> wire one cable, a picture and QBUS routing, but nothing on 'where  and
+> how the cables go on the back (bulkhead). I need to know how, why and
+> when to turn the knobs on the back.
+> Yes, I know nothing of this thing and would like to learn. I know the
+> MAC a little, MS-DOS  in my sleep. Anyway.....
+> 
+> Mike Williams
+> 4212 S. Pacific Way
+> Seaview, Wa. 98644-0068
+> tscowboy at willapabay.org
+
+I'll cc this to the Pups mailing list. You should subscribe so that you can
+get any answers! Details at: http://minnie.cs.adfa.edu.au/PUPS/maillist.html
+
+Ciao,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA40418
+	for pups-liszt; Fri, 26 May 2000 10:13:29 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From wkt at cs.adfa.edu.au  Fri May 26 10:12:40 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Fri, 26 May 2000 10:12:40 +1000 (EST)
+Subject: Who uploaded these to the PUPS ARchive?
+Message-ID: <200005260012.KAA08415@henry.cs.adfa.edu.au>
+
+Hi all,
+	I'm just doing some house cleaning on the PUPS Archive. I've
+forgotten who uploaded these into the incoming directory?
+
+-rw-r-----  1 wkt   pupsarc      53634 Feb 24  1999 29pro_inclsys.tar.gz
+-rw-r-----  1 wkt   pupsarc     777081 Feb 24  1999 29pro_sys.tar.gz
+-rw-r--r--  1 pups  pupsarc    5332873 Jan 17 01:48 old-ultrix-32.tar.gz
+-rw-r--r--  1 pups  pupsarc  371111664 Mar 20 06:00 old-ultrix.tar.gz
+
+As well, can you supply a README saying what is in these files, too :-)
+
+My memory isn't what it used to me.
+
+Thanks!
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id OAA41586
+	for pups-liszt; Fri, 26 May 2000 14:35:06 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From wkt at cs.adfa.edu.au  Fri May 26 14:34:18 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Fri, 26 May 2000 14:34:18 +1000 (EST)
+Subject: More PUPS Donations & Volunteers
+Message-ID: <200005260434.OAA09658@henry.cs.adfa.edu.au>
+
+Hi all,
+	Since the free SCO license, we've had an enormous demand on our
+PUPS volunteers. If there is anybody in Japan who can burn CDs, could you
+contact me if you are prepared to burn a few copies of the PUPS CD.
+
+I've made a start on tidying up the archive & moving recently donated
+things to appropriate directories. Are there other systems out there
+which could be donated to the archive? I've just have a Z8000 SystemIII
+system being donated.
+
+I'm happy to take donations, but they may not be moved into the main
+archive because I don't want to have my butt sued off.
+
+Ages ago, George Colouris at QMC in the UK had a 9-track tape containing
+QED, the visual Unix editor which influenced the development of vi. Can
+anybody in the UK read 9-tracks. If so, I'll put you in contact with George.
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id OAA41696
+	for pups-liszt; Fri, 26 May 2000 14:51:59 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From obrien at NUXI.com  Fri May 26 14:44:17 2000
+From: obrien at NUXI.com (David O'Brien)
+Date: Thu, 25 May 2000 21:44:17 -0700
+Subject: Dead MicroVAX II :(
+In-Reply-To: <200005252233.IAA07703@henry.cs.adfa.edu.au>; from wkt@cs.adfa.edu.au on Fri, May 26, 2000 at 08:33:51AM +1000
+References: <392CE14B.597E81B8@willapabay.org> <200005252233.IAA07703@henry.cs.adfa.edu.au>
+Message-ID: <20000525214417.A58091@dragon.nuxi.com>
+
+On Fri, May 26, 2000 at 08:33:51AM +1000, Warren Toomey wrote:
+> In article by Mike W.:
+> > I have a digital microvax II in a 'world case'. I was wondering how to
+> > hook it up and make it fly. I was told that it runs the Micro VMS OS,
+
+The port-vax at netbsd.org list is full of very VAX clueful people.
+
+-- 
+-- David    (obrien at NUXI.com)
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id QAA42383
+	for pups-liszt; Fri, 26 May 2000 16:00:58 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From lars at nocrew.org  Fri May 26 15:59:56 2000
+From: lars at nocrew.org (lars brinkhoff)
+Date: 26 May 2000 07:59:56 +0200
+Subject: PDP-11 MMU docs?
+In-Reply-To: Johnny Billquist's message of "Thu, 25 May 2000 17:30:37 +0200 (MET DST)"
+References: <Pine.VUL.3.93.1000525173018.7767F-100000@Zeke.Update.UU.SE>
+Message-ID: <85em6pvokj.fsf@junk.nocrew.org>
+
+Johnny Billquist <bqt at Update.UU.SE> writes:
+> On 25 May 2000, lars brinkhoff wrote:
+> > Is there any PDP-11 MMU documentation available?
+> Don't remember seeing any. What do you want to know?
+
+Everything necessary to emulate one in software.  I have Supnik's 
+simulator, but it would be easier if I had proper docs.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id QAA42466
+	for pups-liszt; Fri, 26 May 2000 16:20:11 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Fri May 26 16:18:57 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Thu, 25 May 2000 23:18:57 -0700 (PDT)
+Subject: PDP-11 MMU docs?
+Message-ID: <200005260618.XAA29942@moe.2bsd.com>
+
+Hi -
+
+> From: lars brinkhoff <lars at nocrew.org>
+> Johnny Billquist <bqt at Update.UU.SE> writes:
+> > On 25 May 2000, lars brinkhoff wrote:
+> > > Is there any PDP-11 MMU documentation available?
+> > Don't remember seeing any. What do you want to know?
+> 
+> Everything necessary to emulate one in software.  I have Supnik's 
+> simulator, but it would be easier if I had proper docs.
+
+	Do you also have Harti Brandt's P11 ("Begemot") emulator?  That
+	is a _work of art_!   Has an emulated DEQNA so you can place the
+	"PDP-11" on a LAN, the timeskew problem has been fixed (the emulated
+	pdp-11 keeps good time), and it also has a TOY clock now.
+
+	Check out http://www.begemot.org
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id SAA43074
+	for pups-liszt; Fri, 26 May 2000 18:55:33 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From jkunz at unixag-kl.fh-kl.de  Fri May 26 18:54:02 2000
+From: jkunz at unixag-kl.fh-kl.de (jkunz at unixag-kl.fh-kl.de)
+Date: Fri, 26 May 2000 10:54:02 +0200 (CEST)
+Subject: Dead MicroVAX II :(
+In-Reply-To: <20000525214417.A58091@dragon.nuxi.com>
+Message-ID: <200005260854.KAA08172@unixag-kl.fh-kl.de>
+
+On 25 May, David O'Brien wrote:
+
+> On Fri, May 26, 2000 at 08:33:51AM +1000, Warren Toomey wrote:
+>> In article by Mike W.:
+>> > I have a digital microvax II in a 'world case'. I was wondering how to
+>> > hook it up and make it fly. I was told that it runs the Micro VMS OS,
+> 
+> The port-vax at netbsd.org list is full of very VAX clueful people.
+Yes. port-vax is the right audience. (I am part of it. ;-)  )
+
+There is an excellent site with information about VAX hardware. 
+http://www.vaxarchive.org/hw/index.html
+mirror at
+http://vaxarchive.sevensages.org/hw/index.html
+
+There you can find a link to the KA630/MicroVAX II page
+http://www.telnet.hu/hamster/dr/ka630.html
+This will answer most of your questions. 
+
+If you want a modern Unix OS look at www.netbsd.org.
+Or look at http://minnie.cs.adfa.edu.au/Quasijarus/ (Hi Michael :-) )
+-- 
+
+
+
+tschüß,
+         Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id TAA43336
+	for pups-liszt; Fri, 26 May 2000 19:19:50 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From joerg at begemot.org  Fri May 26 19:22:21 2000
+From: joerg at begemot.org (Joerg B. Micheel)
+Date: Fri, 26 May 2000 21:22:21 +1200
+Subject: Begemot emulator and Harti
+Message-ID: <20000526212221.A4801@begemot.org>
+
+Just as a side note: if you think Harti's Emulator is a useful
+piece of software: sent him flowers. He's celebrating wedding
+this morning in Berlin, marrying a friendly young lady from
+Sibiria, Russia, her name is Larissa.
+
+Regards,
+	Joerg
+-- 
+Joerg B. Micheel			Email: <joerg at begemot.org>
+Begemot Computer Associates		Phone: +64 7 8562148
+40 Masters Avenue, Hillcrest		Fax:   +64 7 8562148
+Hamilton, New Zealand			Pager: +64 868 38222
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id AAA44458
+	for pups-liszt; Sat, 27 May 2000 00:07:05 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From jasomill at shaffstall.com  Sat May 27 00:04:37 2000
+From: jasomill at shaffstall.com (Jason T. Miller)
+Date: Fri, 26 May 2000 09:04:37 -0500 (EST)
+Subject: Hello and thanks!
+In-Reply-To: <200005260320.UAA27315@moe.2bsd.com>
+Message-ID: <Pine.LNX.4.10.10005260850030.31892-100000@guildenstern.shaffstall.com>
+
+Well, I keep calling the hardware support folks, and it keeps ringing
+busy. Of course, since I don't have call waiting or voice mail, that is to
+be expected :) I've actually thought about trying to acquire an
+MSCP<->SCSI card and using one of the SCSI drives I have lying around, but
+the 19" rackmount stuff is too cool (unfortunately, my spares cabinet is
+full of dirty laundry and ruined CD-R media at the moment), though I
+suppose an RA92 would suffice (anybody got one? :) though my budget is
+henceforth nonexistant -- $300 wouldn't break the bank, because they
+wouldn't give it to me. Don't know about the RQDX3, either, but more
+likely the KDA50 (which drives my RA81 -- the RQDX3 is for RXen, no more).
+
+The '81 was up all last night, so I don't have error numbers yet; I'll try
+to repeat the RX50 problem sometime this weekend. The only FS, I have, is
+yours, though I've started reading through it. Though the SCSI spec is
+thousands of pages long, it's pretty easy to program; I just finished some
+raw-tape-read routines for Hewlett-Packard CS/80 tape drives, that was
+even simpler. In both cases, however, I do have documentation
+(exhaustive documentation in re: SCSI -- again, work related). I take it
+from your reply that such docs aren't to be had for MSCP? At any price?
+
+Jason T. Miller
+jasomill at shaffstall.com
+
+On Thu, 25 May 2000, Steven M. Schultz wrote:
+
+> Hi -
+> 
+> > From: "Jason T. Miller" <jasomill at shaffstall.com>
+> > After about a week of work (mainly due to a dying RA81 ... see below), I
+> > have successfully installed 2.11BSD on my 11/83. First and foremost,
+> > thanks to a) Steven M. Shultz for so carefully maintaining and updating
+> > (!) CSRG's PDP-11 code to work with hardware such as my MSCP drives and
+> > TMSCP TK50 and b) everyone involved in prodding SCO to release free
+> 
+> 	You're welcome!  I can't take all of the credit (or blame depending
+> 	how you look at it) for the MSCP driver - that came about in 2.10
+> 	just before I became heavily involved.   Changes/rewrites/whatever
+> 	are my fault though ;)   The TMSCP driver for 2BSD is my doing (based
+> 	on a *heavily* mauled version of the 4.3BSD one with some Ultrix
+> 	influences).
+> 
+> > The only problems I've been having seem to be coming from disk controllers
+> > without media. More specifically, I get a hard error, followed by an
+> > endless loop of error indications if I try to access one of my RX50s (on
+> > an RQDX3 controller), and the only recourse is a reset. Okay, so the
+> 
+> 	Hmmm, that's a new one to me.  I used to have RX50s but they were
+> 	so d$&$*&^!d flakey that I put a standard "pc" 5.25" floppy on 
+> 	instead (TEAC something or other).  I didn't do the hardware stuff,
+> 	Terry Kennedy did that.  Details on jumper setting to use a 5.25"
+> 	floppy in place of RX50s are floating around somewhere on the net
+> 	but I don't have the reference handy.
+> 
+> 	Can't say I've had a problem with the floppy drive with no media.
+> 	It spins and eventually spits out an error but nothing bad happens
+> 	to the system.
+> 
+> 	Hmmmm, what rev level of 2.11BSD do you have installed?  The latest
+> 	from the PUPS archive (or at least fairly recent)?   
+> 
+> > solution here is simple: don't do it. The bigger problem comes with my
+> > flake-job of an RA81, which, FWIW, is the only fixed disk storage I have.
+> > It has a strange habit: the "A" light goes off and the controller can no
+> 
+> 	Been there, seen that - on 11/44s with UDA50 controllers.  When that
+> 	happened I picked up the phone and got the hardware support folks to
+> 	get me a new RA81 ;)   After a while they got tired of maintaining
+> 	old hardware and when the RA81 died the last time they just turned off
+> 	the system and later sold it for scrap (instead of spending $300 for 
+> 	a RA92 drive).  Boo hiss.
+> 
+> 	RA81s have been the worst drive I've seen for failures - it should
+> 	be fairly cheap to get a RA92 (8" desktop enclosure if I recall 
+> 	right) to replace the RA81.  Does the RQDX3 support the larger 
+> 	drives though I wonder?
+> 
+> > the same loop-of-errors syndrome as an empty RX50. Anyone have any
+> > pointers or sage advice? I figured I may try to modify the MSCP driver to
+> > re-init the controller on a hard error, and try again. But the MSCP code
+> > is fairly complicated, and I know nothing of the protocol. Anyone have any
+> 
+> 	You're not just whistling Dixie there - it's the most complex 
+> 	convoluted protocol I've seen for handling disks (and tapes).  Well,
+> 	SCSI these days might be just as complex - but there's a difference:
+> 	I can get lots better specs and documentation for SCSI than I can for 
+> 	MSCP.  If you've access to other systems (RSX, IAS, etc) sources you 
+> 	can RTFS (Read The Fine Source) and try to puzzle out how MSCP works 
+> 	what the errors are and what to do about them but that's a far
+> 	cry from a complete, detailed, tabular, whatever document on how to
+> 	write a MSCP driver.
+> 
+> > MSCP documentation which I could beg, borrow, or steal? I'd give the
+> > specific error codes, but I haven't written any down yet and I'm at work.
+> 
+> 	I know I did do some work (mostly in the TMSCP part though) to improve
+> 	error handling and not leave drives stranded and the like.   If you
+> 	can jot down the error codes I can take a look at the driver and
+> 	perhaps see what can be done to recover more gracefully.
+> 
+> 	Cheers!
+> 
+> 	Steven Schultz
+> 	sms at moe.2bsd.com
+> 
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id AAA44573
+	for pups-liszt; Sat, 27 May 2000 00:41:22 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From leypold at informatik.uni-tuebingen.de  Sat May 27 00:40:23 2000
+From: leypold at informatik.uni-tuebingen.de (Markus Leypold)
+Date: Fri, 26 May 2000 16:40:23 +0200 (CEST)
+Subject: Building a 2.11BSD tape for Supnik's emulator
+Message-ID: <200005261440.QAA12383@informatik.uni-tuebingen.de>
+
+
+
+Hello Seth,
+
+I never worked with a real PDP-11. I tried to build a V7 Boot tape for 
+the Supnick and still did not succeed, but I got the following impressions:
+
+ * V7 Doc says, You can't use the bootstrap from the DEC bulk ROM,
+   but need to key in a custom bootstrap. Have a look into
+   the V7 Manual Volume 2B (Essay about Installing UNIX).
+
+ * It seems, a tape also needs to contain labels for the files
+   (512 Byte Records), kind of directory.
+
+
+Regards -- Markus
+
+
+
+Original Message:
+---------------------------------
+Hello folks,
+
+I'm trying to build a 2.11BSD boot tape for Bob Supnik's emulator.  I
+downloaded the tape files from Distributions/ucb/2.11BSD, and put them
+together with the following commands (on Linux):
+
+  cat mtboot mtboot boot | dd of=file0 obs=512
+  dd if=disklabel of=file1 obs=1024
+  dd if=mkfs of=file2 obs=1024
+  dd if=restor of=file3 obs=1024
+  dd if=icheck of=file4 obs=1024
+  dd if=root.dump of=file5 obs=10240
+  dd if=file6.tar of=file6 obs=10240
+  dd if=file7.tar of=file7 obs=10240
+  dd if=file8.tar of=file8 obs=10240
+  cat file? > boot.tape  [I've verified the shell expands this
+                          expression to the correct file order]
+
+But when I run the simulator and try to boot from the tape (with or
+without the -o optiont to 'boot'), it fails, like so:
+
+  % pdp11
+
+  PDP-11 simulator V2.3d
+  sim> set cpu 18b
+  sim> set cpu 2048K
+  sim> att tm0 boot.tape
+  sim> boot tm0
+
+  HALT instruction, PC: 000002 (HALT)
+  sim> boot -o tm0
+
+  HALT instruction, PC: 000002 (HALT)
+  sim>
+
+It's like the bootstrap code isn't working.  Or possibly I've completely
+misunderstood the proper way to build a tape image.  Is there a better
+way to go about it?
+
+- -Seth
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id CAA45296
+	for pups-liszt; Sat, 27 May 2000 02:31:58 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Sat May 27 02:26:28 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Fri, 26 May 2000 09:26:28 -0700 (PDT)
+Subject: Building a 2.11BSD tape for Supnik's emulator
+Message-ID: <200005261626.JAA08996@moe.2bsd.com>
+
+Hi -
+
+> From: Markus Leypold <leypold at informatik.uni-tuebingen.de>
+> I never worked with a real PDP-11. I tried to build a V7 Boot tape for 
+> the Supnick and still did not succeed, but I got the following impressions:
+> 
+>  * It seems, a tape also needs to contain labels for the files
+>    (512 Byte Records), kind of directory.
+
+	Not exactly.  The boot tape consists of files with different block
+	sizes but has no "labels".  
+> Original Message:
+> ---------------------------------
+> I'm trying to build a 2.11BSD boot tape for Bob Supnik's emulator.  I
+> downloaded the tape files from Distributions/ucb/2.11BSD, and put them
+> together with the following commands (on Linux):
+> 
+>   cat mtboot mtboot boot | dd of=file0 obs=512
+>   dd if=disklabel of=file1 obs=1024
+>   dd if=mkfs of=file2 obs=1024
+>   dd if=restor of=file3 obs=1024
+>   dd if=icheck of=file4 obs=1024
+>   dd if=root.dump of=file5 obs=10240
+>   dd if=file6.tar of=file6 obs=10240
+>   dd if=file7.tar of=file7 obs=10240
+>   dd if=file8.tar of=file8 obs=10240
+>   cat file? > boot.tape  [I've verified the shell expands this
+>                           expression to the correct file order]
+
+	So close yet so far.
+
+	You do not need to "reblock" the files - they already have the correct
+	sizes.  What you do need to do is run a program to add the record
+	length information for the emulator.  The emulator needs to have
+	"virtual" file and record mark information added.
+
+	If you look in the "usr/src/sys/pdpstand" directory you will find
+	a source file "makesimtape.c".  This is a slightly modified version
+	of the 'maketape' program which 2.11 uses to create its own boot tapes.
+	The modifications consist of changes to add the virtual tape marks
+	for Bob's emulator.
+
+	I will include a copy of makesimtape.c below in case anyone has trouble
+	finding it in the source tree.
+
+	makesimtape should compile on almost anything (I've used it on
+	2.11BSD, BSD/OS, and I think FreeBSD).  Compile that program.  Then
+	create a small file (maketape.data) containing:
+
+mtboot 1
+mtboot 1
+boot 1
+* 1
+disklabel 2
+* 1
+mkfs 2
+* 1
+restor 2
+* 1
+icheck 2
+* 1
+root.dump 20
+* 1
+file6.tar 20
+* 1
+file7.tar 20
+* 1
+file8.tar 20
+*1
+
+	Then "makesimtape -i maketape.data -o your_tape_file" will create
+	the virtual tape file in 'your_tape_file'.
+
+	Actually to make sure things work (and the tape is bootable and can
+	run the standalone programs) all you need are the files up thru
+	root.dump - that is enough to load the root filesystem.  
+
+
+	With a real tape drive you use the "maketape" program that comes
+	with 2.11 of course since it wants to issue ioctl calls to place
+	real tape marks, etc on a tape.
+
+> It's like the bootstrap code isn't working.  Or possibly I've completely
+> misunderstood the proper way to build a tape image.  Is there a better
+> way to go about it?
+
+	
+	Hopefully the method described above will be closer to what's
+	needed.  it has been quite a while since I've actually created a
+	simulated tape so I might have left out a step or something.
+
+	Good Luck!
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+=====================makesimtape.c=========================
+/*
+ *	@(#)makesimtape.c	2.1 (2.11BSD) 1998/12/31
+ *		Hacked 'maketape.c' to write a file in a format suitable for
+ *		use with Bob Supnik's PDP-11 simulator (V2.3) emulated tape 
+ *		driver.
+ *
+ * 	NOTE: a PDP-11 has to flip the shorts within the long when writing out
+ *	      the record size.  Seems a PDP-11 is neither a little-endian
+ *	      machine nor a big-endian one.
+ */
+
+#include <stdio.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/uio.h>
+
+#define MAXB 30
+
+	char	buf[MAXB * 512];
+	char	name[50];
+	long	recsz, flipped, trl();
+	int	blksz;
+	int	mt, fd, cnt;
+	struct	iovec	iovec[3];
+	struct	iovec	tmark[2];
+	void	usage();
+
+main(argc, argv)
+	int argc;
+	char *argv[];
+	{
+	int i, j = 0, k = 0;
+	long zero = 0;
+	register char	*outfile = NULL, *infile = NULL;
+	FILE *mf;
+	struct	stat	st;
+
+	while	((i = getopt(argc, argv, "i:o:")) != EOF)
+		{
+		switch	(i)
+			{
+			case	'o':
+				outfile = optarg;
+				break;
+			case	'i':
+				infile = optarg;
+				break;
+			default:
+				usage();
+				/* NOTREACHED */
+			}
+		}
+	if	(!outfile || !infile)
+		usage();
+		/* NOTREACHED */
+/*
+ * Stat the outfile and make sure it either 1) Does not exist, or
+ * 2) Exists but is a regular file.
+*/
+	if	(stat(outfile, &st) != -1 && !(S_ISREG(st.st_mode)))
+		errx(1, "outfile must either not exist or be a regular file");
+		/* NOTREACHED */
+
+	mt = open(outfile, O_WRONLY|O_CREAT|O_TRUNC, 0600);
+	if	(mt < 0)
+		err(1, "Can not create %s", outfile);
+		/* NOTREACHED */
+
+	mf = fopen(infile, "r");
+	if	(!mf)
+		err(1, "Can not open %s", infile);
+		/* NOTREACHED*/
+
+	tmark[0].iov_len = sizeof (long);
+	tmark[0].iov_base = (char *)&zero;
+
+	while	(1)
+		{
+		if	((i = fscanf(mf, "%s %d", name, &blksz))== EOF)
+			exit(0);
+		if	(i != 2) {
+			fprintf(stderr,"Help! Scanf didn't read 2 things (%d)\n", i);
+			exit(1);
+			}
+		if	(blksz <= 0 || blksz > MAXB)
+			{
+			fprintf(stderr, "Block size %u is invalid\n", blksz);
+			exit(1);
+			}
+		recsz = blksz * 512;	/* convert to bytes */
+		iovec[0].iov_len = sizeof (recsz);
+#ifdef	pdp11
+		iovec[0].iov_base = (char *)&flipped;
+#else
+		iovec[0].iov_base = (char *)&recsz;
+#endif
+		iovec[1].iov_len = (int)recsz;
+		iovec[1].iov_base = buf;
+		iovec[2].iov_len =  iovec[0].iov_len;
+		iovec[2].iov_base = iovec[0].iov_base;
+
+		if	(strcmp(name, "*") == 0)
+			{
+			if	(writev(mt, tmark, 1) < 0)
+				warn(1, "writev of pseudo tapemark failed");
+			k++;
+			continue;
+			}
+		fd = open(name, 0);
+		if	(fd < 0)
+			err(1, "Can't open %s for reading", name);
+			/* NOTREACHED */
+		printf("%s: block %d, file %d\n", name, j, k);
+
+		/*
+		 * we pad the last record with nulls
+		 * (instead of the bell std. of padding with trash).
+		 * this allows you to access text files on the
+		 * tape without garbage at the end of the file.
+		 * (note that there is no record length associated
+		 *  with tape files)
+		 */
+
+		while	((cnt=read(fd, buf, (int)recsz)) == (int)recsz)
+			{
+			j++;
+#ifdef	pdp11
+			flipped = trl(recsz);
+#endif
+			if	(writev(mt, iovec, 3) < 0)
+				err(1, "writev #1");
+				/* NOTREACHED */
+			}
+		if	(cnt > 0)
+			{
+			j++;
+			bzero(buf + cnt, (int)recsz - cnt);
+#ifdef	pdp11
+			flipped = trl(recsz);
+#endif
+			if	(writev(mt, iovec, 3) < 0)
+				err(1, "writev #2");
+				/* NOTREACHED */
+			}
+		close(fd);
+		}
+/*
+ * Write two tape marks to simulate EOT
+*/
+	writev(mt, tmark, 1);
+	writev(mt, tmark, 1);
+	}
+
+long
+trl(l)
+	long	l;
+	{
+	union	{
+		long	l;
+		short	s[2];
+		} foo;
+	register short	x;
+
+	foo.l = l;
+	x = foo.s[0];
+	foo.s[0] = foo.s[1];
+	foo.s[1] = x;
+	return(foo.l);
+	}
+
+void
+usage()
+	{
+	fprintf(stderr, "usage: makesimtape -o outfilefile -i inputfile\n");
+	exit(1);
+	}
+
+
+From msokolov at ivan.Harhan.ORG  Sat May 27 06:42:58 2000
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Fri, 26 May 00 15:42:58 CDT
+Subject: Dead MicroVAX II :(
+Message-ID: <0005262042.AA18959@ivan.Harhan.ORG>
+
+In article by Mike W.:
+
+> I have a digital microvax II in a 'world case'. I was wondering how to
+> hook it up and make it fly. I was told that it runs the Micro VMS OS,
+> but no to get get it on the machine, Model: one of two: VS12W-B2 or
+> V512W-B2. It is an old sticker, could be a 5 or an S. A tape drive is
+> installed, but no tape disk came with it. Is there another OS it can
+> run?
+
+Yes, it will run UNIX, the timesharing system by Ritchie and Thompson, Berkeley
+VAX version thereof, the current version of which is 4.3BSD-Quasijarus
+maintained by me, the WWW page for which is:
+
+http://minnie.cs.adfa.edu.au/
+
+Running UNIX requires a UNIX source license (True UNIX never had, doesn't have,
+and never will have a concept of "binary only"), but these days SCO gives them
+out for FREE! You have a tape drive, so you will have no problem with
+installation. I have supply you with the boot tape, but you'll have to
+reimburse me for the tape and shipping.
+
+> How do I hook up the Console to work on it. For that matter, what does
+> the console look like?
+
+You need a standard RS-232 terminal. The console port connector on the MicroVAX
+is of a rather odd standard, though. A DEC BCC05 or BCC08 cable will connect it
+to a standard RS-232 DB25M terminal. If you want or have to make your own
+cable, I've got the pinout for the MicroVAX console port connector somewhere.
+
+> [...] nothing on 'where  and
+> how the cables go on the back (bulkhead).
+
+The I/O distribution panel on the back provides external connections for all
+Q-bus modules you have. You'll have to tell us what Q-bus modules you have so
+that we can tell you what external connections they need. You obviously have
+the CPU, which has one external connection: the console port which I just told
+you about.
+
+> I need to know how, why and
+> when to turn the knobs on the back.
+
+On the CPU module bulkhead there are two knobs and one switch. One knob selects
+the console port baud rate. I think this one is obvious. You can use any of the
+baud rates printed around the knob, but 9600 baud is standard. The other knob
+selects between normal operation (the arrow icon), console language selection
+(the talking face icon), and console port loopback test (the T in the circle
+icon). I always leave it on the arrow icon. Finally, the switch selects between
+maintenance mode (halt enabled, stay in the console on power-up) and production
+mode (halt disabled, boot the OS on power-up). These correspond to the dot-
+inside-the-circle and dot-outside-the-circle icons, respectively. For now leave
+the dot inside the circle.
+
+For more info subscribe to the Quasijarus mailing list and ask there. Send
+subscription requests to:
+
+quasijarus-request at ivan.Harhan.ORG
+
+--
+Michael Sokolov		Harhan Engineering Laboratory
+Public Service Agent	International Free Computing Task Force
+			International Engineering and Science Task Force
+			615 N GOOD LATIMER EXPY STE #4
+			DALLAS TX 75204-5852 USA
+
+Phone: +1-214-824-7693 (Harhan Eng Lab office)
+E-mail: msokolov at ivan.Harhan.ORG (ARPA TCP/SMTP) (UUCP coming soon)
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id GAA48495
+	for pups-liszt; Sat, 27 May 2000 06:46:12 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From msokolov at ivan.Harhan.ORG  Sat May 27 06:44:45 2000
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Fri, 26 May 00 15:44:45 CDT
+Subject: Dead MicroVAX II :(
+Message-ID: <0005262044.AA18967@ivan.Harhan.ORG>
+
+David O'Brien <obrien at NUXI.com> wrote:
+
+> The port-vax at netbsd.org list is full of very VAX clueful people.
+
+So is quasijarus at ivan.Harhan.ORG.
+
+--
+Michael Sokolov		Harhan Engineering Laboratory
+Public Service Agent	International Free Computing Task Force
+			International Engineering and Science Task Force
+			615 N GOOD LATIMER EXPY STE #4
+			DALLAS TX 75204-5852 USA
+
+Phone: +1-214-824-7693 (Harhan Eng Lab office)
+E-mail: msokolov at ivan.Harhan.ORG (ARPA TCP/SMTP) (UUCP coming soon)
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id GAA48519
+	for pups-liszt; Sat, 27 May 2000 06:52:57 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From msokolov at ivan.Harhan.ORG  Sat May 27 06:51:29 2000
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Fri, 26 May 00 15:51:29 CDT
+Subject: Dead MicroVAX II :(
+Message-ID: <0005262051.AA18987@ivan.Harhan.ORG>
+
+jkunz at unixag-kl.fh-kl.de wrote:
+
+> If you want a modern Unix OS [...]
+
+If he did, why would he want a VAX? Someone who detests "modern" pee sea
+hardware and prefers the vastly superior classical DEC stuff (like I do) would
+surely feel the same way about software (again like I do). Why should one treat
+hardware and software differently in this respect? Why mix-and-match the
+wonderful classical hardware with crappy bloated "modern" software?
+
+--
+Michael Sokolov		Harhan Engineering Laboratory
+Public Service Agent	International Free Computing Task Force
+			International Engineering and Science Task Force
+			615 N GOOD LATIMER EXPY STE #4
+			DALLAS TX 75204-5852 USA
+
+Phone: +1-214-824-7693 (Harhan Eng Lab office)
+E-mail: msokolov at ivan.Harhan.ORG (ARPA TCP/SMTP) (UUCP coming soon)
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA48765
+	for pups-liszt; Sat, 27 May 2000 08:22:49 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From bdc at world.std.com  Sat May 27 08:21:49 2000
+From: bdc at world.std.com (Brian Chase)
+Date: Fri, 26 May 2000 15:21:49 -0700
+Subject: Dead MicroVAX II :(
+In-Reply-To: <0005262051.AA18987@ivan.Harhan.ORG>
+Message-ID: <Pine.SGI.4.21.0005261515050.22157-100000@world.std.com>
+
+On Fri, 26 May 2000, Michael Sokolov wrote:
+
+> jkunz at unixag-kl.fh-kl.de wrote:
+> > If you want a modern Unix OS [...]
+> 
+> If he did, why would he want a VAX? Someone who detests "modern" pee
+> sea hardware and prefers the vastly superior classical DEC stuff (like
+> I do) would surely feel the same way about software (again like I do).
+> Why should one treat hardware and software differently in this
+> respect? Why mix-and-match the wonderful classical hardware with
+> crappy bloated "modern" software?
+
+This list is definitely geared towards people running classic OSes on
+classic systems.  I actually really enjoy having lots of the bloated
+modern hardware running on my VAXen.  So much contemporary software
+compiles and runs right out of the tarballs under NetBSD/vax.  And
+honestly, a lot of it performs quite admirably on even my humblest of
+MicroVAX II's.
+
+I see nothing incompatible with loving modern OSes running well on ancient
+hardware. :-)
+
+-brian.
+--- Brian Chase | bdc at world.std.com | http://world.std.com/~bdc/ -----
+All math equations have a fistfight on at least one side.  -- K.
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id BAA51832
+	for pups-liszt; Sun, 28 May 2000 01:50:42 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From jkunz at unixag-kl.fh-kl.de  Sun May 28 01:49:00 2000
+From: jkunz at unixag-kl.fh-kl.de (jkunz at unixag-kl.fh-kl.de)
+Date: Sat, 27 May 2000 17:49:00 +0200 (CEST)
+Subject: Dead MicroVAX II :(
+In-Reply-To: <0005262051.AA18987@ivan.Harhan.ORG>
+Message-ID: <200005271549.RAA15426@unixag-kl.fh-kl.de>
+
+On 27 May, Michael Sokolov wrote:
+
+>> If you want a modern Unix OS [...]
+> 
+> If he did, why would he want a VAX? Someone who detests "modern" pee sea
+> hardware and prefers the vastly superior classical DEC stuff (like I do) would
+> surely feel the same way about software (again like I do). Why should one treat
+> hardware and software differently in this respect? Why mix-and-match the
+> wonderful classical hardware with crappy bloated "modern" software?
+Sure. That is the reason why I referred both the quasijarus project and
+NetBSD. I wanted to give _him_ the choice. 
+
+I own a lot of different old machines. (DEC, Sun, HP, IBM, ...) On most
+of this machins runs the same OS, NetBSD. I like it to see the same
+software running on an old VAX and on a state of the art Alpha. I am
+usung NetBSD for years now, so my preference of NetBSD is historical
+too. 
+-- 
+
+
+
+tschüß,
+         Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+

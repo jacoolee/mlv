@@ -1,0 +1,2424 @@
+From billc_2 at charter.net  Tue Apr  6 20:30:01 2004
+From: billc_2 at charter.net (Bill Cunningham)
+Date: Tue, 6 Apr 2004 06:30:01 -0400
+Subject: [TUHS] Booting v6
+Message-ID: <000901c41bc2$1ffb8840$f3529e18@a>
+
+    I was looking through the old archives at the old UNIX Dennis Ritchie
+submitted. I would like to know how to boot this. I can't seem to compile
+the PDP emulator(s) with djgpp or a non-linux system. I can with my linux.
+Dennis said this version of unix was compiled with assembly, then into C if
+I'm not mistaken. Now the PDPs they were the machines with no monitors just
+printer tty type output correct?
+
+    Bill
+
+
+From kstailey at yahoo.com  Tue Apr  6 23:16:03 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Tue, 6 Apr 2004 06:16:03 -0700 (PDT)
+Subject: [TUHS] Booting v6
+In-Reply-To: <000901c41bc2$1ffb8840$f3529e18@a>
+Message-ID: <20040406131603.85174.qmail@web60510.mail.yahoo.com>
+
+
+--- Bill Cunningham <billc_2 at charter.net> wrote:
+>     I was looking through the old archives at the old UNIX Dennis Ritchie
+> submitted. I would like to know how to boot this. I can't seem to compile
+> the PDP emulator(s) with djgpp or a non-linux system.
+
+Look on this page for the link that says "Windows executables"
+
+http://simh.trailing-edge.com/
+
+> I can with my linux.
+> Dennis said this version of unix was compiled with assembly, then into C if
+> I'm not mistaken.
+
+You are mistaken.  It's the other way around.  Traditional C compilers generate
+assembly which is assembled into machine code object files which are linked
+into an executable.
+
+> Now the PDPs they were the machines with no monitors just
+> printer tty type output correct?
+
+Depends on the PDP you are talking about.  The term "Programmed Data Processor"
+refers to a large number of different systems.  Some are a small as PeeCees and
+others filled entire rooms.
+
+>     Bill
+
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Small Business $15K Web Design Giveaway 
+http://promotions.yahoo.com/design_giveaway/
+
+From akito_fujita at mvg.biglobe.ne.jp  Tue Apr  6 23:44:17 2004
+From: akito_fujita at mvg.biglobe.ne.jp (Akito Fujita)
+Date: Tue, 06 Apr 2004 22:44:17 +0900 (JST)
+Subject: [TUHS] Booting v6
+In-Reply-To: <000901c41bc2$1ffb8840$f3529e18@a>
+References: <000901c41bc2$1ffb8840$f3529e18@a>
+Message-ID: <20040406.224417.74737577.akito_fujita@mvg.biglobe.ne.jp>
+
+From: "Bill Cunningham" <billc_2 at charter.net>
+Subject: [TUHS] Booting v6
+Date: Tue, 6 Apr 2004 06:30:01 -0400
+
+>     I was looking through the old archives at the old UNIX Dennis Ritchie
+> submitted. I would like to know how to boot this. I can't seem to compile
+> the PDP emulator(s) with djgpp or a non-linux system. I can with my linux.
+> Dennis said this version of unix was compiled with assembly, then into C if
+> I'm not mistaken. Now the PDPs they were the machines with no monitors just
+> printer tty type output correct?
+> 
+>     Bill
+
+see http://www.tribug.org/pub/tuhs/PDP-11/Bug_Fixes/V6enb/
+it will help you.
+
+
+- Akito
+
+From james at peacemax.org  Wed Apr  7 03:41:04 2004
+From: james at peacemax.org (J.D.)
+Date: Tue, 06 Apr 2004 11:41:04 -0600
+Subject: [TUHS] what is the progress on porting 32V to x86 platform
+Message-ID: <4072EBB0.7090903@peacemax.org>
+
+To all concerned,
+
+    I was wondering what progress has been made in porting 32V to the 
+x86 platform.
+
+    I would like to keep track of it's development. Maybe even dedicate 
+a web site just for 32V/32I on x86. I'm not certain on how to setup a 
+repository, but I'm willing to learn as I go.
+
+    I have a DSL connection. 3 dedicated IP addresses (1 DNS, 1 mail 
+server, 1 web server). The web server has 80Gb of storage space and is 
+running Slackware Linux 9.1. I currently host my own web site: 
+http://www.peacemax.org on the web server.
+
+    I would really like to see a free / low cost UNIX or UNIX-like OS 
+for the x86 platform come to fruition without the legal battles that 
+Linux and BSD have had to deal with over the years.
+
+
+Thank you,
+James Falknor
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/x-pkcs7-signature
+Size: 4766 bytes
+Desc: S/MIME Cryptographic Signature
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040406/3e095d58/attachment.bin>
+
+From cdl at mpl.ucsd.edu  Wed Apr  7 08:37:52 2004
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Tue, 6 Apr 2004 15:37:52 -0700 (PDT)
+Subject: [TUHS] Booting v6
+Message-ID: <200404062237.i36MbqN03262@opihi.ucsd.edu>
+
+> From: "Bill Cunningham" <billc_2 at charter.net>
+> To: <tuhs at minnie.tuhs.org>
+> Date: Tue, 6 Apr 2004 06:30:01 -0400
+> Subject: [TUHS] Booting v6
+> 
+>     I was looking through the old archives at the old UNIX Dennis Ritchie
+> submitted. I would like to know how to boot this. I can't seem to compile
+> the PDP emulator(s) with djgpp or a non-linux system. I can with my linux.
+
+See below for a session log showing booting 6th Ed Unix on a Linux system.
+
+> Dennis said this version of unix was compiled with assembly, then into C if
+> I'm not mistaken.
+
+I'm pretty sure that by 6th Ed the system was mostly C, with only a
+few assembly routines.
+
+> Now the PDPs they were the machines with no monitors just
+> printer tty type output correct?
+
+High-resolution bit-mapped graphics at any reasonable price came along
+a few years after 6th Ed.  Unix.  Character-cell CRT terminals that
+could display 72x12 up to 80x24 characters on a screen were available
+in 1975, but were pretty expensive.
+
+Instructions for booting "uv6swre" are contained in the file "simh_swre.txt".
+To make things easier for myself, I did the following:
+$ cp unix0_v6_rk.dsk rk0.dsk
+and so on for 1, 2, 3.
+This gives me copies of the distribution disks that I can work with
+without losing the originals.  Then I made a startup file "run.conf"
+to contain the commands for the emulator.  Here is the result of a
+very recent session:
+- - - - - - - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - -
+Script started on Tue 06 Apr 2004 03:09:12 PM
+PDT helium3$ cat run.conf
+set cpu u18
+set cpu 256k
+attach rk0 rk0.dsk
+attach rk1 rk1.dsk
+attach rk2 rk2.dsk
+attach rk3 rk3.dsk
+boot rk0
+
+helium3$ pdp11 run.conf
+
+PDP-11 simulator V3.1-0
+Disabling XQ
+@unix
+
+login: root
+# date
+Sat Aug 20 12:19:47 EDT 1994
+# ls -l
+total 182
+drwxr-xr-x  2 bin      1040 Jan  1  1970 bin
+drwxr-xr-x  2 bin       352 Jan  1  1970 dev
+drwxr-xr-x  2 bin       304 Aug 20 12:19 etc
+drwxr-xr-x  2 bin       336 Jan  1  1970 lib
+drwxr-xr-x 17 bin       272 Jan  1  1970 mnt
+drwxr-xr-x  2 bin        32 Jan  1  1970 mnt2
+-rw-rw-rw-  1 root    28472 Aug 20 12:01 rkunix
+-rwxr-xr-x  1 bin     28636 Aug 20 11:38 rkunix.40
+drwxrwxrwx  2 bin       144 Aug 20 12:14 tmp
+-rwxr-xr-x  1 bin     28472 Aug 20 12:01 unix
+drwxr-xr-x 13 bin       224 Aug 20 12:22 usr
+drwxr-xr-x  2 bin        32 Jan  1  1970 usr2
+# stty
+speed 110 baud
+erase = '#'; kill = '@'
+even odd -nl echo -tabs cr1 
+# sync;sync
+# 
+Simulation stopped, PC: 034316 (ADD #26,R2)
+sim> bye
+Goodbye
+helium3$ exit
+
+Script done on Tue 06 Apr 2004 03:10:09 PM PDT
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Notes:  the simh command for emulating a Unibus PDP11 with 18-bit
+addressing is now "set cpu u18".
+
+In the line "@unix" the "@" is the prompt from the boot program, "unix"
+is your response to it.  Root has no password.
+
+The disks are mounted	rk1 on /usr
+			rk2 on /usr/source
+			rk3 on /mnt
+
+The default character erase and line kill characters shown by stty
+are not what anyone is used to these days.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+
+From cdl at mpl.ucsd.edu  Wed Apr  7 09:17:56 2004
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Tue, 6 Apr 2004 16:17:56 -0700 (PDT)
+Subject: [TUHS] Booting v6
+Message-ID: <200404062317.i36NHu303434@opihi.ucsd.edu>
+
+> Subject: RE: [TUHS] Booting v6
+> Date: Tue, 6 Apr 2004 16:04:10 -0700
+> Thread-Topic: [TUHS] Booting v6
+> thread-index: AcQcKECoV1Z8goZHTHydv0dtlVPxNwAANuHA
+> From: "Ian King" <iking at windows.microsoft.com>
+> To: "Carl Lowenstein" <cdl at mpl.ucsd.edu>, <billc_2 at charter.net>,
+>    <tuhs at minnie.tuhs.org>
+> 
+> BTW, the Lions book - which documents 6th Ed. very comprehensively - is
+> available for legal purchase.  I have both the published version and
+> (from a set of docs I bought on eBay) an old 'bootleg' photocopy.  
+
+Me too, as they say.  I did the bootleg photocopying myself.
+
+> There was at least one card that would drive a vector display, like the
+> old Tektronix storage tube devices, but most I/O was terminal based.  I
+> have some old ADM3a terminals that folks often mistake for early iMacs -
+> they ask me which processor they use. :-)  
+
+The first 11/20 I used had a Tektronix 4002 Graphics terminal
+with it.  This was a storage tube, vector addressable.  But it also
+had a complete ASCII terminal emulator built in, with diode matrix
+character generator ROMs.  Also the best keyboard I ever used,
+with magnetically-operated reed switches.  The Tek terminal used
+a specially modified KL11 terminal interface, which did serial
+communication to the CPU at something like 100k characters/sec.
+This made the hard-copy TTY-based editor really easy to use, because
+it could repaint the whole screen in a fraction of a second.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+From lars at nocrew.org  Wed Apr  7 15:31:30 2004
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: 07 Apr 2004 07:31:30 +0200
+Subject: [TUHS] Booting v6
+In-Reply-To: <200404062317.i36NHu303434@opihi.ucsd.edu>
+References: <200404062317.i36NHu303434@opihi.ucsd.edu>
+Message-ID: <85isgcl5fx.fsf@junk.nocrew.org>
+
+Carl Lowenstein <cdl at mpl.ucsd.edu> writes:
+> > From: "Ian King" <iking at windows.microsoft.com>
+> > 
+> > BTW, the Lions book - which documents 6th Ed. very comprehensively - is
+> > available for legal purchase.  I have both the published version and
+> > (from a set of docs I bought on eBay) an old 'bootleg' photocopy.  
+> Me too, as they say.  I did the bootleg photocopying myself.
+
+Is it still good reading?
+
+-- 
+Lars Brinkhoff,         Services for Unix, Linux, GCC, HTTP
+Brinkhoff Consulting    http://www.brinkhoff.se/
+
+From rwells at impaq.co.uk  Wed Apr  7 20:53:26 2004
+From: rwells at impaq.co.uk (Wells, Richard)
+Date: Wed, 7 Apr 2004 11:53:26 +0100
+Subject: [TUHS] Booting v6
+Message-ID: <63D9641DAC5E4642BA63322DE7B7137B2E0066@andromeda.uk.impaq.corp>
+
+IMHO it's very good reading / learning.
+
+I couldn't buy the book when I last tried (about a year ago) - I think
+it was out of print.. I did manage to find it all on the web though.
+
+Richard Wells
+
+
+-----Original Message-----
+From: Lars Brinkhoff [mailto:lars at nocrew.org] 
+Sent: 07 April 2004 06:32
+To: Carl Lowenstein
+Cc: tuhs at minnie.tuhs.org
+Subject: Re: [TUHS] Booting v6
+
+Carl Lowenstein <cdl at mpl.ucsd.edu> writes:
+> > From: "Ian King" <iking at windows.microsoft.com>
+> > 
+> > BTW, the Lions book - which documents 6th Ed. very comprehensively -
+is
+> > available for legal purchase.  I have both the published version and
+> > (from a set of docs I bought on eBay) an old 'bootleg' photocopy.  
+> Me too, as they say.  I did the bootleg photocopying myself.
+
+Is it still good reading?
+
+-- 
+Lars Brinkhoff,         Services for Unix, Linux, GCC, HTTP
+Brinkhoff Consulting    http://www.brinkhoff.se/
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+______________________________________________________________________
+This email has been scanned by the MessageLabs Email Security System.
+For more information please visit http://www.messagelabs.com/email 
+______________________________________________________________________
+
+From luvisi at andru.sonoma.edu  Thu Apr  8 02:04:01 2004
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Wed, 7 Apr 2004 09:04:01 -0700 (PDT)
+Subject: [TUHS] Booting v6
+In-Reply-To: <85isgcl5fx.fsf@junk.nocrew.org>
+Message-ID: <Pine.LNX.4.44.0404070843180.26120-100000@gladen>
+
+On 7 Apr 2004, Lars Brinkhoff wrote:
+[snip]
+> Is it still good reading?
+[snip]
+
+Absolutely fabulous reading!
+
+The best part, in my opinion, is that when he is walking you through the
+code of a function and you come to another function call, he gives you a
+short description (sometimes just a couple of words, sometimes a few
+sentences) of what that other function does so you can just keep on
+reading the one you're in.
+
+Since most time-space tradeoffs were made in favor of saving space and
+spending time (64k limit for all kernel code and data on the 11/40), the
+code is fairly straight forward (for example, linear searches instead of
+hash tables) once you grok the magic of process switching and how system
+calls work, which Lions helps with a lot.
+
+He also gives a brief introduction to enough PDP-11 assembly and
+architecture, and C, to understand the magic.  I found it to be a very
+pleasant read a few years ago and I plan to read it again one of these
+days.
+
+Andru
+-- 
+Andru Luvisi
+
+Quote Of The Moment:
+  Heisenberg may have been here.
+
+
+From cdl at mpl.ucsd.edu  Thu Apr  8 04:22:54 2004
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Wed, 7 Apr 2004 11:22:54 -0700 (PDT)
+Subject: [TUHS] Booting v6
+Message-ID: <200404071822.i37IMsW04765@opihi.ucsd.edu>
+
+> Date: Wed, 7 Apr 2004 11:53:26 +0100
+> Thread-Topic: [TUHS] Booting v6
+> Thread-Index: AcQcYq8V+wOYWKxXRAqhjHttR6C44gAJhvuw
+> From: "Wells, Richard" <rwells at impaq.co.uk>
+> To: "Lars Brinkhoff" <lars at nocrew.org>
+> 
+> IMHO it's very good reading / learning.
+> 
+> I couldn't buy the book when I last tried (about a year ago) - I think
+> it was out of print.. I did manage to find it all on the web though.
+> 
+> Richard Wells
+> 
+> 
+> -----Original Message-----
+> From: Lars Brinkhoff [mailto:lars at nocrew.org] 
+> Sent: 07 April 2004 06:32
+> To: Carl Lowenstein
+> Cc: tuhs at minnie.tuhs.org
+> Subject: Re: [TUHS] Booting v6
+> 
+> Carl Lowenstein <cdl at mpl.ucsd.edu> writes:
+> > > From: "Ian King" <iking at windows.microsoft.com>
+> > > 
+> > > BTW, the Lions book - which documents 6th Ed. very comprehensively -
+> is
+> > > available for legal purchase.  I have both the published version and
+> > > (from a set of docs I bought on eBay) an old 'bootleg' photocopy.  
+> > Me too, as they say.  I did the bootleg photocopying myself.
+> 
+> Is it still good reading?
+
+It was last time I looked.  Today I seem to have misplaced my copy.
+Just checked AddAll book search, the reprint of the Lions book has
+become a rare collectable, and is selling for about $100.  Oh, well,
+somebody bid a VT100 up to $355 yesterday.
+
+    carl
+
+From luvisi at andru.sonoma.edu  Thu Apr  8 04:55:06 2004
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Wed, 7 Apr 2004 11:55:06 -0700 (PDT)
+Subject: [TUHS] Booting v6
+In-Reply-To: <200404071822.i37IMsW04765@opihi.ucsd.edu>
+Message-ID: <Pine.LNX.4.44.0404071153290.26120-100000@gladen>
+
+Some people mentioned it being out of print.  I was wondering, has anyone
+tried purchasing it from
+
+    http://www.peer-to-peer.com/catalog/opsrc/lions.html
+
+They don't seem to have any indication on the web site that it is out of
+print, and they have a link to it from their home page
+(http://www.peer-to-peer.com/).
+
+Andru
+-- 
+Andru Luvisi
+
+Quote Of The Moment:
+  "Taking the envelope and pencil in his otherwise empty hands, the
+  medium feels it, stares into space, grunts, foams at the mouth, and
+  otherwise becomes very psychic."
+  	- Theodore Annemann
+
+
+From imp at bsdimp.com  Thu Apr  8 04:42:39 2004
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Wed, 07 Apr 2004 12:42:39 -0600 (MDT)
+Subject: [TUHS] Booting v6
+In-Reply-To: <Pine.LNX.4.44.0404071153290.26120-100000@gladen>
+References: <200404071822.i37IMsW04765@opihi.ucsd.edu>
+	<Pine.LNX.4.44.0404071153290.26120-100000@gladen>
+Message-ID: <20040407.124239.32175798.imp@bsdimp.com>
+
+In message: <Pine.LNX.4.44.0404071153290.26120-100000 at gladen>
+            Andru Luvisi <luvisi at andru.sonoma.edu> writes:
+: Some people mentioned it being out of print.  I was wondering, has anyone
+: tried purchasing it from
+: 
+:     http://www.peer-to-peer.com/catalog/opsrc/lions.html
+: 
+: They don't seem to have any indication on the web site that it is out of
+: print, and they have a link to it from their home page
+: (http://www.peer-to-peer.com/).
+
+it was out of print for a while, but was republished a few years
+ago...  I have both copies and can tell you that the republished
+version is true to the original.
+
+Warner
+
+From patv at monmouth.com  Thu Apr  8 10:13:16 2004
+From: patv at monmouth.com (Pat Villani)
+Date: Wed, 07 Apr 2004 20:13:16 -0400
+Subject: [TUHS] what is the progress on porting 32V to x86 platform
+In-Reply-To: <4072EBB0.7090903@peacemax.org>
+References: <4072EBB0.7090903@peacemax.org>
+Message-ID: <4074991C.6080803@monmouth.com>
+
+Actually, not much since December.  Unfortunately, work is getting in 
+the way of having fun.  I hope to be getting back to it again some time 
+soon.
+
+Pat
+
+
+J.D. wrote:
+
+> To all concerned,
+>
+>    I was wondering what progress has been made in porting 32V to the 
+> x86 platform.
+>
+>    I would like to keep track of it's development. Maybe even dedicate 
+> a web site just for 32V/32I on x86. I'm not certain on how to setup a 
+> repository, but I'm willing to learn as I go.
+>
+>    I have a DSL connection. 3 dedicated IP addresses (1 DNS, 1 mail 
+> server, 1 web server). The web server has 80Gb of storage space and is 
+> running Slackware Linux 9.1. I currently host my own web site: 
+> http://www.peacemax.org on the web server.
+>
+>    I would really like to see a free / low cost UNIX or UNIX-like OS 
+> for the x86 platform come to fruition without the legal battles that 
+> Linux and BSD have had to deal with over the years.
+>
+>
+> Thank you,
+> James Falknor
+>
+>------------------------------------------------------------------------
+>
+>_______________________________________________
+>TUHS mailing list
+>TUHS at minnie.tuhs.org
+>http://minnie.tuhs.org/mailman/listinfo/tuhs
+>  
+>
+
+
+From ewayte at pegasus.cc.ucf.edu  Tue Apr 13 00:46:51 2004
+From: ewayte at pegasus.cc.ucf.edu (Eric Wayte)
+Date: Mon, 12 Apr 2004 10:46:51 -0400 (EDT)
+Subject: [TUHS] Booting v6
+In-Reply-To: <Pine.LNX.4.44.0404071153290.26120-100000@gladen>
+References: <Pine.LNX.4.44.0404071153290.26120-100000@gladen>
+Message-ID: <Pine.GSO.4.58.0404121045170.21192@pegasus.cc.ucf.edu>
+
+I tried a few months ago and it is no longer available from them.  They
+suggested I try used book web pages.  There is a copy available on
+half.com as of this writing for around $100.
+
+Eric Wayte
+Sr. DBA
+Univ. of Central Florida
+ewayte at pegasus.cc.ucf.edu
+
+
+On Wed, 7 Apr 2004, Andru Luvisi wrote:
+
+>
+> Some people mentioned it being out of print.  I was wondering, has anyone
+> tried purchasing it from
+>
+>     http://www.peer-to-peer.com/catalog/opsrc/lions.html
+>
+
+From kstailey at yahoo.com  Tue Apr 13 04:38:43 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Mon, 12 Apr 2004 11:38:43 -0700 (PDT)
+Subject: [TUHS] Just noticed an article on John Lions on Salon.com
+Message-ID: <20040412183843.89075.qmail@web60501.mail.yahoo.com>
+
+http://www.salon.com/tech/feature/1999/11/30/lions/
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Tax Center - File online by April 15th
+http://taxes.yahoo.com/filing.html
+
+From hansolofalcon at worldnet.att.net  Tue Apr 13 04:51:11 2004
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Mon, 12 Apr 2004 14:51:11 -0400
+Subject: [TUHS] Just noticed an article on John Lions on Salon.com
+In-Reply-To: <20040412183843.89075.qmail@web60501.mail.yahoo.com>
+Message-ID: <000d01c420bf$205e2660$6401a8c0@who5>
+
+Hello from Gregg C Levine
+An interesting discourse on the subject of the gentleman's books. I
+haven't found them, as yet. However, I did find one discrepancy in the
+article. I suppose Dennis Ritchie will comment eventually, but, here
+goes, his name, and Brian Kernighan are mentioned on my copy of the
+book on the C programming language. The only time I've seen the other
+fellow's name mentioned was in regards to another book on UNIX.
+Outside of that, it's a very well written article.
+
+I'll probably end up searching Alibris, www.alibris.com for the books,
+or related ones.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+
+> -----Original Message-----
+> From: tuhs-bounces at minnie.tuhs.org
+[mailto:tuhs-bounces at minnie.tuhs.org] On
+> Behalf Of Kenneth Stailey
+> Sent: Monday, April 12, 2004 2:39 PM
+> To: tuhs at tuhs.org
+> Subject: [TUHS] Just noticed an article on John Lions on Salon.com
+> 
+> http://www.salon.com/tech/feature/1999/11/30/lions/
+> 
+> __________________________________
+> Do you Yahoo!?
+> Yahoo! Tax Center - File online by April 15th
+> http://taxes.yahoo.com/filing.html
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From michael_davidson at pacbell.net  Tue Apr 13 08:29:36 2004
+From: michael_davidson at pacbell.net (Michael Davidson)
+Date: Mon, 12 Apr 2004 15:29:36 -0700
+Subject: [TUHS] Just noticed an article on John Lions on Salon.com
+References: <000d01c420bf$205e2660$6401a8c0@who5>
+Message-ID: <001601c420dd$a343b040$ea8ca140@pacbell.net>
+
+> Hello from Gregg C Levine
+> An interesting discourse on the subject of the gentleman's books. I
+> haven't found them, as yet. However, I did find one discrepancy in the
+> article. I suppose Dennis Ritchie will comment eventually, but, here
+> goes, his name, and Brian Kernighan are mentioned on my copy of the
+> book on the C programming language. The only time I've seen the other
+> fellow's name mentioned was in regards to another book on UNIX.
+
+I'm not sure what discrepancy you are referring to - the article looked
+quite accurate to me.
+
+Which particular "other fellow" are you thinking of?
+
+
+
+
+From hansolofalcon at worldnet.att.net  Tue Apr 13 09:40:31 2004
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Mon, 12 Apr 2004 19:40:31 -0400
+Subject: [TUHS] Just noticed an article on John Lions on Salon.com
+In-Reply-To: <001601c420dd$a343b040$ea8ca140@pacbell.net>
+Message-ID: <002e01c420e7$8b84ffe0$6401a8c0@who5>
+
+Hello from Gregg C Levine
+Um this fellow, Ken Thompson. According to my copy of the book on the
+C programming language, only Brian Kernighan, and David Ritchie, are
+mentioned. Ken Thompson, is only mentioned as being a partner in the
+creation of UNIX, I think he was a co-author in the book mentioned in
+titles pages, describing the UNIX programming environment. 
+
+And yes, the rest of the article did look okay, around that. 
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+
+> -----Original Message-----
+> From: tuhs-bounces at minnie.tuhs.org
+[mailto:tuhs-bounces at minnie.tuhs.org] On
+> Behalf Of Michael Davidson
+> Sent: Monday, April 12, 2004 6:30 PM
+> To: Gregg C Levine; 'Kenneth Stailey'; tuhs at tuhs.org
+> Subject: Re: [TUHS] Just noticed an article on John Lions on
+Salon.com
+> 
+> > Hello from Gregg C Levine
+> > An interesting discourse on the subject of the gentleman's books.
+I
+> > haven't found them, as yet. However, I did find one discrepancy in
+the
+> > article. I suppose Dennis Ritchie will comment eventually, but,
+here
+> > goes, his name, and Brian Kernighan are mentioned on my copy of
+the
+> > book on the C programming language. The only time I've seen the
+other
+> > fellow's name mentioned was in regards to another book on UNIX.
+> 
+> I'm not sure what discrepancy you are referring to - the article
+looked
+> quite accurate to me.
+> 
+> Which particular "other fellow" are you thinking of?
+> 
+> 
+> 
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From norman at nose.cs.utoronto.ca  Tue Apr 13 10:01:26 2004
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Mon, 12 Apr 2004 20:01:26 -0400
+Subject: [TUHS] Just noticed an article on John Lions on Salon.com
+Message-ID: <20040413000202.5CCA71F4F@minnie.tuhs.org>
+
+  Hello from Gregg C Levine
+  Um this fellow, Ken Thompson. According to my copy of the book on the
+  C programming language, only Brian Kernighan, and David Ritchie, are
+  mentioned. Ken Thompson, is only mentioned as being a partner in the
+  creation of UNIX, I think he was a co-author in the book mentioned in
+  titles pages, describing the UNIX programming environment.
+
+Ken's name is on a number of interesting papers from the early days of
+UNIX, including the original one in CACM, but so far as I can remember
+he was never the official author or co-author of a UNIX book.  You may
+be thinking of `The UNIX Programming Environment,' by Kernighan and Pike.
+
+I suppose those who don't know both Ken Thompson and Rob Pike might
+confuse them, especially since (I think) they both reside in the Bay
+Area now.  It may help to know that Rob's nose comes nearer to a
+sharp point, and that Ken is a licensed pilot.  They are certainly
+different people; I have seen them in the same room many times.
+
+Norman Wilson
+Toronto ON
+
+From hansolofalcon at worldnet.att.net  Tue Apr 13 10:19:56 2004
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Mon, 12 Apr 2004 20:19:56 -0400
+Subject: [TUHS] Just noticed an article on John Lions on Salon.com
+In-Reply-To: <20040413000202.5CCA71F4F@minnie.tuhs.org>
+Message-ID: <003e01c420ed$0d178640$6401a8c0@who5>
+
+Hello (again) from Gregg C Levine
+I believe your right. And I am willing to concede the points regarding
+the two gentlemen in question. However, all of the documents I have
+seen within the past ten years regarding the birth, and history of
+UNIX, all have mentioned both Brian Kernighan, and David Ritchie are
+mentioned. Complete with the appropriately selected story as well.
+
+I suspect however, that in that early paper, Ken Thompson is indeed
+mentioned, however the web page in question does not go into enough
+detail, as it should.   
+
+And regarding the book, your right. I've got my copy of the C book
+across the room, and normally don't refer to it unless necessary.
+
+However, I would really like to have Dennis comment. Not that I doubt
+you, I don't.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+
+> -----Original Message-----
+> From: tuhs-bounces at minnie.tuhs.org
+[mailto:tuhs-bounces at minnie.tuhs.org] On
+> Behalf Of Norman Wilson
+> Sent: Monday, April 12, 2004 8:01 PM
+> To: tuhs at tuhs.org
+> Subject: RE: [TUHS] Just noticed an article on John Lions on
+Salon.com
+> 
+>   Hello from Gregg C Levine
+>   Um this fellow, Ken Thompson. According to my copy of the book on
+the
+>   C programming language, only Brian Kernighan, and David Ritchie,
+are
+>   mentioned. Ken Thompson, is only mentioned as being a partner in
+the
+>   creation of UNIX, I think he was a co-author in the book mentioned
+in
+>   titles pages, describing the UNIX programming environment.
+> 
+> Ken's name is on a number of interesting papers from the early days
+of
+> UNIX, including the original one in CACM, but so far as I can
+remember
+> he was never the official author or co-author of a UNIX book.  You
+may
+> be thinking of `The UNIX Programming Environment,' by Kernighan and
+Pike.
+> 
+> I suppose those who don't know both Ken Thompson and Rob Pike might
+> confuse them, especially since (I think) they both reside in the Bay
+> Area now.  It may help to know that Rob's nose comes nearer to a
+> sharp point, and that Ken is a licensed pilot.  They are certainly
+> different people; I have seen them in the same room many times.
+> 
+> Norman Wilson
+> Toronto ON
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From michael_davidson at pacbell.net  Tue Apr 13 10:58:32 2004
+From: michael_davidson at pacbell.net (Michael Davidson)
+Date: Mon, 12 Apr 2004 17:58:32 -0700
+Subject: [TUHS] Just noticed an article on John Lions on Salon.com
+References: <002e01c420e7$8b84ffe0$6401a8c0@who5>
+Message-ID: <003201c420f2$710146a0$ea8ca140@pacbell.net>
+
+> Hello from Gregg C Levine
+> Um this fellow, Ken Thompson. According to my copy of the book on the
+> C programming language, only Brian Kernighan, and David Ritchie, are
+> mentioned. Ken Thompson, is only mentioned as being a partner in the
+> creation of UNIX,
+
+Yes, I thought you might have been referring to Ken Thompson, but I wasn't
+sure.
+
+The Salon article refers to:
+
+"Ken Thompson and Dennis Ritchie, the two Bell Labs employees who created
+ Unix and the C programming language"
+
+I suspect that the only real inaccuracy here is that (as both Dennis and Ken
+would
+be quick to point out) UNIX was the result of a collaborative effort
+involving
+more than just two people, but if one had to pick just two names then they
+would
+undoubtedly have to be Ritchie and Thompson ...
+
+... and if Thompson isn't normally closely associated with the development
+of C
+it's worth remembering that without "B" there would have been no "C" ...
+
+http://cm.bell-labs.com/cm/cs/who/dmr/kbman.html
+
+
+From james at peacemax.org  Tue Apr 13 11:36:17 2004
+From: james at peacemax.org (J.D.)
+Date: Mon, 12 Apr 2004 19:36:17 -0600
+Subject: [TUHS] "Lions' Commentary on UNIX 6th Edition, with Source"
+Message-ID: <407B4411.9030506@peacemax.org>
+
+To all concerned,
+I decided to find out if the book were still available.
+Per Dan Doernberg at Peer-To-Peer Communications:
+
+>The "Lions' book" is temporarily out of stock;  we expect to 
+>have it available in approximately 2-3 months.
+>
+>Background--- Peer-to-Peer Communications is the original 
+>publisher of "Lions' Commentary on Unix", but we sold the book 
+>to Annabooks/RTC Group in 1999. RTC decided not to reprint it 
+>when they ran out of stock, so we took the publishing rights 
+>back and are now working to make reprint arrangements.
+>
+>
+>Sincerely,
+>
+>
+>Customer Service
+>Peer-to-Peer Communications Inc.
+>service at peer-to-peer.com
+
+
+
+Thank you,
+James Falknor
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/x-pkcs7-signature
+Size: 4766 bytes
+Desc: S/MIME Cryptographic Signature
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040412/d91d5657/attachment.bin>
+
+From kwall at kurtwerks.com  Tue Apr 13 11:57:44 2004
+From: kwall at kurtwerks.com (Kurt Wall)
+Date: Mon, 12 Apr 2004 21:57:44 -0400
+Subject: [TUHS] "Lions' Commentary on UNIX 6th Edition, with Source"
+In-Reply-To: <407B4411.9030506@peacemax.org>
+References: <407B4411.9030506@peacemax.org>
+Message-ID: <20040413015744.GE14895@kurtwerks.com>
+
+In a 8.0K blaze of typing glory, J.D. wrote:
+> To all concerned,
+> I decided to find out if the book were still available.
+> Per Dan Doernberg at Peer-To-Peer Communications:
+> 
+> >The "Lions' book" is temporarily out of stock;  we expect to 
+> >have it available in approximately 2-3 months.
+> >
+> >Background--- Peer-to-Peer Communications is the original 
+> >publisher of "Lions' Commentary on Unix", but we sold the book 
+> >to Annabooks/RTC Group in 1999. RTC decided not to reprint it 
+> >when they ran out of stock, so we took the publishing rights 
+> >back and are now working to make reprint arrangements.
+
+This is the same story Peer-to-Peer gave me about two months ago
+when I enquired after a copy of Lions' Commentary. I hope they
+are able to arrange the reprint. FWIW, they offered to take a
+pre-order, which offer I declined because they were disappointingly
+vague about when the order would be filled. :-(
+
+Regards,
+
+Kurt
+-- 
+The average income of the modern teenager is about 2 a.m.
+
+From dmr at plan9.bell-labs.com  Tue Apr 13 13:35:46 2004
+From: dmr at plan9.bell-labs.com (dmr at plan9.bell-labs.com)
+Date: Mon, 12 Apr 2004 23:35:46 -0400
+Subject: [TUHS] Re: Just noticed an article on John Lions on Salon.com
+Message-ID: <0a92de8522af0df0ed3961392286abca@plan9.bell-labs.com>
+
+A quick guide; but it doesn't distinguish Pike.
+He's probably the slimmest and shortest, and remains 
+the least bearded the last time I saw him.
+
+   From: dmr at alice.att.com (Dennis Ritchie)
+   Subject: re: UNIX
+   Message-ID: <11613 at alice.att.com>
+   Date: 14 Nov 90 05:53:03 GMT
+   Organization: AT&T Bell Laboratories, Murray Hill NJ
+   
+   I read,
+   
+    > Looks like folks are now beginning to credit the
+    > development of UNIX to Kernighan and Ritchie, but
+    > I thought the principal investigators were
+    > *Thompson* and Ritchie.  Did something change?
+   
+   The differences between Kernighan Ritchie Thompson
+   are real but very subtle. We all look alike (middle
+   aged with scruffy graying beards).  Note these
+   distinctions:
+   
+   -- Kernighan is slimmest, Ritchie middlest, Thompson
+      heaviest in body build
+   -- Ritchie got contacts a couple of years ago and so
+      is the only current non-glasses wearer
+   -- Thompson wouldn't touch netnews with a pole,
+      Kernighan secretly gets misc.invest and misc.taxes
+      mailed to him, Ritchie reads it more than is good
+      for him and occasionally contributes
+   -- Ritchie is the only one who has met five people
+      who have appeared on David Letterman (Penn,
+      Teller, Rob Pike, Mayor Koch, and the guy who
+      raised the biggest hog in Ohio)
+   -- Kernighan has written ten times as much readable
+      prose as has Ritchie, Ritchie ten times as much as
+      Thompson.  It's tempting to say that the reverse
+      proportions hold for code, but in fact Kernighan
+      and Ritchie are more nearly tied and Thompson
+      wipes us both out.
+   
+           Dennis
+
+From cdl at mpl.ucsd.edu  Tue Apr 13 15:36:13 2004
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Mon, 12 Apr 2004 22:36:13 -0700 (PDT)
+Subject: [TUHS] Just noticed an article on John Lions on Salon.com
+Message-ID: <200404130536.i3D5aDZ13936@opihi.ucsd.edu>
+
+> From: "Gregg C Levine" <hansolofalcon at worldnet.att.net>
+> To: "'Kenneth Stailey'" <kstailey at yahoo.com>, <tuhs at tuhs.org>
+> Subject: RE: [TUHS] Just noticed an article on John Lions on Salon.com
+> Date: Mon, 12 Apr 2004 14:51:11 -0400
+> 
+> Hello from Gregg C Levine
+> An interesting discourse on the subject of the gentleman's books. I
+> haven't found them, as yet. However, I did find one discrepancy in the
+> article. I suppose Dennis Ritchie will comment eventually, but, here
+> goes, his name, and Brian Kernighan are mentioned on my copy of the
+> book on the C programming language. The only time I've seen the other
+> fellow's name mentioned was in regards to another book on UNIX.
+
+By "the other fellow" do you mean Ken Thompson?
+If so, you are far behind in your knowledge of Unix history.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+From cdl at mpl.ucsd.edu  Tue Apr 13 15:44:10 2004
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Mon, 12 Apr 2004 22:44:10 -0700 (PDT)
+Subject: [TUHS] Just noticed an article on John Lions on Salon.com
+Message-ID: <200404130544.i3D5iA513959@opihi.ucsd.edu>
+
+> From: "Gregg C Levine" <hansolofalcon at worldnet.att.net>
+> To: "'Norman Wilson'" <norman at nose.cs.utoronto.ca>, <tuhs at tuhs.org>
+> Subject: RE: [TUHS] Just noticed an article on John Lions on Salon.com
+> Date: Mon, 12 Apr 2004 20:19:56 -0400
+> 
+> Hello (again) from Gregg C Levine
+> I believe your right. And I am willing to concede the points regarding
+> the two gentlemen in question. However, all of the documents I have
+> seen within the past ten years regarding the birth, and history of
+> UNIX, all have mentioned both Brian Kernighan, and David Ritchie are
+> mentioned. Complete with the appropriately selected story as well.
+> 
+> I suspect however, that in that early paper, Ken Thompson is indeed
+> mentioned, however the web page in question does not go into enough
+> detail, as it should.   
+> 
+> And regarding the book, your right. I've got my copy of the C book
+> across the room, and normally don't refer to it unless necessary.
+
+You know, Unix is not 100% identical to C.
+
+Before continuing this line of discussion, you really should find a copy of
+Bell System Technical Journal, July/August 1978 Vol. 57, No. 6., Part 2
+where Ritchie and Thomson describe the design of Unix.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+From grog at lemis.com  Tue Apr 13 17:20:32 2004
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Tue, 13 Apr 2004 16:50:32 +0930
+Subject: [TUHS] Just noticed an article on John Lions on Salon.com
+In-Reply-To: <20040413000202.5CCA71F4F@minnie.tuhs.org>
+	<002e01c420e7$8b84ffe0$6401a8c0@who5>
+	<001601c420dd$a343b040$ea8ca140@pacbell.net>
+References: <20040413000202.5CCA71F4F@minnie.tuhs.org>
+	<001601c420dd$a343b040$ea8ca140@pacbell.net>
+	<002e01c420e7$8b84ffe0$6401a8c0@who5> <000d01c420bf$205e2660$6401a8c0@who5>
+	<001601c420dd$a343b040$ea8ca140@pacbell.net>
+Message-ID: <20040413072032.GV29128@wantadilla.lemis.com>
+
+On Monday, 12 April 2004 at 15:29:36 -0700, Michael Davidson wrote:
+>> Hello from Gregg C Levine
+>> An interesting discourse on the subject of the gentleman's books. I
+>> haven't found them, as yet. However, I did find one discrepancy in the
+>> article. I suppose Dennis Ritchie will comment eventually, but, here
+>> goes, his name, and Brian Kernighan are mentioned on my copy of the
+>> book on the C programming language. The only time I've seen the other
+>> fellow's name mentioned was in regards to another book on UNIX.
+>
+> I'm not sure what discrepancy you are referring to - the article looked
+> quite accurate to me.
+>
+> Which particular "other fellow" are you thinking of?
+
+On Monday, 12 April 2004 at 19:40:31 -0400, Gregg C Levine wrote:
+> Hello from Gregg C Levine
+> Um this fellow, Ken Thompson. According to my copy of the book on the
+> C programming language, only Brian Kernighan, and David Ritchie, are
+> mentioned. Ken Thompson, is only mentioned as being a partner in the
+> creation of UNIX,
+
+Not that I'm a great believer in religion, but this comes close to
+sacrilege.  I would have thought that people on this forum (you,
+Gregg, certainly included) would have known that ken and dmr (to use
+their login names) are so much the basis of UNIX that up to and
+including the Sixth Edition the directory tree was divided into two
+directories named after them:
+
+   === root at wantadilla (/dev/ttyp1) /home/grog 24 -> cd /src/UNIX/Sixth-Edition/
+   === root at wantadilla (/dev/ttyp1) /src/UNIX/Sixth-Edition 25 -> ls -l usr/sys/
+   total 1
+   -r--r--r--  1 grog  wheel   3016 Jul 18  1975 buf.h
+   dr-xr-xr-x  2 grog  wheel    512 Jul 19  1975 conf
+   -r--r--r--  1 grog  wheel    916 May 14  1975 conf.h
+   dr-xr-xr-x  2 grog  wheel    512 Jul 18  1975 dmr
+   -r--r--r--  1 grog  wheel    407 May 14  1975 file.h
+   -r--r--r--  1 grog  wheel    949 May 14  1975 filsys.h
+   -r--r--r--  1 grog  wheel    533 May 14  1975 ino.h
+   -r--r--r--  1 grog  wheel   1693 Jul 18  1975 inode.h
+   dr-xr-xr-x  2 grog  wheel    512 Jul 18  1975 ken
+   -r--r--r--  1 grog  wheel  58990 Jul 18  1975 lib1
+   -r--r--r--  1 grog  wheel  45578 Jul 18  1975 lib2
+   -r--r--r--  1 grog  wheel   2147 May 14  1975 param.h
+   -r--r--r--  1 grog  wheel   1481 Jul 18  1975 proc.h
+   -r--r--r--  1 grog  wheel    274 May 14  1975 reg.h
+   -r--r--r--  1 grog  wheel    900 Jul 18  1975 run
+   -r--r--r--  1 grog  wheel    533 Jul 18  1975 seg.h
+   -r--r--r--  1 grog  wheel   1749 May 14  1975 systm.h
+   -r--r--r--  1 grog  wheel    380 May 14  1975 text.h
+   -r--r--r--  1 grog  wheel   2320 May 14  1975 tty.h
+   -r--r--r--  1 grog  wheel   2842 Jul 18  1975 user.h
+   === root at wantadilla (/dev/ttyp1) /src/UNIX/Sixth-Edition 26 -> 
+
+"The other fellow" indeed!  As dmr says, he wrote more code than he
+and Kernighan put together (though in this source tree their input is
+remarkably balanced).
+
+On Monday, 12 April 2004 at 20:01:26 -0400, Norman Wilson wrote:
+>   Hello from Gregg C Levine
+>   Um this fellow, Ken Thompson. According to my copy of the book on the
+>   C programming language, only Brian Kernighan, and David Ritchie, are
+>   mentioned. Ken Thompson, is only mentioned as being a partner in the
+>   creation of UNIX, I think he was a co-author in the book mentioned in
+>   titles pages, describing the UNIX programming environment.
+>
+> Ken's name is on a number of interesting papers from the early days of
+> UNIX, including the original one in CACM, but so far as I can remember
+> he was never the official author or co-author of a UNIX book.  You may
+> be thinking of `The UNIX Programming Environment,' by Kernighan and Pike.
+>
+> I suppose those who don't know both Ken Thompson and Rob Pike might
+> confuse them, especially since (I think) they both reside in the Bay
+> Area now.
+
+I've never seen ken without a beard, though there's a photo of him
+without one taken a very long time ago.  I've never seen Rob Pike with
+a beard.
+
+> They are certainly different people; I have seen them in the same
+> room many times.
+
+Ah, the marvels of time-sharing!
+
+Greg
+--
+Note: I discard all HTML mail unseen.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040413/b19805b2/attachment.sig>
+
+From wes.parish at paradise.net.nz  Tue Apr 13 18:35:23 2004
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Tue, 13 Apr 2004 20:35:23 +1200
+Subject: [TUHS] "Lions' Commentary on UNIX 6th Edition, with Source"
+In-Reply-To: <407B4411.9030506@peacemax.org>
+References: <407B4411.9030506@peacemax.org>
+Message-ID: <200404132035.23944.wes.parish@paradise.net.nz>
+
+Good to hear - though since I got my reprint back in 1997, I'm not lacking.  
+
+On Tue, 13 Apr 2004 13:36, J.D. wrote:
+> To all concerned,
+> I decided to find out if the book were still available.
+>
+> Per Dan Doernberg at Peer-To-Peer Communications:
+> >The "Lions' book" is temporarily out of stock;  we expect to
+> >have it available in approximately 2-3 months.
+> >
+> >Background--- Peer-to-Peer Communications is the original
+> >publisher of "Lions' Commentary on Unix", but we sold the book
+> >to Annabooks/RTC Group in 1999. RTC decided not to reprint it
+> >when they ran out of stock, so we took the publishing rights
+> >back and are now working to make reprint arrangements.
+> >
+> >
+> >Sincerely,
+> >
+> >
+> >Customer Service
+> >Peer-to-Peer Communications Inc.
+> >service at peer-to-peer.com
+>
+> Thank you,
+> James Falknor
+
+-- 
+Wesley Parish
+* * *
+Clinersterton beademung - in all of love.  RIP James Blish
+* * *
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+
+From hansolofalcon at worldnet.att.net  Tue Apr 13 20:39:28 2004
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Tue, 13 Apr 2004 06:39:28 -0400
+Subject: [TUHS] Just noticed an article on John Lions on Salon.com
+In-Reply-To: <200404130536.i3D5aDZ13936@opihi.ucsd.edu>
+Message-ID: <004c01c42143$99963520$6401a8c0@who5>
+
+Hello (again) from Gregg C Levine
+Not quite Carl. More like behind schedule. When I got started in this,
+about a year earlier, or maybe more like two years earlier, the
+library where I did most of my research didn't have the copy of the
+Journal available that you thought of, in your next message. This one,
+Bell System Technical Journal, July/August 1978 Vol. 57, No. 6., Part
+2. They claimed that they could not find it. Knowing what I know now
+about the way that library works, it only confirms that they were
+right. However its been on my schedule to find, since then. Probably
+this week, since you've brought it up.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+
+> -----Original Message-----
+> From: tuhs-bounces at minnie.tuhs.org
+[mailto:tuhs-bounces at minnie.tuhs.org] On
+> Behalf Of Carl Lowenstein
+> Sent: Tuesday, April 13, 2004 1:36 AM
+> To: tuhs at tuhs.org
+> Subject: RE: [TUHS] Just noticed an article on John Lions on
+Salon.com
+> 
+> > From: "Gregg C Levine" <hansolofalcon at worldnet.att.net>
+> > To: "'Kenneth Stailey'" <kstailey at yahoo.com>, <tuhs at tuhs.org>
+> > Subject: RE: [TUHS] Just noticed an article on John Lions on
+Salon.com
+> > Date: Mon, 12 Apr 2004 14:51:11 -0400
+> >
+> > Hello from Gregg C Levine
+> > An interesting discourse on the subject of the gentleman's books.
+I
+> > haven't found them, as yet. However, I did find one discrepancy in
+the
+> > article. I suppose Dennis Ritchie will comment eventually, but,
+here
+> > goes, his name, and Brian Kernighan are mentioned on my copy of
+the
+> > book on the C programming language. The only time I've seen the
+other
+> > fellow's name mentioned was in regards to another book on UNIX.
+> 
+> By "the other fellow" do you mean Ken Thompson?
+> If so, you are far behind in your knowledge of Unix history.
+> 
+>     carl
+> --
+>     carl lowenstein         marine physical lab     u.c. san diego
+>                                                  clowenst at ucsd.edu
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From hansolofalcon at worldnet.att.net  Tue Apr 13 20:41:54 2004
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Tue, 13 Apr 2004 06:41:54 -0400
+Subject: [TUHS] Just noticed an article on John Lions on Salon.com
+In-Reply-To: <20040413072032.GV29128@wantadilla.lemis.com>
+Message-ID: <004d01c42143$f05f0120$6401a8c0@who5>
+
+Hello (again) from Gregg C Levine
+Funny you should be bringing that into the subject, Greg! Every time I
+booted an image from the repository here, at TUHS, or directly from
+the home SIMH site, I didn't bother to check those features. I just
+managed to login, and do what prompted me to do that. The next time I
+do so, which should be this week, I'll certainly look for it.
+
+And I thought this would be a short thread.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+
+> -----Original Message-----
+> From: Greg 'groggy' Lehey [mailto:grog at lemis.com]
+> Sent: Tuesday, April 13, 2004 3:21 AM
+> To: Michael Davidson; Gregg C Levine; Norman Wilson
+> Cc: 'Kenneth Stailey'; tuhs at tuhs.org
+> Subject: Re: [TUHS] Just noticed an article on John Lions on
+Salon.com
+> 
+> On Monday, 12 April 2004 at 15:29:36 -0700, Michael Davidson wrote:
+> >> Hello from Gregg C Levine
+> >> An interesting discourse on the subject of the gentleman's books.
+I
+> >> haven't found them, as yet. However, I did find one discrepancy
+in the
+> >> article. I suppose Dennis Ritchie will comment eventually, but,
+here
+> >> goes, his name, and Brian Kernighan are mentioned on my copy of
+the
+> >> book on the C programming language. The only time I've seen the
+other
+> >> fellow's name mentioned was in regards to another book on UNIX.
+> >
+> > I'm not sure what discrepancy you are referring to - the article
+looked
+> > quite accurate to me.
+> >
+> > Which particular "other fellow" are you thinking of?
+> 
+> On Monday, 12 April 2004 at 19:40:31 -0400, Gregg C Levine wrote:
+> > Hello from Gregg C Levine
+> > Um this fellow, Ken Thompson. According to my copy of the book on
+the
+> > C programming language, only Brian Kernighan, and David Ritchie,
+are
+> > mentioned. Ken Thompson, is only mentioned as being a partner in
+the
+> > creation of UNIX,
+> 
+> Not that I'm a great believer in religion, but this comes close to
+> sacrilege.  I would have thought that people on this forum (you,
+> Gregg, certainly included) would have known that ken and dmr (to use
+> their login names) are so much the basis of UNIX that up to and
+> including the Sixth Edition the directory tree was divided into two
+> directories named after them:
+> 
+>    === root at wantadilla (/dev/ttyp1) /home/grog 24 -> cd
+/src/UNIX/Sixth-Edition/
+>    === root at wantadilla (/dev/ttyp1) /src/UNIX/Sixth-Edition 25 -> ls
+-l usr/sys/
+>    total 1
+>    -r--r--r--  1 grog  wheel   3016 Jul 18  1975 buf.h
+>    dr-xr-xr-x  2 grog  wheel    512 Jul 19  1975 conf
+>    -r--r--r--  1 grog  wheel    916 May 14  1975 conf.h
+>    dr-xr-xr-x  2 grog  wheel    512 Jul 18  1975 dmr
+>    -r--r--r--  1 grog  wheel    407 May 14  1975 file.h
+>    -r--r--r--  1 grog  wheel    949 May 14  1975 filsys.h
+>    -r--r--r--  1 grog  wheel    533 May 14  1975 ino.h
+>    -r--r--r--  1 grog  wheel   1693 Jul 18  1975 inode.h
+>    dr-xr-xr-x  2 grog  wheel    512 Jul 18  1975 ken
+>    -r--r--r--  1 grog  wheel  58990 Jul 18  1975 lib1
+>    -r--r--r--  1 grog  wheel  45578 Jul 18  1975 lib2
+>    -r--r--r--  1 grog  wheel   2147 May 14  1975 param.h
+>    -r--r--r--  1 grog  wheel   1481 Jul 18  1975 proc.h
+>    -r--r--r--  1 grog  wheel    274 May 14  1975 reg.h
+>    -r--r--r--  1 grog  wheel    900 Jul 18  1975 run
+>    -r--r--r--  1 grog  wheel    533 Jul 18  1975 seg.h
+>    -r--r--r--  1 grog  wheel   1749 May 14  1975 systm.h
+>    -r--r--r--  1 grog  wheel    380 May 14  1975 text.h
+>    -r--r--r--  1 grog  wheel   2320 May 14  1975 tty.h
+>    -r--r--r--  1 grog  wheel   2842 Jul 18  1975 user.h
+>    === root at wantadilla (/dev/ttyp1) /src/UNIX/Sixth-Edition 26 ->
+> 
+> "The other fellow" indeed!  As dmr says, he wrote more code than he
+> and Kernighan put together (though in this source tree their input
+is
+> remarkably balanced).
+> 
+> On Monday, 12 April 2004 at 20:01:26 -0400, Norman Wilson wrote:
+> >   Hello from Gregg C Levine
+> >   Um this fellow, Ken Thompson. According to my copy of the book
+on the
+> >   C programming language, only Brian Kernighan, and David Ritchie,
+are
+> >   mentioned. Ken Thompson, is only mentioned as being a partner in
+the
+> >   creation of UNIX, I think he was a co-author in the book
+mentioned in
+> >   titles pages, describing the UNIX programming environment.
+> >
+> > Ken's name is on a number of interesting papers from the early
+days of
+> > UNIX, including the original one in CACM, but so far as I can
+remember
+> > he was never the official author or co-author of a UNIX book.  You
+may
+> > be thinking of `The UNIX Programming Environment,' by Kernighan
+and Pike.
+> >
+> > I suppose those who don't know both Ken Thompson and Rob Pike
+might
+> > confuse them, especially since (I think) they both reside in the
+Bay
+> > Area now.
+> 
+> I've never seen ken without a beard, though there's a photo of him
+> without one taken a very long time ago.  I've never seen Rob Pike
+with
+> a beard.
+> 
+> > They are certainly different people; I have seen them in the same
+> > room many times.
+> 
+> Ah, the marvels of time-sharing!
+> 
+> Greg
+> --
+> Note: I discard all HTML mail unseen.
+> Finger grog at lemis.com for PGP public key.
+> See complete headers for address and phone numbers.
+
+
+From Hellwig.Geisse at mni.fh-giessen.de  Tue Apr 13 21:33:06 2004
+From: Hellwig.Geisse at mni.fh-giessen.de (Hellwig.Geisse at mni.fh-giessen.de)
+Date: Tue, 13 Apr 2004 13:33:06 +0200 (CEST)
+Subject: [TUHS] Just noticed an article on John Lions on Salon.com
+In-Reply-To: <004c01c42143$99963520$6401a8c0@who5>
+Message-ID: <XFMail.20040413133306.Hellwig.Geisse@mni.fh-giessen.de>
+
+Hi Gregg,
+
+On 13-Apr-2004 Gregg C Levine wrote:
+> [..]
+> Bell System Technical Journal, July/August 1978 Vol. 57, No. 6., Part
+> 2. They claimed that they could not find it. Knowing what I know now
+> about the way that library works, it only confirms that they were
+> right. However its been on my schedule to find, since then. Probably
+> this week, since you've brought it up.
+
+you can find many of the documents cited in this issue in the
+UNIX Programmer's Manual for the Seventh Edition, Volume 2B,
+which is included, for example, in the package
+http://telexx.mni.fh-giessen.de/PDP11-UNIX/unix-v7-3.tar.gz
+
+Regards,
+Hellwig
+
+From tuhs at rops.org  Tue Apr 13 22:13:17 2004
+From: tuhs at rops.org (Roger Willcocks)
+Date: Tue, 13 Apr 2004 13:13:17 +0100
+Subject: [TUHS] Just noticed an article on John Lions on Salon.com
+Message-ID: <006b01c42150$b449eb20$dc32a8c0@barney>
+
+> Hello from Gregg C Levine
+> Um this fellow, Ken Thompson. According to my copy of the book on the
+> C programming language, only Brian Kernighan, and David Ritchie, are
+> mentioned. Ken Thompson, is only mentioned as being a partner in the
+> creation of UNIX, I think he was a co-author in the book mentioned in
+> titles pages, describing the UNIX programming environment.
+
+> And yes, the rest of the article did look okay, around that.
+
+...um... see http://www.bell-labs.com/news/1999/april/28/1.html:
+
+"Ritchie and Thompson Receive National Medal of Technology from President
+Clinton"
+
+--
+Roger
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040413/ac6d6c27/attachment.html>
+
+From kstailey at yahoo.com  Tue Apr 13 23:28:30 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Tue, 13 Apr 2004 06:28:30 -0700 (PDT)
+Subject: [TUHS] An Interview with John Lions
+Message-ID: <20040413132830.53364.qmail@web60506.mail.yahoo.com>
+
+The PDF when viewed in acroread is rather obnoxious to my system, it turns off
+controls and the window manager frame and takes over the whole window but love
+that google cache.
+
+http://tinyurl.com/3x4ld
+
+
+
+	
+		
+__________________________________
+Do you Yahoo!?
+Yahoo! Small Business $15K Web Design Giveaway 
+http://promotions.yahoo.com/design_giveaway/
+
+From list-tuhs at cosmic.com  Wed Apr 14 08:35:02 2004
+From: list-tuhs at cosmic.com (Mirian Crzig Lennox)
+Date: Tue, 13 Apr 2004 18:35:02 -0400
+Subject: [TUHS] Booting v6
+References: <Pine.GSO.4.58.0404121045170.21192@pegasus.cc.ucf.edu>
+Message-ID: <lj8ygzv755.fsf@gallifrey.i.cosmic.com>
+
+ewayte at pegasus.cc.ucf.edu (Eric Wayte) writes:
+> I tried a few months ago and it is no longer available from them.  They
+> suggested I try used book web pages.  There is a copy available on
+> half.com as of this writing for around $100.
+
+Wow.
+
+Time to start Xeroxing it again...  :)
+
+cheers,
+Mirian
+
+From grog at lemis.com  Wed Apr 14 09:17:46 2004
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Wed, 14 Apr 2004 08:47:46 +0930
+Subject: [TUHS] Booting v6
+In-Reply-To: <lj8ygzv755.fsf@gallifrey.i.cosmic.com>
+References: <Pine.GSO.4.58.0404121045170.21192@pegasus.cc.ucf.edu>
+	<lj8ygzv755.fsf@gallifrey.i.cosmic.com>
+Message-ID: <20040413231746.GD79564@wantadilla.lemis.com>
+
+On Tuesday, 13 April 2004 at 18:35:02 -0400, Mirian Crzig Lennox wrote:
+> ewayte at pegasus.cc.ucf.edu (Eric Wayte) writes:
+>> I tried a few months ago and it is no longer available from them.  They
+>> suggested I try used book web pages.  There is a copy available on
+>> half.com as of this writing for around $100.
+>
+> Wow.
+>
+> Time to start Xeroxing it again...  :)
+
+Somewhere I had a TeX source file of it that went round
+alt.folklore.computers about ten years ago.  I took a brief look
+yesterday but couldn't find it.  If I try harder, there's a good
+chance that I will.  Would anybody be interested?
+
+Greg
+--
+Note: I discard all HTML mail unseen.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040414/464de3ea/attachment.sig>
+
+From shoppa at trailing-edge.com  Wed Apr 14 10:06:43 2004
+From: shoppa at trailing-edge.com (Tim Shoppa)
+Date: Tue, 13 Apr 2004 20:06:43 -0400
+Subject: [TUHS] Booting v6
+In-Reply-To: <lj8ygzv755.fsf@gallifrey.i.cosmic.com>
+References: <Pine.GSO.4.58.0404121045170.21192@pegasus.cc.ucf.edu>
+ <lj8ygzv755.fsf@gallifrey.i.cosmic.com>
+Message-ID: <407C8093.nailC4G1164MX@mini-me.trailing-edge.com>
+
+[Lions book]
+> Wow. Time to start Xeroxing it again...  :)
+
+Latex source to the book was posted to alt.folklore.computers circa
+1994.  I'm guessing that the poster (a "Leo") typed it in by hand
+given the comments that came with the readme.
+
+Tim.
+
+From grog at lemis.com  Wed Apr 14 10:16:25 2004
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Wed, 14 Apr 2004 09:46:25 +0930
+Subject: [TUHS] Lions book (was: Booting v6)
+In-Reply-To: <407C8093.nailC4G1164MX@mini-me.trailing-edge.com>
+References: <Pine.GSO.4.58.0404121045170.21192@pegasus.cc.ucf.edu>
+	<lj8ygzv755.fsf@gallifrey.i.cosmic.com>
+	<407C8093.nailC4G1164MX@mini-me.trailing-edge.com>
+Message-ID: <20040414001625.GH79564@wantadilla.lemis.com>
+
+On Tuesday, 13 April 2004 at 20:06:43 -0400, Tim Shoppa wrote:
+> [Lions book]
+>> Wow. Time to start Xeroxing it again...  :)
+>
+> Latex source to the book was posted to alt.folklore.computers circa
+> 1994.  I'm guessing that the poster (a "Leo") typed it in by hand
+> given the comments that came with the readme.
+
+Yes, that's the one I got.  From memory, the subject was "Leo's notes"
+and it was uuencoded or some such.  Strangely, not many people got it.
+
+Do you still have the text?  I haven't found mine yet, but a number of
+people have expressed interest.
+
+Greg
+--
+Note: I discard all HTML mail unseen.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040414/afebe477/attachment.sig>
+
+From macbiesz at optonline.net  Wed Apr 14 10:55:38 2004
+From: macbiesz at optonline.net (Maciek Bieszczad)
+Date: Tue, 13 Apr 2004 20:55:38 -0400
+Subject: [TUHS] Lions book (was: Booting v6)
+In-Reply-To: <20040414001625.GH79564@wantadilla.lemis.com>
+Message-ID: <000901c421bb$340106e0$04fea8c0@DELL>
+
+You can download PostScript and PDF versions of the Lions book here:
+
+http://morris.xsdeny.net/data/docs/unix/lionc.ps
+http://morris.xsdeny.net/data/docs/unix/lionc.pdf
+
+You can also view Google's rendition here:
+
+http://216.239.51.104/search?q=cache:www.upl.cs.wisc.edu/~epaulson/lionc
+.ps
+
+In my opinion, the LaTeX version would still be interesting. The
+previously mentioned files themselves were probably produced from that
+source.
+
+
+From peter.jeremy at alcatel.com.au  Wed Apr 14 11:16:26 2004
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Wed, 14 Apr 2004 11:16:26 +1000
+Subject: [TUHS] Lions book (was: Booting v6)
+In-Reply-To: <20040414001625.GH79564@wantadilla.lemis.com>
+References: <Pine.GSO.4.58.0404121045170.21192@pegasus.cc.ucf.edu>
+	<lj8ygzv755.fsf@gallifrey.i.cosmic.com>
+	<407C8093.nailC4G1164MX@mini-me.trailing-edge.com>
+	<20040414001625.GH79564@wantadilla.lemis.com>
+Message-ID: <20040414011625.GK10121@gsmx07.alcatel.com.au>
+
+On 2004-Apr-14 09:46:25 +0930, Greg 'groggy' Lehey <grog at lemis.com> wrote:
+>On Tuesday, 13 April 2004 at 20:06:43 -0400, Tim Shoppa wrote:
+>> [Lions book]
+>>> Wow. Time to start Xeroxing it again...  :)
+>>
+>> Latex source to the book was posted to alt.folklore.computers circa
+>> 1994.  I'm guessing that the poster (a "Leo") typed it in by hand
+>> given the comments that came with the readme.
+>
+>Yes, that's the one I got.  From memory, the subject was "Leo's notes"
+>and it was uuencoded or some such.  Strangely, not many people got it.
+
+Google agrees that the subject was "Leo's notes" and it was posted in
+7 uuencoded parts in mid-June 1994.  Unfortunately, Google doesn't
+appear to have kept a copy of the posting (just the whinges about the
+size).
+
+I don't remember seeing it (I don't think I looked at AFC very often then)
+and don't seem to have a copy.  I'd also be interested if anyone still
+has a copy.
+
+-- 
+Peter Jeremy
+
+From kwall at kurtwerks.com  Wed Apr 14 11:33:41 2004
+From: kwall at kurtwerks.com (Kurt Wall)
+Date: Tue, 13 Apr 2004 21:33:41 -0400
+Subject: [TUHS] Booting v6
+In-Reply-To: <20040413231746.GD79564@wantadilla.lemis.com>
+References: <Pine.GSO.4.58.0404121045170.21192@pegasus.cc.ucf.edu>
+	<lj8ygzv755.fsf@gallifrey.i.cosmic.com>
+	<20040413231746.GD79564@wantadilla.lemis.com>
+Message-ID: <20040414013341.GB17018@kurtwerks.com>
+
+In a 1.6K blaze of typing glory, Greg 'groggy' Lehey wrote:
+> On Tuesday, 13 April 2004 at 18:35:02 -0400, Mirian Crzig Lennox wrote:
+> > ewayte at pegasus.cc.ucf.edu (Eric Wayte) writes:
+> >> I tried a few months ago and it is no longer available from them.  They
+> >> suggested I try used book web pages.  There is a copy available on
+> >> half.com as of this writing for around $100.
+> >
+> > Wow.
+> >
+> > Time to start Xeroxing it again...  :)
+> 
+> Somewhere I had a TeX source file of it that went round
+> alt.folklore.computers about ten years ago.  I took a brief look
+> yesterday but couldn't find it.  If I try harder, there's a good
+> chance that I will.  Would anybody be interested?
+
+Yup.
+
+Kurt
+-- 
+For 20 dollars, I'll give you a good fortune next time ...
+
+From grog at lemis.com  Wed Apr 14 13:01:13 2004
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Wed, 14 Apr 2004 12:31:13 +0930
+Subject: [TUHS] Lions book (was: Booting v6)
+In-Reply-To: <20040414011625.GK10121@gsmx07.alcatel.com.au>
+References: <Pine.GSO.4.58.0404121045170.21192@pegasus.cc.ucf.edu>
+	<lj8ygzv755.fsf@gallifrey.i.cosmic.com>
+	<407C8093.nailC4G1164MX@mini-me.trailing-edge.com>
+	<20040414001625.GH79564@wantadilla.lemis.com>
+	<20040414011625.GK10121@gsmx07.alcatel.com.au>
+Message-ID: <20040414030113.GK79564@wantadilla.lemis.com>
+
+On Wednesday, 14 April 2004 at 11:16:26 +1000, Peter Jeremy wrote:
+> On 2004-Apr-14 09:46:25 +0930, Greg 'groggy' Lehey <grog at lemis.com> wrote:
+>> On Tuesday, 13 April 2004 at 20:06:43 -0400, Tim Shoppa wrote:
+>>> [Lions book]
+>>>> Wow. Time to start Xeroxing it again...  :)
+>>>
+>>> Latex source to the book was posted to alt.folklore.computers circa
+>>> 1994.  I'm guessing that the poster (a "Leo") typed it in by hand
+>>> given the comments that came with the readme.
+>>
+>> Yes, that's the one I got.  From memory, the subject was "Leo's notes"
+>> and it was uuencoded or some such.  Strangely, not many people got it.
+>
+> Google agrees that the subject was "Leo's notes" and it was posted in
+> 7 uuencoded parts in mid-June 1994.
+
+I didn't recall that it was that many.  Unfortunately, I didn't retain
+the original articles.  Google appears to be wrong about the date,
+though: my copy is dated May 19, 1994.
+
+> I don't remember seeing it (I don't think I looked at AFC very often
+> then) and don't seem to have a copy.  I'd also be interested if
+> anyone still has a copy.
+
+Yes, I've found it now and put it up in multiple formats at
+http://www.lemis.com/grog/Documentation/Lions/.  Enjoy!
+
+Greg
+--
+Note: I discard all HTML mail unseen.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040414/121d114c/attachment.sig>
+
+From list-tuhs at cosmic.com  Thu Apr 15 01:04:48 2004
+From: list-tuhs at cosmic.com (Mirian Crzig Lennox)
+Date: Wed, 14 Apr 2004 11:04:48 -0400
+Subject: [TUHS] Booting v6
+References: <407C8093.nailC4G1164MX@mini-me.trailing-edge.com>
+Message-ID: <7rad1e38j3.fsf@ducky.sandstorm.net>
+
+shoppa at trailing-edge.com (Tim Shoppa) writes:
+> [Lions book]
+>> Wow. Time to start Xeroxing it again...  :)
+>
+> Latex source to the book was posted to alt.folklore.computers circa
+> 1994.  I'm guessing that the poster (a "Leo") typed it in by hand
+> given the comments that came with the readme.
+
+I'm amused that someone would use LaTeX to reproduce a manuscript of
+dot-matrix source listings and roughly-typewritten commentary.
+
+(No offence at all intended to Dr Lions; the genius was clearly all in
+the content, not the typography.)
+
+cheers,
+Mirian
+
+From arnold at skeeve.com  Thu Apr 15 01:46:54 2004
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Wed, 14 Apr 2004 18:46:54 +0300
+Subject: [TUHS] Booting v6
+Message-ID: <200404141546.i3EFkse7006339@skeeve.com>
+
+> To: tuhs at minnie.tuhs.org
+> From: Mirian Crzig Lennox <list-tuhs at cosmic.com>
+> Subject: Re: [TUHS] Booting v6
+> Date: Wed, 14 Apr 2004 11:04:48 -0400
+>
+> I'm amused that someone would use LaTeX to reproduce a manuscript of
+> dot-matrix source listings and roughly-typewritten commentary.
+
+I have no doubt that the commentary was produced with the V6 nroff.
+It has the look of machine-formatted text about it, although it was
+clearly printed on a constant-width line printer of the time.
+
+Now, were anyone so truly perverse, they might take the latex and
+convert it into nroff/troff. :-)
+
+Arnold
+
+From michael_davidson at pacbell.net  Thu Apr 15 02:18:11 2004
+From: michael_davidson at pacbell.net (Michael Davidson)
+Date: Wed, 14 Apr 2004 09:18:11 -0700
+Subject: [TUHS] Booting v6
+References: <407C8093.nailC4G1164MX@mini-me.trailing-edge.com>
+	<7rad1e38j3.fsf@ducky.sandstorm.net>
+Message-ID: <003701c4223c$1545e1e0$ea8ca140@pacbell.net>
+
+----- Original Message ----- 
+From: "Mirian Crzig Lennox" <list-tuhs at cosmic.com>
+>
+> I'm amused that someone would use LaTeX to reproduce a manuscript of
+> dot-matrix source listings and roughly-typewritten commentary.
+>
+> (No offence at all intended to Dr Lions; the genius was clearly all in
+> the content, not the typography.)
+>
+
+When you describe the notes as having been "roughly-typewritten" I think
+that you may have been misled by the quality of the printer that was used.
+
+According to the 'Acknowledgements' in Lions:
+
+ 'The co-operation of the "nroff" program must also be mentioned.
+  Without it, these notes could never have been produced in this form.
+  However it has yielded some of its more enigmatic secrets so reluctantly,
+  that the author's gratitude is indeed mixed. Certainly "nroff" itself must
+  provide a fertile field for future practitioners of the program
+ducumenter's art.'
+
+
+From kwall at kurtwerks.com  Thu Apr 15 02:51:15 2004
+From: kwall at kurtwerks.com (Kurt Wall)
+Date: Wed, 14 Apr 2004 12:51:15 -0400
+Subject: [TUHS] Booting v6
+In-Reply-To: <200404141546.i3EFkse7006339@skeeve.com>
+References: <200404141546.i3EFkse7006339@skeeve.com>
+Message-ID: <20040414165115.GA18257@kurtwerks.com>
+
+In a 0.7K blaze of typing glory, Aharon Robbins wrote:
+> > To: tuhs at minnie.tuhs.org
+> > From: Mirian Crzig Lennox <list-tuhs at cosmic.com>
+> > Subject: Re: [TUHS] Booting v6
+> > Date: Wed, 14 Apr 2004 11:04:48 -0400
+> >
+> > I'm amused that someone would use LaTeX to reproduce a manuscript of
+> > dot-matrix source listings and roughly-typewritten commentary.
+> 
+> I have no doubt that the commentary was produced with the V6 nroff.
+> It has the look of machine-formatted text about it, although it was
+> clearly printed on a constant-width line printer of the time.
+> 
+> Now, were anyone so truly perverse, they might take the latex and
+> convert it into nroff/troff. :-)
+
+Thus returning to the original form in which it was prepared. There's
+an appealing circularity and feeling of having come full circle to
+that...
+
+Kurt
+-- 
+"Whatever the missing mass of the universe is, I hope it's not
+cockroaches!"
+		-- Mom
+
+From list-tuhs at cosmic.com  Thu Apr 15 03:21:07 2004
+From: list-tuhs at cosmic.com (Mirian Crzig Lennox)
+Date: Wed, 14 Apr 2004 13:21:07 -0400
+Subject: [TUHS] Booting v6
+References: <003701c4223c$1545e1e0$ea8ca140@pacbell.net>
+Message-ID: <7r65c2327w.fsf@ducky.sandstorm.net>
+
+michael_davidson at pacbell.net ("Michael Davidson") writes:
+> ----- Original Message ----- 
+> From: "Mirian Crzig Lennox" <list-tuhs at cosmic.com>
+>>
+>> I'm amused that someone would use LaTeX to reproduce a manuscript of
+>> dot-matrix source listings and roughly-typewritten commentary.
+>>
+>> (No offence at all intended to Dr Lions; the genius was clearly all in
+>> the content, not the typography.)
+>
+> When you describe the notes as having been "roughly-typewritten" I think
+> that you may have been misled by the quality of the printer that was used.
+
+Not at all; "typewritten" means "written with type": fixed-width,
+metal impact type on bars or wheels.  Surely I can't be the only
+person on this list who remembers when hardcopy terminals were often
+called "typewriters".
+
+cheers,
+Mirian
+
+From hansolofalcon at worldnet.att.net  Thu Apr 15 03:32:46 2004
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Wed, 14 Apr 2004 13:32:46 -0400
+Subject: [TUHS] Booting v6
+In-Reply-To: <7r65c2327w.fsf@ducky.sandstorm.net>
+Message-ID: <006f01c42246$809dd920$6401a8c0@who5>
+
+Hello from Gregg C Levine
+Actually, no your not. I do. Even though my contacts with computer
+technology was rather limited, until about thirty odd years ago, and
+on and off, during the eighties. For example, a shop that my father
+ran, which did typesetting, used a pair of teletypes to communicate
+with the host. (Host wasn't a DEC system, he was a related unit.)
+
+And surprisingly enough, one of their customers was AT&T, they sent
+over a manuscript they were having problems setting using the exact
+same methods being discussed here. 
+
+My copy of the C manual, that all of us know who wrote, says it was
+done that way as well.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+
+> -----Original Message-----
+> From: tuhs-bounces at minnie.tuhs.org
+[mailto:tuhs-bounces at minnie.tuhs.org] On
+> Behalf Of Mirian Crzig Lennox
+> Sent: Wednesday, April 14, 2004 1:21 PM
+> To: tuhs at minnie.tuhs.org
+> Subject: Re: [TUHS] Booting v6
+> 
+> michael_davidson at pacbell.net ("Michael Davidson") writes:
+> > ----- Original Message -----
+> > From: "Mirian Crzig Lennox" <list-tuhs at cosmic.com>
+> >>
+> >> I'm amused that someone would use LaTeX to reproduce a manuscript
+of
+> >> dot-matrix source listings and roughly-typewritten commentary.
+> >>
+> >> (No offence at all intended to Dr Lions; the genius was clearly
+all in
+> >> the content, not the typography.)
+> >
+> > When you describe the notes as having been "roughly-typewritten" I
+think
+> > that you may have been misled by the quality of the printer that
+was used.
+> 
+> Not at all; "typewritten" means "written with type": fixed-width,
+> metal impact type on bars or wheels.  Surely I can't be the only
+> person on this list who remembers when hardcopy terminals were often
+> called "typewriters".
+> 
+> cheers,
+> Mirian
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From arnold at skeeve.com  Thu Apr 15 04:38:51 2004
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Wed, 14 Apr 2004 21:38:51 +0300
+Subject: [TUHS] Just noticed an article on John Lions on Salon.com
+Message-ID: <200404141838.i3EIcpG1007508@skeeve.com>
+
+> > Bell System Technical Journal, July/August 1978 Vol. 57, No. 6., Part 2.
+>
+> you can find many of the documents cited in this issue in the
+> UNIX Programmer's Manual for the Seventh Edition, Volume 2B,
+> which is included, for example, in the package
+> http://telexx.mni.fh-giessen.de/PDP11-UNIX/unix-v7-3.tar.gz
+
+The manual can also be gotten online, in postscript and PDF and troff
+from http://plan9.bell-labs.com/7thEdMan.
+
+Arnold
+
+From arnold at skeeve.com  Thu Apr 15 05:34:34 2004
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Wed, 14 Apr 2004 22:34:34 +0300
+Subject: [TUHS] plug for new book - includes V7 code
+Message-ID: <200404141934.i3EJYY84008653@skeeve.com>
+
+Greetings All.
+
+Here is an unashamed but brief plug for my new book, "Linux Programming
+by Example: The Fundamentals":
+
+	http://www.phptr.com/title/0131429647
+
+It is an introductory linux/unix programming book that uses both V7 code
+and current GNU code to teach the basic linux/unix programming API. The
+preface points at the TUHS archive site.
+
+I doubt that anyone on this list would really learn anything from it,
+but it's sorta topical because it uses V7 code.  Also, the cover design
+is really cool. :-)
+
+If this is too commercial for anyone, I apologize; I won't post anything
+else about it to this list.  (If you feel the need, please flame me
+off list.  Thanks.)
+
+Thanks,
+
+Arnold Robbins
+
+From ewayte at pegasus.cc.ucf.edu  Thu Apr 15 05:39:46 2004
+From: ewayte at pegasus.cc.ucf.edu (Eric Wayte)
+Date: Wed, 14 Apr 2004 15:39:46 -0400 (EDT)
+Subject: [TUHS] An Interview with John Lions
+In-Reply-To: <20040413132830.53364.qmail@web60506.mail.yahoo.com>
+References: <20040413132830.53364.qmail@web60506.mail.yahoo.com>
+Message-ID: <Pine.GSO.4.58.0404141539001.27505@pegasus.cc.ucf.edu>
+
+On Tue, 13 Apr 2004, Kenneth Stailey wrote:
+
+> The PDF when viewed in acroread is rather obnoxious to my system, it turns off
+> controls and the window manager frame and takes over the whole window but love
+> that google cache.
+>
+> http://tinyurl.com/3x4ld
+>
+
+I simply hit 'ESC' and was returned to the Acrobat Reader when using
+WinXP at work.
+
+Eric
+
+From peter.jeremy at alcatel.com.au  Thu Apr 15 07:43:13 2004
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Thu, 15 Apr 2004 07:43:13 +1000
+Subject: [TUHS] Booting v6
+In-Reply-To: <20040414165115.GA18257@kurtwerks.com>
+References: <200404141546.i3EFkse7006339@skeeve.com>
+	<20040414165115.GA18257@kurtwerks.com>
+Message-ID: <20040414214313.GY10121@gsmx07.alcatel.com.au>
+
+On 2004-Apr-14 12:51:15 -0400, Kurt Wall <kwall at kurtwerks.com> wrote:
+>In a 0.7K blaze of typing glory, Aharon Robbins wrote:
+>> Now, were anyone so truly perverse, they might take the latex and
+>> convert it into nroff/troff. :-)
+>
+>Thus returning to the original form in which it was prepared. There's
+>an appealing circularity and feeling of having come full circle to
+>that...
+
+Actually, I'm surprised that someone (presumably John Lions) re-wrote
+the nroff into LaTeX - it would seem easier to have just used troff
+for the book.
+
+In order to get that 'original' feel, you'll need to find an
+appropriate DECwriter (LA120?).  Remember to hand-write the page
+numbers and draw in the lines (and maybe boxes) in chapter 23 by hand.
+
+Whilst you could re-create the appropriate 7x9 (I think) font for a
+modern printer - though that will be missing the feel of impact
+dot-matrix output: random variations in density and missing dots.
+
+Personally, I think that is over-doing it.  Text is _far_ easier to
+read when it's properly typeset using a good looking font (that
+includes descenders) at high resolution (>600dpi).  I believe the
+visual appearance of the original notes was limited by the technology
+available to John Lions in 1977, rather than a deliberate decision to
+produce low quality output.
+
+Peter
+
+From imp at bsdimp.com  Thu Apr 15 07:52:52 2004
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Wed, 14 Apr 2004 15:52:52 -0600 (MDT)
+Subject: [TUHS] Booting v6
+In-Reply-To: <20040414214313.GY10121@gsmx07.alcatel.com.au>
+References: <200404141546.i3EFkse7006339@skeeve.com>
+	<20040414165115.GA18257@kurtwerks.com>
+	<20040414214313.GY10121@gsmx07.alcatel.com.au>
+Message-ID: <20040414.155252.105450133.imp@bsdimp.com>
+
+In message: <20040414214313.GY10121 at gsmx07.alcatel.com.au>
+            Peter Jeremy <peter.jeremy at alcatel.com.au> writes:
+: In order to get that 'original' feel, you'll need to find an
+: appropriate DECwriter (LA120?).  Remember to hand-write the page
+: numbers and draw in the lines (and maybe boxes) in chapter 23 by hand.
+
+LA120 is way too late.  More like a DECwriter III...
+
+Warner
+
+From wkt at tuhs.org  Thu Apr 15 07:58:45 2004
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 15 Apr 2004 07:58:45 +1000
+Subject: [TUHS] Re: Lions' book
+In-Reply-To: <407C8093.nailC4G1164MX@mini-me.trailing-edge.com>
+References: <Pine.GSO.4.58.0404121045170.21192@pegasus.cc.ucf.edu>
+	<lj8ygzv755.fsf@gallifrey.i.cosmic.com>
+	<407C8093.nailC4G1164MX@mini-me.trailing-edge.com>
+Message-ID: <20040414215845.GA89455@minnie.tuhs.org>
+
+On Tue, Apr 13, 2004 at 08:06:43PM -0400, Tim Shoppa wrote:
+> [Lions book]
+> Latex source to the book was posted to alt.folklore.computers circa
+> 1994.  I'm guessing that the poster (a "Leo") typed it in by hand
+> given the comments that came with the readme.
+> Tim.
+
+I will give you all three guesses as to who Leo was. Hint: he lives
+in Australia.
+
+8-)
+	Warren
+
+P.S Back from Easter, still catching up with the list.
+
+From milov at uwlax.edu  Thu Apr 15 08:47:26 2004
+From: milov at uwlax.edu (Milo Velimirovic)
+Date: Wed, 14 Apr 2004 17:47:26 -0500
+Subject: [TUHS] Booting v6
+In-Reply-To: <20040414.155252.105450133.imp@bsdimp.com>
+References: <200404141546.i3EFkse7006339@skeeve.com>
+	<20040414165115.GA18257@kurtwerks.com>
+	<20040414214313.GY10121@gsmx07.alcatel.com.au>
+	<20040414.155252.105450133.imp@bsdimp.com>
+Message-ID: <B3A43E11-8E65-11D8-A1C8-000393DB3604@uwlax.edu>
+
+
+On Apr 14, 2004, at 4:52 PM, M. Warner Losh wrote:
+
+> In message: <20040414214313.GY10121 at gsmx07.alcatel.com.au>
+>             Peter Jeremy <peter.jeremy at alcatel.com.au> writes:
+> : In order to get that 'original' feel, you'll need to find an
+> : appropriate DECwriter (LA120?).  Remember to hand-write the page
+> : numbers and draw in the lines (and maybe boxes) in chapter 23 by 
+> hand.
+>
+> LA120 is way too late.  More like a DECwriter III...
+
+I'm betting it would be like my V6 kernel listing...
+printed on an LA36 DECwriterII.
+
+>
+> Warner
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+--
+Milo Velimirović
+University of Wisconsin - La Crosse
+La Crosse, Wisconsin 54601 USA
+--
+There's a reason Dennis Ritchie and Ken Thompson have been awarded the 
+U.S. National Medal of Technology (1998) and are fellows of the 
+Computer History Museum Online.
+Dave Cutler hasn't and isn't.
+"You are not expected to understand this."
+
+
+From tuhs at cuzuco.com  Thu Apr 15 10:43:41 2004
+From: tuhs at cuzuco.com (Brian S Walden)
+Date: Wed, 14 Apr 2004 20:43:41 -0400 (EDT)
+Subject: [TUHS] Lions book (was: Booting v6)
+Message-ID: <200404150043.UAA11983@cuzuco.com>
+
+Greg 'groggy' Lehey <grog at lemis.com> wrote:
+	....
+> >>> [Lions book] 
+> >>>> Wow. Time to start Xeroxing it again...  :)
+> >>> 
+> >>> Latex source to the book was posted to alt.folklore.computers circa
+> >>> 1994.  I'm guessing that the poster (a "Leo") typed it in by hand
+> >>> given the comments that came with the readme.
+> >>
+>  
+> Yes, I've found it now and put it up in multiple formats at
+> http://www.lemis.com/grog/Documentation/Lions/.  Enjoy!
+>  
+> Greg 
+
+I resurrected the Lions' source code for the commentary I made some
+15 years back -- line numbers at all. It had been lost for some time
+and it took a bit, but I finally found it on some obsolete media.
+In making it I didn't have v6 source so it was reverted from v7.
+
+See http://v6.cuzuco.com/
+
+-B
+
+From wkt at tuhs.org  Thu Apr 15 15:40:45 2004
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 15 Apr 2004 15:40:45 +1000
+Subject: [TUHS] Re: Lions' book
+In-Reply-To: <20040414231845.GC10121@gsmx07.alcatel.com.au>
+References: <Pine.GSO.4.58.0404121045170.21192@pegasus.cc.ucf.edu>
+	<lj8ygzv755.fsf@gallifrey.i.cosmic.com>
+	<407C8093.nailC4G1164MX@mini-me.trailing-edge.com>
+	<20040414215845.GA89455@minnie.tuhs.org>
+	<20040414231845.GC10121@gsmx07.alcatel.com.au>
+Message-ID: <20040415054045.GA99769@minnie.tuhs.org>
+
+On Tue, Apr 13, 2004 at 08:06:43PM -0400, Tim Shoppa wrote:
+>>> Latex source to the Lions book was posted to alt.folklore.computers
+>>> circa 1994. I'm guessing that the poster (a "Leo") typed it in by hand.
+
+On 2004-Apr-15 07:58:45 +1000, Warren Toomey <wkt at tuhs.org> wrote:
+>>I will give you all three guesses as to who Leo was. Hint: he lives
+>>in Australia.
+ 
+On Thu, Apr 15, 2004 at 09:18:45AM +1000, Peter Jeremy wrote:
+>That would rule out John since he no longer lives in Australia.
+
+True. The person is alive and well and living on the Gold Coast in
+Queensland where he works for a small private university. He is
+also semi-active in the arena of Unix history. He has a beard. He
+regrets never admitting to the copying of the commentary to John
+Lions personally, because John would probably have commended the
+act.
+
+	Warren
+
+From dmr at plan9.bell-labs.com  Thu Apr 15 17:26:11 2004
+From: dmr at plan9.bell-labs.com (dmr at plan9.bell-labs.com)
+Date: Thu, 15 Apr 2004 03:26:11 -0400
+Subject: [TUHS] Re: Lions' book
+Message-ID: <51f1b7b159b1a354abb0bb4ad1b0d0df@plan9.bell-labs.com>
+
+Bibliographic notes: It appears that the version of
+the commentary that appeared on Usenet and has
+been transformed variously is just the notes.
+So far as I can tell, it's an accurate rendition of them.
+
+There were ~2 original versions of the two-volume
+work (the source and the commentary).  The two
+versions are--
+
+Those produced at UNSW: the one I have are in red
+(source) and orange (commentary) covers.  There
+might have been more than one printing of this.
+The commentary was probably done on some nice terminal
+like the Diablo daisy-wheel.  The source was rendered on
+a dot-matrix terminal.
+
+The second version was done within AT&T/WECo for internal
+use, and could also be ordered by licensees--perhaps it was even
+included with a tape.  Salus says these were no longer available by 1978.
+These have pale blue covers.  The contents
+were, I believe, a photocopy of one of the UNSW renditions.
+
+The Peer-to-Peer edition (1996) is probably a photocopy of
+an AT&T version; it contains various labels that doubtless would
+have been in them.  But they could have been stripped in
+from tape labels or somewhere.  Perhaps Berny Goodheart
+would know about this part of the production process.
+The UNSW version I have has, on its title page for the source
+book, a paragraph that says "This document may contain
+information covered by one or more licenses...." and is noted
+by Lions as issued in June, 1977.
+
+The PtoP version of this page is in a different font, and has a splash label
+in printer font "This information is proprietary and is the
+property of Bell Telephone Laboratories, Inc...."
+It's noted by Lions as of November 1977,  and marked
+"second printing."
+
+It would be nice to cajole PtoP into reprinting, although
+the combination of the TUHS V6 sources and the various
+renditions of the commentary contain most of the
+information (though without the heartfelt encomia).
+
+	Dennis
+
+
+From arnold at skeeve.com  Thu Apr 15 21:11:06 2004
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Thu, 15 Apr 2004 14:11:06 +0300
+Subject: [TUHS] Booting v6
+Message-ID: <200404151111.i3FBB6VL014309@skeeve.com>
+
+> > I have no doubt that the commentary was produced with the V6 nroff.
+> > It has the look of machine-formatted text about it, although it was
+> > clearly printed on a constant-width line printer of the time.
+> > 
+> > Now, were anyone so truly perverse, they might take the latex and
+> > convert it into nroff/troff. :-)
+>
+> Thus returning to the original form in which it was prepared. There's
+> an appealing circularity and feeling of having come full circle to
+> that...
+
+Doing so would be a major Waste Of Time.  This fact, in combination with
+the "appealing circularity" just mentioned makes it highly likely that
+it *will* be done by a Graduate Student somewhere .... :-)
+
+Arnold
+
+From norman at nose.cs.utoronto.ca  Thu Apr 15 21:37:48 2004
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Thu, 15 Apr 2004 07:37:48 -0400
+Subject: [TUHS] Re: Lions' book
+Message-ID: <20040415113823.733241EB2@minnie.tuhs.org>
+
+I can cite a third edition that existed inside Bell Labs
+at one point: white covers, with the latter-day AT&T Bell
+Laboratories name and deathstar logo; AT&T BELL LABORATORIES
+PROPRIETARY (RESTRICTED) printed across the bottom of every
+page.  The title page also says Use pursuant to G.E.I. 2.2.
+Instead of `this document may contain information covered by
+one or more licenses,' there is a paragraph declaring that
+`This document is restricted to authorized AT&T employees who
+have a job-related need to know, and holders of a license for
+the UNIX* Operating System, Level Six, from AT&T Technologies,
+Inc., subject to the restrictions stated in such license.'
+
+And of course the footnote credits the trademark to AT&T Bell
+Laboratories.
+
+The use of the deathstar and the modern company name suggest
+these were printed post-divestiture, i.e. no earlier than 1984.
+
+Andrew Hume came across a few copies of this edition sametime in
+the late 1980s.  I think they came from a load of stuff about to
+be thrown out by Judy Macor, who used to be the person who handled
+license paperwork and sent out tapes.
+
+For some reason my copy has a paper clip on the page where
+`You are not expected to understand this' appears.
+
+Norman Wilson
+Toronto ON
+
+From tuhs at rops.org  Thu Apr 15 22:26:10 2004
+From: tuhs at rops.org (Roger Willcocks)
+Date: Thu, 15 Apr 2004 13:26:10 +0100
+Subject: Fw: [TUHS] Re: Lions' book
+Message-ID: <005401c422e4$d7ef7960$dc32a8c0@barney>
+
+On Thursday, April 15, 2004 6:40 AM, Warren Toomey <wkt at tuhs.org> wrote:
+
+> >>I will give you all three guesses as to who Leo was. Hint: he lives
+> >>in Australia.
+>  
+> On Thu, Apr 15, 2004 at 09:18:45AM +1000, Peter Jeremy wrote:
+> >That would rule out John since he no longer lives in Australia.
+> 
+> True. The person is alive and well and living on the Gold Coast in
+> Queensland where he works for a small private university. He is
+> also semi-active in the arena of Unix history. He has a beard. He
+> regrets never admitting to the copying of the commentary to John
+> Lions personally, because John would probably have commended the
+> act.
+
+Hmmm, try Googling for /interests "unix history" australia latex/ :-)
+
+You wouldn't know, off-hand, whether 'Leo' actually rekeyed the content ?
+
+--
+Roger
+
+
+
+From billc_2 at charter.net  Fri Apr 16 03:11:54 2004
+From: billc_2 at charter.net (Bill Cunningham)
+Date: Thu, 15 Apr 2004 13:11:54 -0400
+Subject: [TUHS] v6 source
+Message-ID: <001b01c4230c$c2b15dc0$209c9718@a>
+
+    I have that source tarball for v6. It's very nice. The only trouble is
+it will not compile that's for sure and I don't have enough experience with
+assembly to even look at the labels and mnemonics. It's nice to look at and
+think this once worked.
+
+    Bill
+
+
+From tuhs at cuzuco.com  Fri Apr 16 06:31:57 2004
+From: tuhs at cuzuco.com (Brian S Walden)
+Date: Thu, 15 Apr 2004 16:31:57 -0400 (EDT)
+Subject: [TUHS] Lions book (was: Booting v6)
+Message-ID: <200404152031.QAA21414@cuzuco.com>
+
+I <tuhs at cuzuco.com> wrote:
+
+> I resurrected the Lions' source code for the commentary I made some
+> 15 years back -- line numbers at all. It had been lost for some time
+> and it took a bit, but I finally found it on some obsolete media.
+> In making it I didn't have v6 source so it was reverted from v7.
+> 
+> See http://v6.cuzuco.com/
+
+Sorry to bother again, but I just noticed that the PostScript versions
+I uploaded were the portrait mode ones, not landscape. I have put the
+right ones in now, so if you downloaded them before this message, you'll need
+to get them again.  Both PDFs however were and are correct.
+
+-B
+
+
+From wkt at tuhs.org  Fri Apr 16 07:46:35 2004
+From: wkt at tuhs.org (Warren Toomey)
+Date: Fri, 16 Apr 2004 07:46:35 +1000
+Subject: Fw: [TUHS] Re: Lions' book
+In-Reply-To: <005401c422e4$d7ef7960$dc32a8c0@barney>
+References: <005401c422e4$d7ef7960$dc32a8c0@barney>
+Message-ID: <20040415214635.GA12817@minnie.tuhs.org>
+
+On Thu, Apr 15, 2004 at 01:26:10PM +0100, Roger Willcocks wrote:
+> > True. The person is alive and well and living on the Gold Coast in
+> > Queensland where he works for a small private university. He is
+> > also semi-active in the arena of Unix history. He has a beard. He
+> > regrets never admitting to the copying of the commentary to John
+> > Lions personally, because John would probably have commended the
+> > act.
+> 
+> You wouldn't know, off-hand, whether 'Leo' actually rekeyed the content ?
+
+No, I OCR'd it with Omnipage on a Mac, then edited the typos and added
+the LaTeX markup. Slow and painful, and there was no way Omnipage was going
+to cope with the dot-matrix source code.
+
+[ Oooh, what a giveaway! ]
+
+	Warren
+
+From mparson at bl.org  Fri Apr 16 07:57:54 2004
+From: mparson at bl.org (Mike Parson)
+Date: Thu, 15 Apr 2004 16:57:54 -0500
+Subject: Fw: [TUHS] Re: Lions' book
+In-Reply-To: <20040415214635.GA12817@minnie.tuhs.org>
+References: <005401c422e4$d7ef7960$dc32a8c0@barney>
+	<20040415214635.GA12817@minnie.tuhs.org>
+Message-ID: <20040415215754.GA22612@ultra.bl.org>
+
+On Fri, Apr 16, 2004 at 07:46:35AM +1000, Warren Toomey wrote:
+> On Thu, Apr 15, 2004 at 01:26:10PM +0100, Roger Willcocks wrote:
+>>> True. The person is alive and well and living on the Gold Coast in
+>>> Queensland where he works for a small private university. He is
+>>> also semi-active in the arena of Unix history. He has a beard. He
+>>> regrets never admitting to the copying of the commentary to John
+>>> Lions personally, because John would probably have commended the
+>>> act.
+>>
+>> You wouldn't know, off-hand, whether 'Leo' actually rekeyed the
+>> content ?
+>
+> No, I OCR'd it with Omnipage on a Mac, then edited the typos and added
+> the LaTeX markup. Slow and painful, and there was no way Omnipage was
+> going to cope with the dot-matrix source code.
+
+Huh...  Omnipage's handling of dot-matrix printouts is one of the
+reasons I will only use it.  Back around 94-95, I had a student come
+into the lab at the university I was working at, her floppy she'd stored
+her paper on was corrupt some how (don't recall exactly why) and the
+only copy of her work she had was a draft-quality print off a 9 pin
+dot-matrix, and pin 4 hadn't been firing.
+
+~120 pages, scanned on the mac and run through OmniPage, very few
+'typos' from the OCR.  It impressed the heck out of me.
+
+> [ Oooh, what a giveaway! ]
+
+I won't tell, I promise.
+
+-- 
+Michael Parson
+mparson at bl.org
+
+From macbiesz at optonline.net  Sun Apr 18 09:04:32 2004
+From: macbiesz at optonline.net (Maciek Bieszczad)
+Date: Sat, 17 Apr 2004 19:04:32 -0400
+Subject: [TUHS] Lions book (was: Booting v6)
+In-Reply-To: <200404152031.QAA21414@cuzuco.com>
+Message-ID: <000001c424d0$5831e940$02fea8c0@DELL>
+
+There's another program out there that generates the source code listing
+format found in the Lions book:
+
+[taken from http://cardit.et.tudelft.nl/~knop/#programs]
+
+Cdg - a C-source Documentation Generator
+
+Cdg produces output in a format similar to the layout used in "Source
+Code and Commentary on UNIX level 6" by John Lions. This format consists
+of a two-column listing of the sources where all lines are numbered, 100
+lines per page. The listing is followed by an extensive cross reference
+table. 
+
+

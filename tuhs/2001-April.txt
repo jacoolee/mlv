@@ -1,0 +1,2472 @@
+From greg at ciswired.com  Sun Apr  1 00:26:58 2001
+From: greg at ciswired.com (Gregory R. Travis)
+Date: Sat, 31 Mar 2001 09:26:58 -0500 (EST)
+Subject: [pups] Reformat RA81/82?
+Message-ID: <Pine.LNX.4.10.10103310916520.8697-100000@weasel.ciswired.com>
+
+Can RA81/82 disks be reformatted in the field?  If so, is this
+done through XXDP or is there a way to do it from the disk's
+serial port?
+
+My RA82 occasionally lights its FAULT light and extinguishes its
+ready light during write operations.  The likelyhood of it
+faulting appears (but I am not certain) to be correlated with a specific
+region of the disk.
+
+About five-ten seconds after the fault, the FAULT indicator turns
+off and ready comes back on.  At no time is an I/O error generated
+that the application or the operating system (2.11BSD) see
+so this fault appears to be transient and is resolved by either
+the drive or the drive/controller together.
+
+It "smells" like a data write error that's resolved after a few
+automatic retries.  I'm hoping a low-level reformat could clear it
+up.  Am I wacked out?
+
+If there's an XXDP exerciser/formatter available I'd appreciate it
+if someone could point me there.  It's been nearly twenty years since
+the last time I even tried running XXDP
+
+Thanks as always,
+
+greg
+
+p.s.  The RA81 drive on the same controller never gives any
+trouble (yet).  I've tried some more basic things like
+swapping SDI cables and drive ports but it doesn't make
+a difference.
+
+Gregory Travis
+Cornerstone Information Systems ATS
+greg at ciswired.com
+812 330 4361 ext. 18
+
+
+
+
+From owner-pups at minnie.cs.adfa.edu.au  Mon Apr  2 06:30:49 2001
+From: owner-pups at minnie.cs.adfa.edu.au (owner-pups at minnie.cs.adfa.edu.au)
+Date: Mon, 2 Apr 2001 06:30:49 +1000 (EST)
+Subject: No subject
+Message-ID: <200104012030.GAA20880@minnie.cs.adfa.edu.au>
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id HAA21273
+	for pups-liszt; Mon, 2 Apr 2001 07:57:37 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+Date: Mon, 2 Apr 2001 07:57:37 +1000 (EST)
+From: owner-pups at minnie.cs.adfa.edu.au
+Message-Id: <200104012157.HAA21273 at minnie.cs.adfa.edu.au>
+To: undisclosed-recipients:;
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id MAA27190
+	for pups-liszt; Wed, 4 Apr 2001 12:48:08 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From cube1 at home.com  Wed Apr  4 12:40:08 2001
+From: cube1 at home.com (Jay Jaeger)
+Date: Tue, 03 Apr 2001 21:40:08 -0500
+Subject: [pups] RL and RK Last Cylinder Warning (RE: VTServer)
+Message-ID: <4.3.2.7.2.20010403213011.044d3da0@cirithi>
+
+Something I thought is worth warning folks about.  For RL01, RL02, RK06 and 
+RK07 (at least), the last cylinder is RESERVED for bad blocks and the pack 
+serial number.
+
+Except for maintaining the bad block list, software should not write there, 
+and should at least preserve the serial number (and its mirror copies that 
+are usually present) when doing so.
+
+The current implementation of VTServer (in particular, the code in the "hk" 
+driver in pdpvtstand) does not appear to take that into account.
+
+The problem is that if you take a *full* pack image from a pack and then 
+restore that *full* pack image to a different pack, you will wipe out the 
+latter's bad block info (and perhaps write in some areas that are known not 
+to be very good).
+
+Traditionally, Unix variants dealt with this by insisting that you use 
+error free (Suffix -EF in the DEC part number on the pack) disk 
+packs.  However, if you are using real hardware you may no longer have 
+those available.
+
+Just a "heads up".
+
+(PS:  FYI I am currently working on a flavor of the "vt" driver that will 
+work over a DR11C.  With the proper cabling (it takes different cables for 
+input and output) you can manage over 1MB per minute that way -- about 20 
+times faster than a serial port.  The code is pretty simple and should work 
+on any old "plain jane" parallel port.  (I do not know how it would behave 
+on a modern serial port)).
+
+I had this working a long time ago, and VTServer prompted me to dredge it 
+up again and test it.  It still works with my PIII 350 under Win98 (it is 
+old DOS code that accesses the old style parallel port directly).  Within a 
+few weeks I expect to provide a "pt" device driver for pdpvtstand, and 
+cabling information and some source code for the PC side (which would be an 
+example only).  The protocol as I currently use it has no 
+checksum.  However I plan to modify "copy" to provide that information so 
+that the results can be checked after the transfer.
+
+Jay Jaeger
+---	
+Jay R. Jaeger					The Computer Collection
+cube1 at home.com			visit http://members.home.net/thecomputercollection
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id NAA27320
+	for pups-liszt; Wed, 4 Apr 2001 13:11:21 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From wkt at henry.cs.adfa.edu.au  Wed Apr  4 13:04:10 2001
+From: wkt at henry.cs.adfa.edu.au (Warren Toomey)
+Date: Wed, 4 Apr 2001 13:04:10 +1000 (EST)
+Subject: [pups] Re: RL and RK Last Cylinder Warning (RE: VTServer)
+In-Reply-To: <4.3.2.7.2.20010403213011.044d3da0@cirithi> from Jay Jaeger at "Apr
+ 3, 2001 09:40:08 pm"
+Message-ID: <200104040304.f3434A010297@henry.cs.adfa.edu.au>
+
+In article by Jay Jaeger:
+> Something I thought is worth warning folks about.  For RL01, RL02, RK06 and 
+> RK07 (at least), the last cylinder is RESERVED for bad blocks and the pack 
+> serial number.
+
+Jay, I've added your warnings to the new version, vtserver2.3a-20010404.tar.gz,
+which I just put out a few seconds ago. This also contains a patch to the
+ODT download code from Charles H Dickman <chd_1 at nktelco.net>:
+
+	I made some changes to the source to wait for the current memory
+	value and trailing space to be echoed by ODT. I also had a bit
+	of trouble if the output values were not padded with 0's. I think
+	this is because any character other than a valid octal digit or
+	a return or a ctrl-j is illegal in that context and causes an error.
+
+ftp://minnie.cs.adfa.edu.au/pub/PDP-11/Vtserver/vtserver2.3a-20010404.tar.gz
+ 
+> (PS:  FYI I am currently working on a flavor of the "vt" driver that will 
+> work over a DR11C.  With the proper cabling (it takes different cables for 
+> input and output) you can manage over 1MB per minute that way -- about 20 
+> times faster than a serial port.  The code is pretty simple and should work 
+> on any old "plain jane" parallel port.  (I do not know how it would behave 
+> on a modern serial port)).
+> 
+> I had this working a long time ago, and VTServer prompted me to dredge it 
+> up again and test it.  It still works with my PIII 350 under Win98 (it is 
+> old DOS code that accesses the old style parallel port directly).  Within a 
+> few weeks I expect to provide a "pt" device driver for pdpvtstand, and 
+> cabling information and some source code for the PC side (which would be an 
+> example only).  The protocol as I currently use it has no 
+> checksum.  However I plan to modify "copy" to provide that information so 
+> that the results can be checked after the transfer.
+> Jay Jaeger
+
+Jay, if you could write a ptboot.s bootstrapper and a pt.c driver
+which speaks the same protocol [should be easy - just use vt.c and
+rewrite vtgetc() and vtputc()], then I'll happily add it to the
+next version.
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA33889
+	for pups-liszt; Thu, 5 Apr 2001 10:11:17 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From wkt at henry.cs.adfa.edu.au  Thu Apr  5 10:04:02 2001
+From: wkt at henry.cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 5 Apr 2001 10:04:02 +1000 (EST)
+Subject: [pups] Ancient Unix licenses? (fwd)
+Message-ID: <200104050004.f35042G12856@henry.cs.adfa.edu.au>
+
+All,
+	I've received this e-mail from a student at NYU Law Department.
+If any of you have copies of old Unix licenses, and your organisation
+would be prepared to release copies to Greg, could you contact him.
+
+Also, if you could send me copies of your licenses, that would be
+great too. About 8 people have already done this, and I am happy to
+act as a repository for this old information.
+
+Cheers,
+	Warren
+
+----- Forwarded message from gmp216 at nyu.edu -----
+ From gmp at zebware.com Thu Apr  5 09:49:39 2001
+ To: wkt at cs.adfa.edu.au
+ From: gmp216 at nyu.edu
+ Subject: Ancient Unix licenses?
+ Date: Wed, 04 Apr 2001 23:49:31 +0000
+ Sender: gmp at zebware.com
+
+Peter Salus identified you as the collector of old Unix versions, so I
+thought you might be able to help me with a project I am working on.
+I am studying the legal history of Unix for a colloquium at NYU, and I
+would really love to see copies of the old Unix licenses that the various
+universities signed. Do you happen to have access to any of these? All I
+can find are the transcribed tape labels from your archive which say things
+like "subject to the software agreement you have with Western Electric."
+Thanks! And thank you also for pushing to make the source code available.
+That has been an immeasurable help.
+
+---
+Greg Pomerantz
+NYU Law, J.D. '02
+----- End of forwarded message from gmp216 at nyu.edu -----
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id SAA36569
+	for pups-liszt; Thu, 5 Apr 2001 18:36:58 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From pete at dunnington.u-net.com  Thu Apr  5 17:43:42 2001
+From: pete at dunnington.u-net.com (Pete Turnbull)
+Date: Thu, 5 Apr 2001 07:43:42 GMT
+Subject: [pups] Ancient Unix licenses? (fwd)
+In-Reply-To: Warren Toomey <wkt@henry.cs.adfa.edu.au>
+        "[pups] Ancient Unix licenses? (fwd)" (Apr  5, 10:04)
+References: <200104050004.f35042G12856@henry.cs.adfa.edu.au>
+Message-ID: <10104050843.ZM16566@indy.dunnington.u-net.com>
+
+On Apr 5, 10:04, Warren Toomey wrote:
+> All,
+> 	I've received this e-mail from a student at NYU Law Department.
+> If any of you have copies of old Unix licenses, and your organisation
+> would be prepared to release copies to Greg, could you contact him.
+>
+> Also, if you could send me copies of your licenses, that would be
+> great too. About 8 people have already done this, and I am happy to
+> act as a repository for this old information.
+
+Warren, do you still have copies of mine, or do you want another set?
+
+-- 
+
+Pete						Peter Turnbull
+						Network Manager
+						Dept. of Computer Science
+						University of York
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id WAA37756
+	for pups-liszt; Thu, 5 Apr 2001 22:50:22 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From ejb at leguin.org.uk  Thu Apr  5 22:42:53 2001
+From: ejb at leguin.org.uk (Edward Brocklesby)
+Date: Thu, 5 Apr 2001 12:42:53 +0000
+Subject: [pups] Public access 2.11BSD system
+Message-ID: <01040512425302.26560@klamath.leguin.org.uk>
+
+Hi all,
+
+I've set up a free public 2.11BSD system, for anyone who wants to try it..
+To create an account, just telnet to klamath.ddts.net.
+
+I'm not sure if this is the right place to post this, but it seems 
+appropriate :>
+
+	-larne-
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id GAA40397
+	for pups-liszt; Fri, 6 Apr 2001 06:44:44 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From iking at microsoft.com  Fri Apr  6 06:36:56 2001
+From: iking at microsoft.com (Ian King)
+Date: Thu, 5 Apr 2001 13:36:56 -0700
+Subject: [pups] LP on Unix 6th Ed?
+Message-ID: <8D25F244B8274141B5D313CA4823F39C0235D22F@red-msg-06.redmond.corp.microsoft.com>
+
+I've been scratching my head over how to set up the printer in 6th
+Edition UNIX.  Any hints?  I tried mknod'ing /dev/lp with a variety of
+major device numbers and then redirecting ls to it, with no success.
+The printer interface is at the "usual" address on my PDP-11/34, and
+works under another OS.  w
+
+TIA -- Ian 
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id JAA41188
+	for pups-liszt; Fri, 6 Apr 2001 09:28:21 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From johnh at psych.usyd.edu.au  Fri Apr  6 09:21:03 2001
+From: johnh at psych.usyd.edu.au (John Holden)
+Date: Fri, 6 Apr 2001 09:21:03 +1000 (EST)
+Subject: [pups] LP on Unix 6th Ed?
+Message-ID: <200104052321.JAA28539@psychwarp.psych.usyd.edu.au>
+
+
+The lp driver usually had a major device number of 2, so 'mknod /dev/lp c 2 0'
+should work, but the kernel may not have been built to support line printers.
+
+Check in /usr/sys/conf/c.c for an entry in the 'cdevsw' table for the
+'lp' entries (and the major device position). If there are null entries,
+either edit c.c, compile it and relink the kernel, or edit the 'run' script
+in /usr/sys/conf/ and add 'lp' after the 'mkconf' (but before the 'done')
+and run the script to rebuilt the kernel.
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id OAA42567
+	for pups-liszt; Fri, 6 Apr 2001 14:19:22 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From clefevre-lists at noos.fr  Fri Apr  6 14:11:56 2001
+From: clefevre-lists at noos.fr (Cyrille Lefevre)
+Date: 06 Apr 2001 06:11:56 +0200
+Subject: [pups] Public access 2.11BSD system
+In-Reply-To: <01040512425302.26560@klamath.leguin.org.uk>
+References: <01040512425302.26560@klamath.leguin.org.uk>
+Message-ID: <zodull9v.fsf@gits.dyndns.org>
+
+Edward Brocklesby <ejb at leguin.org.uk> writes:
+
+> I've set up a free public 2.11BSD system, for anyone who wants to try it..
+> To create an account, just telnet to klamath.ddts.net.
+
+would be interresting, but :
+
+# telnet klamath.ddts.net
+Trying 62.254.132.250...
+telnet: connect to address 62.254.132.250: No route to host
+
+my ip address is gits.dyndns.org (currently 212.198.231.165) and I
+live in france.  are there any restrictions anywhere or the machine
+is down ?
+
+Cyrille.
+--
+home: mailto:clefevre at poboxes.com   UNIX is user-friendly; it's just particular
+work: mailto:Cyrille.Lefevre at edf.fr   about who it chooses to be friends with.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id UAA43967
+	for pups-liszt; Fri, 6 Apr 2001 20:07:12 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From ejb at leguin.org.uk  Fri Apr  6 19:59:33 2001
+From: ejb at leguin.org.uk (Edward Brocklesby)
+Date: Fri, 6 Apr 2001 09:59:33 +0000
+Subject: [pups] STYX and 2.11BSD licensing
+Message-ID: <01040609593307.26560@klamath.leguin.org.uk>
+
+Hi all.
+
+A couple of things..
+
+First, sorry to post about this again so soon, but styx is moving to a new 
+location, so any accounts created from now on will be removed later today
+when it's moved.
+
+Second, where do I stand on /usr/src/ permissions? Can I allow read access
+to it, or is that effectively distributing 2.11BSD source, against SCO's 
+license? Is there any way to verify who has obtained a license, and add them
+to a src group?
+
+Thanks,
+	-larne-
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id DAA48500
+	for pups-liszt; Sat, 7 Apr 2001 03:50:14 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From lars at fwn.rug.nl  Sat Apr  7 03:45:31 2001
+From: lars at fwn.rug.nl (Lars J. Buitinck)
+Date: Fri, 06 Apr 2001 19:45:31 +0200
+Subject: [pups] STYX and 2.11BSD licensing
+References: <01040609593307.26560@klamath.leguin.org.uk>
+Message-ID: <3ACE00BB.FE5D18F8@fwn.rug.nl>
+
+Couple of suggestions:
+
+1.  Make a user account that automatically replies to email by sending a
+user a copy of the SCO license and an automatically generated code,
+which the user should then send back to be added to the src group.  I
+could write a program for you.
+2.  Make a program that checks whether a user is in the src group, if
+not displays the SCO license, asks if the user accepts the license, if
+so adds the user to the src group.  Problem is that this program should
+be SUID...
+
+I'll start working on the first suggested program rightaway.  Don't have
+much else to do anyway ;-)
+
+Edward Brocklesby wrote:
+> 
+> Hi all.
+> 
+> A couple of things..
+> 
+> First, sorry to post about this again so soon, but styx is moving to a new
+> location, so any accounts created from now on will be removed later today
+> when it's moved.
+> 
+> Second, where do I stand on /usr/src/ permissions? Can I allow read access
+> to it, or is that effectively distributing 2.11BSD source, against SCO's
+> license? Is there any way to verify who has obtained a license, and add them
+> to a src group?
+> 
+> Thanks,
+>         -larne-
+
+-- 
+If I traveled to the end of the rainbow
+As Dame Fortune did intend,
+Murphy would be there to tell me
+The pot's at the other end.
+                -- Bert Whitney
+
+Lars J. Buitinck
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id GAA49251
+	for pups-liszt; Sat, 7 Apr 2001 06:03:13 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From helbig at Informatik.BA-Stuttgart.DE  Sat Apr  7 05:59:11 2001
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Fri, 6 Apr 2001 21:59:11 +0200 (CEST)
+Subject: [pups] Enhancement of SIMH-V2.5a
+Message-ID: <200104061959.f36JxBq18211@RVC1.Informatik.BA-Stuttgart.DE>
+
+Hi,
+
+As the subject says, I enhanced the PDP-11 simulator from Robert
+Supnik(V2.5a). Please tell me, if the README sounds interesting to
+you. In that case, maybe we could arrange to put the tar ball on
+one of minnie's disks.
+
+Wolfgang
+
+Here is the README:
+
+MAR-13-01
+
+This directory contains Robert Supnik's simulator controller V2.5a
+together with the PDP-11 simulator. I modified the PDP-11 simulator.
+The other simulators from the original V2.5a distribution are not
+included in this directory.
+
+The details:
+Physical Addresses 
+------------------
+The deposit and examine commands treated physical addresses as 22
+bit addresses, even if the CPU was set to 18 bit addresses. Thus,
+the I/O page was addressed from 17760000 to 17777776.  I changed
+this.  Now, if the CPU is set to 18 bit, the I/O page is addressed
+from 760000 to 770000.
+
+Three additional KL11 terminal devices:
+---------------------------------------
+KL11 File Input (KLI0, KLI1, KLI2):
+The KL11 file input (KLIx) units read from an attached file. They 
+implement the same registers as the KL11 terminal input (TTI).
+(cf. 5.2.3 in simh_doc.txt)
+
+KL11 File Output (KLO0, KLO1, KLO2)
+The KL11 file output (KLOx) units append to an attached file.  They
+implement the same registers as the KL11 terminal output unit (TTI).
+(cf. 5.2.4 in simh_doc.txt)
+
+The added program ASR supplies a (host)-terminal interface to
+the KLI/O attached files.
+ASR is invoked as
+	asr kli klo .
+It polls the host terminal (stdin) and appends the polled bytes
+to the file kli. Furthermore it polls the file klo and copies
+the polled bytes to the host terminal (stdout).
+
+To quit asr, enter ^E.
+
+To build asr, enter:
+	cc asr.c scp_tty.c
+	cp a.out asr
+
+Building the pdp11-simulator:
+The source code is in pdp11_kl.c. So the installation instructions in
+simh_doc.txt apply.
+
+Both asr and pdp11_kl.c is only tested on NetBSD 1.5. It hopefully
+works on other UNIX-like host operating systems as well.
+
+Example of who to to connect the file-I/O KL-devices and asr:
+Start the simulator.
+Attach the file kli to KLI0 and the file klo to KLO0.
+Enter
+	asr kli klo
+from another host terminal.
+Now, whatever you type, goes to KLI0, and whatever is written by
+KLO0 is typed onto your terminal.
+
+Device numbers of the terminal devices in PDP11-UNIX V6:
+UNIT		major/minor number
+TTI/TTO		0/0	(/dev/tty8, the console)
+KLI0/KLO0	0/1
+KLI1/KLO1	0/2
+KLI2/KLO2	0/3
+
+Synchronization of the line clock to the host clock:
+---------------------------------------------------
+"SYNC" is an add-on to the PDP-11 line clock device. It tries to
+synchronize the Line-time Clock (CLK, cf. 5.2.6 in simh_doc.txt)
+with the host time. It only works if the unsynchronized CLK runs
+too fast. On every tick of CLK, the simulator then sleeps until a
+total of 1/60 seconds elapsed from the last tick.
+
+Synchronization slows down the simulator and reduces the load of
+the CPU.  It is turned on automatically through activation of
+the CLK device.  The clock device is activated through a RESET.
+You can turn off synchronization by depositing '1' into the newly
+added "SYNCH"-register of the CLK-unit. To turn on synchronizing,
+deposit '0' into it. If synchronizing is active, the SYNCH-register
+shows the host time (number of seconds elapsed since Jan 1 1970
+UTC).
+
+Have fun,
+
+Wolfgang Helbig <helbig at ba-stuttgart.de>
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id GAA49442
+	for pups-liszt; Sat, 7 Apr 2001 06:55:26 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From ejb at leguin.org.uk  Sat Apr  7 06:47:57 2001
+From: ejb at leguin.org.uk (Edward Brocklesby)
+Date: Fri, 6 Apr 2001 20:47:57 +0000
+Subject: [pups] STYX and 2.11BSD licensing
+In-Reply-To: <3ACE00BB.FE5D18F8@fwn.rug.nl>
+References: <01040609593307.26560@klamath.leguin.org.uk> <3ACE00BB.FE5D18F8@fwn.rug.nl>
+Message-ID: <01040620475700.00557@klamath.leguin.org.uk>
+
+On Friday 06 April 2001  5:45 pm, Lars J. Buitinck wrote:
+> Couple of suggestions:
+>
+> 1.  Make a user account that automatically replies to email by sending a
+> user a copy of the SCO license and an automatically generated code,
+> which the user should then send back to be added to the src group.  I
+> could write a program for you.
+
+Hmm, yes.. would it just ask them to accept the license, or direct them to
+SCO's site, and get them to send back SCO's license code?  I'm really not
+sure of the legal issues surrounding this (or even how much it matters,
+now that it only takes 5 minutes to obtain a license..)
+
+> 2.  Make a program that checks whether a user is in the src group, if
+> not displays the SCO license, asks if the user accepts the license, if
+> so adds the user to the src group.  Problem is that this program should
+> be SUID...
+
+Locking the group file and securely updating it shouldn't be *too* hard, but
+yes, I'd prefer not to have many setuid programs around (I've already done
+a small audit of the code and fixed a couple of security bugs, and removed
+setuid bits from as many programs as possible.. I really wouldn't want someone
+to have root on it, simply because it would allow them to take any IP address
+on the host's network).
+
+> I'll start working on the first suggested program rightaway.  Don't have
+> much else to do anyway ;-)
+
+cheers :>
+
+	-larne-
+
+PS- styx is down right now, it's getting it's own (100% dedicated :) box, 
+hosted at tele.dk.. this should be setup over the weekend, then it'll be
+up and running again.
+
+Also, if anyone wants my INET_RESTRICT kernel patch (which only allows users 
+in INET_GROUP to call connect()) for 2.11BSD, I can put it online somewhere
+(although it's really not that difficult to implement). Also if 2.11BSD is 
+still being maintained, the setproctitle() vulnerability recently discovered 
+in 4BSD derived ftpd is still present (trivial fix - change 
+setproctitle(title) to setproctitle("%s", title)).  I'm still going through 
+various 4BSD code security problems to determine which are present in 2BSD.
+
+And lastly, if anyone wants source to the newuser program I used, I can put 
+that online too.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id JAA50238
+	for pups-liszt; Sat, 7 Apr 2001 09:45:06 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Sat Apr  7 09:24:19 2001
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Fri, 6 Apr 2001 16:24:19 -0700 (PDT)
+Subject: [pups] STYX and 2.11BSD licensing
+Message-ID: <200104062324.f36NOJs03847@moe.2bsd.com>
+
+Hi --
+
+> From: Edward Brocklesby <ejb at leguin.org.uk>
+> (although it's really not that difficult to implement). Also if 2.11BSD is 
+> still being maintained, the setproctitle() vulnerability recently discovered 
+> in 4BSD derived ftpd is still present (trivial fix - change 
+> setproctitle(title) to setproctitle("%s", title)).  I'm still going through 
+
+	2.11's still maintained - I've been busy (and a bit "burned out") and
+	haven't fired up the 11/73 as much as I should have or used to.  So
+	many projects, so little time ...
+
+	Sounds like it's time to at least get the FTPD bug fixed though ;)
+
+	Steven Schultz
+	sms at to.gd-es.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id VAA53356
+	for pups-liszt; Sat, 7 Apr 2001 21:33:01 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From lars at fwn.rug.nl  Sat Apr  7 21:28:07 2001
+From: lars at fwn.rug.nl (Lars J. Buitinck)
+Date: Sat, 07 Apr 2001 13:28:07 +0200
+Subject: [pups] STYX and 2.11BSD licensing
+References: <01040609593307.26560@klamath.leguin.org.uk> <3ACE00BB.FE5D18F8@fwn.rug.nl> <01040620475700.00557@klamath.leguin.org.uk>
+Message-ID: <3ACEF9C7.20A1328E@fwn.rug.nl>
+
+Edward Brocklesby wrote:
+> 
+> Hmm, yes.. would it just ask them to accept the license, or direct them to
+> SCO's site, and get them to send back SCO's license code?  I'm really not
+> sure of the legal issues surrounding this (or even how much it matters,
+> now that it only takes 5 minutes to obtain a license..)
+
+Less than 5 minutes.  I don't know when you got your license, but they
+don't even give a code anymore - they just show the license, let you
+click "ACCEPT" and you're in their archive.  Just show 'em the license.
+
+> Locking the group file and securely updating it shouldn't be *too* hard, but
+> yes, I'd prefer not to have many setuid programs around (I've already done
+> a small audit of the code and fixed a couple of security bugs, and removed
+> setuid bits from as many programs as possible.. I really wouldn't want someone
+> to have root on it, simply because it would allow them to take any IP address
+> on the host's network).
+
+And I don't feel like being responsible for anything bad that happens to
+your box by a bug in MFSRP - My First SUID Root Program :-)
+
+-- 
+If I traveled to the end of the rainbow
+As Dame Fortune did intend,
+Murphy would be there to tell me
+The pot's at the other end.
+                -- Bert Whitney
+
+Lars J. Buitinck
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id XAA53804
+	for pups-liszt; Sat, 7 Apr 2001 23:10:51 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From ejb at leguin.org.uk  Sat Apr  7 23:02:58 2001
+From: ejb at leguin.org.uk (Edward Brocklesby)
+Date: Sat, 7 Apr 2001 13:02:58 +0000
+Subject: [pups] STYX and 2.11BSD licensing
+In-Reply-To: <200104062324.f36NOJs03847@moe.2bsd.com>
+References: <200104062324.f36NOJs03847@moe.2bsd.com>
+Message-ID: <01040713025800.00566@klamath.leguin.org.uk>
+
+On Friday 06 April 2001 11:24 pm, Steven M. Schultz wrote:
+> 	2.11's still maintained - I've been busy (and a bit "burned out") and
+> 	haven't fired up the 11/73 as much as I should have or used to.  So
+> 	many projects, so little time ...
+
+Hm, I saw the patch archive.. which patchlevel is the 2.11_rp_unknown image
+on minnie at? 
+
+There's a couple of things I'd be interested in adding to 2BSD, though I'm 
+not sure if they'd make it into upstream.  One is the 4BSD timezones system, 
+which is somewhat better than setting TIMEZONE in the kernel..
+
+	-larne-
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id DAA55128
+	for pups-liszt; Sun, 8 Apr 2001 03:15:07 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Sun Apr  8 03:00:01 2001
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Sat, 7 Apr 2001 10:00:01 -0700 (PDT)
+Subject: [pups] STYX and 2.11BSD licensing
+Message-ID: <200104071700.f37H01815466@moe.2bsd.com>
+
+Hi -
+
+> From: Edward Brocklesby <ejb at leguin.org.uk>
+> Hm, I saw the patch archive.. which patchlevel is the 2.11_rp_unknown image
+> on minnie at? 
+
+	It's ancient.   Look at /VERSION - it should have the current rev
+	level:
+
+Current Patch Level: 436
+Date: February 22, 2001
+
+	Oh, I see I've number 436 almost ready to publish ;)
+
+> There's a couple of things I'd be interested in adding to 2BSD, though I'm 
+> not sure if they'd make it into upstream.  One is the 4BSD timezones system, 
+> which is somewhat better than setting TIMEZONE in the kernel..
+
+	The 4BSD timezone stuff is already there, at least in userland - see
+	/usr/share/zoneinfo and 'tic' and so on.
+
+	Since most PDP-11s do not have a "CMOS clock" to get the date and time
+	from I'm not sure where the kernel would get its initial date/time
+	from.   Some models (11/93) have a TOY clock that could be set to
+	GMT, but the other models do not - so the user/admin would have to
+	remember to set the date/time to GMT when booting the system.
+
+	Steven Schultz
+	moe.2bsd.com
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA56444
+	for pups-liszt; Sun, 8 Apr 2001 08:14:24 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From helbig at Informatik.BA-Stuttgart.DE  Sun Apr  8 08:10:15 2001
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Sun, 8 Apr 2001 00:10:15 +0200 (CEST)
+Subject: [pups] STYX and 2.11BSD licensing
+Message-ID: <200104072210.f37MAFu20067@RVC1.Informatik.BA-Stuttgart.DE>
+
+	
+> 	Since most PDP-11s do not have a "CMOS clock" to get the date and time
+> 	from I'm not sure where the kernel would get its initial date/time
+> 	from. [ ... ]
+
+In UNIX V6/V7 the kernel reads the initial time from the superblock of the
+root file system. The timestamp is written each time the superblock is updated
+on disk.
+
+> 	GMT, but the other models do not - so the user/admin would have to
+> 	remember to set the date/time to GMT when booting the system.
+
+The admin just has to remember that the date(1) command converts from
+localtime to GMT when setting the date -- unless an 's' is appended to
+the date string. (in V6 only, not mentioned in its man page)
+
+BTW. in V6, the timezone offset was not coded into the kernel, but
+in the C-library source ctime.c. If you happen to live outside
+Eastern Timezone, you'll have to change it. Furthermore the daylight
+saving time switch is hardcoded in localtime() -- last Sunday in
+April and last Sunday in October, with different rules for 1974
+(Jan 5 and last Sunday in November) and 1975 (last Sunday in February
+and last Sunday in November).
+
+So you in V6 don't have to rebuild the kernel to adopt the timezone
+changes.  Instead you have to rebuild the C-Library (at least
+replace ctime.c) and build all commands that depend on it. I've
+found these:
+
+	date find ls who cron dump mail pr restore
+
+Putting the timezone offset into the kernel like in V7 seems to be
+better, because you don't have to recompile all those commands.
+
+Wolfgang
+
+PS. I've patches to V6, that make it y2k ready and avoid some integer
+overflows in ctime, which occure since 1998, so not related
+to y2k.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id JAA56796
+	for pups-liszt; Sun, 8 Apr 2001 09:30:04 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Sun Apr  8 09:17:44 2001
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Sat, 7 Apr 2001 16:17:44 -0700 (PDT)
+Subject: [pups] STYX and 2.11BSD licensing
+Message-ID: <200104072317.f37NHij19414@moe.2bsd.com>
+
+Hi -
+
+> From: Wolfgang Helbig <helbig at Informatik.BA-Stuttgart.DE>
+> In UNIX V6/V7 the kernel reads the initial time from the superblock of the
+> root file system. The timestamp is written each time the superblock is updated
+> on disk.
+	
+	2.11 (and as far as I can remember all of the 2BSD family) do the
+	same thing.
+
+	The trouble is that the initial time upon boot can be seriously wrong.
+
+	For example I haven't booted my 11/73 in a month or two - the date and
+	time will be sometime in Jan or Feb.
+
+	In the "PC" world there's the CMOS clock (set to GMT on all the systems
+	I have) and a battery - when the system boots it can read the 
+	correct/current/GMT date/time from the hardware (as can a 11/93 with 
+	a TOY clock).
+
+> BTW. in V6, the timezone offset was not coded into the kernel, but
+> in the C-library source ctime.c. If you happen to live outside
+
+	Yep - I had hoped to never have to remember _that_ again ;)
+
+> Putting the timezone offset into the kernel like in V7 seems to be
+> better, because you don't have to recompile all those commands.
+
+	Right.
+
+	It is only one module in the kernel (param.c) that needs to
+	be recompiled - just edit param.c and that's the only module that will
+	be rebuilt.
+
+	Another way is to use 'adb -w -k ...' and patch the kernel and/or
+	memory.
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id CAA61234
+	for pups-liszt; Mon, 9 Apr 2001 02:18:54 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From Fred.van.Kempen at microwalt.nl  Mon Apr  9 02:04:34 2001
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Sun, 8 Apr 2001 18:04:34 +0200 
+Subject: [pups] STYX and 2.11BSD licensing
+Message-ID: <6F63E31101C6D41196490008C7B2BFC3020ABB@mwnt4.microwalt.nl>
+
+All,
+
+> 	Since most PDP-11s do not have a "CMOS clock" to get the date and
+>	time from I'm not sure where the kernel would get its initial
+>	date/time from.
+Dunno about V6/V7/2BSD, but Ultrix-11 uses the "last modified" date-stamp
+from the root file system (inode 1; /) to save/restore the last known
+date.  Kinda works, and better than having a system run in 1970 initially :)
+Still, TZ info is stored im the kernel.  Would be nice to have that in
+user space, too...
+
+--fred
+
+
+**********************************************************************
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the system manager.
+
+This footnote also confirms that this email message has been swept by
+MIMEsweeper for the presence of computer viruses.
+
+www.mimesweeper.com
+**********************************************************************
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id EAA86572
+	for pups-liszt; Wed, 11 Apr 2001 04:45:21 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From norman at nose.cs.utoronto.ca  Wed Apr 11 04:36:46 2001
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Tue, 10 Apr 2001 14:36:46 -0400
+Subject: [pups] Sigma RDQ11-EC, ESDI disk wisdom needed
+Message-ID: <200104101845.EAA86568@minnie.cs.adfa.edu.au>
+
+I am trying to get a Sigma RQD11-EC ESDI disk controller and Fujitsu
+M2261E disk to work in a MicroVAX III, and am stumped.  I am quite
+sure the current problem would show up in a Qbus PDP-11 as well, so
+I thought I'd ask here.
+
+Those who don't recognize the devices will probably find it boring to
+read on, but for the sake of politeness, the RQD11-EC is a four-drive
+Qbus ESDI disk controller that speaks MSCP to the host computer, and
+the M2261E is a 320MB full-height 5.25-inch ESDI disk drive.  I picked
+them both up (actually two of each) just short of someone's dumpster a
+couple of years ago, but this is the first time I have tried to use them.
+It was believed that they were working when last powered up, which was
+several years before they came to me.  They didn't come with documentation.
+I hope to get a copy of the controller manual from a geographically-distant
+friend, who has already e-mailed me a list of switch settings and some
+other key facts.  www.pc-disk.de has a spec-and-jumpers sheet for the
+disk.
+
+In a sentence, the trouble is that the controller cannot see the disk.
+
+In more detail:
+
+The RQD11 is configured at address 0160354 (I am testing in a system
+that also has an RQDX3 at the standard address which I don't want to
+disturb); bootstrap disabled; CPU type LSI-11 (the only other choice is
+`none'); interrupts at BR4.  Except the address, these are the same
+settings the board had when it was last in use.
+
+There are many disk jumpers.  Among the settings are: drive select 1;
+daisy-chain style signal gating; 590 bytes per sector, hard-sectored;
+ATTN not set to READY at power-up.  Again these are believed to be the
+settings when the drive was last used.
+
+The A (wide) cable runs from the A connector on the disk to J5 (the only
+34-pin connector) on the controller.  The drive has a terminator DIP in
+place.  The B (narrow) cable runs from the B connector on the disk to
+J1 on the controller.  The cables I am using happen to be missing the
+keys normally found at the drive end; I have tried all four possible
+cable orientations to no avail.
+
+When fed power, the disk spins up and calibrates (the rattling head-dance
+I'm familiar with from other Fuji disks of similar vintage).  At no point
+have I seen any fault LEDs lit.  The READY LED on the front of the disk
+comes on after calibration, and stays on.
+
+The RQD11's CSR responds as it should on the Qbus, and the sequence
+that is supposed to open communications with WOMBAT (the firmware command
+interpreter) works fine:
+
+  >>>d/p/w 20001f40 20
+  >>>d/l 20088008 80000002
+  >>>d/w 200000ec ac
+  >>>s 400
+
+  RQD11-EC   WOMBAT Version: 2.38
+  Drive number:
+
+According to my friend with the manual, before the drive number prompt
+the firmware should list all the drives it sees, but I have yet to see
+it list anything.  If I give it a drive number between 0 and 7, it reports
+`no drv'; any other number yields `Illegal drive number'.
+
+I have tried various experiments, including
+- using J3 instead of J1 for the B cable
+- different drive-select lines
+- changing CHN7 15-16 to `set ATTN at power-up'
+each with all four possible cable orientations.
+
+As I say, I'm stumped.  Anybody got any suggestions?  Is there anything
+I can do to get better diagnostic information out of either the disk or
+the controller?
+
+Thanks much for any advice,
+
+Norman Wilson
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Sun Apr 15 01:01:45 2001
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Sat, 14 Apr 2001 17:01:45 +0200 (CEST)
+Subject: [pups] Ken_Welsch_v6 and Dennis_v6
+Message-ID: <200104141501.f3EF1jO03450@RVC1.Informatik.BA-Stuttgart.DE>
+
+Hi,
+
+I'm referring to the Ken_Welsch_v6 description in
+	http://minnie.cs.adfa.edu.au/TUHS/Archive/PDP-11/Distributions/DETAILS
+
+The Ken Welsch tape differs from the Dennis disks only in the "RESTRICTED RIGHTS"-
+statement that was put into /usr/sys/ken/main.c on October 10th 1975 EDT.
+The binaries that depend on this change, were rebuilt (usr/sys/lib1 and the
+kernels in /) and thus show the same modification date.
+
+All other files from the Ken Welsch tape bear a timestamp between May 14th 1975
+and July 18th 1975.
+
+After installation from the Ken Welsch tape onto a (simulated) RK-disk
+the date(1) command displays:
+	October 10 12:29:51 EDT 1975
+(which in Australia is October 11th. That might explain, why the
+dates given in the DETAILS file are off by one)
+
+Wolfgang
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id BAA16087
+	for pups-liszt; Sun, 15 Apr 2001 01:46:27 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From bill at cs.scranton.edu  Sun Apr 15 01:38:20 2001
+From: bill at cs.scranton.edu (Bill Gunshannon)
+Date: Sat, 14 Apr 2001 11:38:20 -0400 (EDT)
+Subject: [pups] PDP-11/24 -- BA11-A help needed
+Message-ID: <Pine.LNX.4.10.10104141137380.20429-100000@triangle.cs.uofs.edu>
+
+
+
+Is there anyone here with experience working on a PDP-11/24 in a BA11-A
+box??  I am trying to more mine from a broken BA11-L to a working BA11-A
+and I need some help with where one of the cables from the control panel
+goes.
+
+Anyone??
+
+bill
+
+-- 
+Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three wolves
+bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+University of Scranton   |
+Scranton, Pennsylvania   |         #include <std.disclaimer.h>   
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id DAA16635
+	for pups-liszt; Sun, 15 Apr 2001 03:14:08 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From kwellsch at tampabay.rr.com  Sun Apr 15 03:05:49 2001
+From: kwellsch at tampabay.rr.com (Ken Wellsch)
+Date: Sat, 14 Apr 2001 13:05:49 -0400
+Subject: [pups] Ken_Welsch_v6 and Dennis_v6
+References: <200104141501.f3EF1jO03450@RVC1.Informatik.BA-Stuttgart.DE>
+Message-ID: <3AD8836D.C674C657@tampabay.rr.com>
+
+I always wondered why when booting the image it did not print the
+notice so often displayed with V6.  I've not looked at the physical
+tape this image was pulled from in many years, but I cannot imagine
+the fine folks at the University of Waterloo (where I worked for
+many years) would have changed anything.  So I would gather from
+your detective work that based on dates, this tape just predates
+that provided by Dennis Richie by such a short time?  I do know
+that the physical paper label on the tape was hand written.  Not
+the typed sort I expected with any sort of (c) notice or anything.
+
+-- Ken
+
+Wolfgang Helbig wrote:
+> 
+> Hi,
+> 
+> I'm referring to the Ken_Welsch_v6 description in
+>         http://minnie.cs.adfa.edu.au/TUHS/Archive/PDP-11/Distributions/DETAILS
+> 
+> The Ken Welsch tape differs from the Dennis disks only in the "RESTRICTED RIGHTS"-
+> statement that was put into /usr/sys/ken/main.c on October 10th 1975 EDT.
+> The binaries that depend on this change, were rebuilt (usr/sys/lib1 and the
+> kernels in /) and thus show the same modification date.
+> 
+> All other files from the Ken Welsch tape bear a timestamp between May 14th 1975
+> and July 18th 1975.
+> 
+> After installation from the Ken Welsch tape onto a (simulated) RK-disk
+> the date(1) command displays:
+>         October 10 12:29:51 EDT 1975
+> (which in Australia is October 11th. That might explain, why the
+> dates given in the DETAILS file are off by one)
+> 
+> Wolfgang
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id EAA17130
+	for pups-liszt; Sun, 15 Apr 2001 04:53:12 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From helbig at Informatik.BA-Stuttgart.DE  Sun Apr 15 04:48:45 2001
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Sat, 14 Apr 2001 20:48:45 +0200 (CEST)
+Subject: [pups] Ken_Welsch_v6 and Dennis_v6
+Message-ID: <200104141848.f3EImj703621@RVC1.Informatik.BA-Stuttgart.DE>
+
+> I always wondered why when booting the image it did not print the
+> notice so often displayed with V6.  I've not looked at the physical
+> tape this image was pulled from in many years, but I cannot imagine
+> the fine folks at the University of Waterloo (where I worked for
+> many years) would have changed anything.  So I would gather from
+> your detective work that based on dates, this tape just predates
+> that provided by Dennis Richie by such a short time?  I do know
+
+No, the other way round: The tape you provided is from October 10th
+and the disk image provided by Dennis is from July 18th. The
+"RESTRICED RIGHT"- remark was put into the kernel on October 10th.
+It is on the tape that you provided, it is not on the disk image
+from Dennis.  But the source code from the Lions book shows this
+remark as well.
+
+I don't know who changed main.c on October 10th 1975 (I lived in Israel
+at that time)
+
+You see the remark only if you set the switch register on the PDP-11
+to a nonzero value befor booting. I installed V6 from the tape
+following the setup instructions. With the Supnik simulator, enter
+	sim > d sr 1
+	sim > boot rk0
+	@rkunix
+
+And it will print your rights!
+
+Wolfgang
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Mon Apr 16 03:08:32 2001
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Sun, 15 Apr 2001 19:08:32 +0200 (CEST)
+Subject: [pups] V6 and Supnik-simulator
+Message-ID: <200104151708.f3FH8WS05058@RVC1.Informatik.BA-Stuttgart.DE>
+
+Hi,
+
+If the following  README sounds interesting to you, maybe we can
+arrange to put a tar ball of it onto minnie?
+
+I also prepared postscript files of the V6-documentation.
+Anyone interested?
+
+Wolfgang
+
+First README:
+UNIX V6 on the Supnik simulator:
+--------------------------------
+This directory contains tape files for the Supnik simulator and
+accompaning README files, which I produced when preparing an OS
+course at the Berufsakademie. Further it contains C-sources of two
+commands (enblock.c/deblock.c). These commands prepare a tapefile for the
+simulator (enblock) and produce a plain file from a simulator
+tapefile (deblock).
+
+The Supnik simulator can be obtained from:
+	ftp://minnie.cs.adfa.edu.au/pub/PDP-11/Sims/Supnik_2.3/sources/
+I used the sim_2.3d.tar.gz tar ball.
+
+This directory contains a *.README and *.enb files with the following
+basenames:
+
+ctable: A bug in the input table for the C-compiler code generator is fixed.
+ctime:	Some y2k related changes to V6.
+dcheck: Bug fix and enhancement of dcheck. 
+dist:	The V6 distribution tape: dist.README explains how to install
+	and setup UNIX-V6 with the simulator. The file dist.enb is missing
+	for copyright and space reasons, you have to prepare it yourself.
+	(see enb.README). 
+dotdot: Kernel enhancement: If in a root directoy of a mounted filesystem,
+	let ".." mean the parent of the mount point, not the root directory.
+enb:	Conventions and usage of .enb files. Explains how to
+	prepare tape files for the Supnik simulator and tells you
+	how to prepare the V6 distribution tape.
+ludiv:	Derivation of a double word unsigned division algorithm, which is used
+	in ctime. (no corresponding .enb)
+man:	The man command, which was missing from the distribution, and some
+	changes to make V6-nroff output readable on an xterm.
+
+So enb.README and dist.README are the next files you should read.
+
+If you have questions or find bugs or whatever, mail to
+	helbig at informatik.ba-stuttgart.de
+
+Last but not least I thankfully acknowledge the work of the people
+who talked SCO into offering the ancient-UNIX source license, who collected
+the old distribution tapes and run the PUPS Archive. And of course I thank
+Bob Supnik for this great simulator!
+
+Second README:
+This directory contains some documentation as found on the UNIX V6
+Distribution tape. The files were converted to postscript with
+groff and the usage of the V6 ms-macro package. (See the print
+shell script)
+
+Assembler:				as.ps		(*)
+Beginners Guide:			beg.ps		(*)
+C-Language Reference:			c.ps		(***)
+C-Tutorial:				ctut.ps		(**)
+ED-Tutorial:				ed.ps		(*)
+Summary of UNIX:			hel.ps		(*)
+Description of the C-IO-Library:	iolib.ps	()
+Description of the kernel IO/Subsystem:	iosys.ps	(**)
+Some thought about security:		secur.ps	(*)
+Instruction how to install V6 from tape:start.ps	(***)
+Table of Contents of the Online Manual	toc.ps		(**)
+Overview of UNIX (ACM-paper)		unix.ps		(***)
+YACC - yet another compiler compiler	yacc.ps		()
+
+The more stars the more useful for the OS course. Two or more stars
+indicate high recommended!
+
+>From the V7-distribution I included "A tour through the UNIX-C-Compiler"
+(ctour.ps), which describes the internal workings of the said
+compiler. The format and meaning of /usr/sources/c/table.s is
+particular interesting reading if you want to learn about how a
+compiler generates machine code.
+
+The shell script "print" can be used to format the *.ps files.
+(on a contemporary UNIX system with groff)
+
+The file tmac.s contains V6-ms macros, which are used by some of
+the doc files.
+
+Some of the V6 doc files needed to be adopted to groff to render
+acceptable output. But the 25 year old troff sources were amazingly
+compatible with groff.
+
+
+From iking at microsoft.com  Tue Apr 17 01:34:09 2001
+From: iking at microsoft.com (Ian King)
+Date: Mon, 16 Apr 2001 08:34:09 -0700
+Subject: [pups] Ken_Welsch_v6 and Dennis_v6
+Message-ID: <8D25F244B8274141B5D313CA4823F39C0235D23D@red-msg-06.redmond.corp.microsoft.com>
+
+All, 
+
+Yes, I saw the "rights" declaration (with a non-zero switch register) on
+a real machine (PDP-11/34a with programmer's panel), when I booted Ken's
+v6 distribution in single-user mode (there is a specific value you enter
+into the register, 173030, as documented in bproc.8; does anyone know
+why this value was used?).  
+
+I'm not sure why, but I was never able to get Dennis' distribution to
+boot in the emulator; as a result, I didn't take the time to copy it
+over to an RK05 (using Warren's excellent tools) to boot on the 11/34.  
+
+-- Ian 
+
+-----Original Message-----
+From: Wolfgang Helbig [mailto:helbig at Informatik.BA-Stuttgart.DE] 
+Sent: Saturday, April 14, 2001 11:49 AM
+To: helbig at Informatik.BA-Stuttgart.DE; kwellsch at tampabay.rr.com
+Cc: pups at minnie.cs.adfa.edu.au
+Subject: Re: [pups] Ken_Welsch_v6 and Dennis_v6
+
+
+> I always wondered why when booting the image it did not print the 
+> notice so often displayed with V6.  I've not looked at the physical 
+> tape this image was pulled from in many years, but I cannot imagine 
+> the fine folks at the University of Waterloo (where I worked for many 
+> years) would have changed anything.  So I would gather from your 
+> detective work that based on dates, this tape just predates that 
+> provided by Dennis Richie by such a short time?  I do know
+
+No, the other way round: The tape you provided is from October 10th and
+the disk image provided by Dennis is from July 18th. The "RESTRICED
+RIGHT"- remark was put into the kernel on October 10th. It is on the
+tape that you provided, it is not on the disk image from Dennis.  But
+the source code from the Lions book shows this remark as well.
+
+I don't know who changed main.c on October 10th 1975 (I lived in Israel
+at that time)
+
+You see the remark only if you set the switch register on the PDP-11 to
+a nonzero value befor booting. I installed V6 from the tape following
+the setup instructions. With the Supnik simulator, enter
+	sim > d sr 1
+	sim > boot rk0
+	@rkunix
+
+And it will print your rights!
+
+Wolfgang
+
+
+From ejb at leguin.org.uk  Tue Apr 17 11:14:25 2001
+From: ejb at leguin.org.uk (Edward Brocklesby)
+Date: Tue, 17 Apr 2001 01:14:25 +0000
+Subject: [pups] 2.11BSD system
+Message-ID: <0104170114250J.00508@klamath.leguin.org.uk>
+
+Hi all,
+
+The public access 2.11BSD system is finally back up, at styx.leguin.org.uk.  
+You might find your account has been deleted, in which case just create a new 
+one..
+
+(for anyone who didn't see my original mail, styx is a public access 2.11bsd 
+system on a pdp-11/70 that anyone can create an account on via telnet).
+
+	-larne-
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id VAA36260
+	for pups-liszt; Tue, 17 Apr 2001 21:59:39 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From leypold at informatik.uni-tuebingen.de  Tue Apr 17 21:51:14 2001
+From: leypold at informatik.uni-tuebingen.de (Markus E Leypold)
+Date: Tue, 17 Apr 2001 11:51:14 GMT
+Subject: [pups] V6 and Supnik-simulator
+In-Reply-To: <200104151708.f3FH8WS05058@RVC1.Informatik.BA-Stuttgart.DE>
+	(message from Wolfgang Helbig on Sun, 15 Apr 2001 19:08:32 +0200
+	(CEST))
+References: <200104151708.f3FH8WS05058@RVC1.Informatik.BA-Stuttgart.DE>
+Message-ID: <200104171151.LAA21885@neuromancer.informatik.uni-tuebingen.de>
+
+
+ > Delivered-To: leypold at informatik.uni-tuebingen.de
+ > Date: Sun, 15 Apr 2001 19:08:32 +0200 (CEST)
+ > From: Wolfgang Helbig <helbig at Informatik.BA-Stuttgart.DE>
+ > Sender: owner-pups at minnie.cs.adfa.edu.au
+ > 
+ > Hi,
+ > 
+ > If the following  README sounds interesting to you, maybe we can
+ > arrange to put a tar ball of it onto minnie?
+ > 
+ > I also prepared postscript files of the V6-documentation.
+ > Anyone interested?
+
+
+Yes, me in example :-). I wonder wether you could give them to dmr to be
+placed just at the side of the v7 docs, or wether you could put it
+into the archive?
+
+Regards -- Markus
+
+ > 
+ > Wolfgang
+ > 
+ > First README:
+ > UNIX V6 on the Supnik simulator:
+ > --------------------------------
+ > This directory contains tape files for the Supnik simulator and
+ > accompaning README files, which I produced when preparing an OS
+ > course at the Berufsakademie. Further it contains C-sources of two
+ > commands (enblock.c/deblock.c). These commands prepare a tapefile for the
+ > simulator (enblock) and produce a plain file from a simulator
+ > tapefile (deblock).
+ > 
+ > The Supnik simulator can be obtained from:
+ > 	ftp://minnie.cs.adfa.edu.au/pub/PDP-11/Sims/Supnik_2.3/sources/
+ > I used the sim_2.3d.tar.gz tar ball.
+ > 
+ > This directory contains a *.README and *.enb files with the following
+ > basenames:
+ > 
+ > ctable: A bug in the input table for the C-compiler code generator is fixed.
+ > ctime:	Some y2k related changes to V6.
+ > dcheck: Bug fix and enhancement of dcheck. 
+ > dist:	The V6 distribution tape: dist.README explains how to install
+ > 	and setup UNIX-V6 with the simulator. The file dist.enb is missing
+ > 	for copyright and space reasons, you have to prepare it yourself.
+ > 	(see enb.README). 
+ > dotdot: Kernel enhancement: If in a root directoy of a mounted filesystem,
+ > 	let ".." mean the parent of the mount point, not the root directory.
+ > enb:	Conventions and usage of .enb files. Explains how to
+ > 	prepare tape files for the Supnik simulator and tells you
+ > 	how to prepare the V6 distribution tape.
+ > ludiv:	Derivation of a double word unsigned division algorithm, which is used
+ > 	in ctime. (no corresponding .enb)
+ > man:	The man command, which was missing from the distribution, and some
+ > 	changes to make V6-nroff output readable on an xterm.
+ > 
+ > So enb.README and dist.README are the next files you should read.
+ > 
+ > If you have questions or find bugs or whatever, mail to
+ > 	helbig at informatik.ba-stuttgart.de
+ > 
+ > Last but not least I thankfully acknowledge the work of the people
+ > who talked SCO into offering the ancient-UNIX source license, who collected
+ > the old distribution tapes and run the PUPS Archive. And of course I thank
+ > Bob Supnik for this great simulator!
+ > 
+ > Second README:
+ > This directory contains some documentation as found on the UNIX V6
+ > Distribution tape. The files were converted to postscript with
+ > groff and the usage of the V6 ms-macro package. (See the print
+ > shell script)
+ > 
+ > Assembler:				as.ps		(*)
+ > Beginners Guide:			beg.ps		(*)
+ > C-Language Reference:			c.ps		(***)
+ > C-Tutorial:				ctut.ps		(**)
+ > ED-Tutorial:				ed.ps		(*)
+ > Summary of UNIX:			hel.ps		(*)
+ > Description of the C-IO-Library:	iolib.ps	()
+ > Description of the kernel IO/Subsystem:	iosys.ps	(**)
+ > Some thought about security:		secur.ps	(*)
+ > Instruction how to install V6 from tape:start.ps	(***)
+ > Table of Contents of the Online Manual	toc.ps		(**)
+ > Overview of UNIX (ACM-paper)		unix.ps		(***)
+ > YACC - yet another compiler compiler	yacc.ps		()
+ > 
+ > The more stars the more useful for the OS course. Two or more stars
+ > indicate high recommended!
+ > 
+ > >From the V7-distribution I included "A tour through the UNIX-C-Compiler"
+ > (ctour.ps), which describes the internal workings of the said
+ > compiler. The format and meaning of /usr/sources/c/table.s is
+ > particular interesting reading if you want to learn about how a
+ > compiler generates machine code.
+ > 
+ > The shell script "print" can be used to format the *.ps files.
+ > (on a contemporary UNIX system with groff)
+ > 
+ > The file tmac.s contains V6-ms macros, which are used by some of
+ > the doc files.
+ > 
+ > Some of the V6 doc files needed to be adopted to groff to render
+ > acceptable output. But the 25 year old troff sources were amazingly
+ > compatible with groff.
+ > 
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id WAA36286
+	for pups-liszt; Tue, 17 Apr 2001 22:02:15 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From leypold at informatik.uni-tuebingen.de  Tue Apr 17 21:53:23 2001
+From: leypold at informatik.uni-tuebingen.de (Markus E Leypold)
+Date: Tue, 17 Apr 2001 11:53:23 GMT
+Subject: [pups] Ken_Welsch_v6 and Dennis_v6
+In-Reply-To: 	<8D25F244B8274141B5D313CA4823F39C0235D23D@red-msg-06.redmond.corp.microsoft.com>
+	(iking@microsoft.com)
+References: <8D25F244B8274141B5D313CA4823F39C0235D23D@red-msg-06.redmond.corp.microsoft.com>
+Message-ID: <200104171153.LAA21888@neuromancer.informatik.uni-tuebingen.de>
+
+ > Delivered-To: leypold at informatik.uni-tuebingen.de
+ > Content-Class: urn:content-classes:message
+ > Date: Mon, 16 Apr 2001 08:34:09 -0700
+ > Thread-Topic: [pups] Ken_Welsch_v6 and Dennis_v6
+ > Thread-Index: AcDFGASz18jwJYwtTZmjFncUfGcq0gBccMBw
+ > From: "Ian King" <iking at microsoft.com>
+ > Cc: <pups at minnie.cs.adfa.edu.au>
+ > Sender: owner-pups at minnie.cs.adfa.edu.au
+ > 
+ > All, 
+ > 
+ > Yes, I saw the "rights" declaration (with a non-zero switch register) on
+ > a real machine (PDP-11/34a with programmer's panel), when I booted Ken's
+ > v6 distribution in single-user mode (there is a specific value you enter
+ > into the register, 173030, as documented in bproc.8; does anyone know
+ > why this value was used?).  
+ > 
+ > I'm not sure why, but I was never able to get Dennis' distribution to
+ > boot in the emulator; as a result, I didn't take the time to copy it
+
+
+As far as I remember I had the same problem. The bootsector I think is
+simply empty (god knows why). I took the bs from another disk -- and
+everything was fine.
+
+Regards -- Markus
+
+
+ > over to an RK05 (using Warren's excellent tools) to boot on the 11/34.  
+ > 
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id CAA37877
+	for pups-liszt; Wed, 18 Apr 2001 02:15:20 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From ejb at leguin.org.uk  Wed Apr 18 02:06:34 2001
+From: ejb at leguin.org.uk (Edward Brocklesby)
+Date: Tue, 17 Apr 2001 16:06:34 +0000
+Subject: [pups] very strange problems with 2.11BSD tcp/ip stack
+Message-ID: <0104171606340L.00508@klamath.leguin.org.uk>
+
+hi,
+
+I've been using the 2.11BSD tcp/ip stack fine for weeks, but now, just when 
+we move it to a new host, its been very flaky.. I'm not sure if it's a 
+problem with the configuration of the emulator host system, or the TCP stack 
+itself.
+
+the problem seems to be with packets arriving and being processed out of 
+order.. I get this from a ping:
+PING 62.242.39.162 (62.242.39.162): 56 data bytes
+64 bytes from 62.242.39.162: icmp_seq=2 ttl=255 time=14.427 ms
+64 bytes from 62.242.39.162: icmp_seq=3 ttl=255 time=24.571 ms
+64 bytes from 62.242.39.162: icmp_seq=0 ttl=255 time=3194.977 ms
+64 bytes from 62.242.39.162: icmp_seq=1 ttl=255 time=2207.308 ms
+64 bytes from 62.242.39.162: icmp_seq=12 ttl=255 time=14.602 ms
+64 bytes from 62.242.39.162: icmp_seq=13 ttl=255 time=24.598 ms
+64 bytes from 62.242.39.162: icmp_seq=14 ttl=255 time=14.612 ms
+64 bytes from 62.242.39.162: icmp_seq=15 ttl=255 time=24.571 ms
+64 bytes from 62.242.39.162: icmp_seq=16 ttl=255 time=14.614 ms
+64 bytes from 62.242.39.162: icmp_seq=4 ttl=255 time=12156.845 ms
+64 bytes from 62.242.39.162: icmp_seq=5 ttl=255 time=11166.777 ms
+64 bytes from 62.242.39.162: icmp_seq=6 ttl=255 time=10176.688 ms
+64 bytes from 62.242.39.162: icmp_seq=7 ttl=255 time=9186.604 ms
+64 bytes from 62.242.39.162: icmp_seq=8 ttl=255 time=8197.344 ms
+64 bytes from 62.242.39.162: icmp_seq=9 ttl=255 time=7206.744 ms
+64 bytes from 62.242.39.162: icmp_seq=10 ttl=255 time=6216.641 ms
+64 bytes from 62.242.39.162: icmp_seq=11 ttl=255 time=5226.532 ms
+
+but the box i'm pinging from is the host system where the emulator is 
+located.. so there isn't any possible network problem. 
+
+The configuration is, tap0 has the IP 62.242.39.161 on the host, and the 
+pdp-11 has 62.242.39.162, with netmask 0xfffffff8.  Nothing else special has 
+been done on either side.
+
+on the host, we have this:
+
+freeze% ifconfig xl0
+xl0: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+        inet 195.249.6.94 netmask 0xfffffff8 broadcast 195.249.6.95
+        inet6 fe80::260:97ff:fe7d:74ac%xl0 prefixlen 64 scopeid 0x1
+        ether 00:60:97:7d:74:ac
+        media: 100baseTX <full-duplex> status: active
+        supported media: autoselect 100baseTX <full-duplex> 100baseTX 
+10baseT/UTP <full-duplex> 10baseT/UTP 100baseTX <hw-loopback>
+freeze% ifconfig tap0
+tap0: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> mtu 1532
+        inet6 fe80::260:97ff:fe7d:74ac%tap0 prefixlen 64 scopeid 0xb
+        inet 62.242.39.161 netmask 0xfffffffc broadcast 62.242.39.163
+        ether 00:bd:e7:e0:cc:00
+        Opened by PID 31257
+freeze% netstat -rn
+Routing tables
+ 
+Internet:
+Destination        Gateway            Flags     Refs     Use     Netif Expire
+default            195.249.6.90       UGSc        2     8355      xl0
+62.242.39.160/30   link#11            UC          0        0     tap0 =>
+127.0.0.1          127.0.0.1          UH          2    15389      lo0
+195.249.6.88/29    link#1             UC          0        0      xl0 =>
+
+
+and on the pdp-11:
+
+styx% ifconfig qe0
+qe0: flags=63<UP,BROADCAST,NOTRAILERS,RUNNING>
+        inet 62.242.39.162 netmask fffffffc broadcast 62.242.39.163
+styx% netstat -rn
+Routing tables
+Destination      Gateway            Flags     Refs     Use  Interface
+127.0.0.1        127.0.0.1          UH          0        0  lo0
+62.242.39.162    127.0.0.1          UH          0        0  lo0
+default          62.242.39.161      UG          1     3551  qe0
+62.242.39.160    62.242.39.162      U           1      321  qe0
+
+If someone could shed some light on this problem, it'd be much appreciated..
+
+	-larne-
+
+
+From jkunz at unixag-kl.fh-kl.de  Wed Apr 18 07:32:53 2001
+From: jkunz at unixag-kl.fh-kl.de (jkunz at unixag-kl.fh-kl.de)
+Date: Tue, 17 Apr 2001 23:32:53 +0200 (CEST)
+Subject: [pups] very strange problems with 2.11BSD tcp/ip stack
+In-Reply-To: <0104171606340L.00508@klamath.leguin.org.uk>
+Message-ID: <200104172132.XAA27697@unixag-kl.fh-kl.de>
+
+On 17 Apr, Edward Brocklesby wrote:
+
+> I've been using the 2.11BSD tcp/ip stack fine for weeks, but now, just when 
+> we move it to a new host, its been very flaky.. 
+[...]
+> the problem seems to be with packets arriving and being processed out of 
+> order.. 
+I had exactely the same problem on my 11/73 with a DELQA running
+2.11BSD. I noticed this after I reconfigured the qe0 interface and the
+routes while the system was up and running. It disapeared after I had
+to powercycle the machine for other reasons. 
+-- 
+
+
+
+tschüß,
+         Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA40135
+	for pups-liszt; Wed, 18 Apr 2001 08:30:41 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From ejb at leguin.org.uk  Wed Apr 18 08:21:47 2001
+From: ejb at leguin.org.uk (Edward Brocklesby)
+Date: Tue, 17 Apr 2001 22:21:47 +0000
+Subject: [pups] very strange problems with 2.11BSD tcp/ip stack
+In-Reply-To: <200104172132.XAA27697@unixag-kl.fh-kl.de>
+References: <200104172132.XAA27697@unixag-kl.fh-kl.de>
+Message-ID: <0104172221470N.00508@klamath.leguin.org.uk>
+
+On Tuesday 17 April 2001  9:32 pm, jkunz at unixag-kl.fh-kl.de wrote:
+> I had exactely the same problem on my 11/73 with a DELQA running
+> 2.11BSD. I noticed this after I reconfigured the qe0 interface and the
+> routes while the system was up and running. It disapeared after I had
+> to powercycle the machine for other reasons.
+
+Yeah, that's probably the problem.. I was fiddling with the routes (changing 
+the IP and subnet) just before it started.. after a reboot it seems fine.
+
+	-larne-
+
+
+From clefevre-lists at noos.fr  Thu Apr 19 13:30:48 2001
+From: clefevre-lists at noos.fr (Cyrille Lefevre)
+Date: 19 Apr 2001 05:30:48 +0200
+Subject: [pups] 2.11BSD system
+In-Reply-To: <0104170114250J.00508@klamath.leguin.org.uk>
+References: <0104170114250J.00508@klamath.leguin.org.uk>
+Message-ID: <bspto9av.fsf@gits.dyndns.org>
+
+Edward Brocklesby <ejb at leguin.org.uk> writes:
+
+> The public access 2.11BSD system is finally back up, at styx.leguin.org.uk.  
+> You might find your account has been deleted, in which case just create a new 
+> one..
+
+works well :)
+
+please, could you open access to /usr/src since many files are 640 ?
+
+something like chmod -R o+r /usr/src and maybe
+find /usr/src -type d -print | xargs chmod o+x
+
+thanks in advance.
+
+Cyrille.
+--
+home: mailto:clefevre at poboxes.com   UNIX is user-friendly; it's just particular
+work: mailto:Cyrille.Lefevre at edf.fr   about who it chooses to be friends with.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id QAA50563
+	for pups-liszt; Thu, 19 Apr 2001 16:07:32 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From ejb at leguin.org.uk  Thu Apr 19 15:58:49 2001
+From: ejb at leguin.org.uk (Edward Brocklesby)
+Date: Thu, 19 Apr 2001 06:58:49 +0100
+Subject: [pups] 2.11BSD system
+In-Reply-To: <bspto9av.fsf@gits.dyndns.org>
+References: <0104170114250J.00508@klamath.leguin.org.uk> <bspto9av.fsf@gits.dyndns.org>
+Message-ID: <01041906584901.00527@klamath.leguin.org.uk>
+
+On Thursday 19 April 2001  4:30 am, Cyrille Lefevre wrote:
+> please, could you open access to /usr/src since many files are 640 ?
+
+well.. i can't do that without violating SCO's license.  however, i am 
+working on a program to add people to the src group once they have indicated 
+they agree to the license.
+
+	-larne-
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id WAA52655
+	for pups-liszt; Thu, 19 Apr 2001 22:06:22 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From root at gits.dyndns.org  Thu Apr 19 21:57:42 2001
+From: root at gits.dyndns.org (Cyrille Lefevre)
+Date: Thu, 19 Apr 2001 13:57:42 +0200 (CEST)
+Subject: [pups] 2.11BSD system
+In-Reply-To: <01041906584901.00527@klamath.leguin.org.uk> "from Edward Brocklesby
+ at Apr 19, 2001 06:58:49 am"
+Message-ID: <200104191157.f3JBvgq85414@gits.dyndns.org>
+
+Edward Brocklesby wrote:
+> On Thursday 19 April 2001  4:30 am, Cyrille Lefevre wrote:
+> > please, could you open access to /usr/src since many files are 640 ?
+> 
+> well.. i can't do that without violating SCO's license.  however, i am 
+> working on a program to add people to the src group once they have indicated 
+> they agree to the license.
+
+oh! I see. forgot about that.
+
+see you.
+
+Cyrille.
+--
+home: mailto:clefevre at poboxes.com   UNIX is user-friendly; it's just particular
+work: mailto:Cyrille.Lefevre at edf.fr   about who it chooses to be friends with. 
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id AAA53529
+	for pups-liszt; Fri, 20 Apr 2001 00:42:00 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From norman at nose.cs.utoronto.ca  Fri Apr 20 00:32:52 2001
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Thu, 19 Apr 2001 10:32:52 -0400
+Subject: [pups] Sigma RQD11s, ESDI, and other naughty words
+Message-ID: <200104191441.AAA53525@minnie.cs.adfa.edu.au>
+
+A couple of weeks ago, I asked if anyone had any suggestions to help
+me convince a Sigma RQD11 Qbus-to-ESDI controller that it had disks
+attached.  The trouble turned out to be pretty silly--the A-cable
+terminator in the disk I was testing with was in backwards--but later
+I discovered what may be a genuine controller botch that is worth
+reporting.
+
+Like most Qbus disk controllers, the RQD11 speaks the MSCP protocol
+to the host.  More precisely it understands MSCP messages and uses
+UQSSP to transmit them; UQSSP is the transport protocol used by
+UNIBUS and Qbus controllers like the UDA50 and KDA50 and RQDX3 and
+TQK50 and so on.  In general, the host sends commands like `bring
+drive online' or `read a block' to the controller, and the controller
+sends back response messages like `command succeeded' or `command failed.'
+(Never mind how the data part of the block is sent to memory for now.)
+
+The host sets up a ring of buffers for the controller to place messages
+in.  Each buffer has an ownership flag: messages owned by the controller
+are available to hold new messages; messages owned by the host are not,
+usually because there's already a message there.  When the controller
+has a message to send, it waits (if necessary) until it owns the next
+buffer in the ring (the ring is used in strict round-robin order);
+puts the message there; and sets the ownership flag to `host.'
+When the host has handled the message, or at least copied it elsewhere,
+it sets the flag back to `controller.'
+
+When the controller gives a message to host, it also generates an
+interrupt.  There are several other reasons for generating an interrupt,
+so it is also supposed to set a single flag elsewhere in a communication
+area in host memory to mean `there are new messages.'
+
+My UQSSP driver code checked for new messages only if the flag was set,
+and that caused me grief; it turns out that, at least when the host is
+a MicroVAX III, the RQD11 sets the `new messages' flag inconsistently,
+or perhaps too late.  Presumably it should have been set before requesting
+the interrupt, but empirically I can see that sometimes it gets set later.
+The effect was that the controller did what I told it, but my device driver
+never heard the acknowledgement that said it did.  Obviously this makes
+I/O unreasonably slow.
+
+Fortunately there's a simple way around this: my driver's interrupt routine
+now peeks at the ownership flag for the buffer where the next message
+should appear.  (Remember that the message buffers are used in strict order,
+so the host always knows exactly which buffer that is.)  When I do that,
+all is well.
+
+I suspect that many existing UQSSP drivers already did what my code does
+now; in particular, the controllers and disks I am testing are known to
+have worked for many years with Ultrix, and while searching for data on
+the controller I came across various notes suggesting that the RQD11 works
+under NetBSD/VAX as well.  But those who are writing new code or making
+changes to existing code should beware; the RQD11 appears to be breaking
+the rules (according to the old UQSSP manual I still have), and (as in
+many real-world protocol situations) if you write your code from the spec
+(as I did, in fact, albeit many years ago), the real world may trip it up.
+
+Norman Wilson
+
+
+From ejb at leguin.org.uk  Fri Apr 20 06:51:24 2001
+From: ejb at leguin.org.uk (Edward Brocklesby)
+Date: Thu, 19 Apr 2001 21:51:24 +0100
+Subject: [pups] Maximum PDP-11 executable size?
+Message-ID: <01041921512403.00527@klamath.leguin.org.uk>
+
+Hi,
+
+I'm having problems compiling some large-ish programs on 2.11BSD, for example 
+MH. Even when putting *everything* on overlays, I still get an error:
+
+[ejb at styx] ~/mh-6.8.4.orig/uip > /bin/ld -i -X -o xforw /lib/crt0.o -Z forw.o 
+-Z whatnowproc.o -Z whatnowsbr.o -Z sendsbr.o -Z annosbr.o -Z distsbr.o -Z 
+../config/config.o -Z ../sbr/libmh.a -Z ../mts/libmts.a -Z ../zotnet/libzot.a 
+-Z -lc -Z -lerrlst -Z ../config/version.o
+ld: too big for type 431 (problem 2: tsize = 0, ovrnd = 8192, dtotal = 0)
+[ejb at styx] ~/mh-6.8.4.orig/uip >
+
+is there any way around this, or is MH just too big to fix on a PDP?
+
+	-larne-
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA56896
+	for pups-liszt; Fri, 20 Apr 2001 10:01:25 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Fri Apr 20 09:47:22 2001
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Thu, 19 Apr 2001 16:47:22 -0700 (PDT)
+Subject: [pups] Maximum PDP-11 executable size?
+Message-ID: <200104192347.f3JNlMq22283@moe.2bsd.com>
+
+Hi -
+
+> From: Edward Brocklesby <ejb at leguin.org.uk>
+> I'm having problems compiling some large-ish programs on 2.11BSD, for example 
+> MH. Even when putting *everything* on overlays, I still get an error:
+
+	It has been eons and eons since I attempted MH and I can't remember
+	if I gave up or finally got something to work (shows how long its
+	been ;)).
+
+> [ejb at styx] ~/mh-6.8.4.orig/uip > /bin/ld -i -X -o xforw /lib/crt0.o -Z forw.o 
+> -Z whatnowproc.o -Z whatnowsbr.o -Z sendsbr.o -Z annosbr.o -Z distsbr.o -Z 
+> ../config/config.o -Z ../sbr/libmh.a -Z ../mts/libmts.a -Z ../zotnet/libzot.a 
+> -Z -lc -Z -lerrlst -Z ../config/version.o
+> ld: too big for type 431 (problem 2: tsize = 0, ovrnd = 8192, dtotal = 0)
+> [ejb at styx] ~/mh-6.8.4.orig/uip >
+
+	Hmmm, I grep'd the current source to 'ld' and couldn't find the
+	message "problem 2: ...".   I do remember that being present during
+	the debugging of 'ld' when the long symbol names (the "string table"
+	aka 4.3BSD a.out format) capability was being developed.
+
+	That suggests that 'ld' might be out of date.
+
+	The answer to the 'Maximum PDP-11 executable size?' question is fairly
+	length and a bit involved ;).   Assuming split I/D:
+
+	  Short answer: 120KB to 904KB
+
+	Long answer:
+
+	without overlays there is one 64KB code segment and one 56KB data
+	segment giving 120KB for a non overlaid program.  In practice if a
+	program hits 56KB out of 'ld' then there's no room for malloc() and
+	the program may link but it won't run ;(
+
+	For overlaid programs there is still but one 56KB data segment (the top
+	8KB is for the stack) but now the code can be arranged differently:
+
+	There is a maximum of 15 overlays and there can be no 'gaps' (zero
+	length/empty overlays between populated overlays).
+
+	BASE	OVERLAYSIZE	TOTALTEXT
+	8KB	56KB * 15	840KB
+	16KB	48KB * 15	736KB
+	24KB	40KB * 15	624KB
+	32KB	32KB * 15	512KB
+	40KB	24KB * 15	400KB
+	48KB	16KB * 15	288KB
+	56KB	8KB  * 15	176KB
+
+	In reality the kernel probably would choke on the first several cases,
+	and even if it didn't that large of a program would cause severe 
+	swapping.
+
+	Most overlaid programs on the system ('vi' for example) use either the
+	base=48KB or base=56KB layout.  I think 'kermit' might use the 40KB
+	base segment.
+
+	The "tsize" error would indicate that the code size summing had an
+	overflow - that was a bug at one time and was later fixed, which 
+	again suggests that the 'ld' is out dated somehow.
+
+	If 'ld' was able to create 'xforw' try doing a "size xforw" on it
+	and seeing how far it got - perhaps a clue can be gathered that
+	way.
+
+	You may need to usually terminate the overlay list with a -Y - I don't
+	believe it's "required" though.
+
+	-Z -lc -Z -lerrlst -Y ../config/version.o
+
+> is there any way around this, or is MH just too big to fix on a PDP?
+
+	Couple things to try.  Use 'size' on the .o (and/or .a) files to
+	see how big things are - add them up and see if things start overflowing
+	16 bits.   There was an overflow bug in ld's size computations - it was
+	fixed by using a 'long' in a couple places to detect wraparound. 
+
+	What version of 2.11 (should be in the first couple lines of /VERSION)
+	are you using?   Sure feels like 'ld' is old and having problems that
+	were fixed later on.
+
+	Steven Schultz
+	sms at to.gd-es.com
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA57165
+	for pups-liszt; Fri, 20 Apr 2001 10:57:13 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From ejb at leguin.org.uk  Fri Apr 20 10:48:19 2001
+From: ejb at leguin.org.uk (Edward Brocklesby)
+Date: Fri, 20 Apr 2001 01:48:19 +0100
+Subject: [pups] Maximum PDP-11 executable size?
+In-Reply-To: <200104192347.f3JNlMq22283@moe.2bsd.com>
+References: <200104192347.f3JNlMq22283@moe.2bsd.com>
+Message-ID: <01042001482004.00527@klamath.leguin.org.uk>
+
+On Friday 20 April 2001 12:47 am, Steven M. Schultz wrote:
+> > [ejb at styx] ~/mh-6.8.4.orig/uip > /bin/ld -i -X -o xforw /lib/crt0.o -Z
+> > forw.o -Z whatnowproc.o -Z whatnowsbr.o -Z sendsbr.o -Z annosbr.o -Z
+> > distsbr.o -Z ../config/config.o -Z ../sbr/libmh.a -Z ../mts/libmts.a -Z
+> > ../zotnet/libzot.a -Z -lc -Z -lerrlst -Z ../config/version.o
+> > ld: too big for type 431 (problem 2: tsize = 0, ovrnd = 8192, dtotal = 0)
+> > [ejb at styx] ~/mh-6.8.4.orig/uip >
+>
+> 	Hmmm, I grep'd the current source to 'ld' and couldn't find the
+> 	message "problem 2: ...".   I do remember that being present during
+
+That's something I added myself, to try to help with the problem..
+
+> 	That suggests that 'ld' might be out of date.
+
+/VERSION says:
+Current Patch Level: 400
+Date: January 24, 1998
+
+That's what was on the PUPS FTP site..
+
+> 	without overlays there is one 64KB code segment and one 56KB data
+> 	segment giving 120KB for a non overlaid program.  In practice if a
+> 	program hits 56KB out of 'ld' then there's no room for malloc() and
+> 	the program may link but it won't run ;(
+>
+> 	For overlaid programs there is still but one 56KB data segment (the top
+> 	8KB is for the stack) but now the code can be arranged differently:
+>
+> 	There is a maximum of 15 overlays and there can be no 'gaps' (zero
+> 	length/empty overlays between populated overlays).
+>
+> 	BASE	OVERLAYSIZE	TOTALTEXT
+> 	8KB	56KB * 15	840KB
+> 	16KB	48KB * 15	736KB
+> 	24KB	40KB * 15	624KB
+> 	32KB	32KB * 15	512KB
+> 	40KB	24KB * 15	400KB
+> 	48KB	16KB * 15	288KB
+> 	56KB	8KB  * 15	176KB
+>
+> 	In reality the kernel probably would choke on the first several cases,
+> 	and even if it didn't that large of a program would cause severe
+> 	swapping.
+>
+> 	Most overlaid programs on the system ('vi' for example) use either the
+> 	base=48KB or base=56KB layout.  I think 'kermit' might use the 40KB
+> 	base segment.
+
+hm.. how do you specify the base segment size to ld? i don't see anything in 
+the manual page. Just link enough code into the base that it becomes the 
+right size?
+
+> 	The "tsize" error would indicate that the code size summing had an
+> 	overflow - that was a bug at one time and was later fixed, which
+> 	again suggests that the 'ld' is out dated somehow.
+
+possibly, i will look on the 2BSD patch archives now..
+
+> 	If 'ld' was able to create 'xforw' try doing a "size xforw" on it
+> 	and seeing how far it got - perhaps a clue can be gathered that
+> 	way.
+
+text    data    bss     dec     hex
+27648   35860   32412   95920   176b0   total text: 83072
+        overlays: 832,4352,2624,832,1920,29568,192,11008,4096
+
+this particular link gave the error:
+ld: too big for type 431 (problem 2: tsize = 0, ovrnd = -32768, dtotal = 0)
+
+the negative ovrnd i find very strange- perhaps the wrapround bug?
+
+> 	You may need to usually terminate the overlay list with a -Y - I don't
+> 	believe it's "required" though.
+>
+> 	-Z -lc -Z -lerrlst -Y ../config/version.o
+
+nope.. this doesn't seem to help
+
+> > is there any way around this, or is MH just too big to fix on a PDP?
+>
+> 	Couple things to try.  Use 'size' on the .o (and/or .a) files to
+> 	see how big things are - add them up and see if things start overflowing
+> 	16 bits.   There was an overflow bug in ld's size computations - it was
+> 	fixed by using a 'long' in a couple places to detect wraparound.
+
+Well, considering that there's a couple of *large* libraries here..
+-rw-r--r--  1 ejb        127074 Apr  9 14:47 ../zotnet/libzot.a
+-rw-r--r--  1 ejb        102126 Apr  9 14:39 ../sbr/libmh.a
+
+maybe that's the problem..
+
+	-larne-
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id NAA57746
+	for pups-liszt; Fri, 20 Apr 2001 13:01:24 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Fri Apr 20 12:42:54 2001
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Thu, 19 Apr 2001 19:42:54 -0700 (PDT)
+Subject: [pups] Maximum PDP-11 executable size?
+Message-ID: <200104200242.f3K2gsf23361@moe.2bsd.com>
+
+Hi -
+
+> > 	message "problem 2: ...".   I do remember that being present during
+> 
+> That's something I added myself, to try to help with the problem..
+
+	Ok - whew, for a minute there I thought some of my debug code had
+	leaked to the world ;)   That's the style of debug message I use <g>
+
+> /VERSION says:
+> Current Patch Level: 400
+> Date: January 24, 1998
+
+	Ouch - that is a bit old, there are updates thru 434 (I've 435 in
+	midstream but haven't had time to finish it).
+
+> That's what was on the PUPS FTP site..
+
+	Ah.   Much becomes clear now.   That indeed was the version at one time.
+	A year or so ago I and Warren coordinated an update to the 2.11 in PUPS
+	The current PUPS version is 431 (only 3 updates since then - I've
+	slowed down a lot over the last couple years).
+
+> hm.. how do you specify the base segment size to ld? i don't see anything in 
+
+	You don't.   At least not directly.  Anything outside an overlay
+	goes into the base segment.  Thus anything before the first -Z goes
+	into the base, and anything after the -Y goes into the base.
+
+> the manual page. Just link enough code into the base that it becomes the 
+> right size?
+
+	That's basically the way to do it.  You can do "size" on the .o files
+	first to get an idea what you want to put where but after that tuning
+	the overlays to fit is a bit of an art.
+
+> text    data    bss     dec     hex
+> 27648   35860   32412   95920   176b0   total text: 83072
+>         overlays: 832,4352,2624,832,1920,29568,192,11008,4096
+	
+	the single BIGGEST problem is that 'data + bss' exceeds not only the
+	56KB limit but the total 64KB limit available to a process.  Looks
+	like MH want 35860+32412 or 68272 bytes of D space.
+
+	You might be able to get the code to fit - I'd pack the base to at
+	least 40KB (more likely 48KB) and only have two or three overlays
+	of 24KB or 16KB.
+
+	THe data space problem means you're going to have to go and lower
+	a lot of the buffer size limits.   Remember:  even if you do get
+	the dataspace down to where the linker doesn't complain the program
+	will almost certainly try to malloc() memory.  Thus the smaller the
+	data+bss the better - and be prepared for malloc() failures
+
+	One thing that can be done is to run 'xstr' over the sources and
+	collect error message strings, printf strings, and so on into a common
+	pool.   The other thing that can be done is create a strings file
+	and extract as many as possible strings from the source modules into
+	an external file.   Examples of doing this type of thing can be found
+	in the source tree - 'lint' was one such program, 'sendmail' was another
+	and kermit yet another (that's why there are 'sendmail.sr'  and
+	'kermit5.sr' files on the system).
+
+	In fact 'kermit' is a good example of squishing a monster program into
+	a small machine.  Check out /usr/src/new/kermit5.188
+
+> ld: too big for type 431 (problem 2: tsize = 0, ovrnd = -32768, dtotal = 0)
+> 
+> the negative ovrnd i find very strange- perhaps the wrapround bug?
+
+	Hmmm, could be.  
+
+> Well, considering that there's a couple of *large* libraries here..
+> -rw-r--r--  1 ejb        127074 Apr  9 14:47 ../zotnet/libzot.a
+> -rw-r--r--  1 ejb        102126 Apr  9 14:39 ../sbr/libmh.a
+> 
+> maybe that's the problem..
+
+	The size of the .a doesn't accurately reflect the code+text+bss
+
+	For one thing 'bss' takes up no room at all in an archive.   Don't
+	forget that symbol tables and relocation information (as well as
+	'ar' book keeping info) is present.   You can't rely on "ls -l"
+	to say very much about an object file - only "size" can do that.
+	"size libmh.a" will give a much better idea where the problem areas
+	are.
+
+	Steven Schultz
+	sms at to.gd-es.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id OAA58045
+	for pups-liszt; Fri, 20 Apr 2001 14:21:45 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From ejb at leguin.org.uk  Fri Apr 20 14:12:58 2001
+From: ejb at leguin.org.uk (Edward Brocklesby)
+Date: Fri, 20 Apr 2001 05:12:58 +0100
+Subject: [pups] Maximum PDP-11 executable size?
+In-Reply-To: <200104200242.f3K2gsf23361@moe.2bsd.com>
+References: <200104200242.f3K2gsf23361@moe.2bsd.com>
+Message-ID: <01042005125805.00527@klamath.leguin.org.uk>
+
+On Friday 20 April 2001  3:42 am, Steven M. Schultz wrote:
+> 	the single BIGGEST problem is that 'data + bss' exceeds not only the
+> 	56KB limit but the total 64KB limit available to a process.  Looks
+> 	like MH want 35860+32412 or 68272 bytes of D space.
+>
+> 	You might be able to get the code to fit - I'd pack the base to at
+> 	least 40KB (more likely 48KB) and only have two or three overlays
+> 	of 24KB or 16KB.
+
+The problem appears to be `libmh.a', which alone has 30K text + 22K data + 
+24K bss (77444 total).  Any way around this? I've tried all the combinations 
+i can think of, to no avail..
+
+> 	One thing that can be done is to run 'xstr' over the sources and
+> 	collect error message strings, printf strings, and so on into a common
+> 	pool.   The other thing that can be done is create a strings file
+> 	and extract as many as possible strings from the source modules into
+> 	an external file.   Examples of doing this type of thing can be found
+> 	in the source tree - 'lint' was one such program, 'sendmail' was another
+> 	and kermit yet another (that's why there are 'sendmail.sr'  and
+> 	'kermit5.sr' files on the system).
+
+hmm... a lot of work just to get MH working.
+
+> > ld: too big for type 431 (problem 2: tsize = 0, ovrnd = -32768, dtotal =
+> > 0)
+> >
+> > the negative ovrnd i find very strange- perhaps the wrapround bug?
+>
+> 	Hmmm, could be.
+
+Could be i used the wrong printf format also..
+
+> 	"size libmh.a" will give a much better idea where the problem areas
+> 	are.
+
+unfortunately, size doesn't appear to work on archive libraries.
+
+	-larne-
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id PAA58237
+	for pups-liszt; Fri, 20 Apr 2001 15:01:25 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Fri Apr 20 14:49:59 2001
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Thu, 19 Apr 2001 21:49:59 -0700 (PDT)
+Subject: [pups] Maximum PDP-11 executable size?
+Message-ID: <200104200449.f3K4nxv24294@moe.2bsd.com>
+
+> From: Edward Brocklesby <ejb at leguin.org.uk>
+> The problem appears to be `libmh.a', which alone has 30K text + 22K data + 
+> 24K bss (77444 total).  Any way around this? I've tried all the combinations 
+> i can think of, to no avail..
+
+	I think this would be a very good time to point out that 'data' is
+	NOT overlaid, only the text is overlaid.   There is but 1 data segment
+	and all data+bss goes into it.
+
+	Text overlays work because there's a very careful dance done by the
+	assembler and linker.   Functions use a 'thunk' (intermediate
+	transfer vector) - thus when a program calls foo() it is really
+	calling something like ~foo().  That thunk performs part of the 
+	function prolog and then checks if the overlay mapping needs to changeoa	and if so makes a syscall to have the kernel twiddle the MMU.  Then
+	the thunk calls foo+4 (skipping the part of the function prolog that
+	has already been done).   Very elegant but completely unapplicable
+	to data references (think on it - how is each and every pointer
+	dereference to be checked to see if that data is mapped in?).
+	
+	In order to get the code to fit it would be necessary to extract
+	all of the .o files from the .a file ("ar x libmh.a") and
+	pack the .o files into overlays so they fit nicely.
+
+> > 	One thing that can be done is to run 'xstr' over the sources and
+> 
+> hmm... a lot of work just to get MH working.
+
+	Getting 32bit programs (and MH was done on a VAX or PDP10 (which is
+	actually a 36 bit machine ;)) to run on a 16 bit machine is a lot of
+	work.
+
+	Since MH was written with a large address space in mind it will likely
+	be necessary to go thru the code and find the "#define BUFSIZE 32000"
+	or whatever and scale things back.   The odds are good that many 
+	buffers are declared to be large just because it didn't matter on
+	a big address space machine.   That's what had to be done for 'vi',
+	'sendmail', 'kermit', etc.
+
+> > 	"size libmh.a" will give a much better idea where the problem areas
+> > 	are.
+> 
+> unfortunately, size doesn't appear to work on archive libraries.
+
+	Oh.  Darn, I got my systems mixed up.  On some systems 'size' will
+	work on .a files - something to put on the TODO pile (shouldn't be
+	too hard since 'nm' works with .a files).
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id PAA58368
+	for pups-liszt; Fri, 20 Apr 2001 15:35:23 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From ejb at leguin.org.uk  Fri Apr 20 15:26:25 2001
+From: ejb at leguin.org.uk (Edward Brocklesby)
+Date: Fri, 20 Apr 2001 06:26:25 +0100
+Subject: [pups] Maximum PDP-11 executable size?
+In-Reply-To: <200104200449.f3K4nxv24294@moe.2bsd.com>
+References: <200104200449.f3K4nxv24294@moe.2bsd.com>
+Message-ID: <01042006262506.00527@klamath.leguin.org.uk>
+
+On Friday 20 April 2001  5:49 am, Steven M. Schultz wrote:
+> 	In order to get the code to fit it would be necessary to extract
+> 	all of the .o files from the .a file ("ar x libmh.a") and
+> 	pack the .o files into overlays so they fit nicely.
+
+hmm.. i might have a look at doing this after i get xstr working.
+
+> 	Getting 32bit programs (and MH was done on a VAX or PDP10 (which is
+> 	actually a 36 bit machine ;)) to run on a 16 bit machine is a lot of
+> 	work.
+
+36bit with 9bit bytes, iirc .. fun :>
+
+I'm currently converting libmh.a to use xstr, but I've come across a 
+problem.. given the definition
+
+static char  unixbuf[BUFSIZ] = "";
+
+xstr generates the code
+
+static char  unixbuf[BUFSIZ] = (&xstr[0]);
+
+which the C compiler refuses to compile.  Any way around this?
+
+	-larne-
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id RAA59071
+	for pups-liszt; Fri, 20 Apr 2001 17:41:53 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From helbig at Informatik.BA-Stuttgart.DE  Fri Apr 20 17:37:28 2001
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Fri, 20 Apr 2001 09:37:28 +0200 (CEST)
+Subject: [pups] V6 and Supnik-simulator
+Message-ID: <200104200737.f3K7bSv10954@RVC1.Informatik.BA-Stuttgart.DE>
+
+>  > If the following  README sounds interesting to you, maybe we can
+>  > arrange to put a tar ball of it onto minnie?
+>  > 
+>  > I also prepared postscript files of the V6-documentation.
+>  > Anyone interested?
+>
+>
+> Yes, me in example :-). I wonder wether you could give them to dmr to be
+> placed just at the side of the v7 docs, or wether you could put it
+> into the archive?
+
+I asked Dennis, and he told me, the best place for those directories
+is the minnie archive. So I'd like to put it there, but don't know how to.
+
+Wolfgang
+
+>
+> Regards -- Markus
+>
+>  > 
+>  > Wolfgang
+>  > 
+>  > First README:
+>  > UNIX V6 on the Supnik simulator:
+>  > --------------------------------
+>  > This directory contains tape files for the Supnik simulator and
+>  > accompaning README files, which I produced when preparing an OS
+
+[...]
+
+>  > Second README:
+>  > This directory contains some documentation as found on the UNIX V6
+>  > Distribution tape. The files were converted to postscript with
+>  > groff and the usage of the V6 ms-macro package. (See the print
+>  > shell script)
+
+[...]
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id SAA59307
+	for pups-liszt; Fri, 20 Apr 2001 18:22:59 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From leypold at informatik.uni-tuebingen.de  Fri Apr 20 18:15:44 2001
+From: leypold at informatik.uni-tuebingen.de (Markus E Leypold)
+Date: Fri, 20 Apr 2001 08:15:44 GMT
+Subject: [pups] V6 and Supnik-simulator
+In-Reply-To: <200104200737.f3K7bSv10954@RVC1.Informatik.BA-Stuttgart.DE>
+	(message from Wolfgang Helbig on Fri, 20 Apr 2001 09:37:28 +0200
+	(CEST))
+References: <200104200737.f3K7bSv10954@RVC1.Informatik.BA-Stuttgart.DE>
+Message-ID: <200104200815.IAA01537@neuromancer.informatik.uni-tuebingen.de>
+
+
+ > Delivered-To: leypold at informatik.uni-tuebingen.de
+ > Date: Fri, 20 Apr 2001 09:37:28 +0200 (CEST)
+ > From: Wolfgang Helbig <helbig at Informatik.BA-Stuttgart.DE>
+ > Cc: pups at minnie.cs.adfa.edu.au
+ > 
+ > >  > If the following  README sounds interesting to you, maybe we can
+ > >  > arrange to put a tar ball of it onto minnie?
+ > >  > 
+ > >  > I also prepared postscript files of the V6-documentation.
+ > >  > Anyone interested?
+ > >
+ > >
+ > > Yes, me in example :-). I wonder wether you could give them to dmr to be
+ > > placed just at the side of the v7 docs, or wether you could put it
+ > > into the archive?
+ > 
+ > I asked Dennis, and he told me, the best place for those directories
+ > is the minnie archive. So I'd like to put it there, but don't know how to.
+
+Well -- send a mail to warren k tomey (wkt at .... -- you'll find him in
+the mailing list). He has been building the archive and might tell
+you, how to transfer the files. Since PUPS-archive has an incoming
+directory, I think, it might be, that ftp-'put' to incoming will
+work. Warren or some other archive maintainer can pick it from there,
+and place it in the proper directories.
+
+Ask Warren. He is the one who should know.
+
+Regards -- Markus
+
+PS: Somehow I know your name. You haven't written a book by chance?
+
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id TAA59510
+	for pups-liszt; Fri, 20 Apr 2001 19:00:17 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From bqt at update.uu.se  Fri Apr 20 18:51:19 2001
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Fri, 20 Apr 2001 10:51:19 +0200 (CEST)
+Subject: [pups] Maximum PDP-11 executable size?
+In-Reply-To: <01042006262506.00527@klamath.leguin.org.uk>
+Message-ID: <Pine.LNX.4.21.0104201049370.3728-100000@Tempo.Update.UU.SE>
+
+On Fri, 20 Apr 2001, Edward Brocklesby wrote:
+
+> On Friday 20 April 2001  5:49 am, Steven M. Schultz wrote:
+> > 	Getting 32bit programs (and MH was done on a VAX or PDP10 (which is
+> > 	actually a 36 bit machine ;)) to run on a 16 bit machine is a lot of
+> > 	work.
+> 
+> 36bit with 9bit bytes, iirc .. fun :>
+
+Actually, the PDP-10 have variable byte size. Anything from 1 to 36
+bits. Lazy people went with 9 bit bytes, while size-aware people used 7
+bit bytes. And then you have SIXBIT...
+
+	/Department for worthless knowledge. :-)
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id FAA65073
+	for pups-liszt; Sat, 21 Apr 2001 05:02:46 +1000 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From tih at Hamartun.Priv.NO  Sat Apr 21 04:23:51 2001
+From: tih at Hamartun.Priv.NO (Tom Ivar Helbekkmo)
+Date: 20 Apr 2001 20:23:51 +0200
+Subject: [pups] Maximum PDP-11 executable size?
+In-Reply-To: "Steven M. Schultz"'s message of "Thu, 19 Apr 2001 19:42:54 -0700 (PDT)"
+References: <200104200242.f3K2gsf23361@moe.2bsd.com>
+Message-ID: <867l0f8m6g.fsf@barsoom.Hamartun.Priv.NO>
+
+"Steven M. Schultz" <sms at moe.2bsd.com> writes:
+
+> > Current Patch Level: 400
+> > Date: January 24, 1998
+> 
+> 	Ouch - that is a bit old, there are updates thru 434 (I've 435 in
+> 	midstream but haven't had time to finish it).
+
+You mean 435/436: patch 435 was released on February 7th, 2001.  :-)
+
+-tih
+-- 
+Popularity is the hallmark of mediocrity.  --Niles Crane, "Frasier"
+
+
+From Fred.van.Kempen at microwalt.nl  Tue Apr 24 07:24:26 2001
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Mon, 23 Apr 2001 23:24:26 +0200
+Subject: [pups] Dead RD54... heeelp!
+Message-ID: <6F63E31101C6D41196490008C7B2BFC3020B2F@mwnt4.microwalt.nl>
+
+All,
+
+My RD54 just died on me.  It spins up, but, apparently, not all the way.. it
+does not
+make its usual calibration sound anymore.  After this, the drive seems to be
+dead.
+
+Does this sound familiar?  Is it the HDA or the electronics?
+(I have another RD54, perhaps I can exchange the electronics pcb's ?)
+
+--fred (__sigh__)
+--
+Fred N. van Kempen                         Fred.van.Kempen at MicroWalt.NL
+Microsoft MCSE+I/MCSE/MCSD                               Compaq ASE/ACT
+UNIX Systems Programmer                 Cisco ACRC/CCDA/CCNA/SupportPro
+
+            InterNetworking en Network Security Consultant
+   MicroWalt Corporation (Netherlands), Korte Heul 95, 1403 ND BUSSUM
+  Phone +31 (35) 6980059 FAX +31 (35) 6980215  http://WWW.MicroWalt.NL/
+
+Dit  bericht  en  eventuele bijlagen is  uitsluitend  bestemd  voor  de
+geadresseerde.  Openbaarmaking,   vermenigvuldiging,  verspreiding  aan
+derden  is  niet  toegestaan.   Er   wordt   geen  verantwoordelijkheid 
+genomen  voor de juiste en  volledige  overbrenging van  de inhoud  van
+dit bericht, noch voor de tijdige ontvangst ervan.
+
+
+
+
+From lars at fwn.rug.nl  Fri Apr 27 07:18:07 2001
+From: lars at fwn.rug.nl (Lars J. Buitinck)
+Date: Thu, 26 Apr 2001 23:18:07 +0200
+Subject: [pups] Berkeley Pascal
+Message-ID: <3AE8908F.BC5CBC79@fwn.rug.nl>
+
+I was browsing through the 2.11BSD docs on my OpenBSD PC, and I noticed
+I couldn't format the Pascal manuals.  Can anybody format them for me
+in (if at all possible) PostScript format, or else plain TXT (with ^H_
+and other more(1) hacks ofcourse)?  I haven't got 2.11 to work in simh
+yet, otherwise I'd try it in 2.11.
+
+-- 
+If I traveled to the end of the rainbow
+As Dame Fortune did intend,
+Murphy would be there to tell me
+The pot's at the other end.
+                -- Bert Whitney
+
+Lars J. Buitinck
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Sat Apr 28 23:59:09 2001
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Sat, 28 Apr 2001 15:59:09 +0200 (CEST)
+Subject: [pups] V6 and Supnik-simulator
+Message-ID: <200104281359.f3SDx9306485@RVC1.Informatik.BA-Stuttgart.DE>
+
+Hi,
+
+Warren put the v6enb.tar.gz into
+	http://minnie.cs.adfa.edu.au/TUHS/Archive/PDP-11/Bug_Fixes/V6enb/
+Thank you, Warren!
+
+Besides some minor and rather unimportant changes to V6, this file
+contains README files, that try to explain how to install
+UNIX V6 on Bob Supnik's simulator from the tape file provided by
+Ken Wellsch. These setup instructions are aimed at the beginner
+level with regard to UNIX as well as to the simulator.
+
+The "bug fixes" are supplied as "diff -e" files on tp-formatted
+tape files, ready to be used by the simulator.
+
+Two simple ANSI-C programs are provided to insert (enblock) or remove
+(deblock) blocking information in tape files needed by Bob's simulator.
+
+Have fun,
+
+Wolfgang
+
+

@@ -1,0 +1,3292 @@
+From Fred.van.Kempen at microwalt.nl  Tue Feb  5 03:36:47 2002
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Mon, 4 Feb 2002 18:36:47 +0100 
+Subject: [pups] Problems booting PDP11/40 using vtserver
+Message-ID: <6F63E31101C6D41196490008C7B2BFC304B403@mwnt4.microwalt.nl>
+
+.. and I'm actually still alive, although only barely... :)
+
+I'll respond to Michael in email, and summarize here..
+
+--f
+
+> -----Original Message-----
+> From: Warren Toomey [mailto:wkt at minnie.tuhs.org]
+> Sent: maandag 28 januari 2002 23:09
+> To: Michael Werner
+> Cc: PUPS mailing list
+> Subject: Re: [pups] Problems booting PDP11/40 using vtserver
+> 
+> 
+> In article by Michael Werner:
+> > I have my PDP11/40 connected to a MicroVAX 2 (running NetBSD/vax
+> > 1.5.2) via serial line and want to boot a 2.9BSD or 2.11BSD 
+> using the
+> > vtserver software.
+> > When I toggle in vtserver's boot code, the first file is 
+> being loaded
+> > correctly by the PDP. Then, following the instructions in vtserver
+> > documentation, the serial line should be used as a serial 
+> console - and
+> > some text should appear! And this is the problem: I don't 
+> get any output.
+> > So, my question: Does anybody know what's going wrong here?
+> > Thanks in advance - Michi
+> 
+> I've passed the baton of Vtserver development over to Fred van Kempen.
+> However, which version of Vtserver are you using?
+> 
+> Cheers,
+> 	Warren
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+> 
+
+
+            InterNetworking en Network Security Consultant
+   MicroWalt Corporation (Netherlands), Korte Heul 95, 1403 ND BUSSUM
+  Phone +31 (35) 6980059 FAX +31 (35) 6980215  http://WWW.MicroWalt.NL/
+
+Dit  bericht  en  eventuele bijlagen is  uitsluitend  bestemd  voor  de
+geadresseerde.  Openbaarmaking,   vermenigvuldiging,  verspreiding  aan
+derden  is  niet  toegestaan.   Er   wordt   geen  verantwoordelijkheid 
+genomen  voor de juiste en  volledige  overbrenging van  de inhoud  van
+dit bericht, noch voor de tijdige ontvangst ervan.
+
+
+From lothar.felten at gmx.net  Tue Feb  5 05:27:35 2002
+From: lothar.felten at gmx.net (lothar felten)
+Date: Mon, 4 Feb 2002 20:27:35 +0100
+Subject: [pups] VT102 and other hardware....    was: solution for the disklabel
+In-Reply-To: <Pine.LNX.4.21.0201301600500.29712-100000@Tempo.Update.UU.SE>
+Message-ID: <PKEKIKBJNMFKLFAMAKINAEIKCBAA.lothar.felten@gmx.net>
+
+> >
+> > Maybe it wants a DEL
+> character instead of
+> backspace (backspace *is* ctrl-H,
+> > shown as ^H or ^h).  Change
+> it on the terminal by going
+> into setup, or use
+> > stty on the BSD system to
+> change the delete character
+> (stty del '^h').
+>
+> On a real VT100 you cannot
+> get the delete key to
+> generate a backspace. He
+> must be pressing the
+> backspace key, or he's not
+> using a VT100 at all, but
+> instead some emulator, which
+> isn't doing things the VT100 way...
+
+thanks for helping me!
+
+i'm using a "real" vt102 box. now it works, problem was just i thought
+"backspace" should behave pc-like. the del-key does erase my letters and
+the backspace displays ^H. sorry but i'm just no used to this "behaviour"
+of the keys.
+this weekend i put a qbus serial card into the pdp, but i dont get a login
+prompt on this ports: i edited /etc/ttys, the special files in /dev are
+present. i'm still using the generic kernel (still not brave enough to
+start configuring & compiling a new one, how long would this approx. take
+on a 11/83 with 4mb? is it worth it?). on the console connected to the
+cpu-board i always get a #prompt without login, is this normal?
+i have a DEQNA-nic, but with the MAKEDEV script i can't make the qe0
+device. i would make it myself with mknod, but wich major/minor number do i
+need?
+there are devices for my RL02 disks, but everytime i try to access them by
+disklabel the system stops (the run light goes off). is there a way to
+check if the controller is working ?
+on my RQDX3-distribution panel i found a 34 pin floppy connector. i
+connected two 5,25" diskdrives (pc drives, TEAC, jumpered different) they
+work fine.
+
+-- lothar
+
+
+
+From engdahl at safeaccess.com  Thu Feb  7 01:09:35 2002
+From: engdahl at safeaccess.com (Jonathan Engdahl)
+Date: Wed, 6 Feb 2002 10:09:35 -0500
+Subject: [pups] bootstrapping an RT-11 image via VTserver
+Message-ID: <NBBBKGHOAIDAAHFIJOFGGEFBENAA.engdahl@safeaccess.com>
+
+I built an 11/23 with 256K RAM, a UDC11 disk controller, one 80 meg MFM hard
+drive. The hard drive formatter runs under RT-11. The assumption is that you
+have a working floppy from which you can boot RT-11. I want to devise a
+method to run the formatter via VTserver.
+
+I figured out how to do this for the RQDX3 and XXDP. You can run XXDP under
+E11, load the utility you want to run, then stop E11 and dump the entire 28K
+word memory image to a disk file. By hacking a header onto this memory
+image, you can turn it into a standalone that can be bootstrapped via
+VTserver, just like the disklabel, mkfs, and restor standlones. This is
+easy, because XXDP tells you what the restart address is when you load a
+program.
+
+The question: is is possible to restart RT11SJ in the same manner as XXDP? I
+read some of the manuals, and tried using ODT to restart RT-11 at various
+points pointed to by the vector table and fixed area. By starting at the
+trap 4 address I can get it to restart and live. However, this seems to make
+RT-11 forget that I had done a "GET" of the utility that I wanted to run. I
+tried restarting at the RMON address, but that crashes.
+
+One other experiment I've tried is to GET the utility then "START 1000", but
+that crashes too. If I GET then just type "START" it lives. What am I doing
+wrong?
+
+One assumption is that the utility only uses memory and TT: system calls --
+no disk accesses or swapping. Is it possible to abuse RT-11 in this manner?
+
+The utilities I'm trying to run are the UDC11 OCT and UDCT utilities. I want
+to make it possible to reformat the hard drive on this single drive system
+without tearing it apart and moving pieces to another system. It is also
+possible to mess up the NVRAM on the UDC11 so that you cannot boot. If this
+happens, and you are lucky enough to have another running system (and I am),
+you can rejumper the CSR of the stuck board and fix it on the other system.
+Otherwise, you are in big trouble.
+
+I wonder if it would be possible to bootstrap a VM0: image into high RAM and
+boot from it?
+
+I realize there are other solutions. The standard answer to questions like
+this is "get more hardware". The reason for doing this is I want to invent a
+method that will work for a very minimal pile of hardware. And the whole
+point of that is to make it possible for people to get a PDP-11 running with
+minimal investment.
+
+
+--
+Jonathan Engdahl                 Rockwell Automation
+Principal Research Engineer      1 Allen-Bradley Drive
+Advanced Technology              Mayfield Heights, OH 44124, USA
+Mayfield Heights Labs            engdahl at safeaccess.com  440-646-7326
+
+http://users.safeaccess.com/engdahl/PDP-11.htm
+
+
+
+
+From shoppa at trailing-edge.com  Thu Feb  7 21:23:46 2002
+From: shoppa at trailing-edge.com (Tim Shoppa)
+Date: Thu, 7 Feb 2002 06:23:46 -0500 (EST)
+Subject: [pups] bootstrapping an RT-11 image via VTserver
+In-Reply-To: <NBBBKGHOAIDAAHFIJOFGGEFBENAA.engdahl@safeaccess.com> from "Jonathan Engdahl" at Feb 06, 2002 10:09:35 AM
+Message-ID: <20020207112346.A6A2218336@mudd.trailing-edge.com>
+
+> One assumption is that the utility only uses memory and TT: system calls --
+> no disk accesses or swapping. Is it possible to abuse RT-11 in this manner?
+
+RT-11 does support magtape installation via a special version of DUP
+called MDUP.  If you look on a full RT-11 V5.x distribution, you will
+find "MDUP.MT", "MDUP.MS", and (depending on version number) "MDUP.AI"
+and "MDUP.MU".  These are "snapshots" of RT-11 systems with a single
+tape driver (MT, MS, or MU) and a number of different disk drivers
+installed (so they don't have to be FETCHed) and running the special
+install-only build of DUP.
+
+I think there is some MDUP info in the doc set, though it is
+heavily oriented (of course) towards magtape installtion, not
+serial port installation.  But the idea is sound.
+
+> I wonder if it would be possible to bootstrap a VM0: image into high RAM and
+> boot from it?
+
+Yes, this works, and is even officially supported in the later 5.x
+releases (where it is used as part of the AI installation procedure.)
+
+Tim.
+
+
+From engdahl at safeaccess.com  Fri Feb  8 15:13:04 2002
+From: engdahl at safeaccess.com (Jonathan Engdahl)
+Date: Fri, 8 Feb 2002 00:13:04 -0500
+Subject: [pups] Duh - how do you format an RX50?
+Message-ID: <002301c1b05f$4b317a40$c3e01840@rcs.ra.rockwell.com>
+
+I can't believe I haven't figured this out yet. I bought an
+RX50, and installed it in my PDP-11/53 running 2.11BSD. It's
+nice having that empty hole in the front of the BA23 plugged,
+but I hope for even more. The drive seems alive: if I say "cp
+/dev/ra1a /dev/null", it starts groaning and ticking as if it
+were reading the floppy.
+
+But how do you format the floppies?
+
+I tried XXDP/ZRQCH0 (downloaded via VTserver), but it says the
+floppies are UNFORMATTABLE. That does that mean?
+
+--
+Jonathan Engdahl                    Rockwell Automation
+Principal Research Engineer         1 Allen-Bradley Drive
+Advanced Technology                 Mayfield Heights, OH 44124
+http://users.safeaccess.com/engdahl engdahl at safeaccess.com
+
+"The things which are seen are temporary,
+ but the things which are not seen are eternal."  II Cor. 4:18
+
+
+
+
+From bill at cs.scranton.edu  Fri Feb  8 23:31:56 2002
+From: bill at cs.scranton.edu (Bill Gunshannon)
+Date: Fri, 8 Feb 2002 08:31:56 -0500 (EST)
+Subject: [pups] Duh - how do you format an RX50?
+In-Reply-To: <002301c1b05f$4b317a40$c3e01840@rcs.ra.rockwell.com>
+Message-ID: <20020208082605.E6001-100000@server2.cs.scranton.edu>
+
+On Fri, 8 Feb 2002, Jonathan Engdahl wrote:
+
+> I can't believe I haven't figured this out yet. I bought an
+> RX50, and installed it in my PDP-11/53 running 2.11BSD. It's
+> nice having that empty hole in the front of the BA23 plugged,
+> but I hope for even more. The drive seems alive: if I say "cp
+> /dev/ra1a /dev/null", it starts groaning and ticking as if it
+> were reading the floppy.
+>
+> But how do you format the floppies?
+>
+> I tried XXDP/ZRQCH0 (downloaded via VTserver), but it says the
+> floppies are UNFORMATTABLE. That does that mean?
+
+RX50's came pre-formatted from DEC.  There was never a way to
+format them on PDP's or VAX as far as I knew.  I do think it is
+possible to create them using PUTR and an old PC with a proper
+floppy controller and a 1.2M floppy drive configured the right
+way.
+
+My understanding is they are 80 track, 96 tpi format but spin
+at the slow spead of normal 5.25 disks and not the higher speed
+used by IBM HD disks.
+
+As a curious note, I actually had (and may still have in the
+attic somewhere) a real shugart 80 track 5.25 drive that would
+have been the equivalent of an RX50, so it was not only DEC who
+used that format.  I had them on a TRS-80 and NewDOS-80 and
+DOSPlus had no problems formatting and using the drive.  This
+was long before my first PDP, but I now wonder if they would
+have been able to read and write (and maybe even format!) RX50's.
+
+bill
+
+-- 
+Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three wolves
+bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+University of Scranton   |
+Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+
+
+
+From pete at dunnington.u-net.com  Sat Feb  9 09:42:20 2002
+From: pete at dunnington.u-net.com (Pete Turnbull)
+Date: Fri, 8 Feb 2002 23:42:20 GMT
+Subject: [pups] Duh - how do you format an RX50?
+In-Reply-To: Bill Gunshannon <bill@cs.scranton.edu>
+        "Re: [pups] Duh - how do you format an RX50?" (Feb  8,  8:31)
+References: <20020208082605.E6001-100000@server2.cs.scranton.edu>
+Message-ID: <10202082342.ZM4837@mindy.dunnington.u-net.com>
+
+On Feb 8,  8:31, Bill Gunshannon wrote:
+
+> RX50's came pre-formatted from DEC.  There was never a way to
+> format them on PDP's or VAX as far as I knew.  I do think it is
+> possible to create them using PUTR and an old PC with a proper
+> floppy controller and a 1.2M floppy drive configured the right
+> way.
+
+You can format them on a Rainbow, but not an -11 or VAX.
+
+> My understanding is they are 80 track, 96 tpi format but spin
+> at the slow spead of normal 5.25 disks and not the higher speed
+> used by IBM HD disks.
+
+Very similar low-level format to IBM floppies, except that, as Bill says,
+they're 80-track.  The spec is 80-track, 96 tpi, single-side, double
+density (not HD), 10 sectors per track, 512 bytes/sector.  DEC squeeze the
+extra sector in by shortening some of the gaps; even so the timing is a
+little tight and the drive speed has to be better-than-averagely accurate.
+
+It doesn't matter whether you write them at 300 rpm or 360, so long as the
+controller adjusts its data rate accordingly (250kbps or 300kbps).  Which
+is what a PC does (uses 250kbps for 300rpm and 300kbps for 360 rpm).
+ However, many HD-capable drives use pin 2 on the interface not only to
+change the speed but change the write current.  Some such drives have
+jumpers to set the correct values.
+
+> As a curious note, I actually had (and may still have in the
+> attic somewhere) a real shugart 80 track 5.25 drive that would
+> have been the equivalent of an RX50, so it was not only DEC who
+> used that format.  I had them on a TRS-80 and NewDOS-80 and
+> DOSPlus had no problems formatting and using the drive.  This
+> was long before my first PDP, but I now wonder if they would
+> have been able to read and write (and maybe even format!) RX50's.
+
+If the controller it was attached to can write MFM (double-density), then
+it would work.  Drives of that type were very common before PCs took over.
+ In fact you can fudge one to look like half of an RX50 (a real RX50 plays
+funny tricks with the SideSelect and Track00 signals, and some DEC
+controllers use that to recognise an RX50).
+
+-- 
+Pete						Peter Turnbull
+						Network Manager
+						University of York
+
+
+From cube1 at charter.net  Sun Feb 10 00:37:50 2002
+From: cube1 at charter.net (Jay Jaeger)
+Date: Sat, 09 Feb 2002 08:37:50 -0600
+Subject: [pups] Duh - how do you format an RX50?
+In-Reply-To: <10202082342.ZM4837@mindy.dunnington.u-net.com>
+References: <Bill Gunshannon <bill@cs.scranton.edu>
+ <20020208082605.E6001-100000@server2.cs.scranton.edu>
+Message-ID: <4.3.2.7.2.20020209083535.02048700@cirithi>
+
+Um, bzzzzt.  Wrong.  I have a floppy labeled:  BL-FN7AP-MC CZFNAP0 M-11 
+FORMTR RX50  .  This is a formatter program for a Micro PDP-11.
+
+It is a *diagnostic* program (not a user program) for formatting these 
+beasties.  Mine is for the -11, I would imagine that there is one for the 
+MicroVAX as well.
+
+Of course, it is copyrighted.
+
+Jay
+
+At 11:42 PM 2/8/2002 +0000, Pete Turnbull wrote:
+>On Feb 8,  8:31, Bill Gunshannon wrote:
+>
+> > RX50's came pre-formatted from DEC.  There was never a way to
+> > format them on PDP's or VAX as far as I knew.  I do think it is
+> > possible to create them using PUTR and an old PC with a proper
+> > floppy controller and a 1.2M floppy drive configured the right
+> > way.
+>
+>You can format them on a Rainbow, but not an -11 or VAX.
+
+
+---	
+Jay R. Jaeger					The Computer Collection
+cube1 at charter.net
+
+
+
+
+From bill at cs.scranton.edu  Sun Feb 10 03:14:36 2002
+From: bill at cs.scranton.edu (Bill Gunshannon)
+Date: Sat, 9 Feb 2002 12:14:36 -0500 (EST)
+Subject: [pups] Duh - how do you format an RX50?
+In-Reply-To: <4.3.2.7.2.20020209083535.02048700@cirithi>
+Message-ID: <20020209120052.L7548-100000@server2.cs.scranton.edu>
+
+On Sat, 9 Feb 2002, Jay Jaeger wrote:
+
+> Um, bzzzzt.  Wrong.  I have a floppy labeled:  BL-FN7AP-MC CZFNAP0 M-11
+> FORMTR RX50  .  This is a formatter program for a Micro PDP-11.
+>
+> It is a *diagnostic* program (not a user program) for formatting these
+> beasties.  Mine is for the -11, I would imagine that there is one for the
+> MicroVAX as well.
+
+I guess this constitutes the last straw for this myth.  Or was it merely
+a business decision intended to promote the sale of pre-formatted RX-50
+diskettes. (A practice not uncommon in those days.  For example, at one
+place where I worked we were responsible for maintaining Terak Micros, a
+LSI-11 based system.  Any time we reported a floppy problem the first
+question was, "Are you using Terak brand diskettes??"  Of course, everyone
+at that time knew there were only 3 manufacturers of platens and everybody
+else just supplied labels!!)
+
+Other arguments:  I have an Andromeda Disk Controller.  I know one of the
+supported floppy formats is RX50.  I'll bet the their formatting program
+won't care what drive is there and will happily format diskettes for use
+in this and other RX-50's.
+
+By the way, I mnentioned having a n on-DEC 80 track 5.25 drive.  I was
+wrong about one thing, though.  It was not a Shugart, it was a Tandon.
+Sadly, I don't think I still have it.
+
+But I think it is time to dig up some drives and controllers and see
+just what can be done to create RX50 diskettes.  Who know, maybe I can
+take over the business that DEC had.  Hmmm.  I think they used to get
+$10.00 a diskette.  They're rarer now.  Maybe $25.00 each??  Yeah, that's
+the trick.  I'll tell my daughter she can register for the next semester
+now....   :-)
+
+>
+> Of course, it is copyrighted.
+
+I wonder if there is anyone who could be contacted about releasing it??
+Maybe even the VMS version, too.  Or even, the source??  Somehow, I doubt
+that Compaq still sells many pre-formatted RX50's.
+
+And while we're on the subject, what about this supposed problem using
+anything put certain kinds of diskettes??  I used my 80 track 96tpi drive
+all the time with the same diskettes I used in my other SS/SD, DS/SD drives
+all the time and never had a problem.  Is this perhaps another myth intended
+to foster the sale of pre-formatted diskettes??
+
+bill
+
+-- 
+Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three wolves
+bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+University of Scranton   |
+Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+
+
+
+From pete at dunnington.u-net.com  Sun Feb 10 04:18:48 2002
+From: pete at dunnington.u-net.com (Pete Turnbull)
+Date: Sat, 9 Feb 2002 18:18:48 GMT
+Subject: [pups] Duh - how do you format an RX50?
+In-Reply-To: Jay Jaeger <cube1@charter.net>
+        "Re: [pups] Duh - how do you format an RX50?" (Feb  9,  8:37)
+References: <Bill Gunshannon <bill@cs.scranton.edu> 
+	<20020208082605.E6001-100000@server2.cs.scranton.edu> 
+	<4.3.2.7.2.20020209083535.02048700@cirithi>
+Message-ID: <10202091818.ZM6506@mindy.dunnington.u-net.com>
+
+On Feb 9,  8:37, Jay Jaeger wrote:
+> Um, bzzzzt.  Wrong.  I have a floppy labeled:  BL-FN7AP-MC CZFNAP0 M-11
+> FORMTR RX50  .  This is a formatter program for a Micro PDP-11.
+>
+> It is a *diagnostic* program (not a user program) for formatting these
+> beasties.  Mine is for the -11, I would imagine that there is one for the
+> MicroVAX as well.
+
+> At 11:42 PM 2/8/2002 +0000, Pete Turnbull wrote:
+> >You can format them on a Rainbow, but not an -11 or VAX.
+
+Jay, I'd be very interested to know more about that.  I never heard of it
+before, and I thought I had a pretty comprehensive collection of the PDP-11
+(including microPDP-11) diagnostics.  Was it standard issue with a
+particular model?  Is there a date on it?
+
+-- 
+Pete						Peter Turnbull
+						Network Manager
+						University of York
+
+
+From pete at dunnington.u-net.com  Sun Feb 10 04:40:21 2002
+From: pete at dunnington.u-net.com (Pete Turnbull)
+Date: Sat, 9 Feb 2002 18:40:21 GMT
+Subject: [pups] Duh - how do you format an RX50?
+In-Reply-To: Bill Gunshannon <bill@cs.scranton.edu>
+        "Re: [pups] Duh - how do you format an RX50?" (Feb  9, 12:14)
+References: <20020209120052.L7548-100000@server2.cs.scranton.edu>
+Message-ID: <10202091840.ZM7032@mindy.dunnington.u-net.com>
+
+On Feb 9, 12:14, Bill Gunshannon wrote:
+> On Sat, 9 Feb 2002, Jay Jaeger wrote:
+>
+> > Um, bzzzzt.  Wrong.  I have a floppy labeled:  BL-FN7AP-MC CZFNAP0 M-11
+> > FORMTR RX50  .  This is a formatter program for a Micro PDP-11.
+
+> I guess this constitutes the last straw for this myth.  Or was it merely
+> a business decision intended to promote the sale of pre-formatted RX-50
+> diskettes. (A practice not uncommon in those days.  For example, at one
+> place where I worked we were responsible for maintaining Terak Micros, a
+> LSI-11 based system.  Any time we reported a floppy problem the first
+> question was, "Are you using Terak brand diskettes??"  Of course,
+everyone
+> at that time knew there were only 3 manufacturers of platens and
+everybody
+> else just supplied labels!!)
+>
+> Other arguments:  I have an Andromeda Disk Controller.  I know one of the
+> supported floppy formats is RX50.  I'll bet the their formatting program
+> won't care what drive is there and will happily format diskettes for use
+> in this and other RX-50's.
+
+I expect it would.  It's not hard to write a formatter program.  I wrote
+one for my Acorn Archimedes, and an RX50 copier program as well.
+
+> I wonder if there is anyone who could be contacted about releasing it??
+> Maybe even the VMS version, too.  Or even, the source??  Somehow, I doubt
+> that Compaq still sells many pre-formatted RX50's.
+
+I seem to recall that DEC let people copy XXDP between machines without too
+much excitement.
+
+> And while we're on the subject, what about this supposed problem using
+> anything put certain kinds of diskettes??  I used my 80 track 96tpi drive
+> all the time with the same diskettes I used in my other SS/SD, DS/SD
+drives
+> all the time and never had a problem.  Is this perhaps another myth
+intended
+> to foster the sale of pre-formatted diskettes??
+
+So long as they're labelled SD or DD and not HD, they have the right
+coercivity.  Some people argue that the fineness of the emulsion may be a
+factor, but actually you'd have to be incredibly unlucky to have a flaw on
+a disk that would allow it to be perfect for SD but not DD.  Some people
+have likewise argued that the disk head gap is only about half as wide for
+80-track as it is for 40-track, but that's irrelevant: even if the gap is a
+third of the track pitch, thats around 1/300", the resulting bit density
+(300 bpi) on the radius of the disk is still much coarser than the bit
+density around the circumference (about 3300 bpi for single density).
+
+I do have a few very old S/S floppies with flaws on the second side, and
+which therefore aren't good to use as D/S (I value my data!) but I have
+hundreds more sold as S/S that are work fine as D/S.  They just weren't
+certified that way; they probably just weren't tested, in the days when
+lots of disks didn't need to be.
+
+-- 
+Pete						Peter Turnbull
+						Network Manager
+						University of York
+
+
+From pete at dunnington.u-net.com  Sun Feb 10 04:46:36 2002
+From: pete at dunnington.u-net.com (Pete Turnbull)
+Date: Sat, 9 Feb 2002 18:46:36 GMT
+Subject: [pups] Duh - how do you format an RX50?
+In-Reply-To: Jay Jaeger <cube1@charter.net>
+        "Re: [pups] Duh - how do you format an RX50?" (Feb  9,  8:37)
+References: <Bill Gunshannon <bill@cs.scranton.edu> 
+	<20020208082605.E6001-100000@server2.cs.scranton.edu> 
+	<4.3.2.7.2.20020209083535.02048700@cirithi>
+Message-ID: <10202091846.ZM7193@mindy.dunnington.u-net.com>
+
+On Feb 9,  8:37, Jay Jaeger wrote:
+> Um, bzzzzt.  Wrong.  I have a floppy labeled:  BL-FN7AP-MC CZFNAP0 M-11
+> FORMTR RX50  .  This is a formatter program for a Micro PDP-11.
+>
+> It is a *diagnostic* program (not a user program) for formatting these
+> beasties.  Mine is for the -11, I would imagine that there is one for the
+> MicroVAX as well.
+
+Jay, I just checked on that.  It's not an RX50 formatter, it's the XXDP V2
+formatting and diagnostics routines for an RXDX3.  IIRC it will format RD5x
+hard drives, and RX33, but not an RX50.  Can you get a directory listing of
+the disk?
+
+-- 
+Pete						Peter Turnbull
+						Network Manager
+						University of York
+
+
+From eric at brouhaha.com  Sun Feb 10 09:27:35 2002
+From: eric at brouhaha.com (Eric Smith)
+Date: Sat, 9 Feb 2002 15:27:35 -0800 (PST)
+Subject: [pups] Duh - how do you format an RX50?
+In-Reply-To: <4.3.2.7.2.20020209083535.02048700@cirithi>
+References: <4.3.2.7.2.20020209083535.02048700@cirithi>
+Message-ID: <2320.64.169.63.74.1013297255.squirrel@ruckus.brouhaha.com>
+
+> Um, bzzzzt.  Wrong.  I have a floppy labeled:  BL-FN7AP-MC CZFNAP0 M-11
+>  FORMTR RX50  .  This is a formatter program for a Micro PDP-11.
+>
+> It is a *diagnostic* program (not a user program) for formatting these
+> beasties.  Mine is for the -11, I would imagine that there is one for
+> the  MicroVAX as well.
+
+The "RX50" at the end of the title may just mean that the floppy is in
+RX50 format, not that the diagnostics contained therein can format RX50s.
+I'd almost be willing to bet money on that, since the Micro PDP-11
+originally used the RQDX1 to control the RX50, and a disassembly of
+the RQDX1 firmware shows no evidence of floppy formatting code.
+
+
+
+
+
+
+From cube1 at charter.net  Mon Feb 11 09:23:59 2002
+From: cube1 at charter.net (Jay Jaeger)
+Date: Sun, 10 Feb 2002 17:23:59 -0600
+Subject: [pups] Duh - how do you format an RX50?
+In-Reply-To: <2320.64.169.63.74.1013297255.squirrel@ruckus.brouhaha.com>
+References: <4.3.2.7.2.20020209083535.02048700@cirithi>
+ <4.3.2.7.2.20020209083535.02048700@cirithi>
+Message-ID: <4.3.2.7.2.20020210172249.02039468@cirithi>
+
+Rats.  So it would seem.  Forgot about that angle.  Useful program -- just 
+not for floppies.
+
+Oh well.
+
+(Hmm. I wonder how "bzzzzt"s taste when you have to eat them with your 
+hat?)  I suspect that they kind of tingle, eh?
+
+Jay
+
+
+
+At 03:27 PM 2/9/2002 -0800, Eric Smith wrote:
+> > Um, bzzzzt.  Wrong.  I have a floppy labeled:  BL-FN7AP-MC CZFNAP0 M-11
+> >  FORMTR RX50  .  This is a formatter program for a Micro PDP-11.
+> >
+> > It is a *diagnostic* program (not a user program) for formatting these
+> > beasties.  Mine is for the -11, I would imagine that there is one for
+> > the  MicroVAX as well.
+>
+>The "RX50" at the end of the title may just mean that the floppy is in
+>RX50 format, not that the diagnostics contained therein can format RX50s.
+>I'd almost be willing to bet money on that, since the Micro PDP-11
+>originally used the RQDX1 to control the RX50, and a disassembly of
+>the RQDX1 firmware shows no evidence of floppy formatting code.
+
+---	
+Jay R. Jaeger					The Computer Collection
+cube1 at charter.net
+
+
+
+
+From pete at dunnington.u-net.com  Mon Feb 11 10:25:28 2002
+From: pete at dunnington.u-net.com (Pete Turnbull)
+Date: Mon, 11 Feb 2002 00:25:28 GMT
+Subject: [pups] Duh - how do you format an RX50?
+In-Reply-To: Jay Jaeger <cube1@charter.net>
+        "Re: [pups] Duh - how do you format an RX50?" (Feb 10, 17:23)
+References: <4.3.2.7.2.20020209083535.02048700@cirithi> 
+	<4.3.2.7.2.20020210172249.02039468@cirithi>
+Message-ID: <10202110025.ZM5582@mindy.dunnington.u-net.com>
+
+On Feb 10, 17:23, Jay Jaeger wrote:
+> Rats.  So it would seem.  Forgot about that angle.  Useful program --
+just
+> not for floppies.
+>
+> Oh well.
+>
+> (Hmm. I wonder how "bzzzzt"s taste when you have to eat them with your
+> hat?)  I suspect that they kind of tingle, eh?
+
+As far as I remember, yes.  I've tried it a few times myself :-)
+
+
+-- 
+Pete						Peter Turnbull
+						Network Manager
+						University of York
+
+
+From talmage at cmf.nrl.navy.mil  Thu Feb 14 08:24:18 2002
+From: talmage at cmf.nrl.navy.mil (David W Talmage)
+Date: Wed, 13 Feb 2002 17:24:18 -0500
+Subject: [pups] screen 3.9.9 vs. 2.11BSD write() to fifo and/or select() on socket
+Message-ID: <5706.1013639058@paul.cmf.nrl.navy.mil>
+
+Would someone please advise me about fifos and sockets in 2.11BSD?  I'm having 
+trouble porting screen 3.9.9, the multiplexing terminal emulator, to 2.11BSD 
+because of them.  I'm running Mr. Schultz's 2.11BSD with all patches up to 
+#442 on Mr. Brandt's p11 emulator version 2.9.  FWIW, I have INET in my kernel 
+but I've ifconfig-ed only lo0.
+
+screen's configure complains that it finds no usable fifo or socket.
+
+The fifo test portion of the configure script fails when writing to the fifo.  
+The write() returns -1 and sets errno == 79, "Inappropriate file type or 
+format".  This happens when I run the test as root, as I must in order to use 
+mknod() to create the fifo.  See fifotest.c, below.
+
+screen can use sockets instead of fifos.  That portion of the configure script 
+fails as well.  It fails in that it does not return from the select() on the 
+socket until the alarm goes off.  See socketstest.c, below.
+
+/* fifotest.c */
+#include "confdefs.h"
+#include <sys/errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+/*
+#ifndef O_NONBLOCK
+#define O_NONBLOCK O_NDELAY
+#endif
+#ifndef S_IFIFO
+#define S_IFIFO 0010000
+#endif
+*/
+char *fin = "/tmp/conftest254";
+
+main()
+{
+  struct stat stb;
+  int f;
+
+  (void)alarm(5);
+#ifdef POSIX
+  if (mkfifo(fin, 0777)) {
+#else
+  if (mknod(fin, S_IFIFO|0777, 0)) {
+#endif
+printf("mknod failed\n");
+perror("mknod");
+    exit(1);
+    }
+  if (stat(fin, &stb) || (stb.st_mode & S_IFIFO) != S_IFIFO) {
+  printf("stat failed\n");
+    exit(1);
+    }
+  close(0);
+#ifdef __386BSD__
+  /*
+   * The next test fails under 386BSD, but screen works using fifos.
+   * Fifos in O_RDWR mode are only used for the BROKEN_PIPE case and for
+   * the select() configuration test.
+   */
+  exit(0);
+#endif
+  if (open(fin, O_RDONLY | O_NONBLOCK)) {
+    printf("open #1 failed\n");
+    exit(1);
+    }
+  if (fork() == 0)
+    {
+      printf("f0\n");
+      close(0);
+      if (open(fin, O_WRONLY | O_NONBLOCK)) {
+        printf("f0 open #2 failed\n");
+        exit(1);
+        }
+      close(0);
+      if (open(fin, O_WRONLY | O_NONBLOCK)) {
+        printf("f0 open #3 failed\n");
+        exit(1);
+        }
+      if (write(0, "TEST", 4) == -1) { /* FAILS HERE */
+        printf("f0 write failed %d\n", errno);
+        perror("write");
+        exit(1);
+        }
+      exit(0);
+    }
+  printf("f1\n");
+  f = 1;
+  if (select(1, &f, 0, 0, 0) == -1) {
+    printf("f1 select failed\n");
+    exit(1);
+    }
+  exit(0);
+}
+
+
+
+/* socketstest.c */
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <fcntl.h>
+
+char *son = "/tmp/conftest254";
+
+main()
+{
+  int s1, s2, s3, l;
+  struct sockaddr_un a;
+
+  (void)alarm(5);
+  if ((s1 = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) {
+    perror("socket");
+    exit(1);
+    }
+  a.sun_family = AF_UNIX;
+  strcpy(a.sun_path, son);
+  (void) unlink(son);
+  if (bind(s1, (struct sockaddr *) &a, strlen(son)+2) == -1) {
+    perror("bind");
+    exit(1);
+    }
+  if (listen(s1, 2)) {
+    perror("listen");
+    exit(1);
+    }
+  if (fork() == 0)
+    {
+      if ((s2 = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) {
+        perror("f0 socket");
+        kill(getppid(), 3);
+        }
+      (void)connect(s2, (struct sockaddr *)&a, strlen(son) + 2);
+      if (write(s2, "HELLO", 5) == -1) {
+        perror("f0 write");
+        kill(getppid(), 3);
+        }
+      exit(0);
+    }
+  l = sizeof(a);
+  if (close(0) == -1) {
+    perror("close");
+  }
+
+  if (accept(s1, &a, &l)) {
+    perror("accept");
+    exit(1);
+    }
+  l = 1;
+  if (select(1, &l, 0, 0, 0) == -1) { /* DOESN'T RETURN BEFORE SIG_ALARM */
+    perror("select");
+    exit(1);
+    }
+  exit(0);
+}
+
+
+-- 
+David Talmage (talmage at cmf.nrl.navy.mil)
+ITT Industries, Advanced Engineering & Sciences,
+Advanced Technology Group
+
+
+
+
+From sms at 2BSD.COM  Thu Feb 14 10:25:48 2002
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Wed, 13 Feb 2002 16:25:48 -0800 (PST)
+Subject: [pups] screen 3.9.9 vs. 2.11BSD write() to fifo and/or select() on socket
+Message-ID: <200202140025.g1E0Pmr20483@moe.2bsd.com>
+
+Hi!
+
+> From: David W Talmage <talmage at cmf.nrl.navy.mil>
+> Would someone please advise me about fifos and sockets in 2.11BSD?
+
+	Ok ;)
+
+	Don't use fifos - they don't exist (as you probably have found
+	out by now :))
+
+> I'm having 
+> trouble porting screen 3.9.9, the multiplexing terminal emulator, to 2.11BSD 
+
+	fifos and sockets are just the tip of the iceberg when it comes
+	to 'screen'.   Eons ago (when screen was a fairly new program) I made
+	an attempt at porting it and ran into the address space problems - seems
+	that screen wants to use lots of large buffers, has lots of strings
+	(all the help, etc) and so on. 
+
+> because of them.  I'm running Mr. Schultz's 2.11BSD with all patches up to 
+> #442 on Mr. Brandt's p11 emulator version 2.9.  FWIW, I have INET in my kernel
+> but I've ifconfig-ed only lo0.
+
+	Thanks for the "ownership" label but I think of it more as being
+	a 'steward' and coordinator than anything else
+
+	p11 2.9?   Wow, I've an old patched/hacked 2.5 because I can't seem
+	to find p11's home now - begemot.org doesn't mention anything about
+	"p11".
+
+> The fifo test portion of the configure script fails when writing to the fifo.  
+> The write() returns -1 and sets errno == 79, "Inappropriate file type or 
+
+	Right, FIFOs don't exist.  One of those things I never could find
+	the need or time for ;)
+
+> format".  This happens when I run the test as root, as I must in order to use 
+> mknod() to create the fifo.  See fifotest.c, below.
+
+	If 2.11's mknod can create fifos that is _news_ to me.   I don't recall
+	seeing (or adding) that capability.
+
+> screen can use sockets instead of fifos.  That portion of the configure script
+> fails as well.  It fails in that it does not return from the select() on the 
+> socket until the alarm goes off.  See socketstest.c, below.
+
+	Now that is very strange.   Unix domain sockets do work (syslogd
+	uses them for example) so I'm at a loss to explain why the test
+	program isn't working.
+
+	One thing I did do is after running "./a.out&" was do an immediate
+	'ps'.   That should see 2 a.out processes due to the 'fork()' call.
+	I only say one.  This tells me that the alarm was started (obviously
+	since alarm(5) is the first thing executed) but the child process
+	raced thru and exited before the parent got to the select() call.
+
+	With the child exited the select() will block until interrupted by
+	the alarm() call.
+
+	Steven Schultz
+	sms at 2bsd.com
+
+
+From lars at nocrew.org  Thu Feb 14 18:22:48 2002
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: 14 Feb 2002 09:22:48 +0100
+Subject: [pups] screen 3.9.9 vs. 2.11BSD write() to fifo and/or select() on socket
+In-Reply-To: <200202140025.g1E0Pmr20483@moe.2bsd.com>
+References: <200202140025.g1E0Pmr20483@moe.2bsd.com>
+Message-ID: <85lmdwfp5z.fsf@junk.nocrew.org>
+
+"Steven M. Schultz" <sms at 2BSD.COM> writes:
+> 	p11 2.9?   Wow, I've an old patched/hacked 2.5 because I can't seem
+> 	to find p11's home now - begemot.org doesn't mention anything about
+> 	"p11".
+
+ftp://ftp.fokus.gmd.de/pub/cats/usr/harti/p11/
+
+-- 
+Lars Brinkhoff          http://lars.nocrew.org/     Linux, GCC, PDP-10,
+Brinkhoff Consulting    http://www.brinkhoff.se/    HTTP programming
+
+
+From talmage at cmf.nrl.navy.mil  Fri Feb 15 01:27:04 2002
+From: talmage at cmf.nrl.navy.mil (David W Talmage)
+Date: Thu, 14 Feb 2002 10:27:04 -0500
+Subject: [pups] screen 3.9.9 vs. 2.11BSD write() to fifo and/or select() 
+ on socket
+In-Reply-To: Your message of "Wed, 13 Feb 2002 16:25:48 PST."
+             <200202140025.g1E0Pmr20483@moe.2bsd.com> 
+Message-ID: <8332.1013700424@paul.cmf.nrl.navy.mil>
+
+"Steven M. Schultz" <sms at 2BSD.COM> wrote:
+>> From: David W Talmage <talmage at cmf.nrl.navy.mil>
+>> Would someone please advise me about fifos and sockets in 2.11BSD?
+>...
+>	Don't use fifos - they don't exist (as you probably have found
+>	out by now :))
+
+I thought that I'd read in the FM that they do.  I see now that I was 
+mistaken, perhaps delusional.  I see now that <sys/stat.h> contains the gospel:
+
+#define S_IFIFO 0010000         /* named pipe (fifo) - Not used by 2.11BSD */
+
+
+>> I'm having 
+>> trouble porting screen 3.9.9, the multiplexing terminal emulator, to 2.11BSD
+> ...
+>	an attempt at porting it and ran into the address space problems - seems
+>	that screen wants to use lots of large buffers, has lots of strings
+>	(all the help, etc) and so on. 
+
+Sounds like I'm in for some deep hacking if I continue with this.  Will 
+overlays help me here?
+
+>...
+>> screen can use sockets instead of fifos.  That portion of the configure 
+script
+>> fails as well.  It fails in that it does not return from the select() on the
+> 
+>> socket until the alarm goes off.  See socketstest.c, below.
+>...
+>	With the child exited the select() will block until interrupted by
+>	the alarm() call.
+
+I wonder if setitimer() will fare any better.  alarm() is obsolete.
+
+I'll send a progress report if I decide to continue this project.  Thanks for 
+your help, Mr. Schultz.
+
+David Talmage
+
+
+
+
+From sms at 2BSD.COM  Fri Feb 15 02:33:42 2002
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Thu, 14 Feb 2002 08:33:42 -0800 (PST)
+Subject: [pups] screen 3.9.9 vs. 2.11BSD write() to fifo and/or select() on socket
+Message-ID: <200202141633.g1EGXgs01723@moe.2bsd.com>
+
+Hi -
+
+> From: David W Talmage <talmage at cmf.nrl.navy.mil>
+> I thought that I'd read in the FM that they do.  I see now that I was 
+> mistaken,perhaps delusional.  I see now that <sys/stat.h> contains the gospel:
+> 
+> #define S_IFIFO 0010000         /* named pipe (fifo) - Not used by 2.11BSD */
+
+	:)
+
+	Adding FIFOs to the kernel would make an interesting project though -
+	perhaps when I become inspired/motivated I'll give it a try.
+
+> Sounds like I'm in for some deep hacking if I continue with this.  Will 
+> overlays help me here?
+
+	Overlays will help if the code comes out to more than 64KB.   Alas,
+	overlays will _not_ help the dataspace requirements.   The last time
+	I looked at 'screen' I saw things like "char buf[32768];' sprinkled
+	thru the code.   So you might be in for some serious hacking to trim
+	back the sizes of arrays/buffers/etc.   It probably would also be
+	a good idea to 'string'ify the program (there are tools to assist
+	doing this - take a look at how sendmail and lint are built).
+
+> I wonder if setitimer() will fare any better.  alarm() is obsolete.
+
+	The gospel according to /usr/src/lib/libc/gen/alarm.c says:
+
+/*
+ * Backwards compatible alarm.
+ */
+#include <sys/time.h>
+#include <unistd.h>
+
+unsigned int
+alarm(secs)
+	unsigned int secs;
+{
+	struct itimerval it, oitv;
+	register struct itimerval *itp = &it;
+
+	timerclear(&itp->it_interval);
+	itp->it_value.tv_sec = secs;
+	itp->it_value.tv_usec = 0;
+	if (setitimer(ITIMER_REAL, itp, &oitv) < 0)
+		return (-1);
+	if (oitv.it_value.tv_usec)
+		oitv.it_value.tv_sec++;
+	return (oitv.it_value.tv_sec);
+}
+
+	<g>
+
+> I'll send a progress report if I decide to continue this project.  Thanks for 
+> your help, Mr. Schultz.
+
+	What I think you're seeing is the race condition that fork() has - 
+	there is no guarantee which process (parent or child) runs first.
+	The test program does the fork() and the child runs to completion
+	before the parent enters the select().  At that point the parent
+	will wait until the alarm goes off.
+
+	One thing you might try is create two separate programs.  One would
+	create the socket and wait for the other program to connect and send
+	a string.  If that works it shows that the UNIX domainsockets are
+	working as expected and that the fork() race is indeed the problem.
+	IF the client/server tests fail then there is something wrong in the
+	UNIX domain socket handling that needs to be addressed.
+
+	Good Luck!
+
+	Cheers,
+	Steven Schultz
+
+
+From p.visser at tip.nl  Sat Feb 16 22:30:01 2002
+From: p.visser at tip.nl (Pieter Visser)
+Date: Sat, 16 Feb 2002 13:30:01 +0100
+Subject: [pups] PDP11-23
+Message-ID: <000801c1b6e5$a9a03760$73e6f1c3@pieterprive>
+
+Hello,
+
+I ám still have a working Dec pdp11-23. It runs on CTS-300 with 10 Mb Harddisk and a Tape drive for back-ups
+I think the programm is writen in dibol.
+
+I f you want more information about this system please reply by email
+
+If anyone can help me with the following questions.
+
+Can i connect an windows/dos sytem to the pdp11-23 and run the program.
+Is it possible to copy the program and run it on a Windows/Dos based machine.
+
+Hope to hear from sombody,
+
+Pieter Visser
+The Netherlands
+e-mail p.visser at tip.nl
+handy    +31-(0)6-53630275
+phone    +31-(0)165-313597
+work      +31-(0)76-5022800
+fax         +31-(0)76-5022090  
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20020216/5bb061de/attachment.html>
+
+From bqt at update.uu.se  Sun Feb 17 00:09:01 2002
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Sat, 16 Feb 2002 15:09:01 +0100 (CET)
+Subject: [pups] PDP11-23
+In-Reply-To: <000801c1b6e5$a9a03760$73e6f1c3@pieterprive>
+Message-ID: <Pine.LNX.4.21.0202161438170.7991-100000@Tempo.Update.UU.SE>
+
+Hi, Pieter.
+
+> If anyone can help me with the following questions.
+
+We can always try.
+
+> Can i connect an windows/dos sytem to the pdp11-23 and run the program.
+
+Yes. Use any terminal emulator on the PC, and use it the same way as you
+are using some other terminal right now.
+
+> Is it possible to copy the program and run it on a Windows/Dos based machine.
+
+Not as such. However, there do exist PDP-11 emulators for the PC, which
+means you could copy the whole operating system, and everything else
+associated (I hope you don't have any special hardware though) it should
+be runnable. Look a e11 (http://www.dbit.com) for such a system.
+Another option is a PDP-11 system on a card that you put into your PC,
+made by Strobe Data (http://www.strobe.com).
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From bill at cs.scranton.edu  Sun Feb 17 01:46:22 2002
+From: bill at cs.scranton.edu (Bill Gunshannon)
+Date: Sat, 16 Feb 2002 10:46:22 -0500 (EST)
+Subject: [pups] PDP11-23
+In-Reply-To: <Pine.LNX.4.21.0202161438170.7991-100000@Tempo.Update.UU.SE>
+Message-ID: <20020216104153.Y3512-100000@server2.cs.scranton.edu>
+
+On Sat, 16 Feb 2002, Johnny Billquist wrote:
+
+>
+> > Is it possible to copy the program and run it on a Windows/Dos based machine.
+>
+> Not as such. However, there do exist PDP-11 emulators for the PC, which
+> means you could copy the whole operating system, and everything else
+> associated (I hope you don't have any special hardware though) it should
+> be runnable. Look a e11 (http://www.dbit.com) for such a system.
+> Another option is a PDP-11 system on a card that you put into your PC,
+> made by Strobe Data (http://www.strobe.com).
+>
+
+Actually, I think he was thinking of the application rather than the
+whole system.  Was there ever a DIBOL compiler for the PC??  Was there
+ever a DIBOL compiler for any non-DEC systems??  Would it be possible
+(and maybe even fun) to either write a DIBOL to C translater (like p2c
+or f2c) or even a DIBOL front end to GCC??  Would there be any interest
+in having DIBOL available again??
+
+I think the above questions should easily show that even though I have
+the DIBOL manual and probably even have a copy of the compiler on a tape
+somewhere, I have never used or even looked at the language.  I have,
+however, heard a lot of comments praising it.
+
+bill
+
+-- 
+Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three wolves
+bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+University of Scranton   |
+Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+
+
+
+From cpg at aladdin.de  Sat Feb 23 00:52:13 2002
+From: cpg at aladdin.de (Christian Groessler)
+Date: 22 Feb 2002 15:52:13 +0100
+Subject: [pups] missing space in 2.11_rp_unknown
+Message-ID: <87wux5zi02.fsf@panther.aladdin.de>
+
+Hi,
+
+I'm running above image with the p11 emulator, and the root partition
+is almost full.
+I tried to clean it up, but I cannot find where the space is used.
+
+df says:
+
+--------
+# df
+Filesystem  1K-blocks     Used    Avail Capacity  Mounted on
+root             7816     7030      786    10%    /
+--------
+
+but looking at files, I only see 2MB+ in use:
+
+--------
+# du -s /
+2702    
+--------
+
+This persists over reboots, so it doesn't seem to be a large deleted
+file which is still in use.
+
+Where is the missing space?
+
+regards,
+chris
+
+
+
+From grog at lemis.com  Sat Feb 23 11:29:31 2002
+From: grog at lemis.com (Greg Lehey)
+Date: Sat, 23 Feb 2002 11:59:31 +1030
+Subject: [pups] missing space in 2.11_rp_unknown
+In-Reply-To: <87wux5zi02.fsf@panther.aladdin.de>
+References: <87wux5zi02.fsf@panther.aladdin.de>
+Message-ID: <20020223115931.A16519@wantadilla.lemis.com>
+
+On Friday, 22 February 2002 at 15:52:13 +0100, Christian Groessler wrote:
+> Hi,
+>
+> I'm running above image with the p11 emulator, and the root partition
+> is almost full.
+> I tried to clean it up, but I cannot find where the space is used.
+>
+> df says:
+>
+> --------
+> # df
+> Filesystem  1K-blocks     Used    Avail Capacity  Mounted on
+> root             7816     7030      786    10%    /
+> --------
+>
+> but looking at files, I only see 2MB+ in use:
+>
+> --------
+> # du -s /
+> 2702
+> --------
+>
+> This persists over reboots, so it doesn't seem to be a large deleted
+> file which is still in use.
+
+Have you tried running fsck?
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+
+From sms at 2BSD.COM  Sat Feb 23 13:31:49 2002
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Fri, 22 Feb 2002 19:31:49 -0800 (PST)
+Subject: [pups] missing space in 2.11_rp_unknown
+Message-ID: <200202230331.g1N3Vn719597@moe.2bsd.com>
+
+Hi!
+
+> From: Christian Groessler <cpg at aladdin.de>
+> I'm running above image with the p11 emulator, and the root partition
+> is almost full.
+> 
+> # df
+> Filesystem  1K-blocks     Used    Avail Capacity  Mounted on
+> root             7816     7030      786    10%    /
+> 
+> but looking at files, I only see 2MB+ in use:
+> 
+> # du -s /
+> 2702    
+
+> This persists over reboots, so it doesn't seem to be a large deleted
+> file which is still in use.
+
+	It might be a corrupt freelist.   If that is the case then running
+	fsck will detect that fact and reclaim the space by rebuilding the
+	freelist.
+
+> Where is the missing space?
+
+	My guess is it's "missing" - that can happen if the system's shutdown
+	(or the emulator terminated) prematurely.   In that case the freelist
+	metadata might not have been updated.
+
+	I see Greg mentioned running fsck.   That sounds like an excellent
+	suggestion.
+
+	Cheers,
+	Steven Schultz
+	sms at 2bsd.com
+
+
+From repro at nutechgroup.net  Sun Feb 24 05:57:40 2002
+From: repro at nutechgroup.net (Nutech)
+Date: Sun, 24 Feb 2002 01:27:40 +0530
+Subject: [pups] PDP 11
+Message-ID: <3C77F434.F25C3348@nutechgroup.net>
+
+I post this message with hope that someone out there can help me with a
+problem I have at hand.
+
+My company recently bought a preowned printing machine, which uses a
+PDP11/73 BA23
+connected to a VT240 terminal to control the functions of the machine.
+Needless to say that we are unable to make the PDP run since we have no
+knowledge of the machine and have no one to look upto for guidance..
+
+While we are able to power on the PDP, the VT240 is dead.
+
+Looking for help I came across your site and got the feeling that you
+might be able to help me out of my current deliema.
+
+While I have the original program disks, I have NO operating disks or
+knowledge of what OS is on the PDP. The printing machine is controlled
+by the PDP thru 4 serial ports (TT0 thru
+TT3), the machine has a total of 8 ports, 4 are left unused.
+
+PLEASE HELP.
+Regards,
+Shroff
+repro at nutechgroup.net
+
+
+
+From cpg at aladdin.de  Mon Feb 25 21:57:21 2002
+From: cpg at aladdin.de (Christian Groessler)
+Date: 25 Feb 2002 12:57:21 +0100
+Subject: [pups] missing space in 2.11_rp_unknown
+Message-ID: <87heo5vkny.fsf@panther.aladdin.de>
+
+Hi,
+
+On 02/22/2002 07:31:49 PM PST "Steven M. Schultz" wrote:
+>
+>> From: Christian Groessler <cpg at aladdin.de>
+>> I'm running above image with the p11 emulator, and the root partition
+>> is almost full.
+>>
+>> # df
+>> Filesystem  1K-blocks     Used    Avail Capacity  Mounted on
+>> root             7816     7030      786    10%    /
+>>
+>> but looking at files, I only see 2MB+ in use:
+>>
+>> # du -s /
+>> 2702
+>
+>	I see Greg mentioned running fsck.   That sounds like an excellent
+>	suggestion.
+
+Yes, but it didn't help :-(
+What can this be?
+
+I tried something else, I copied the contents of the root fs
+elsewhere, newfs'd the root partition and copied the contents back.
+
+But now booting stops when it normally starts init,
+
+-------------
+: unix
+Boot: bootdev=05010 bootcsr=0176700
+
+2.11 BSD UNIX #1: Fri Feb 15 18:47:18 PST 2002
+    chris at pdp11:/usr/src/sys/PDP11CPG
+
+attaching qe0 csr 174440
+qe0: DEC DEQNA addr 08:00:2b:07:82:6c
+attaching lo0
+
+phys mem  = 2097152
+avail mem = 1647872
+user mem  = 307200
+
+-------------
+
+... and here it hangs. Do I have to consider something else when I
+newfs the root partition?
+
+regards,
+chris
+
+
+
+From sms at 2BSD.COM  Tue Feb 26 03:16:31 2002
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Mon, 25 Feb 2002 09:16:31 -0800 (PST)
+Subject: [pups] missing space in 2.11_rp_unknown
+Message-ID: <200202251716.g1PHGVT16246@moe.2bsd.com>
+
+Hi -
+
+> >	I see Greg mentioned running fsck.   That sounds like an excellent
+> >	suggestion.
+> 
+> Yes, but it didn't help :-(
+
+> What can this be?
+
+	It might be necessary to use the '-s' option .   "fsck -s" will
+	unconditionally rebuild the freelist.
+
+> I tried something else, I copied the contents of the root fs
+> elsewhere, newfs'd the root partition and copied the contents back.
+
+	Did you use dump+restor?
+
+> But now booting stops when it normally starts init,
+> 
+	Oh no!
+
+> -------------
+> : unix
+> Boot: bootdev=05010 bootcsr=0176700
+> 
+> 2.11 BSD UNIX #1: Fri Feb 15 18:47:18 PST 2002
+>     chris at pdp11:/usr/src/sys/PDP11CPG
+> 
+> attaching qe0 csr 174440
+> qe0: DEC DEQNA addr 08:00:2b:07:82:6c
+> attaching lo0
+> 
+> phys mem  = 2097152
+> avail mem = 1647872
+> user mem  = 307200
+> 
+> -------------
+> 
+> ... and here it hangs. Do I have to consider something else when I
+> newfs the root partition?
+
+	The boot block, /boot, /unix, /netnix and /etc/init, /bin/sh are 
+	intact since the system got as far as printing the memory numbers.
+
+	After the memory stats the '/etc/autoconfig' process should be
+	run ('init' runs it) and the device probes should take place.
+
+	The only thing I can think of (and it's a wild guess) is that the
+	"clock" isn't running - thru the boot process clock interrupts 
+	aren't used but when 'init' goes to run 'autoconfig' the system nees
+	clock interrupts in order to drive the context switching.   Either
+	the clock isn't running or /etc/autoconfig got corrupted somehow
+	in the copying.
+
+	Steven Schultz
+	sms at 2bsd.com
+
+
+From cpg at aladdin.de  Tue Feb 26 21:56:34 2002
+From: cpg at aladdin.de (Christian Groessler)
+Date: 26 Feb 2002 12:56:34 +0100
+Subject: [pups] missing space in 2.11_rp_unknown
+Message-ID: <87oficpibx.fsf@panther.aladdin.de>
+
+Hi,
+
+On 02/25/2002 09:16:31 AM PST "Steven M. Schultz" wrote:
+>
+>Hi -
+>
+>> >	I see Greg mentioned running fsck.   That sounds like an excellent
+>> >	suggestion.
+>>
+>> Yes, but it didn't help :-(
+>
+>> What can this be?
+>
+>	It might be necessary to use the '-s' option .   "fsck -s" will
+>	unconditionally rebuild the freelist.
+
+This didn't work either.
+
+>
+>> I tried something else, I copied the contents of the root fs
+>> elsewhere, newfs'd the root partition and copied the contents back.
+>
+>	Did you use dump+restor?
+
+No, tar. I tried again with dump and restor and now it works! Thanks
+for the hint! I seldomly use dump/restore.
+
+Now there's enough space in /:
+
+$ df
+Filesystem  1K-blocks     Used    Avail Capacity  Mounted on
+/dev/xp0a        7816     2658     5158    04%    /
+/dev/xp0g      151625   117599    34026    08%    /usr
+$ 
+
+Btw, the capacity values look a bit strange?
+
+regards,
+chris
+
+
+
+From sms at 2BSD.COM  Wed Feb 27 09:29:07 2002
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Tue, 26 Feb 2002 15:29:07 -0800 (PST)
+Subject: [pups] missing space in 2.11_rp_unknown
+Message-ID: <200202262329.g1QNT7T07646@moe.2bsd.com>
+
+Hi!
+
+> From: Christian Groessler <cpg at aladdin.de>
+> >	Did you use dump+restor?
+> 
+> No, tar. I tried again with dump and restor and now it works! Thanks
+> for the hint! I seldomly use dump/restore.
+	
+	Ah ha!  For moving filesystems dump+restor or 'afio' need to be
+	used.   Dump+restor also have the advantage of preserving the
+	file flags (see chflags(2) and chflags(1)) - other utilities do
+	not preserve that metadata.
+
+	The other thing that dump+restor (or afio) handle correctly is
+	the special files in /dev.  'tar' does not know how to archive
+	files such as "/dev/rp0a".
+
+	Mmmm, I wonder if the problems you were having  were caused by
+	/dev not being correctly populated.
+
+> Now there's enough space in /:
+> 
+> $ df
+> Filesystem  1K-blocks     Used    Avail Capacity  Mounted on
+> /dev/xp0a        7816     2658     5158    04%    /
+> /dev/xp0g      151625   117599    34026    08%    /usr
+> $ 
+> 
+> Btw, the capacity values look a bit strange?
+
+	Yes, they do look (more than a little bit) strange.
+
+	On my system here (a P11 based emulated PDP-11 - I have a real 11/73
+	but it is only powered up when I'm actively testing):
+
+Filesystem  1K-blocks     Used    Avail Capacity  Mounted on
+/dev/xp0a        8228     3163     5065    38%    /
+/dev/xp0h      155328    84188    71140    54%    /usr
+
+	What patchlevel did you mention the system was at?   There were a lot
+	of patches issued after the ' 2.11_rp_unknown' image was created.
+	One thing, which probably will not make any difference, to try would
+	be to recompile 'df' (and possibly 'libc') and see if the problem
+	changes.   Looks like it's a math error of some kind so either
+	the compiler/libraries are broken or P11's having a problem doing
+	arithmetic.
+
+	Cheers,
+	Steven Schultz
+	sms at 2bsd.com
+
+
+From repro at nutechgroup.net  Wed Feb 27 13:50:30 2002
+From: repro at nutechgroup.net (Nutech)
+Date: Wed, 27 Feb 2002 09:20:30 +0530
+Subject: [pups] Memory Error 46 on a PDP 11/73
+Message-ID: <3C7C5786.5A3185F3@nutechgroup.net>
+
+Hello,
+I am getting the following error when I try to boot my PDP. The Card
+details for the CPU and the Memory Board are as under.
+
+Here are the details of the Various cards.
+Slot 1(ABCD)     KDJ11-BB (M8190)
+Slot 2(ABCD)     MSV11-QA(M7551)
+Slot 3 (AB)         M3107
+Slot 3 (CD)         Blank
+Slot 4 (AB)         Solna prinitng machine card
+Slot 4 (CD)         BIT Scandiavia card
+Slot 5 (AB)         Blank
+Slot 5 (CD)        M7555
+
+Can some one please guide what I can do besides replacing the old card
+with a new card.
+Regards,
+Shroff
+
+
+                     Testing in progress - Please wait
+
+                             1 2 3 4 5 6
+
+Error 46
+Memory Error
+
+See troubleshooting documentation
+
+
+Error PC = 173242       PCR page = 15   Program listing address = 015242
+
+R0 = 060000     R1 = 125252     R2 = 125652     R3 = 052525
+R4 = 001000     R5 = 040000     R6 = 172300     Par3 = 034000
+
+Expected data   = 125252
+Bad data        = 125652
+Address         = 03400000
+
+Command    Description
+
+   1       Rerun test
+   2       Loop on test
+   3       Map memory and I/O page
+
+Type a command then press the RETURN key: 3
+
+
+Memory Map
+Starting   Ending       Size in    CSR          CSR     Bus
+Address    address      K Bytes    address      type    type
+
+00000000 - 03777776     1024       17772100     Parity  Qbus
+
+
+Press the RETURN key when ready to continue
+
+I/O page Map
+Starting   Ending
+Address    address
+
+17760440 - 17760456
+17765000 - 17765776     CPU ROM or EEPROM
+17772100                Memory CSR
+17772150 - 17772152
+17772200 - 17772276     Supervisor I and D PDR/PAR's
+17772300 - 17772376     Kernel I and D PDR/PAR's
+17772516                MMR3
+17773000 - 17773776     CPU ROM
+17777160 - 17777166
+17777520 - 17777524     BCSR, PCR, BCR/BDR
+17777546                Clock CSR
+17777560 - 17777566     Console SLU
+17777572 - 17777576     MMR0,1,2
+17777600 - 17777676     User I and D PDR/PAR's
+17777744 - 17777752     MSER, CCR, MREG, Hit/Miss
+17777766                CPU Error
+17777772                PIRQ
+
+Press the RETURN key when ready to continue
+
+I/O page Map
+Starting   Ending
+Address    address
+
+17777776                PSW
+
+Press the RETURN key when ready to continue
+
+Error 46
+Memory Error
+
+See troubleshooting documentation
+
+
+Error PC = 173242       PCR page = 15   Program listing address = 015242
+
+R0 = 060000     R1 = 125252     R2 = 125652     R3 = 052525
+R4 = 001000     R5 = 040000     R6 = 172300     Par3 = 034000
+
+Expected data   = 125252
+Bad data        = 125652
+Address         = 03400000
+
+Command    Description
+
+   1       Rerun test
+   2       Loop on test
+   3       Map memory and I/O page
+
+Type a command then press the RETURN key:
+
+
+
+
+
+From cpg at aladdin.de  Thu Feb 28 07:35:53 2002
+From: cpg at aladdin.de (Christian Groessler)
+Date: 27 Feb 2002 22:35:53 +0100
+Subject: [pups] missing space in 2.11_rp_unknown
+Message-ID: <87ofiad2va.fsf@power.cnet.aladdin.de>
+
+Hi,
+
+On 02/26/2002 03:29:07 PM PST "Steven M. Schultz" wrote:
+>
+>	Mmmm, I wonder if the problems you were having  were caused by
+>	/dev not being correctly populated.
+
+Maybe. I noticed they're missing and recreated them by hand. Perhaps I
+made a mistake there.
+
+
+>> $ df
+>> Filesystem  1K-blocks     Used    Avail Capacity  Mounted on
+>> /dev/xp0a        7816     2658     5158    04%    /
+>> /dev/xp0g      151625   117599    34026    08%    /usr
+>> $
+>>
+>> Btw, the capacity values look a bit strange?
+>
+>	Yes, they do look (more than a little bit) strange.
+>
+>	On my system here (a P11 based emulated PDP-11 - I have a real 11/73
+>	but it is only powered up when I'm actively testing):
+>
+>Filesystem  1K-blocks     Used    Avail Capacity  Mounted on
+>/dev/xp0a        8228     3163     5065    38%    /
+>/dev/xp0h      155328    84188    71140    54%    /usr
+>
+>	What patchlevel did you mention the system was at?   There were a lot
+>	of patches issued after the ' 2.11_rp_unknown' image was created.
+>	One thing, which probably will not make any difference, to try would
+>	be to recompile 'df' (and possibly 'libc') and see if the problem
+>	changes.   Looks like it's a math error of some kind so either
+>	the compiler/libraries are broken or P11's having a problem doing
+>	arithmetic.
+
+It's a problem of the p11 emulator I use. I got a patch off-list which
+fixed it. It was some signed/unsigned thing.
+
+Regarding the patchlevels, how do I find out which patchlevel my
+system is at?
+
+regards,
+chris
+
+
+
+From sms at 2BSD.COM  Thu Feb 28 09:25:22 2002
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Wed, 27 Feb 2002 15:25:22 -0800 (PST)
+Subject: [pups] missing space in 2.11_rp_unknown
+Message-ID: <200202272325.g1RNPM825304@moe.2bsd.com>
+
+Hello again -
+
+> From: Christian Groessler <cpg at aladdin.de>
+> >	Mmmm, I wonder if the problems you were having  were caused by
+> >	/dev not being correctly populated.
+> 
+> Maybe. I noticed they're missing and recreated them by hand. Perhaps I
+> made a mistake there.
+
+	It would be easy enough to do - or perhaps a critical one was
+	left out.    Filesystems without device nodes can be moved
+	with a 'tar' pipeline but the root filesystem is special.
+
+> It's a problem of the p11 emulator I use. I got a patch off-list which
+> fixed it. It was some signed/unsigned thing.
+
+	Ah ha!
+
+> Regarding the patchlevels, how do I find out which patchlevel my
+> system is at?
+
+	Look at the /VERSION file.  The first or second line will have
+	the patchlevel.   That file's updated by each patch.
+
+	Cheers,
+	Steven
+
+
+From frank at wortner.com  Thu Feb 28 12:24:49 2002
+From: frank at wortner.com (Frank Wortner)
+Date: Wed, 27 Feb 2002 21:24:49 -0500
+Subject: [pups] missing space in 2.11_rp_unknown
+In-Reply-To: <200202272325.g1RNPM825304@moe.2bsd.com>
+Message-ID: <B8A2FF20.3EC6%frank@wortner.com>
+
+FYI,  here's the patch that fixes the "df" problem that Christian reported.
+If I recall correctly,  it took me about a day to figure out that the
+problem wasn't in df,  wasn't in the 2.11 BSD C library,  but was in the p11
+emulator.  The fact that the same disk image booted by Bob Supnik's SIMH
+PDP/11 emulator produced correct "df" results was the big clue.  Here's the
+fix for p11 (version 2.7).
+
+$ diff -c float.h*
+*** float.h     Tue Oct 10 10:36:14 2000
+--- float.h.orig        Sat Mar  4 03:03:29 2000
+***************
+*** 442,448 ****
+  # define CnvL(A,L)    (void)((A) = F_int((L)))
+  # define CnvF2L(S,L)  (void)((L) = F_chop((S)))
+
+! # define FrExp(A)     ((signed)((A).e - EOFFS))
+
+  # define GetMant(P)   (((P)->m & ~f_msb) << 1)
+  # define GetExp(P)    ((int)(P)->e - EOFFS + 1)
+--- 442,448 ----
+  # define CnvL(A,L)    (void)((A) = F_int((L)))
+  # define CnvF2L(S,L)  (void)((L) = F_chop((S)))
+
+! # define FrExp(A)     ((A).e - EOFFS)
+
+  # define GetMant(P)   (((P)->m & ~f_msb) << 1)
+  # define GetExp(P)    ((int)(P)->e - EOFFS + 1)
+
+-- 
+Frank
+
+"I don't hold with all this washing.  This modern Behind-the-ears nonsense."
+* Eeyore, "Winnie the Pooh"
+
+
+
+
+From sven_dehmlow at web.de  Fri Feb  1 02:09:13 2002
+From: sven_dehmlow at web.de (Sven Dehmlow)
+Date: Thu, 31 Jan 2002 17:09:13 +0100
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <20020131110042.F19170@apple.ukc.ac.uk>
+References: <20020130091842.A12653@apple.ukc.ac.uk> <200201310918.LAA20241@mole.nixu.fi> <20020131110042.F19170@apple.ukc.ac.uk>
+Message-ID: <02013117091301.00697@linux>
+
+On Thursday 31 January 2002 12:00, P.A.Osborne wrote:
+> On Thu, Jan 31, 2002 at 11:18:06AM +0200, Lauri Aarnio wrote:
+> > Have you considered using Tanenbaum's Minix as a reference ?
+>
+> Funnily enough - no.  Which was a tad daft as I have a copy
+> of the original Tanenbaum book on a shelf about 2 feet above
+> the monitor....  :-)   sheepish grin
+>
+
+Good than it will be easy for you to take a look into this book and 
+to find out that Minix is a microkernel. You want to code a 
+monolithic kernel.
+
+Any questions? ;-)
+
+
+[snip]
+
+Sven
+
+
+
+From Lauri.Aarnio at nixu.com  Fri Feb  1 04:45:03 2002
+From: Lauri.Aarnio at nixu.com (Lauri Aarnio)
+Date: Thu, 31 Jan 2002 20:45:03 +0200
+Subject: [TUHS] Re: Porting Unix v6 to i386 
+In-Reply-To: Your message of "Thu, 31 Jan 2002 17:09:13 +0100."
+             <02013117091301.00697@linux> 
+Message-ID: <200201311845.UAA17935@mole.nixu.fi>
+
+In message <02013117091301.00697 at linux>, Sven Dehmlow writes:
+>On Thursday 31 January 2002 12:00, P.A.Osborne wrote:
+>> On Thu, Jan 31, 2002 at 11:18:06AM +0200, Lauri Aarnio wrote:
+>> > Have you considered using Tanenbaum's Minix as a reference ?
+>>
+>> Funnily enough - no.  Which was a tad daft as I have a copy
+>> of the original Tanenbaum book on a shelf about 2 feet above
+>> the monitor....  :-)   sheepish grin
+>>
+>
+>Good than it will be easy for you to take a look into this book and 
+>to find out that Minix is a microkernel. You want to code a 
+>monolithic kernel.
+
+It doesn't matter at all if it is a microkernel or not, if somebody
+just needs a reference implementation; How device drivers work or how
+the '286 memory management needs to be set up is practically the same;
+what matters is that Minix runs in 16-bit protected mode whereas 
+Linux and *BSD don't.
+
+	Lauri
+
+
+
+From bqt at update.uu.se  Fri Feb  1 04:51:41 2002
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Thu, 31 Jan 2002 19:51:41 +0100 (CET)
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <20020131102649.B19170@apple.ukc.ac.uk>
+Message-ID: <Pine.LNX.4.21.0201311947170.29712-100000@Tempo.Update.UU.SE>
+
+On Thu, 31 Jan 2002, P.A.Osborne wrote:
+
+> On Wed, Jan 30, 2002 at 08:50:31PM +0100, Johnny Billquist wrote:
+> > On Wednesday 30 January 2002 10:18, P.A.Osborne wrote:
+> > > Having had a rummage and a chat with acolleague here at
+> > > UKC - it seems that V6 will be easier than V7,  partially because
+> > > of the Lions commentary - but mainly because 286 protected mode
+> > > gives a very similar handling on memory management as the PDP did.
+> > 
+> > What a silly argument. 
+> > V6 and V7 both run on the PDP-11, so the memory
+> > management hardware used by them both are the same.
+> 
+> Having looked through the source of v6 and v7  the comments are shall
+> we say minimalistic to people who are not as familiar with the PDP 
+> architecture as say Ritchie and Thompson - ie ME!   Hence the Lions
+> commentary makes life a darn site easier.
+> 
+> I am not disagreeing with the second point you have made.   However the
+> point is that V7 is a development on from V6 and the memory management 
+> is more complex and thus requires more work.
+
+I thought I only made one point, and that was that the argument for V6
+being easier to port because "286 protected mode gives a very similar
+handling on memory management as the PDP did".
+
+Since V6 and V7 both run on the PDP-11 it can absolutely not be an
+argument for preferring V6 to V7.
+
+Thus I think it is a silly argument.
+
+The rest is purely speculative on my behalf, and I really don't want to
+debate wether V6 or V7 would be better to port.
+I have a proper PDP-11 at home, and in addition, I run RSX, not Unix on
+it. :-)
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From mike at ducky.net  Fri Feb  1 05:04:30 2002
+From: mike at ducky.net (Mike Haertel)
+Date: Thu, 31 Jan 2002 11:04:30 -0800 (PST)
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <20020131102649.B19170@apple.ukc.ac.uk>
+Message-ID: <200201311904.g0VJ4UA41938@ducky.net>
+
+>Having looked through the source of v6 and v7  the comments are shall
+>we say minimalistic to people who are not as familiar with the PDP 
+>architecture as say Ritchie and Thompson - ie ME!   Hence the Lions
+>commentary makes life a darn site easier.
+>
+>I am not disagreeing with the second point you have made.   However the
+>point is that V7 is a development on from V6 and the memory management 
+>is more complex and thus requires more work.
+
+V6 is much more difficult to port.  Reason: it had never been ported.
+
+By contrast V7 source code contains numerous cleanups that were
+made for the Interdata 8/32 port.  (One of those cleanups included
+the deletion of the famous "You are not expected to understand this"
+comment in the kernel--because that C code for context switching 
+could not be made to work on other architectures.  Whereas you can
+port V7 context switch just by rewriting the supporting asm routines.)
+
+Another problem with V6 is that a significant number of the user level
+utility programs were still written in asm.  E.g. cat, strip, sum,
+and even nroff.
+
+You can still use the Lions book pretty well as a reference for
+understanding the V7 kernel.  The code may not be identical but the
+concepts are mostly the same.
+
+
+From grog at lemis.com  Fri Feb  1 10:42:56 2002
+From: grog at lemis.com (Greg Lehey)
+Date: Fri, 1 Feb 2002 11:12:56 +1030
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <200201311845.UAA17935@mole.nixu.fi>
+References: <02013117091301.00697@linux> <200201311845.UAA17935@mole.nixu.fi>
+Message-ID: <20020201111256.A538@wantadilla.lemis.com>
+
+On Thursday, 31 January 2002 at 20:45:03 +0200, Lauri Aarnio wrote:
+> In message <02013117091301.00697 at linux>, Sven Dehmlow writes:
+>> On Thursday 31 January 2002 12:00, P.A.Osborne wrote:
+>>> On Thu, Jan 31, 2002 at 11:18:06AM +0200, Lauri Aarnio wrote:
+>>>> Have you considered using Tanenbaum's Minix as a reference ?
+>>>
+>>> Funnily enough - no.  Which was a tad daft as I have a copy
+>>> of the original Tanenbaum book on a shelf about 2 feet above
+>>> the monitor....  :-)   sheepish grin
+>>>
+>>
+>> Good than it will be easy for you to take a look into this book and
+>> to find out that Minix is a microkernel. You want to code a
+>> monolithic kernel.
+>
+> It doesn't matter at all if it is a microkernel or not, if somebody
+> just needs a reference implementation; How device drivers work or how
+> the '286 memory management needs to be set up is practically the same;
+> what matters is that Minix runs in 16-bit protected mode whereas
+> Linux and *BSD don't.
+
+To repeat what I said earlier: the hardware-dependent code isn't very
+interesting, it's the kernel interfaces.  Minix is not UNIX; BSD is.
+You'll find it easier to adapt a BSD driver to the Sixth or Seventh
+Edition than you will a Minix or Linux driver.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+
+From mirian at cosmic.com  Mon Feb  4 01:21:54 2002
+From: mirian at cosmic.com (Mirian Crzig Lennox)
+Date: Sun, 3 Feb 2002 15:21:54 +0000 (UTC)
+Subject: [TUHS] booting 4.3-Quasijarus on SIMH VAX
+Message-ID: <slrna5qlch.41s.mirian@trantor.cosmic.com>
+
+I've managed to boot the latest 4.3-Quasijarus0a on Bob Supnik's SIMH
+VAX emulator.  SIMH emulates a MicroVAX 3000, which is one of the
+currently supported configurations in 4.3-Quasijarus.
+
+The way I did it was:
+
+First I installed NetBSD 1.5.2/vax on the VAX emulator.  I used this to
+label and newfs the root/usr diskimage for 4.3-Q (it is important to use
+the -O option to newfs so that NetBSD will create a 4.3-style
+filesystem.  (In all cases, I used RA90 disk images, which are nice and
+spacious and which both netbsd and 4.3-Q seem to work well with.)  Then
+I restored the root and usr filesystems from the 4.3-Q distribution onto
+these diskimages, and used the /usr/mdec/installboot command in NetBSD
+to install the bootblock onto the root diskimage.  I created an fstab
+for it, and also commented out everything in rc* having to do with the
+network (there's no network device support in SIMH VAX yet).  I also
+commented out all gettys listed in /etc/ttys except for console.
+
+Speaking of console, it's important to use something which is as close
+to a VT-100 as possible.  I've been using rxvt, which is pretty good.
+
+It seems to be important to disable the RL controller ("set rl disabled"
+in SIMH) when booting the GENERIC kernel.  Otherwise, you get a page
+fault and panic on boot.  (I haven't tracked the cause of this down
+yet).  The GENERIC kernel also expects there to be images on ra0, ra1
+and ra2 (which are rq0, rq1 and rq1 in SIMH, respectively).
+
+I can get the system to come up in multiuser mode, and I can log in as
+root.  Unfortunately, though, after a few seconds, the system locks up
+with 
+
+uda0: lost interrupt
+uba0: reset uda0    
+uda0: DMA burst size set to 4
+ra0: uda0, unit 0, size = 2376153 sectors
+
+Typing ^E to get to the SIMH prompt, and single-stepping the emulator
+shows it is stuck in the idle loop.  At this point, nothing short of
+shutting down SIMH has any effect.
+
+Any thoughts on what might be going wrong?  The complete log is included
+below:
+
+--Mirian
+
+KA655-B V5.3, VMB 2.7
+Performing normal system tests.
+40..39..38..37..36..35..34..33..32..31..30..29..28..27..26..25..
+24..23..22..21..20..19..18..17..16..15..14..13..12..11..10..09..
+08..07..06..05..04..03..
+Tests completed.
+>>>boot dua0:
+(BOOT/R5:0 DUA0)
+
+
+
+  2..
+-DUA0
+  1..0..
+
+loading boot
+
+Boot
+: /vmunix
+327204+103384+130352 start 0x23a8
+4.3 BSD Quasijarus UNIX #0: Sat Oct  2 22:15:38 CDT 1999
+    msokolov at luthien:/usr/src/sys/GENERIC
+real mem  = 67076096
+SYSPTSIZE limits number of buffers to 18
+avail mem = 65240064
+using 18 buffers containing 147456 bytes of memory
+MicroVAX 3000, ucode rev 6
+uda0 at uba0 csr 172150 vec 774, ipl 15
+uda0: version 3 model 3
+uda0: DMA burst size set to 4
+ra0 at uda0 slave 0: mydisk, size = 2376153 sectors
+ra1 at uda0 slave 1: no disk label: ra90, size = 2376153 sectors
+ra2 at uda0 slave 2: no disk label: ra90, size = 2376153 sectors
+ra3 at uda0 slave 3: floppy
+dz0 at uba0 csr 160100 didn't interrupt
+dz1 at uba0 csr 160110 didn't interrupt
+dz2 at uba0 csr 160120 didn't interrupt
+dz3 at uba0 csr 160130 didn't interrupt
+Changing root device to ra0a
+WARNING: todr too small -- CHECK AND RESET THE DATE!
+Automatic reboot in progress...
+Sun Aug 19 18:07:26 CDT 2001
+/dev/ra0a: 429 files, 5504 used, 26548 free (52 frags, 3312 blocks, 0.0% fragmentation)
+/dev/rra0d: 2588 files, 21064 used, 968769 free (785 frags, 120998 blocks, 0..0% fragmentation)
+Sun Aug 19 18:07:58 CDT 2001
+checking quotas: done.
+starting system logger
+preserving editor files
+clearing /tmp
+standard daemons: update cron.
+starting local daemons:.
+Sun Aug 19 18:08:01 CDT 2001
+
+
+4.3 BSD UNIX (kryluk) (console)
+
+login: root
+Last login: Sun Aug 19 17:52:53 on console
+4.3 BSD Quasijarus UNIX #0: Sat Oct  2 22:15:38 CDT 1999
+
+Welcome to UNIX!
+
+erase ^?, kill ^U, intr ^C
+# uda0: lost interrupt
+uba0: reset uda0
+uda0: DMA burst size set to 4
+ra0: uda0, unit 0, size = 2376153 sectors
+
+
+From P.A.Osborne at ukc.ac.uk  Fri Feb  1 20:24:30 2002
+From: P.A.Osborne at ukc.ac.uk (P.A.Osborne)
+Date: Fri, 1 Feb 2002 10:24:30 +0000
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <200201311847.g0VIlHj41858@ducky.net>; from mike@ducky.net on Thu, Jan 31, 2002 at 10:47:17AM -0800
+References: <20020131102843.C19170@apple.ukc.ac.uk> <200201311847.g0VIlHj41858@ducky.net>
+Message-ID: <20020201102430.C22403@apple.ukc.ac.uk>
+
+> >http://hp.openwatcom.org/ftp/zips/    for the binaries
+> >http://hp.openwatcom.org/ftp/docs/    for PDFs of the documentation
+> 
+> Cool!
+
+Thanks.
+
+> Still, no source code => not much use for porting Unix, unless you
+> want to be limited to cross-compiling from DOS.  (Making the Watcom
+> binaries run under v6 Unix seems very unlikely since they probably
+> use fancy 32-bit extenders that know all sorts of esoterica about
+> DOS memory management...)
+
+The reason I want the compiler is that it will generate standalone
+16 bit code on a sensible platform.    GCC doesnt produce 16 bit
+code as far as I am aware - so personally I thought it would be
+amusing (I must be mad) to use tools that run under DOS (well OS/2).
+
+> Someone else on the mailing list suggested using old versions of
+> Tanenbaum's Minix, which has a different set of compilers; again
+> the problem is, no compiler source code last time I looked at Minix.
+> 
+> So far the only viable compiler suggestion seems to be the one
+> from Warner Losh who recommended bcc.  (Or, port the PDP-11 compiler
+> yourself.)
+
+I think we are looking at this from different ends, let me try and explain:
+
+Initially we need to be able to compile the kernel/system so it runs,
+I feel that updating the code to ANSI C and using a modern compiler
+will do the job for that.
+
+Eventually it would be nice to be able to get v6-i86 (or whatever we 
+call it) to boot itself and then be able to compile itself - at that
+point it becomes a complete project.  
+
+It is however essentially two projects:
+1.   rewriting the OS so it boots as i86
+2.   (re)writing a compiler that will run native and be able to compile 
+     the OS on its own platform 
+
+The second part is not essential by any means,  but it could by the 
+purists be considered the ultimate goal.  
+
+Paul
+
+
+
+From P.A.Osborne at ukc.ac.uk  Fri Feb  1 20:27:41 2002
+From: P.A.Osborne at ukc.ac.uk (P.A.Osborne)
+Date: Fri, 1 Feb 2002 10:27:41 +0000
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <Pine.LNX.4.21.0201311947170.29712-100000@Tempo.Update.UU.SE>; from bqt@update.uu.se on Thu, Jan 31, 2002 at 07:51:41PM +0100
+References: <20020131102649.B19170@apple.ukc.ac.uk> <Pine.LNX.4.21.0201311947170.29712-100000@Tempo.Update.UU.SE>
+Message-ID: <20020201102741.D22403@apple.ukc.ac.uk>
+
+On Thu, Jan 31, 2002 at 07:51:41PM +0100, Johnny Billquist wrote:
+> I thought I only made one point, and that was that the argument for V6
+> being easier to port because "286 protected mode gives a very similar
+> handling on memory management as the PDP did".
+
+Rereading the mail - you did.  
+
+Sorry for getting the wrong end of the stick.
+
+> Since V6 and V7 both run on the PDP-11 it can absolutely not be an
+> argument for preferring V6 to V7.
+> 
+> Thus I think it is a silly argument.
+
+OK fair point - I respect your view.
+
+> The rest is purely speculative on my behalf, and I really don't want to
+> debate wether V6 or V7 would be better to port.
+> I have a proper PDP-11 at home, and in addition, I run RSX, not Unix on
+> it. :-)
+
+If I acquired a PDP-11 and wanted to take it home I suspect that the
+missus would not be too pleased.  Hence the PDP emulator and a bizarre
+need to port to x86...
+
+Paul
+
+
+From P.A.Osborne at ukc.ac.uk  Mon Feb  4 19:33:43 2002
+From: P.A.Osborne at ukc.ac.uk (P.A.Osborne)
+Date: Mon, 4 Feb 2002 09:33:43 +0000
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <E16WjYq-0005RL-00@mercury.ukc.ac.uk>; from bwc@borf.com on Fri, Feb 01, 2002 at 02:43:53PM -0500
+References: <E16WjYq-0005RL-00@mercury.ukc.ac.uk>
+Message-ID: <20020204093343.C18315@apple.ukc.ac.uk>
+
+On Fri, Feb 01, 2002 at 02:43:53PM -0500, bwc at borf.com wrote:
+> Regarding the few comments in Ken's kernel--I always found the great--you
+> can get the Lyons' commentary which may be another reason for doing Sixth.
+
+My thoughts exactly funnily enough.
+
+Pondering just this over the weekend has left me wondering whether 
+MiniUnix would be a better initial place to start - as its essentially 
+V6, but without memory management or pipes.   Which as a starting point 
+for the experiment may be an easier place to start.
+
+Thoughts anyone?
+
+
+Also as a sideline,  I don't know how the list owner of this list
+feels about this discussion potentially swamping the list.  If this
+is an issue or other readers of the list are sick and tired of the
+current ruminations please feel free to let me know and I will create
+a mailing list on the list manager here at UKC.  That way those of 
+us who are regarded as sad, mad or just plain losers can take our
+mutterings somewhere else.
+
+:-)
+
+Paul
+
+
+From wkt at minnie.tuhs.org  Mon Feb  4 20:57:28 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Mon, 4 Feb 2002 20:57:28 +1000 (EST)
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <20020204093343.C18315@apple.ukc.ac.uk> from "P.A.Osborne" at "Feb
+ 4, 2002 09:33:43 am"
+Message-ID: <200202041057.g14AvTs78831@minnie.tuhs.org>
+
+In article by P.A.Osborne:
+> [V6 is well described in the Lions Commentary]
+> My thoughts exactly funnily enough.
+
+Well, seeing as though Paul referred to me (see below), I'll throw my
+own $0.02 in. I'd recommend V7 for several reasons:
+
+	- it's more portable
+	- the flavour of C used is more modern
+	- it's got more useful applications (yacc etc.)
+	- you get the stdio library
+	- one last thing, there were some awful race conditions and
+	  bogosities in V6 that just had to be fixed. See the
+	  `50 bugs' tape, and also Dennis' own admission about
+	  6th Edition savu/retu at
+	  http://cm.bell-labs.com/cm/cs/who/dmr/odd.html
+ 
+> Pondering just this over the weekend has left me wondering whether 
+> MiniUnix would be a better initial place to start - as its essentially 
+> V6, but without memory management or pipes.   Which as a starting point 
+> for the experiment may be an easier place to start.
+
+You could port that in a short amount of time, and treat it as a
+warming-up exercise!
+ 
+> Also as a sideline,  I don't know how the list owner of this list
+> feels about this discussion potentially swamping the list.
+
+I think the list needs some traffic :-) It might be worth setting up
+a list for the e-mails between co-developers, but also to have periodic
+status reports and questions sent to this list.
+
+> That way those of 
+> us who are regarded as sad, mad or just plain losers can take our
+> mutterings somewhere else.
+
+Why do you think I set this list up in the first place ;-) ??!
+
+Cheers,
+	Warren
+
+
+From P.A.Osborne at ukc.ac.uk  Mon Feb  4 21:48:28 2002
+From: P.A.Osborne at ukc.ac.uk (P.A.Osborne)
+Date: Mon, 4 Feb 2002 11:48:28 +0000
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <200202041057.g14AvTs78831@minnie.tuhs.org>; from wkt@minnie.tuhs.org on Mon, Feb 04, 2002 at 08:57:28PM +1000
+References: <20020204093343.C18315@apple.ukc.ac.uk> <200202041057.g14AvTs78831@minnie.tuhs.org>
+Message-ID: <20020204114828.F18315@apple.ukc.ac.uk>
+
+On Mon, Feb 04, 2002 at 08:57:28PM +1000, Warren Toomey wrote:
+> Well, seeing as though Paul referred to me (see below), I'll throw my
+> own $0.02 in. I'd recommend V7 for several reasons:
+> 
+> 	- it's more portable
+> 	- the flavour of C used is more modern
+> 	- it's got more useful applications (yacc etc.)
+> 	- you get the stdio library
+> 	- one last thing, there were some awful race conditions and
+> 	  bogosities in V6 that just had to be fixed. See the
+> 	  `50 bugs' tape, and also Dennis' own admission about
+> 	  6th Edition savu/retu at
+> 	  http://cm.bell-labs.com/cm/cs/who/dmr/odd.html
+
+Hmmm.  I am starting (I have to admit) to lean towards V7 as my thoughts
+continue.  I hadn't seen the "50 bugs" tape - although I believe I have
+a copy archived somewhere.  Must take a gander at some point and mount
+it on the emulator.
+
+> > Pondering just this over the weekend has left me wondering whether 
+> > MiniUnix would be a better initial place to start - as its essentially 
+> > V6, but without memory management or pipes.   Which as a starting point 
+> > for the experiment may be an easier place to start.
+> 
+> You could port that in a short amount of time, and treat it as a
+> warming-up exercise!
+
+Thats what I was thinking - it also alows a honing of very rusty skills,
+and also allows building of tools that will be needed on the way.  
+
+Also I dont suppose that anyone has the tarred up source for MiniUnix
+they could mail me?  (It just saves me from extracting it out of
+the tape/disk images the hard way).
+
+One thing I am undecided about though is this:
+
+Should the source be converted to from pre K&R C  to ANSI C for
+the sake of updating the system to run on a newer architecture (though
+not much since the PC was released in 1980 and we only need 16bits).
+
+OR
+
+Should we attempt to provide a new compiler (or preparser) which will
+take the pre K&R C and just compile it as is?
+
+I have to admit the above comments are straight off the top of my head,
+and haven't been considered at any length and indeed should be (over
+several pints of ale).  
+
+> > Also as a sideline,  I don't know how the list owner of this list
+> > feels about this discussion potentially swamping the list.
+> 
+> I think the list needs some traffic :-) It might be worth setting up
+> a list for the e-mails between co-developers, but also to have periodic
+> status reports and questions sent to this list.
+
+OK once we get to that stage (I am still reading up and checking out
+the different architectures at present - so me writing code
+isnt going to happen yet until I at least have been over the printed source
+with a red pen) which could be a while,  I guess either I can run 
+a list here at UKC or maybe Warren would like to put one up at Minnie?
+
+Regards
+
+Paul
+
+
+From MichaelDavidson at pacbell.net  Tue Feb  5 08:12:27 2002
+From: MichaelDavidson at pacbell.net (Michael Davidson)
+Date: Mon, 04 Feb 2002 14:12:27 -0800
+Subject: [TUHS] Re: Porting Unix v6 to i386
+References: <02013117091301.00697@linux> <200201311845.UAA17935@mole.nixu.fi>
+ <20020201111256.A538@wantadilla.lemis.com>
+Message-ID: <3C5F074B.5080802@pacbell.net>
+
+Greg Lehey wrote:
+
+>
+>To repeat what I said earlier: the hardware-dependent code isn't very
+>interesting, it's the kernel interfaces.  Minix is not UNIX; BSD is.
+>You'll find it easier to adapt a BSD driver to the Sixth or Seventh
+>Edition than you will a Minix or Linux driver.
+>
+The bits that are "interesting" or "useful" to any particular person are 
+the bits which
+help to fill in the gaps in their knowledge and are therefore likely to 
+be different for
+different people. 
+
+I am inclined to think that *none* of the other operating systems that 
+have been mentioned
+- Linux, Minix, BSD UNIX etc - are of much use *except* as a reference 
+for how to do
+certain things with the hardware (and they probably aren't even very 
+good for that purpose)
+
+UNIX has come a *long* way since V6 and V7, and a modern BSD device 
+driver with
+support for disk partitioning schemes, bad block mapping and 
+who-knows-what-else is a
+very different beast from the V6 rk11 driver.
+
+To me, at least, the "obvious" way to get a V6 or V7 disk driver working 
+is to do exactly
+what almost everyone used to do when faced with this problem - you start 
+with
+something like the rk11 driver, study it until you understand how it 
+works (or at least
+think that you do ...) and then modify it to talk to your particular 
+piece of hardware.
+
+ From that perspective, what you *really* need is good documentation for 
+the PC
+hardware that you are going to be dealing with - ie interrupt 
+controller, dma controller,
+floppy controller, ide interface etc.
+
+
+
+From norman at nose.cs.utoronto.ca  Tue Feb  5 08:23:31 2002
+From: norman at nose.cs.utoronto.ca (norman at nose.cs.utoronto.ca)
+Date: Mon, 04 Feb 2002 17:23:31 -0500
+Subject: [TUHS] Re: Porting Unix v6 to i386
+Message-ID: <200202042224.IAA18805@guardian-ext.bond.edu.au>
+
+Greg Lehey:
+
+  To repeat what I said earlier: the hardware-dependent code isn't very
+  interesting, it's the kernel interfaces.  Minix is not UNIX; BSD is.
+  You'll find it easier to adapt a BSD driver to the Sixth or Seventh
+  Edition than you will a Minix or Linux driver.
+
+It depends on approach, which depends in turn on intent.
+
+If the intent is to get a system up and running as quickly as possible,
+it would probably be best to shoehorn existing code into the existing
+old UNIX framework, and code from a current BSD system is probably easier
+to do that with than code from Minix (says someone who has looked at
+neither within living memory).
+
+If the intent is to learn about the innards of operating systems and
+how they interact with hardware, or about the specifics of old UNIXes
+or the OS aspects of Intel hardware, it is better to compare different
+descriptions of the hardware (whether abstract descriptions in books
+or pragmatic ones in code), write your own small test programs to be
+run on bare hardware or as special cases within some system that
+already runs there, and eventually write your own code or adopt code
+that you now understand thoroughly.
+
+Which of these you consider fun depends both on your goals and on your
+personal taste.  Both are worthy of respect.
+
+In days long past, when I did a lot of work to make a research version
+of UNIX as robust as possible against hardware flaws (recover if possible,
+at least explain clearly what broke if not) and to port it to a few new
+VAXes of the time, I found the best hardware information to lie in the
+VAX/VMS source fiche.  The UNIXes of the day tended either to crash on
+the slightest hardware error or to ignore the error and just misbehave
+until rebooted.  Stealing code from them would have been easier, but it
+wouldn't have done what I wanted.  Reading the VMS sources and treating
+them as a hardware reference manual did.  Modern UNIXes doubtless do
+better, but the point is that different systems do different things
+with the hardware, and if your goal is understanding and not just
+function, you will gain more by looking in many places.
+
+An irrelevant but fun anecdote:  it could be argued that the resulting
+code recovered too smoothly from errors.  One day I discovered that
+one of our systems was running more slowly than usual, though it was
+otherwise OK; checking back on the paper console log, I discovered
+that several weeks earlier it had had a hard cache error, reported it
+and cheerfully turned off the bad half of the cache, and continued on
+its way.  So I called Field Service and we scheduled a convenient time
+to run diagnostics--yes, the hardware really had failed--and replace
+the bad CPU board; but it would have been better to have noticed
+earlier.  I watched the console logs more carefully after that.
+
+Norman Wilson
+Toronto ON
+
+
+From wkt at minnie.tuhs.org  Tue Feb  5 16:21:57 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Tue, 5 Feb 2002 16:21:57 +1000 (EST)
+Subject: [TUHS] Browse Unix src: the Unix Tree
+Message-ID: <200202050621.g156LwK91534@minnie.tuhs.org>
+
+All,
+	With the freeing up of the Unix source, not only can I open up
+the Unix Archive to anonymous downloads, but I can now make my Unix Tree
+web site available anonymously: http://minnie.tuhs.org/UnixTree/
+
+Here is where you will find unpacked versions of Unix source code, and
+a means of comparing files between different versions.
+
+Cheers,
+	Warren
+
+P.S Thanks to the many people who have set up mirrors of the Unix Archive.
+
+
+From P.A.Osborne at ukc.ac.uk  Tue Feb  5 20:42:44 2002
+From: P.A.Osborne at ukc.ac.uk (P.A.Osborne)
+Date: Tue, 5 Feb 2002 10:42:44 +0000
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <3C5F074B.5080802@pacbell.net>; from MichaelDavidson@pacbell.net on Mon, Feb 04, 2002 at 02:12:27PM -0800
+References: <02013117091301.00697@linux> <200201311845.UAA17935@mole.nixu.fi> <20020201111256.A538@wantadilla.lemis.com> <3C5F074B.5080802@pacbell.net>
+Message-ID: <20020205104244.C25428@apple.ukc.ac.uk>
+
+On Mon, Feb 04, 2002 at 02:12:27PM -0800, Michael Davidson wrote:
+> I am inclined to think that *none* of the other operating systems that 
+> have been mentioned
+> - Linux, Minix, BSD UNIX etc - are of much use *except* as a reference 
+> for how to do
+> certain things with the hardware (and they probably aren't even very 
+> good for that purpose)
+
+
+I feel that Linux and *BSD are possibly overkill for reference as
+a device driver model.  Mainly because they have evolved so far on
+from what Vx is and they were even in the earliest days.  
+
+I DO feel however that the source of a current PC system could be a 
+good example of how to talk to the floppy, keyboard etc etc at the
+lowest level ie performing the read, write etc etc.  So because of
+its small size and the fact that it doesn't have hundreds of people
+editing the code then say MINIX could be very usefull as a "how did
+they read from the floppy drive";  NOT how did they do process 
+scheduling.
+
+So for example taking the source for the RK driver from V6  rk.c:
+If we were say in a PC version to call the floppy drive RK (why not?),
+then the aim would surely be to rewrite the appropriate functions
+so they are specific to the PC floppy drive.
+
+
+> UNIX has come a *long* way since V6 and V7, and a modern BSD device 
+> driver with
+> support for disk partitioning schemes, bad block mapping and 
+> who-knows-what-else is a
+> very different beast from the V6 rk11 driver.
+
+Of course it is.  Otherwise I would still be using a magnet to edit
+the hard disk the hard way.  I don't think for one minute we should
+provide that level of sophistication.  
+
+Instead we should aim at getting a "1970s version of Unix" running on 
+a PC.  So initially  the teletype becomes the screen and the keyboard
+and the disk unit becomes say the floppy drive.   
+
+Later things can be expanded to talk IDE/SCSI whatever - but at that 
+point you are evolving the "1970s version of Unix" on a stage further - 
+which at present is not what I (at least) consider a goal of any 
+potential porting project to be.   It becomes part of a wish list.
+
+At present I would be extremely happy with being able to put a 1.44MB
+floppy disk in a PC and watch the PC boot an early Unix,  provide a shell
+and be able to use a few tools.  
+
+I don't think that initially we should aim for any more than that.
+
+My apologies if I am raining on anyones parade or this mail has gone
+out of context to the one I am replying to,  or is even turning into
+a rant.  Sorry if I am irritating anyone.
+
+> To me, at least, the "obvious" way to get a V6 or V7 disk driver working 
+> is to do exactly
+> what almost everyone used to do when faced with this problem - you start 
+> with
+> something like the rk11 driver, study it until you understand how it 
+> works (or at least
+> think that you do ...) and then modify it to talk to your particular 
+> piece of hardware.
+
+Exactly.  That way you waste less time mucking around.
+
+>  From that perspective, what you *really* need is good documentation for 
+> the PC
+> hardware that you are going to be dealing with - ie interrupt 
+> controller, dma controller,
+> floppy controller, ide interface etc.
+
+The PC Indispensible Hardware Book ISBN: 0201596164   is dead good for this.
+A quick look at Amazon reveals that there is a new edition - which is 
+going to cover hardware we are unlikely to use - so an earlier edition may
+be found fairly cheaply.  Besides I am not forking out for another copy
+just yet - the wifes course books are crippling my bank account as it is.  :-)
+
+Regards
+
+Paul
+
+
+From jss at subatomix.com  Thu Feb  7 02:36:42 2002
+From: jss at subatomix.com (Jeffrey S. Sharp)
+Date: Wed, 6 Feb 2002 10:36:42 -0600 (CST)
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <20020205104244.C25428@apple.ukc.ac.uk>
+Message-ID: <20020206102406.A44142-100000@kenny.subatomix.com>
+
+On Tue, 5 Feb 2002, P.A.Osborne wrote:
+
+> Instead we should aim at getting a "1970s version of Unix" running on a
+> PC.  So initially the teletype becomes the screen and the keyboard and
+> the disk unit becomes say the floppy drive.
+>
+> Later things can be expanded to talk IDE/SCSI whatever - but at that
+> point you are evolving the "1970s version of Unix" on a stage further -
+
+Screen => console tty is obvious.  But why do you insist on the floppy
+drive as the storage medium?
+
+The floppy drive subsystem has drives and a controller with a certain
+programatic interface.  The IDE/SCSI subsystem has drives and a controller
+with a certain programatic interface.  They're the same kind of thing.
+Why is one more guilty of evolving the 1970s version of UNXI?
+
+I think that a floppy might make a good RK03/05 (capacity differences
+aside), but why not implement some RP drives with hard drives of even zip
+drives?
+
+--
+Jeffrey S. Sharp
+jss at subatomix.com
+
+
+
+From P.A.Osborne at ukc.ac.uk  Thu Feb  7 20:23:13 2002
+From: P.A.Osborne at ukc.ac.uk (P.A.Osborne)
+Date: Thu, 7 Feb 2002 10:23:13 +0000
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <20020206102406.A44142-100000@kenny.subatomix.com>; from jss@subatomix.com on Wed, Feb 06, 2002 at 10:36:42AM -0600
+References: <20020205104244.C25428@apple.ukc.ac.uk> <20020206102406.A44142-100000@kenny.subatomix.com>
+Message-ID: <20020207102313.D26210@apple.ukc.ac.uk>
+
+On Wed, Feb 06, 2002 at 10:36:42AM -0600, Jeffrey S. Sharp wrote:
+> > Instead we should aim at getting a "1970s version of Unix" running on a
+> > PC.  So initially the teletype becomes the screen and the keyboard and
+> > the disk unit becomes say the floppy drive.
+> >
+> > Later things can be expanded to talk IDE/SCSI whatever - but at that
+> > point you are evolving the "1970s version of Unix" on a stage further -
+> 
+> Screen => console tty is obvious.  But why do you insist on the floppy
+> drive as the storage medium?
+
+I don't insist on it.  It was just my reckoning to get things going,  that
+a floppy as an RK would be enough.
+
+> The floppy drive subsystem has drives and a controller with a certain
+> programatic interface.  The IDE/SCSI subsystem has drives and a controller
+> with a certain programatic interface.  They're the same kind of thing.
+> Why is one more guilty of evolving the 1970s version of UNXI?
+
+Re-reading that last mail of mine,  I see that my mind kind of meandered.
+So to be honest - I think you could well be right.
+
+> I think that a floppy might make a good RK03/05 (capacity differences
+> aside), but why not implement some RP drives with hard drives of even zip
+> drives?
+
+I don't see any particular reason not to do so.  I was attempting to
+openly straighten my own thoughts out (perhaps thinking out loud is not
+the best plan) and suggest that initially an RK - floppy would be a start,
+and that RP - hard disk could be done later.
+
+Paul
+
+
+From Rahbynz1 at aol.com  Tue Feb 12 04:31:50 2002
+From: Rahbynz1 at aol.com (Rahbynz1 at aol.com)
+Date: Mon, 11 Feb 2002 13:31:50 EST
+Subject: [TUHS] Re: FW: FW: Cancer (DO NOT DELETE A WORD OF THIS)
+Message-ID: <12e.c4f9e0e.29996817@aol.com>
+
+Please read the following:
+http://urbanlegends.about.com/library/blamybruce.htm?terms=make+a+wish
+
+
+
+From jkunz at unixag-kl.fh-kl.de  Thu Feb 14 08:10:38 2002
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Wed, 13 Feb 2002 23:10:38 +0100
+Subject: [TUHS] 4.4BSD-Lite binaries for SPARC and PMAX
+Message-ID: <20020213231038.A172997@krumm.unixag-kl.fh-kl.de>
+
+Hi.
+
+I plan to do a BSD exhibition at the VCFE. Main focus is
+4.3BSD{,-Tahoe,-Reno} on VAXen. But I want to show 4.4BSD-Lite on HP300,
+SPARC and PMAX too. I have the 4.4BSD-Lite HP300 binaries, but nothing
+for SPARC and PMAX. Are there any binaries still around? I don't want to
+struggle with a SPARC and PMAX bootstrap...
+
+Ahh, and 4.2BSD-Reno for HP300 is missing too...
+-- 
+
+
+
+tschüß,
+         Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+From agrier at poofygoof.com  Fri Feb 15 08:30:50 2002
+From: agrier at poofygoof.com (Aaron J. Grier)
+Date: Thu, 14 Feb 2002 14:30:50 -0800
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <no.id>; from P.A.Osborne@ukc.ac.uk on Fri, Feb 01, 2002 at 10:24:30AM +0000
+Message-ID: <20020214143050.J241@goldberry.poofy.goof.com>
+
+On Fri, Feb 01, 2002 at 10:24:30AM +0000, P.A.Osborne wrote:
+
+> The reason I want the compiler is that it will generate standalone 16
+> bit code on a sensible platform.    GCC doesnt produce 16 bit code as
+> far as I am aware - so personally I thought it would be amusing (I
+> must be mad) to use tools that run under DOS (well OS/2).
+
+support for PDP-11 was added to gcc a few months ago.  I don't think
+it's been well tested, but support exists in current versions of
+binutils and gcc.
+
+http://pdp11.nocrew.org/
+
+there's also support for the m68hc11/12 which are 16-bit.
+
+it seems like support for 80{,1,2}86 in gcc should be possible; it just
+hasn't been done yet.
+
+another compiler that might be worth looking at is SDCC
+http://sdcc.sourceforge.net/ which is currently targeted towards 8-bit
+MCUs.
+
+of course bootstrapping via the original K&R compiler would be the
+"classic" way to do it, though.  ;)
+
+-- 
+  Aaron J. Grier | "Not your ordinary poofy goof." | agrier at poofygoof.com
+      "[...] I generally haven't found IDM guys to be very good
+       live acts, most of them just sit down at their laptop and
+       tweak reaktor."  -- Brandon Daniel
+
+
+From johnh at psych.usyd.edu.au  Fri Feb 15 10:07:15 2002
+From: johnh at psych.usyd.edu.au (John Holden)
+Date: Fri, 15 Feb 2002 11:07:15 +1100 (EST)
+Subject: [TUHS] Re: Porting Unix v6 to i386
+Message-ID: <200202150007.LAA29610@psychwarp.psych.usyd.edu.au>
+
+Aaron J. Grier wrote :-
+
+> support for PDP-11 was added to gcc a few months ago. 
+
+It's been around since 1991 as a patch, but it didn't keep up with the newer
+versions of gcc
+
+
+
+From peter.jeremy at alcatel.com.au  Fri Feb 15 13:08:29 2002
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Fri, 15 Feb 2002 14:08:29 +1100
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <20020214143050.J241@goldberry.poofy.goof.com>; from
+ agrier@poofygoof.com on Thu, Feb 14, 2002 at 02:30:50PM -0800
+References: <no.id@cim.alcatel.com.au>
+ <20020214143050.J241@goldberry.poofy.goof.com>
+Message-ID: <20020215140829.G78085@gsmx07.alcatel.com.au>
+
+On 2002-Feb-14 14:30:50 -0800, "Aaron J. Grier" <agrier at poofygoof.com> wrote:
+>support for PDP-11 was added to gcc a few months ago.  I don't think
+>it's been well tested, but support exists in current versions of
+>binutils and gcc.
+>
+>http://pdp11.nocrew.org/
+>
+>there's also support for the m68hc11/12 which are 16-bit.
+
+This is only cross-compilation support.  gcc was never designed to be
+hosted in a 16-bit environment.  An i386 gcc is:
+   text    data     bss     dec     hex filename
+1660236   22836   97104 1780176  1b29d0 /usr/libexec/cc1
+
+Even taking into account the savings with 16-bit int's and pointers,
+you won't get the data segment below 64k - and most of gcc's structures
+are dynamically allocated.
+
+>it seems like support for 80{,1,2}86 in gcc should be possible; it just
+>hasn't been done yet.
+
+Given that i386 is already supported, adding support for 16-bit x86
+would be fairly easy.  The only major work would be handling the
+16-bit addressing modes.
+
+>another compiler that might be worth looking at is SDCC
+>http://sdcc.sourceforge.net/ which is currently targeted towards 8-bit
+>MCUs.
+
+Again, no x86 support and I don't believe the code generation is
+that good.
+
+>of course bootstrapping via the original K&R compiler would be the
+>"classic" way to do it, though.  ;)
+
+The PDP-11 is orthogonal and so PCC doesn't have to worry about
+getting particular operands into particular registers.  I suspect
+that supporting the i386's idiosyncracies would be non-trivial.
+
+Peter
+
+
+From lars at nocrew.org  Fri Feb 15 18:08:03 2002
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: 15 Feb 2002 09:08:03 +0100
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <20020214143050.J241@goldberry.poofy.goof.com>
+References: <20020214143050.J241@goldberry.poofy.goof.com>
+Message-ID: <85lmdvcgm4.fsf@junk.nocrew.org>
+
+"Aaron J. Grier" <agrier at poofygoof.com> writes:
+> support for PDP-11 was added to gcc a few months ago.  I don't think
+> it's been well tested, but support exists in current versions of
+> binutils and gcc.
+
+You are confusing gcc and binutils.  PDP-11 support as added to
+binutils recently.  However, it's not well tested, and is likely
+to need more work to be usable.
+
+John Holden <johnh at psych.usyd.edu.au> writes:
+> > support for PDP-11 was added to gcc a few months ago. 
+> It's been around since 1991 as a patch, but it didn't keep up with
+> the newer versions of gcc
+
+It's still there, and some people are looking after it from time to
+time, but it's probably too broken to be useful.  However, there has
+been some interest in building a complete GNU cross tool chain for the
+PDP-11.
+
+-- 
+Lars Brinkhoff          http://lars.nocrew.org/     Linux, GCC, PDP-10,
+Brinkhoff Consulting    http://www.brinkhoff.se/    HTTP programming
+
+
+From firebug at apk.net  Mon Feb 18 15:30:18 2002
+From: firebug at apk.net (Derrik Walker v2.0)
+Date: Mon, 18 Feb 2002 00:30:18 -0500
+Subject: [TUHS] Legal ramifications putting certain things on my web site?
+Message-ID: <9829AFEA-2430-11D6-A883-003065C1AC88@apk.net>
+
+I've started porting some of the old UNIX programs to Mac OS X.  I've 
+got about 1/2 the games, that should be ok, but I also have other things 
+like crypt and makekey.  I'd like to make these available in binary 
+form, but I don't want the men in black knocking  at my door either...
+
+Any thoughts?
+
+On a side note, I simply can not believe how easy it is to compile this 
+old code under Mac OS X.  for some of it, it's proving easier than 
+porting Linux code ( if you've only known how long I worked on linux's 
+fortune, and the old one just compiled no fuss, no problems ).
+
+Also, if your wandering why ... that's easy, because I can.
+
+Thanks.
+
+- Derrik
+
+firebug at apk.net                                                   
+http://junior.apk.net/~firebug
+---------------------------------------------------------------------------------------------------
+The number of UNIX installations has grown to 10, with more expected.
+         -- The Unix Programmer's Manual, 2nd Edition, June 1972
+
+
+
+From MichaelDavidson at pacbell.net  Mon Feb 18 16:01:07 2002
+From: MichaelDavidson at pacbell.net (Michael Davidson)
+Date: Sun, 17 Feb 2002 22:01:07 -0800
+Subject: [TUHS] Legal ramifications putting certain things on my web site?
+References: <9829AFEA-2430-11D6-A883-003065C1AC88@apk.net>
+Message-ID: <3C7098A3.2C8B2220@pacbell.net>
+
+"Derrik Walker v2.0" wrote:
+> 
+> I've started porting some of the old UNIX programs to Mac OS X.  I've
+> got about 1/2 the games, that should be ok, but I also have other things
+> like crypt and makekey.  I'd like to make these available in binary
+> form, but I don't want the men in black knocking  at my door either...
+> 
+> Any thoughts?
+> 
+
+Assuming that you are in the US you might want to put some kind of
+blanket disclaimer on your web site - something like the one at:
+
+http://gatekeeper.dec.com/hypertext/info/export-controls.html
+
+which essentially says that it is the responsibility of people
+downloading stuff from your site to ensure that they comply with
+any and all export regulations.
+
+I am not a lawyer and have no idea whether this kind of statement
+actually gives you any real protection but obviously someone at
+DEC once thought that it did ...
+
+
+From wkt at minnie.tuhs.org  Mon Feb 18 19:36:54 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Mon, 18 Feb 2002 19:36:54 +1000 (EST)
+Subject: [TUHS] Legal ramifications putting certain things on my web site?
+In-Reply-To: <9829AFEA-2430-11D6-A883-003065C1AC88@apk.net> from "Derrik Walker
+ v2.0" at "Feb 18, 2002 00:30:18 am"
+Message-ID: <200202180936.g1I9ats43685@minnie.tuhs.org>
+
+In article by Derrik Walker v2.0:
+> I've started porting some of the old UNIX programs to Mac OS X.  I've 
+> got about 1/2 the games, that should be ok, but I also have other things 
+> like crypt and makekey.  I'd like to make these available in binary 
+> form, but I don't want the men in black knocking  at my door either...
+> 
+> Any thoughts?
+> 
+> On a side note, I simply can not believe how easy it is to compile this 
+> old code under Mac OS X.  for some of it, it's proving easier than 
+> porting Linux code ( if you've only known how long I worked on linux's 
+> fortune, and the old one just compiled no fuss, no problems ).
+> 
+> Also, if your wandering why ... that's easy, because I can.
+> Thanks.
+> - Derrik
+
+Derrick, if it's code from 32V, 7th Edition or earlier, then you are
+covered by the new Caldera Ancient UNIX license, and you can release
+binaries and/or source. If it's code from any of the BSDs, then you
+are covered by a standard BSD license, except for the bits which
+Caldera can trace as belonging to them 8-)
+
+Cheers,
+	Warren
+
+
+From casanndra2002 at yahoo.com  Tue Feb 19 06:11:37 2002
+From: casanndra2002 at yahoo.com (casanndra2002 at yahoo.com)
+Date: Mon, 18 Feb 2002 21:11:37 +0100
+Subject: [TUHS] I N T E R N E T   I N C O M E  ! ! !
+Message-ID: <200202182014.GAA07728@guardian-ext.bond.edu.au>
+
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20020218/8c61b732/attachment.html>
+
+From rweather at zip.com.au  Tue Feb 19 14:06:28 2002
+From: rweather at zip.com.au (Rhys Weatherley)
+Date: Tue, 19 Feb 2002 14:06:28 +1000
+Subject: [TUHS] v7 upgrade
+Message-ID: <3C71CF44.18D0BDA1@zip.com.au>
+
+Hi,
+
+I've been lurking here for a week or two, reading the
+archives on porting v7 to x86, etc.
+
+On a lark, I downloaded the v7 sources and started to
+"upgrade" them so the userland can build and run on top
+of modern OS kernels such as Linux.  The bulk of libc
+is the same (warts and all), with the "sys" layer replaced
+with modern syscalls.
+
+Perhaps it is a bit "sacrilegious", but I believe it makes
+the code more accessible for experimentation, and it
+should solve the "how do we get a PDP-11 compiler"
+problem: we use the original hosted on top of a modern
+kernel as a cross-compiler.
+
+Check it out and let me know what you think.  Most of
+the libraries have been upgraded, with a handful of the
+simpler command-line utilities.
+
+http://www.southern-storm.com.au/v7upgrade.html
+
+Cheers,
+
+Rhys.
+
+
+
+
+From wkt at minnie.tuhs.org  Tue Feb 19 17:06:58 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Tue, 19 Feb 2002 17:06:58 +1000 (EST)
+Subject: [TUHS] v7 upgrade
+In-Reply-To: <3C71CF44.18D0BDA1@zip.com.au> from Rhys Weatherley at "Feb 19,
+ 2002 02:06:28 pm"
+Message-ID: <200202190706.g1J76wG51094@minnie.tuhs.org>
+
+In article by Rhys Weatherley:
+> On a lark, I downloaded the v7 sources and started to
+> "upgrade" them so the userland can build and run on top
+> of modern OS kernels such as Linux.  The bulk of libc
+> is the same (warts and all), with the "sys" layer replaced
+> with modern syscalls.
+> 
+> Perhaps it is a bit "sacrilegious", but I believe it makes
+> the code more accessible for experimentation, and it
+> should solve the "how do we get a PDP-11 compiler"
+> problem: we use the original hosted on top of a modern
+> kernel as a cross-compiler.
+
+Hi Rhys, just looked at your page. I liked the comment:
+
+  Using these libraries, it is possible to port and run the old v7 command-line
+  utilities. Eventually, it should be possible to run the original PDP-11
+  toolchain as a cross-compiler and hence be able to build an original v7
+  system without needing to use a PDP-11 emulator to run the old binaries.
+
+Strangely enough, I took a slightly different tack than you did to obtain
+the same result. Have a look at Apout at
+ftp://minnie.tuhs.org/pub/PDP-11/Sims/Apout/README
+
+8-)
+	Warren
+
+
+From rweather at zip.com.au  Tue Feb 19 18:01:02 2002
+From: rweather at zip.com.au (Rhys Weatherley)
+Date: Tue, 19 Feb 2002 18:01:02 +1000
+Subject: [TUHS] v7 upgrade
+References: <200202190706.g1J76wG51094@minnie.tuhs.org>
+Message-ID: <3C72063E.CA48D123@zip.com.au>
+
+Warren Toomey wrote:
+
+> Strangely enough, I took a slightly different tack than you did to obtain
+> the same result. Have a look at Apout at
+> ftp://minnie.tuhs.org/pub/PDP-11/Sims/Apout/README
+
+Nice.  Both approaches have their uses.
+
+I'm interested in how upgrading the code will make it more
+accessible to people wishing to study OS design, by enabling
+it to compile natively for modern hardware.  It's difficult to
+"fiddle" with the code when running via emulation.
+
+I forgot to mention in my previous message that I've also
+got the userland compiling with bcc (Bruce's C Compiler),
+outputting 8086 binaries.  This should help those who want
+to port v7 to 8086.
+
+Besides, it's fun to mess with this old code.  I'm quite
+impressed that there's been very few problems upgrading
+the userland to run on 32-bit CPU's.
+
+Cheers,
+
+Rhys.
+
+
+
+
+From mirian at cosmic.com  Wed Feb 20 01:51:46 2002
+From: mirian at cosmic.com (Mirian Crzig Lennox)
+Date: Tue, 19 Feb 2002 15:51:46 +0000 (UTC)
+Subject: [TUHS] v7 upgrade
+References: <3C71CF44.18D0BDA1@zip.com.au>
+Message-ID: <slrna74t4i.ts9.mirian@trantor.cosmic.com>
+
+On Tue, 19 Feb 2002 14:06:28 +1000, Rhys Weatherley <rweather at zip.com.au> wrote:
+>
+>I've been lurking here for a week or two, reading the
+>archives on porting v7 to x86, etc.
+>
+>Perhaps it is a bit "sacrilegious", but I believe it makes
+>the code more accessible for experimentation, and it
+>should solve the "how do we get a PDP-11 compiler"
+>problem: we use the original hosted on top of a modern
+>kernel as a cross-compiler.
+
+I don't believe it is sacrilegious at all.  The triumph of UNIX has
+always been that it's the software that really matters, not the
+hardware.
+
+--Mirian
+
+
+
+From aek at spies.com  Wed Feb 20 07:19:51 2002
+From: aek at spies.com (Al Kossow)
+Date: Tue, 19 Feb 2002 13:19:51 -0800
+Subject: [TUHS] v7 upgrade
+Message-ID: <200202192119.NAA21653@spies.com>
+
+There were ports of PCC to the 8086, Z8000, and 68000 done by
+MIT's Laboratory for Computer Science. This might be a more
+historically correct place to start.
+
+
+From wkt at minnie.tuhs.org  Thu Feb 21 11:10:21 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Thu, 21 Feb 2002 11:10:21 +1000 (EST)
+Subject: [TUHS] 4.4BSD-Lite binaries for SPARC and PMAX
+In-Reply-To: <20020220193912.A195476@MissSophie.unixag-kl.fh-kl.de> from Jochen
+ Kunz at "Feb 20, 2002 07:39:12 pm"
+Message-ID: <200202210110.g1L1AL367254@minnie.tuhs.org>
+
+> Warren, maybe you know a PUPS volunteer in the USA that has appropriate
+> equipment and experience to do this job? This would also reduce shipping
+> efforts and cost for Mr. McKusick. (And risk of damage of the tapes, as
+> it would avoid shipping across the "big pond".)
+
+I've just sent some mail to Tim Shoppa, asking if he would be willing
+to read the tapes for us.
+
+Cheers,
+	Warren
+
+
+From shoppa at trailing-edge.com  Thu Feb 21 12:03:19 2002
+From: shoppa at trailing-edge.com (Tim Shoppa)
+Date: Wed, 20 Feb 2002 21:03:19 -0500 (EST)
+Subject: [TUHS] 4.4BSD-Lite binaries for SPARC and PMAX
+In-Reply-To: <200202210110.g1L1AL367254@minnie.tuhs.org> from "Warren Toomey" at Feb 21, 2002 11:10:21 AM
+Message-ID: <20020221020319.3720318336@mudd.trailing-edge.com>
+
+> > Warren, maybe you know a PUPS volunteer in the USA that has appropriate
+> > equipment and experience to do this job? This would also reduce shipping
+> > efforts and cost for Mr. McKusick. (And risk of damage of the tapes, as
+> > it would avoid shipping across the "big pond".)
+> 
+> I've just sent some mail to Tim Shoppa, asking if he would be willing
+> to read the tapes for us.
+
+I'd be glad to help out.  In in the Washington DC area.
+
+Although I have to admit I haven't been following the mailing list
+lately - what tapes have been found and where are they?
+
+I *think* I've got some 4.4-ish tapes for some other architectures
+already, but I don't think for PMAX or SPARC.
+
+Tim.
+
+
+From jkunz at unixag-kl.fh-kl.de  Thu Feb 21 18:13:42 2002
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Thu, 21 Feb 2002 09:13:42 +0100
+Subject: [TUHS] 4.4BSD-Lite binaries for SPARC and PMAX
+In-Reply-To: <20020221020319.3720318336@mudd.trailing-edge.com>; from shoppa@trailing-edge.com on Thu, Feb 21, 2002 at 03:03:19 CET
+References: <200202210110.g1L1AL367254@minnie.tuhs.org> <20020221020319.3720318336@mudd.trailing-edge.com>
+Message-ID: <20020221091342.R195476@MissSophie.unixag-kl.fh-kl.de>
+
+On 2002.02.21 03:03 Tim Shoppa wrote:
+
+> Although I have to admit I haven't been following the mailing list
+> lately - what tapes have been found and where are they?
+This was a off list discussion with The High Priest of the Daemon, Mr.
+Kirk McKusick himself. He possibly still has the original 4.4BSD SPARC
+and PMAX distribution tapes. He is willing to give them to me to read
+them for transfering the contens into the TUHS archive. Unfortunately my
+9 track tape does only 1600 / 3200 BPI and I assume the tapes are 6250
+BPI... Also if someone in the USA can do the job it would reduce
+shipping cost and efforts for Mr. McKusick, because I am beyond the "big
+pond". 
+
+> I *think* I've got some 4.4-ish tapes for some other architectures
+> already, but I don't think for PMAX or SPARC.
+In the archive is only 4.4BSD-ALPHA with hp300 binarys, so... [beging
+smile] 
+-- 
+
+
+
+tschüß,
+         Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+From jss.tuhs at subatomix.com  Fri Feb 22 00:22:17 2002
+From: jss.tuhs at subatomix.com (Jeffrey S. Sharp)
+Date: Thu, 21 Feb 2002 08:22:17 -0600 (CST)
+Subject: [TUHS] 4.4BSD-Lite binaries for SPARC and PMAX
+In-Reply-To: <20020221091342.R195476@MissSophie.unixag-kl.fh-kl.de>
+Message-ID: <20020221081508.G2203-100000@kenny.subatomix.com>
+
+On Thu, 21 Feb 2002, Jochen Kunz wrote:
+
+> Also if someone in the USA can do the job it would reduce shipping cost
+> and efforts for Mr. McKusick, because I am beyond the "big pond".
+
+Also, be aware that many shippers will not insure international shipments.
+If a UPS worker knows that the contents of a particular truck are not
+insured, how do you think he/she would treat them?
+
+Someone in the USA surely has an appropriate tape drive.  With the list's
+permission, I'd like to ask the members of the classiccmp and SunRescue
+lists for help.  To whom should I direct them?
+
+--
+Jeffrey S. Sharp
+jss at subatomix.com
+
+
+
+From jkunz at unixag-kl.fh-kl.de  Fri Feb 22 01:59:04 2002
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Thu, 21 Feb 2002 16:59:04 +0100
+Subject: [TUHS] 4.4BSD-Lite binaries for SPARC and PMAX
+In-Reply-To: <20020221081508.G2203-100000@kenny.subatomix.com>; from jss.tuhs@subatomix.com on Thu, Feb 21, 2002 at 08:22:17AM -0600
+References: <20020221091342.R195476@MissSophie.unixag-kl.fh-kl.de> <20020221081508.G2203-100000@kenny.subatomix.com>
+Message-ID: <20020221165904.A24287@unixag-kl.fh-kl.de>
+
+On Thu, Feb 21, 2002 at 08:22:17AM -0600, Jeffrey S. Sharp wrote:
+
+> Also, be aware that many shippers will not insure international shipments.
+> If a UPS worker knows that the contents of a particular truck are not
+> insured, how do you think he/she would treat them?
+This is an other reason I thought about, but did not write it down...
+I am sure I can get a 6250 BPI 9 track tape here in Germany, 
+possibly from a friend in my city, but then there is still the 
+shipping problem...
+
+> Someone in the USA surely has an appropriate tape drive.  With the list's
+> permission, I'd like to ask the members of the classiccmp and SunRescue
+> lists for help.  To whom should I direct them?
+Tim Shoppa has already taken this job. Thanks to him and Mr. McKusick 
+for donating their precious time to this project. :-)
+-- 
+
+
+
+tschüß,
+         Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+
+From rweather at zip.com.au  Wed Feb 27 14:39:46 2002
+From: rweather at zip.com.au (Rhys Weatherley)
+Date: Wed, 27 Feb 2002 14:39:46 +1000
+Subject: [TUHS] v7upgrade 0.0.2
+Message-ID: <3C7C6312.B69744A0@zip.com.au>
+
+I've uploaded version 0.0.2 of "v7upgrade" to my Web site:
+
+http://www.southern-storm.com.au/v7upgrade.html
+
+It is now possible to run a stripped-down v7 userland
+environment on top of a Linux/i386 kernel, using the
+v7 Bourne shell.
+
+A good chunk of the "shellutils" programs have now been
+upgraded, including all of your usual favourites (cat, chmod,
+cp, date, dd, diff, echo, kill, ls, mkdir, mv, od, rm, rmdir,
+among others).
+
+Getting the Bourne shell to work on top of Linux was quite
+the adventure, to say the least.  S.R. did some very naughty
+things in that code. :-)
+
+The code also compiles cleanly for the bcc/8086 target,
+although I don't yet have a v7 kernel to run it on yet.
+
+Cheers,
+
+Rhys.
+
+
+
+
+From leypold at informatik.uni-tuebingen.de  Wed Feb 20 09:58:52 2002
+From: leypold at informatik.uni-tuebingen.de (M E Leypold @ labnet)
+Date: Wed, 20 Feb 2002 00:58:52 +0100
+Subject: [TUHS] v7 upgrade
+In-Reply-To: <200202192119.NAA21653@spies.com>
+References: <200202192119.NAA21653@spies.com>
+Message-ID: <15474.59068.85087.897739@hod.void.org>
+
+Al Kossow writes:
+ > 
+ > There were ports of PCC to the 8086, Z8000, and 68000 done by
+ > MIT's Laboratory for Computer Science. This might be a more
+ > historically correct place to start.
+
+
+I alway wondered, wether the source of these ports is available
+somewhere. I bet it isn't.
+
+Regards -- Markus
+
+
+
+

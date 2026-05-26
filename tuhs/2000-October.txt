@@ -1,0 +1,1363 @@
+From frank at wortner.com  Wed Oct  4 06:02:17 2000
+From: frank at wortner.com (Frank Wortner)
+Date: Tue, 3 Oct 2000 16:02:17 -0400 (EDT)
+Subject: [pups] Networking With 2.11 BSD and Begemot Emulator
+Message-ID: <Pine.NEB.4.21.0010031544040.23696-100000@panix2.panix.com>
+
+I've been trying to set up an emulated PDP-11 running 2.11 BSD.  Just for
+the fun,  I'm trying to get the 11 to talk on a LAN.  Unfortunately,  it's
+not working.
+
+My configuration is Begemot P11 Version 2.7 running under
+FreeBSD 4.1.1.  I've booted 2.11,  configured a custom networking kernel,
+installed the unix and netnix images,  changed the IP addresses in
+/etc/hosts to match my LAN,  run mkhosts to rebuild  /etc/hosts.dir and
+/etc/hosts.pag and rebooted.
+
+On the P11 front,  I've built a fake qma.rom file populated with zeros --
+just like the P11 README file said,  made sure that I had a tun driver
+configured in my FreeBSD system,  and started P11.   Then I did an
+
+	ifconfig tun0 host-IP-address emulator-IP-address up
+
+Running ifconfig on the host confirmed that things *seemed* to be OK:
+
+# ifconfig tun0
+tun0: flags=8051<UP,POINTOPOINT,RUNNING,MULTICAST> mtu 1518
+        inet6 fe80::260:8ff:febd:5882%tun0 --> :: prefixlen 64 scopeid 0xb
+        inet host-IP-address --> emulator-IP-address netmask 0xffff0000
+        Opened by PID 32199
+
+The IP addresses are identical in the first three octets,  and differ only
+in the last octet.
+
+Unfortunately,  once I boot 2.11 BSD,  I can't contact the "outside
+world" from the emulator,  nor contact the emulator from the
+outside.  No telnet,  no ftp,  pings just hang.
+
+Everything looks OK from inside:
+
+# ifconfig qe0
+qe0: flags=63<UP,BROADCAST,NOTRAILERS,RUNNING>
+        inet emulator-IP-address netmask ffff0000 broadcast Bcast-IP
+
+What am I missing?
+
+Thanks in advance,
+
+Frank
+ 
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA36466
+	for pups-liszt; Wed, 4 Oct 2000 10:49:43 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From grog at lemis.com  Wed Oct  4 09:47:22 2000
+From: grog at lemis.com (Greg Lehey)
+Date: Wed, 4 Oct 2000 09:17:22 +0930
+Subject: [pups] Networking With 2.11 BSD and Begemot Emulator
+In-Reply-To: <Pine.NEB.4.21.0010031544040.23696-100000@panix2.panix.com>; from frank@wortner.com on Tue, Oct 03, 2000 at 04:02:17PM -0400
+References: <Pine.NEB.4.21.0010031544040.23696-100000@panix2.panix.com>
+Message-ID: <20001004091722.C1760@wantadilla.lemis.com>
+
+On Tuesday,  3 October 2000 at 16:02:17 -0400, Frank Wortner wrote:
+> I've been trying to set up an emulated PDP-11 running 2.11 BSD.  Just for
+> the fun,  I'm trying to get the 11 to talk on a LAN.  Unfortunately,  it's
+> not working.
+
+There's a bug.  It used to work, and *something* changed.  I've been
+meaning to look at it, but it's currently waiting on the tuit queue.
+
+> My configuration is Begemot P11 Version 2.7 running under
+> FreeBSD 4.1.1.  I've booted 2.11,  configured a custom networking kernel,
+> installed the unix and netnix images,  changed the IP addresses in
+> /etc/hosts to match my LAN,  run mkhosts to rebuild  /etc/hosts.dir and
+> /etc/hosts.pag and rebooted.
+>
+> On the P11 front,  I've built a fake qma.rom file populated with zeros --
+> just like the P11 README file said,  made sure that I had a tun driver
+> configured in my FreeBSD system,  and started P11.  
+
+I know the README says this will work, but I haven't been able to get
+it to work that way.  Somewhere I have a real image; I'll see if I can
+find it.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA36700
+	for pups-liszt; Wed, 4 Oct 2000 11:12:10 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Wed Oct  4 10:11:10 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Tue, 3 Oct 2000 17:11:10 -0700 (PDT)
+Subject: [pups] Networking With 2.11 BSD and Begemot Emulator
+Message-ID: <200010040011.RAA09035@moe.2bsd.com>
+
+Hi --
+
+> From: Frank Wortner <frank at wortner.com>
+> 
+> I've been trying to set up an emulated PDP-11 running 2.11 BSD.  Just for
+> the fun,  I'm trying to get the 11 to talk on a LAN.  Unfortunately,  it's...
+> 
+> My configuration is Begemot P11 Version 2.7 running under
+> FreeBSD 4.1.1.  I've booted 2.11,  configured a custom networking kernel,
+> installed the unix and netnix images,  changed the IP addresses in...
+> 
+> 	ifconfig tun0 host-IP-address emulator-IP-address up
+> 
+> # ifconfig tun0
+> tun0: flags=8051<UP,POINTOPOINT,RUNNING,MULTICAST> mtu 1518
+>         inet6 fe80::260:8ff:febd:5882%tun0 --> :: prefixlen 64 scopeid 0xb
+>         inet host-IP-address --> emulator-IP-address netmask 0xffff0000
+>         Opened by PID 32199
+> 
+> The IP addresses are identical in the first three octets,  and differ only
+> in the last octet.
+> 
+> Unfortunately,  once I boot 2.11 BSD,  I can't contact the "outside
+> world" from the emulator,  nor contact the emulator from the
+> outside.  No telnet,  no ftp,  pings just hang.
+> What am I missing?
+
+	You're missing ARP.
+
+	'tun' only works with IP - ARP packets are not IP and do not pass
+	thru the 'if_tun' driver.
+
+	I have (using BSD/OS 4.1's if_tun which is probably the same as
+	FreeBSD's) an emulated 11 going quite nicely.
+
+	What you need to do ON THE 11's SIDE, is populate his arp table with
+	the information about any host on the local LAN that the 11 will
+	want to talk to
+
+	In /etc/netstart on the 11 side just after the 'ifconfig' lines:
+
+	ifconfig qe0 inet netmask $netmask $hostname broadcast $broadcast up -trailers >/dev/console 2>&1
+	# ifconfig sl0 inet 192.254.254.2 192.254.254.1 -arp -trailers >/dev/console 2>&1
+	# slattach /dev/ttyS6 9600
+	# Next line needed when running under the Begemot emulator
+	arp -s 206.139.202.1 "0:0:c:3d:e9:f7" pub
+	arp -s 206.139.202.51 "0:a0:24:78:9c:21" pub
+ 	arp -s 206.139.202.200 "0:90:27:88:64:74" pub
+ 	arp -s 206.139.202.201 "08:0:2b:f:5b:a6" pub
+	arp -s 206.139.202.209 "0:40:5:a4:72:27" pub
+	ifconfig lo0 inet localhost up -trailers	>/dev/console 2>&1
+
+	Typically you only need the ARP info for the hosting system and
+	the default gateway.   
+
+	Oh, there's a bug in P11 that after 25 days of calendar up time the
+	clock on the 11 basically stops ticking.   I've a fix I came up with
+	(and submitted to the author) but it'll be a couple weeks until I
+	know for sure if it's the right fix (32bit overflow in a calculation).
+
+	Steven Schultz
+	sms at to.gd-es.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id MAA37363
+	for pups-liszt; Wed, 4 Oct 2000 12:35:16 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From grog at lemis.com  Wed Oct  4 11:29:11 2000
+From: grog at lemis.com (Greg Lehey)
+Date: Wed, 4 Oct 2000 10:59:11 +0930
+Subject: [pups] Networking With 2.11 BSD and Begemot Emulator
+In-Reply-To: <200010040011.RAA09035@moe.2bsd.com>; from sms@moe.2bsd.com on Tue, Oct 03, 2000 at 05:11:10PM -0700
+References: <200010040011.RAA09035@moe.2bsd.com>
+Message-ID: <20001004105911.H7292@wantadilla.lemis.com>
+
+On Tuesday,  3 October 2000 at 17:11:10 -0700, Steven M. Schultz wrote:
+> Hi --
+>
+>> From: Frank Wortner <frank at wortner.com>
+>>
+>> I've been trying to set up an emulated PDP-11 running 2.11 BSD.  Just for
+>> the fun,  I'm trying to get the 11 to talk on a LAN.  Unfortunately,  it's...
+>>
+>> My configuration is Begemot P11 Version 2.7 running under
+>> FreeBSD 4.1.1.  I've booted 2.11,  configured a custom networking kernel,
+>> installed the unix and netnix images,  changed the IP addresses in...
+>>
+>> 	ifconfig tun0 host-IP-address emulator-IP-address up
+>>
+>> # ifconfig tun0
+>> tun0: flags=8051<UP,POINTOPOINT,RUNNING,MULTICAST> mtu 1518
+>>         inet6 fe80::260:8ff:febd:5882%tun0 --> :: prefixlen 64 scopeid 0xb
+>>         inet host-IP-address --> emulator-IP-address netmask 0xffff0000
+>>         Opened by PID 32199
+>>
+>> The IP addresses are identical in the first three octets,  and differ only
+>> in the last octet.
+>>
+>> Unfortunately,  once I boot 2.11 BSD,  I can't contact the "outside
+>> world" from the emulator,  nor contact the emulator from the
+>> outside.  No telnet,  no ftp,  pings just hang.
+>> What am I missing?
+>
+> 	You're missing ARP.
+>
+> 	'tun' only works with IP - ARP packets are not IP and do not pass
+> 	thru the 'if_tun' driver.
+>
+> 	I have (using BSD/OS 4.1's if_tun which is probably the same as
+> 	FreeBSD's) an emulated 11 going quite nicely.
+>
+> 	What you need to do ON THE 11's SIDE, is populate his arp table with
+> 	the information about any host on the local LAN that the 11 will
+> 	want to talk to
+
+I didn't need to do this when I had the emulated net running.  I did
+set the netmask to 255.255.255.255, though, and put the default route
+through that interface.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id NAA37613
+	for pups-liszt; Wed, 4 Oct 2000 13:10:32 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Wed Oct  4 11:59:45 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Tue, 3 Oct 2000 18:59:45 -0700 (PDT)
+Subject: [pups] Networking With 2.11 BSD and Begemot Emulator
+Message-ID: <200010040159.SAA09659@moe.2bsd.com>
+
+> From: Greg Lehey <grog at lemis.com>
+> 
+> I didn't need to do this when I had the emulated net running.  I did
+> set the netmask to 255.255.255.255, though, and put the default route
+> through that interface.
+
+	I thought you mentioned using the 'tap' driver rather than 'tun'
+	at one time.   If my memory hasn't failed me that would explain
+	why it worked since 'tap' passes ARP traffic.
+
+	The missing piece I forgot earlier was on the hosting machine's
+	side to publish an ARP entry for the simulated 11.
+
+	Just after ifconfig'ing tun0 up use the hosting system's mac address:
+
+ifconfig tun0 206.139.202.200 206.139.202.203 up
+arp -s shemp 0:90:27:88:64:74 pub
+
+	I'm not sure how ARP can be made to work thru the 'tun' device.
+	Without ARP on an ethernet I am not aware of any 'routing' that 
+	can fill in the mac addresses in the ethernet packets.   
+
+	Try pub'ing the arp entries and see if that works.   Might try 'tap'
+	instead of 'tun' if you're looking for something else to try.
+
+	Steven Schultz
+
+
+From frank at wortner.com  Thu Oct  5 01:57:02 2000
+From: frank at wortner.com (Frank Wortner)
+Date: Wed, 4 Oct 2000 11:57:02 -0400 (EDT)
+Subject: [pups] Networking With 2.11 BSD and Begemot Emulator
+In-Reply-To: <200010041528.IAA19574@moe.2bsd.com>
+Message-ID: <Pine.NEB.4.21.0010041152430.26565-100000@panix6.panix.com>
+
+Just to let everyone know,  Stephen Schultz was right:  I needed arp table
+entries as he described.`
+
+Thanks to him and Greg Lehey for their useful replies.
+
+Frank
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA44035
+	for pups-liszt; Thu, 5 Oct 2000 08:00:59 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From frank at wortner.com  Thu Oct  5 04:37:09 2000
+From: frank at wortner.com (Frank Wortner)
+Date: Wed, 4 Oct 2000 14:37:09 -0400 (EDT)
+Subject: [pups] Default P11 Emulator Clock Rate
+Message-ID: <Pine.NEB.4.21.0010041418140.20682-100000@panix3.panix.com>
+
+This is just an FYI for anyone playing with the Begemot P11 emulator ...
+
+The default clock rate on P11 is 50 Hz.  While this corresponds to AC line
+frequency in many parts of the world,  it is not correct for the
+U.S.,  where 60 Hz is the norm.  Since PDP-11 Unix was developed in the
+U.S.,  the bootable distributions probably assume a 60 Hz clock
+also.  When the software and "hardware" disagree on clock rates,  problems
+happen.
+
+My emulated 11 had difficulties keeping accurate time until I discovered
+the 50 Hz clock rate.  After I changed it to 60,  the emulator's time was
+remarkably accurate!
+
+If you want to change the default clock rate,  you can do so in the source
+(look for the symbol "clock_rate" in "main.c"),  or you can just add
+
+	set clock_rate 60
+
+into your p11conf file.  This will override the default in the emulator
+program.
+
+Have fun -- I certainly am! :-)
+
+Frank
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA44015
+	for pups-liszt; Thu, 5 Oct 2000 08:00:13 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Thu Oct  5 01:24:07 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Wed, 4 Oct 2000 08:24:07 -0700 (PDT)
+Subject: [pups] Networking With 2.11 BSD and Begemot Emulator
+Message-ID: <200010041524.IAA19559@moe.2bsd.com>
+
+Hi -
+
+> From: Greg Lehey <grog at lemis.com>
+> No, that wasn't me.  FreeBSD doesn't have a tap driver.  Do you mean
+> Frank?
+
+	Sure it does.  The FreeBSD 4.1.1 release notes say so  ;)
+	Before that the 'if_tap.c' module was available (for some time)
+	as a download that could be retrieved from the author's site.
+
+> > 	The missing piece I forgot earlier was on the hosting machine's
+> > 	side to publish an ARP entry for the simulated 11.
+> 
+> I'm pretty sure we weren't using arp at all.  tun is a point-to-point
+> interface.
+
+	The reason for publishing an ARP entry on the hosting system is
+	so that other systems on the LAN know how to get to the simulated
+	11 via the P11 hosting system.   If the hosting system doesn't
+	publish an ARP entry the gateway, etc won't know to send the packets
+	to the machine running P11.
+
+> > 	I'm not sure how ARP can be made to work thru the 'tun' device.
+> 
+> I don't think it can.  I think Harti used some magic there.
+
+	I know it can't - I asked him about it :)   That's when I first 
+	discovered that nothing was able to communicate with the simulated
+	11 - the 11 will not send anything unless it's able to get a 
+	response to its ARP request.   On the hosting side it would be 
+	possible perhaps to use a "interface route" but 2.11 can not do that
+	and will block waiting for an ARPREPLY.
+
+	Steven
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id JAA44583
+	for pups-liszt; Thu, 5 Oct 2000 09:38:50 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Thu Oct  5 08:27:58 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Wed, 4 Oct 2000 15:27:58 -0700 (PDT)
+Subject: [pups] Default P11 Emulator Clock Rate
+Message-ID: <200010042227.PAA21951@moe.2bsd.com>
+
+Hi -
+
+> From: Frank Wortner <frank at wortner.com>
+> The default clock rate on P11 is 50 Hz.  While this corresponds to AC line
+> frequency in many parts of the world,  it is not correct for the
+> U.S.,  where 60 Hz is the norm.  Since PDP-11 Unix was developed in the
+> U.S.,  the bootable distributions probably assume a 60 Hz clock
+
+	Yes, the bootable 2.11 distribution assumes a 60Hz clock.  That is
+	easily changed though for folks that live in 50Hz areas.  Edit the
+	kernel config file and change LINEHZ to 50.  The rest of the system 
+	has been changed to ask the kernel for the clockrate so there shouldn't
+	be any compiled in assumptions outside the kernel (if I overlooked
+	any let me know and I'll fix it).
+
+> My emulated 11 had difficulties keeping accurate time until I discovered
+> the 50 Hz clock rate.  After I changed it to 60,  the emulator's time was
+> remarkably accurate!
+
+	Indeed it is accurate.   Earlier versions of P11 would lose time
+	very rapidly if the PDP-11 was "busy" - but the latest version of
+	P11 is fantastic at keeping time.  If you run 'ntpd' on the 11 the
+	time stays even closer to "real".
+
+	Steven Schultz
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id SAA46919
+	for pups-liszt; Thu, 5 Oct 2000 18:03:16 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From grog at lemis.com  Thu Oct  5 13:03:25 2000
+From: grog at lemis.com (Greg Lehey)
+Date: Thu, 5 Oct 2000 12:33:25 +0930
+Subject: [pups] Networking With 2.11 BSD and Begemot Emulator
+In-Reply-To: <200010041524.IAA19559@moe.2bsd.com>; from sms@moe.2bsd.com on Wed, Oct 04, 2000 at 08:24:07AM -0700
+References: <200010041524.IAA19559@moe.2bsd.com>
+Message-ID: <20001005123324.C12234@wantadilla.lemis.com>
+
+On Wednesday,  4 October 2000 at  8:24:07 -0700, Steven M. Schultz wrote:
+> Hi -
+>
+>> From: Greg Lehey <grog at lemis.com>
+>> No, that wasn't me.  FreeBSD doesn't have a tap driver.  Do you mean
+>> Frank?
+>
+> 	Sure it does.  The FreeBSD 4.1.1 release notes say so  ;)
+> 	Before that the 'if_tap.c' module was available (for some time)
+> 	as a download that could be retrieved from the author's site.
+
+I stand corrected:
+
+> revision 1.1
+> date: 2000/07/20 17:01:10;  author: nsayer;  state: Exp;
+> Add the tap driver.
+> 
+> The tap driver is used to present a virtual Ethernet interface to the
+> system. Packets presented by the network stack to the interface are
+> made available to a character device in /dev. With tap and the bridge
+> code, you can make remote bridge configurations where both sides of
+> the bridge are separated by userland daemons.
+> 
+> This driver also has a special naming hack to allow it to serve a similar
+> purpose to the vmware port.
+> 
+> Submitted by:   myevmenkin at att.com, vsilyaev at mindspring.com
+
+Ah well, I still haven't used it.
+
+>>> 	The missing piece I forgot earlier was on the hosting machine's
+>>> 	side to publish an ARP entry for the simulated 11.
+>>
+>> I'm pretty sure we weren't using arp at all.  tun is a point-to-point
+>> interface.
+>
+> 	The reason for publishing an ARP entry on the hosting system is
+> 	so that other systems on the LAN know how to get to the simulated
+> 	11 via the P11 hosting system.   If the hosting system doesn't
+> 	publish an ARP entry the gateway, etc won't know to send the packets
+> 	to the machine running P11.
+
+I did that with a static route entry.
+
+>>> 	I'm not sure how ARP can be made to work thru the 'tun' device.
+>>
+>> I don't think it can.  I think Harti used some magic there.
+>
+> 	I know it can't - I asked him about it :)   That's when I first
+> 	discovered that nothing was able to communicate with the simulated
+> 	11 - the 11 will not send anything unless it's able to get a
+> 	response to its ARP request.   On the hosting side it would be
+> 	possible perhaps to use a "interface route" but 2.11 can not do that
+> 	and will block waiting for an ARPREPLY.
+
+As I say, it's not that simple.  I used it without trouble for years.
+Recently something broke, and I suspect it trashed my root file
+system, and I haven't had time to go back and fix it.  Since others
+have the rest running, it's obviously nothing fundamental.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+
+From sms at moe.2bsd.com  Fri Oct  6 02:42:05 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Thu, 5 Oct 2000 09:42:05 -0700 (PDT)
+Subject: [pups] Networking With 2.11 BSD and Begemot Emulator
+Message-ID: <200010051642.JAA03467@moe.2bsd.com>
+
+Hi -
+
+> From: Greg Lehey <grog at lemis.com>
+> > revision 1.1
+> > date: 2000/07/20 17:01:10;  author: nsayer;  state: Exp;
+> > Add the tap driver.
+> 
+> Ah well, I still haven't used it.
+
+	Neither have I ;)   I thought (for 30 seconds or less) about 
+	porting it to BSD/OS - it's not that big and didn't appear to be
+	overly tricky.
+
+	Only reason I knew about 'tap' was that P11 has support for it and
+	a pointer where to fetch 'tap' from.
+
+> > 	The reason for publishing an ARP entry on the hosting system is...
+> 
+> I did that with a static route entry.
+
+	Publishing an ARP entry has the benefit of not needing to wander
+	around to all the systems on the LAN (I've several) and add a static 
+	route.   In my case I don't own/run the local router so I couldn't 
+	add a static route if I wanted to.   Having the host system 
+	'arp ... pub' works was the simplest way to deal with the situation.
+
+> As I say, it's not that simple.  I used it without trouble for years.
+
+	Well, i'd have to see it working or have it explained in a bit more
+	detail.  Having been thru the DEQNA driver and IP stack in 2.11 I
+	can't see how an 11 will communicate with anything over an ethernet
+	if it can't perform the IP<->ethernet address mapping.
+
+> Recently something broke, and I suspect it trashed my root file
+> system, and I haven't had time to go back and fix it.  Since others
+
+	Ouch!  On the 11 side?  Or on the hosting system's side?
+
+	Steven
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id QAA53881
+	for pups-liszt; Fri, 6 Oct 2000 16:12:11 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From cube1 at home.com  Fri Oct  6 12:25:17 2000
+From: cube1 at home.com (Jay Jaeger)
+Date: Thu, 05 Oct 2000 21:25:17 -0500
+Subject: [pups] Re: UNIX Heritage Society Digest V1 #137
+In-Reply-To: <200009241945.GAA72267@minnie.cs.adfa.edu.au>
+Message-ID: <4.3.2.7.2.20001005212349.06086580@cirithi>
+
+I had to replace the RS 423 drives on my PDP-11/24 and in the connected 
+VT-100 terminal after a problem on a PC clobbered the 11/24 console ports 
+which in turn clobbered the VT-100 some time ago.
+
+---	
+Jay R. Jaeger					The Computer Collection
+cube1 at home.com			visit http://members.home.net/thecomputercollection
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id QAA53897
+	for pups-liszt; Fri, 6 Oct 2000 16:14:08 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From grog at lemis.com  Fri Oct  6 13:35:03 2000
+From: grog at lemis.com (Greg Lehey)
+Date: Fri, 6 Oct 2000 13:05:03 +0930
+Subject: [pups] Networking With 2.11 BSD and Begemot Emulator
+In-Reply-To: <200010051642.JAA03467@moe.2bsd.com>; from sms@moe.2bsd.com on Thu, Oct 05, 2000 at 09:42:05AM -0700
+References: <200010051642.JAA03467@moe.2bsd.com>
+Message-ID: <20001006130503.A21828@wantadilla.lemis.com>
+
+On Thursday,  5 October 2000 at  9:42:05 -0700, Steven M. Schultz wrote:
+>>> 	The reason for publishing an ARP entry on the hosting system is...
+>> I did that with a static route entry.
+>
+> 	Publishing an ARP entry has the benefit of not needing to wander
+> 	around to all the systems on the LAN (I've several) and add a static
+> 	route.   In my case I don't own/run the local router so I couldn't
+> 	add a static route if I wanted to.   Having the host system
+> 	'arp ... pub' works was the simplest way to deal with the situation.
+>
+>> As I say, it's not that simple.  I used it without trouble for years.
+>
+> 	Well, i'd have to see it working or have it explained in a bit more
+> 	detail.  Having been thru the DEQNA driver and IP stack in 2.11 I
+> 	can't see how an 11 will communicate with anything over an ethernet
+> 	if it can't perform the IP<->ethernet address mapping.
+
+I don't know the details either, unfortunately.  I really need to find
+some time to get the thing running again.
+
+>> Recently something broke, and I suspect it trashed my root file
+>> system, and I haven't had time to go back and fix it.  Since others
+>
+> 	Ouch!  On the 11 side?  Or on the hosting system's side?
+
+On the 11 side.  I'm not sure what happened, but it looks like it.
+It's not a big deal, since I have backups somewhere.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+
+From pino at dohd.org  Mon Oct  9 23:39:36 2000
+From: pino at dohd.org (Martijn van Buul)
+Date: Mon, 9 Oct 2000 15:39:36 +0200
+Subject: [pups] How to arrange bootable media for 2.11BSD?
+Message-ID: <20001009153936.A18313@mud.stack.nl>
+
+Ahoy!
+
+I've about given up hope to create a 2.11 boottape myself[1], so I'm wondering
+what to do next. I have this MicroPDP, with a DELQA network card, a PC
+5.25" diskdrive shoe-horned into working as RX33 and a TK50 tape drive.
+If it helps: I've managed to get Kermit running on the PDP, but I haven't
+figured out if it is possible to "kermit" to the tapedrive directly. Probably
+not.
+
+Any hints?
+
+Kind regards,
+
+Martijn.
+
+[1] My hopes have vaporized into thin air by two "not so overly bright" 
+    persons. One of them decided that the TKZ-50 drive we (the local
+    user group) had should be split into controllerboard and actual
+    drive (and stored seperately), the other one didn't recognize
+    the TKZ50 controller, couldn't figure out what it was used for, and
+    threw it away... Some people deserve to be shot.
+-- 
+    Martijn van Buul -  Pino at dohd.org - http://www.stack.nl/~martijnb/
+	 Geek code: G--  - Visit OuterSpace: mud.stack.nl 3333
+   Kees J. Bot: The sum of CPU power and user brain power is a constant.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id JAA80663
+	for pups-liszt; Tue, 10 Oct 2000 09:47:32 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From bqt at Update.UU.SE  Tue Oct 10 08:46:18 2000
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Tue, 10 Oct 2000 00:46:18 +0200 (MET DST)
+Subject: [pups] How to arrange bootable media for 2.11BSD?
+In-Reply-To: <20001009153936.A18313@mud.stack.nl>
+Message-ID: <Pine.VUL.3.93.1001010004455.25207B-100000@Zeke.Update.UU.SE>
+
+On Mon, 9 Oct 2000, Martijn van Buul wrote:
+
+> Ahoy!
+> 
+> I've about given up hope to create a 2.11 boottape myself[1], so I'm wondering
+> what to do next. I have this MicroPDP, with a DELQA network card, a PC
+> 5.25" diskdrive shoe-horned into working as RX33 and a TK50 tape drive.
+> If it helps: I've managed to get Kermit running on the PDP, but I haven't
+> figured out if it is possible to "kermit" to the tapedrive directly. Probably
+> not.
+> 
+> Any hints?
+
+Perhaps you should start by telling what you have running on the PDP-11
+right now? Both software and hardware wise.
+
+> [1] My hopes have vaporized into thin air by two "not so overly bright" 
+>     persons. One of them decided that the TKZ-50 drive we (the local
+>     user group) had should be split into controllerboard and actual
+>     drive (and stored seperately), the other one didn't recognize
+>     the TKZ50 controller, couldn't figure out what it was used for, and
+>     threw it away... Some people deserve to be shot.
+
+Wow. Impressive stupidity!
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id PAA82929
+	for pups-liszt; Tue, 10 Oct 2000 15:40:22 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Tue Oct 10 14:36:03 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Mon, 9 Oct 2000 21:36:03 -0700 (PDT)
+Subject: [pups] How to arrange bootable media for 2.11BSD?
+Message-ID: <200010100436.VAA01412@moe.2bsd.com>
+
+Greetings -
+
+> From: Martijn van Buul <pino at dohd.org>
+> I've about given up hope to create a 2.11 boottape myself[1], so I'm wondering
+> what to do next. I have this MicroPDP, with a DELQA network card, a PC
+
+	It is an 11/53 or better (73, 83, 93)?   There were numerous "MicroPDP"
+	systems made but some of them were 11/23 or 23+ and those will not
+	run 2.11BSD
+
+> 5.25" diskdrive shoe-horned into working as RX33 and a TK50 tape drive.
+> If it helps: I've managed to get Kermit running on the PDP, but I haven't
+> figured out if it is possible to "kermit" to the tapedrive directly. Probably
+> not.
+
+	What OS did you manage to get Kermit running under?   I do not believe
+	Kermit itself can handle the multiple block sizes used when writing
+	the files that make up the "boot tape".   Do you have any development
+	facilities on the currently running system?   If so then it might be
+	possible to write a program to create a tape from the files brought
+	over via kermit.
+
+> Any hints?
+
+	First shoot the individuals mentioned in [1]? ;)
+
+	If you've a PC with a 5.25" drive and the ability to do image copies
+	to it ('dd' on a *BSD* or Linux system) that might be one way to
+	get 2.11 over to the MicroPDP.    A single RX33 can easily hold the
+	standalone programs (boot, disklabel, restore, mkfs, icheck) and
+	it only takes 3 or 4 RX33 disks to hold a root filesystem dump.
+	The bad part is that the GENERIC kernel lacks networking due to
+	space contraints.   Someone would have to create a custom kernel+
+	networking root filesystem and create 3 or 4 RX33 images to be dd'd
+	out to floppies.    Then, once a networking based root filesystem
+	was loaded it should be possible to get pull the remaining data
+	over the network with a "rsh ... | tar ..." command.
+
+	Much depends on the ability to create floppy disks from images on a PC 
+	that can be read on the RX33 which the PDP-11 has.  If that works
+	then the rest will be timeconsuming (and the install instructions
+	will of course be heavily modified ;)) but at least possible.
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+
+From pino at dohd.org  Wed Oct 11 04:36:31 2000
+From: pino at dohd.org (Martijn van Buul)
+Date: Tue, 10 Oct 2000 20:36:31 +0200
+Subject: [pups] How to arrange bootable media for 2.11BSD?
+In-Reply-To: <200010100436.VAA01412@moe.2bsd.com>; from sms@moe.2bsd.com on Mon, Oct 09, 2000 at 09:36:03PM -0700
+References: <200010100436.VAA01412@moe.2bsd.com>
+Message-ID: <20001010203631.A29606@mud.stack.nl>
+
+*whoops*. 
+
+I've been mailing personal replies, instead of replies to the list. Too much
+relying on procmail, I suppose.
+
+Steven M. Schultz wrote:
+ 
+> 	It is an 11/53 or better (73, 83, 93)?   There were numerous "MicroPDP"
+> 	systems made but some of them were 11/23 or 23+ and those will not
+> 	run 2.11BSD
+
+It's a 11/53+ (aka: 1.5 MB RAM), which *should* be able to run 2.11BSD.
+
+ 
+> 	What OS did you manage to get Kermit running under?
+
+Micro/RSX
+
+>	I do not believe Kermit itself can handle the multiple block sizes used
+>	when writing the files that make up the "boot tape".   Do you have any
+>	development facilities on the currently running system?   If so then it
+>	might be possible to write a program to create a tape from the files
+>	brought over via kermit.
+
+There is a Macro-assembler, and reportedly a PASCAL compiler. However, my
+Micro/RSX skills (let alone -programming skills) should be considered 
+rudimentary - the only resource I have is the on-line helpfile (which isn't
+very clear every now and then).
+
+> 	If you've a PC with a 5.25" drive and the ability to do image copies
+> 	to it ('dd' on a *BSD* or Linux system) that might be one way to
+> 	get 2.11 over to the MicroPDP.    A single RX33 can easily hold the
+> 	standalone programs (boot, disklabel, restore, mkfs, icheck) and
+> 	it only takes 3 or 4 RX33 disks to hold a root filesystem dump.
+
+The "RX33" is working (that's how I was able to low-level format two
+MFM disks, and how I got Kermit running). And yes, I have a Minix-VMD box
+with a 5.25" HD drive.
+
+For the sake of completeness, I'll include the currently available 
+hardware:
+
+KJD11-D/S   (processor), DZQ11, TK50, RQDX3 with one RD32A, a third-party
+21MB MFM disk (ST225, RD33? 31? Something like that), a second 21MB
+MFM disk standing by (A microscribe of some sort), a 5.25" PC floppy 
+drive shoe-horned into a RX33, and a DELQA card.
+
+(Well, that's what I have installed right now. I do have some other cards,
+ including a DRV11-J "Hi-density parallell line unit" and some strange
+ VG-Electronics cards (which they claim are specific to surface analysis))
+
+And a spare TK50 mechanic..
+
+-- 
+    Martijn van Buul -  Pino at dohd.org - http://www.stack.nl/~martijnb/
+	 Geek code: G--  - Visit OuterSpace: mud.stack.nl 3333
+   Kees J. Bot: The sum of CPU power and user brain power is a constant.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id JAA89483
+	for pups-liszt; Wed, 11 Oct 2000 09:01:31 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From wkb at freebie.demon.nl  Wed Oct 11 07:20:11 2000
+From: wkb at freebie.demon.nl (Wilko Bulte)
+Date: Tue, 10 Oct 2000 23:20:11 +0200
+Subject: [pups] How to arrange bootable media for 2.11BSD?
+In-Reply-To: <20001009153936.A18313@mud.stack.nl>; from pino@dohd.org on Mon, Oct 09, 2000 at 03:39:36PM +0200
+References: <20001009153936.A18313@mud.stack.nl>
+Message-ID: <20001010232011.A8918@freebie.demon.nl>
+
+On Mon, Oct 09, 2000 at 03:39:36PM +0200, Martijn van Buul wrote:
+
+> I've about given up hope to create a 2.11 boottape myself[1], so I'm wondering
+> what to do next. I have this MicroPDP, with a DELQA network card, a PC
+> 5.25" diskdrive shoe-horned into working as RX33 and a TK50 tape drive.
+> If it helps: I've managed to get Kermit running on the PDP, but I haven't
+> figured out if it is possible to "kermit" to the tapedrive directly. Probably
+> not.
+> 
+> Any hints?
+
+Well... you can borrow one of my TK50s with 2.11 on it ;-)
+
+-- 
+Wilko Bulte  	 
+wilko at freebsd.org 			Arnhem, the Netherlands
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id JAA89462
+	for pups-liszt; Wed, 11 Oct 2000 09:00:59 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From mark at cs.ualberta.ca  Wed Oct 11 00:30:24 2000
+From: mark at cs.ualberta.ca (Mark Green)
+Date: Tue, 10 Oct 2000 08:30:24 -0600 (MDT)
+Subject: [pups] How to arrange bootable media for 2.11BSD?
+In-Reply-To: <20001009153936.A18313@mud.stack.nl> from Martijn van Buul at "Oct
+ 9, 2000 03:39:36 pm"
+Message-ID: <20001010143026Z433793-12555+100@scapa.cs.ualberta.ca>
+
+> Ahoy!
+> 
+> I've about given up hope to create a 2.11 boottape myself[1], so I'm wondering
+> what to do next. I have this MicroPDP, with a DELQA network card, a PC
+> 5.25" diskdrive shoe-horned into working as RX33 and a TK50 tape drive.
+> If it helps: I've managed to get Kermit running on the PDP, but I haven't
+> figured out if it is possible to "kermit" to the tapedrive directly. Probably
+> not.
+> 
+> Any hints?
+
+If you need a TK50 with 2.11 on it I could produce one for you (provided
+that you have jumped through all the license hoops).  The only sticky
+point might be shipping, where are you located?  I'm travelling a lot
+this month, so it may take a week or so to get it done.
+
+-- 
+Dr. Mark Green                                 mark at cs.ualberta.ca
+McCalla Professor                              (780) 492-4584
+Department of Computing Science                (780) 492-1071 (FAX)
+University of Alberta, Edmonton, Alberta, T6G 2H1, Canada
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA90520
+	for pups-liszt; Wed, 11 Oct 2000 11:24:54 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Wed Oct 11 10:12:18 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Tue, 10 Oct 2000 17:12:18 -0700 (PDT)
+Subject: [pups] How to arrange bootable media for 2.11BSD?
+Message-ID: <200010110012.RAA13052@moe.2bsd.com>
+
+Hi -
+
+> From: Martijn van Buul <pino at dohd.org>
+> *whoops*. 
+> 
+> I've been mailing personal replies, instead of replies to the list. Too much
+> relying on procmail, I suppose.
+
+	;)
+
+> It's a 11/53+ (aka: 1.5 MB RAM), which *should* be able to run 2.11BSD.
+
+	Indeed it should be able to.   I personally have not done so but the
+	processor/mmu meet all the criteria and 1.5MB is perfect.
+
+> The "RX33" is working (that's how I was able to low-level format two
+
+	I have a "RX33" on my 11/73 so I can create a boot  disk and the
+	root filesystem dump (split over 3 or 4 1.2MB disk images).
+
+> For the sake of completeness, I'll include the currently available 
+> hardware:
+
+	Ah, thanks!   That answers some other questions I was going to ask ;)
+
+> KJD11-D/S   (processor), DZQ11, TK50, RQDX3 with one RD32A, a third-party
+> 21MB MFM disk (ST225, RD33? 31? Something like that), a second 21MB
+> MFM disk standing by (A microscribe of some sort), a 5.25" PC floppy 
+> drive shoe-horned into a RX33, and a DELQA card.
+
+	It is going to take some creative symlink and mount point work to
+	fit 2.11 into 20MB disks - the system really expects to have ~80MB
+	at least for /usr.   An RD54 at 159MB is more than enough but a RD53
+	paired with a couple RD32/3 would be adequate.
+
+	Steven Schultz
+	sms at to.gd-es.com
+
+
+From rdkeys at unity.ncsu.edu  Thu Oct 12 00:29:18 2000
+From: rdkeys at unity.ncsu.edu (rdkeys at unity.ncsu.edu)
+Date: Wed, 11 Oct 2000 10:29:18 -0400 (EDT)
+Subject: [pups] What hard drives to look for for PDP-11 use?
+In-Reply-To: <200010110012.RAA13052@moe.2bsd.com> from "Steven M. Schultz" at Oct 10, 2000 05:12:18 PM
+Message-ID: <200010111429.KAA23987@uni04du.unity.ncsu.edu>
+
+> 	It is going to take some creative symlink and mount point work to
+> 	fit 2.11 into 20MB disks - the system really expects to have ~80MB
+> 	at least for /usr.   An RD54 at 159MB is more than enough but a RD53
+> 	paired with a couple RD32/3 would be adequate.
+> 
+> 	Steven Schultz
+> 	sms at to.gd-es.com
+
+Steven.... I have been thinking of trying to find a PDP-11 of some sort
+(like hunting for needles in a hay stack in this part of the woods, but
+maybe something will surface).  Anyway... for the sake of discussion,
+and general dumpster diving knowledge....
+
+1.  What mfm hard drives from the non-DEC world could be adapted to
+    work on a PDP-11?
+
+2.  Can any scsi drives be used (RZ-23's or that kind of thing?).
+
+I often run across lots of smaller DEC scsi drives in MooU surplus,
+as well as assorted MFM drives from retired AT crates.  IF I can
+find out what is worth saving to use, that would be great info
+to have handy, whilst dumpster diving.  At a buck or two a chassis,
+it is worth saving a few drives, provided I know what to save.
+
+I will assume the target OS is 2.11BSD or 2.9BSD, since those seem
+to handle the greatest assortment of hardware types.
+
+Can any of these non-DEC drives be adapted to MVII use?
+
+Can any of the early MFM or ESDI Sun drives be used?
+
+I vaguely remember some notes on some of this somewhere.  Any urls
+or pointers thereto would be appreciated.
+
+Thanks
+
+Bob Keys
+rdkeys at unity.ncsu.edu
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id NAA99702
+	for pups-liszt; Thu, 12 Oct 2000 13:17:44 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From SHOPPA at trailing-edge.com  Thu Oct 12 10:03:42 2000
+From: SHOPPA at trailing-edge.com (SHOPPA at trailing-edge.com)
+Date: Wed, 11 Oct 2000 20:03:42 -0400
+Subject: [pups] What hard drives to look for for PDP-11 use?
+Message-ID: <001011200342.202026f0@trailing-edge.com>
+
+Bob Keys wrote:
+
+>1.  What mfm hard drives from the non-DEC world could be adapted to
+>    work on a PDP-11?
+
+Perhaps the number one most frequently asked question on this list :-).
+See
+
+ http://ibiblio.org/pub/academic/computer-science/history/pdp-11/hardware/third-party-disks.txt
+
+for Terry Kennedy's excellent collection of DECUServe articles with lots
+of juicy details about using non-DEC MFM drives and floppy drives on DEC
+RQDXn controllers.
+
+Tim.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id NAA99851
+	for pups-liszt; Thu, 12 Oct 2000 13:39:10 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From allisonp at world.std.com  Thu Oct 12 12:33:35 2000
+From: allisonp at world.std.com (allisonp at world.std.com)
+Date: Wed, 11 Oct 2000 22:33:35 -0400 (EDT)
+Subject: [pups] What hard drives to look for for PDP-11 use?
+In-Reply-To: <200010111429.KAA23987@uni04du.unity.ncsu.edu>
+Message-ID: <Pine.SGI.3.95.1001011222653.13816A-100000@world.std.com>
+
+> 
+> 1.  What mfm hard drives from the non-DEC world could be adapted to
+>     work on a PDP-11?
+
+Many, any that are similar to ST225(RD31) and ST251(RD32) or have the same
+CHS as RD52 (Quantum D540), MIcropolus 1325(rd53) or Maxtor2190(rd54).
+Those disks were DEC baged but not DEC made and are findable.  there are
+many similar out there as well.
+ 
+> 2.  Can any scsi drives be used (RZ-23's or that kind of thing?).
+
+Yes if you have a SCSI card that is MSCP compatable.  THese are scarce
+ as many are still in service or quickly picked up.
+
+> I often run across lots of smaller DEC scsi drives in MooU surplus,
+> as well as assorted MFM drives from retired AT crates.  IF I can
+> find out what is worth saving to use, that would be great info
+> to have handy, whilst dumpster diving.  At a buck or two a chassis,
+> it is worth saving a few drives, provided I know what to save.
+
+There is a good chance they are useable depending on the controller 
+in your DEC hardware.
+
+> I will assume the target OS is 2.11BSD or 2.9BSD, since those seem
+> to handle the greatest assortment of hardware types.
+
+Someone else will confirm but 2.11 handles MSCP so that means RQDX
+controllers for MFM or many of the SCSI controlers that speak MSCP.
+
+> Can any of these non-DEC drives be adapted to MVII use?
+
+See above list.
+
+
+> Can any of the early MFM or ESDI Sun drives be used?
+
+Yes, with the right controller, some caveats.
+
+Hopefully you will get more detailes from others.
+
+Allison
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id QAA00755
+	for pups-liszt; Thu, 12 Oct 2000 16:12:51 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From sms at moe.2bsd.com  Thu Oct 12 13:07:14 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Wed, 11 Oct 2000 20:07:14 -0700 (PDT)
+Subject: [pups] What hard drives to look for for PDP-11 use?
+Message-ID: <200010120307.UAA26966@moe.2bsd.com>
+
+Hi Bob -
+
+> From: rdkeys at unity.ncsu.edu
+> Steven.... I have been thinking of trying to find a PDP-11 of some sort
+> (like hunting for needles in a hay stack in this part of the woods, but
+
+	Interesting.   I wouldn't have thought an 11/73 or similar would
+	be too hard to find.
+
+> 1.  What mfm hard drives from the non-DEC world could be adapted to
+>     work on a PDP-11?
+
+	Tim has already jumped in with a pointer or two.
+
+> 2.  Can any scsi drives be used (RZ-23's or that kind of thing?).
+
+	Oh yes!   But you need to have a Qbus SCSI<->MSCP controller.  They
+	are easy to _find_ but quite *expensive*.   Not as expensive as
+	they were when I shelled out US$1500 for a new Emulex UC08 (and that
+	with a good discount - the sales person was sympathetic to my
+	explanation this was for a 'hobby').    Used CMD, Emulex or Dilog
+	controllers will run around $500-900.
+
+	Once you have gotten over the sticker/exchequer shock the upside
+	is that you can use about many SCSI disk or tape drives that other
+	folks are tossing otu because they're too small.   The older ~300MB
+	and 1GB disks that are not useful on modern systems are great in
+	a PDP-11 environment.    Uh, don't bother putting a 73GB Cheetah
+	on an 11 ;)
+
+	One place that lists CMD and Emulex controllers is:
+
+		http://www.ficompinc.com
+
+> I will assume the target OS is 2.11BSD or 2.9BSD, since those seem
+> to handle the greatest assortment of hardware types.
+> 
+> Can any of these non-DEC drives be adapted to MVII use?
+
+	At one time I had a uVax-II with a Dilog DQ696 (I think that was 
+	the model number) that had a couple ESDI drives on it - a ~300MB
+	Miniscribe disk and a couple Maxtor RD53 sized drives.
+
+> Can any of the early MFM or ESDI Sun drives be used?
+
+	Definitely.    Emulex QD33 and QD35 adaptors (in addition to the
+	Dilog DQ696) ring a bell as far as non-SCSI disks go.
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+
+From rdkeys at unity.ncsu.edu  Fri Oct 13 04:14:20 2000
+From: rdkeys at unity.ncsu.edu (rdkeys at unity.ncsu.edu)
+Date: Thu, 12 Oct 2000 14:14:20 -0400 (EDT)
+Subject: [pups] What hard drives to look for for PDP-11 use?
+In-Reply-To: <200010120307.UAA26966@moe.2bsd.com> from "Steven M. Schultz" at Oct 11, 2000 08:07:14 PM
+Message-ID: <200010121814.OAA22228@uni01du.unity.ncsu.edu>
+
+> Hi Bob -
+
+Hello.....
+
+> > From: rdkeys at unity.ncsu.edu
+> > Steven.... I have been thinking of trying to find a PDP-11 of some sort
+> > (like hunting for needles in a hay stack in this part of the woods, but
+> 
+> 	Interesting.   I wouldn't have thought an 11/73 or similar would
+> 	be too hard to find.
+
+Most of the PDP stuff has long since been surplussed, and I have trolled
+the local newsfeeds but nothing seems to turn up.  VAXen are the usual
+fare, since PDP's were not that common around here.  The RTP NC area did
+not really get big into computering until the VAX era.
+
+> > 1.  What mfm hard drives from the non-DEC world could be adapted to
+> >     work on a PDP-11?
+> 
+> 	Tim has already jumped in with a pointer or two.
+> 
+> > 2.  Can any scsi drives be used (RZ-23's or that kind of thing?).
+> 
+> 	Oh yes!   But you need to have a Qbus SCSI<->MSCP controller.  They
+> 	are easy to _find_ but quite *expensive*.   Not as expensive as
+> 	they were when I shelled out US$1500 for a new Emulex UC08 (and that
+> 	with a good discount - the sales person was sympathetic to my
+> 	explanation this was for a 'hobby').    Used CMD, Emulex or Dilog
+> 	controllers will run around $500-900.
+
+I fell into a MVII yesterday that has a Dilog controller.  Is that the
+one you are talking about?  If so, that could be a lucky find.
+
+Here's a crazy, but possible thought.... can I write 211BSD drives from
+a MicroVAX II and move the card/drives over to the PDP-11 and have a
+reasonable expectation that they will work, or at least boot to a root
+or a miniroot or such?  It is a long shot, but if I am just dd'ing
+images, it might work, I would think.
+
+One of my goals with the MVII is to use it to write 9 track tapes, IFF
+I can lay hands on one of several 9 trackkers in surplus in the next
+few weeks.  They were originally used on a local VAXsystem 5400 crate
+and are single ended scsi Ciphers.  Could they be used on a PDP-11, too?
+
+> 	Once you have gotten over the sticker/exchequer shock the upside
+> 	is that you can use about many SCSI disk or tape drives that other
+> 	folks are tossing otu because they're too small.   The older ~300MB
+> 	and 1GB disks that are not useful on modern systems are great in
+> 	a PDP-11 environment.    Uh, don't bother putting a 73GB Cheetah
+> 	on an 11 ;)
+
+I have plenty of the RZ55/56/57/58ish things that have popped up in
+surplus that I am using on my VAXstation toyz.  All the PeeCee types
+avoid them like the plague, and I truck them out by the handfull.
+MooU was big on those and DS5000/200 crates.  They are now hitting
+surplus quite frequently.
+
+> 	One place that lists CMD and Emulex controllers is:
+> 
+> 		http://www.ficompinc.com
+> 
+> > I will assume the target OS is 2.11BSD or 2.9BSD, since those seem
+> > to handle the greatest assortment of hardware types.
+> > 
+> > Can any of these non-DEC drives be adapted to MVII use?
+> 
+> 	At one time I had a uVax-II with a Dilog DQ696 (I think that was 
+> 	the model number) that had a couple ESDI drives on it - a ~300MB
+> 	Miniscribe disk and a couple Maxtor RD53 sized drives.
+
+I had one of those, too, a few months back, but stripped the MVI it came
+out of, without thinking of hanging onto that card.  Minus two points for
+me.  Someone else was lucky that day.....(:+}}...
+
+> > Can any of the early MFM or ESDI Sun drives be used?
+> 
+> 	Definitely.    Emulex QD33 and QD35 adaptors (in addition to the
+> 	Dilog DQ696) ring a bell as far as non-SCSI disks go.
+
+I have half a dozen of these early Sun drives in storage, so that is
+good to know, and I did save the 650mb esdi drive from the MVI, thinking
+I could use it on a Sun, but never got around to it.
+
+> 	Steven Schultz
+> 	sms at moe.2bsd.com
+
+Thanks for the tidbits folks!
+
+Bob
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id JAA06738
+	for pups-liszt; Fri, 13 Oct 2000 09:51:38 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From wkb at freebie.demon.nl  Thu Oct 12 18:11:06 2000
+From: wkb at freebie.demon.nl (Wilko Bulte)
+Date: Thu, 12 Oct 2000 10:11:06 +0200
+Subject: [pups] What hard drives to look for for PDP-11 use?
+In-Reply-To: <200010111429.KAA23987@uni04du.unity.ncsu.edu>; from rdkeys@unity.ncsu.edu on Wed, Oct 11, 2000 at 10:29:18AM -0400
+References: <200010110012.RAA13052@moe.2bsd.com> <200010111429.KAA23987@uni04du.unity.ncsu.edu>
+Message-ID: <20001012101105.B18613@freebie.demon.nl>
+
+On Wed, Oct 11, 2000 at 10:29:18AM -0400, rdkeys at unity.ncsu.edu wrote:
+> > 	It is going to take some creative symlink and mount point work to
+> > 	fit 2.11 into 20MB disks - the system really expects to have ~80MB
+> > 	at least for /usr.   An RD54 at 159MB is more than enough but a RD53
+> > 	paired with a couple RD32/3 would be adequate.
+> > 
+> > 	Steven Schultz
+> > 	sms at to.gd-es.com
+> 
+> Steven.... I have been thinking of trying to find a PDP-11 of some sort
+> (like hunting for needles in a hay stack in this part of the woods, but
+> maybe something will surface).  Anyway... for the sake of discussion,
+> and general dumpster diving knowledge....
+> 
+> 1.  What mfm hard drives from the non-DEC world could be adapted to
+>     work on a PDP-11?
+
+RD53 is a Micropolis 1375 (eh, no the MFM variant of it.. 75 is SCSI.
+Maybe 1325??).
+
+RD54 is a Maxtor or Newbury data drive.
+ 
+I can look up the details if needed. As far as MFM drives go I would not
+consider anything smaller than a 53.
+
+-- 
+Wilko Bulte  	 
+wilko at freebsd.org 			Arnhem, the Netherlands
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id JAA06732
+	for pups-liszt; Fri, 13 Oct 2000 09:51:34 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From rdkeys at unity.ncsu.edu  Fri Oct 13 04:23:56 2000
+From: rdkeys at unity.ncsu.edu (rdkeys at unity.ncsu.edu)
+Date: Thu, 12 Oct 2000 14:23:56 -0400 (EDT)
+Subject: [pups] What hard drives to look for for PDP-11 use?
+In-Reply-To: <Pine.SGI.3.95.1001011222653.13816A-100000@world.std.com> from "allisonp@world.std.com" at Oct 11, 2000 10:33:35 PM
+Message-ID: <200010121823.OAA23482@uni01du.unity.ncsu.edu>
+
+> > 1.  What mfm hard drives from the non-DEC world could be adapted to
+> >     work on a PDP-11?
+> 
+> Many, any that are similar to ST225(RD31) and ST251(RD32) or have the same
+> CHS as RD52 (Quantum D540), MIcropolus 1325(rd53) or Maxtor2190(rd54).
+> Those disks were DEC baged but not DEC made and are findable.  there are
+> many similar out there as well.
+
+Oh, stupid me... I cleaned up the junk pile a couple of months back
+and not thinking threw out about 20 of these mfm critters, not thinking
+they were much usable, any more.  I did save a couple of the 150mb
+mfm things from the Sun3 crate, though.  They were Micropolis, if
+memory is correct.  All the 20/30/40/60/80mb things I chucked.
+Oh well.
+
+On the ESDI drives, has anyone tried the IBM things from Model 60
+and Model 80 machines?  They were 70/115/300mb drives, and are
+quite common.  If they were usable, I have bunches of those that
+have not yet been thrown out.  They are also quite numerous in
+local surplus.
+
+Bob
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA07195
+	for pups-liszt; Fri, 13 Oct 2000 11:09:05 +1100 (EST)
+	(envelope-from owner-pups at minnie.cs.adfa.edu.au)
+
+From jkunz at unixag-kl.fh-kl.de  Fri Oct 13 09:44:38 2000
+From: jkunz at unixag-kl.fh-kl.de (jkunz at unixag-kl.fh-kl.de)
+Date: Fri, 13 Oct 2000 01:44:38 +0200 (CEST)
+Subject: [pups] What hard drives to look for for PDP-11 use?
+In-Reply-To: <200010121823.OAA23482@uni01du.unity.ncsu.edu>
+Message-ID: <200010122344.BAA05071@unixag-kl.fh-kl.de>
+
+On 12 Oct, rdkeys at unity.ncsu.edu wrote:
+
+> On the ESDI drives, has anyone tried the IBM things from Model 60
+> and Model 80 machines?  
+I am using Micropolis 1654-7 (150MB), 1664-7 (320MB) and Maxtor XT4380
+(350MB) ESDI drives from PCs and Apollo Domain DN3X00 Machines with a
+Dilog DQ686 QBus MSCP controller. Last week I salvaged a XT4780 (~700MB)
+but did not have the time to test it. I had no problems using this
+disks. After reformating them with the controller on board diag they
+worked well in my MicroVAX II. I expect no problems with it when I
+convert the VAX to a PDP11/23. 
+The problem with some IBM PS/2 ESDI drives is the proprietary
+connector, that combinates signal and power lines in one connector.
+I don't know if they are usable with a normal ESDI controller. On the
+other hand: In my PS/2 80 is the same Maxtor XT4380 like the one from
+Apollo I am using with the Dilog. 
+-- 
+
+
+
+tschüß,
+         Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+From rdkeys at unity.ncsu.edu  Wed Oct 18 02:39:28 2000
+From: rdkeys at unity.ncsu.edu (rdkeys at unity.ncsu.edu)
+Date: Tue, 17 Oct 2000 12:39:28 -0400 (EDT)
+Subject: [pups] 9 track reelers on MVII.... will an IBM differential drive work?
+Message-ID: <200010171639.MAA21656@uni03du.unity.ncsu.edu>
+
+On a lark, my ol' propeller headed beanie was whirring, again, today.
+
+Problem:  how to use old IBM differential scsi reel tape deck to make
+          reel tapes for antique unix....
+
+Discussion:  I picked up a perfectly fine looking IBM 9348-001 differential
+             scsi interface tape deck from an AS400 box.  I had thought of
+             using a differential to single-ended scsi converter, but, they
+             are a tad dear for this olde man's beer bellie peanut computer
+             budget.  Thinking there had to be some other way of making use
+             of this deck to write some fine old reels, I saw, buried deep
+             in the pdp-11 cards list a differential tape card by Dilogic,
+             and though... hmmm, can the old MVII crank out to the 9 track
+             via such a card?
+
+Solutions:   anyone have any insights on trying something like this or know
+             if such a shennanigan will work?  Are there any other such
+             differential scsi cards available that might work?  Anyone
+             got such a critter gathering dust?  Is this really a scsi
+             card or is it some other interface?
+
+
+Thanks
+
+Bob
+
+
+From robin at ruffnready.co.uk  Sun Oct 22 03:54:42 2000
+From: robin at ruffnready.co.uk (Robin Birch)
+Date: Sat, 21 Oct 2000 18:54:42 +0100
+Subject: [pups] BSD2.11 Floating Point Simulator
+Message-ID: <yHnWMXAihd85EwLN@ruffnready.co.uk>
+
+Dear All,
+I am currently looking at making the 2.11 FP simulator work.
+Unfortunately I don't have a non floating point PDP to check things on.
+Can some one who has please try running some FP code on the Generic
+Kernel for 2.11 and let me know what happens.  I am slowly going through
+the code but some symptoms would be useful.  
+
+regards
+
+Robin
+____________________________________________________________________
+Robin Birch     robin at ruffnready.co.uk
+
+M1ASU/2E0ARJ/M5ABD     Old computers and radios always welcome
+
+

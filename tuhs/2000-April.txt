@@ -1,0 +1,789 @@
+From wkt at cs.adfa.edu.au  Wed Apr 12 09:49:23 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Wed, 12 Apr 2000 09:49:23 +1000 (EST)
+Subject: Some interesting old UNIX news
+Message-ID: <200004112349.JAA54199@henry.cs.adfa.edu.au>
+
+Hi all,
+	I'd just like to welcome the new people to the PUPS list. This
+is probably the first e-mail in the list for a few weeks. I've been pretty
+busy at work, but there is some interesting news on the old UNIX front.
+
++ SCO has now sold over 220 old Unix licenses, and I have something like
+  120 license holders with access to the on-line PUPS Archive. We've lost
+  count of the number of CDs produced by the PUPS Volunteers (thanks guys!)
+
++ I've got some Y2K patches for Unix coming in from Alexey Chupahin in
+  Russia. Once I get them sorted out, they will be put into the archive.
+
++ The baton of old Unix at SCO has been passed from Dion Johnson to David
+  Eyes and now to Paul Kaspian, their Open Source Marketing Manager. There
+  will be some changes to the Ancient UNIX license. If you haven't bought
+  a license, I would recommend NOT sending in any money just yet.
+
+  This will be good news, but I'm waiting on SCO to announce the details.
+
+I'll keep you all informed as usual.
+
+Cheers,
+	Warren
+
+P.S the Minix operating system has been released under a BSD license. Anybody
+    want to port it to the PDP-11 family?
+
+
+From lars at nocrew.org  Wed Apr 12 22:05:16 2000
+From: lars at nocrew.org (lars brinkhoff)
+Date: 12 Apr 2000 14:05:16 +0200
+Subject: Help running 2.11 on Supnik 2.3d
+In-Reply-To: Warren Toomey's message of "Wed, 12 Apr 2000 09:49:23 +1000 (EST)"
+Message-ID: <85ln2jsewz.fsf@junk.nocrew.org>
+
+I've tried running the image in /Boot_Images/2.11_on_rl02 on
+Supnik's emulator version 2.3d, but the root filsystem seems
+corrupted, with many binaries being unexecutable, bad block
+error messages, etc.
+
+Does anyone know how to successfully boot this image?
+
+If this is the wrong place for this kind of question, or if
+there's a FAQ on this, then please point me in the right
+direction.
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA92766
+	for pups-liszt; Thu, 13 Apr 2000 08:33:33 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Thu Apr 13 08:33:16 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 13 Apr 2000 08:33:16 +1000 (EST)
+Subject: Help running 2.11 on Supnik 2.3d
+In-Reply-To: <85ln2jsewz.fsf@junk.nocrew.org> from lars brinkhoff at "Apr 12, 2000  2: 5:16 pm"
+Message-ID: <200004122233.IAA06177@henry.cs.adfa.edu.au>
+
+In article by lars brinkhoff:
+> I've tried running the image in /Boot_Images/2.11_on_rl02 [from the PUPS
+> Archive] on Supnik's emulator version 2.3d, but the root filsystem seems
+> corrupted, with many binaries being unexecutable, bad block
+> error messages, etc.
+> 
+> Does anyone know how to successfully boot this image?
+
+Hmm, if I get a chance I'll try it here. Has anybody used this image
+successfully?
+
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id NAA94344
+	for pups-liszt; Thu, 13 Apr 2000 13:23:56 +1000 (EST)
+
+From sms at moe.2bsd.com  Thu Apr 13 13:22:56 2000
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Wed, 12 Apr 2000 20:22:56 -0700 (PDT)
+Subject: Help running 2.11 on Supnik 2.3d
+Message-ID: <200004130322.UAA16968@moe.2bsd.com>
+
+Hi --
+
+> From: lars brinkhoff <lars at nocrew.org>
+> I've tried running the image in /Boot_Images/2.11_on_rl02 on
+> Supnik's emulator version 2.3d, but the root filsystem seems
+> corrupted, with many binaries being unexecutable, bad block error messages, 
+> etc.
+> 
+> Does anyone know how to successfully boot this image?
+
+	Yes.  The problem is not with the images (although the whole "on rl02"
+	is a pain - you're far better off using the "xp" or large disk support
+	that Bob added).
+
+> If this is the wrong place for this kind of question, or if
+> there's a FAQ on this, then please point me in the right direction.
+
+	This is a very good place to ask this type of question.
+
+	And now the moment you've been waiting for:  "the Answer" ;)
+
+	2.11BSD is *very* upset at having to run in 256kb of memory.  since
+	the kernel plus buffer cache (and other data structures) can easily
+	exceed 200kb there is not enough memory left over to run a program.
+	Programs such as 'fsck' are fairly large split I/D programs and won't
+	fit in the remaining ~56kb or so.
+
+	The quick fix to the problem is adding the line:
+
+		set cpu 2048K
+
+	to the config file before running the simulator.  That will give the
+	simulated PDP-11 2Mb of memory which is a real nice size.  Oh, if
+	memory is a concern on the system then "set cpu 1024K" will work
+	well.  Since there's no networking involved 1Mb will be quite adequate.
+	If you were using "P11" (the Begemot emulator) and had the full IP/TCP
+	stack, etc then the kernel+networking+buffers can reach close to 400Kb
+	and you might want to use 2Mb for the memory size.
+
+	You might also look into the latest version (2.5) of the Begemot
+	emulator.  The two key advantages of P11 are:  1) a emulated DEQNA so
+	you can place the PDP11 on a network, 2) It keeps _good_ time
+	(version 2.4 and earlier had severe timeskew when running compute
+	bound programs, 2.5 is awesomely better and within range of "ntp"
+	to keep the clock correct).  P11 also supports (as does Bob Supnik's
+	simulator) large disks such as the RP06 which is much nicer than
+	4 RL02s and a batch of RK05s.
+
+	Hmmm, I'm not sure which rev level of 2.11BSD is in the "on_rl02"
+	images - I hope it has the "bounce buffer support" to handle the 18bit
+	RK controller on a 22bit bus...   If the RK images show corrupt or the
+	kernel crashes then I would suspect the kernel is a bit too old.
+
+	Unpack the "211bsd_on_rl02" images from the .gz images, edit the
+	"script" file to increase the system memory and you should be all
+	set to go.
+
+	Steven
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id OAA94566
+	for pups-liszt; Thu, 13 Apr 2000 14:56:35 +1000 (EST)
+
+From grog at lemis.com  Thu Apr 13 14:56:23 2000
+From: grog at lemis.com (Greg Lehey)
+Date: Thu, 13 Apr 2000 14:26:23 +0930
+Subject: Early file system layouts (was: Splitting / and /usr)
+Message-ID: <20000413142623.A45386@freebie.lemis.com>
+
+Saw this on a NetBSD list.
+
+Greg
+
+----- Forwarded message from "Alistair G. Crooks" <agc at ftp.netbsd.org> -----
+
+> Date: Wed, 12 Apr 2000 01:31:41 -0700 (PDT)
+> To: kre at munnari.oz.au
+> Cc: current-users at netbsd.org
+> Precedence: list
+> Delivered-To: current-users at netbsd.org
+>
+> Robert,
+>
+> [Off topic warning]
+>
+>>> Did you not know that /usr was split off only because the disks were too
+>>> small to keep everything on one way back in the early days
+>>
+>> That's how I heard it too - but this split must have occurred way back
+>> very early in the days before anyone outside Bell Labs had ever heard of
+>> unix (as I remember it, even the CACM paper had /usr in it).
+>
+> I believe that the topic of splitting / and /usr was discussed
+> at the Glasgow University meeting of the UKUUG, which was around
+> 1978, if my memory serves me well. As the first copy of V5 and V6
+> came out of the labs in the 1975/1976 timeframe, I suspect it came
+> later. I don't have my copy of the CACM paper to hand, so I can't
+> check dates.
+>
+> Whilst I attented the University there at that time, I didn't attend
+> the conference - more fool me.
+>
+> I suspect that Alistair Kilgour or Zdravko Podolski could provide
+> more information, or any of the Bell Labs alumni who were there.
+>
+> agc
+
+----- End forwarded message -----
+----- Forwarded message from Robert Elz <kre at munnari.OZ.AU> -----
+
+> To: "Alistair G. Crooks" <agc at ftp.netbsd.org>
+> Cc: current-users at netbsd.org
+> Date: Thu, 13 Apr 2000 10:36:15 +1000
+> Precedence: list
+> Delivered-To: current-users at netbsd.org
+>
+>     Date:        Wed, 12 Apr 2000 01:31:41 -0700 (PDT)
+>     From:        "Alistair G. Crooks" <agc at ftp.netbsd.org>
+>     Message-ID:  <200004120831.BAA06860 at nbftp.isc.org>
+>
+>> [Off topic warning]
+>
+> Ditto - but recording history sometimes has its uses...
+>
+>> I believe that the topic of splitting / and /usr was discussed
+>> at the Glasgow University meeting of the UKUUG, which was around
+>> 1978,
+>
+> It was definitely done before that.
+>
+> Unfortunately, I can't find a 5th edition manual (or even a reprinted
+> facsimilie thereof at the minute), but the 6th edition manual for sh(1)
+> says ...
+>
+> 	If the first argument [ on a command line ] is the name of an
+> 	executable file, it is invoked; otherwise the string `/bin' is
+> 	prepended to the argument.  (In this way most standard commands,
+> 	which reside in `/bin', are found.)  If no such command is found,
+> 	the string `/usr' is further prepended (to give `/usr/bin/command')
+> 	and another attempt is made to execute the resulting file.  (Certain
+> 	lesser-used commands live in `/usr/bin'.)
+>
+> The sixth edition manual is dated May 75, but the date on the sh man page
+> is 5/15/74 (which I interpret as the 15th of May, 1974).
+>
+> For those who are new to unix (within the last 20 years) note that there
+> was no notion of a user settable path...
+>
+>> I don't have my copy of the CACM paper to hand, so I can't
+>> check dates.
+>
+> I have checked now, and it says nothing either way, so that is no help.
+> Kernighan's "Unix for Beginners" (of a generally similar vintage) gives
+> a diagrammatic view of the filesystem tree, in which all that exists in
+> /usr are user directories, though that is not really conclusive.
+>
+>> I suspect that Alistair Kilgour or Zdravko Podolski could provide
+>> more information, or any of the Bell Labs alumni who were there.
+>
+> I will see if Dennis will tell me...
+>
+> kre
+>
+
+----- End forwarded message -----
+----- Forwarded message from Robert Elz <kre at munnari.OZ.AU> -----
+
+> To: "Alistair G. Crooks" <agc at ftp.netbsd.org>, current-users at netbsd.org
+> Date: Thu, 13 Apr 2000 12:45:05 +1000
+> Precedence: list
+> Delivered-To: current-users at netbsd.org
+>
+>     Date:        Thu, 13 Apr 2000 10:36:15 +1000
+>     From:        Robert Elz <kre at munnari.OZ.AU>
+>     Message-ID:  <353.955586175 at munnari.OZ.AU>
+>
+>> I will see if Dennis will tell me...
+>
+> He did, ...
+>
+>   But early; definitely by the time of the "nsys" system, the
+>   first C version, which was 1973.
+>
+> And ...
+>
+>   The point of /usr/bin was really to find a place to put
+>   those binaries.  (The .5MB disk was pretty cramped even
+>   with with two of them, as we later had).
+>
+> which (if we ever needed it) is confirmation or the original reason...
+>
+> kre
+>
+
+----- End forwarded message -----
+
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id PAA94737
+	for pups-liszt; Thu, 13 Apr 2000 15:32:38 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Thu Apr 13 15:32:02 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 13 Apr 2000 15:32:02 +1000 (EST)
+Subject: Early file system layouts (/ and /usr split)
+In-Reply-To: <20000413142623.A45386@freebie.lemis.com> from Greg Lehey at "Apr 13, 2000  2:26:23 pm"
+Message-ID: <200004130532.PAA08492@henry.cs.adfa.edu.au>
+
+[ This came to me from a NetBSD mailing list, via Greg Lehey ]
+
+Someone said.....
+> >>> Did you not know that /usr was split off only because the disks were too
+> >>> small to keep everything on one way back in the early days
+
+Someone else said....
+> > I believe that the topic of splitting / and /usr was discussed
+> > at the Glasgow University meeting of the UKUUG, which was around
+> > 1978, if my memory serves me well. As the first copy of V5 and V6
+> > came out of the labs in the 1975/1976 timeframe, I suspect it came
+> > later. I don't have my copy of the CACM paper to hand, so I can't
+> > check dates.
+
+The answer is: UNIX had / and /usr split by at least the time of the
+July 1974 CACM paper ``The UNIX Time-sharing system''.
+
+Here is the evidence:
+
+At http://minnie.cs.adfa.edu.au/PUPS/Images/ken-and-den.txt and
+   http://minnie.cs.adfa.edu.au/PUPS/Images/ken-and-den.jpg
+
+you will find a picture of Ken and Dennis at the PDP-11/20 around 1972.
+The commentary in the text file from John Holden tell us that the disk
+drives are RF-11 and RK03 drives.
+
+RF-11 drives were fixed head drives with 512K of storage with fast access.
+RK03s and RK05s could store 2M, but were not as fast as RF-11s.
+
+The source code to (nearly) 3rd Edition UNIX, dated August 31, 1973, only
+has drivers for two disks, RF-11s and RK05s. This source code is in the
+PUPS Archive, http://minnie.cs.adfa.edu.au/PUPS. You need a Unix src license.
+
+Now, the July 1974 CACM paper says this:
+
+	In our installation, for example, the root directory resides
+	on the fixed-head disk, and the large disk drive, which contains
+	user's files, is mounted by the system initialization program; ....
+
+To me, this strongly indicates that / and /usr were split by at least
+July 1974, if not the earlier date of August 1973.
+
+Cheers all,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id PAA94865
+	for pups-liszt; Thu, 13 Apr 2000 15:50:31 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Thu Apr 13 15:50:17 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 13 Apr 2000 15:50:17 +1000 (EST)
+Subject: Early file system layouts (/ and /usr split)
+In-Reply-To: <200004130532.PAA08492@henry.cs.adfa.edu.au> from Warren Toomey at "Apr 13, 2000  3:32: 2 pm"
+Message-ID: <200004130550.PAA08605@henry.cs.adfa.edu.au>
+
+In article by Warren Toomey:
+> The answer is: UNIX had / and /usr split by at least the time of the
+> July 1974 CACM paper ``The UNIX Time-sharing system''.
+
+I just found some more evidence. The 2nd Edition UNIX manual is dated
+June 1972, but the actual man pages have their date of last modification.
+
+The manual for init(7), dated 15th June 1972, says:
+
+[ If console switches are set to 173030, a shell is attached to the
+  console immediately, i.e single-user mode ]
+
+	Otherwise, init does some housekeeping: the mode of each DECtape
+	file is changed to [read-write] (in case the system crashed during
+	a tap command); directory /usr is mounted on the RK0 disk; directory
+	/sys is mounted on the RK1 disk.
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id PAA94952
+	for pups-liszt; Thu, 13 Apr 2000 15:59:25 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Thu Apr 13 15:59:06 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 13 Apr 2000 15:59:06 +1000 (EST)
+Subject: Early file system layouts (/ and /usr split)
+In-Reply-To: <200004130550.PAA08605@henry.cs.adfa.edu.au> from Warren Toomey at "Apr 13, 2000  3:50:17 pm"
+Message-ID: <200004130559.PAA08671@henry.cs.adfa.edu.au>
+
+In article by Warren Toomey:
+> In article by Warren Toomey:
+> > The answer is: UNIX had / and /usr split by at least the time of the
+> > July 1974 CACM paper ``The UNIX Time-sharing system''.
+> 
+> I just found some more evidence.
+
+And more, from the 1st Edition init(7) man page dated 3rd November, 1971.
+
+	Directory usr is assigned via sys mount as resident on the RK disk.
+
+and sys mount means the mount(2) system call.
+
+Cheers,
+	Warren
+
+
+From wkt at cs.adfa.edu.au  Mon Apr 17 14:08:55 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Mon, 17 Apr 2000 14:08:55 +1000 (EST)
+Subject: Request: More volunteers for PUPS Archive
+Message-ID: <200004170408.OAA36672@henry.cs.adfa.edu.au>
+
+Hi all,
+	It's time to call again for volunteers to help out with the
+distribution of the PUPS Archive. In particular, if you have received
+a CD of the archive within the last 9 months, and you can duplicate it,
+then please let me know if you are willing to distribute a few CDs a month.
+
+We have a need for people in Asia, Japan, Australia, South America, but
+I'll take anybody anywhere!
+
+Many thanks in advance for your offers.
+
+Cheers,
+	Warren
+
+
+From norman at nose.cs.utoronto.ca  Mon Apr 17 04:43:14 2000
+From: norman at nose.cs.utoronto.ca (norman at nose.cs.utoronto.ca)
+Date: Sun, 16 Apr 2000 14:43:14 -0400
+Subject: Early file system layouts (was: Splitting / and /usr)
+Message-ID: <200004172217.IAA38973@minnie.cs.adfa.edu.au>
+
+Warren is right that even the First Edition manual says that init
+mounts /usr, implying that /usr was a distinct file system even that
+early.  It seems to me that the original question Greg forwarded
+from the NetBSD list was also after when /usr/bin appeared, which
+isn't necessarily the same date.
+
+A possible answer from old manuals:
+
+- Second Edition sh(I) (dated 3/15/72):
+	If the first argument is the name of an executable file,
+	it is invoked; otherwise the string "/bin/" is prepended
+	to the argument.  (In this way the standard commands,
+	which reside in "/bin", are found.)  If the "/bin" file
+	exists, but is not executable, it is used by the shell
+	as a command file.
+
+- Third Edition sh(I) (dated 1/15/73):
+	If the first argument is the name of an executable file,
+	it is invoked; otherwise the string "/bin/" is prepended
+	to the argument.  (In this way most standard commands,
+	which reside in "/bin", are found.)  If no such command
+	is found, the string "/usr" is further prepended (to give
+	"/usr/bin/command") and another attempt is made to execute
+	the resulting file.  (Certain "overflow" commands live in
+	"/usr/bin".)  If the "/usr/bin" file exists, but is not
+	executable, it is used by the shell as a command file.
+
+Notice the odd detail that non-executable files in /bin (early on)
+or /usr/bin (later) get special treatment.  Does this mean that
+shell scripts that weren't in /usr/bin had to be invoked explicitly
+via `sh script' instead of just `script'?
+
+Even deeper historic trivia: it occurred to me to check the fragments
+of the PDP-7 system I have on paper to see whether /usr existed then.
+I was quickly reminded that it almost certainly didn't because subdirectories
+weren't really used then; there were no pathnames in that system.
+(You could open only files in the working directory, though you could
+link from another directory.)  When asked to invoke `x', the shell first
+tried to open `x', then to link `x' from directory `system' and open the
+result.  (Presumably it remembered to remove the needless link after the
+open, but I'm not quite certain; the old paper copy is missing a few
+lines just there.)  So even the name `bin' doesn't date back quite to
+the beginning.
+
+Norman Wilson
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA39649
+	for pups-liszt; Tue, 18 Apr 2000 10:10:53 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Tue Apr 18 10:10:41 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Tue, 18 Apr 2000 10:10:41 +1000 (EST)
+Subject: Early file system layouts
+In-Reply-To: <200004172217.IAA38973@minnie.cs.adfa.edu.au> from "norman@nose.cs.utoronto.ca" at "Apr 16, 2000  2:43:14 pm"
+Message-ID: <200004180010.KAA42226@henry.cs.adfa.edu.au>
+
+In article by norman at nose.cs.utoronto.ca:
+> - Second Edition sh(I) (dated 3/15/72):
+> 	If the first argument is the name of an executable file,
+> 	it is invoked; otherwise the string "/bin/" is prepended
+> 	to the argument.  (In this way the standard commands,
+> 	which reside in "/bin", are found.)  If the "/bin" file
+> 	exists, but is not executable, it is used by the shell
+> 	as a command file.
+> Notice the odd detail that non-executable files in /bin (early on)
+> or /usr/bin (later) get special treatment.  Does this mean that
+> shell scripts that weren't in /usr/bin had to be invoked explicitly
+> via `sh script' instead of just `script'?
+
+Can't tell, we don't have the source code. In the Nsys kernel (dated
+just before the 4th Edition), files must have the execute bit on or
+they can't be exec(2)d.
+
+	Warren
+
+
+From wkt at cs.adfa.edu.au  Thu Apr 20 08:57:15 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 20 Apr 2000 08:57:15 +1000 (EST)
+Subject: SCO Ancient UNIX license now free
+Message-ID: <200004192257.IAA63322@henry.cs.adfa.edu.au>
+
+[ This from a SCO press release ]
+SCO Contributes to the Open Source Community; Kicks Off Open Source Initiatives
+ 
+ Company to Release Key Technologies, Source Code, and Resources for 
+ Software Developers; "Ancient" UNIX Source Code Available for Free
+ 
+[ ... ]
+
+ Additionally, SCO has simplified its "Ancient" UNIX program and waived the 
+ $100 processing fee. Anyone will be able to log onto the SCO web site and 
+ download historically preserved UNIX code for educational and 
+ non-commercial use.
+ 
+ ___________________
+ Tom Fox-Sellers
+ Public Relations Specialist, Linux & Open Source
+ Tel: 831-427-7049
+ Email: mailto:toms at sco.com
+ Press: http://www.sco.com/press
+ ___________________
+
+
+
+Side note: you still have to have a license, it's just free to obtain now.
+I won't be able to make things available anonymously still.
+
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id JAA52221
+	for pups-liszt; Thu, 20 Apr 2000 09:47:03 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Thu Apr 20 09:46:49 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 20 Apr 2000 09:46:49 +1000 (EST)
+Subject: SCO Ancient UNIX license now free
+In-Reply-To: <Pine.LNX.4.03.10004191642250.26245-100000@andru.sonoma.edu> from Andru Luvisi at "Apr 19, 2000  4:43: 1 pm"
+Message-ID: <200004192346.JAA63622@henry.cs.adfa.edu.au>
+
+In article by Andru Luvisi:
+> Could I trouble you for the URL on SCO's site?  I can find the press
+> release, but the license eludes me.
+
+Actually, the URL SCO used to use, http://www.sco.com/offers/, doesn't
+have the license anymore. So I assume they are rearranging their site.
+
+Here are some excepts from my SCO contact as to what they _might_ do:
+
+    What we basically want to do is:
+
+    1) Waive the $100 fee for the source code. 
+
+    2) Make our portion of the source (by separating it from DEC's etc.
+    etc.) available from our web site, while still leaving it available on
+    yours. We would still like to refer people to you if they would like
+    other source code or would like to purchase a CD
+
+    3) Make the license agreement available online with a click through in
+    order to eliminate the paperwork. (We would probably just e-mail you the
+    people who have agreed to the license for your records)
+
+    We will however require that people "click through" our
+    site (or possibly yours) to gain access to your FTP site and media
+    distribution. We will consider any person that accepts the license
+    agreement from our site a "license holder".
+
+I'm currently working on an automatic mechanism which would allow a person
+to click-agree to the on-line SCO license (whenever that occurs), which
+would give them access to the UNIX source code via SCO's web site, and
+also password-protected access to the PUPS Archive here.
+
+*** Note the Archive contains stuff that SCO doesn't own, e.g Ultrix,
+    the BSD releases, but which still require a UNIX source license.
+
+For all those who haven't bought an Ancient UNIX license from SCO, if
+you can I would hang off from ordering one until the web mechanism
+arrives. It will save you and SCO the time & delay of processing paperwork.
+
+If you _really_ require a license, and are prepared to wait 6 weeks,
+then go to http://minnie.cs.adfa.edu.au/PUPS/getlicense.html to get a
+copy of the license. Post it to SCO, but don't send any money!!
+
+Hope this helps,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA52566
+	for pups-liszt; Thu, 20 Apr 2000 11:16:24 +1000 (EST)
+
+From dave at horsfall.org  Thu Apr 20 11:09:04 2000
+From: dave at horsfall.org (Dave Horsfall)
+Date: Thu, 20 Apr 2000 11:09:04 +1000 (EST)
+Subject: SCO Ancient UNIX license now free
+In-Reply-To: <200004192257.IAA63322@henry.cs.adfa.edu.au>
+Message-ID: <Pine.GSO.4.21.0004201108070.19440-100000@fgh.geac.com.au>
+
+On Thu, 20 Apr 2000, Warren Toomey wrote:
+
+> Side note: you still have to have a license, it's just free to obtain now.
+
+I don't suppose they'll offer a refund? :-)
+
+-- 
+Dave Horsfall VK2KFU  dave at geac.com.au  Ph: +61 2 9978-7493 Fx: +61 2 9978-7422
+Geac Computers P/L (FGH Division) 2/57 Christie St, St Leonards 2065, Australia
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA52620
+	for pups-liszt; Thu, 20 Apr 2000 11:29:32 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Thu Apr 20 11:29:23 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 20 Apr 2000 11:29:23 +1000 (EST)
+Subject: SCO Ancient UNIX license now free
+In-Reply-To: <Pine.GSO.4.21.0004201108070.19440-100000@fgh.geac.com.au> from Dave Horsfall at "Apr 20, 2000 11: 9: 4 am"
+Message-ID: <200004200129.LAA64313@henry.cs.adfa.edu.au>
+
+In article by Dave Horsfall:
+> On Thu, 20 Apr 2000, Warren Toomey wrote:
+> 
+> > Side note: you still have to have a license, it's just free to obtain now.
+> 
+> I don't suppose they'll offer a refund? :-)
+
+Consider yourself a well-paid member of the Unix Freedom Fighters :-)
+
+	Warren
+
+
+From grog at lemis.com  Fri Apr 21 13:50:37 2000
+From: grog at lemis.com (Greg Lehey)
+Date: Fri, 21 Apr 2000 13:20:37 +0930
+Subject: Ancient UNIX to be free (was: cscope now available under the BSD license)
+Message-ID: <20000421132037.C99014@freebie.lemis.com>
+
+If you're planning to buy an AU licence, now isn't the time :-)
+
+Greg
+
+----- Forwarded message from atrn at zeta.org.au -----
+
+> Delivered-To: freebsd-chat at freebsd.org
+> Date: Thu, 20 Apr 2000 07:45:17 +1000 (EST)
+>
+> On 19 Apr, I wrote:
+>> SCO has made the cscope sources available under the BSD license.
+>> There's a press release at,
+>>
+>> 	http://www.sco.com/press/releases/2000/6927.html
+>
+> And further down the press release they state,
+>
+>     Additionally, SCO has simplified its "Ancient" UNIX program and waived the
+>     $100 processing fee. Anyone will be able to log onto the SCO web site and
+>     download historically preserved UNIX code for educational and non-
+>     commercial use.
+>
+> (Note future tense "will be able to", it's not there yet).
+>
+> This essentially halves the cost of getting the CSRG CD's from Kirk
+> McKusick.
+>
+> --
+> Andy Newman
+
+----- End forwarded message -----
+
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+
+From bdc at world.std.com  Thu Apr 27 12:10:18 2000
+From: bdc at world.std.com (Brian Chase)
+Date: Wed, 26 Apr 2000 19:10:18 -0700
+Subject: History of Unix mv.
+Message-ID: <Pine.SGI.4.21.0004261906390.6381-100000@world.std.com>
+
+When was the "mv" command first updated to do a copy/remove for regular
+files being moved across filesystems? 
+
+-brian.
+--- Brian Chase | bdc at world.std.com | http://world.std.com/~bdc/ -----
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id MAA98999
+	for pups-liszt; Thu, 27 Apr 2000 12:23:30 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Thu Apr 27 12:23:11 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 27 Apr 2000 12:23:11 +1000 (EST)
+Subject: History of Unix mv.
+In-Reply-To: <Pine.SGI.4.21.0004261906390.6381-100000@world.std.com> from Brian Chase at "Apr 26, 2000  7:10:18 pm"
+Message-ID: <200004270223.MAA11845@henry.cs.adfa.edu.au>
+
+In article by Brian Chase:
+> When was the "mv" command first updated to do a copy/remove for regular
+> files being moved across filesystems? 
+> -brian.
+
+V2 mv(1) manual says files can't be moved across filesystems. V3 mv(1)
+manual doesn't say either way. V4 mv(1) manual says the file will be
+copied and the original deleted. V5 mv(1) source code exec's cp(1) when
+the destination is on a different filesystem.
+
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id QAA00577
+	for pups-liszt; Thu, 27 Apr 2000 16:20:01 +1000 (EST)
+
+From bdc at world.std.com  Thu Apr 27 16:19:43 2000
+From: bdc at world.std.com (Brian Chase)
+Date: Wed, 26 Apr 2000 23:19:43 -0700
+Subject: History of Unix mv.
+In-Reply-To: <200004270223.MAA11845@henry.cs.adfa.edu.au>
+Message-ID: <Pine.SGI.4.21.0004262316570.10764-100000@world.std.com>
+
+On Thu, 27 Apr 2000, Warren Toomey wrote:
+> In article by Brian Chase:
+
+> > When was the "mv" command first updated to do a copy/remove for regular
+> > files being moved across filesystems? 
+> > -brian.
+> 
+> V2 mv(1) manual says files can't be moved across filesystems. V3 mv(1)
+> manual doesn't say either way. V4 mv(1) manual says the file will be
+> copied and the original deleted. V5 mv(1) source code exec's cp(1) when
+> the destination is on a different filesystem.
+
+So wait.  I need some clarification here.  When you say V2, V3, V4, etc..
+do you mean 2nd Ed, 3rd Ed, 4th Ed Unix?
+
+-brian.
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id QAA00629
+	for pups-liszt; Thu, 27 Apr 2000 16:22:57 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Thu Apr 27 16:22:42 2000
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 27 Apr 2000 16:22:42 +1000 (EST)
+Subject: History of Unix mv.
+In-Reply-To: <Pine.SGI.4.21.0004262316570.10764-100000@world.std.com> from Brian Chase at "Apr 26, 2000 11:19:43 pm"
+Message-ID: <200004270622.QAA13320@henry.cs.adfa.edu.au>
+
+In article by Brian Chase:
+> > V2 mv(1) manual says files can't be moved across filesystems. V3 mv(1)
+> > manual doesn't say either way. V4 mv(1) manual says the file will be
+> > copied and the original deleted. V5 mv(1) source code exec's cp(1) when
+> > the destination is on a different filesystem.
+> 
+> So wait.  I need some clarification here.  When you say V2, V3, V4, etc..
+> do you mean 2nd Ed, 3rd Ed, 4th Ed Unix?
+> -brian.
+
+Yup, 2nd Edition == 2e == V2.
+
+1st Edition     November 3, 1971
+2nd Edition     June 12, 1972
+3rd Edition     February, 1973
+4th Edition     November, 1973
+5th Edition     June, 1974
+6th Edition     May, 1975
+7th Edition     January, 1979
+8th Edition     February, 1985
+9th Edition     September, 1986
+10th Edition    October, 1989
+
+Cheers,
+	Warren
+
+

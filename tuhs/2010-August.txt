@@ -1,0 +1,1762 @@
+From dgunix at gmail.com  Sun Aug  1 04:49:32 2010
+From: dgunix at gmail.com (DG UX)
+Date: Sat, 31 Jul 2010 21:49:32 +0300
+Subject: [TUHS] Making progress with old DG/UX virtualization. Need advice.
+Message-ID: <AANLkTin1yeFg1Y2A-pzz+-iKBX2yfj5UoP2V9-TMMpnZ@mail.gmail.com>
+
+As you might remember from a previous post, I am trying to virtualize
+/ emulate an old Data General UNIX system to a VM env'.
+This is my progress so far (after a lot of reading, searching and
+understanding who is who and what does it all mean) :
+
+1. I've DD'ed an exact copy of the raw system disk as an image on my Linux box.
+2. Loaded it up with most virtualization products out there - VMware,
+VirtualBox, Xen/KVM/Qemu, Bochs and such.
+ They all work, ie, bootloader works and getting a DG/UX menu to
+choose my proper kernel/system disk.
+3. This is where they fail, as they cannot find the system's original
+Adaptec PCI SCSI Controller (which is an AIC-7880 chip).
+ Most VM products only support LSI/BusLogic SCSI, and IDE of course.
+
+As I see it, I have a few things I can do to make it work:
+
+1. write an Adaptec driver for a VM product.
+2. write an LSI/BusLogic driver for DG/UX or implement virtio drivers into it.
+3. get IDE support working.
+
+1st 2 options, as I understand from software eng' and other
+professionals, are very difficult.
+The 3rd option is interesting :
+
+On one hand, I have an config file with all of DG/UX's supported
+hardware, IDE is simply not there (would love for someone else to have
+a look if possible. Just say so and I'll send you the file).
+_and_  docs say "Data General has not tested or qualified the use  of
+IDE devices in AViiON AV 2100 systems".
+
+_BUT_, on the other hand, BIOS seems to have plenty of IDE config
+options and also docs say:
+
+ "IDE Interface - Disabled/Auto" , "OnBoard IDE Controller - enabled".
+" The AV 2100 board set consists of  a system board with six PCI
+expansion slots, three ISA expansion slots, and several embedded
+controller devices (PCI video, SCSI, Network, and IDE).
+
+and "..A SCSI-III AIC-7880 controller for connecting up to seven 8-bit
+narrow SCSI devices.  You can also connect a mixture of fifteen 8-bit
+narrow and 16-bit wide SCSI devices to the controller—maximum of seven
+8-bit narrow SCSI devices. PCI-enhanced Integrated Drive Electronics
+(IDE) hard disk interface that supports two hard disk drives"
+
+Also " Since the lower bay contains a SCSI CD-ROM drive, only one
+other SCSI device can be installed.  You can install an IDE device in
+the remaining bay. "
+
+And much more. The question is, if I have an exact image of the
+primary disk and I did try to load it via an IDE drive (in Qemu/
+VirtualBox etc), didn't work out. Like last time, bootloader booted up
+and then hang after trying to load the kernel.
+
+Is there something I can try and do as a different config in my image file?
+Anything else you can think of?
+Please let me know if you need any file sent over.
+Any help would be greatly appreciated.
+
+Thanks,
+Adam
+
+
+From claunia at claunia.com  Mon Aug  2 16:11:57 2010
+From: claunia at claunia.com (Natalia Portillo)
+Date: Mon, 2 Aug 2010 07:11:57 +0100
+Subject: [TUHS] [TUHS & QEMU] Making progress with old DG/UX virtualization.
+	Need advice.
+In-Reply-To: <AANLkTin1yeFg1Y2A-pzz+-iKBX2yfj5UoP2V9-TMMpnZ@mail.gmail.com>
+References: <AANLkTin1yeFg1Y2A-pzz+-iKBX2yfj5UoP2V9-TMMpnZ@mail.gmail.com>
+Message-ID: <ED8FCB5C-7329-4F02-9622-EACCC4E84B30@claunia.com>
+
+Hi,
+
+I've read all your posts in the QEMU mailing list and the TUHS one and I'm answering to both lists in a hope my mail enlights you and any other curious.
+
+First of all, old UNIX systems (and I put my hand on the fire for DG/UX also), use a monolithic linked at setup/later time kernel.
+That is, even if you get a driver (IDE, virtio, whatsoever), the configuration files, the kernel, the ramdisk, everything that lets your system boot, MUST HAVE BEEN BOOT from the AIC controller, the driver is hardcoded, no way to change it.
+
+If you have extensive knowledge of what files a driver setup modifies on DG/UX specifically (knowledge from other UNIX, forget it, they are as different as Porsche and Ferrari motors), you can always get a new kernel with the drivers you need to make it boot and manually put them in your image.
+
+In the case, you meet this requirements, and, you do it, you can then achieve to other problems. The DG/UX workstations are x86 machines, but nothing swears they are PC compatible machines, and they can have a different memory map for some critical device, or include critical devices never found in a PC (like an Intel Macintosh does for example). Just booting from a BIOS doesn't make the machines be the same (PowerPC Macintosh, IBM POWER workstations, Genesi Pegasos, are machines that boot OpenFirmware with heavily different configurations, devices and memory maps).
+
+Also, you are assuming IDE is available in DG/UX just because the controller is present in the hardware. That hardware was also used for Windows NT. IDE support can be JUST FOR Windows, and the DG/UX manufacturer just decided to not include an IDE driver in the kernel (happened in AIX for PCs until last version of all, only SCSI was supported, being a hugely strange controller in PC worlds).
+
+In the case you opt for making a driver (adding IDE, virtio, or other SCSI support) for the DG/UX need to say you need, low level knowledge of the hardware, low level knowledge of the operating system, a working machine (for sure, with the hardware available), a debug machine (almost sure also), C and maybe assembler knowledge. In a scale of 10, this puts the difficulty in 8 for most of programmers, and surely if you were one you stacked with the first option everyone gave you (see next sentence).
+
+The easiest way, and the one that people answered you already in QEMU's mailing list (in a scale of 10 the difficulty is 6 or even 5), is creating an emulated device (that's the correct term, not "driver") for an emulator, like QEMU, Bochs, VirtualBox (forget this option for VMWare, VirtualPC or Parallels) that adds the AIC SCSI controller you exactly need.
+
+Why is this easiest? You don't need any DG/UX working system, you don't need to know how DG/UX works, you don't need to compile a kernel, copy it to your image.
+
+You just take the Adaptec's documentation, and start coding, making a SCSI emulated controller, and testing it with systems you can always reinstall, debug, and check, until they fully work (Windows, Linux, BSD, take your choice).
+
+And then, you just polish it until your DG/UX boots, or finds the memory map as a mess it doesnt like.
+
+Finally, please stop begging on all the internet, spend that time coding the driver or getting the money to pay a programmer that will do.
+
+Sincerely yours,
+Natalia Portillo
+Claunia.com CEO
+QEMU's Official OS Support List maintainer
+
+From dgunix at gmail.com  Mon Aug  2 17:48:42 2010
+From: dgunix at gmail.com (DG UX)
+Date: Mon, 2 Aug 2010 10:48:42 +0300
+Subject: [TUHS] [TUHS & QEMU] Making progress with old DG/UX
+	virtualization. Need advice.
+In-Reply-To: <ED8FCB5C-7329-4F02-9622-EACCC4E84B30@claunia.com>
+References: <AANLkTin1yeFg1Y2A-pzz+-iKBX2yfj5UoP2V9-TMMpnZ@mail.gmail.com>
+	<ED8FCB5C-7329-4F02-9622-EACCC4E84B30@claunia.com>
+Message-ID: <AANLkTi=--dfhcqP4tdtrSx+oN9ixhKfRK3vZ=D7TG2WD@mail.gmail.com>
+
+Thanks Natalia,
+
+I'll start by answering the insultive part of your answer, as my ego
+will not let me go on if I don't:
+
+I am not "begging on all the internet", I am simply seeking solutions,
+help and advice, and making sure to update whoever is interested in
+the progress I am doing.
+Also, I wish to thank you for your insight and well detailed answer.
+Finally I got an explanation as to _why_ solution A will not be as
+good as solution B. That is what I call a winning argument, and I
+thank you for that.
+
+I already have people searching for Adaptec docs and programmers for
+the creation of the driver, err, emulated device.
+
+Take care,
+Adam
+
+
+On Mon, Aug 2, 2010 at 9:11 AM, Natalia Portillo <claunia at claunia.com> wrote:
+> Hi,
+>
+> I've read all your posts in the QEMU mailing list and the TUHS one and I'm answering to both lists in a hope my mail enlights you and any other curious.
+>
+> First of all, old UNIX systems (and I put my hand on the fire for DG/UX also), use a monolithic linked at setup/later time kernel.
+> That is, even if you get a driver (IDE, virtio, whatsoever), the configuration files, the kernel, the ramdisk, everything that lets your system boot, MUST HAVE BEEN BOOT from the AIC controller, the driver is hardcoded, no way to change it.
+>
+> If you have extensive knowledge of what files a driver setup modifies on DG/UX specifically (knowledge from other UNIX, forget it, they are as different as Porsche and Ferrari motors), you can always get a new kernel with the drivers you need to make it boot and manually put them in your image.
+>
+> In the case, you meet this requirements, and, you do it, you can then achieve to other problems. The DG/UX workstations are x86 machines, but nothing swears they are PC compatible machines, and they can have a different memory map for some critical device, or include critical devices never found in a PC (like an Intel Macintosh does for example). Just booting from a BIOS doesn't make the machines be the same (PowerPC Macintosh, IBM POWER workstations, Genesi Pegasos, are machines that boot OpenFirmware with heavily different configurations, devices and memory maps).
+>
+> Also, you are assuming IDE is available in DG/UX just because the controller is present in the hardware. That hardware was also used for Windows NT. IDE support can be JUST FOR Windows, and the DG/UX manufacturer just decided to not include an IDE driver in the kernel (happened in AIX for PCs until last version of all, only SCSI was supported, being a hugely strange controller in PC worlds).
+>
+> In the case you opt for making a driver (adding IDE, virtio, or other SCSI support) for the DG/UX need to say you need, low level knowledge of the hardware, low level knowledge of the operating system, a working machine (for sure, with the hardware available), a debug machine (almost sure also), C and maybe assembler knowledge. In a scale of 10, this puts the difficulty in 8 for most of programmers, and surely if you were one you stacked with the first option everyone gave you (see next sentence).
+>
+> The easiest way, and the one that people answered you already in QEMU's mailing list (in a scale of 10 the difficulty is 6 or even 5), is creating an emulated device (that's the correct term, not "driver") for an emulator, like QEMU, Bochs, VirtualBox (forget this option for VMWare, VirtualPC or Parallels) that adds the AIC SCSI controller you exactly need.
+>
+> Why is this easiest? You don't need any DG/UX working system, you don't need to know how DG/UX works, you don't need to compile a kernel, copy it to your image.
+>
+> You just take the Adaptec's documentation, and start coding, making a SCSI emulated controller, and testing it with systems you can always reinstall, debug, and check, until they fully work (Windows, Linux, BSD, take your choice).
+>
+> And then, you just polish it until your DG/UX boots, or finds the memory map as a mess it doesnt like.
+>
+> Finally, please stop begging on all the internet, spend that time coding the driver or getting the money to pay a programmer that will do.
+>
+> Sincerely yours,
+> Natalia Portillo
+> Claunia.com CEO
+> QEMU's Official OS Support List maintainer
+
+
+From claunia at claunia.com  Tue Aug  3 02:00:58 2010
+From: claunia at claunia.com (Natalia Portillo)
+Date: Mon, 2 Aug 2010 17:00:58 +0100
+Subject: [TUHS] [TUHS & QEMU] Making progress with old DG/UX
+	virtualization. Need advice.
+In-Reply-To: <AANLkTi=--dfhcqP4tdtrSx+oN9ixhKfRK3vZ=D7TG2WD@mail.gmail.com>
+References: <AANLkTin1yeFg1Y2A-pzz+-iKBX2yfj5UoP2V9-TMMpnZ@mail.gmail.com>
+	<ED8FCB5C-7329-4F02-9622-EACCC4E84B30@claunia.com>
+	<AANLkTi=--dfhcqP4tdtrSx+oN9ixhKfRK3vZ=D7TG2WD@mail.gmail.com>
+Message-ID: <102BDE4B-6F31-4C6C-845B-28BBD24B5CF1@claunia.com>
+
+Hi,
+
+El 02/08/2010, a las 08:48, DG UX escribió:
+
+> Thanks Natalia,
+> 
+> I'll start by answering the insultive part of your answer, as my ego
+> will not let me go on if I don't:
+> 
+> I am not "begging on all the internet", I am simply seeking solutions,
+> help and advice, and making sure to update whoever is interested in
+> the progress I am doing.
+> Also, I wish to thank you for your insight and well detailed answer.
+> Finally I got an explanation as to _why_ solution A will not be as
+> good as solution B. That is what I call a winning argument, and I
+> thank you for that.
+
+That's why I sent you the message not because egos
+
+> I already have people searching for Adaptec docs and programmers for
+> the creation of the driver, err, emulated device.
+
+Great, I wish you my best and offer my repository of operating systems to test the emulated device on as much systems as possible when it is mature enough.
+
+> Take care,
+> Adam
+
+Natalia Portillo
+Claunia.com
+
+> On Mon, Aug 2, 2010 at 9:11 AM, Natalia Portillo <claunia at claunia.com> wrote:
+>> Hi,
+>> 
+>> I've read all your posts in the QEMU mailing list and the TUHS one and I'm answering to both lists in a hope my mail enlights you and any other curious.
+>> 
+>> First of all, old UNIX systems (and I put my hand on the fire for DG/UX also), use a monolithic linked at setup/later time kernel.
+>> That is, even if you get a driver (IDE, virtio, whatsoever), the configuration files, the kernel, the ramdisk, everything that lets your system boot, MUST HAVE BEEN BOOT from the AIC controller, the driver is hardcoded, no way to change it.
+>> 
+>> If you have extensive knowledge of what files a driver setup modifies on DG/UX specifically (knowledge from other UNIX, forget it, they are as different as Porsche and Ferrari motors), you can always get a new kernel with the drivers you need to make it boot and manually put them in your image.
+>> 
+>> In the case, you meet this requirements, and, you do it, you can then achieve to other problems. The DG/UX workstations are x86 machines, but nothing swears they are PC compatible machines, and they can have a different memory map for some critical device, or include critical devices never found in a PC (like an Intel Macintosh does for example). Just booting from a BIOS doesn't make the machines be the same (PowerPC Macintosh, IBM POWER workstations, Genesi Pegasos, are machines that boot OpenFirmware with heavily different configurations, devices and memory maps).
+>> 
+>> Also, you are assuming IDE is available in DG/UX just because the controller is present in the hardware. That hardware was also used for Windows NT. IDE support can be JUST FOR Windows, and the DG/UX manufacturer just decided to not include an IDE driver in the kernel (happened in AIX for PCs until last version of all, only SCSI was supported, being a hugely strange controller in PC worlds).
+>> 
+>> In the case you opt for making a driver (adding IDE, virtio, or other SCSI support) for the DG/UX need to say you need, low level knowledge of the hardware, low level knowledge of the operating system, a working machine (for sure, with the hardware available), a debug machine (almost sure also), C and maybe assembler knowledge. In a scale of 10, this puts the difficulty in 8 for most of programmers, and surely if you were one you stacked with the first option everyone gave you (see next sentence).
+>> 
+>> The easiest way, and the one that people answered you already in QEMU's mailing list (in a scale of 10 the difficulty is 6 or even 5), is creating an emulated device (that's the correct term, not "driver") for an emulator, like QEMU, Bochs, VirtualBox (forget this option for VMWare, VirtualPC or Parallels) that adds the AIC SCSI controller you exactly need.
+>> 
+>> Why is this easiest? You don't need any DG/UX working system, you don't need to know how DG/UX works, you don't need to compile a kernel, copy it to your image.
+>> 
+>> You just take the Adaptec's documentation, and start coding, making a SCSI emulated controller, and testing it with systems you can always reinstall, debug, and check, until they fully work (Windows, Linux, BSD, take your choice).
+>> 
+>> And then, you just polish it until your DG/UX boots, or finds the memory map as a mess it doesnt like.
+>> 
+>> Finally, please stop begging on all the internet, spend that time coding the driver or getting the money to pay a programmer that will do.
+>> 
+>> Sincerely yours,
+>> Natalia Portillo
+>> Claunia.com CEO
+>> QEMU's Official OS Support List maintainer
+
+
+
+From neozeed at gmail.com  Wed Aug 11 08:23:00 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Tue, 10 Aug 2010 18:23:00 -0400
+Subject: [TUHS] 2.11 BSD question... (exe sizes)
+Message-ID: <AANLkTi=xUSRhv4zM6c90N5BifoWUB1WMT-mwWRWma4o8@mail.gmail.com>
+
+I managed to get 2.11 installed on SIMH, and hacked the de driver to work
+(pretty much the same thing I did for 4.2 BSD on the 11/780) and now I've
+gotten it networking.
+
+I'll admit I'm not all that swift on the pdp-11, but I get the impression
+that the maximum exe size is 128kb with 64kb of instructions, and 64kb of
+data?  Isn't there something that can be done with overlays or some other
+linker thing to act like an 8086/80286 with the large memory model (ie
+multiple segments...?)
+
+I've been trying to build ircII-4.4 and I can't figure out how to link
+something that big... I've tried the -Z and -O flags to ld to no avail.
+
+Clearly I'm doing either something wrong, or impossible or stupid.
+
+FWIW, here is the size of the same program on the VAX
+
+myname# ls -l irc-4.4
+-rwxr-xr-x  1 root       413696 Jun  8 08:46 irc-4.4*
+myname# size irc-4.4
+text    data    bss     dec     hex
+293888  67584   20784   382256  5d530
+
+I have a feeling that 300kb of text, along with 67kb of data is just too
+much...?
+
+Any pointers would be appreciated!
+
+Jason
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100810/53bcfe09/attachment.html>
+
+From cowan at mercury.ccil.org  Wed Aug 11 13:49:34 2010
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Tue, 10 Aug 2010 23:49:34 -0400
+Subject: [TUHS] 2.11 BSD question... (exe sizes)
+In-Reply-To: <AANLkTi=xUSRhv4zM6c90N5BifoWUB1WMT-mwWRWma4o8@mail.gmail.com>
+References: <AANLkTi=xUSRhv4zM6c90N5BifoWUB1WMT-mwWRWma4o8@mail.gmail.com>
+Message-ID: <20100811034934.GA14746@mercury.ccil.org>
+
+Jason Stevens scripsit:
+
+> I'll admit I'm not all that swift on the pdp-11, but I get the impression
+> that the maximum exe size is 128kb with 64kb of instructions, and 64kb of
+> data?  Isn't there something that can be done with overlays or some other
+> linker thing to act like an 8086/80286 with the large memory model (ie
+> multiple segments...?)
+
+The PDP-11 is inherently a 16-bit-pointer machine; it has no concept
+of 32-bit pointers, so it is always either in the x86 small or the x86
+tiny model.  On DEC's operating systems, you could indeed set up overlays
+that allowed code to be swapped in and out, either to disk or to unmapped
+physical memory (much quicker!)  However, AFAIK ld(1) never provided that
+capability to userspace, although the technique is used inside the kernel.
+In any case, such tricks don't help with data space, which is strictly
+limited to 64K.
+
+--
+There is / One art                      John Cowan <cowan at ccil.org>
+No more / No less                       http://www.ccil.org/~cowan
+To do / All things
+With art- / Lessness    
+
+
+From neozeed at gmail.com  Wed Aug 11 14:45:28 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Wed, 11 Aug 2010 00:45:28 -0400
+Subject: [TUHS] 2.11 BSD question... (exe sizes)
+In-Reply-To: <20100811034934.GA14746@mercury.ccil.org>
+References: <AANLkTi=xUSRhv4zM6c90N5BifoWUB1WMT-mwWRWma4o8@mail.gmail.com>
+	<20100811034934.GA14746@mercury.ccil.org>
+Message-ID: <AANLkTi=mMr2BfHD94V5XVDH6agoePurubQvJy2OndL_e@mail.gmail.com>
+
+>
+>
+> The PDP-11 is inherently a 16-bit-pointer machine; it has no concept
+> of 32-bit pointers, so it is always either in the x86 small or the x86
+> tiny model.
+
+
+I guess it's logical that after the years, intel could at least make *some*
+improvements....
+
+
+> On DEC's operating systems, you could indeed set up overlays
+> that allowed code to be swapped in and out, either to disk or to unmapped
+> physical memory (much quicker!)  However, AFAIK ld(1) never provided that
+> capability to userspace, although the technique is used inside the kernel.
+> In any case, such tricks don't help with data space, which is strictly
+> limited to 64K.
+>
+
+And that pretty much seals the deal.  Oh well, it's amazing how big things
+have grown over the years....!
+
+
+
+> --
+> There is / One art                      John Cowan <cowan at ccil.org>
+> No more / No less                       http://www.ccil.org/~cowan
+> To do / All things
+> With art- / Lessness
+>
+
+
+Thanks anyways!
+
+Jason
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100811/2f3c10d5/attachment.html>
+
+From jkunz at unixag-kl.fh-kl.de  Wed Aug 11 17:27:41 2010
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Wed, 11 Aug 2010 09:27:41 +0200
+Subject: [TUHS] 2.11 BSD question... (exe sizes)
+In-Reply-To: <AANLkTi=xUSRhv4zM6c90N5BifoWUB1WMT-mwWRWma4o8@mail.gmail.com>
+References: <AANLkTi=xUSRhv4zM6c90N5BifoWUB1WMT-mwWRWma4o8@mail.gmail.com>
+Message-ID: <20100811092741.364c374a.jkunz@unixag-kl.fh-kl.de>
+
+On Tue, 10 Aug 2010 18:23:00 -0400
+Jason Stevens <neozeed at gmail.com> wrote:
+
+> I get the impression that the maximum exe size is 128kb with 64kb of
+> instructions, and 64kb of data? 
+> Isn't there something that can be done with overlays
+You are limited to 64 kB of data. Code size can be larger then 64 kB
+with the help of overlays. Have a look at how the kernel does this.
+-- 
+
+
+\end{Jochen}
+
+\ref{http://www.unixag-kl.fh-kl.de/~jkunz/}
+
+
+
+From selector.dub.u at gmail.com  Wed Aug 11 19:18:14 2010
+From: selector.dub.u at gmail.com (selector-dub-u)
+Date: Wed, 11 Aug 2010 17:18:14 +0800
+Subject: [TUHS] Hello . f--m
+Message-ID: <AANLkTinY6wM4eYGu4YvO3J3O1Ymx-_CpJ-7wcKExf7TR@mail.gmail.com>
+
+Hi,friend
+  I find a good website which is www.dybers2.com   It sells electronic
+products. All of them are brand new and original and they all have
+cheap price and high quality.The company also deal with the tariff for
+us. One of my friends orders an Apple laptop. It only takes a week to
+get it.
+Let us enjoy the happiness of shopping.  %--u
+
+
+From wkt at tuhs.org  Wed Aug 11 21:54:42 2010
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 11 Aug 2010 21:54:42 +1000
+Subject: [TUHS] Hello
+In-Reply-To: <AANLkTinY6wM4eYGu4YvO3J3O1Ymx-_CpJ-7wcKExf7TR@mail.gmail.com>
+References: <AANLkTinY6wM4eYGu4YvO3J3O1Ymx-_CpJ-7wcKExf7TR@mail.gmail.com>
+Message-ID: <20100811115442.GA29069@minnie.tuhs.org>
+
+Hmm, a person actually on the TUHS list who sends spam. I've removed them
+from the list. Apologies for the noise.
+Cheers,
+	Warren
+
+
+From dgunix at gmail.com  Thu Aug 12 00:14:11 2010
+From: dgunix at gmail.com (DG UX)
+Date: Wed, 11 Aug 2010 17:14:11 +0300
+Subject: [TUHS] DG/UX user/admin around?
+Message-ID: <AANLkTinTbTke=2tGeQsHfk3G6_e9cdF7OvTKN+rCU2qK@mail.gmail.com>
+
+Sorry to bother you all with my questions over this ancient machine
+and my failing trials with it..
+Trying to get a DGUX system (Intel based) to work, as is, on a 'regular' x86 PC.
+
+Just a couple of things :
+
+1. I did find out that that DG machine is looking for an Adaptec PCI
+SCSI Controller, and so I got an AHA-2940UW PCI card, installed it in
+an old PC, got a matching 9GB HDD and booted it up from my image I've
+'DD'ed from the original DG machine.
+Boot prompt came up and said it's trying to load
+sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3
+it didn't, no error msg, just gave me back a "Boot command:" prompt.
+Bootpath of the original machine is sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3.
+The disk drive parameters are correct, according to the docs, its -
+dev(ctrl(pci[pci_num]),slot[,func_num[,ctrl_id]])[,dev_id[,LUN]]).
+I've checked the PCI slot in which I installed the card, it's 3, and
+so I've tried '3' instead of 'd' in the command above, just got the
+boot prompt back again.
+Also tried - sd(apsc(pci(),3),0)root:/dgux -3  which should also work
+according to the docs (all other params are default).
+Tried to play with it and tried tons of combinations, just for the
+heck of it, still nothing. If I do type in some nonsense it does give
+me an error msg : "Error: No device specifications found in the boot
+command. Invalid boot command line".
+According to the docs, once I get the correct syntax, the system should load up.
+Anyone got any advice about that?
+
+2.   Anyone here a/was a DG/UX user/admin? you guys are very hard to find :)
+
+Thanks,
+D'
+
+
+From neozeed at gmail.com  Thu Aug 12 01:05:06 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Wed, 11 Aug 2010 11:05:06 -0400
+Subject: [TUHS] 2.11 BSD question... (exe sizes)
+In-Reply-To: <4C627129.2050509@softjar.se>
+References: <mailman.1.1281492002.20712.tuhs@minnie.tuhs.org>
+	<4C627129.2050509@softjar.se>
+Message-ID: <AANLkTinyV3h9SYY0no+yXVifi=7scaBz1e-205zoNb8G@mail.gmail.com>
+
+The 'problem' is with the de driver...Basically SIMH flags something wrong
+with all incoming packets, and the driver thinks they are all corrupt...
+
+in the procedure derecv
+
+                   if ((rp->r_flags &
+(RFLG_ERRS|RFLG_FRAM|RFLG_OFLO|RFLG_CRC))||
+                       (rp->r_flags&(RFLG_STP|RFLG_ENP)) !=
+(RFLG_STP|RFLG_ENP) ||
+                       (rp->r_lenerr & (RERR_BUFL|RERR_UBTO|RERR_NCHN)) ||
+                       len < ETHERMIN || len > ETHERMTU) {
+
+something here is being passed wrong.. I've just changed the statement to
+if(1==2) to keep the logic flow...
+
+Anyways the same issue cropped up with 4.2 BSD & the VAX 11/780
+
+On my pdp-11 the ini I'm using is:
+
+set cpu 11/94 4M
+set cpu cis
+set cpu idle
+set xu ena
+att xu slirp
+;attach tm0 211bsd.tap
+attach tm0 ircii-4.4.source.tap
+set rp0 rp06
+attach rp0 auto.dsk
+set rq dis
+set rk dis
+set rl dis
+set hk dis
+set rx dis
+set tq dis
+set dz lines=8
+att dz 1000
+boot rp0
+
+I'm also using a version of SIMH that I've replaced the libpcap with SLiRP
+from Qemu.. It's basically a user mode ip stack to do NAT.  The advantage is
+that they always have the same ip address, and it doesn't
+require escalated privileges to run.
+
+On Wed, Aug 11, 2010 at 5:45 AM, Johnny Billquist <bqt at softjar.se> wrote:
+
+> Jason Stevens <neozeed at gmail.com> wrote:
+>
+>  I managed to get 2.11 installed on SIMH, and hacked the de driver to work
+>> (pretty much the same thing I did for 4.2 BSD on the 11/780) and now I've
+>> gotten it networking.
+>>
+>
+> Huh? What did you hack with the qe driver? Was that in 2.11BSD? I didn't
+> know there was any problems with it in the first place.
+>
+> Or is there some problem in simh that you fixed?
+>
+>  I'll admit I'm not all that swift on the pdp-11, but I get the impression
+>>
+>> that the maximum exe size is 128kb with 64kb of instructions, and 64kb of
+>> data?  Isn't there something that can be done with overlays or some other
+>> linker thing to act like an 8086/80286 with the large memory model (ie
+>> multiple segments...?)
+>>
+>
+> Yes and no. In principle, the maximum size of a program is 64K instruction
+> and 64K data. That's as much as is directly addressable. With overloays you
+> can extend that somewhat, but there are limitations and restrictions.
+>
+>
+>  I've been trying to build ircII-4.4 and I can't figure out how to link
+>> something that big... I've tried the -Z and -O flags to ld to no avail.
+>>
+>> Clearly I'm doing either something wrong, or impossible or stupid.
+>>
+>> FWIW, here is the size of the same program on the VAX
+>>
+>> myname# ls -l irc-4.4
+>> -rwxr-xr-x  1 root       413696 Jun  8 08:46 irc-4.4*
+>> myname# size irc-4.4
+>> text    data    bss     dec     hex
+>> 293888  67584   20784   382256  5d530
+>>
+>> I have a feeling that 300kb of text, along with 67kb of data is just too
+>> much...?
+>>
+>> Any pointers would be appreciated!
+>>
+>
+> You'll need to trim some fat off.
+>
+> Points to remember:
+> 64K data is the max. There is no way to use overlays to get more data
+> space. Overlays can only extend the instruction space.
+> Overlays and the main program share the same address space. That is, the
+> size of the main code and the largest overlay segment together must not
+> exceed 64K. So, overlays is just a way to move parts of the program in and
+> out of your basic 64K address space.
+> When you link a program, you'll be able to see the sizes of all segments as
+> well as the main program.
+>
+> As an example, this is how tcsh looks like:
+>
+> Test:/# size /bin/tcsh
+>
+> text    data    bss     dec     hex
+> 48960   14844   11986   75790   1280e   total text: 140864
+>        overlays: 15424,16000,14144,14016,16256,16064
+>
+> Notice how text+max(sizeof overlays) is less than 64K.
+>
+> All that said, you can easily find IRC clients who are much smaller than
+> that... :-)
+>
+>        Johnny
+>
+> --
+> Johnny Billquist                  || "I'm on a bus
+>                                  ||  on a psychedelic trip
+> email: bqt at softjar.se             ||  Reading murder books
+> pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100811/96ac7b37/attachment.html>
+
+From carl.lowenstein at gmail.com  Tue Aug 24 10:05:10 2010
+From: carl.lowenstein at gmail.com (Carl Lowenstein)
+Date: Mon, 23 Aug 2010 17:05:10 -0700
+Subject: [TUHS] Fwd: [Sysadmin-L] Historical materials
+In-Reply-To: <201008232141.o7NLfbi9048767@communication.ucsd.edu>
+References: <201008232141.o7NLfbi9048767@communication.ucsd.edu>
+Message-ID: <AANLkTimbs74+w98=E_xsyYBqExB4r8SDpqnLyqbrqa5e@mail.gmail.com>
+
+---------- Forwarded message ----------
+From: Bruce Jones <probes at communication.ucsd.edu>
+Date: Mon, Aug 23, 2010 at 2:41 PM
+Subject: [Sysadmin-L]  Historical materials
+To: sysadmin-L at ucsd.edu
+
+
+
+Anyone want the complete set for BSD/386 v 1.0?
+
+Includes manual, CDR, and 3.3" diskettes.
+
+Just the thing to add to your library of obsolete but historically
+significant software.
+
+Bruce Jones
+Department of Communication
+(858) 534-0417/4410             FAX (858) 534-7315
+
+ -=- -=- -=- -=- -=- -=- -=- -=- -=- -=- -=- -=- -=- -=- -=- -=- -=-
+
+
+
+
+
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenstein at ucsd.edu
+
+
+From claunia at claunia.com  Tue Aug 24 11:01:56 2010
+From: claunia at claunia.com (Natalia Portillo)
+Date: Tue, 24 Aug 2010 02:01:56 +0100
+Subject: [TUHS] DG/UX user/admin around?
+In-Reply-To: <AANLkTinTbTke=2tGeQsHfk3G6_e9cdF7OvTKN+rCU2qK@mail.gmail.com>
+References: <AANLkTinTbTke=2tGeQsHfk3G6_e9cdF7OvTKN+rCU2qK@mail.gmail.com>
+Message-ID: <43599C01-574E-48C6-A192-8C587A814178@claunia.com>
+
+Hi,
+
+Just a question.
+
+How did you checked the PCI bus and slot numbers?
+Counting physically on the motherboard?
+
+If this is the case you're doing it wrong.
+
+The chipset could have various buses and slot numbers and so what appears physically to be slot 0 can easily be bus 2 slot 6.
+
+El 11/08/2010, a las 15:14, DG UX escribió:
+
+> Sorry to bother you all with my questions over this ancient machine
+> and my failing trials with it..
+> Trying to get a DGUX system (Intel based) to work, as is, on a 'regular' x86 PC.
+> 
+> Just a couple of things :
+> 
+> 1. I did find out that that DG machine is looking for an Adaptec PCI
+> SCSI Controller, and so I got an AHA-2940UW PCI card, installed it in
+> an old PC, got a matching 9GB HDD and booted it up from my image I've
+> 'DD'ed from the original DG machine.
+> Boot prompt came up and said it's trying to load
+> sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3
+> it didn't, no error msg, just gave me back a "Boot command:" prompt.
+> Bootpath of the original machine is sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3.
+> The disk drive parameters are correct, according to the docs, its -
+> dev(ctrl(pci[pci_num]),slot[,func_num[,ctrl_id]])[,dev_id[,LUN]]).
+> I've checked the PCI slot in which I installed the card, it's 3, and
+> so I've tried '3' instead of 'd' in the command above, just got the
+> boot prompt back again.
+> Also tried - sd(apsc(pci(),3),0)root:/dgux -3  which should also work
+> according to the docs (all other params are default).
+> Tried to play with it and tried tons of combinations, just for the
+> heck of it, still nothing. If I do type in some nonsense it does give
+> me an error msg : "Error: No device specifications found in the boot
+> command. Invalid boot command line".
+> According to the docs, once I get the correct syntax, the system should load up.
+> Anyone got any advice about that?
+> 
+> 2.   Anyone here a/was a DG/UX user/admin? you guys are very hard to find :)
+> 
+> Thanks,
+> D'
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From dgunix at gmail.com  Wed Aug 25 00:44:20 2010
+From: dgunix at gmail.com (DG UX)
+Date: Tue, 24 Aug 2010 17:44:20 +0300
+Subject: [TUHS] DG/UX user/admin around?
+In-Reply-To: <43599C01-574E-48C6-A192-8C587A814178@claunia.com>
+References: <AANLkTinTbTke=2tGeQsHfk3G6_e9cdF7OvTKN+rCU2qK@mail.gmail.com>
+	<43599C01-574E-48C6-A192-8C587A814178@claunia.com>
+Message-ID: <AANLkTinsdZd7xqWDfdbO89Vb_MMcBFGUU+f2uTp2dGvY@mail.gmail.com>
+
+I've tried 3 things:
+
+1. Board shows "PCI3"
+2. Linux LiveCD says PCI slot 3
+3. I've tried a million combinations, just for the heck of it. None worked.
+
+And also, as I said, in case there is only 1 adapter it should
+automatically default and I cant shorthand it, as -
+sd(apsc(pci(),3),0)root
+Of course that as for the controller ID it is 7 - as shown by the
+Adaptec management tool and the device ID is 1 (or 0), depending on
+where I put it's jumper and also shown by mgmt tool at boot.
+
+Got any other ideas of how to verify bus/slot?
+
+
+On Tue, Aug 24, 2010 at 4:01 AM, Natalia Portillo <claunia at claunia.com> wrote:
+> Hi,
+>
+> Just a question.
+>
+> How did you checked the PCI bus and slot numbers?
+> Counting physically on the motherboard?
+>
+> If this is the case you're doing it wrong.
+>
+> The chipset could have various buses and slot numbers and so what appears physically to be slot 0 can easily be bus 2 slot 6.
+>
+> El 11/08/2010, a las 15:14, DG UX escribió:
+>
+>> Sorry to bother you all with my questions over this ancient machine
+>> and my failing trials with it..
+>> Trying to get a DGUX system (Intel based) to work, as is, on a 'regular' x86 PC.
+>>
+>> Just a couple of things :
+>>
+>> 1. I did find out that that DG machine is looking for an Adaptec PCI
+>> SCSI Controller, and so I got an AHA-2940UW PCI card, installed it in
+>> an old PC, got a matching 9GB HDD and booted it up from my image I've
+>> 'DD'ed from the original DG machine.
+>> Boot prompt came up and said it's trying to load
+>> sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3
+>> it didn't, no error msg, just gave me back a "Boot command:" prompt.
+>> Bootpath of the original machine is sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3.
+>> The disk drive parameters are correct, according to the docs, its -
+>> dev(ctrl(pci[pci_num]),slot[,func_num[,ctrl_id]])[,dev_id[,LUN]]).
+>> I've checked the PCI slot in which I installed the card, it's 3, and
+>> so I've tried '3' instead of 'd' in the command above, just got the
+>> boot prompt back again.
+>> Also tried - sd(apsc(pci(),3),0)root:/dgux -3  which should also work
+>> according to the docs (all other params are default).
+>> Tried to play with it and tried tons of combinations, just for the
+>> heck of it, still nothing. If I do type in some nonsense it does give
+>> me an error msg : "Error: No device specifications found in the boot
+>> command. Invalid boot command line".
+>> According to the docs, once I get the correct syntax, the system should load up.
+>> Anyone got any advice about that?
+>>
+>> 2.   Anyone here a/was a DG/UX user/admin? you guys are very hard to find :)
+>>
+>> Thanks,
+>> D'
+>> _______________________________________________
+>> TUHS mailing list
+>> TUHS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+
+
+From claunia at claunia.com  Wed Aug 25 01:34:51 2010
+From: claunia at claunia.com (Natalia Portillo)
+Date: Tue, 24 Aug 2010 16:34:51 +0100
+Subject: [TUHS] DG/UX user/admin around?
+In-Reply-To: <AANLkTinsdZd7xqWDfdbO89Vb_MMcBFGUU+f2uTp2dGvY@mail.gmail.com>
+References: <AANLkTinTbTke=2tGeQsHfk3G6_e9cdF7OvTKN+rCU2qK@mail.gmail.com>
+	<43599C01-574E-48C6-A192-8C587A814178@claunia.com>
+	<AANLkTinsdZd7xqWDfdbO89Vb_MMcBFGUU+f2uTp2dGvY@mail.gmail.com>
+Message-ID: <B395BC57-D5C5-44F1-9CA9-62E58BF4DF1C@claunia.com>
+
+Use lspci -v on the Linux LiveCD to be sure that bus, slot, function and controller number are correct.
+
+El 24/08/2010, a las 15:44, DG UX escribió:
+
+> I've tried 3 things:
+> 
+> 1. Board shows "PCI3"
+> 2. Linux LiveCD says PCI slot 3
+> 3. I've tried a million combinations, just for the heck of it. None worked.
+> 
+> And also, as I said, in case there is only 1 adapter it should
+> automatically default and I cant shorthand it, as -
+> sd(apsc(pci(),3),0)root
+> Of course that as for the controller ID it is 7 - as shown by the
+> Adaptec management tool and the device ID is 1 (or 0), depending on
+> where I put it's jumper and also shown by mgmt tool at boot.
+> 
+> Got any other ideas of how to verify bus/slot?
+> 
+> 
+> On Tue, Aug 24, 2010 at 4:01 AM, Natalia Portillo <claunia at claunia.com> wrote:
+>> Hi,
+>> 
+>> Just a question.
+>> 
+>> How did you checked the PCI bus and slot numbers?
+>> Counting physically on the motherboard?
+>> 
+>> If this is the case you're doing it wrong.
+>> 
+>> The chipset could have various buses and slot numbers and so what appears physically to be slot 0 can easily be bus 2 slot 6.
+>> 
+>> El 11/08/2010, a las 15:14, DG UX escribió:
+>> 
+>>> Sorry to bother you all with my questions over this ancient machine
+>>> and my failing trials with it..
+>>> Trying to get a DGUX system (Intel based) to work, as is, on a 'regular' x86 PC.
+>>> 
+>>> Just a couple of things :
+>>> 
+>>> 1. I did find out that that DG machine is looking for an Adaptec PCI
+>>> SCSI Controller, and so I got an AHA-2940UW PCI card, installed it in
+>>> an old PC, got a matching 9GB HDD and booted it up from my image I've
+>>> 'DD'ed from the original DG machine.
+>>> Boot prompt came up and said it's trying to load
+>>> sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3
+>>> it didn't, no error msg, just gave me back a "Boot command:" prompt.
+>>> Bootpath of the original machine is sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3.
+>>> The disk drive parameters are correct, according to the docs, its -
+>>> dev(ctrl(pci[pci_num]),slot[,func_num[,ctrl_id]])[,dev_id[,LUN]]).
+>>> I've checked the PCI slot in which I installed the card, it's 3, and
+>>> so I've tried '3' instead of 'd' in the command above, just got the
+>>> boot prompt back again.
+>>> Also tried - sd(apsc(pci(),3),0)root:/dgux -3  which should also work
+>>> according to the docs (all other params are default).
+>>> Tried to play with it and tried tons of combinations, just for the
+>>> heck of it, still nothing. If I do type in some nonsense it does give
+>>> me an error msg : "Error: No device specifications found in the boot
+>>> command. Invalid boot command line".
+>>> According to the docs, once I get the correct syntax, the system should load up.
+>>> Anyone got any advice about that?
+>>> 
+>>> 2.   Anyone here a/was a DG/UX user/admin? you guys are very hard to find :)
+>>> 
+>>> Thanks,
+>>> D'
+>>> _______________________________________________
+>>> TUHS mailing list
+>>> TUHS at minnie.tuhs.org
+>>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>> 
+>> 
+
+
+
+From dgunix at gmail.com  Wed Aug 25 17:33:26 2010
+From: dgunix at gmail.com (DG UX)
+Date: Wed, 25 Aug 2010 10:33:26 +0300
+Subject: [TUHS] DG/UX user/admin around?
+In-Reply-To: <B395BC57-D5C5-44F1-9CA9-62E58BF4DF1C@claunia.com>
+References: <AANLkTinTbTke=2tGeQsHfk3G6_e9cdF7OvTKN+rCU2qK@mail.gmail.com>
+	<43599C01-574E-48C6-A192-8C587A814178@claunia.com>
+	<AANLkTinsdZd7xqWDfdbO89Vb_MMcBFGUU+f2uTp2dGvY@mail.gmail.com>
+	<B395BC57-D5C5-44F1-9CA9-62E58BF4DF1C@claunia.com>
+Message-ID: <AANLkTi=VKwYCAW-+qE0=ijRQk5O0ci1abjWwT326GRXU@mail.gmail.com>
+
+Yeah, tried that, even with -vvv. Got :
+
+01:09.0 SCSI storage controller: Adaptec AHA-2940U/UW/D / AIC-7881U
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR+ FastB2B-
+        Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium
+>TAbort- <TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64 (2000ns min, 2000ns max), Cache Line Size: 64 bytes
+        Interrupt: pin A routed to IRQ 16
+        Region 0: I/O ports at ec00 [disabled] [size=256]
+        Region 1: Memory at ff8ff000 (32-bit, non-prefetchable) [size=4K]
+        Expansion ROM at 30000000 [disabled] [size=64K]
+
+That means that is bus 01, device 09, and function 0. Correct? That means that
+dev(ctrl(pci[pci_num]),slot[,func_num[,ctrl_id]])[,dev_id[,LUN]])    ==
+sd(apsc(pci(0),3,0,7),9,0) ?
+
+I think that ctrl_id is my Adaptec adapter (7, according to Adaptec
+mgmt) and dev_id is my SCSI HDD = 1 according to jumper setting and
+Adaptet mgmt).
+
+
+Also dmidecode shows PCI3 as the only one that is 'in use'.
+
+Handle 0x0903, DMI type 9, 13 bytes
+System Slot Information
+        Designation: PCI3
+        Type: 32-bit PCI
+        Current Usage: In Use
+        Length: Long
+        ID: 3
+        Characteristics:
+                5.0 V is provided
+                3.3 V is provided
+                PME signal is supported
+
+
+
+Thanks
+
+
+
+On Tue, Aug 24, 2010 at 6:34 PM, Natalia Portillo <claunia at claunia.com> wrote:
+> Use lspci -v on the Linux LiveCD to be sure that bus, slot, function and controller number are correct.
+>
+> El 24/08/2010, a las 15:44, DG UX escribió:
+>
+>> I've tried 3 things:
+>>
+>> 1. Board shows "PCI3"
+>> 2. Linux LiveCD says PCI slot 3
+>> 3. I've tried a million combinations, just for the heck of it. None worked.
+>>
+>> And also, as I said, in case there is only 1 adapter it should
+>> automatically default and I cant shorthand it, as -
+>> sd(apsc(pci(),3),0)root
+>> Of course that as for the controller ID it is 7 - as shown by the
+>> Adaptec management tool and the device ID is 1 (or 0), depending on
+>> where I put it's jumper and also shown by mgmt tool at boot.
+>>
+>> Got any other ideas of how to verify bus/slot?
+>>
+>>
+>> On Tue, Aug 24, 2010 at 4:01 AM, Natalia Portillo <claunia at claunia.com> wrote:
+>>> Hi,
+>>>
+>>> Just a question.
+>>>
+>>> How did you checked the PCI bus and slot numbers?
+>>> Counting physically on the motherboard?
+>>>
+>>> If this is the case you're doing it wrong.
+>>>
+>>> The chipset could have various buses and slot numbers and so what appears physically to be slot 0 can easily be bus 2 slot 6.
+>>>
+>>> El 11/08/2010, a las 15:14, DG UX escribió:
+>>>
+>>>> Sorry to bother you all with my questions over this ancient machine
+>>>> and my failing trials with it..
+>>>> Trying to get a DGUX system (Intel based) to work, as is, on a 'regular' x86 PC.
+>>>>
+>>>> Just a couple of things :
+>>>>
+>>>> 1. I did find out that that DG machine is looking for an Adaptec PCI
+>>>> SCSI Controller, and so I got an AHA-2940UW PCI card, installed it in
+>>>> an old PC, got a matching 9GB HDD and booted it up from my image I've
+>>>> 'DD'ed from the original DG machine.
+>>>> Boot prompt came up and said it's trying to load
+>>>> sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3
+>>>> it didn't, no error msg, just gave me back a "Boot command:" prompt.
+>>>> Bootpath of the original machine is sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3.
+>>>> The disk drive parameters are correct, according to the docs, its -
+>>>> dev(ctrl(pci[pci_num]),slot[,func_num[,ctrl_id]])[,dev_id[,LUN]]).
+>>>> I've checked the PCI slot in which I installed the card, it's 3, and
+>>>> so I've tried '3' instead of 'd' in the command above, just got the
+>>>> boot prompt back again.
+>>>> Also tried - sd(apsc(pci(),3),0)root:/dgux -3  which should also work
+>>>> according to the docs (all other params are default).
+>>>> Tried to play with it and tried tons of combinations, just for the
+>>>> heck of it, still nothing. If I do type in some nonsense it does give
+>>>> me an error msg : "Error: No device specifications found in the boot
+>>>> command. Invalid boot command line".
+>>>> According to the docs, once I get the correct syntax, the system should load up.
+>>>> Anyone got any advice about that?
+>>>>
+>>>> 2.   Anyone here a/was a DG/UX user/admin? you guys are very hard to find :)
+>>>>
+>>>> Thanks,
+>>>> D'
+>>>> _______________________________________________
+>>>> TUHS mailing list
+>>>> TUHS at minnie.tuhs.org
+>>>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>>>
+>>>
+>
+>
+
+
+From imp at bsdimp.com  Thu Aug 26 00:29:37 2010
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Wed, 25 Aug 2010 08:29:37 -0600 (MDT)
+Subject: [TUHS] DG/UX user/admin around?
+In-Reply-To: <AANLkTi=VKwYCAW-+qE0=ijRQk5O0ci1abjWwT326GRXU@mail.gmail.com>
+References: <AANLkTinsdZd7xqWDfdbO89Vb_MMcBFGUU+f2uTp2dGvY@mail.gmail.com>
+	<B395BC57-D5C5-44F1-9CA9-62E58BF4DF1C@claunia.com>
+	<AANLkTi=VKwYCAW-+qE0=ijRQk5O0ci1abjWwT326GRXU@mail.gmail.com>
+Message-ID: <20100825.082937.1151864885528850825.imp@bsdimp.com>
+
+In message: <AANLkTi=VKwYCAW-+qE0=ijRQk5O0ci1abjWwT326GRXU at mail.gmail.com>
+            DG UX <dgunix at gmail.com> writes:
+: Yeah, tried that, even with -vvv. Got :
+:
+: 01:09.0 SCSI storage controller: Adaptec AHA-2940U/UW/D / AIC-7881U
+:         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+: ParErr- Stepping- SERR+ FastB2B-
+:         Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium
+: >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+:         Latency: 64 (2000ns min, 2000ns max), Cache Line Size: 64 bytes
+:         Interrupt: pin A routed to IRQ 16
+:         Region 0: I/O ports at ec00 [disabled] [size=256]
+:         Region 1: Memory at ff8ff000 (32-bit, non-prefetchable) [size=4K]
+:         Expansion ROM at 30000000 [disabled] [size=64K]
+: 
+: That means that is bus 01, device 09, and function 0. Correct? That means that
+: dev(ctrl(pci[pci_num]),slot[,func_num[,ctrl_id]])[,dev_id[,LUN]])    ==
+: sd(apsc(pci(0),3,0,7),9,0) ?
+
+bus is going to be 1 here.  slot == device since it makes little sense
+to mix scsi and pci IDs in that part of the string to me and
+bus:dev:func is fairly standard notation (with variation in
+punctionation) and dev_id would be 1, since that's the SCSI ID (where
+it does make sense to use scsi IDs).
+
+: I think that ctrl_id is my Adaptec adapter (7, according to Adaptec
+: mgmt) and dev_id is my SCSI HDD = 1 according to jumper setting and
+: Adaptet mgmt).
+
+I don't think that ctrl_id is 7.  Your SCSI ID for the controller on
+the scsi bus is 7, but the SCSI ID for all controllers is 7.  If you
+had a dual channel scsi card, you'd have to distinguish channel A from
+channel B, and that's usually going to be encoded 0/1 or 1/2 (more
+typically the former, but I don't know DGUX specifically).
+
+So wouldn't that be sd(apsc(pci1),9,0,0),1,0) or more simply
+sd(apsc(pci1),9),1)?  Hmmm, the above expression has too few ) so I'm
+thinking based on the original boot command, it should be either
+sd(apsc(pci(1),9,0,0),1,0) or more simply sd(apsc(pci(1),9),1)
+
+Maybe this will be helpful.  But that's just a shot in the dark.
+There also appears to be a PCI bridge in the new system that isn't in
+the old system, since the card is on pci bus 1 and the boot loader is
+looking for it on pci bus 0.  This likely isn't a huge deal since the
+BIOS of that vintage PC will initialize the bridge correctly.
+
+Warner
+
+: Also dmidecode shows PCI3 as the only one that is 'in use'.
+: 
+: Handle 0x0903, DMI type 9, 13 bytes
+: System Slot Information
+:         Designation: PCI3
+:         Type: 32-bit PCI
+:         Current Usage: In Use
+:         Length: Long
+:         ID: 3
+:         Characteristics:
+:                 5.0 V is provided
+:                 3.3 V is provided
+:                 PME signal is supported
+: 
+: 
+: 
+: Thanks
+: 
+: 
+: 
+: On Tue, Aug 24, 2010 at 6:34 PM, Natalia Portillo <claunia at claunia.com> wrote:
+: > Use lspci -v on the Linux LiveCD to be sure that bus, slot, function and controller number are correct.
+: >
+: > El 24/08/2010, a las 15:44, DG UX escribió:
+: >
+: >> I've tried 3 things:
+: >>
+: >> 1. Board shows "PCI3"
+: >> 2. Linux LiveCD says PCI slot 3
+: >> 3. I've tried a million combinations, just for the heck of it. None worked.
+: >>
+: >> And also, as I said, in case there is only 1 adapter it should
+: >> automatically default and I cant shorthand it, as -
+: >> sd(apsc(pci(),3),0)root
+: >> Of course that as for the controller ID it is 7 - as shown by the
+: >> Adaptec management tool and the device ID is 1 (or 0), depending on
+: >> where I put it's jumper and also shown by mgmt tool at boot.
+: >>
+: >> Got any other ideas of how to verify bus/slot?
+: >>
+: >>
+: >> On Tue, Aug 24, 2010 at 4:01 AM, Natalia Portillo <claunia at claunia.com> wrote:
+: >>> Hi,
+: >>>
+: >>> Just a question.
+: >>>
+: >>> How did you checked the PCI bus and slot numbers?
+: >>> Counting physically on the motherboard?
+: >>>
+: >>> If this is the case you're doing it wrong.
+: >>>
+: >>> The chipset could have various buses and slot numbers and so what appears physically to be slot 0 can easily be bus 2 slot 6.
+: >>>
+: >>> El 11/08/2010, a las 15:14, DG UX escribió:
+: >>>
+: >>>> Sorry to bother you all with my questions over this ancient machine
+: >>>> and my failing trials with it..
+: >>>> Trying to get a DGUX system (Intel based) to work, as is, on a 'regular' x86 PC.
+: >>>>
+: >>>> Just a couple of things :
+: >>>>
+: >>>> 1. I did find out that that DG machine is looking for an Adaptec PCI
+: >>>> SCSI Controller, and so I got an AHA-2940UW PCI card, installed it in
+: >>>> an old PC, got a matching 9GB HDD and booted it up from my image I've
+: >>>> 'DD'ed from the original DG machine.
+: >>>> Boot prompt came up and said it's trying to load
+: >>>> sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3
+: >>>> it didn't, no error msg, just gave me back a "Boot command:" prompt.
+: >>>> Bootpath of the original machine is sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3.
+: >>>> The disk drive parameters are correct, according to the docs, its -
+: >>>> dev(ctrl(pci[pci_num]),slot[,func_num[,ctrl_id]])[,dev_id[,LUN]]).
+: >>>> I've checked the PCI slot in which I installed the card, it's 3, and
+: >>>> so I've tried '3' instead of 'd' in the command above, just got the
+: >>>> boot prompt back again.
+: >>>> Also tried - sd(apsc(pci(),3),0)root:/dgux -3  which should also work
+: >>>> according to the docs (all other params are default).
+: >>>> Tried to play with it and tried tons of combinations, just for the
+: >>>> heck of it, still nothing. If I do type in some nonsense it does give
+: >>>> me an error msg : "Error: No device specifications found in the boot
+: >>>> command. Invalid boot command line".
+: >>>> According to the docs, once I get the correct syntax, the system should load up.
+: >>>> Anyone got any advice about that?
+: >>>>
+: >>>> 2.   Anyone here a/was a DG/UX user/admin? you guys are very hard to find :)
+: >>>>
+: >>>> Thanks,
+: >>>> D'
+: >>>> _______________________________________________
+: >>>> TUHS mailing list
+: >>>> TUHS at minnie.tuhs.org
+: >>>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+: >>>
+: >>>
+: >
+: >
+: _______________________________________________
+: TUHS mailing list
+: TUHS at minnie.tuhs.org
+: https://minnie.tuhs.org/mailman/listinfo/tuhs
+: 
+: 
+
+
+From dgunix at gmail.com  Thu Aug 26 17:14:06 2010
+From: dgunix at gmail.com (DG UX)
+Date: Thu, 26 Aug 2010 10:14:06 +0300
+Subject: [TUHS] DG/UX user/admin around?
+In-Reply-To: <20100825.082937.1151864885528850825.imp@bsdimp.com>
+References: <AANLkTinsdZd7xqWDfdbO89Vb_MMcBFGUU+f2uTp2dGvY@mail.gmail.com>
+	<B395BC57-D5C5-44F1-9CA9-62E58BF4DF1C@claunia.com>
+	<AANLkTi=VKwYCAW-+qE0=ijRQk5O0ci1abjWwT326GRXU@mail.gmail.com>
+	<20100825.082937.1151864885528850825.imp@bsdimp.com>
+Message-ID: <AANLkTi=EymaQ2XBYzZeYLCea1ZOQietXcXxfODn8ZuLz@mail.gmail.com>
+
+According to the docs, there are ranges to those parameters :
+
+sd(apsc(pci(0),d,0,7),0,0)
+
+sd = scsi disk
+apsc = scsi controller
+PCI = pci host bridge
+0 = pci host bridge number. 0= primary. 1=secondary
+d = PCI slot number 0-1F
+0 = PCI function number 0-7
+7 - Controller SCSI ID - 0-F
+0 - Device SCSI ID 0=disk 2=tape 4=cdrom
+0 - LUN number - 0-1F
+
+
+from what I gathered, I know this to be 100% guaranteed:
+sd(apsc(pci(?),?,0,?),?,0)
+
+first "?" is pci bridge which is assumed to be primary (0).
+The last "?" is the device SCSI ID which seems odd,  the initial
+command says "1" and here it doesn't even fit. Only 0,2 and 4.
+Of course I've tried all both of the options M. Warnet Losh suggested,
+still getting nothing.
+
+Seems strange.
+What do you guys think?
+
+
+
+On Wed, Aug 25, 2010 at 5:29 PM, M. Warner Losh <imp at bsdimp.com> wrote:
+> In message: <AANLkTi=VKwYCAW-+qE0=ijRQk5O0ci1abjWwT326GRXU at mail.gmail.com>
+>            DG UX <dgunix at gmail.com> writes:
+> : Yeah, tried that, even with -vvv. Got :
+> :
+> : 01:09.0 SCSI storage controller: Adaptec AHA-2940U/UW/D / AIC-7881U
+> :         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+> : ParErr- Stepping- SERR+ FastB2B-
+> :         Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium
+> : >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+> :         Latency: 64 (2000ns min, 2000ns max), Cache Line Size: 64 bytes
+> :         Interrupt: pin A routed to IRQ 16
+> :         Region 0: I/O ports at ec00 [disabled] [size=256]
+> :         Region 1: Memory at ff8ff000 (32-bit, non-prefetchable) [size=4K]
+> :         Expansion ROM at 30000000 [disabled] [size=64K]
+> :
+> : That means that is bus 01, device 09, and function 0. Correct? That means that
+> : dev(ctrl(pci[pci_num]),slot[,func_num[,ctrl_id]])[,dev_id[,LUN]])    ==
+> : sd(apsc(pci(0),3,0,7),9,0) ?
+>
+> bus is going to be 1 here.  slot == device since it makes little sense
+> to mix scsi and pci IDs in that part of the string to me and
+> bus:dev:func is fairly standard notation (with variation in
+> punctionation) and dev_id would be 1, since that's the SCSI ID (where
+> it does make sense to use scsi IDs).
+>
+> : I think that ctrl_id is my Adaptec adapter (7, according to Adaptec
+> : mgmt) and dev_id is my SCSI HDD = 1 according to jumper setting and
+> : Adaptet mgmt).
+>
+> I don't think that ctrl_id is 7.  Your SCSI ID for the controller on
+> the scsi bus is 7, but the SCSI ID for all controllers is 7.  If you
+> had a dual channel scsi card, you'd have to distinguish channel A from
+> channel B, and that's usually going to be encoded 0/1 or 1/2 (more
+> typically the former, but I don't know DGUX specifically).
+>
+> So wouldn't that be sd(apsc(pci1),9,0,0),1,0) or more simply
+> sd(apsc(pci1),9),1)?  Hmmm, the above expression has too few ) so I'm
+> thinking based on the original boot command, it should be either
+> sd(apsc(pci(1),9,0,0),1,0) or more simply sd(apsc(pci(1),9),1)
+>
+> Maybe this will be helpful.  But that's just a shot in the dark.
+> There also appears to be a PCI bridge in the new system that isn't in
+> the old system, since the card is on pci bus 1 and the boot loader is
+> looking for it on pci bus 0.  This likely isn't a huge deal since the
+> BIOS of that vintage PC will initialize the bridge correctly.
+>
+> Warner
+>
+> : Also dmidecode shows PCI3 as the only one that is 'in use'.
+> :
+> : Handle 0x0903, DMI type 9, 13 bytes
+> : System Slot Information
+> :         Designation: PCI3
+> :         Type: 32-bit PCI
+> :         Current Usage: In Use
+> :         Length: Long
+> :         ID: 3
+> :         Characteristics:
+> :                 5.0 V is provided
+> :                 3.3 V is provided
+> :                 PME signal is supported
+> :
+> :
+> :
+> : Thanks
+> :
+> :
+> :
+> : On Tue, Aug 24, 2010 at 6:34 PM, Natalia Portillo <claunia at claunia.com> wrote:
+> : > Use lspci -v on the Linux LiveCD to be sure that bus, slot, function and controller number are correct.
+> : >
+> : > El 24/08/2010, a las 15:44, DG UX escribió:
+> : >
+> : >> I've tried 3 things:
+> : >>
+> : >> 1. Board shows "PCI3"
+> : >> 2. Linux LiveCD says PCI slot 3
+> : >> 3. I've tried a million combinations, just for the heck of it. None worked.
+> : >>
+> : >> And also, as I said, in case there is only 1 adapter it should
+> : >> automatically default and I cant shorthand it, as -
+> : >> sd(apsc(pci(),3),0)root
+> : >> Of course that as for the controller ID it is 7 - as shown by the
+> : >> Adaptec management tool and the device ID is 1 (or 0), depending on
+> : >> where I put it's jumper and also shown by mgmt tool at boot.
+> : >>
+> : >> Got any other ideas of how to verify bus/slot?
+> : >>
+> : >>
+> : >> On Tue, Aug 24, 2010 at 4:01 AM, Natalia Portillo <claunia at claunia.com> wrote:
+> : >>> Hi,
+> : >>>
+> : >>> Just a question.
+> : >>>
+> : >>> How did you checked the PCI bus and slot numbers?
+> : >>> Counting physically on the motherboard?
+> : >>>
+> : >>> If this is the case you're doing it wrong.
+> : >>>
+> : >>> The chipset could have various buses and slot numbers and so what appears physically to be slot 0 can easily be bus 2 slot 6.
+> : >>>
+> : >>> El 11/08/2010, a las 15:14, DG UX escribió:
+> : >>>
+> : >>>> Sorry to bother you all with my questions over this ancient machine
+> : >>>> and my failing trials with it..
+> : >>>> Trying to get a DGUX system (Intel based) to work, as is, on a 'regular' x86 PC.
+> : >>>>
+> : >>>> Just a couple of things :
+> : >>>>
+> : >>>> 1. I did find out that that DG machine is looking for an Adaptec PCI
+> : >>>> SCSI Controller, and so I got an AHA-2940UW PCI card, installed it in
+> : >>>> an old PC, got a matching 9GB HDD and booted it up from my image I've
+> : >>>> 'DD'ed from the original DG machine.
+> : >>>> Boot prompt came up and said it's trying to load
+> : >>>> sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3
+> : >>>> it didn't, no error msg, just gave me back a "Boot command:" prompt.
+> : >>>> Bootpath of the original machine is sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3.
+> : >>>> The disk drive parameters are correct, according to the docs, its -
+> : >>>> dev(ctrl(pci[pci_num]),slot[,func_num[,ctrl_id]])[,dev_id[,LUN]]).
+> : >>>> I've checked the PCI slot in which I installed the card, it's 3, and
+> : >>>> so I've tried '3' instead of 'd' in the command above, just got the
+> : >>>> boot prompt back again.
+> : >>>> Also tried - sd(apsc(pci(),3),0)root:/dgux -3  which should also work
+> : >>>> according to the docs (all other params are default).
+> : >>>> Tried to play with it and tried tons of combinations, just for the
+> : >>>> heck of it, still nothing. If I do type in some nonsense it does give
+> : >>>> me an error msg : "Error: No device specifications found in the boot
+> : >>>> command. Invalid boot command line".
+> : >>>> According to the docs, once I get the correct syntax, the system should load up.
+> : >>>> Anyone got any advice about that?
+> : >>>>
+> : >>>> 2.   Anyone here a/was a DG/UX user/admin? you guys are very hard to find :)
+> : >>>>
+> : >>>> Thanks,
+> : >>>> D'
+> : >>>> _______________________________________________
+> : >>>> TUHS mailing list
+> : >>>> TUHS at minnie.tuhs.org
+> : >>>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+> : >>>
+> : >>>
+> : >
+> : >
+> : _______________________________________________
+> : TUHS mailing list
+> : TUHS at minnie.tuhs.org
+> : https://minnie.tuhs.org/mailman/listinfo/tuhs
+> :
+> :
+>
+
+
+From dgunix at gmail.com  Fri Aug 27 01:47:57 2010
+From: dgunix at gmail.com (DG UX)
+Date: Thu, 26 Aug 2010 18:47:57 +0300
+Subject: [TUHS] DG/UX user/admin around?
+In-Reply-To: <AANLkTi=EymaQ2XBYzZeYLCea1ZOQietXcXxfODn8ZuLz@mail.gmail.com>
+References: <AANLkTinsdZd7xqWDfdbO89Vb_MMcBFGUU+f2uTp2dGvY@mail.gmail.com>
+	<B395BC57-D5C5-44F1-9CA9-62E58BF4DF1C@claunia.com>
+	<AANLkTi=VKwYCAW-+qE0=ijRQk5O0ci1abjWwT326GRXU@mail.gmail.com>
+	<20100825.082937.1151864885528850825.imp@bsdimp.com>
+	<AANLkTi=EymaQ2XBYzZeYLCea1ZOQietXcXxfODn8ZuLz@mail.gmail.com>
+Message-ID: <AANLkTi=J5ofZ3RDvMhHam-5CvgRf-GhUrUQDYwYfRoEj@mail.gmail.com>
+
+After reviewing the docs and /proc/bus/pci via a livecd, I believe
+Warner is 100% correct.
+sd(apsc(pci(01),09),1) should do it.
+Even tried (pci(1),9),1) and pci(1),9,0) and all the possible
+combinations between these. Nothing loads.
+
+:(
+
+Cheers
+
+
+
+On Thu, Aug 26, 2010 at 10:14 AM, DG UX <dgunix at gmail.com> wrote:
+> According to the docs, there are ranges to those parameters :
+>
+> sd(apsc(pci(0),d,0,7),0,0)
+>
+> sd = scsi disk
+> apsc = scsi controller
+> PCI = pci host bridge
+> 0 = pci host bridge number. 0= primary. 1=secondary
+> d = PCI slot number 0-1F
+> 0 = PCI function number 0-7
+> 7 - Controller SCSI ID - 0-F
+> 0 - Device SCSI ID 0=disk 2=tape 4=cdrom
+> 0 - LUN number - 0-1F
+>
+>
+> from what I gathered, I know this to be 100% guaranteed:
+> sd(apsc(pci(?),?,0,?),?,0)
+>
+> first "?" is pci bridge which is assumed to be primary (0).
+> The last "?" is the device SCSI ID which seems odd,  the initial
+> command says "1" and here it doesn't even fit. Only 0,2 and 4.
+> Of course I've tried all both of the options M. Warnet Losh suggested,
+> still getting nothing.
+>
+> Seems strange.
+> What do you guys think?
+>
+>
+>
+> On Wed, Aug 25, 2010 at 5:29 PM, M. Warner Losh <imp at bsdimp.com> wrote:
+>> In message: <AANLkTi=VKwYCAW-+qE0=ijRQk5O0ci1abjWwT326GRXU at mail.gmail.com>
+>>            DG UX <dgunix at gmail.com> writes:
+>> : Yeah, tried that, even with -vvv. Got :
+>> :
+>> : 01:09.0 SCSI storage controller: Adaptec AHA-2940U/UW/D / AIC-7881U
+>> :         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+>> : ParErr- Stepping- SERR+ FastB2B-
+>> :         Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium
+>> : >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+>> :         Latency: 64 (2000ns min, 2000ns max), Cache Line Size: 64 bytes
+>> :         Interrupt: pin A routed to IRQ 16
+>> :         Region 0: I/O ports at ec00 [disabled] [size=256]
+>> :         Region 1: Memory at ff8ff000 (32-bit, non-prefetchable) [size=4K]
+>> :         Expansion ROM at 30000000 [disabled] [size=64K]
+>> :
+>> : That means that is bus 01, device 09, and function 0. Correct? That means that
+>> : dev(ctrl(pci[pci_num]),slot[,func_num[,ctrl_id]])[,dev_id[,LUN]])    ==
+>> : sd(apsc(pci(0),3,0,7),9,0) ?
+>>
+>> bus is going to be 1 here.  slot == device since it makes little sense
+>> to mix scsi and pci IDs in that part of the string to me and
+>> bus:dev:func is fairly standard notation (with variation in
+>> punctionation) and dev_id would be 1, since that's the SCSI ID (where
+>> it does make sense to use scsi IDs).
+>>
+>> : I think that ctrl_id is my Adaptec adapter (7, according to Adaptec
+>> : mgmt) and dev_id is my SCSI HDD = 1 according to jumper setting and
+>> : Adaptet mgmt).
+>>
+>> I don't think that ctrl_id is 7.  Your SCSI ID for the controller on
+>> the scsi bus is 7, but the SCSI ID for all controllers is 7.  If you
+>> had a dual channel scsi card, you'd have to distinguish channel A from
+>> channel B, and that's usually going to be encoded 0/1 or 1/2 (more
+>> typically the former, but I don't know DGUX specifically).
+>>
+>> So wouldn't that be sd(apsc(pci1),9,0,0),1,0) or more simply
+>> sd(apsc(pci1),9),1)?  Hmmm, the above expression has too few ) so I'm
+>> thinking based on the original boot command, it should be either
+>> sd(apsc(pci(1),9,0,0),1,0) or more simply sd(apsc(pci(1),9),1)
+>>
+>> Maybe this will be helpful.  But that's just a shot in the dark.
+>> There also appears to be a PCI bridge in the new system that isn't in
+>> the old system, since the card is on pci bus 1 and the boot loader is
+>> looking for it on pci bus 0.  This likely isn't a huge deal since the
+>> BIOS of that vintage PC will initialize the bridge correctly.
+>>
+>> Warner
+>>
+>> : Also dmidecode shows PCI3 as the only one that is 'in use'.
+>> :
+>> : Handle 0x0903, DMI type 9, 13 bytes
+>> : System Slot Information
+>> :         Designation: PCI3
+>> :         Type: 32-bit PCI
+>> :         Current Usage: In Use
+>> :         Length: Long
+>> :         ID: 3
+>> :         Characteristics:
+>> :                 5.0 V is provided
+>> :                 3.3 V is provided
+>> :                 PME signal is supported
+>> :
+>> :
+>> :
+>> : Thanks
+>> :
+>> :
+>> :
+>> : On Tue, Aug 24, 2010 at 6:34 PM, Natalia Portillo <claunia at claunia.com> wrote:
+>> : > Use lspci -v on the Linux LiveCD to be sure that bus, slot, function and controller number are correct.
+>> : >
+>> : > El 24/08/2010, a las 15:44, DG UX escribió:
+>> : >
+>> : >> I've tried 3 things:
+>> : >>
+>> : >> 1. Board shows "PCI3"
+>> : >> 2. Linux LiveCD says PCI slot 3
+>> : >> 3. I've tried a million combinations, just for the heck of it. None worked.
+>> : >>
+>> : >> And also, as I said, in case there is only 1 adapter it should
+>> : >> automatically default and I cant shorthand it, as -
+>> : >> sd(apsc(pci(),3),0)root
+>> : >> Of course that as for the controller ID it is 7 - as shown by the
+>> : >> Adaptec management tool and the device ID is 1 (or 0), depending on
+>> : >> where I put it's jumper and also shown by mgmt tool at boot.
+>> : >>
+>> : >> Got any other ideas of how to verify bus/slot?
+>> : >>
+>> : >>
+>> : >> On Tue, Aug 24, 2010 at 4:01 AM, Natalia Portillo <claunia at claunia.com> wrote:
+>> : >>> Hi,
+>> : >>>
+>> : >>> Just a question.
+>> : >>>
+>> : >>> How did you checked the PCI bus and slot numbers?
+>> : >>> Counting physically on the motherboard?
+>> : >>>
+>> : >>> If this is the case you're doing it wrong.
+>> : >>>
+>> : >>> The chipset could have various buses and slot numbers and so what appears physically to be slot 0 can easily be bus 2 slot 6.
+>> : >>>
+>> : >>> El 11/08/2010, a las 15:14, DG UX escribió:
+>> : >>>
+>> : >>>> Sorry to bother you all with my questions over this ancient machine
+>> : >>>> and my failing trials with it..
+>> : >>>> Trying to get a DGUX system (Intel based) to work, as is, on a 'regular' x86 PC.
+>> : >>>>
+>> : >>>> Just a couple of things :
+>> : >>>>
+>> : >>>> 1. I did find out that that DG machine is looking for an Adaptec PCI
+>> : >>>> SCSI Controller, and so I got an AHA-2940UW PCI card, installed it in
+>> : >>>> an old PC, got a matching 9GB HDD and booted it up from my image I've
+>> : >>>> 'DD'ed from the original DG machine.
+>> : >>>> Boot prompt came up and said it's trying to load
+>> : >>>> sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3
+>> : >>>> it didn't, no error msg, just gave me back a "Boot command:" prompt.
+>> : >>>> Bootpath of the original machine is sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3.
+>> : >>>> The disk drive parameters are correct, according to the docs, its -
+>> : >>>> dev(ctrl(pci[pci_num]),slot[,func_num[,ctrl_id]])[,dev_id[,LUN]]).
+>> : >>>> I've checked the PCI slot in which I installed the card, it's 3, and
+>> : >>>> so I've tried '3' instead of 'd' in the command above, just got the
+>> : >>>> boot prompt back again.
+>> : >>>> Also tried - sd(apsc(pci(),3),0)root:/dgux -3  which should also work
+>> : >>>> according to the docs (all other params are default).
+>> : >>>> Tried to play with it and tried tons of combinations, just for the
+>> : >>>> heck of it, still nothing. If I do type in some nonsense it does give
+>> : >>>> me an error msg : "Error: No device specifications found in the boot
+>> : >>>> command. Invalid boot command line".
+>> : >>>> According to the docs, once I get the correct syntax, the system should load up.
+>> : >>>> Anyone got any advice about that?
+>> : >>>>
+>> : >>>> 2.   Anyone here a/was a DG/UX user/admin? you guys are very hard to find :)
+>> : >>>>
+>> : >>>> Thanks,
+>> : >>>> D'
+>> : >>>> _______________________________________________
+>> : >>>> TUHS mailing list
+>> : >>>> TUHS at minnie.tuhs.org
+>> : >>>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>> : >>>
+>> : >>>
+>> : >
+>> : >
+>> : _______________________________________________
+>> : TUHS mailing list
+>> : TUHS at minnie.tuhs.org
+>> : https://minnie.tuhs.org/mailman/listinfo/tuhs
+>> :
+>> :
+>>
+>
+
+
+From imp at bsdimp.com  Fri Aug 27 02:11:52 2010
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Thu, 26 Aug 2010 10:11:52 -0600 (MDT)
+Subject: [TUHS] DG/UX user/admin around?
+In-Reply-To: <AANLkTi=J5ofZ3RDvMhHam-5CvgRf-GhUrUQDYwYfRoEj@mail.gmail.com>
+References: <20100825.082937.1151864885528850825.imp@bsdimp.com>
+	<AANLkTi=EymaQ2XBYzZeYLCea1ZOQietXcXxfODn8ZuLz@mail.gmail.com>
+	<AANLkTi=J5ofZ3RDvMhHam-5CvgRf-GhUrUQDYwYfRoEj@mail.gmail.com>
+Message-ID: <20100826.101152.789626515647114533.imp@bsdimp.com>
+
+In message: <AANLkTi=J5ofZ3RDvMhHam-5CvgRf-GhUrUQDYwYfRoEj at mail.gmail.com>
+            DG UX <dgunix at gmail.com> writes:
+: After reviewing the docs and /proc/bus/pci via a livecd, I believe
+: Warner is 100% correct.
+: sd(apsc(pci(01),09),1) should do it.
+: Even tried (pci(1),9),1) and pci(1),9,0) and all the possible
+: combinations between these. Nothing loads.
+: 
+: :(
+
+Try strapping the SCSI drive to 0 instead of 1 and see if that fixes
+it.  Maybe it has 'special magic' based on the 'type/id' of the
+intended disk that gets 'freaked out' when you pass it a number it
+isn't expecting.
+
+Warner
+
+: Cheers
+: 
+: 
+: 
+: On Thu, Aug 26, 2010 at 10:14 AM, DG UX <dgunix at gmail.com> wrote:
+: > According to the docs, there are ranges to those parameters :
+: >
+: > sd(apsc(pci(0),d,0,7),0,0)
+: >
+: > sd = scsi disk
+: > apsc = scsi controller
+: > PCI = pci host bridge
+: > 0 = pci host bridge number. 0= primary. 1=secondary
+: > d = PCI slot number 0-1F
+: > 0 = PCI function number 0-7
+: > 7 - Controller SCSI ID - 0-F
+: > 0 - Device SCSI ID 0=disk 2=tape 4=cdrom
+: > 0 - LUN number - 0-1F
+: >
+: >
+: > from what I gathered, I know this to be 100% guaranteed:
+: > sd(apsc(pci(?),?,0,?),?,0)
+: >
+: > first "?" is pci bridge which is assumed to be primary (0).
+: > The last "?" is the device SCSI ID which seems odd,  the initial
+: > command says "1" and here it doesn't even fit. Only 0,2 and 4.
+: > Of course I've tried all both of the options M. Warnet Losh suggested,
+: > still getting nothing.
+: >
+: > Seems strange.
+: > What do you guys think?
+: >
+: >
+: >
+: > On Wed, Aug 25, 2010 at 5:29 PM, M. Warner Losh <imp at bsdimp.com> wrote:
+: >> In message: <AANLkTi=VKwYCAW-+qE0=ijRQk5O0ci1abjWwT326GRXU at mail.gmail.com>
+: >>            DG UX <dgunix at gmail.com> writes:
+: >> : Yeah, tried that, even with -vvv. Got :
+: >> :
+: >> : 01:09.0 SCSI storage controller: Adaptec AHA-2940U/UW/D / AIC-7881U
+: >> :         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+: >> : ParErr- Stepping- SERR+ FastB2B-
+: >> :         Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium
+: >> : >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+: >> :         Latency: 64 (2000ns min, 2000ns max), Cache Line Size: 64 bytes
+: >> :         Interrupt: pin A routed to IRQ 16
+: >> :         Region 0: I/O ports at ec00 [disabled] [size=256]
+: >> :         Region 1: Memory at ff8ff000 (32-bit, non-prefetchable) [size=4K]
+: >> :         Expansion ROM at 30000000 [disabled] [size=64K]
+: >> :
+: >> : That means that is bus 01, device 09, and function 0. Correct? That means that
+: >> : dev(ctrl(pci[pci_num]),slot[,func_num[,ctrl_id]])[,dev_id[,LUN]])    ==
+: >> : sd(apsc(pci(0),3,0,7),9,0) ?
+: >>
+: >> bus is going to be 1 here.  slot == device since it makes little sense
+: >> to mix scsi and pci IDs in that part of the string to me and
+: >> bus:dev:func is fairly standard notation (with variation in
+: >> punctionation) and dev_id would be 1, since that's the SCSI ID (where
+: >> it does make sense to use scsi IDs).
+: >>
+: >> : I think that ctrl_id is my Adaptec adapter (7, according to Adaptec
+: >> : mgmt) and dev_id is my SCSI HDD = 1 according to jumper setting and
+: >> : Adaptet mgmt).
+: >>
+: >> I don't think that ctrl_id is 7.  Your SCSI ID for the controller on
+: >> the scsi bus is 7, but the SCSI ID for all controllers is 7.  If you
+: >> had a dual channel scsi card, you'd have to distinguish channel A from
+: >> channel B, and that's usually going to be encoded 0/1 or 1/2 (more
+: >> typically the former, but I don't know DGUX specifically).
+: >>
+: >> So wouldn't that be sd(apsc(pci1),9,0,0),1,0) or more simply
+: >> sd(apsc(pci1),9),1)?  Hmmm, the above expression has too few ) so I'm
+: >> thinking based on the original boot command, it should be either
+: >> sd(apsc(pci(1),9,0,0),1,0) or more simply sd(apsc(pci(1),9),1)
+: >>
+: >> Maybe this will be helpful.  But that's just a shot in the dark.
+: >> There also appears to be a PCI bridge in the new system that isn't in
+: >> the old system, since the card is on pci bus 1 and the boot loader is
+: >> looking for it on pci bus 0.  This likely isn't a huge deal since the
+: >> BIOS of that vintage PC will initialize the bridge correctly.
+: >>
+: >> Warner
+: >>
+: >> : Also dmidecode shows PCI3 as the only one that is 'in use'.
+: >> :
+: >> : Handle 0x0903, DMI type 9, 13 bytes
+: >> : System Slot Information
+: >> :         Designation: PCI3
+: >> :         Type: 32-bit PCI
+: >> :         Current Usage: In Use
+: >> :         Length: Long
+: >> :         ID: 3
+: >> :         Characteristics:
+: >> :                 5.0 V is provided
+: >> :                 3.3 V is provided
+: >> :                 PME signal is supported
+: >> :
+: >> :
+: >> :
+: >> : Thanks
+: >> :
+: >> :
+: >> :
+: >> : On Tue, Aug 24, 2010 at 6:34 PM, Natalia Portillo <claunia at claunia.com> wrote:
+: >> : > Use lspci -v on the Linux LiveCD to be sure that bus, slot, function and controller number are correct.
+: >> : >
+: >> : > El 24/08/2010, a las 15:44, DG UX escribió:
+: >> : >
+: >> : >> I've tried 3 things:
+: >> : >>
+: >> : >> 1. Board shows "PCI3"
+: >> : >> 2. Linux LiveCD says PCI slot 3
+: >> : >> 3. I've tried a million combinations, just for the heck of it. None worked.
+: >> : >>
+: >> : >> And also, as I said, in case there is only 1 adapter it should
+: >> : >> automatically default and I cant shorthand it, as -
+: >> : >> sd(apsc(pci(),3),0)root
+: >> : >> Of course that as for the controller ID it is 7 - as shown by the
+: >> : >> Adaptec management tool and the device ID is 1 (or 0), depending on
+: >> : >> where I put it's jumper and also shown by mgmt tool at boot.
+: >> : >>
+: >> : >> Got any other ideas of how to verify bus/slot?
+: >> : >>
+: >> : >>
+: >> : >> On Tue, Aug 24, 2010 at 4:01 AM, Natalia Portillo <claunia at claunia.com> wrote:
+: >> : >>> Hi,
+: >> : >>>
+: >> : >>> Just a question.
+: >> : >>>
+: >> : >>> How did you checked the PCI bus and slot numbers?
+: >> : >>> Counting physically on the motherboard?
+: >> : >>>
+: >> : >>> If this is the case you're doing it wrong.
+: >> : >>>
+: >> : >>> The chipset could have various buses and slot numbers and so what appears physically to be slot 0 can easily be bus 2 slot 6.
+: >> : >>>
+: >> : >>> El 11/08/2010, a las 15:14, DG UX escribió:
+: >> : >>>
+: >> : >>>> Sorry to bother you all with my questions over this ancient machine
+: >> : >>>> and my failing trials with it..
+: >> : >>>> Trying to get a DGUX system (Intel based) to work, as is, on a 'regular' x86 PC.
+: >> : >>>>
+: >> : >>>> Just a couple of things :
+: >> : >>>>
+: >> : >>>> 1. I did find out that that DG machine is looking for an Adaptec PCI
+: >> : >>>> SCSI Controller, and so I got an AHA-2940UW PCI card, installed it in
+: >> : >>>> an old PC, got a matching 9GB HDD and booted it up from my image I've
+: >> : >>>> 'DD'ed from the original DG machine.
+: >> : >>>> Boot prompt came up and said it's trying to load
+: >> : >>>> sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3
+: >> : >>>> it didn't, no error msg, just gave me back a "Boot command:" prompt.
+: >> : >>>> Bootpath of the original machine is sd(apsc(pci(0),d,0,7),1,0)root:/dgux -3.
+: >> : >>>> The disk drive parameters are correct, according to the docs, its -
+: >> : >>>> dev(ctrl(pci[pci_num]),slot[,func_num[,ctrl_id]])[,dev_id[,LUN]]).
+: >> : >>>> I've checked the PCI slot in which I installed the card, it's 3, and
+: >> : >>>> so I've tried '3' instead of 'd' in the command above, just got the
+: >> : >>>> boot prompt back again.
+: >> : >>>> Also tried - sd(apsc(pci(),3),0)root:/dgux -3  which should also work
+: >> : >>>> according to the docs (all other params are default).
+: >> : >>>> Tried to play with it and tried tons of combinations, just for the
+: >> : >>>> heck of it, still nothing. If I do type in some nonsense it does give
+: >> : >>>> me an error msg : "Error: No device specifications found in the boot
+: >> : >>>> command. Invalid boot command line".
+: >> : >>>> According to the docs, once I get the correct syntax, the system should load up.
+: >> : >>>> Anyone got any advice about that?
+: >> : >>>>
+: >> : >>>> 2.   Anyone here a/was a DG/UX user/admin? you guys are very hard to find :)
+: >> : >>>>
+: >> : >>>> Thanks,
+: >> : >>>> D'
+: >> : >>>> _______________________________________________
+: >> : >>>> TUHS mailing list
+: >> : >>>> TUHS at minnie.tuhs.org
+: >> : >>>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+: >> : >>>
+: >> : >>>
+: >> : >
+: >> : >
+: >> : _______________________________________________
+: >> : TUHS mailing list
+: >> : TUHS at minnie.tuhs.org
+: >> : https://minnie.tuhs.org/mailman/listinfo/tuhs
+: >> :
+: >> :
+: >>
+: >
+: 
+: 
+
+

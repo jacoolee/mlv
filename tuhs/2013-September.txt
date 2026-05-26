@@ -1,0 +1,484 @@
+From wkt at tuhs.org  Sun Sep  1 16:42:34 2013
+From: wkt at tuhs.org (Warren Toomey)
+Date: Sun, 1 Sep 2013 16:42:34 +1000
+Subject: [TUHS] CB/UNIX Manual Scans
+Message-ID: <20130901064234.GA29302@neddie.local.net>
+
+All, I'll be moving house sometime in the next few months, so I thought
+I would start scanning in the paper documents that I've got. I've just
+completed the scan of the CB/UNIX manuals that Larry Cipriani sent in
+a while back. You can find them here:
+
+http://www.tuhs.org/Archive/PDP-11/Distributions/other/CB_Unix/
+
+and here is the blurb I put in there.
+
+Cheers,
+	Warren
+
+CB/UNIX was a variant of the UNIX operating system internal to Bell
+Labs. It was developed at the Columbus, Ohio branch and was little-known
+outside the company. CB/UNIX was developed to address deficiencies
+inherent in Research Unix, notably the lack of interprocess communication
+and file locking, considered essential for a database management
+system. Several Bell System operation support system products were
+based on CB/UNIX such as Switching Control Center System. The primary
+innovations were power-fail restart, line disciplines, terminal types,
+and IPC features similar to System V's messages and shared memory.
+
+So far we have a scanned copy of the CB/UNIX manuals which were donated
+to TUHS by Larry Cipriani. Copies of the binaries and source code would
+be much appreciated. There were two volumes of manuals. The first volume
+held cbunix_intro, cbunix_man1 and cbunix_man1L. The second volume held
+the remaining sections. The 'L' in the scans indicates local sections of
+the manuals, i.e. those elements created and maintaned at Columbus.
+
+In an e-mail from Larry, he asked a retired CB/UNIX developer about the
+major features that were added to UNIX by CB/UNIX. Was it primarily messages,
+semaphores, named pipes, shared memory? The developer replied:
+
+    Other things that immediately come to mind that we added first
+    in Columbus Unix were power-fail restart (myself and Jim McGuire did the
+    initial work) and line-disciplines and terminal types (Bill Snider did
+    the initial work).  Hal Person (or Pierson?) also rewrote the original
+    check disk command into something that was useful by someone other than
+    researchers.  Bill Snider and Hal Pierson were really instrumental in
+    taking UNIX from research and applying it to SCCS (Switching Control
+    Center System).  I worked with them when I first hired on.  When we
+    first used UNIX on an 11/20 with core memory it was written in assembler
+    (1974).  It quickly went through "B" and we started using the C version
+    in early 1975 as I recall. We also did some enhancements to the scheduling
+    algorithms in UNIX to make them more "real-time" capable.
+
+
+From doug at cs.dartmouth.edu  Tue Sep  3 23:09:27 2013
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Tue, 03 Sep 2013 09:09:27 -0400
+Subject: [TUHS] TUHS Digest, Vol 106, Issue 1
+In-Reply-To: <mailman.1.1378087201.4641.tuhs@minnie.tuhs.org>
+References: <mailman.1.1378087201.4641.tuhs@minnie.tuhs.org>
+Message-ID: <201309031309.r83D9R9Q003001@stowe.cs.dartmouth.edu>
+
+>  CB/UNIX was developed to address deficiencies inherent in Research Unix,
+>   notably the lack of interprocess communication and file locking
+
+CB/UNIX was one of several versions in various divisions of Bell Labs
+to implement IPC facilities beyond pipes and signals. Top management
+in a division would declare that they wanted to use Unix, but needed
+some particular IPC mechanism: semaphores, events, message passing, etc.--
+and needed it right away. I always believed that these demands stiffer
+as they percolated up through channels to the point that no alternative
+mechanism would do. We in research would have preferred to seek a
+general solution that would suffice to serve the various demands.
+Besides, anything that we produced but didn't use ourselves would
+automatically be suspect. We were very wary of featuritis.
+
+Roughly speaking, each demand led to a different local flavor of
+Unix, each (I like to think) reflecting the particular variant of
+IPC with which one of its system designers worked in graduate
+school. Somewhere between the wariness of research Unix, where
+an ethos of generality ruled, and Linux, which offers a dozen ways
+to do anything, there must lie a happy medium--a medium that I
+believe would be much closer to Unix than Linux. That, alas, has
+not proved to be the way of open source.
+
+
+From a.phillip.garcia at gmail.com  Wed Sep  4 00:02:39 2013
+From: a.phillip.garcia at gmail.com (A. P. Garcia)
+Date: Tue, 3 Sep 2013 09:02:39 -0500
+Subject: [TUHS] TUHS Digest, Vol 106, Issue 1
+In-Reply-To: <201309031309.r83D9R9Q003001@stowe.cs.dartmouth.edu>
+References: <mailman.1.1378087201.4641.tuhs@minnie.tuhs.org>
+ <201309031309.r83D9R9Q003001@stowe.cs.dartmouth.edu>
+Message-ID: <CAFCBnZuAoL_6OG9Q5rtnQNfqQubPOeeDrKL+9o-jN_KCHYfZCw@mail.gmail.com>
+
+On Tue, Sep 3, 2013 at 8:09 AM, Doug McIlroy <doug at cs.dartmouth.edu> wrote:
+
+<snip>
+> We in research would have preferred to seek a
+> general solution that would suffice to serve the various demands.
+> Besides, anything that we produced but didn't use ourselves would
+> automatically be suspect. We were very wary of featuritis.
+<snip>
+> Somewhere between the wariness of research Unix, where
+> an ethos of generality ruled, and Linux, which offers a dozen ways
+> to do anything, there must lie a happy medium--a medium that I
+> believe would be much closer to Unix than Linux. That, alas, has
+> not proved to be the way of open source.
+
+it happened to unix too, though. maybe not to research, due to the
+ethos you describe, but it doesn't sound like Ken Thompson was
+entirely happy with some of the things other people did:
+
+"Probably the glaring error in Unix was that it underevaluated the
+concept of remoteness. The open-close-read-write interface should have
+been encapsulated together as something for remoteness; something that
+brought a group of interfaces together as a single thing - a remote
+file system as opposed to a local file system.
+
+Unix lacked that concept; there was just one group of
+open-close-read-write interfaces. It was a glaring omission and was
+the reason that some of the awful things came into Unix like ptrace
+and some of the system calls. Every time I looked at later versions of
+Unix there were 15 new system calls, which tells you something's
+wrong. I just didn't see it at the time. This was fixed in a fairly
+nice way in Plan 9." --Ken Thompson
+
+i also recall, well, a rant of sorts by tuhs's own Larry McVoy, where
+he argued pretty vigorously to strip out all the cruft.
+
+
+From asbesto at freaknet.org  Fri Sep  6 07:10:12 2013
+From: asbesto at freaknet.org (asbesto)
+Date: Thu, 5 Sep 2013 23:10:12 +0200
+Subject: [TUHS] Museo dell'Informatica Funzionante: APPLE 1 PRESENTATION,
+	13/9/2013
+Message-ID: <20130905211012.GA31424@freaknet.org>
+
+PRESS RELEASE - PLEASE COPY AND SHARE! 
+
+                           APPLE 1
+
+                    FRIDAY, Sept. the 13th 
+ at the "Museo dell'Informatica Funzionante" Computer Museum
+    Via Carnevale 17, 96010 Palazzolo Acreide (SR) - ITALY
+
+ http://museo.freaknet.org/en/presentazione-progetto-apple-1/
+
+The APPLE 1 marked the start of the era of "personal computing",
+a computer that people could keep at home on their desks, a
+pioneer vision at that time, that opened the way for the future
+of human-machine interfaces. Born from the genius of Steve
+Wozniak, it transformed Apple into today ‘s success, thanks also
+to the entrepreneurial audacity of Steve Jobs.
+
+At that time only about 200 pieces were produced; today only
+about 50 of them survived, of which only a dozen are fully
+working. The APPLE 1 was an open project since its birth: he
+schematics and instructions were already circulating among fans
+well before the creation of Apple as a company. From this early
+computer, Steve Wozniak created the legendary APPLE 2, a
+colossal success that transformed him and Steve Jobs into
+billionaires.
+
+We started this adventure almost two years ago at the "Museo
+dell'Informatica Funzionante" Computer Museum: to rebuild from
+scratch, starting from a completely blank electronic card, a
+working APPLE 1, using tools and components dated exactly or
+before its creation: 1976.
+
+A year and a half  was spent searching for integrated circuits,
+connectors, electronic components of various types, bought new
+or second-hand, found in various parts of the world, but all
+identical to the originals, with the right features and from the
+same historical period. The project, managed by a local team,
+involved fans and professionals from all the world.
+
+So we present today our creation, made entirely in
+Sicily, Palazzolo Acreide, Italy: a specimen of APPLE Computer
+1, fully functional, rebuilt with attention to every detail and
+using only original components at the best of our possibility!
+
+With this release we intend to invite everyone to the event of
+his first start, in person or remotely via our live streaming.
+
+Friday, September 13, 2013:
+
+19:00 - Presentation of the APPLE 1 project and the computer
+19.30 - Booting up the rebuilt APPLE 1 Computer, and operational
+        demo 
+20:00 - Aperitif
+
+Remote presence:
+
+Via live chat on IRC: https://irc.dyne.org, channel #museo
+
+Live video streaming: http://bambuser.com/channel/musif
+
+On Twitter: follow @FreaknetMuseum
+
+All people in Palazzolo Acreide can also have a guided tour of
+our exibithion "Apple, il genio di Steve Wozniak", dedicated to
+the genius of Steve Wozniak and his creations, with working
+Apple computers and memorabilia from 1978 to 1999.
+
+For more information, press kits and interviews please write to
+museo at freaknet.org
+
+
+From dnied at tiscali.it  Fri Sep  6 08:04:05 2013
+From: dnied at tiscali.it (Dario Niedermann)
+Date: Fri, 06 Sep 2013 00:04:05 +0200
+Subject: [TUHS] Museo dell'Informatica Funzionante: APPLE 1 PRESENTATION,
+ 13/9/2013
+In-Reply-To: <20130905211012.GA31424@freaknet.org>
+References: <20130905211012.GA31424@freaknet.org>
+Message-ID: <5228ffd5.QyQEwedXHky+Nxix%dnied@tiscali.it>
+
+asbesto <asbesto at freaknet.org> wrote:
+
+> PRESS RELEASE - PLEASE COPY AND SHARE! 
+>
+>                            APPLE 1
+
+You're off topic.
+
+
+From JP at eukor.com  Fri Sep  6 08:15:21 2013
+From: JP at eukor.com (JP at eukor.com)
+Date: Fri,  6 Sep 2013 07:15:21 +0900 (KST)
+Subject: [TUHS]
+	=?euc-kr?q?Museo_dell=27Informatica_Funzionante=3A_APPLE_1?=
+	=?euc-kr?q?_PRESENTATION=2C_13/9/2013?=
+Message-ID: <20130905221521.ED9E711BC70@mmp.eukor21.com>
+
+Spam detection software, running on the system "www.oztivo.net", has
+identified this incoming email as possible spam.  The original message
+has been attached to this so you can view it (if it isn't spam) or label
+similar future email.  If you have any questions, see
+@@CONTACT_ADDRESS@@ for details.
+
+Content preview:  ÀÎÁõÆäÀÌÁö½Ã¾È1 [...] 
+
+Content analysis details:   (6.0 points, 5.0 required)
+
+ pts rule name              description
+---- ---------------------- --------------------------------------------------
+ 1.4 RCVD_IN_BRBL_LASTEXT   RBL: RCVD_IN_BRBL_LASTEXT
+                            [211.32.24.57 listed in bb.barracudacentral.org]
+ 0.7 SPF_SOFTFAIL           SPF: sender does not match SPF record (softfail)
+ 1.1 URI_HEX                URI: URI hostname has long hexadecimal sequence
+ 0.0 WEIRD_PORT             URI: Uses non-standard port number for HTTP
+ 0.4 HTML_IMAGE_RATIO_02    BODY: HTML has a low ratio of text to image area
+ 0.0 HTML_MESSAGE           BODY: HTML included in message
+ 0.8 BAYES_50               BODY: Bayes spam probability is 40 to 60%
+                            [score: 0.5000]
+ 0.7 MIME_HTML_ONLY         BODY: Message only has text/html MIME parts
+ 0.8 RDNS_NONE              Delivered to internal network by a host with no rDNS
+ 0.0 T_REMOTE_IMAGE         Message contains an external image
+
+The original message was not completely plain text, and may be unsafe to
+open with some email clients; in particular, it may contain a virus,
+or confirm that your address can receive spam.  If you wish to view
+it, it may be safer to save it to a file and open it with an editor.
+
+-------------- next part --------------
+An embedded message was scrubbed...
+From: unknown sender
+Subject: no subject
+Date: no date
+Size: 167
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130906/e49e927a/attachment.mht>
+
+From JP at eukor.com  Fri Sep  6 08:15:21 2013
+From: JP at eukor.com (JP at eukor.com)
+Date: Fri,  6 Sep 2013 07:15:21 +0900 (KST)
+Subject: =?EUC-KR?B?UkU6IFJlOiBbVFVIU10gTXVzZW8gZGVsbCdJbmZvcm1hdGljYSBGdW56aW9uYW50ZTogQVBQTEUgMSBQUkVTRU5UQVRJT04sIDEzLzkvMjAxMw==?=
+Message-ID: <20130905221521.ED9E711BC70@mmp.eukor21.com>
+
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130906/e49e927a/attachment.html>
+
+From asbesto at freaknet.org  Fri Sep  6 17:44:12 2013
+From: asbesto at freaknet.org (asbesto)
+Date: Fri, 6 Sep 2013 09:44:12 +0200
+Subject: [TUHS] Museo dell'Informatica Funzionante: APPLE 1 PRESENTATION,
+ 13/9/2013
+In-Reply-To: <5228ffd5.QyQEwedXHky+Nxix%dnied@tiscali.it>
+References: <20130905211012.GA31424@freaknet.org>
+ <5228ffd5.QyQEwedXHky+Nxix%dnied@tiscali.it>
+Message-ID: <20130906074412.GD2002@freaknet.org>
+
+Fri, Sep 06, 2013 at 12:04:05AM +0200, Dario Niedermann wrote:
+
+> asbesto <asbesto at freaknet.org> wrote:
+> > PRESS RELEASE - PLEASE COPY AND SHARE! 
+> >                            APPLE 1
+> You're off topic.
+
+sorry, as a computer museum devoted to preservation of unix
+systems since so many years, I thought such a presentation
+was perfectly in topic...
+
+-- 
+[ ::::::::: 73 de IW9HGS : http://freaknet.org/asbesto ::::::::::: ]
+[ Freaknet Medialab :: Poetry Hacklab : Dyne.Org :: Radio Cybernet ]
+[ NON SCRIVERMI USANDO LETTERE ACCENTATE  -  NON MANDARMI ALLEGATI ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC and SPAM ]
+
+
+From ori at helicontech.co.il  Fri Sep  6 17:58:48 2013
+From: ori at helicontech.co.il (Ori Idan)
+Date: Fri, 6 Sep 2013 10:58:48 +0300
+Subject: [TUHS] Museo dell'Informatica Funzionante: APPLE 1 PRESENTATION,
+	13/9/2013
+In-Reply-To: <5228ffd5.QyQEwedXHky+Nxix%dnied@tiscali.it>
+References: <20130905211012.GA31424@freaknet.org>
+ <5228ffd5.QyQEwedXHky+Nxix%dnied@tiscali.it>
+Message-ID: <CACyhTRGEv2wX7NX+s=Zm8sTiqxSY5en82UME_rsvU9pyrumBng@mail.gmail.com>
+
+On Fri, Sep 6, 2013 at 1:04 AM, Dario Niedermann <dnied at tiscali.it> wrote:
+
+> asbesto <asbesto at freaknet.org> wrote:
+>
+> > PRESS RELEASE - PLEASE COPY AND SHARE!
+> >
+> >                            APPLE 1
+>
+> You're off topic.
+>
+
+Although this is off topic since the list talks about Unix only, I find it
+very interesting and wish I  was in Italy at that time (and understood the
+language since I guess it will be presented in Italian).
+
+-- 
+Ori Idan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130906/96818104/attachment.html>
+
+From reed at reedmedia.net  Wed Sep 18 10:01:57 2013
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Tue, 17 Sep 2013 19:01:57 -0500 (CDT)
+Subject: [TUHS] how to extract tap file?
+Message-ID: <alpine.NEB.2.02.1309171859040.27631@t1.m.reedmedia.net>
+
+How to to extract a ".tap" file?  What tools?
+
+I found http://man.cat-v.org/unix-1st/1/tap manual but I haven't found 
+corresponding tool (even in tuhs source code archive).
+
+The file I am trying to extract is 
+http://bitsavers.trailing-edge.com/bits/BSD/BSD4.1_bootable.tap.gz (12 
+MB).  I can view some of the plain text in it.
+
+I tried historical ar (which I have used for some other 1970's images), 
+restore, and tar. file(1) says it is a "Maple help database".
+
+  Jeremy C. Reed
+
+echo 'EhZ[h ^jjf0%%h[[Zc[Z_W$d[j%Xeeai%ZW[ced#]dk#f[d]k_d%' | \
+  tr            '#-~'            '\-.-{'
+
+
+
+From random832 at fastmail.us  Wed Sep 18 11:05:46 2013
+From: random832 at fastmail.us (random832 at fastmail.us)
+Date: Tue, 17 Sep 2013 21:05:46 -0400
+Subject: [TUHS] how to extract tap file?
+In-Reply-To: <alpine.NEB.2.02.1309171859040.27631@t1.m.reedmedia.net>
+References: <alpine.NEB.2.02.1309171859040.27631@t1.m.reedmedia.net>
+Message-ID: <1379466346.1352.23295729.4AEF0801@webmail.messagingengine.com>
+
+On Tue, Sep 17, 2013, at 20:01, Jeremy C. Reed wrote:
+> How to to extract a ".tap" file?  What tools?
+> 
+> I found http://man.cat-v.org/unix-1st/1/tap manual but I haven't found 
+> corresponding tool (even in tuhs source code archive).
+
+The tool is called "tp".
+
+
+From random832 at fastmail.us  Wed Sep 18 11:13:06 2013
+From: random832 at fastmail.us (random832 at fastmail.us)
+Date: Tue, 17 Sep 2013 21:13:06 -0400
+Subject: [TUHS] how to extract tap file?
+In-Reply-To: <alpine.NEB.2.02.1309171859040.27631@t1.m.reedmedia.net>
+References: <alpine.NEB.2.02.1309171859040.27631@t1.m.reedmedia.net>
+Message-ID: <1379466786.3523.23296497.3CA569A9@webmail.messagingengine.com>
+
+On Tue, Sep 17, 2013, at 20:01, Jeremy C. Reed wrote:
+> How to to extract a ".tap" file?  What tools?
+> 
+> I found http://man.cat-v.org/unix-1st/1/tap manual but I haven't found 
+> corresponding tool (even in tuhs source code archive)
+
+sorry, my previous email was wrong, tap isn't the same as tp.
+
+AncientFS has a tap driver for FUSE:
+https://github.com/macfuse/macfuse/tree/master/filesystems/unixfs/ancientfs
+- you might be able to use that directly or use it to get information
+about the format. I could swear I found a copy of the original archive
+program for it at some point, but I don't remember where.
+
+
+From reed at reedmedia.net  Wed Sep 18 11:32:04 2013
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Tue, 17 Sep 2013 20:32:04 -0500 (CDT)
+Subject: [TUHS] how to extract tap file?
+In-Reply-To: <alpine.NEB.2.02.1309171859040.27631@t1.m.reedmedia.net>
+References: <alpine.NEB.2.02.1309171859040.27631@t1.m.reedmedia.net>
+Message-ID: <alpine.NEB.2.02.1309172027500.27631@t1.m.reedmedia.net>
+
+On Tue, 17 Sep 2013, Jeremy C. Reed wrote:
+
+> How to to extract a ".tap" file?  What tools?
+
+I forgot that I asked this before and was answered off-list pointing to 
+a non-existent URL which I found archived elsewhere:
+
+http://marc.info/?l=classiccmp&m=104968973930145
+
+I may try some of this.
+
+> I found http://man.cat-v.org/unix-1st/1/tap manual but I haven't found 
+> corresponding tool (even in tuhs source code archive).
+> 
+> The file I am trying to extract is 
+> http://bitsavers.trailing-edge.com/bits/BSD/BSD4.1_bootable.tap.gz (12 
+> MB).  I can view some of the plain text in it.
+> 
+> I tried historical ar (which I have used for some other 1970's images), 
+> restore, and tar. file(1) says it is a "Maple help database".
+
+
+From wkt at tuhs.org  Wed Sep 18 13:02:53 2013
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 18 Sep 2013 13:02:53 +1000
+Subject: [TUHS] how to extract tap file?
+In-Reply-To: <alpine.NEB.2.02.1309172027500.27631@t1.m.reedmedia.net>
+References: <alpine.NEB.2.02.1309171859040.27631@t1.m.reedmedia.net>
+ <alpine.NEB.2.02.1309172027500.27631@t1.m.reedmedia.net>
+Message-ID: <0715ad0c-3e30-4a2c-88a8-1eb0cf2e9a59@email.android.com>
+
+Have a look in http://www.tuhs.org/Archive/PDP-11/Tools/Tapes/
+at the tp tools. I know I wrote some C programs to deal with tap, but on the road so can't see exactly where I put them.
+Cheers, Warren
+
+"Jeremy C. Reed" <reed at reedmedia.net> wrote:
+>On Tue, 17 Sep 2013, Jeremy C. Reed wrote:
+>
+>> How to to extract a ".tap" file?  What tools?
+>
+>I forgot that I asked this before and was answered off-list pointing to
+>
+>a non-existent URL which I found archived elsewhere:
+>
+>http://marc.info/?l=classiccmp&m=104968973930145
+>
+>I may try some of this.
+>
+>> I found http://man.cat-v.org/unix-1st/1/tap manual but I haven't
+>found 
+>> corresponding tool (even in tuhs source code archive).
+>> 
+>> The file I am trying to extract is 
+>> http://bitsavers.trailing-edge.com/bits/BSD/BSD4.1_bootable.tap.gz
+>(12 
+>> MB).  I can view some of the plain text in it.
+>> 
+>> I tried historical ar (which I have used for some other 1970's
+>images), 
+>> restore, and tar. file(1) says it is a "Maple help database".
+>_______________________________________________
+>TUHS mailing list
+>TUHS at minnie.tuhs.org
+>https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130918/b5afdddb/attachment.html>
+

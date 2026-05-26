@@ -1,0 +1,1555 @@
+From rjtucke at gmail.com  Wed Dec 10 10:00:32 2008
+From: rjtucke at gmail.com (Ross Tucker)
+Date: Tue, 9 Dec 2008 17:00:32 -0700
+Subject: [pups] PDP-11 / vacuum tube interface
+Message-ID: <2f30dc950812091600t2028222dw3f855b2271a12593@mail.gmail.com>
+
+Dear all,
+(This has got to be the strangest cross-post I've ever done.)
+
+I have just taken a bet from a friend to challenge my geekiness. I was
+telling him about my love of Vintage Technology and he proposed that I
+combine two hitherto separate hobbies and see what happens. The
+topics: the DEC PDP-11 minicomputer (vintage: 1970s) and vacuum-tube
+ham radios (vintage: 1960s). I do sincerely apologize for
+cross-posting, but I am rather younger than either of these
+technologies (vintage: 1984) and this seems like a monumental
+challenge.
+
+My question for y'all: how could I possibly design+build a project
+that uses both of these technologies? My thought is to port some radio
+receiver Digital Signal Processing (DSP) application into PDP-11
+assembler, compile and run it via emulator on my PC, then use it with
+the vacuum-tube regenerative receiver that I built a few years ago...
+Does anybody know if PDP-11 UNIXes even had the capability for a
+"sound card"? Or, to get ambitious, I would LOVE to design some
+interface circuitry between PDP-11 digital circuitry and vacuum-tube
+electronics... The challenges are legion: the tube side of the circuit
+operates around 350V DC levels with radio-frequency (RF) signals at 7
+MHz (almost the clock rate of some PDP-11s!) and I don't have the DEC
+Handbooks, but I'm pretty sure that even those ancient pre-TTL
+circuits operate below 350V!
+
+So... any, er, "ideas"?
+
+Best regards,
+Ross Tucker
+
+
+From carl.lowenstein at gmail.com  Wed Dec 10 11:37:31 2008
+From: carl.lowenstein at gmail.com (Carl Lowenstein)
+Date: Tue, 9 Dec 2008 17:37:31 -0800
+Subject: [pups] PDP-11 / vacuum tube interface
+In-Reply-To: <2f30dc950812091600t2028222dw3f855b2271a12593@mail.gmail.com>
+References: <2f30dc950812091600t2028222dw3f855b2271a12593@mail.gmail.com>
+Message-ID: <5904d5730812091737g501a4b4ai98ac0862b13107be@mail.gmail.com>
+
+On Tue, Dec 9, 2008 at 4:00 PM, Ross Tucker <rjtucke at gmail.com> wrote:
+> Dear all,
+> (This has got to be the strangest cross-post I've ever done.)
+>
+> I have just taken a bet from a friend to challenge my geekiness. I was
+> telling him about my love of Vintage Technology and he proposed that I
+> combine two hitherto separate hobbies and see what happens. The
+> topics: the DEC PDP-11 minicomputer (vintage: 1970s) and vacuum-tube
+> ham radios (vintage: 1960s). I do sincerely apologize for
+> cross-posting, but I am rather younger than either of these
+> technologies (vintage: 1984) and this seems like a monumental
+> challenge.
+>
+> My question for y'all: how could I possibly design+build a project
+> that uses both of these technologies? My thought is to port some radio
+> receiver Digital Signal Processing (DSP) application into PDP-11
+> assembler, compile and run it via emulator on my PC, then use it with
+> the vacuum-tube regenerative receiver that I built a few years ago...
+> Does anybody know if PDP-11 UNIXes even had the capability for a
+> "sound card"?
+
+Well, you could look at "Votrax" on Wikipedia.  Allegedly, the first
+words spoken by a Unix system at Bell Labs, using its Votrax
+synthesizer, were "file not found".
+
+Things that are now known as "sound cards" were called A:D and D:A
+converters back in those days.  And there were a fair variety of them
+available for both Unibus and Qbus systems.
+
+> Or, to get ambitious, I would LOVE to design some
+> interface circuitry between PDP-11 digital circuitry and vacuum-tube
+> electronics... The challenges are legion: the tube side of the circuit
+> operates around 350V DC levels with radio-frequency (RF) signals at 7
+> MHz (almost the clock rate of some PDP-11s!) and I don't have the DEC
+> Handbooks, but I'm pretty sure that even those ancient pre-TTL
+> circuits operate below 350V!
+
+The vacuum-tube circuits may be running from 350 VDC but somewhere
+there are low-level inputs from which everything is amplified.  Think
+microphone.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenstein at ucsd.edu
+
+
+From rjtucke at gmail.com  Wed Dec 10 12:49:12 2008
+From: rjtucke at gmail.com (Ross Tucker)
+Date: Tue, 9 Dec 2008 19:49:12 -0700
+Subject: [pups] PDP-11 / vacuum tube interface
+In-Reply-To: <2f30dc950812091600t2028222dw3f855b2271a12593@mail.gmail.com>
+References: <2f30dc950812091600t2028222dw3f855b2271a12593@mail.gmail.com>
+Message-ID: <2f30dc950812091849gda4d77cy4428df8671149b8a@mail.gmail.com>
+
+Dear all,
+(This has got to be the strangest cross-post I've ever done.)
+
+I have just taken a bet from a friend to challenge my geekiness. I was
+telling him about my love of Vintage Technology and he proposed that I
+combine two hitherto separate hobbies and see what happens. The
+topics: the DEC PDP-11 minicomputer (vintage: 1970s) and vacuum-tube
+ham radios (vintage: 1960s). I do sincerely apologize for
+cross-posting, but I am rather younger than either of these
+technologies (vintage: 1984) and this seems like a monumental
+challenge.
+
+My question for y'all: how could I possibly design+build a project
+that uses both of these technologies? My thought is to port some radio
+receiver Digital Signal Processing (DSP) application into PDP-11
+assembler, compile and run it via emulator on my PC, then use it with
+the vacuum-tube regenerative receiver that I built a few years ago...
+Does anybody know if PDP-11 UNIXes even had the capability for a
+"sound card"? Or, to get ambitious, I would LOVE to design some
+interface circuitry between PDP-11 digital circuitry and vacuum-tube
+electronics... The challenges are legion: the tube side of the circuit
+operates around 350V DC levels with radio-frequency (RF) signals at 7
+MHz (almost the clock rate of some PDP-11s!) and I don't have the DEC
+Handbooks, but I'm pretty sure that even those ancient pre-TTL
+circuits operate below 350V!
+
+So... any, er, "ideas"?
+
+Best regards,
+Ross Tucker
+
+CCed to: 'glowbugs' list at <glowbugs at piobaire.mines.uidaho.edu>
+
+
+From IanK at vulcan.com  Wed Dec 10 13:33:50 2008
+From: IanK at vulcan.com (Ian King)
+Date: Tue, 9 Dec 2008 19:33:50 -0800
+Subject: [pups] PDP-11 / vacuum tube interface
+In-Reply-To: <2f30dc950812091849gda4d77cy4428df8671149b8a@mail.gmail.com>
+References: <2f30dc950812091600t2028222dw3f855b2271a12593@mail.gmail.com>,
+	<2f30dc950812091849gda4d77cy4428df8671149b8a@mail.gmail.com>
+Message-ID: <FF6AB92D97A23A409701CDBF66F03FCD2A56ED41@505fuji>
+
+In addition to the DECtalk standalone device, there was a Qbus module called DECVoice (DTC04) that was intended for telephone systems (voice response systems).  I have the module in my personal collection; unfortunately, what I've been told is that there's a lot of others' intellectual property in the software (it's a microcoded device) so it would be a serious challenge to get the code to run it - too bad.  -- Ian
+________________________________________
+From: pups-bounces at minnie.tuhs.org [pups-bounces at minnie.tuhs.org] On Behalf Of Ross Tucker [rjtucke at gmail.com]
+Sent: Tuesday, December 09, 2008 6:49 PM
+To: pups at minnie.tuhs.org
+Subject: [pups] PDP-11 / vacuum tube interface
+
+Dear all,
+(This has got to be the strangest cross-post I've ever done.)
+
+I have just taken a bet from a friend to challenge my geekiness. I was
+telling him about my love of Vintage Technology and he proposed that I
+combine two hitherto separate hobbies and see what happens. The
+topics: the DEC PDP-11 minicomputer (vintage: 1970s) and vacuum-tube
+ham radios (vintage: 1960s). I do sincerely apologize for
+cross-posting, but I am rather younger than either of these
+technologies (vintage: 1984) and this seems like a monumental
+challenge.
+
+My question for y'all: how could I possibly design+build a project
+that uses both of these technologies? My thought is to port some radio
+receiver Digital Signal Processing (DSP) application into PDP-11
+assembler, compile and run it via emulator on my PC, then use it with
+the vacuum-tube regenerative receiver that I built a few years ago...
+Does anybody know if PDP-11 UNIXes even had the capability for a
+"sound card"? Or, to get ambitious, I would LOVE to design some
+interface circuitry between PDP-11 digital circuitry and vacuum-tube
+electronics... The challenges are legion: the tube side of the circuit
+operates around 350V DC levels with radio-frequency (RF) signals at 7
+MHz (almost the clock rate of some PDP-11s!) and I don't have the DEC
+Handbooks, but I'm pretty sure that even those ancient pre-TTL
+circuits operate below 350V!
+
+So... any, er, "ideas"?
+
+Best regards,
+Ross Tucker
+
+CCed to: 'glowbugs' list at <glowbugs at piobaire.mines.uidaho.edu>
+_______________________________________________
+PUPS mailing list
+PUPS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From cube1 at charter.net  Wed Dec 10 12:41:49 2008
+From: cube1 at charter.net (Jay Jaeger)
+Date: Tue, 09 Dec 2008 20:41:49 -0600
+Subject: [pups] PDP-11 / vacuum tube interface
+In-Reply-To: <5904d5730812091737g501a4b4ai98ac0862b13107be@mail.gmail.co
+ m>
+References: <2f30dc950812091600t2028222dw3f855b2271a12593@mail.gmail.com>
+	<2f30dc950812091600t2028222dw3f855b2271a12593@mail.gmail.com>
+Message-ID: <4.3.2.7.2.20081209203649.01d65d08@cirithi>
+
+Back in the 1970's Paul Pierce used a D/A converter on a PDP-11 at the UW 
+Computer Systems Lab to generate music much like early PC sound cards did 
+-- by combining harmonics in various ratios.  Although he happened to have 
+used RT-11, there is no reason why it could not be done under Unix.  (The 
+UW Computer Systems Lab also had a Votrax).
+
+So, sure, you could, with an A/D and D/A converter do something like 
+that.  I am not sure that the various emulators have done emulation for A/D 
+or D/A, but in principle, it ought to be possible.
+
+AC coupling (via a capacitor) of the input or output would remove any 
+concerns about the relatively high DC voltages.  Besides, input signals 
+ordinarily come into the grids of vacuum tube circuits by way of a 
+transformer.  Ditto for outputs from tube circuits.
+
+Jay Jaeger
+
+
+At 05:37 PM 12/9/2008 -0800, Carl Lowenstein wrote:
+>On Tue, Dec 9, 2008 at 4:00 PM, Ross Tucker <rjtucke at gmail.com> wrote:
+> > Dear all,
+> > (This has got to be the strangest cross-post I've ever done.)
+> >
+> > I have just taken a bet from a friend to challenge my geekiness. I was
+> > telling him about my love of Vintage Technology and he proposed that I
+> > combine two hitherto separate hobbies and see what happens. The
+> > topics: the DEC PDP-11 minicomputer (vintage: 1970s) and vacuum-tube
+> > ham radios (vintage: 1960s). I do sincerely apologize for
+> > cross-posting, but I am rather younger than either of these
+> > technologies (vintage: 1984) and this seems like a monumental
+> > challenge.
+> >
+> > My question for y'all: how could I possibly design+build a project
+> > that uses both of these technologies? My thought is to port some radio
+> > receiver Digital Signal Processing (DSP) application into PDP-11
+> > assembler, compile and run it via emulator on my PC, then use it with
+> > the vacuum-tube regenerative receiver that I built a few years ago...
+> > Does anybody know if PDP-11 UNIXes even had the capability for a
+> > "sound card"?
+>
+>Well, you could look at "Votrax" on Wikipedia.  Allegedly, the first
+>words spoken by a Unix system at Bell Labs, using its Votrax
+>synthesizer, were "file not found".
+>
+>Things that are now known as "sound cards" were called A:D and D:A
+>converters back in those days.  And there were a fair variety of them
+>available for both Unibus and Qbus systems.
+>
+> > Or, to get ambitious, I would LOVE to design some
+> > interface circuitry between PDP-11 digital circuitry and vacuum-tube
+> > electronics... The challenges are legion: the tube side of the circuit
+> > operates around 350V DC levels with radio-frequency (RF) signals at 7
+> > MHz (almost the clock rate of some PDP-11s!) and I don't have the DEC
+> > Handbooks, but I'm pretty sure that even those ancient pre-TTL
+> > circuits operate below 350V!
+>
+>The vacuum-tube circuits may be running from 350 VDC but somewhere
+>there are low-level inputs from which everything is amplified.  Think
+>microphone.
+>
+>     carl
+>--
+>     carl lowenstein         marine physical lab     u.c. san diego
+>                                                  clowenstein at ucsd.edu
+>_______________________________________________
+>PUPS mailing list
+>PUPS at minnie.tuhs.org
+>https://minnie.tuhs.org/mailman/listinfo/pups
+
+---	
+Jay R. Jaeger					The Computer Collection
+cube1 at charter.net
+
+
+
+From mcquiggi at sfu.ca  Wed Dec 10 15:02:08 2008
+From: mcquiggi at sfu.ca (Kevin McQuiggin)
+Date: Tue, 9 Dec 2008 21:02:08 -0800
+Subject: [pups] PDP-11 / vacuum tube interface
+In-Reply-To: <2f30dc950812091600t2028222dw3f855b2271a12593@mail.gmail.com>
+References: <2f30dc950812091600t2028222dw3f855b2271a12593@mail.gmail.com>
+Message-ID: <108A91F6-216E-46D3-990A-DB3ABAE687BA@sfu.ca>
+
+How about using the pdp-11 to decode Morse code transmissions that you  
+receive on your vintage radio?  This would eliminate any issues with  
+interfacing to HV circuits, as you could simply run the radio's audio  
+output through a PLL circuit to detect tone/no tone and then read this  
+single bit signal on the pdp-11.  You decode the Morse code in  
+software.  I have code for you (in an old version of Pascal) if you'd  
+like.  It adapts to the Morse code speed automatically and "catches  
+up" to changes in Morse speed in about 5 letters maximum, as I  
+recall.  From an undergrad project I completed in the late 1970s!  I  
+could also dig out the hardware info.  Then again you might have more  
+fun reinventing this yourself!
+
+Kevin
+
+On 9-Dec-08, at 4:00 PM, Ross Tucker wrote:
+
+> Dear all,
+> (This has got to be the strangest cross-post I've ever done.)
+>
+> I have just taken a bet from a friend to challenge my geekiness. I was
+> telling him about my love of Vintage Technology and he proposed that I
+> combine two hitherto separate hobbies and see what happens. The
+> topics: the DEC PDP-11 minicomputer (vintage: 1970s) and vacuum-tube
+> ham radios (vintage: 1960s). I do sincerely apologize for
+> cross-posting, but I am rather younger than either of these
+> technologies (vintage: 1984) and this seems like a monumental
+> challenge.
+>
+> My question for y'all: how could I possibly design+build a project
+> that uses both of these technologies? My thought is to port some radio
+> receiver Digital Signal Processing (DSP) application into PDP-11
+> assembler, compile and run it via emulator on my PC, then use it with
+> the vacuum-tube regenerative receiver that I built a few years ago...
+> Does anybody know if PDP-11 UNIXes even had the capability for a
+> "sound card"? Or, to get ambitious, I would LOVE to design some
+> interface circuitry between PDP-11 digital circuitry and vacuum-tube
+> electronics... The challenges are legion: the tube side of the circuit
+> operates around 350V DC levels with radio-frequency (RF) signals at 7
+> MHz (almost the clock rate of some PDP-11s!) and I don't have the DEC
+> Handbooks, but I'm pretty sure that even those ancient pre-TTL
+> circuits operate below 350V!
+>
+> So... any, er, "ideas"?
+>
+> Best regards,
+> Ross Tucker
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/pups
+>
+
+
+
+From jkunz at unixag-kl.fh-kl.de  Wed Dec 10 19:22:41 2008
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Wed, 10 Dec 2008 10:22:41 +0100
+Subject: [pups] PDP-11 / vacuum tube interface
+In-Reply-To: <2f30dc950812091600t2028222dw3f855b2271a12593@mail.gmail.com>
+References: <2f30dc950812091600t2028222dw3f855b2271a12593@mail.gmail.com>
+Message-ID: <20081210102241.4ba8027e.jkunz@unixag-kl.fh-kl.de>
+
+On Tue, 9 Dec 2008 17:00:32 -0700
+"Ross Tucker" <rjtucke at gmail.com> wrote:
+
+> Does anybody know if PDP-11 UNIXes even had the capability for a
+> "sound card"?
+There are ADC cards for QBus (and most likely UniBUS) PDP-11s...
+What about PSK31? QRSS?
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+
+From robinb at ruffnready.co.uk  Wed Dec 10 19:21:37 2008
+From: robinb at ruffnready.co.uk (robinb at ruffnready.co.uk)
+Date: Wed, 10 Dec 2008 09:21:37 +0000
+Subject: [pups] PDP-11 / vacuum tube interface
+In-Reply-To: <2f30dc950812091600t2028222dw3f855b2271a12593@mail.gmail.com>
+Message-ID: <E1LALGD-000BvI-89@pr-webmail-2.demon.net>
+
+That's a wonderful idea.  As has been pointed out there are a number of A2D and D2A boards available for the PDP11.  However it would be fun to do it yourself and design one from scratch although getting hold of prototyping boards for unibus or Q bus could be a bit difficult these days.
+
+You would probably have to down convert your RF to audio to keep everything in the realm of what the PDP could handle though something like PSK should be able to be resolved, morse should be a doddle.
+
+Have a go, this is seriously pointless geeky stuff and as a result huge fun.
+
+Robin
+
+rjtucke at gmail.com wrote:
+> Dear all,
+> (This has got to be the strangest cross-post I've ever done.)
+> 
+> I have just taken a bet from a friend to challenge my geekiness. I was
+> telling him about my love of Vintage Technology and he proposed that I
+> combine two hitherto separate hobbies and see what happens. The
+> topics: the DEC PDP-11 minicomputer (vintage: 1970s) and vacuum-tube
+> ham radios (vintage: 1960s). I do sincerely apologize for
+> cross-posting, but I am rather younger than either of these
+> technologies (vintage: 1984) and this seems like a monumental
+> challenge.
+> 
+> My question for y'all: how could I possibly design+build a project
+> that uses both of these technologies? My thought is to port some radio
+> receiver Digital Signal Processing (DSP) application into PDP-11
+> assembler, compile and run it via emulator on my PC, then use it with
+> the vacuum-tube regenerative receiver that I built a few years ago...
+> Does anybody know if PDP-11 UNIXes even had the capability for a
+> "sound card"? Or, to get ambitious, I would LOVE to design some
+> interface circuitry between PDP-11 digital circuitry and vacuum-tube
+> electronics... The challenges are legion: the tube side of the circuit
+> operates around 350V DC levels with radio-frequency (RF) signals at 7
+> MHz (almost the clock rate of some PDP-11s!) and I don't have the DEC
+> Handbooks, but I'm pretty sure that even those ancient pre-TTL
+> circuits operate below 350V!
+> 
+> So... any, er, "ideas"?
+> 
+> Best regards,
+> Ross Tucker
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/pups
+> 
+
+
+
+From fred.van.kempen at microwalt.nl  Thu Dec 11 04:09:34 2008
+From: fred.van.kempen at microwalt.nl (Fred N. van Kempen)
+Date: Wed, 10 Dec 2008 19:09:34 +0100
+Subject: [pups] PDP-11 / vacuum tube interface
+Message-ID: <4AAEDF5C75F8034081EC5DB322150E3C014A59@MWNLEX01.mwcorp.lan>
+
+> (This has got to be the strangest cross-post I've ever done.)
+You've got that right :P
+
+> I do sincerely apologize for
+> cross-posting, but I am rather younger than either of these
+> technologies (vintage: 1984) and this seems like a monumental
+> challenge.
+Well, several projects can be thought off in this scenario, but
+if you want to keep it mildly useful, try to do something with
+audio tubes connected to an '11 (OK, here's a spoiler: "you'll
+make a PDP11-driven music player using a tube-based audio
+backend"), or such.  You could go into analog computing as
+well, but that can be kinda hairy.
+
+This more or less only requires building a usable D/A converter
+on the '11, which then interfaces to the tubes.  I'd use a DMA-
+based 16-bit DA controller.
+
+Cheers,
+
+Fred (smiling @ his nano-11 system running Ultrix, all the size of
+      a matchbox..)
+
+
+
+
+From bill at cs.uofs.edu  Thu Dec 11 07:25:30 2008
+From: bill at cs.uofs.edu (Bill Gunshannon)
+Date: Wed, 10 Dec 2008 16:25:30 -0500 (EST)
+Subject: [pups] PDP-11 / vacuum tube interface
+In-Reply-To: <5904d5730812091737g501a4b4ai98ac0862b13107be@mail.gmail.com>
+References: <2f30dc950812091600t2028222dw3f855b2271a12593@mail.gmail.com>
+	<5904d5730812091737g501a4b4ai98ac0862b13107be@mail.gmail.com>
+Message-ID: <50683.71.245.40.168.1228944330.squirrel@www.cs.uofs.edu>
+
+
+If the intent was to be the first one to wed computers and vacuum tubes,
+you have missed the boat by several decades.  I, and I am sure many others
+did it long ago.  I ran HF AX.25 Packet Radio on my Heathkit HW-101.
+
+Of course, if the desire is to wed the PDP-11 and vacuum tubes, if it
+hasn't been done already the same could be done.  I would bet I could
+put an old version of the KA9Q software on a PDP-11 running BSD or even
+Ultrix-11.  And then, fire up my HW-101 (yes, I still have it) and the
+deed is done.  Of course, I could also use my HF rig which is also of
+the vacuum tube genre.  Drake Twins. :-)
+
+bill
+
+-- 
+Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three wolves
+bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+University of Scranton   |
+Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+
+
+
+
+From mcquiggi at sfu.ca  Thu Dec 11 10:04:07 2008
+From: mcquiggi at sfu.ca (Kevin McQuiggin)
+Date: Wed, 10 Dec 2008 16:04:07 -0800
+Subject: [pups] PDP-11 / vacuum tube interface
+In-Reply-To: <50683.71.245.40.168.1228944330.squirrel@www.cs.uofs.edu>
+References: <2f30dc950812091600t2028222dw3f855b2271a12593@mail.gmail.com>
+	<5904d5730812091737g501a4b4ai98ac0862b13107be@mail.gmail.com>
+	<50683.71.245.40.168.1228944330.squirrel@www.cs.uofs.edu>
+Message-ID: <C476A2A1-8D74-40F1-9E99-DD82D764030D@sfu.ca>
+
+One could always build "a mnemonic memory circuit using stone knives  
+and bearskins"...
+
+For those Trekkies out there...
+
+Kevin
+
+On 10-Dec-08, at 1:25 PM, Bill Gunshannon wrote:
+
+>
+> If the intent was to be the first one to wed computers and vacuum  
+> tubes,
+> you have missed the boat by several decades.  I, and I am sure many  
+> others
+> did it long ago.  I ran HF AX.25 Packet Radio on my Heathkit HW-101.
+>
+> Of course, if the desire is to wed the PDP-11 and vacuum tubes, if it
+> hasn't been done already the same could be done.  I would bet I could
+> put an old version of the KA9Q software on a PDP-11 running BSD or  
+> even
+> Ultrix-11.  And then, fire up my HW-101 (yes, I still have it) and the
+> deed is done.  Of course, I could also use my HF rig which is also of
+> the vacuum tube genre.  Drake Twins. :-)
+>
+> bill
+>
+> -- 
+> Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three  
+> wolves
+> bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+> University of Scranton   |
+> Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+>
+>
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/pups
+>
+
+
+
+From IanK at vulcan.com  Thu Dec 11 10:06:01 2008
+From: IanK at vulcan.com (Ian King)
+Date: Wed, 10 Dec 2008 16:06:01 -0800
+Subject: [pups] PDP-11 / vacuum tube interface
+In-Reply-To: <C476A2A1-8D74-40F1-9E99-DD82D764030D@sfu.ca>
+References: <2f30dc950812091600t2028222dw3f855b2271a12593@mail.gmail.com>
+	<5904d5730812091737g501a4b4ai98ac0862b13107be@mail.gmail.com>
+	<50683.71.245.40.168.1228944330.squirrel@www.cs.uofs.edu>
+	<C476A2A1-8D74-40F1-9E99-DD82D764030D@sfu.ca>
+Message-ID: <FF6AB92D97A23A409701CDBF66F03FCD2A5AB2E0@505fuji>
+
+But only if you have Joan Collins to inspire you.
+
+> -----Original Message-----
+> From: pups-bounces at minnie.tuhs.org [mailto:pups-
+> bounces at minnie.tuhs.org] On Behalf Of Kevin McQuiggin
+> Sent: Wednesday, December 10, 2008 4:04 PM
+> To: Bill Gunshannon
+> Cc: pups at minnie.tuhs.org
+> Subject: Re: [pups] PDP-11 / vacuum tube interface
+>
+> One could always build "a mnemonic memory circuit using stone knives
+> and bearskins"...
+>
+> For those Trekkies out there...
+>
+> Kevin
+>
+> On 10-Dec-08, at 1:25 PM, Bill Gunshannon wrote:
+>
+> >
+> > If the intent was to be the first one to wed computers and vacuum
+> > tubes,
+> > you have missed the boat by several decades.  I, and I am sure many
+> > others
+> > did it long ago.  I ran HF AX.25 Packet Radio on my Heathkit HW-101.
+> >
+> > Of course, if the desire is to wed the PDP-11 and vacuum tubes, if it
+> > hasn't been done already the same could be done.  I would bet I could
+> > put an old version of the KA9Q software on a PDP-11 running BSD or
+> > even
+> > Ultrix-11.  And then, fire up my HW-101 (yes, I still have it) and
+> the
+> > deed is done.  Of course, I could also use my HF rig which is also of
+> > the vacuum tube genre.  Drake Twins. :-)
+> >
+> > bill
+> >
+> > --
+> > Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three
+> > wolves
+> > bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+> > University of Scranton   |
+> > Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+> >
+> >
+> > _______________________________________________
+> > PUPS mailing list
+> > PUPS at minnie.tuhs.org
+> > https://minnie.tuhs.org/mailman/listinfo/pups
+> >
+>
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From jkunz at unixag-kl.fh-kl.de  Fri Dec 12 03:14:36 2008
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Thu, 11 Dec 2008 18:14:36 +0100
+Subject: [pups] PDP-11 / vacuum tube interface
+In-Reply-To: <4AAEDF5C75F8034081EC5DB322150E3C014A59@MWNLEX01.mwcorp.lan>
+References: <4AAEDF5C75F8034081EC5DB322150E3C014A59@MWNLEX01.mwcorp.lan>
+Message-ID: <20081211181436.6bd5c50a.jkunz@unixag-kl.fh-kl.de>
+
+On Wed, 10 Dec 2008 19:09:34 +0100
+"Fred N. van Kempen" <fred.van.kempen at microwalt.nl> wrote:
+
+> smiling @ his nano-11 system running Ultrix, all the size of
+>       a matchbox..
+nano-11? Please elaborate.
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+
+From fred.van.kempen at microwalt.nl  Fri Dec 12 04:16:52 2008
+From: fred.van.kempen at microwalt.nl (Fred N. van Kempen)
+Date: Thu, 11 Dec 2008 19:16:52 +0100
+Subject: [pups] PDP-11 / vacuum tube interface
+Message-ID: <4AAEDF5C75F8034081EC5DB322150E3C014A79@MWNLEX01.mwcorp.lan>
+
+I was bored, and ported my version of SimH (which is an older
+version, but with some stuff ripped out, and other stuff put
+in) to my operating system for my ARM-based MCU board.  It
+now "acts" like a regular 11/83 when turned on, and will
+happily boot Ultrix-11 off the CF card :)
+
+Not as fast as running on a peecee, not half as much fun as
+running a real '11, but hey, it DOES fit into my backpack.
+
+--f 
+
+-----Original Message-----
+From: pups-bounces at minnie.tuhs.org [mailto:pups-bounces at minnie.tuhs.org] On Behalf Of Jochen Kunz
+Sent: Thursday, December 11, 2008 6:15 PM
+To: pups at minnie.tuhs.org
+Subject: Re: [pups] PDP-11 / vacuum tube interface
+
+On Wed, 10 Dec 2008 19:09:34 +0100
+"Fred N. van Kempen" <fred.van.kempen at microwalt.nl> wrote:
+
+> smiling @ his nano-11 system running Ultrix, all the size of
+>       a matchbox..
+nano-11? Please elaborate.
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+_______________________________________________
+PUPS mailing list
+PUPS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From brantley at coraid.com  Fri Dec 12 04:43:58 2008
+From: brantley at coraid.com (Brantley Coile)
+Date: Thu, 11 Dec 2008 13:43:58 -0500
+Subject: [pups] V7 boot tape files
+Message-ID: <491EBE22-B214-422B-B3E4-B464C19E83E4@coraid.com>
+
+Hey there,
+
+I have two questions.  First, does anyone have the original files from  
+the Seventh Edition boot tape?  Second, does simh support tape  
+operations like writing file markers?  No doubt you can see where I'm  
+headed with this.  I want to attach the original boot tape and install  
+the original V7 tape onto simh.
+
+Thanks,
+Brantley Coile
+
+
+
+From Hellwig.Geisse at mni.fh-giessen.de  Sat Dec 13 01:51:09 2008
+From: Hellwig.Geisse at mni.fh-giessen.de (Hellwig Geisse)
+Date: Fri, 12 Dec 2008 16:51:09 +0100
+Subject: [pups] V7 boot tape files
+In-Reply-To: <491EBE22-B214-422B-B3E4-B464C19E83E4@coraid.com>
+References: <491EBE22-B214-422B-B3E4-B464C19E83E4@coraid.com>
+Message-ID: <1229097069.6522.520.camel@papa>
+
+Brantley,
+
+On Thu, 2008-12-11 at 13:43 -0500, Brantley Coile wrote:
+> I have two questions.  First, does anyone have the original files from  
+> the Seventh Edition boot tape?  Second, does simh support tape  
+> operations like writing file markers?  No doubt you can see where I'm  
+> headed with this.  I want to attach the original boot tape and install  
+> the original V7 tape onto simh.
+
+some time ago I did exactly what you plan to do.
+I used the original V7 tape files from Keith Bostic,
+which are hosted by PUPS. I wrote a small program
+that converted the distinct files into a single 'tape'
+with a format that simh understands. I could then
+proceed with the installation of V7 exactly as the
+manual says.
+
+The whole package with instructions is available here:
+http://homepages.fh-giessen.de/~hg53/pdp11-unix/
+
+Hellwig
+
+
+
+From bqt at softjar.se  Sat Dec 13 02:42:21 2008
+From: bqt at softjar.se (Johnny Billquist)
+Date: Fri, 12 Dec 2008 17:42:21 +0100
+Subject: [pups] V7 boot tape files
+In-Reply-To: <491EBE22-B214-422B-B3E4-B464C19E83E4@coraid.com>
+References: <491EBE22-B214-422B-B3E4-B464C19E83E4@coraid.com>
+Message-ID: <4942946D.9070306@softjar.se>
+
+Brantley Coile skrev:
+> Hey there,
+> 
+> I have two questions.  First, does anyone have the original files from  
+> the Seventh Edition boot tape?  Second, does simh support tape  
+> operations like writing file markers?  No doubt you can see where I'm  
+> headed with this.  I want to attach the original boot tape and install  
+> the original V7 tape onto simh.
+
+I don't have any tapes, but I'm sure someone do.
+
+However, the answer to the second question is: of course. Otherwise it couldn't 
+emulate a tape.
+
+	Johnny
+
+-- 
+Johnny Billquist                  || "I'm on a bus
+                                   ||  on a psychedelic trip
+email: bqt at softjar.se             ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+From hansolofalcon at worldnet.att.net  Sat Dec 13 10:49:11 2008
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Fri, 12 Dec 2008 19:49:11 -0500
+Subject: [pups] PDP-11 / vacuum tube interface
+In-Reply-To: <C476A2A1-8D74-40F1-9E99-DD82D764030D@sfu.ca>
+Message-ID: <EF13F3C409A24418A643A72EA259C272@who8>
+
+Hello!
+The term is Trekker, Kevin. And it takes place during the second act of a
+very important episode. 
+
+
+But I freely admit that I am interested in this decidedly strange mix of
+technology.
+--
+Gregg C Levine hansolofalcon at worldnet.att.net
+"The Force will be with you always." Obi-Wan Kenobi
+  
+
+
+> -----Original Message-----
+> From: pups-bounces at minnie.tuhs.org [mailto:pups-bounces at minnie.tuhs.org]
+On Behalf
+> Of Kevin McQuiggin
+> Sent: Wednesday, December 10, 2008 7:04 PM
+> To: Bill Gunshannon
+> Cc: pups at minnie.tuhs.org
+> Subject: Re: [pups] PDP-11 / vacuum tube interface
+> 
+> One could always build "a mnemonic memory circuit using stone knives
+> and bearskins"...
+> 
+> For those Trekkies out there...
+> 
+> Kevin
+> 
+> On 10-Dec-08, at 1:25 PM, Bill Gunshannon wrote:
+> 
+> >
+> > If the intent was to be the first one to wed computers and vacuum
+> > tubes,
+> > you have missed the boat by several decades.  I, and I am sure many
+> > others
+> > did it long ago.  I ran HF AX.25 Packet Radio on my Heathkit HW-101.
+> >
+> > Of course, if the desire is to wed the PDP-11 and vacuum tubes, if it
+> > hasn't been done already the same could be done.  I would bet I could
+> > put an old version of the KA9Q software on a PDP-11 running BSD or
+> > even
+> > Ultrix-11.  And then, fire up my HW-101 (yes, I still have it) and the
+> > deed is done.  Of course, I could also use my HF rig which is also of
+> > the vacuum tube genre.  Drake Twins. :-)
+> >
+> > bill
+> >
+> > --
+> > Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three
+> > wolves
+> > bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+> > University of Scranton   |
+> > Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+> >
+> >
+> > _______________________________________________
+> > PUPS mailing list
+> > PUPS at minnie.tuhs.org
+> > https://minnie.tuhs.org/mailman/listinfo/pups
+> >
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From hansolofalcon at worldnet.att.net  Sat Dec 13 11:14:35 2008
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Fri, 12 Dec 2008 20:14:35 -0500
+Subject: [pups] PDP-11 / vacuum tube interface DAC-6A2
+In-Reply-To: <C476A2A1-8D74-40F1-9E99-DD82D764030D@sfu.ca>
+Message-ID: <308E8CEB5AAF4419A84F9066DF8E3FBA@who8>
+
+Hello! (Resend because a member missed it.)
+The term is Trekker, Kevin. And it takes place during the second act of a
+very important episode. 
+
+
+But I freely admit that I am interested in this decidedly strange mix of
+technology.
+--
+Gregg C Levine hansolofalcon at worldnet.att.net
+"The Force will be with you always." Obi-Wan Kenobi
+  
+
+
+> -----Original Message-----
+> From: pups-bounces at minnie.tuhs.org [mailto:pups-bounces at minnie.tuhs.org]
+On Behalf
+> Of Kevin McQuiggin
+> Sent: Wednesday, December 10, 2008 7:04 PM
+> To: Bill Gunshannon
+> Cc: pups at minnie.tuhs.org
+> Subject: Re: [pups] PDP-11 / vacuum tube interface
+> 
+> One could always build "a mnemonic memory circuit using stone knives
+> and bearskins"...
+> 
+> For those Trekkies out there...
+> 
+> Kevin
+> 
+> On 10-Dec-08, at 1:25 PM, Bill Gunshannon wrote:
+> 
+> >
+> > If the intent was to be the first one to wed computers and vacuum
+> > tubes,
+> > you have missed the boat by several decades.  I, and I am sure many
+> > others
+> > did it long ago.  I ran HF AX.25 Packet Radio on my Heathkit HW-101.
+> >
+> > Of course, if the desire is to wed the PDP-11 and vacuum tubes, if it
+> > hasn't been done already the same could be done.  I would bet I could
+> > put an old version of the KA9Q software on a PDP-11 running BSD or
+> > even
+> > Ultrix-11.  And then, fire up my HW-101 (yes, I still have it) and the
+> > deed is done.  Of course, I could also use my HF rig which is also of
+> > the vacuum tube genre.  Drake Twins. :-)
+> >
+> > bill
+> >
+> > --
+> > Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three
+> > wolves
+> > bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+> > University of Scranton   |
+> > Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+> >
+> >
+> > _______________________________________________
+> > PUPS mailing list
+> > PUPS at minnie.tuhs.org
+> > https://minnie.tuhs.org/mailman/listinfo/pups
+> >
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From lorddoomicus at mac.com  Wed Dec 10 10:30:14 2008
+From: lorddoomicus at mac.com (Lord Doomicus)
+Date: Tue, 09 Dec 2008 19:30:14 -0500
+Subject: [TUHS] /usr/bin/bs on HPUX?
+Message-ID: <75D36093-D9D0-48EF-ACAC-DF739E0236B6@mac.com>
+
+I was poking around an HP UX system at work today, and noticed a  
+command I've never noticed before ... /usr/bin/bs.
+
+I'm sure it's been there for a long time, even though I've been an  
+HPUX admin for more than a decade, sometimes I'm just blind ... but  
+anyway ....
+
+I tried to search on google ... it looks like only HPUX, AIX, and  
+Maybe AU/X has it.  Seems to be some kind of pseudo BASIC like  
+interpreter.
+
+Anyone ever use it for anything?  Has anyone even noticed it before?   
+I'll have to boot my Crimson to see if IRIX has it.
+
+- Derrik
+
+Derrik Walker v2.0, RHCE
+lorddoomicus at mac.com
+http://www.doomd.net
+
+"There's nothing nice about Steve Jobs and there's nothing evil about  
+Bill Gates."
+	-- Chuck Peddle, MOS 6502 Chip Designer
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20081209/889366ac/attachment.html>
+
+From tfb at tfeb.org  Wed Dec 10 19:45:43 2008
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Wed, 10 Dec 2008 09:45:43 +0000
+Subject: [TUHS] /usr/bin/bs on HPUX?
+In-Reply-To: <75D36093-D9D0-48EF-ACAC-DF739E0236B6@mac.com>
+References: <75D36093-D9D0-48EF-ACAC-DF739E0236B6@mac.com>
+Message-ID: <239FF1D4-67E4-4D4C-9FE1-07B60DF27436@tfeb.org>
+
+On 10 Dec 2008, at 00:30, Lord Doomicus wrote:
+>
+> Anyone ever use it for anything?  Has anyone even noticed it  
+> before?  I'll have to boot my Crimson to see if IRIX has it.
+I remember a bs command (which was some kind of mini-BASIC) in the   
+4.2BSD machine I first used.  However it may have been added by the  
+vendor rather than have been in 4.2BSD proper.
+
+I used it at the time, and have occasionally missed it since - nothing  
+I now use regularly  (OSX and Solaris) seems to have it.
+
+--tim
+
+
+From neozeed at gmail.com  Thu Dec 11 00:29:49 2008
+From: neozeed at gmail.com (Jason Stevens)
+Date: Wed, 10 Dec 2008 09:29:49 -0500
+Subject: [TUHS] /usr/bin/bs on HPUX?
+In-Reply-To: <75D36093-D9D0-48EF-ACAC-DF739E0236B6@mac.com>
+References: <75D36093-D9D0-48EF-ACAC-DF739E0236B6@mac.com>
+Message-ID: <46b366130812100629y696b9a63q4ab58c4afd230af8@mail.gmail.com>
+
+I just fired up my copy of 4.2 on simh....
+
+4.2 BSD UNIX (myname)
+login: root
+Last login: Thu Sep  8 19:45:39 on console
+4.2 BSD UNIX #3: Thu Sep 8 08:46:54 PDT 1983
+Would you like to play a game?
+You have mail.
+Don't login as root, use su
+myname# cd /bin
+myname# ls bs
+bs not found
+myname# which bs
+no bs in /etc /usr/ucb /bin /usr/bin /usr/local /usr/hosts .
+myname# man bs
+No manual entry for bs.
+myname#
+
+Sorry that wasn't much help.....
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20081210/77411812/attachment.html>
+
+From cowan at ccil.org  Thu Dec 11 04:08:26 2008
+From: cowan at ccil.org (John Cowan)
+Date: Wed, 10 Dec 2008 13:08:26 -0500
+Subject: [TUHS] /usr/bin/bs on HPUX?
+In-Reply-To: <75D36093-D9D0-48EF-ACAC-DF739E0236B6@mac.com>
+References: <75D36093-D9D0-48EF-ACAC-DF739E0236B6@mac.com>
+Message-ID: <20081210180826.GE1746@mercury.ccil.org>
+
+Lord Doomicus scripsit:
+
+> I was poking around an HP UX system at work today, and noticed a  
+> command I've never noticed before ... /usr/bin/bs.
+> 
+> I'm sure it's been there for a long time, even though I've been an  
+> HPUX admin for more than a decade, sometimes I'm just blind ... but  
+> anyway ....
+> 
+> I tried to search on google ... it looks like only HPUX, AIX, and  
+> Maybe AU/X has it.  Seems to be some kind of pseudo BASIC like  
+> interpreter.
+
+That's just what it is.  Here are the things I now know about it.
+
+0.  The string "bs" gets an awful lot of false Google hits, no matter
+how hard you try.
+
+1.  "bs" was written at AT&T, probably at the Labs, at some time between
+the release of 32V and System III.  It was part of both System III and
+at least some System V releases.
+
+2.  It was probably meant as a replacement for "bas", which was a more
+conventional GW-Basic-style interpreter written in PDP-11 assembly
+language.  (32V still had the PDP-11 source, which of course didn't work.)
+
+3.  At one time System III source code was available on the net,
+including bs.c and bs.1, but apparently it no longer is.  I downloaded
+it then but don't have it any more.
+
+4.  I was able to compile it under several Unixes, but it wouldn't run:
+I think there must have been some kind of dependency on memory layout,
+but never found out exactly what.
+
+5. I remember from the man page that it had regular expressions, and
+two commands "compile" and "execute" that switched modes to storing
+expressions and executing them on the spot, respectively.  That eliminated
+the need for line numbers.
+
+6. It was apparently never part of Solaris.
+
+7. It was never part of any BSD release, on which "bs" was the battleships
+game.
+
+8. I can't find the man page on line anywhere either.
+
+9. The man page said it had some Snobol features.  I think that meant
+the ability to return failure -- I vaguely remember an "freturn" command.
+
+10.  99 Bottles of Beer has a sample bs program at
+http://www2.99-bottles-of-beer.net/language-bs-103.html .
+
+11. If someone sends me a man page, I'll consider reimplementing it as
+Open Source.
+
+-- 
+We are lost, lost.  No name, no business, no Precious, nothing.  Only empty.
+Only hungry: yes, we are hungry.  A few little fishes, nassty bony little
+fishes, for a poor creature, and they say death.  So wise they are; so just,
+so very just.  --Gollum        cowan at ccil.org  http://ccil.org/~cowan
+
+
+From jrvalverde at cnb.csic.es  Thu Dec 18 00:27:26 2008
+From: jrvalverde at cnb.csic.es (Jose R. Valverde)
+Date: Wed, 17 Dec 2008 15:27:26 +0100
+Subject: [TUHS]  /usr/bin/bs on HPUX?
+Message-ID: <20081217152726.24f01d4e@cnb.csic.es>
+
+Bit of digging:
+
+> 1.  "bs" was written at AT&T, probably at the Labs, at some time between
+> the release of 32V and System III.  It was part of both System III and
+> at least some System V releases.
+
+And of course it is in TUHS! Remember we have 32V and SIII. For example,
+look into 
+
+	TUHS/Other/Distributions/Plexis_Sys3/
+or
+	TUHS/PDP-11/Distributions/usdl/SysIII/
+
+The sources contain 'bs' under cmd/bs
+
+The latter one (under USDL) contains also the man page under usr/src/man/man1
+(as 'bs.1').
+
+So, there. You have it.
+
+This leads me to consider we would greatly benefit from an expanded and
+indexed TUHS repository tree. I made one on my mirror long ago, but a
+series of disk crashes ended with it. Maybe, if there is interest I
+could do it again.
+
+				
+			    j
+-- 
+			EMBnet/CNB
+		Scientific Computing Service
+	Solving all your computer needs for Scientific
+			Research.
+
+		http://bioportal.cnb.csic.es
+		  http://www.es.embnet.org
+
+
+From cowan at ccil.org  Thu Dec 18 01:39:45 2008
+From: cowan at ccil.org (John Cowan)
+Date: Wed, 17 Dec 2008 10:39:45 -0500
+Subject: [TUHS] /usr/bin/bs on HPUX?
+In-Reply-To: <20081217152726.24f01d4e@cnb.csic.es>
+References: <20081217152726.24f01d4e@cnb.csic.es>
+Message-ID: <20081217153945.GE12605@mercury.ccil.org>
+
+Jose R. Valverde scripsit:
+
+> And of course it is in TUHS! Remember we have 32V and SIII. For example,
+> look into 
+> 
+> 	TUHS/Other/Distributions/Plexis_Sys3/
+> or
+> 	TUHS/PDP-11/Distributions/usdl/SysIII/
+
+As I pointed out in my previous post, both of these directories have
+been removed from minnie, presumably because there is doubt about
+the licensing status of System III.  Among the listed mirrors
+at http://minnie.tuhs.org/TUHS/archive_sites.html , at least
+unix-archive.pdp11.org.ru still has copies.
+
+-- 
+Go, and never darken my towels again!           John Cowan
+        --Rufus T. Firefly                      http://ccil.org/~cowan
+
+
+From lyricalnanoha at usotsuki.hoshinet.org  Thu Dec 18 02:14:24 2008
+From: lyricalnanoha at usotsuki.hoshinet.org (lyricalnanoha)
+Date: Wed, 17 Dec 2008 11:14:24 -0500 (EST)
+Subject: [TUHS] /usr/bin/bs on HPUX?
+In-Reply-To: <20081217153945.GE12605@mercury.ccil.org>
+References: <20081217152726.24f01d4e@cnb.csic.es>
+	<20081217153945.GE12605@mercury.ccil.org>
+Message-ID: <alpine.DEB.0.99.0812171113040.18248@andisteele.dosius.ath.cx>
+
+On Wed, 17 Dec 2008, John Cowan wrote:
+
+> Jose R. Valverde scripsit:
+>
+>> And of course it is in TUHS! Remember we have 32V and SIII. For example,
+>> look into
+>>
+>> 	TUHS/Other/Distributions/Plexis_Sys3/
+>> or
+>> 	TUHS/PDP-11/Distributions/usdl/SysIII/
+>
+> As I pointed out in my previous post, both of these directories have
+> been removed from minnie, presumably because there is doubt about
+> the licensing status of System III.  Among the listed mirrors
+> at http://minnie.tuhs.org/TUHS/archive_sites.html , at least
+> unix-archive.pdp11.org.ru still has copies.
+
+Hm.  I had it already.
+
+*grovels through the source*
+
+it's using a very bizarre form of longjmp()... was that the normal syntax 
+in sys3?  it's using a struct, instead of the two parameters glibc wants.
+
+(yeah yeah, I know, EW GNU, but I just wanted to see what I was up 
+against.  That's the only thing spitting errors but there's a ton of 
+warnings.)
+
+-uso.
+
+
+From cowan at ccil.org  Thu Dec 18 02:35:51 2008
+From: cowan at ccil.org (John Cowan)
+Date: Wed, 17 Dec 2008 11:35:51 -0500
+Subject: [TUHS] /usr/bin/bs on HPUX?
+In-Reply-To: <alpine.DEB.0.99.0812171113040.18248@andisteele.dosius.ath.cx>
+References: <20081217152726.24f01d4e@cnb.csic.es>
+	<20081217153945.GE12605@mercury.ccil.org>
+	<alpine.DEB.0.99.0812171113040.18248@andisteele.dosius.ath.cx>
+Message-ID: <20081217163550.GF12605@mercury.ccil.org>
+
+lyricalnanoha scripsit:
+
+> it's using a very bizarre form of longjmp()... was that the normal syntax 
+> in sys3?  it's using a struct, instead of the two parameters glibc wants.
+
+v7 wants two parameters too.  This was probably some attempt at cleanup that
+didn't survive.
+
+To fork a hacker nursery rhyme:
+
+System III!  System III!
+See how it runs!  See how it runs!
+Its longjmp() loses so totally,
+It runs all its programs in 'I & D',
+It's made by our fav'rite monopoly,
+System III!
+
+-- 
+"Well, I'm back."  --Sam        John Cowan <cowan at ccil.org>
+
+
+From wkt at tuhs.org  Thu Dec 18 09:05:30 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 18 Dec 2008 09:05:30 +1000
+Subject: [TUHS] Old UNIX Filesystems with FUSE
+Message-ID: <20081217230530.GA64474@minnie.tuhs.org>
+
+http://osxbook.com/software/ancientfs/
+
+Amit Singh has added support for a whole bunch of early UNIX filesystem and
+archive formats to FUSE.
+
+Cheers,
+	Warren
+
+
+From cowan at ccil.org  Thu Dec 18 09:16:46 2008
+From: cowan at ccil.org (John Cowan)
+Date: Wed, 17 Dec 2008 18:16:46 -0500
+Subject: [TUHS] Old UNIX Filesystems with FUSE
+In-Reply-To: <20081217230530.GA64474@minnie.tuhs.org>
+References: <20081217230530.GA64474@minnie.tuhs.org>
+Message-ID: <20081217231645.GC28193@mercury.ccil.org>
+
+Warren Toomey scripsit:
+> http://osxbook.com/software/ancientfs/
+> 
+> Amit Singh has added support for a whole bunch of early UNIX filesystem and
+> archive formats to FUSE.
+
+Does this depend heavily on OS X, or should it work on Linux and BSD as well?
+
+-- 
+Some people open all the Windows;       John Cowan
+wise wives welcome the spring           cowan at ccil.org
+by moving the Unix.                     http://www.ccil.org/~cowan
+  --ad for Unix Book Units (U.K.)
+        (see http://cm.bell-labs.com/cm/cs/who/dmr/unix3image.gif)
+
+
+From wkt at tuhs.org  Thu Dec 18 09:22:41 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 18 Dec 2008 09:22:41 +1000
+Subject: [TUHS] Old UNIX Filesystems with FUSE
+In-Reply-To: <20081217231645.GC28193@mercury.ccil.org>
+References: <20081217230530.GA64474@minnie.tuhs.org>
+	<20081217231645.GC28193@mercury.ccil.org>
+Message-ID: <20081217232241.GA64798@minnie.tuhs.org>
+
+On Wed, Dec 17, 2008 at 06:16:46PM -0500, John Cowan wrote:
+> > Amit Singh has added support for a whole bunch of early UNIX filesystem and
+> > archive formats to FUSE.
+> Does this depend heavily on OS X, or should it work on Linux and BSD as well?
+
+No idea. I had a brief look at some of the code on the web site and it seems
+relatively neutral, but I have not downloaded it yet. I've sent an e-mail
+with the same question to Amit.
+
+	Warren
+
+
+From norman at oclsc.org  Thu Dec 18 09:46:44 2008
+From: norman at oclsc.org (Norman Wilson)
+Date: Wed, 17 Dec 2008 18:46:44 -0500 (EST)
+Subject: [TUHS] Old UNIX Filesystems with FUSE
+Message-ID: <1229557604.28312.for-standards-violators@oclsc.org>
+
+John Cowan:
+
+> Does this depend heavily on OS X, or should it work on Linux and BSD as well?
+
+Warren Krun Toomey:
+
+  No idea. I had a brief look at some of the code on the web site and it seems
+  relatively neutral, but I have not downloaded it yet. I've sent an e-mail
+  with the same question to Amit.
+
+======
+
+I keep meaning to poke about at FUSE, since it plays more or
+less the role of the file-server-implementation library setup
+I wrote for my own purposes 20 years ago (in the context of a
+UNIX variant that cannot yet be distributed freely).
+
+But I'd be surprised if the stuff was terribly MacOS X dependent.
+Certainly FUSE exists in Linux, and the libraries and requisite
+kernel module are even included in some Linux distributions
+(notably recent editions of Fedora), because sshfs is built atop
+FUSE.
+
+Norman Wilson
+Toronto ON
+
+
+From magnus at rubidium.dyndns.org  Thu Dec 18 10:13:21 2008
+From: magnus at rubidium.dyndns.org (Magnus Danielson)
+Date: Thu, 18 Dec 2008 01:13:21 +0100
+Subject: [TUHS] Old UNIX Filesystems with FUSE
+In-Reply-To: <20081217232241.GA64798@minnie.tuhs.org>
+References: <20081217230530.GA64474@minnie.tuhs.org>	<20081217231645.GC28193@mercury.ccil.org>
+	<20081217232241.GA64798@minnie.tuhs.org>
+Message-ID: <494995A1.3080109@rubidium.dyndns.org>
+
+Warren Toomey skrev:
+> On Wed, Dec 17, 2008 at 06:16:46PM -0500, John Cowan wrote:
+>>> Amit Singh has added support for a whole bunch of early UNIX filesystem and
+>>> archive formats to FUSE.
+>> Does this depend heavily on OS X, or should it work on Linux and BSD as well?
+> 
+> No idea. I had a brief look at some of the code on the web site and it seems
+> relatively neutral, but I have not downloaded it yet. I've sent an e-mail
+> with the same question to Amit.
+
+OK, a checkout and compile-attempt later I can tell you that it doesn't 
+cook directly out of the box into the pot. Should not be that much magic 
+to get it cooking thought.
+
+Cheers,
+Magnus
+
+
+From cowan at ccil.org  Thu Dec 18 10:27:20 2008
+From: cowan at ccil.org (John Cowan)
+Date: Wed, 17 Dec 2008 19:27:20 -0500
+Subject: [TUHS] Old UNIX Filesystems with FUSE
+In-Reply-To: <1229557604.28312.for-standards-violators@oclsc.org>
+References: <1229557604.28312.for-standards-violators@oclsc.org>
+Message-ID: <20081218002720.GB9007@mercury.ccil.org>
+
+Norman Wilson scripsit:
+
+> I keep meaning to poke about at FUSE, since it plays more or
+> less the role of the file-server-implementation library setup
+> I wrote for my own purposes 20 years ago (in the context of a
+> UNIX variant that cannot yet be distributed freely).
+
+"Cannot yet" is good.  Is there any hope of seeing the 10th Edition
+emerge from the shadows, ever?
+
+-- 
+We pledge allegiance to the penguin             John Cowan
+and to the intellectual property regime         cowan at ccil.org
+for which he stands, one world under            http://www.ccil.org/~cowan
+Linux, with free music and open source
+software for all.               --Julian Dibbell on Brazil, edited
+
+
+From lorddoomicus at mac.com  Thu Dec 18 09:55:24 2008
+From: lorddoomicus at mac.com (Lord Doomicus)
+Date: Wed, 17 Dec 2008 18:55:24 -0500
+Subject: [TUHS] /usr/bin/bs on HPUX?
+In-Reply-To: <20081217163550.GF12605@mercury.ccil.org>
+References: <20081217152726.24f01d4e@cnb.csic.es>
+	<20081217153945.GE12605@mercury.ccil.org>
+	<alpine.DEB.0.99.0812171113040.18248@andisteele.dosius.ath.cx>
+	<20081217163550.GF12605@mercury.ccil.org>
+Message-ID: <E3303491-1270-4852-AE27-C76E7E68085C@mac.com>
+
+
+On Dec 17, 2008, at 11:35 AM, John Cowan wrote:
+
+> lyricalnanoha scripsit:
+>
+>> it's using a very bizarre form of longjmp()... was that the normal  
+>> syntax
+>> in sys3?  it's using a struct, instead of the two parameters glibc  
+>> wants.
+>
+> v7 wants two parameters too.  This was probably some attempt at  
+> cleanup that
+> didn't survive.
+>
+> To fork a hacker nursery rhyme:
+>
+> System III!  System III!
+> See how it runs!  See how it runs!
+> Its longjmp() loses so totally,
+> It runs all its programs in 'I & D',
+> It's made by our fav'rite monopoly,
+> System III!
+
+
+Yea, I got the same thing when I tried compile it under OS X.  I know  
+HPUX has it, so I checked the man page for longjmp under HPUX, and  
+like OS X, it takes two parameters.  So, someplace, there is a version  
+of the bs source that has the correct longjmp system call.   But, it  
+may only be in the HPUX source tree.  I should boot up one of my SGI's  
+and have a look to see if it has bs, and what version of longjmp it  
+uses.
+
+- Derrik
+
+Derrik Walker v2.0, RHCE
+lorddoomicus at mac.com
+http://www.doomd.net
+
+"There's nothing nice about Steve Jobs and there's nothing evil about  
+Bill Gates."
+	-- Chuck Peddle, MOS 6502 Chip Designer
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20081217/0fe17bbe/attachment.html>
+
+From norman at oclsc.org  Thu Dec 18 11:32:50 2008
+From: norman at oclsc.org (Norman Wilson)
+Date: Wed, 17 Dec 2008 20:32:50 -0500 (EST)
+Subject: [TUHS] Old UNIX Systems with netb (was Filesystems with FUSE)
+Message-ID: <1229564341.1920.for-standards-violators@oclsc.org>
+
+John Cowan:
+
+  "Cannot yet" is good.  Is there any hope of seeing the 10th Edition
+  emerge from the shadows, ever?
+
+=======
+
+Unless some energetic person skilled at nudging people in
+a friendly way takes on the cause, probably not.
+
+Even were Novell to release the source code to System V,
+that wouldn't of itself make 10/e open, since there's plenty
+in the latter system that differs substantially from the
+former--all the really interesting bits, in fact.  As has
+been discussed here at some point in the past, someone would
+have to get (updated list of players) Novell, AT&T, and Alcatel
+all to agree to the release.  The good news is that that would
+probably mostly require getting Novell to agree that there's
+nothing in the system worth protecting for commercial reasons,
+and the others just to officially say what is already likely
+true, that they don't care.  The bad news is that that is
+probably substantial work, as he who talked what was then SCO
+into a hobbyist-source-license for 7/e and predecessors knows well.
+
+But Warren has already gone far beyond the call in his work
+(and cannot be thanked enough, so herewith I thank him yet
+again); and I'm old and tired and was never really good at
+talking to corporate types anyway; and in my humble but correct
+opinion, it is the combination of energy and dedication and
+ability to talk cheerfully to corporate times and to persist
+without losing either hope or patience or cordiality that
+is needed.  That has always been a rare combination.
+
+If someone thinks he or she has the requisite skills and wants
+to have a go, I'll be glad to offer what little help I can,
+and I'm sure Warren likewise.  But somehow I wonder whether
+it will actually happen before the world ends on 2038 January
+18.
+
+Norman Wilson
+Toronto ON
+
+
+From lm at bitmover.com  Thu Dec 18 11:53:51 2008
+From: lm at bitmover.com (Larry McVoy)
+Date: Wed, 17 Dec 2008 17:53:51 -0800
+Subject: [TUHS] Old UNIX Systems with netb (was Filesystems with FUSE)
+In-Reply-To: <1229564341.1920.for-standards-violators@oclsc.org>
+References: <1229564341.1920.for-standards-violators@oclsc.org>
+Message-ID: <20081218015350.GE22766@bitmover.com>
+
+> Unless some energetic person skilled at nudging people in
+> a friendly way takes on the cause, probably not.
+
+Energetic?  At 46, running a company for 10 years, hmm, less so.
+Skilled in nudging people in a friendly way, hmm, google me.
+Effective?  Yes.
+Willing?  Yes.
+
+Not sure if that helps.  Who are the players?
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From wkt at tuhs.org  Thu Dec 18 17:19:41 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 18 Dec 2008 17:19:41 +1000
+Subject: [TUHS] Old UNIX Filesystems with FUSE
+In-Reply-To: <20081217231645.GC28193@mercury.ccil.org>
+References: <20081217230530.GA64474@minnie.tuhs.org>
+	<20081217231645.GC28193@mercury.ccil.org>
+Message-ID: <20081218071941.GA70009@minnie.tuhs.org>
+
+On Wed, Dec 17, 2008 at 06:16:46PM -0500, John Cowan wrote:
+> > Amit Singh has added support for a whole bunch of early UNIX filesystem and
+> > archive formats to FUSE.
+> Does this depend heavily on OS X, or should it work on Linux and BSD as well?
+
+Amit says:
+
+  As for portability, yes, I have kept AncientFS limited to the cross
+  platform FUSE API (MacFUSE supports much more than the FUSE API). So,
+  it should work on other FUSE implementations with few changes.
+
+Cheers,
+	Warren
+
+
+From lehmann at ans-netz.de  Thu Dec 18 20:14:03 2008
+From: lehmann at ans-netz.de (Oliver Lehmann)
+Date: Thu, 18 Dec 2008 11:14:03 +0100
+Subject: [TUHS] Old UNIX Filesystems with FUSE
+In-Reply-To: <20081218071941.GA70009@minnie.tuhs.org>
+References: <20081217230530.GA64474@minnie.tuhs.org>
+	<20081217231645.GC28193@mercury.ccil.org>
+	<20081218071941.GA70009@minnie.tuhs.org>
+Message-ID: <20081218101403.94009.qmail@avocado.salatschuessel.net>
+
+Hi, 
+
+Warren Toomey writes: 
+
+>   As for portability, yes, I have kept AncientFS limited to the cross
+>   platform FUSE API (MacFUSE supports much more than the FUSE API). So,
+>   it should work on other FUSE implementations with few changes.
+
+I've modified the code so compiles on FreeBSD but dlsym() still does not 
+work: 
+
+root at nudel ancientfs> ./ancientfs --type v7 --dmg v7_rl02_1145 /mnt/tmp
+Undefined symbol "unixfs_v7"
+invalid file system type v7
+Exit 255 
+
+dlsym() is kinda new to me so I'm a bit lost... 
+
+I've uploaded a diff to the svn checkout which is mentioned on Amits page 
+here: 
+
+http://pofo.de/tmp/ancientfs_20081218_01.diff 
+
+The changes are
+ - casting to satisfy %llu and %lu printf
+ - Makefile adjustments
+ - enhance endian checks to support BYTE_ORDER
+ - work around undefined OSSwap functions
+
+
+From wkt at tuhs.org  Tue Dec 23 08:53:31 2008
+From: wkt at tuhs.org (Warren Toomey)
+Date: Tue, 23 Dec 2008 08:53:31 +1000
+Subject: [TUHS] AncientFS ported to Linux and FreeBSD
+Message-ID: <20081222225331.GA48343@minnie.tuhs.org>
+
+Guys, Amit wrote in:
+
+  http://www.osxbook.com/blog/2008/12/22/ancientfs-on-linux-and-freebsd/
+  By popular demand, I've "ported" AncientFS to Linux and FreeBSD.
+
+Cheers & Merry Xmas to you all,
+	Warren
+
+

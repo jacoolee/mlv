@@ -1,0 +1,2676 @@
+From agrier at poofygoof.com  Wed Sep  3 05:15:08 2014
+From: agrier at poofygoof.com (Aaron J. Grier)
+Date: Tue, 2 Sep 2014 12:15:08 -0700
+Subject: [TUHS] portal daemon (was Re: networking on unix before uucp)
+In-Reply-To: <20140822155701.GB19006@mercury.ccil.org>
+References: <CADxT5N4L0YXSB0uqWeb6w87KJF+=0Mc7Nhb=Q_g+j8Q8-bQ7kg@mail.gmail.com>
+ <CAEoi9W50tqYzWHjvvfYTyxg2q6iqdczpSsLdb_Vg7tNBj6FXMQ@mail.gmail.com>
+ <20140822155701.GB19006@mercury.ccil.org>
+Message-ID: <20140902191508.GJ22809@arwen.poofy.goof.com>
+
+On Fri, Aug 22, 2014 at 11:57:01AM -0400, John Cowan wrote:
+> #     filedes = open( "/dev/net/harv",2 );
+> #     if( filedes < 0 )
+> #        printf(" harvard is dead");
+> #     else
+> #        while( (nbytes=read(filedes,buf,80)) > 0 )
+> #           write( 0,buf,nbytes );                                   
+> 
+> If only this code still worked on modern Unixes!  The socket API is
+> fine, but there really was no need to break good old open, at least
+> for client-side operations.  Plan 9 got it right here, as usual.
+
+was this the impetus behind mount_portal in 4.4BSD?  It's still
+available in NetBSD, although I've never played with it myself.
+
+-- 
+  Aaron J. Grier | "Not your ordinary poofy goof." | agrier at poofygoof.com
+
+
+From clemc at ccc.com  Wed Sep  3 05:57:58 2014
+From: clemc at ccc.com (Clem Cole)
+Date: Tue, 2 Sep 2014 15:57:58 -0400
+Subject: [TUHS] portal daemon (was Re: networking on unix before uucp)
+In-Reply-To: <20140902191508.GJ22809@arwen.poofy.goof.com>
+References: <CADxT5N4L0YXSB0uqWeb6w87KJF+=0Mc7Nhb=Q_g+j8Q8-bQ7kg@mail.gmail.com>
+ <CAEoi9W50tqYzWHjvvfYTyxg2q6iqdczpSsLdb_Vg7tNBj6FXMQ@mail.gmail.com>
+ <20140822155701.GB19006@mercury.ccil.org>
+ <20140902191508.GJ22809@arwen.poofy.goof.com>
+Message-ID: <CAC20D2PG5Uj6ZuSfdB-pLDhb3pGN7fAukVMS=SAK21sTXfWGZg@mail.gmail.com>
+
+Mumble -- I would say that BSD portals was more in response to an MIT idea
+that the Apollo guys (Jim Rees I believe) put in domain as the Apollo Typed
+File System.   At the time of the BSD, there was a lots of discussion going
+on about how to move things out the kernel and a number of techniques were
+considered -- Portals was one of them.
+
+
+The idea of /dev/mumble/some_other_mumble was kicking around early UNIX for
+a long time.   I think I first encountered it in the MIT Chaos code, but
+the Arpanet NCP code may have redated its use.   The idea was simple, the
+kernel's nami() function that was called by kernel open code (or any other
+call the had to walk a pathname), left the pointer to the next undecoded
+part of the path in the user's input buffer alone.   So a hack was put in
+the kernel that caused open to vector to needed helper code for the network
+to do the rest of the pathname to get the parameters.    The advantage of
+this of course is open returns a real file descriptor.
+
+BTW: One idea I had many years ago, and I remember talking to Dennis about
+it at a couple of USENIX was similar to Apollo's typed scheme.   As dmr put
+it to me at the time, UNIX has a typed file system with very few types.
+ The question was if we opened up the typing scheme to allow for arbitrary
+types, would you get more of mess or would the new feature be of an
+advantage.  I was not doing research at the time - I was employed at
+Masscomp and just getting a distributed FS was enough.  Since I did not
+have a good use for the hack for EFS, I never tried to implement it.  It
+was always on my "TODO" list.   Maybe when I retire and I can hack just for
+the fun of it, I can try it ;-)
+
+Clem
+
+
+On Tue, Sep 2, 2014 at 3:15 PM, Aaron J. Grier <agrier at poofygoof.com> wrote:
+
+> On Fri, Aug 22, 2014 at 11:57:01AM -0400, John Cowan wrote:
+> > #     filedes = open( "/dev/net/harv",2 );
+> > #     if( filedes < 0 )
+> > #        printf(" harvard is dead");
+> > #     else
+> > #        while( (nbytes=read(filedes,buf,80)) > 0 )
+> > #           write( 0,buf,nbytes );
+> >
+> > If only this code still worked on modern Unixes!  The socket API is
+> > fine, but there really was no need to break good old open, at least
+> > for client-side operations.  Plan 9 got it right here, as usual.
+>
+> was this the impetus behind mount_portal in 4.4BSD?  It's still
+> available in NetBSD, although I've never played with it myself.
+>
+> --
+>   Aaron J. Grier | "Not your ordinary poofy goof." | agrier at poofygoof.com
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140902/f96dccb7/attachment.html>
+
+From fair-tuhs at netbsd.org  Wed Sep  3 06:06:38 2014
+From: fair-tuhs at netbsd.org (Erik E. Fair)
+Date: Tue, 02 Sep 2014 13:06:38 -0700
+Subject: [TUHS] portal daemon (was Re: networking on unix before uucp)
+In-Reply-To: <CAC20D2PG5Uj6ZuSfdB-pLDhb3pGN7fAukVMS=SAK21sTXfWGZg@mail.gmail.com>
+References: <20140902191508.GJ22809@arwen.poofy.goof.com>
+Message-ID: <17956.1409688398@cesium.clock.org>
+
+Plan 9 went that way in a big way, as I recall the published papers
+given at USENIX; they took naming in the UNIX filesystem to a high art.
+
+	oh, and by the way, hi all,
+
+	Erik Fair
+
+
+From agrier at poofygoof.com  Thu Sep  4 02:23:31 2014
+From: agrier at poofygoof.com (Aaron J. Grier)
+Date: Wed, 3 Sep 2014 09:23:31 -0700
+Subject: [TUHS] UUCP Maps
+In-Reply-To: <3AD6DC6D-943C-4659-929C-E46EF14FA68D@orthanc.ca>
+References: <4E5EF9AB-6F41-4EB7-B48E-C502C8D87DC0@orthanc.ca>
+ <A153B584-9594-453A-BA82-D6A59036132B@xs4all.nl>
+ <4C1F271F-A4CC-4DCA-BD6E-7220ECA3AD82@orthanc.ca>
+ <3AD6DC6D-943C-4659-929C-E46EF14FA68D@orthanc.ca>
+Message-ID: <20140903162330.GK22809@arwen.poofy.goof.com>
+
+On Mon, Aug 25, 2014 at 03:21:08PM -0700, Lyndon Nerenberg wrote:
+> And perhaps a bit more importantly, does he still have the raw data
+> that drove creating the maps?
+
+I have a late snapshot from just before comp.maps.uucp was shut down.  I
+also recall grovelling ftp sites for historic data, and finding some at
+ftp.uu.net, now dead.  uucp.org also had map files and lookups
+available, although it also seems to be dead now.
+
+> It would be very interesting to see and compare those byte counts
+> against today's internet. (I'm also very curious to see the relative
+> flow between the hubs, and how data fanned out from them.)
+
+the maps didn't contain byte counts, AFAIK.  the data rates were self-
+reported, so were likely not terribly accurate.
+
+by the time I got involved with UUCP, the mapping project was in its
+twilight, and I recall numerous errors in my local (u.usa.or)
+neighborhood.  I fixed up what I could, and even made contact with and
+resurrected a few links.  (one of them actually used UUCP to pass email
+traffic during a network changeover.)
+
+the UUCP maps revealed a very coarse social topology, a lot of which I
+think is still active today.  I don't think it was common to pass high
+levels of traffic with strangers unless you were doing it on a
+commercial basis.  :)
+
+> I remember when the newsgroup traffic on Usenet hit 5 MB/day.  I think
+> that was the third "death of the net" predicted event.
+
+I still have an "imminent death of the net" button around here
+somewhere.  :)
+(http://photos.vec.com/Blog/2011-08/Blast-From-the-Past/i-9KKNPj3)
+
+when I was still in my larval phase at my alma mater in the latter half
+of the 90s, one of the two available T1s was constantly filled with
+usenet traffic.  (we didn't carry binary groups.)  the feed itself was
+handled by a sequent symmetry (dynix) with fujitsu supereagle(?) drives
+for the spool, exported to ultrix decstations (and later OSF/1 alpha)
+via NFS.  as I was exiting my larval phase, nntp was replaced with the
+"on-demand" dnews running on the alphas.  (the sequents were also
+retired, which subsequently broke the HVAC due to lack of load...)
+
+I tried for a while in the early 00s to get diablo
+(http://www.openusenet.org/diablo/) running under NetBSD, but never
+figured out the right incantation to get it to pass socket descriptors
+between processes.  (ObTUHS: what is the history of this ability?)
+
+more recently (IE within the last few years), eternal september looked
+promising, and while I could get trn to authenticate to read news, I
+couldn't figure out how to get inews to handle authentication for
+posting.
+
+I digress...
+
+-- 
+  Aaron J. Grier | "Not your ordinary poofy goof." | agrier at poofygoof.com
+
+
+From arnold at skeeve.com  Thu Sep  4 15:23:16 2014
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Wed, 03 Sep 2014 23:23:16 -0600
+Subject: [TUHS] UUCP Maps
+In-Reply-To: <20140903162330.GK22809@arwen.poofy.goof.com>
+References: <4E5EF9AB-6F41-4EB7-B48E-C502C8D87DC0@orthanc.ca>
+ <A153B584-9594-453A-BA82-D6A59036132B@xs4all.nl>
+ <4C1F271F-A4CC-4DCA-BD6E-7220ECA3AD82@orthanc.ca>
+ <3AD6DC6D-943C-4659-929C-E46EF14FA68D@orthanc.ca>
+ <20140903162330.GK22809@arwen.poofy.goof.com>
+Message-ID: <201409040523.s845NG5W025739@freefriends.org>
+
+"Aaron J. Grier" <agrier at poofygoof.com> wrote:
+
+> more recently (IE within the last few years), eternal september looked
+> promising, and while I could get trn to authenticate to read news, I
+> couldn't figure out how to get inews to handle authentication for
+> posting.
+>
+> I digress...
+
+I use trn with eternal september for reading and posting all the
+time. I think you just use the inews that comes with trn.
+
+Arnold
+
+
+From beebe at math.utah.edu  Tue Sep  9 10:46:53 2014
+From: beebe at math.utah.edu (Nelson H. F. Beebe)
+Date: Mon, 8 Sep 2014 18:46:53 -0600 (MDT)
+Subject: [TUHS]  another Web site on computer history
+Message-ID: <CMM.0.95.0.1410223613.beebe@psi.math.utah.edu>
+
+Traffic this evening on the pcc compiler list <pcc.lists.ludd.ltu.se>
+alerted me to the existence of the Software Preservation Group, a
+branch of the Computer History Museum, with a Web site at
+
+	http://www.softwarepreservation.org/
+
+I do not recall hearing of it before today, and perhaps a few TUHS
+list readers have not either.  It may be desirable to add a link to it
+from the Unix block of the http://minnie.tuhs.org/ site.
+
+I think that it could also be good to record a link to the Bitsaver's
+site at
+
+	http://bitsavers.trailing-edge.com/
+
+and to make a list of TUHS mirrors more prominent (e.g., we have one
+at
+
+	http://www.math.utah.edu/mirrors/minnie.tuhs.org/
+
+).
+
+-------------------------------------------------------------------------------
+- Nelson H. F. Beebe                    Tel: +1 801 581 5254                  -
+- University of Utah                    FAX: +1 801 581 4148                  -
+- Department of Mathematics, 110 LCB    Internet e-mail: beebe at math.utah.edu  -
+- 155 S 1400 E RM 233                       beebe at acm.org  beebe at computer.org -
+- Salt Lake City, UT 84112-0090, USA    URL: http://www.math.utah.edu/~beebe/ -
+-------------------------------------------------------------------------------
+
+
+From chneukirchen at gmail.com  Fri Sep 12 07:24:32 2014
+From: chneukirchen at gmail.com (Christian Neukirchen)
+Date: Thu, 11 Sep 2014 23:24:32 +0200
+Subject: [TUHS] Etymology of bc(1)
+Message-ID: <877g19g8a7.fsf@gmail.com>
+
+Hello,
+
+on de.comp.os.unix.shell there is a recent thread about bc(1) which
+turned into a discussion about why it is called "bc".  dc(1) is pretty
+clearly "desk calculator" as by the man page, but the etymology of bc
+seems to be unclear.
+
+I've heard the following plausible theories:
+
+- basic calculator (Wikipedia)
+- beauty calculator (some people apparently dislike RPN)
+- better calculator
+- bench calculator (Wikipedia)
+- b is the letter d mirrored (RPN vs algebraic)
+- bundle calculator (the word "bundle" appears 97 times in bc.y of V6)
+
+...but nobody had a really conclusive argument.  Perhaps someone here
+remembers the real story?
+
+Thanks,
+-- 
+Christian Neukirchen  <chneukirchen at gmail.com>  http://chneukirchen.org
+
+
+From imp at bsdimp.com  Fri Sep 12 07:41:01 2014
+From: imp at bsdimp.com (Warner Losh)
+Date: Thu, 11 Sep 2014 15:41:01 -0600
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <877g19g8a7.fsf@gmail.com>
+References: <877g19g8a7.fsf@gmail.com>
+Message-ID: <7A7060B7-0229-425F-BCF4-23C3669E167C@bsdimp.com>
+
+
+On Sep 11, 2014, at 3:24 PM, Christian Neukirchen <chneukirchen at gmail.com> wrote:
+
+> Hello,
+> 
+> on de.comp.os.unix.shell there is a recent thread about bc(1) which
+> turned into a discussion about why it is called "bc".  dc(1) is pretty
+> clearly "desk calculator" as by the man page, but the etymology of bc
+> seems to be unclear.
+> 
+> I've heard the following plausible theories:
+> 
+> - basic calculator (Wikipedia)
+> - beauty calculator (some people apparently dislike RPN)
+> - better calculator
+> - bench calculator (Wikipedia)
+> - b is the letter d mirrored (RPN vs algebraic)
+> - bundle calculator (the word "bundle" appears 97 times in bc.y of V6)
+> 
+> ...but nobody had a really conclusive argument.  Perhaps someone here
+> remembers the real story?
+
+I’d always heard ‘binary calculator’ but I don’t have a good reference for that.
+
+Warner
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 842 bytes
+Desc: Message signed with OpenPGP using GPGMail
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140911/655725cb/attachment.sig>
+
+From dave at horsfall.org  Fri Sep 12 08:04:42 2014
+From: dave at horsfall.org (Dave Horsfall)
+Date: Fri, 12 Sep 2014 08:04:42 +1000 (EST)
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <7A7060B7-0229-425F-BCF4-23C3669E167C@bsdimp.com>
+References: <877g19g8a7.fsf@gmail.com>
+ <7A7060B7-0229-425F-BCF4-23C3669E167C@bsdimp.com>
+Message-ID: <alpine.BSF.2.00.1409120800490.63870@aneurin.horsfall.org>
+
+On Thu, 11 Sep 2014, Warner Losh wrote:
+
+> I?d always heard ?binary calculator? but I don?t have a good reference 
+> for that.
+
+I've heard "binary" because it used binary arithmetic (and limited 
+precision), and "basic" because it was a lot simpler than "dc" (which I've 
+always thought was "decimal" calculator due to it using arbitrary 
+precision decimal arithmetic).
+
+-- Dave
+
+
+From cowan at mercury.ccil.org  Fri Sep 12 08:17:43 2014
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Thu, 11 Sep 2014 18:17:43 -0400
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <alpine.BSF.2.00.1409120800490.63870@aneurin.horsfall.org>
+References: <877g19g8a7.fsf@gmail.com>
+ <7A7060B7-0229-425F-BCF4-23C3669E167C@bsdimp.com>
+ <alpine.BSF.2.00.1409120800490.63870@aneurin.horsfall.org>
+Message-ID: <20140911221742.GJ23708@mercury.ccil.org>
+
+Dave Horsfall scripsit:
+
+> > I?d always heard ?binary calculator? but I don?t have a good reference 
+> > for that.
+> 
+> I've heard "binary" because it used binary arithmetic (and limited 
+> precision), and "basic" because it was a lot simpler than "dc" (which I've 
+> always thought was "decimal" calculator due to it using arbitrary 
+> precision decimal arithmetic).
+
+That can't be right.  Bc was just an overlay to dc that parsed bc
+language, compiled it into dc language, and fed dc from a pipe (all the
+output was direct from dc).  So the arithmetic capabilities were exactly
+the same.
+
+I note that bc first appeared just about when bas(1) disappeared, so
+perhaps there is a connection in their names.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+In the sciences, we are now uniquely privileged to sit side by side
+with the giants on whose shoulders we stand.  --Gerald Holton
+
+
+From scj at yaccman.com  Fri Sep 12 09:34:20 2014
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Thu, 11 Sep 2014 16:34:20 -0700
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <20140911221742.GJ23708@mercury.ccil.org>
+References: <877g19g8a7.fsf@gmail.com>
+ <7A7060B7-0229-425F-BCF4-23C3669E167C@bsdimp.com>
+ <alpine.BSF.2.00.1409120800490.63870@aneurin.horsfall.org>
+ <20140911221742.GJ23708@mercury.ccil.org>
+Message-ID: <344a02ca45aefd407cf16d2c835718e5.squirrel@webmail.yaccman.com>
+
+Well, Doug McIlroy would probably know definitively, but my memory is that
+it was called "bc" because it was written by Bob Morris (senior)--thus,
+Bob's calculator.
+
+Steve
+
+
+
+From dave at horsfall.org  Fri Sep 12 11:03:03 2014
+From: dave at horsfall.org (Dave Horsfall)
+Date: Fri, 12 Sep 2014 11:03:03 +1000 (EST)
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <20140911221742.GJ23708@mercury.ccil.org>
+References: <877g19g8a7.fsf@gmail.com>
+ <7A7060B7-0229-425F-BCF4-23C3669E167C@bsdimp.com>
+ <alpine.BSF.2.00.1409120800490.63870@aneurin.horsfall.org>
+ <20140911221742.GJ23708@mercury.ccil.org>
+Message-ID: <alpine.BSF.2.00.1409121055300.63870@aneurin.horsfall.org>
+
+On Thu, 11 Sep 2014, John Cowan wrote:
+
+> > I've heard "binary" because it used binary arithmetic (and limited 
+> > precision), and "basic" because it was a lot simpler than "dc" (which 
+> > I've always thought was "decimal" calculator due to it using arbitrary 
+> > precision decimal arithmetic).
+> 
+> That can't be right.  Bc was just an overlay to dc that parsed bc 
+> language, compiled it into dc language, and fed dc from a pipe (all the 
+> output was direct from dc).  So the arithmetic capabilities were exactly 
+> the same.
+
+Hey, I never made any claim as to its veracity, and I lost my old manuals 
+in a house move.
+
+On the *nix systems to which I have access, bc(1) is a standalone
+program on FreeBSD and OSX, but pipes to dc(1) on OpenBSD.  I cannot
+check my Penguin box (Ubuntu) because its keyboard died, and I didn't
+set up remote access to it.
+
+All boxen say "arbitrary-precision arithmetic language and calculator" or 
+variants thereof.
+
+-- Dave
+
+
+From jnc at mercury.lcs.mit.edu  Fri Sep 12 11:54:15 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Thu, 11 Sep 2014 21:54:15 -0400 (EDT)
+Subject: [TUHS] Etymology of bc(1)
+Message-ID: <20140912015415.DB69E18C09E@mercury.lcs.mit.edu>
+
+    > From: Dave Horsfall <dave at horsfall.org>
+
+    > On the *nix systems to which I have access, bc(1) is a standalone
+    > program on FreeBSD and OSX, but pipes to dc(1) on OpenBSD. I cannot
+    > check my Penguin box (Ubuntu)
+
+Dude! Trying to answer questions about the origins of BC by looking at
+systems this late is like trying to learn Latin by studying Italian! :-)
+
+I looked at the Version 6 source, and it's a bunch of YACC code, but it pulls
+the same technique of using a pipe to an instance of DC, viz:
+
+	pipe(p);
+	if (fork()==0) {
+		close(1);
+		dup(p[1]);
+		close(p[0]);
+		close(p[1]);
+		yyinit(argc, argv);
+		yyparse();
+		exit();
+	}
+	close(0);
+	dup(p[0]);
+	close(p[0]);
+	close(p[1]);
+	execl("/bin/dc", "dc", "-", 0);
+
+There's likely even older versions than the V6 one, but that's the earliest
+source I have online on my PC for easy access.
+
+	Noel
+
+
+From cubexyz at gmail.com  Fri Sep 12 12:35:23 2014
+From: cubexyz at gmail.com (Mark Longridge)
+Date: Thu, 11 Sep 2014 22:35:23 -0400
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <20140912015415.DB69E18C09E@mercury.lcs.mit.edu>
+References: <20140912015415.DB69E18C09E@mercury.lcs.mit.edu>
+Message-ID: <CADxT5N7qjNKaKKcS0DyTeUTDg1f+mdL6AEikkW1k+tGbYTzb+Q@mail.gmail.com>
+
+> There's likely even older versions than the V6 one, but that's the earliest
+> source I have online on my PC for easy access.
+
+There's nothing in the Unix v5 manual about bc and there's no code for
+it either. If there's an older version I can't find it.
+
+I have a version of Unix v6 that has a file called /usr/doc/bc that
+describes bc at length and it mentions both Lorinda Cherry and Robert
+Morris.
+
+There's even a file called /usr/doc/bca which is titled "Appendix"
+with even more info.
+
+Bob's Calculator seems plausible enough.
+
+Mark
+
+On 9/11/14, Noel Chiappa <jnc at mercury.lcs.mit.edu> wrote:
+>     > From: Dave Horsfall <dave at horsfall.org>
+>
+>     > On the *nix systems to which I have access, bc(1) is a standalone
+>     > program on FreeBSD and OSX, but pipes to dc(1) on OpenBSD. I cannot
+>     > check my Penguin box (Ubuntu)
+>
+> Dude! Trying to answer questions about the origins of BC by looking at
+> systems this late is like trying to learn Latin by studying Italian! :-)
+>
+> I looked at the Version 6 source, and it's a bunch of YACC code, but it
+> pulls
+> the same technique of using a pipe to an instance of DC, viz:
+>
+> 	pipe(p);
+> 	if (fork()==0) {
+> 		close(1);
+> 		dup(p[1]);
+> 		close(p[0]);
+> 		close(p[1]);
+> 		yyinit(argc, argv);
+> 		yyparse();
+> 		exit();
+> 	}
+> 	close(0);
+> 	dup(p[0]);
+> 	close(p[0]);
+> 	close(p[1]);
+> 	execl("/bin/dc", "dc", "-", 0);
+>
+> There's likely even older versions than the V6 one, but that's the earliest
+> source I have online on my PC for easy access.
+>
+> 	Noel
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+From jnc at mercury.lcs.mit.edu  Fri Sep 12 13:15:55 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Thu, 11 Sep 2014 23:15:55 -0400 (EDT)
+Subject: [TUHS] Etymology of bc(1)
+Message-ID: <20140912031555.02B3318C0A3@mercury.lcs.mit.edu>
+
+    > From: Mark Longridge <cubexyz at gmail.com>
+
+    > I have a version of Unix v6 that has a file called /usr/doc/bc that
+    > describes bc at length
+
+Oh, right, I missed that. I'm a source kind of person... :-)
+
+Speaking of using a pipe to an existing command, I originally mis-read the
+code to think there was only _one_ process involved, and that it was buffering
+its output into the pipe before doing the exec() itself - something like this:
+
+        pipe(p);
+	write_stuff(p[1]);
+        close(0);
+        dup(p[0]);
+        close(p[0]);
+        close(p[1]);
+        execl("/bin/other", "other", arg, 0);
+	
+Which is kind of a hack, but... it does avoid using a second process, although
+the amount of data that can be passed is limited. (IIRC, a pipe will hold at
+most 8 blocks, at least on V6.) Did this hack ever get used in anything?
+
+	Noel
+
+
+From lm at mcvoy.com  Fri Sep 12 13:33:17 2014
+From: lm at mcvoy.com (Larry McVoy)
+Date: Thu, 11 Sep 2014 20:33:17 -0700
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <20140912031555.02B3318C0A3@mercury.lcs.mit.edu>
+References: <20140912031555.02B3318C0A3@mercury.lcs.mit.edu>
+Message-ID: <20140912033317.GT633@mcvoy.com>
+
+On Thu, Sep 11, 2014 at 11:15:55PM -0400, Noel Chiappa wrote:
+>     > From: Mark Longridge <cubexyz at gmail.com>
+> 
+>     > I have a version of Unix v6 that has a file called /usr/doc/bc that
+>     > describes bc at length
+> 
+> Oh, right, I missed that. I'm a source kind of person... :-)
+> 
+> Speaking of using a pipe to an existing command, I originally mis-read the
+> code to think there was only _one_ process involved, and that it was buffering
+> its output into the pipe before doing the exec() itself - something like this:
+> 
+>         pipe(p);
+> 	write_stuff(p[1]);
+>         close(0);
+>         dup(p[0]);
+>         close(p[0]);
+>         close(p[1]);
+>         execl("/bin/other", "other", arg, 0);
+> 	
+> Which is kind of a hack, but... it does avoid using a second process, although
+> the amount of data that can be passed is limited. (IIRC, a pipe will hold at
+> most 8 blocks, at least on V6.) Did this hack ever get used in anything?
+
+Rob (different rob) and I made a command line expr like thing, can't
+remember why that did the same trick of shoving stuff (in our case it
+was argv) into a pipe and then running yyparse().
+
+It's at www.mcvoy.com/lm/af.shar
+
+Still builds though it is from 1988.
+-- 
+---
+Larry McVoy            	     lm at mcvoy.com             http://www.mcvoy.com/lm 
+
+
+From dave at horsfall.org  Fri Sep 12 16:00:29 2014
+From: dave at horsfall.org (Dave Horsfall)
+Date: Fri, 12 Sep 2014 16:00:29 +1000 (EST)
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <20140912015415.DB69E18C09E@mercury.lcs.mit.edu>
+References: <20140912015415.DB69E18C09E@mercury.lcs.mit.edu>
+Message-ID: <alpine.BSF.2.00.1409121547260.63870@aneurin.horsfall.org>
+
+On Thu, 11 Sep 2014, Noel Chiappa wrote:
+
+> Dude! Trying to answer questions about the origins of BC by looking at 
+> systems this late is like trying to learn Latin by studying Italian! :-)
+
+Perhaps so, but I was a bit surprised that FreeBSD (and I include the Mac
+in that) totally rewrote it from a Posix draft, and dropped the pipe.
+
+I no longer have my old manuals (they disappeared during a house move).
+
+-- Dave
+
+
+From dave at horsfall.org  Fri Sep 12 16:10:15 2014
+From: dave at horsfall.org (Dave Horsfall)
+Date: Fri, 12 Sep 2014 16:10:15 +1000 (EST)
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <20140912031555.02B3318C0A3@mercury.lcs.mit.edu>
+References: <20140912031555.02B3318C0A3@mercury.lcs.mit.edu>
+Message-ID: <alpine.BSF.2.00.1409121606450.63870@aneurin.horsfall.org>
+
+On Thu, 11 Sep 2014, Noel Chiappa wrote:
+
+> Which is kind of a hack, but... it does avoid using a second process, 
+> although the amount of data that can be passed is limited. (IIRC, a pipe 
+> will hold at most 8 blocks, at least on V6.) Did this hack ever get used 
+> in anything?
+
+speaking of pipes, wasn't it PWB that imlemented a write of zero bytes to 
+mean end of file, or am I thinking of some other version?  For some 
+reason, the Harvard shell and friends, including the TTY driver, come to 
+mind.
+
+-- Dave
+
+
+From cowan at mercury.ccil.org  Fri Sep 12 21:15:12 2014
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Fri, 12 Sep 2014 07:15:12 -0400
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <alpine.BSF.2.00.1409121547260.63870@aneurin.horsfall.org>
+References: <20140912015415.DB69E18C09E@mercury.lcs.mit.edu>
+ <alpine.BSF.2.00.1409121547260.63870@aneurin.horsfall.org>
+Message-ID: <20140912111512.GA14385@mercury.ccil.org>
+
+Dave Horsfall scripsit:
+
+> Perhaps so, but I was a bit surprised that FreeBSD (and I include the Mac
+> in that) totally rewrote it from a Posix draft, and dropped the pipe.
+
+So did GNU.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Do I contradict myself?
+Very well then, I contradict myself.
+I am large, I contain multitudes.
+        --Walt Whitman, Leaves of Grass
+
+
+From otto at drijf.net  Fri Sep 12 21:36:12 2014
+From: otto at drijf.net (Otto Moerbeek)
+Date: Fri, 12 Sep 2014 13:36:12 +0200
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <20140912111512.GA14385@mercury.ccil.org>
+References: <20140912015415.DB69E18C09E@mercury.lcs.mit.edu>
+ <alpine.BSF.2.00.1409121547260.63870@aneurin.horsfall.org>
+ <20140912111512.GA14385@mercury.ccil.org>
+Message-ID: <20140912113612.GN24919@discoboy.drijf.net>
+
+On Fri, Sep 12, 2014 at 07:15:12AM -0400, John Cowan wrote:
+
+> Dave Horsfall scripsit:
+> 
+> > Perhaps so, but I was a bit surprised that FreeBSD (and I include the Mac
+> > in that) totally rewrote it from a Posix draft, and dropped the pipe.
+> 
+> So did GNU.
+
+FreeBSD head has OpenBSD's dc(1) and bc(1) , which does pipe to dc(1).
+
+(I wrote both).
+
+	-Otto
+
+
+From random832 at fastmail.us  Fri Sep 12 23:37:16 2014
+From: random832 at fastmail.us (random832 at fastmail.us)
+Date: Fri, 12 Sep 2014 09:37:16 -0400
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <alpine.BSF.2.00.1409121055300.63870@aneurin.horsfall.org>
+References: <877g19g8a7.fsf@gmail.com>
+ <7A7060B7-0229-425F-BCF4-23C3669E167C@bsdimp.com>
+ <alpine.BSF.2.00.1409120800490.63870@aneurin.horsfall.org>
+ <20140911221742.GJ23708@mercury.ccil.org>
+ <alpine.BSF.2.00.1409121055300.63870@aneurin.horsfall.org>
+Message-ID: <1410529036.3893715.166731793.44CF06BA@webmail.messagingengine.com>
+
+On Thu, Sep 11, 2014, at 21:03, Dave Horsfall wrote:
+> On the *nix systems to which I have access, bc(1) is a standalone
+> program on FreeBSD and OSX, but pipes to dc(1) on OpenBSD.
+
+What language does the undocumented option (assuming it is supported at
+all) "bc -c" generate on FreeBSD and OSX? "Standard" bc, which actually
+pipes to dc, generates (obviously) dc when run in this way, but GNU bc
+generates a completely different and as far as I know undocumented
+language, which is handled by the execute function (in execute.c) but as
+far as I know there is no way to make it accept it on standard input.
+
+Standard bc:
+$ echo '2+2' | bc -c
+ 2 2+ps.
+q$
+
+GNU bc:
+$ echo '2+2' | bc -c
+@iK2:K2:+W at r
+@i
+$
+
+
+(the @i and @r pseudo-instructions are printed separately from the
+generated code when in -c mode [util.c], and are not part of the
+language passed to the execute function.)
+
+
+From usotsuki at buric.co  Sat Sep 13 00:18:03 2014
+From: usotsuki at buric.co (Steve Nickolas)
+Date: Fri, 12 Sep 2014 14:18:03 +0000 (UTC)
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <1410529036.3893715.166731793.44CF06BA@webmail.messagingengine.com>
+References: <877g19g8a7.fsf@gmail.com>
+ <7A7060B7-0229-425F-BCF4-23C3669E167C@bsdimp.com>
+ <alpine.BSF.2.00.1409120800490.63870@aneurin.horsfall.org>
+ <20140911221742.GJ23708@mercury.ccil.org>
+ <alpine.BSF.2.00.1409121055300.63870@aneurin.horsfall.org>
+ <1410529036.3893715.166731793.44CF06BA@webmail.messagingengine.com>
+Message-ID: <alpine.DEB.2.02.1409121416330.91420@localhost>
+
+On Fri, 12 Sep 2014, random832 at fastmail.us wrote:
+
+> What language does the undocumented option (assuming it is supported at
+> all) "bc -c" generate on FreeBSD and OSX? "Standard" bc, which actually
+> pipes to dc, generates (obviously) dc when run in this way, but GNU bc
+> generates a completely different and as far as I know undocumented
+> language, which is handled by the execute function (in execute.c) but as
+> far as I know there is no way to make it accept it on standard input.
+>
+> Standard bc:
+> $ echo '2+2' | bc -c
+> 2 2+ps.
+> q$
+>
+> GNU bc:
+> $ echo '2+2' | bc -c
+> @iK2:K2:+W at r
+> @i
+> $
+
+FreeBSD 10:
+
+$ echo '2+2'|bc -c
+  2 2+ps.
+q$
+
+(yeah, I run ash... I got a chroot with Debian and the different userlands 
+would cause conflict if I defaulted to bash)
+
+-uso.
+
+
+From scj at yaccman.com  Sat Sep 13 03:12:39 2014
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Fri, 12 Sep 2014 10:12:39 -0700
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <20140912113612.GN24919@discoboy.drijf.net>
+References: <20140912015415.DB69E18C09E@mercury.lcs.mit.edu>
+ <alpine.BSF.2.00.1409121547260.63870@aneurin.horsfall.org>
+ <20140912111512.GA14385@mercury.ccil.org>
+ <20140912113612.GN24919@discoboy.drijf.net>
+Message-ID: <5371bd291f9537ed5935435a418bc648.squirrel@webmail.yaccman.com>
+
+A gentle reminder that in that era, 4K words of memory cost in the 5
+digits of $'s, and many Unix machines had far less than the 64K bytes
+(yes, K) that was the maximum.  And there was no paging.  Piping was kind
+of a poor man's paging to write programs that would work on small-memory
+machines.
+
+While there were benefits, it was also a big pain, especially when
+debugging.  And for the most part, we abandoned this style when we got
+32-bit machines that had as much as a (gasp!) megabyte of memory...
+
+Steve
+
+
+
+>> Dave Horsfall scripsit:
+>>
+>> > Perhaps so, but I was a bit surprised that FreeBSD (and I include the
+>> Mac
+>> > in that) totally rewrote it from a Posix draft, and dropped the pipe.
+>>
+>> So did GNU.
+
+
+
+
+
+From imp at bsdimp.com  Sat Sep 13 03:18:13 2014
+From: imp at bsdimp.com (Warner Losh)
+Date: Fri, 12 Sep 2014 11:18:13 -0600
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <5371bd291f9537ed5935435a418bc648.squirrel@webmail.yaccman.com>
+References: <20140912015415.DB69E18C09E@mercury.lcs.mit.edu>
+ <alpine.BSF.2.00.1409121547260.63870@aneurin.horsfall.org>
+ <20140912111512.GA14385@mercury.ccil.org>
+ <20140912113612.GN24919@discoboy.drijf.net>
+ <5371bd291f9537ed5935435a418bc648.squirrel@webmail.yaccman.com>
+Message-ID: <09F72555-089F-4BC4-A602-93CC5B51F0B0@bsdimp.com>
+
+
+On Sep 12, 2014, at 11:12 AM, scj at yaccman.com wrote:
+
+> A gentle reminder that in that era, 4K words of memory cost in the 5
+> digits of $'s, and many Unix machines had far less than the 64K bytes
+> (yes, K) that was the maximum.  And there was no paging.  Piping was kind
+> of a poor man's paging to write programs that would work on small-memory
+> machines.
+> 
+> While there were benefits, it was also a big pain, especially when
+> debugging.  And for the most part, we abandoned this style when we got
+> 32-bit machines that had as much as a (gasp!) megabyte of memory...
+
+Sure beat the heck out of trying to get overlays right. I remember “fondly”
+trying to get the overlay layout manager working to get the FORTRAN programs
+I was writing at the time to fit into 64k (or was it 48k). Switching from the PDP-11
+to the VAX was a godsend and all that moved into the kernel and got way simpler
+from the user perspective…
+
+Warner
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 842 bytes
+Desc: Message signed with OpenPGP using GPGMail
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140912/10029b12/attachment.sig>
+
+From tfb at tfeb.org  Sat Sep 13 04:28:19 2014
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Fri, 12 Sep 2014 19:28:19 +0100
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <20140912015415.DB69E18C09E@mercury.lcs.mit.edu>
+References: <20140912015415.DB69E18C09E@mercury.lcs.mit.edu>
+Message-ID: <75643223-3F78-4DA9-8C8F-B80EA885710F@tfeb.org>
+
+On 12 Sep 2014, at 02:54, Noel Chiappa <jnc at mercury.lcs.mit.edu> wrote:
+
+> Dude! Trying to answer questions about the origins of BC by looking at
+> systems this late is like trying to learn Latin by studying Italian! :-)
+
+[I'm not a latin scholar, so this is second-hand information.]
+
+Curiously, I understand that studying Italian (or romance languages in general) turns out to be a fairly good way of learning about the Latin, where by "Latin" they mean the language people actually *spoke*, as opposed to the deformed version of it that some tiny minority of people wrote.
+
+In a thousand years, it will also turn out that the best way to learn about Unix will be by reading the archives of some mailing list where people discussed their memories of the early versions of it.
+
+--tim
+
+From clemc at ccc.com  Sat Sep 13 05:02:01 2014
+From: clemc at ccc.com (Clem Cole)
+Date: Fri, 12 Sep 2014 15:02:01 -0400
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <5371bd291f9537ed5935435a418bc648.squirrel@webmail.yaccman.com>
+References: <20140912015415.DB69E18C09E@mercury.lcs.mit.edu>
+ <alpine.BSF.2.00.1409121547260.63870@aneurin.horsfall.org>
+ <20140912111512.GA14385@mercury.ccil.org>
+ <20140912113612.GN24919@discoboy.drijf.net>
+ <5371bd291f9537ed5935435a418bc648.squirrel@webmail.yaccman.com>
+Message-ID: <CAC20D2NAbNtzdFJusbNuaUAr-30dB81nCe-vrqhdBY3DYt2k_Q@mail.gmail.com>
+
+​Steve good point but ...​
+
+
+On Fri, Sep 12, 2014 at 1:12 PM, <scj at yaccman.com> wrote:
+
+> And for the most part, we abandoned this style when we got
+> 32-bit machines that had as much as a (gasp!) megabyte of memory...
+>
+
+
+
+​Yes and no (know maybe) - as Pike said "cat -v" considered harmful.
+The original small is beautiful idea that ​made UNIX so welcome, was lost
+in the process.
+
+I remember when we got the money to maxed out the memory on an 11/34 form
+48K to 256K bytes (using aftermarket memory of course).  And as you point
+it, it is a lot easier when we use the computer to so a lot more of the
+work  (that why we have compilers, debuggers and tools in general).   But
+when I look at programs written by daugther and her peers, I realized that
+just have the innate feel for what is needed to get the job done often
+seems lost to them.  Things just grow and use this framework or thank
+subsystem.  It so easy to grab, that I wonder if we are ahead or behind.
+
+That said, I do not yearn longly for V6.  It was a fun system and we did a
+lot with it and I certainly learned a ton.  But I am way more productive on
+my Mac.   But I think the program style and lessons that many of us have
+from the those times is to try to get to the nut of the task at hand and
+remember how you are getting there.
+
+Let me be less abstract.  I recently found an Open Source NIXIE tube
+subsystem from a guy that used an Arduino.   Its very cool and impressive.
+ Think about it, use a $4 computer to run each NIXIE tube, instead of lots
+of logic to multiples the pins.  But when I looked at his code, I shook my
+head.  Basically straight lined everything, brute force.   I remember being
+taught, if the routine is longer than a printer page or two, break it up.
+I took his code, put a bunch of the things into tables, made a few
+functions to use those tables and cut the size of the code even with the
+tables, by almost a 3rd and its a lot easier to understand.
+
+In fact, I wrote a small subsystem so I could debug the whole thing using a
+UNIX pipe to represent each digit, as debugging on the Arduino is a really,
+really poor.
+
+But what did I do - I applied lessons from a great system, UNIX to create a
+clean, easy to understand (and even debug).
+
+Anyway - my thesis is that bigger is not always better.
+
+Clem
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140912/9e0325fe/attachment.html>
+
+From dave at horsfall.org  Sat Sep 13 05:32:47 2014
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sat, 13 Sep 2014 05:32:47 +1000 (EST)
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <20140912111512.GA14385@mercury.ccil.org>
+References: <20140912015415.DB69E18C09E@mercury.lcs.mit.edu>
+ <alpine.BSF.2.00.1409121547260.63870@aneurin.horsfall.org>
+ <20140912111512.GA14385@mercury.ccil.org>
+Message-ID: <alpine.BSF.2.00.1409130530490.63870@aneurin.horsfall.org>
+
+On Fri, 12 Sep 2014, John Cowan wrote:
+
+> > Perhaps so, but I was a bit surprised that FreeBSD (and I include the 
+> > Mac in that) totally rewrote it from a Posix draft, and dropped the 
+> > pipe.
+> 
+> So did GNU.
+
+Which I'd pointed out in a later message (I think).
+
+-- Dave
+
+
+From dave at horsfall.org  Sat Sep 13 05:36:53 2014
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sat, 13 Sep 2014 05:36:53 +1000 (EST)
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <20140912113612.GN24919@discoboy.drijf.net>
+References: <20140912015415.DB69E18C09E@mercury.lcs.mit.edu>
+ <alpine.BSF.2.00.1409121547260.63870@aneurin.horsfall.org>
+ <20140912111512.GA14385@mercury.ccil.org>
+ <20140912113612.GN24919@discoboy.drijf.net>
+Message-ID: <alpine.BSF.2.00.1409130533030.63870@aneurin.horsfall.org>
+
+On Fri, 12 Sep 2014, Otto Moerbeek wrote:
+
+> FreeBSD head has OpenBSD's dc(1) and bc(1) , which does pipe to dc(1).
+
+Interesting; FreeBSD seems to be adopting a lot of OpenBSD stuff now, such 
+as the PF firewall etc.
+
+> (I wrote both).
+
+Well done, sir!  It's always nice to meet a developer.
+
+-- Dave
+
+
+From dave at horsfall.org  Sat Sep 13 06:02:26 2014
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sat, 13 Sep 2014 06:02:26 +1000 (EST)
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <1410529036.3893715.166731793.44CF06BA@webmail.messagingengine.com>
+References: <877g19g8a7.fsf@gmail.com>
+ <7A7060B7-0229-425F-BCF4-23C3669E167C@bsdimp.com>
+ <alpine.BSF.2.00.1409120800490.63870@aneurin.horsfall.org>
+ <20140911221742.GJ23708@mercury.ccil.org>
+ <alpine.BSF.2.00.1409121055300.63870@aneurin.horsfall.org>
+ <1410529036.3893715.166731793.44CF06BA@webmail.messagingengine.com>
+Message-ID: <alpine.BSF.2.00.1409130539280.63870@aneurin.horsfall.org>
+
+On Fri, 12 Sep 2014, random832 at fastmail.us wrote:
+
+> What language does the undocumented option (assuming it is supported at 
+> all) "bc -c" generate on FreeBSD and OSX? "Standard" bc, which actually 
+> pipes to dc, generates (obviously) dc when run in this way, but GNU bc 
+> generates a completely different and as far as I know undocumented 
+> language, which is handled by the execute function (in execute.c) but as 
+> far as I know there is no way to make it accept it on standard input.
+
+According to my trusty Mac:
+
+DIFFERENCES
+    This version of bc was implemented from the POSIX P1003.2/D11 draft and
+    contains several differences and extensions relative to the  draft  and
+    traditional  implementations.  It is not implemented in the traditional
+    way using dc(1).  This version is a single  process  which  parses  and
+    runs  a  byte  code  translation  of the program.  There is an "undocu-
+    mented" option (-c) that causes the program to output the byte code  to
+    the  standard  output  instead  of  running it.  It was mainly used for
+    debugging the parser and preparing the math library.
+
+My trusty FreeBSD box says the same thing.  Well, they're both Gnu 1.06, 
+after all, and it's some sort of byte-code.  I can sort see how it works; 
+single digit integers, unless wrapped by "Knnn:" etc..
+
+> Standard bc:
+> $ echo '2+2' | bc -c
+>  2 2+ps.
+> q$
+> 
+> GNU bc:
+> $ echo '2+2' | bc -c
+> @iK2:K2:+W at r
+> @i
+> $
+
+Oops; a "1" stands for itself, but other ints are bracketed:
+
+davehorsmacbook:~ dave$ bc -c
+@ibc 1.06
+Copyright 1991-1994, 1997, 1998, 2000 Free Software Foundation, Inc.
+This is free software with ABSOLUTELY NO WARRANTY.
+For details type `warranty'. 
+1+1
+11+W at r
+@i2+2
+K2:K2:+W at r
+@i
+
+Amusing that it treats "1" and "not 1" differently.  Oh, and "0" stands 
+for itself.  One more test:
+
+00+W at r
+@i-1+1
+1n1+W at r
+
+So, that's something like "1 negate 1 add" - gasp, that's RPN!  I'd check 
+the sources if I had them (none for Mac, and I didn't bother with FBSD).
+
+-- Dave
+
+
+From imp at bsdimp.com  Sat Sep 13 06:03:39 2014
+From: imp at bsdimp.com (Warner Losh)
+Date: Fri, 12 Sep 2014 14:03:39 -0600
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <alpine.BSF.2.00.1409130533030.63870@aneurin.horsfall.org>
+References: <20140912015415.DB69E18C09E@mercury.lcs.mit.edu>
+ <alpine.BSF.2.00.1409121547260.63870@aneurin.horsfall.org>
+ <20140912111512.GA14385@mercury.ccil.org>
+ <20140912113612.GN24919@discoboy.drijf.net>
+ <alpine.BSF.2.00.1409130533030.63870@aneurin.horsfall.org>
+Message-ID: <735ABE8A-5718-4FEA-BA07-1EA59307F4C8@bsdimp.com>
+
+
+On Sep 12, 2014, at 1:36 PM, Dave Horsfall <dave at horsfall.org> wrote:
+
+> On Fri, 12 Sep 2014, Otto Moerbeek wrote:
+> 
+>> FreeBSD head has OpenBSD's dc(1) and bc(1) , which does pipe to dc(1).
+> 
+> Interesting; FreeBSD seems to be adopting a lot of OpenBSD stuff now, such 
+> as the PF firewall etc.
+
+There’s a lot of flow between the BSDs these days. Much more than in the Bad Old Days which spawned the 4 different distributions…
+
+Warner
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 842 bytes
+Desc: Message signed with OpenPGP using GPGMail
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140912/2fde8946/attachment.sig>
+
+From dave at horsfall.org  Sat Sep 13 06:05:24 2014
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sat, 13 Sep 2014 06:05:24 +1000 (EST)
+Subject: [TUHS] Etymology of dsw(1)
+Message-ID: <alpine.BSF.2.00.1409130602290.63870@aneurin.horsfall.org>
+
+Speaking of things etymological, I've heard two versions of that for 
+dsw(1).
+
+Delete from Switch Register (delete file whose i-num is in CSR)
+
+Delete Sh*t Work (same, but expressed a bit more robustly)
+
+-- Dave
+
+
+From cowan at mercury.ccil.org  Sat Sep 13 06:11:56 2014
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Fri, 12 Sep 2014 16:11:56 -0400
+Subject: [TUHS] Etymology of dsw(1)
+In-Reply-To: <alpine.BSF.2.00.1409130602290.63870@aneurin.horsfall.org>
+References: <alpine.BSF.2.00.1409130602290.63870@aneurin.horsfall.org>
+Message-ID: <20140912201156.GN14385@mercury.ccil.org>
+
+Dave Horsfall scripsit:
+
+> Delete from Switch Register (delete file whose i-num is in CSR)
+
+There's no doubt that this is right, but
+<http://dvlabs.tippingpoint.com/blog/2008/03/18/a-bit-of-history> claims
+that the switch register was set to the number of files to skip over
+before dumping core.  If you resumed the core dump, the next file would
+be deleted.  This allowed deleting files whose names could not be typed.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Pour moi, les villes du Silmarillion ont plus de realite que Babylone.
+                --Christopher Tolkien, as interviewed by Le Monde
+
+
+From grawity at gmail.com  Sat Sep 13 06:18:01 2014
+From: grawity at gmail.com (=?UTF-8?Q?Mantas_Mikul=C4=97nas?=)
+Date: Fri, 12 Sep 2014 23:18:01 +0300
+Subject: [TUHS] Etymology of dsw(1)
+In-Reply-To: <20140912201156.GN14385@mercury.ccil.org>
+References: <alpine.BSF.2.00.1409130602290.63870@aneurin.horsfall.org>
+ <20140912201156.GN14385@mercury.ccil.org>
+Message-ID: <CAPWNY8XKpfuBUZTsDg_t8pS_cD9nRK4ddFFE7=7qKJVkTS_xSQ@mail.gmail.com>
+
+On Fri, Sep 12, 2014 at 11:11 PM, John Cowan <cowan at mercury.ccil.org> wrote:
+> Dave Horsfall scripsit:
+>
+>> Delete from Switch Register (delete file whose i-num is in CSR)
+>
+> There's no doubt that this is right, but
+> <http://dvlabs.tippingpoint.com/blog/2008/03/18/a-bit-of-history> claims
+> that the switch register was set to the number of files to skip over
+> before dumping core.  If you resumed the core dump, the next file would
+> be deleted.  This allowed deleting files whose names could not be typed.
+
+This reminds me of a similar discussion thirty-three years ago:
+
+http://article.olduse.net/125 at Auiucdcs.UUCP
+http://article.olduse.net/19 at Aresearch.UUCP
+http://article.olduse.net/20 at Aresearch.UUCP
+
+...which seems to confirm the "nth file" version.
+
+
+(Also, hi everyone. First post here. Possibly the only, though.)
+
+-- 
+Mantas Mikulėnas <grawity at gmail.com>
+
+
+From mah at mhorton.net  Sat Sep 13 06:40:09 2014
+From: mah at mhorton.net (Mary Ann Horton)
+Date: Fri, 12 Sep 2014 13:40:09 -0700
+Subject: [TUHS] Etymology of dsw(1)
+In-Reply-To: <alpine.BSF.2.00.1409130602290.63870@aneurin.horsfall.org>
+References: <alpine.BSF.2.00.1409130602290.63870@aneurin.horsfall.org>
+Message-ID: <20140912134009.206319igxvipo0mh@webmail.mhorton.net>
+
+I heard both versions of this as well.  Or rather, I heard the second,  
+and was surprised to see the first in the manual.
+
+Quoting Dave Horsfall <dave at horsfall.org>:
+
+> Speaking of things etymological, I've heard two versions of that for
+> dsw(1).
+>
+> Delete from Switch Register (delete file whose i-num is in CSR)
+>
+> Delete Sh*t Work (same, but expressed a bit more robustly)
+
+
+
+From random832 at fastmail.us  Sat Sep 13 07:10:37 2014
+From: random832 at fastmail.us (random832 at fastmail.us)
+Date: Fri, 12 Sep 2014 17:10:37 -0400
+Subject: [TUHS] Disassembler
+Message-ID: <1410556237.4018989.166902537.58431910@webmail.messagingengine.com>
+
+Does anyone know of a good PDP-11 disassembler?
+
+-- 
+Random832
+
+
+From lm at mcvoy.com  Sat Sep 13 07:16:42 2014
+From: lm at mcvoy.com (Larry McVoy)
+Date: Fri, 12 Sep 2014 14:16:42 -0700
+Subject: [TUHS] Disassembler
+In-Reply-To: <1410556237.4018989.166902537.58431910@webmail.messagingengine.com>
+References: <1410556237.4018989.166902537.58431910@webmail.messagingengine.com>
+Message-ID: <20140912211642.GG14334@mcvoy.com>
+
+I had a TA, Ken Witte, who just did od on the file and read that.  No shit.
+
+On Fri, Sep 12, 2014 at 05:10:37PM -0400, random832 at fastmail.us wrote:
+> Does anyone know of a good PDP-11 disassembler?
+> 
+> -- 
+> Random832
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+---
+Larry McVoy            	     lm at mcvoy.com             http://www.mcvoy.com/lm 
+
+
+From clemc at ccc.com  Sat Sep 13 08:07:58 2014
+From: clemc at ccc.com (Clem Cole)
+Date: Fri, 12 Sep 2014 18:07:58 -0400
+Subject: [TUHS] Disassembler
+In-Reply-To: <20140912211642.GG14334@mcvoy.com>
+References: <1410556237.4018989.166902537.58431910@webmail.messagingengine.com>
+ <20140912211642.GG14334@mcvoy.com>
+Message-ID: <CAC20D2NCmRHzAqKGA9irNL=E8L=_aPf_BFhZ2uWVEjF9BYhHBg@mail.gmail.com>
+
+Larry,
+
+The original Cray-1 lacks mnemonics - the instructions are octal.  Freaked
+me out the first time I saw it.
+
+On Fri, Sep 12, 2014 at 5:16 PM, Larry McVoy <lm at mcvoy.com> wrote:
+
+> I had a TA, Ken Witte, who just did od on the file and read that.  No shit.
+>
+> On Fri, Sep 12, 2014 at 05:10:37PM -0400, random832 at fastmail.us wrote:
+> > Does anyone know of a good PDP-11 disassembler?
+> >
+> > --
+> > Random832
+> > _______________________________________________
+> > TUHS mailing list
+> > TUHS at minnie.tuhs.org
+> > https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+> --
+> ---
+> Larry McVoy                  lm at mcvoy.com
+> http://www.mcvoy.com/lm
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140912/2be7afb1/attachment.html>
+
+From carl.lowenstein at gmail.com  Sat Sep 13 08:15:13 2014
+From: carl.lowenstein at gmail.com (Carl Lowenstein)
+Date: Fri, 12 Sep 2014 15:15:13 -0700
+Subject: [TUHS] Etymology of dsw(1)
+In-Reply-To: <20140912134009.206319igxvipo0mh@webmail.mhorton.net>
+References: <alpine.BSF.2.00.1409130602290.63870@aneurin.horsfall.org>
+ <20140912134009.206319igxvipo0mh@webmail.mhorton.net>
+Message-ID: <CAOgEH+MzhMOYwiSTnEtWeNVXhybJ8BSgZtcLqFthcDPFETKivg@mail.gmail.com>
+
+There are those who believe that DSW originated from the Russian "do
+svidaniya".
+You could Google it and decide for yourself.
+
+    carl
+
+On Fri, Sep 12, 2014 at 1:40 PM, Mary Ann Horton <mah at mhorton.net> wrote:
+
+> I heard both versions of this as well.  Or rather, I heard the second, and
+> was surprised to see the first in the manual.
+>
+> Quoting Dave Horsfall <dave at horsfall.org>:
+>
+>  Speaking of things etymological, I've heard two versions of that for
+>> dsw(1).
+>>
+>> Delete from Switch Register (delete file whose i-num is in CSR)
+>>
+>> Delete Sh*t Work (same, but expressed a bit more robustly)
+>>
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenstein at ucsd.edu
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140912/d9d83371/attachment.html>
+
+From clemc at ccc.com  Sat Sep 13 08:17:52 2014
+From: clemc at ccc.com (Clem Cole)
+Date: Fri, 12 Sep 2014 18:17:52 -0400
+Subject: [TUHS] Disassembler
+In-Reply-To: <1410556237.4018989.166902537.58431910@webmail.messagingengine.com>
+References: <1410556237.4018989.166902537.58431910@webmail.messagingengine.com>
+Message-ID: <CAC20D2PDJ+YJf8DPVXruONVcCZwDqXP41t5aJjGqpaZiD8sSYA@mail.gmail.com>
+
+The USENIX archives have a number of them.  I've long ago forgotten which
+was the best.
+
+I'd recommend that poke around Warren's site.  I also would look at the
+Purdue archives as a solid start.  They had the best microprocessor tools
+and I know there was a really good disassembler in there for the 8 bit
+micros at the time.  You could use them to reverse compile code and put the
+symbols back etc..  There was 11 and Vax tools in that mix too.   I seem to
+remember there was a good one from Oz - UNSW maybe?  The other place I
+would look would be from the Cooper Union folks circa 1980.  Those guys
+ported the DEC tools (Macro-11, Librarian, Linker and FTN to V6 & V7) [they
+also wrote a PDP-10 simulator to do it since they were all written in
+BLISS-10 - amazing project].   Anyway, the CU guys had some cool tools as I
+recall, and an disassembler might have been in that mix.
+
+
+Clem
+
+On Fri, Sep 12, 2014 at 5:10 PM, <random832 at fastmail.us> wrote:
+
+> Does anyone know of a good PDP-11 disassembler?
+>
+> --
+> Random832
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140912/37fe536a/attachment.html>
+
+From ron at ronnatalie.com  Sat Sep 13 08:18:22 2014
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Fri, 12 Sep 2014 18:18:22 -0400
+Subject: [TUHS] Disassembler
+In-Reply-To: <CAC20D2NCmRHzAqKGA9irNL=E8L=_aPf_BFhZ2uWVEjF9BYhHBg@mail.gmail.com>
+References: <1410556237.4018989.166902537.58431910@webmail.messagingengine.com>
+ <20140912211642.GG14334@mcvoy.com>
+ <CAC20D2NCmRHzAqKGA9irNL=E8L=_aPf_BFhZ2uWVEjF9BYhHBg@mail.gmail.com>
+Message-ID: <8ADF4608-A918-4FA4-8D5D-84125732081E@ronnatalie.com>
+
+When a PDP-11 instruction is dumped in octal, it's pretty easy to read.    The bottom six, nine, or twelve bits are the operand (three bits for addressing mode, three bits for register).
+While I'm a bit out of practice these days, I'd certainly read through a few octal dumps like that.
+
+Octal isn't a stretch for the Cray.   Cray was begat by the old CDC mainframes, the last of which was the 7600 (BRL got the LAST 7600 ever built, they held the line open for us.
+It wasn't decommisioned until about 1987.    The CDC had a 60 bit word size.   
+
+ I somehow to my chagrin got responsible for all the comm gear for that fed the beast.     As we were getting ready to decommission it I had all these "surplus tags" that I was attaching
+to all the multiplexors and modems and the like.    I amusingly taped one up on the corner of the main CPU cabinet.    The people running the data center weren't amused.
+
+The room where the 7600 was held received one of the few Denelcor HEP systems (which was designed for BRL).   Mike Muuss's group (of which I was a part), ported UNIX to run
+on that beast.     It ran for a short while before it was replaced with a Cray X/MP (one originally slated to go to Apple but we preempted their order).    Right before I left BRL I put my signature
+to the Cray 2 procurement.
+
+-Ron
+
+
+
+From dave at horsfall.org  Sat Sep 13 08:18:52 2014
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sat, 13 Sep 2014 08:18:52 +1000 (EST)
+Subject: [TUHS] Disassembler
+In-Reply-To: <20140912211642.GG14334@mcvoy.com>
+References: <1410556237.4018989.166902537.58431910@webmail.messagingengine.com>
+ <20140912211642.GG14334@mcvoy.com>
+Message-ID: <alpine.BSF.2.00.1409130815220.63870@aneurin.horsfall.org>
+
+On Fri, 12 Sep 2014, Larry McVoy wrote:
+
+> I had a TA, Ken Witte, who just did od on the file and read that.  No 
+> shit.
+
+Back in my S/360 days, I could disassemble by eye, with just an occasional 
+glance at The Green Card (had to do just that for a CompSci exam once).
+
+Oh, and "db" was also your friend, on the -11.
+
+-- Dave
+
+
+From dave at horsfall.org  Sat Sep 13 12:52:28 2014
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sat, 13 Sep 2014 12:52:28 +1000 (EST)
+Subject: [TUHS] Etymology of bc(1)
+In-Reply-To: <75643223-3F78-4DA9-8C8F-B80EA885710F@tfeb.org>
+References: <20140912015415.DB69E18C09E@mercury.lcs.mit.edu>
+ <75643223-3F78-4DA9-8C8F-B80EA885710F@tfeb.org>
+Message-ID: <alpine.BSF.2.00.1409131240150.63870@aneurin.horsfall.org>
+
+On Fri, 12 Sep 2014, Tim Bradshaw wrote:
+
+> Curiously, I understand that studying Italian (or romance languages in 
+> general) turns out to be a fairly good way of learning about the Latin, 
+> where by "Latin" they mean the language people actually *spoke*, as 
+> opposed to the deformed version of it that some tiny minority of people 
+> wrote.
+
+And as we stray even further from our original brief (Monty Python quote, 
+but OT stuff can be fun at times), English in turn is not Romance but 
+Germanic, and has been described as not so much as borrowing words from 
+other languages as chasing them down dark alleys and beating them 
+senseless.
+
+> In a thousand years, it will also turn out that the best way to learn 
+> about Unix will be by reading the archives of some mailing list where 
+> people discussed their memories of the early versions of it.
+
+Reckon they might also wonder why Americans don't use English? :-)
+
+In the meantime, the next time NASA launches a probe then perhaps it could 
+carry a DVD of Warren's archives; there's both an LP and a CD out there, 
+after all.
+
+-- Dave, who would also spell creat(2) with an "e"
+
+
+From dave at horsfall.org  Sat Sep 13 13:05:37 2014
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sat, 13 Sep 2014 13:05:37 +1000 (EST)
+Subject: [TUHS] Etymology of dsw(1)
+In-Reply-To: <CAPWNY8XKpfuBUZTsDg_t8pS_cD9nRK4ddFFE7=7qKJVkTS_xSQ@mail.gmail.com>
+References: <alpine.BSF.2.00.1409130602290.63870@aneurin.horsfall.org>
+ <20140912201156.GN14385@mercury.ccil.org>
+ <CAPWNY8XKpfuBUZTsDg_t8pS_cD9nRK4ddFFE7=7qKJVkTS_xSQ@mail.gmail.com>
+Message-ID: <alpine.BSF.2.00.1409131258500.63870@aneurin.horsfall.org>
+
+On Fri, 12 Sep 2014, Mantas Mikul?nas wrote:
+
+> (Also, hi everyone. First post here. Possibly the only, though.)
+
+Welcome!  I hope that you're not leaving the list because of the sudden 
+volume; it's normally quiet, but we are a bunch of old farts who will 
+sometimes get too much mint in our juleps, and we are all too happy to 
+pass on what we know (mostly because we've been there, and have seen the 
+present as well).
+
+Please don't leave, if you are...
+
+-- Dave
+
+
+From doug at cs.dartmouth.edu  Sat Sep 13 21:53:49 2014
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Sat, 13 Sep 2014 07:53:49 -0400
+Subject: [TUHS] Etymology of bc
+Message-ID: <201409131153.s8DBrnj8030233@coolidge.cs.dartmouth.edu>
+
+> Speaking of using a pipe to an existing command, I originally mis-read the
+> code to think there was only _one_ process involved, and that it was buffering
+> its output into the pipe before doing the exec() itself - something like this:
+> 
+>         pipe(p);
+>         write_stuff(p[1]);
+>         close(0);
+>         dup(p[0]);
+>         close(p[0]);
+>         close(p[1]);
+>         execl("/bin/other", "other", arg, 0);
+> 
+> Which is kind of a hack, but... it does avoid using a second process, although
+> the amount of data that can be passed is limited. (IIRC, a pipe will hold at
+> most 8 blocks, at least on V6.) Did this hack ever get used in anything?
+
+I didn't notice anybody commenting on the fact that this hack doesn't
+work for the purpose--an interactive desk calculator. Running bc then
+dc serially defeats interactivity.
+
+The scheme of filling a pipe completely before emptying it is used
+in Rob Pike's plan9 editor, sam, to pipe text through some transforming
+process. Because the transformer (think sort) may not produce any
+output until it has read all its input, sam can't read the result
+back until it has finished stuffing the pipe.
+
+Of course sam has to create two pipes, not just one, and it happens
+that the initial writer and ultimate reader are the same. But the 
+basic idea is the same.
+
+Doug
+
+
+From mah at mhorton.net  Mon Sep 15 13:01:10 2014
+From: mah at mhorton.net (Mary Ann Horton)
+Date: Sun, 14 Sep 2014 20:01:10 -0700
+Subject: [TUHS] UUCP Maps
+In-Reply-To: <4E5EF9AB-6F41-4EB7-B48E-C502C8D87DC0@orthanc.ca>
+References: <4E5EF9AB-6F41-4EB7-B48E-C502C8D87DC0@orthanc.ca>
+Message-ID: <54165676.3050403@mhorton.net>
+
+I would be happy to curate them on stargatemuseum.org.  I can always 
+download them from the Google archive of comp.mail.uucp but I wonder if 
+someone has the final official tarball copy?
+
+On 08/25/2014 01:55 PM, Lyndon Nerenberg wrote:
+> The recent UUCP network conversation has me wondering ... is anyone collecting/curating the UUCP maps that represented the way we communicated (outside the ARPANET) from the time of Chesson's paper until the death of comp.mail.maps?  Brian Reid's postscript maps were a work of genius; the hand-drawn ASCII maps that predated those are even more wonderful bits of Internet history, let alone art.
+>
+> --lyndon
+>
+>
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140914/d8380c2e/attachment.html>
+
+From jfoust at threedee.com  Tue Sep 16 01:13:46 2014
+From: jfoust at threedee.com (John Foust)
+Date: Mon, 15 Sep 2014 10:13:46 -0500
+Subject: [TUHS] Teletype
+In-Reply-To: <CAEvOwxW=G+g3dtSGaN=P7QmovgOygfANxacmcUo9Devn6v6B1Q@mail.g
+ mail.com>
+References: <CAEvOwxW=G+g3dtSGaN=P7QmovgOygfANxacmcUo9Devn6v6B1Q@mail.gmail.com>
+Message-ID: <20140915154725.2FFA01B1716@www.oztivo.net>
+
+At 01:04 PM 8/15/2014, Brian Zick wrote:
+>Would it still be possible today for someone like me to go out, and find an old teletype terminal (an old ASR or DECwriter or something), set up a phone line and modem and get a roll of paper, and then actually use it to connect to other computers?
+
+Yes, lots of people do it.  There is a "Greenkeys" mailing list 
+
+http://mailman.qth.net/mailman/listinfo/greenkeys
+
+populated by mostly ham radio RTTY types, but it's also a great archive
+of posts about hook-ups and repairs.  Yes, there are current-loop
+adapters and RS-232 to USB adapters that can be used to connect
+to contemporary machines.  There are also streaming audio web sites
+that send RTTY-style signals if you'd like to emulate your old radio
+over the Internet but still use your RTTY audio decoding hardware.
+
+There's also a fellow http://aetherltd.com/ who connects even older teletype 
+hardware to cell-phone texting.
+
+The Teletype Model 33 was very popular among early computer users
+because it was relatively low-priced compared to heavier-duty 
+teletypes.  The old RTTY folks tend to look down their nose at it
+because it wasn't as robust as other models.  
+
+They routinely huff and puff at recent auction prices for the Model 33, 
+though, as old computer collectors routinely pay $1,000 for them, while 
+it's tough to give away the better-built (and heavier!) teletypes.
+
+Last summer I picked up a Western Union-branded Teletype Model 28 KSR
+(circa mid-1950s) in near-pristine condition for $50.  Almost twenty 
+years ago I found a Model 33 in a university dumpster.
+
+- John
+
+
+
+From b4 at gewt.net  Tue Sep 16 05:51:35 2014
+From: b4 at gewt.net (Cory Smelosky)
+Date: Mon, 15 Sep 2014 15:51:35 -0400 (EDT)
+Subject: [TUHS] Teletype
+In-Reply-To: <20140915154725.2FFA01B1716@www.oztivo.net>
+References: <CAEvOwxW=G+g3dtSGaN=P7QmovgOygfANxacmcUo9Devn6v6B1Q@mail.gmail.com>
+ <20140915154725.2FFA01B1716@www.oztivo.net>
+Message-ID: <alpine.DFB.2.11.1409151549130.994@meaghan.gimme-sympathy.org>
+
+On Mon, 15 Sep 2014, John Foust wrote:
+
+> At 01:04 PM 8/15/2014, Brian Zick wrote:
+>> Would it still be possible today for someone like me to go out, and find an old teletype terminal (an old ASR or DECwriter or something), set up a phone line and modem and get a roll of paper, and then actually use it to connect to other computers?
+>
+> Yes, lots of people do it.  There is a "Greenkeys" mailing list
+>
+
+I have plans to do it once I get the PSU for my LA120 sorted out.
+
+[...]
+> populated by mostly ham radio RTTY types, but it's also a great archive
+> of posts about hook-ups and repairs.  Yes, there are current-loop
+> adapters and RS-232 to USB adapters that can be used to connect
+> to contemporary machines.  There are also streaming audio web sites
+> that send RTTY-style signals if you'd like to emulate your old radio
+> over the Internet but still use your RTTY audio decoding hardware.
+>
+[...]
+>
+> They routinely huff and puff at recent auction prices for the Model 33,
+> though, as old computer collectors routinely pay $1,000 for them, while
+> it's tough to give away the better-built (and heavier!) teletypes.
+>
+
+Really is annoying how much they go for. :(
+
+> Last summer I picked up a Western Union-branded Teletype Model 28 KSR
+> (circa mid-1950s) in near-pristine condition for $50.  Almost twenty
+> years ago I found a Model 33 in a university dumpster.
+>
+
+I got a (broken, but repairable) LA120 for the total cost of $0 as the guy 
+has like 10 and likes enabling my hobby. ;)
+
+> - John
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+-- 
+Cory Smelosky
+http://gewt.net Personal stuff
+http://gimme-sympathy.org Projects
+
+
+From jfoust at threedee.com  Tue Sep 16 04:07:26 2014
+From: jfoust at threedee.com (John Foust)
+Date: Mon, 15 Sep 2014 13:07:26 -0500
+Subject: [TUHS] another Web site on computer history
+Message-ID: <20140915180746.155301B171A@www.oztivo.net>
+
+At 07:46 PM 9/8/2014, you wrote:
+>Traffic this evening on the pcc compiler list <pcc.lists.ludd.ltu.se>
+>alerted me to the existence of the Software Preservation Group, a
+>branch of the Computer History Museum, with a Web site at
+>
+>        http://www.softwarepreservation.org/
+
+Also at http://www.computerhistory.org/groups/spg/ .
+
+It's run by Al Kossow:
+
+http://www.computerhistory.org/staff/Al,Kossow/
+
+He worked at Apple for a long time.  His early years were at UW-Milwaukee.
+
+He also frequents the Classic Computer Collector mailing list, a place
+where you might acquire and learn to repair the old iron.
+
+- John
+
+
+
+From dave at horsfall.org  Tue Sep 16 05:38:39 2014
+From: dave at horsfall.org (Dave Horsfall)
+Date: Tue, 16 Sep 2014 05:38:39 +1000 (EST)
+Subject: [TUHS] Teletype
+In-Reply-To: <20140915154725.2FFA01B1716@www.oztivo.net>
+References: <CAEvOwxW=G+g3dtSGaN=P7QmovgOygfANxacmcUo9Devn6v6B1Q@mail.gmail.com>
+ <20140915154725.2FFA01B1716@www.oztivo.net>
+Message-ID: <alpine.BSF.2.00.1409160514440.76151@aneurin.horsfall.org>
+
+On Mon, 15 Sep 2014, John Foust wrote:
+
+> Last summer I picked up a Western Union-branded Teletype Model 28 KSR 
+> (circa mid-1950s) in near-pristine condition for $50.  Almost twenty 
+> years ago I found a Model 33 in a university dumpster.
+
+For many years I used to collect old SCSI disks that otherwise would have 
+met a sticky end*.  The most reliable ones were Fujitsu (they just 
+soldiered on and on) with HP next (they made a noise like a jet engine, 
+but I'm partially deaf anyway, due to attending too many *loud* rock 
+concerts#).
+
+To this day, I still keep an eye out on the verge,
+
+[*]
+They were chucked out for the sin of being deemed too small for the latest 
+bloatware, but I never did find one small enough to act as a perfect RAID 
+journal.  The littlest one was 2Gb, whilst I was searching for something 
+around 20Mb.  Yes, I'm weird.
+
+[#]
+Bliss is when you are seated right in front of Suzi Quatro's Marshall 
+stack.  Your ears will ring a bit afterwards...
+
+-- Dave
+
+
+From cubexyz at gmail.com  Thu Sep 25 03:24:40 2014
+From: cubexyz at gmail.com (Mark Longridge)
+Date: Wed, 24 Sep 2014 13:24:40 -0400
+Subject: [TUHS] where is ecvt?
+Message-ID: <CADxT5N6mDEeo=4hERK3AuTGh3+-owQnbpeZSp=bEPJVhjLA02Q@mail.gmail.com>
+
+I've been comparing Unix v5 libc to modern linux and various other
+Unix versions and I found something odd.
+
+I made a list of functions which occur in Unix v5 libc.a and modern
+linux glibc.a and while there is no problem using the ecvt function in
+modern linux it doesn't seem to appear:
+
+ar t /usr/lib/libc.a | grep ecvt
+
+...doesn't find ecvt.
+
+But if you do:
+grep ecvt /usr/lib/libc.a
+then
+Binary file /usr/lib/libc.a matches
+
+So it seems it is in there somewhere. While searching for ecvt.c I
+found it as part of openbsd. I assume in modern Linux ecvt must be
+part of a larger function but I couldn't find it in the glibc source.
+
+Of course in Unix v5 things were completely straightforward as TUHS
+has the file V5/usr/source/s3/ecvt.s
+
+I just want to find all the functions that are still in modern glibc.a
+which also existed in Unix v5 libc.a
+
+
+From ron at ronnatalie.com  Thu Sep 25 03:38:14 2014
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Wed, 24 Sep 2014 13:38:14 -0400
+Subject: [TUHS] where is ecvt?
+In-Reply-To: <CADxT5N6mDEeo=4hERK3AuTGh3+-owQnbpeZSp=bEPJVhjLA02Q@mail.gmail.com>
+References: <CADxT5N6mDEeo=4hERK3AuTGh3+-owQnbpeZSp=bEPJVhjLA02Q@mail.gmail.com>
+Message-ID: <8843E941-3E0E-4538-A3E4-5D11590794F0@ronnatalie.com>
+
+My guess is that when the libc was built ecvt.s was built into some other file other than ecvt.o and exists in the library under that name.
+Ar only reports the file names inserted.   The loader looks at all the symbol tables on the contained files.    Have you tried extracting the files in the archive and running nm on them?
+
+
+
+From cubexyz at gmail.com  Thu Sep 25 04:01:51 2014
+From: cubexyz at gmail.com (Mark Longridge)
+Date: Wed, 24 Sep 2014 14:01:51 -0400
+Subject: [TUHS] where is ecvt?
+In-Reply-To: <8843E941-3E0E-4538-A3E4-5D11590794F0@ronnatalie.com>
+References: <CADxT5N6mDEeo=4hERK3AuTGh3+-owQnbpeZSp=bEPJVhjLA02Q@mail.gmail.com>
+ <8843E941-3E0E-4538-A3E4-5D11590794F0@ronnatalie.com>
+Message-ID: <CADxT5N4oFe82BUby63mXoW1v6h2_sbxr32jvnX033mSrLOJMxw@mail.gmail.com>
+
+> The loader looks at all the symbol tables on the contained files.    Have you tried
+> extracting the files in the archive and running nm on them?
+
+It seems that in glibc the file efgcvt.c just wraps ecvt to a call to
+sprintf so there's really isn't a ecvt.c (and thus no ecvt.o) but
+efgcvt.o instead.
+
+Mark
+
+
+On 9/24/14, Ronald Natalie <ron at ronnatalie.com> wrote:
+> My guess is that when the libc was built ecvt.s was built into some other
+> file other than ecvt.o and exists in the library under that name.
+> Ar only reports the file names inserted.   The loader looks at all the
+> symbol tables on the contained files.    Have you tried extracting the files
+> in the archive and running nm on them?
+>
+>
+
+
+From random832 at fastmail.us  Thu Sep 25 05:41:24 2014
+From: random832 at fastmail.us (random832 at fastmail.us)
+Date: Wed, 24 Sep 2014 15:41:24 -0400
+Subject: [TUHS] where is ecvt?
+In-Reply-To: <CADxT5N6mDEeo=4hERK3AuTGh3+-owQnbpeZSp=bEPJVhjLA02Q@mail.gmail.com>
+References: <CADxT5N6mDEeo=4hERK3AuTGh3+-owQnbpeZSp=bEPJVhjLA02Q@mail.gmail.com>
+Message-ID: <1411587684.755368.171378613.58B0C23E@webmail.messagingengine.com>
+
+On Wed, Sep 24, 2014, at 13:24, Mark Longridge wrote:
+> ar t /usr/lib/libc.a | grep ecvt
+> 
+> ...doesn't find ecvt.
+> 
+> But if you do:
+> grep ecvt /usr/lib/libc.a
+> then
+> Binary file /usr/lib/libc.a matches
+
+$ objdump -t libc.a
+
+...
+efgcvt.o:     file format elf64-x86-64
+
+SYMBOL TABLE:
+...
+00000000000000b0 g     F .text  000000000000001e ecvt
+...
+
+On a system without a tool like objdump, the next logical step would be
+ar x.
+
+
+From cowan at mercury.ccil.org  Thu Sep 25 06:36:13 2014
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Wed, 24 Sep 2014 16:36:13 -0400
+Subject: [TUHS] where is ecvt?
+In-Reply-To: <CADxT5N6mDEeo=4hERK3AuTGh3+-owQnbpeZSp=bEPJVhjLA02Q@mail.gmail.com>
+References: <CADxT5N6mDEeo=4hERK3AuTGh3+-owQnbpeZSp=bEPJVhjLA02Q@mail.gmail.com>
+Message-ID: <20140924203612.GC5462@mercury.ccil.org>
+
+Mark Longridge scripsit:
+
+> I made a list of functions which occur in Unix v5 libc.a and modern
+> linux glibc.a and while there is no problem using the ecvt function in
+> modern linux it doesn't seem to appear:
+
+ecvt() and fcvt() were deprecated in Posix 2001 in favor of printf(), and
+in Posix 2008 they were removed altogether.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+He made the Legislature meet at one-horse tank-towns out in the alfalfa
+belt, so that hardly nobody could get there and most of the leaders
+would stay home and let him go to work and do things as he pleased.
+    --H.L. Mencken's translation of the Declaration of Independence
+
+
+From dave at horsfall.org  Thu Sep 25 08:07:43 2014
+From: dave at horsfall.org (Dave Horsfall)
+Date: Thu, 25 Sep 2014 08:07:43 +1000 (EST)
+Subject: [TUHS] where is ecvt?
+In-Reply-To: <20140924203612.GC5462@mercury.ccil.org>
+References: <CADxT5N6mDEeo=4hERK3AuTGh3+-owQnbpeZSp=bEPJVhjLA02Q@mail.gmail.com>
+ <20140924203612.GC5462@mercury.ccil.org>
+Message-ID: <alpine.BSF.2.00.1409250803010.43296@aneurin.horsfall.org>
+
+On Wed, 24 Sep 2014, John Cowan wrote:
+
+> ecvt() and fcvt() were deprecated in Posix 2001 in favor of printf(), 
+> and in Posix 2008 they were removed altogether.
+
+I *thought* that the name was familiar, but having been whacked here before
+I kept my fingers firmly buttoned up :-)
+
+> John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+> He made the Legislature meet at one-horse tank-towns out in the alfalfa
+> belt, so that hardly nobody could get there and most of the leaders
+> would stay home and let him go to work and do things as he pleased.
+>     --H.L. Mencken's translation of the Declaration of Independence
+
+I was a member of an organisation like that.
+
+-- Dave
+
+
+From drsalists at gmail.com  Thu Sep 25 09:53:13 2014
+From: drsalists at gmail.com (Dan Stromberg)
+Date: Wed, 24 Sep 2014 16:53:13 -0700
+Subject: [TUHS] where is ecvt?
+In-Reply-To: <1411587684.755368.171378613.58B0C23E@webmail.messagingengine.com>
+References: <CADxT5N6mDEeo=4hERK3AuTGh3+-owQnbpeZSp=bEPJVhjLA02Q@mail.gmail.com>
+ <1411587684.755368.171378613.58B0C23E@webmail.messagingengine.com>
+Message-ID: <CAGGBd_rChrUH30nSBOTXZgCwYdDhzpvak1EaFovQioXRupAptw@mail.gmail.com>
+
+On Wed, Sep 24, 2014 at 12:41 PM,  <random832 at fastmail.us> wrote:
+> On Wed, Sep 24, 2014, at 13:24, Mark Longridge wrote:
+> $ objdump -t libc.a
+>
+> ...
+> efgcvt.o:     file format elf64-x86-64
+>
+> SYMBOL TABLE:
+> ...
+> 00000000000000b0 g     F .text  000000000000001e ecvt
+> ...
+>
+> On a system without a tool like objdump, the next logical step would be
+> ar x.
+
+You can also use nm:
+
+                    case "`uname`" in
+                        IRIX*)
+                            nm -B "$libpath" | sed "s#^#$libpath:#"
+                            ;;
+                        SunOS|OSF1)
+                            # here we're munging Sun format around into linux
+                            # format
+                            nm -P "$libpath" | awk ' { print $3,$2,$1 } ' | \
+                                sed "s#^#$libpath:#"
+                            ;;
+                        Linux|DragonFly)
+                            nm -o "$libpath"
+                            ;;
+                        AIX)
+                            #AIX: .popen               T     0430424        14
+                            # -X bits specifies the bitwidth for the library
+                            # -p says don't sort - Much faster
+                            nm -X 32 -p -o "$libpath" | awk ' { print
+$3,$2,$1 } ' | \
+                                sed "s#^#$libpath:#"
+                            nm -X 64 -p -o "$libpath" | awk ' { print
+$3,$2,$1 } ' | \
+                                sed "s#^#$libpath:#"
+                            ;;
+                    esac
+
+
+From cubexyz at gmail.com  Sun Sep 28 05:03:01 2014
+From: cubexyz at gmail.com (Mark Longridge)
+Date: Sat, 27 Sep 2014 15:03:01 -0400
+Subject: [TUHS] yacc for Unix v5
+Message-ID: <CADxT5N68F8Xnkn4LvbmWGB0pebz9gZqzPP2CYYr0dyK-+0NCrw@mail.gmail.com>
+
+I've been looking into the history of yacc (yet another compiler compiler).
+
+The earliest reference I can find is the man page for yacc from v3
+which indicates that yacc was written in B language. The files actn.b
+and /crp/scj/bigyacc are mentioned. No luck so far in locating those
+files.
+
+There is a man page for v4 which is very brief.
+
+There is a yacc executable for v5 but so far I haven't found any v5
+era code that works with it. My attempts to compile bc.y from v6 using
+yacc from v5 were not successful.
+Also the source code for yacc in v5 is missing.
+
+On a happier note I was able to use yacc and cc to regenerate the bc
+calculator in v6. It needed a fair amount of swap space to compile
+otherwise an "Intermediate file error" will occur. It seemed to
+require at least 300 blocks of hard drive space.
+
+It's a bit mysterious what the Unix v5 yacc was used on. It predated
+bc and expr. There's no v5 era *.y files available to look at.
+
+Mark
+
+
+From arnold at skeeve.com  Sun Sep 28 05:19:58 2014
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Sat, 27 Sep 2014 22:19:58 +0300
+Subject: [TUHS] made up errno contest, at an early USENIX
+Message-ID: <201409271919.s8RJJwPx019024@skeeve.com>
+
+Hi All.
+
+This is really gonna stretch the memories. (I may have even asked about
+it on this list before.)
+
+At one of the earlier USENIX conferences that I attended, maybe in
+Atlanta, there was a contest to make up humorous new errno values.
+The one that won, which I remember to this day was:
+
+EMISTERED:
+	A host is a host from coast to coast,
+	and no-one can talk to host that's close,
+	unless the host that isn't close
+	is busy, hung, or dead.
+
+I have quoted this is the gawk doc for many years.
+
+I'm wondering if there is a way to find out who was the author
+of this gem? I'd like to give him/her credit.
+
+Thanks,
+
+Arnold
+
+
+From dave at horsfall.org  Sun Sep 28 06:25:44 2014
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sun, 28 Sep 2014 06:25:44 +1000 (EST)
+Subject: [TUHS] made up errno contest, at an early USENIX
+In-Reply-To: <201409271919.s8RJJwPx019024@skeeve.com>
+References: <201409271919.s8RJJwPx019024@skeeve.com>
+Message-ID: <alpine.BSF.2.00.1409280622570.43296@aneurin.horsfall.org>
+
+On Sat, 27 Sep 2014, Aharon Robbins wrote:
+
+> EMISTERED:
+> 	A host is a host from coast to coast,
+> 	and no-one can talk to host that's close,
+> 	unless the host that isn't close
+> 	is busy, hung, or dead.
+
+Boy, that's a blast from the past!  I saw it (I think) reprinted in AUUGN 
+from Usenix's ";login:" journal, if that's any help.
+
+-- Dave
+
+
+From jaapna at xs4all.nl  Sun Sep 28 06:41:36 2014
+From: jaapna at xs4all.nl (Jaap Akkerhuis)
+Date: Sat, 27 Sep 2014 23:41:36 +0300
+Subject: [TUHS] made up errno contest, at an early USENIX
+In-Reply-To: <201409271919.s8RJJwPx019024@skeeve.com>
+References: <201409271919.s8RJJwPx019024@skeeve.com>
+Message-ID: <BFA8B40B-D660-4B30-9BB7-51934F502A3A@xs4all.nl>
+
+
+On Sep 27, 2014, at 22:19, Aharon Robbins <arnold at skeeve.com> wrote:
+
+> Hi All.
+> 
+> This is really gonna stretch the memories. (I may have even asked about
+> it on this list before.)
+> 
+> At one of the earlier USENIX conferences that I attended, maybe in
+> Atlanta, there was a contest to make up humorous new errno values.
+> The one that won, which I remember to this day was:
+> 
+> EMISTERED:
+> 	A host is a host from coast to coast,
+> 	and no-one can talk to host that's close,
+> 	unless the host that isn't close
+> 	is busy, hung, or dead.
+
+
+Ah, that one.  There is even a videa somewhere on which the judges
+sing this entry to the contest.  I forgot who the winner was but
+having been a judge of the contest (and singing badly) I should
+have some notes soemewhere.
+
+I'm currently not close to my personal archives, so it might take a
+while before I have an opportunity to look for the details (provided
+I still have them).
+
+
+	jaap
+
+> I have quoted this is the gawk doc for many years.
+> 
+> I'm wondering if there is a way to find out who was the author
+> of this gem? I'd like to give him/her credit.
+> 
+> Thanks,
+> 
+> Arnold
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 235 bytes
+Desc: Message signed with OpenPGP using GPGMail
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140927/b90ed6be/attachment.sig>
+
+From wkt at tuhs.org  Sun Sep 28 06:58:07 2014
+From: wkt at tuhs.org (Warren Toomey)
+Date: Sun, 28 Sep 2014 06:58:07 +1000
+Subject: [TUHS] made up errno contest, at an early USENIX
+In-Reply-To: <alpine.BSF.2.00.1409280622570.43296@aneurin.horsfall.org>
+References: <201409271919.s8RJJwPx019024@skeeve.com>
+ <alpine.BSF.2.00.1409280622570.43296@aneurin.horsfall.org>
+Message-ID: <956129F9-ED61-4E18-BD05-E698F19617E1@tuhs.org>
+
+I'm away & on poor bandwidth but try http://minnie.tuhs.org/Archive/Documentation/AUUGN/. My memory says somewhere in volumes 3, 4 or 5.
+Cheers, Warren
+
+On 28 September 2014 06:25:44 AEST, Dave Horsfall <dave at horsfall.org> wrote:
+>On Sat, 27 Sep 2014, Aharon Robbins wrote:
+>
+>> EMISTERED:
+>> 	A host is a host from coast to coast,
+>> 	and no-one can talk to host that's close,
+>> 	unless the host that isn't close
+>> 	is busy, hung, or dead.
+>
+>Boy, that's a blast from the past!  I saw it (I think) reprinted in
+>AUUGN 
+>from Usenix's ";login:" journal, if that's any help.
+>
+>-- Dave
+>_______________________________________________
+>TUHS mailing list
+>TUHS at minnie.tuhs.org
+>https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140928/ecf85394/attachment.html>
+
+From clemc at ccc.com  Sun Sep 28 07:09:06 2014
+From: clemc at ccc.com (Clem Cole)
+Date: Sat, 27 Sep 2014 17:09:06 -0400
+Subject: [TUHS] made up errno contest, at an early USENIX
+In-Reply-To: <201409271919.s8RJJwPx019024@skeeve.com>
+References: <201409271919.s8RJJwPx019024@skeeve.com>
+Message-ID: <CAC20D2PsTg1K3P0KcmPnnKvD2j55Zt=Wc4EhnL8GMOKyHBY2=g@mail.gmail.com>
+
+Mike O’Brien (aka Mr. Protocol)
+
+On Sat, Sep 27, 2014 at 3:19 PM, Aharon Robbins <arnold at skeeve.com> wrote:
+
+> Hi All.
+>
+> This is really gonna stretch the memories. (I may have even asked about
+> it on this list before.)
+>
+> At one of the earlier USENIX conferences that I attended, maybe in
+> Atlanta, there was a contest to make up humorous new errno values.
+> The one that won, which I remember to this day was:
+>
+> EMISTERED:
+>         A host is a host from coast to coast,
+>         and no-one can talk to host that's close,
+>         unless the host that isn't close
+>         is busy, hung, or dead.
+>
+> I have quoted this is the gawk doc for many years.
+>
+> I'm wondering if there is a way to find out who was the author
+> of this gem? I'd like to give him/her credit.
+>
+> Thanks,
+>
+> Arnold
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140927/525caf91/attachment.html>
+
+From dave at horsfall.org  Sun Sep 28 07:16:49 2014
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sun, 28 Sep 2014 07:16:49 +1000 (EST)
+Subject: [TUHS] made up errno contest, at an early USENIX
+In-Reply-To: <956129F9-ED61-4E18-BD05-E698F19617E1@tuhs.org>
+References: <201409271919.s8RJJwPx019024@skeeve.com>
+ <alpine.BSF.2.00.1409280622570.43296@aneurin.horsfall.org>
+ <956129F9-ED61-4E18-BD05-E698F19617E1@tuhs.org>
+Message-ID: <alpine.BSF.2.00.1409280714270.43296@aneurin.horsfall.org>
+
+On Sun, 28 Sep 2014, Warren Toomey wrote:
+
+> I'm away & on poor bandwidth but try 
+> http://minnie.tuhs.org/Archive/Documentation/AUUGN/. My memory says 
+> somewhere in volumes 3, 4 or 5.
+
+I'd poke around myself (and I see my SCCS paper is in there somewhere) but 
+I'm close to blowing my download limit for the month (grabbing Mavericks 
+for my Mac and subsequent updates tends to do that).
+
+-- Dave
+
+
+From arnold at skeeve.com  Sun Sep 28 14:44:58 2014
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Sat, 27 Sep 2014 22:44:58 -0600
+Subject: [TUHS] made up errno contest, at an early USENIX
+In-Reply-To: <CAC20D2PsTg1K3P0KcmPnnKvD2j55Zt=Wc4EhnL8GMOKyHBY2=g@mail.gmail.com>
+References: <201409271919.s8RJJwPx019024@skeeve.com>
+ <CAC20D2PsTg1K3P0KcmPnnKvD2j55Zt=Wc4EhnL8GMOKyHBY2=g@mail.gmail.com>
+Message-ID: <201409280444.s8S4iw9O006216@freefriends.org>
+
+Thanks!
+
+Arnold
+
+Clem Cole <clemc at ccc.com> wrote:
+
+> Mike O’Brien (aka Mr. Protocol)
+>
+> On Sat, Sep 27, 2014 at 3:19 PM, Aharon Robbins <arnold at skeeve.com> wrote:
+>
+> > Hi All.
+> >
+> > This is really gonna stretch the memories. (I may have even asked about
+> > it on this list before.)
+> >
+> > At one of the earlier USENIX conferences that I attended, maybe in
+> > Atlanta, there was a contest to make up humorous new errno values.
+> > The one that won, which I remember to this day was:
+> >
+> > EMISTERED:
+> >         A host is a host from coast to coast,
+> >         and no-one can talk to host that's close,
+> >         unless the host that isn't close
+> >         is busy, hung, or dead.
+> >
+> > I have quoted this is the gawk doc for many years.
+> >
+> > I'm wondering if there is a way to find out who was the author
+> > of this gem? I'd like to give him/her credit.
+> >
+> > Thanks,
+> >
+> > Arnold
+> > _______________________________________________
+> > TUHS mailing list
+> > TUHS at minnie.tuhs.org
+> > https://minnie.tuhs.org/mailman/listinfo/tuhs
+> >
+
+
+From scj at yaccman.com  Sun Sep 28 14:48:27 2014
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Sat, 27 Sep 2014 21:48:27 -0700
+Subject: [TUHS] yacc for Unix v5
+In-Reply-To: <CADxT5N68F8Xnkn4LvbmWGB0pebz9gZqzPP2CYYr0dyK-+0NCrw@mail.gmail.com>
+References: <CADxT5N68F8Xnkn4LvbmWGB0pebz9gZqzPP2CYYr0dyK-+0NCrw@mail.gmail.com>
+Message-ID: <d112b61d87fe83c74684b66eb4fd1a4a.squirrel@webmail.yaccman.com>
+
+
+> I've been looking into the history of yacc (yet another compiler
+> compiler).    ....
+
+
+The Yacc history was not particularly clean in the early days.  When Unix
+came along, I inherited a B compiler from Dennis for the GE (later
+Honeywell) mainframe at Bell Labs.  It was a recursive descent compiler
+for statements with a bolted on precedence mechanism for expressions.  I
+wanted to add some features (notably, some way to do exclusive OR). 
+Dennis and I settled on the ^ character and after a lot of sweat I got it
+to work on the GE, and Dennis put the change in the Unix B as well.  But
+it was very painful.
+
+There was a compiler/compiler in use at the Labs, imported I think by Doug
+McIlroy, called TMG.  It was a backtracking recursive descent compiler
+that could compile almost anything but was unbearably slow and, if it
+encountered a syntax error would backtrack back to the first character of
+the input file and say, in effect, "something's wrong in here somewhere".
+
+Al Aho overheard some of the discussions about adding the operator and the
+problems with TMG, and suggested that we explore this new LR parsing that
+Knuth had invented a few yuears earlier.  Al offered to build a table to
+handle the expressions in B, and I took him up on the offer and gave him
+an expression grammar with about 35 rules.  Al labored by hand for two
+days, and gave me a table.  I typed it in and it didn't work.  We debugged
+it, and Al spent another handful of hours and gave me another table.  It
+was better, but still didn't work.  After a couple of more go-arounds, I
+said "maybe you could show me what you are doing, and I could get the
+computer to do it."  And Yacc was born.
+
+The original version of Yacc, in B, was a huge CPU hog, and couldn't do
+very large grammars.  I remember it once taking 20 minutes to process a
+grammar.  And it brought the Unix system to its knees.  So after the first
+version, most of the activity was in improving the algorithm and data
+structure, and overlaying temporary arrays so we could do bigger grammars
+on the PDP-11.  I estimated that I sped Yacc up by a factor of 10,000 in
+its first several years.
+
+In the middle of this work, I spent a 9-month sabbatical at the University
+of Waterloo in Canada.  I did some work on Yacc while there, but when I
+returned to Bell Labs, I discovered that B had been supplanted by C, and
+an MIT co-op student had converted the B compiler to a C compiler, and had
+also translated Yacc from B to C.  He had also made some substantial
+changes in the code generation algorithm, improving much of the code but
+also introducing a bunch of fairly obscure bugs.
+
+One thing about the early Unix releases. Most of the work of preparing the
+releases was done by a very small number of people (1-3).  Unix in those
+days operated in a state of continuous development and integration.  For
+example, Dennis did most of his compiler work between midnight and 4 AM. 
+We would come in almost every day to find a new C compiler, with
+yesterday's compiler tucked away in a known place.  Most of the time we
+never noticed.  But if there was a problem we sent email to Dennis and
+used the previous compiler.  When Dennis came in after lunch, the bug was
+usually fixed in an hour or two.  The rest of us operated in a similar
+fashion.
+
+So the decision of what source code for Yacc or PCC was copied into a
+given release was often invisible to the author of the code.  The only
+discussion I remember relating to the code I had written was a lunchtime
+discussion about whether the lawyers would let us distribute PCC.  This
+was resolved by putting it in the release and not saying anything and
+nothing happened...
+
+
+
+
+From lm at mcvoy.com  Sun Sep 28 14:54:03 2014
+From: lm at mcvoy.com (Larry McVoy)
+Date: Sat, 27 Sep 2014 21:54:03 -0700
+Subject: [TUHS] made up errno contest, at an early USENIX
+In-Reply-To: <201409280444.s8S4iw9O006216@freefriends.org>
+References: <201409271919.s8RJJwPx019024@skeeve.com>
+ <CAC20D2PsTg1K3P0KcmPnnKvD2j55Zt=Wc4EhnL8GMOKyHBY2=g@mail.gmail.com>
+ <201409280444.s8S4iw9O006216@freefriends.org>
+Message-ID: <20140928045403.GG4182@mcvoy.com>
+
+Does anyone know where Mike is these days?
+
+On Sat, Sep 27, 2014 at 10:44:58PM -0600, arnold at skeeve.com wrote:
+> Thanks!
+> 
+> Arnold
+> 
+> Clem Cole <clemc at ccc.com> wrote:
+> 
+> > Mike O???Brien (aka Mr. Protocol)
+> >
+> > On Sat, Sep 27, 2014 at 3:19 PM, Aharon Robbins <arnold at skeeve.com> wrote:
+> >
+> > > Hi All.
+> > >
+> > > This is really gonna stretch the memories. (I may have even asked about
+> > > it on this list before.)
+> > >
+> > > At one of the earlier USENIX conferences that I attended, maybe in
+> > > Atlanta, there was a contest to make up humorous new errno values.
+> > > The one that won, which I remember to this day was:
+> > >
+> > > EMISTERED:
+> > >         A host is a host from coast to coast,
+> > >         and no-one can talk to host that's close,
+> > >         unless the host that isn't close
+> > >         is busy, hung, or dead.
+> > >
+> > > I have quoted this is the gawk doc for many years.
+> > >
+> > > I'm wondering if there is a way to find out who was the author
+> > > of this gem? I'd like to give him/her credit.
+> > >
+> > > Thanks,
+> > >
+> > > Arnold
+> > > _______________________________________________
+> > > TUHS mailing list
+> > > TUHS at minnie.tuhs.org
+> > > https://minnie.tuhs.org/mailman/listinfo/tuhs
+> > >
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+---
+Larry McVoy            	     lm at mcvoy.com             http://www.mcvoy.com/lm 
+
+
+From dave at horsfall.org  Sun Sep 28 20:01:11 2014
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sun, 28 Sep 2014 20:01:11 +1000 (EST)
+Subject: [TUHS] made up errno contest, at an early USENIX
+In-Reply-To: <alpine.BSF.2.00.1409280622570.43296@aneurin.horsfall.org>
+References: <201409271919.s8RJJwPx019024@skeeve.com>
+ <alpine.BSF.2.00.1409280622570.43296@aneurin.horsfall.org>
+Message-ID: <alpine.BSF.2.00.1409281954320.43296@aneurin.horsfall.org>
+
+On Sun, 28 Sep 2014, Dave Horsfall wrote:
+
+> > EMISTERED:
+> > 	A host is a host from coast to coast,
+> > 	and no-one can talk to host that's close,
+> > 	unless the host that isn't close
+> > 	is busy, hung, or dead.
+> 
+> Boy, that's a blast from the past!  I saw it (I think) reprinted in 
+> AUUGN from Usenix's ";login:" journal, if that's any help.
+
+Oh, and my favourite *genuine* errno is still ENAMETOOLONG.
+
+And the ultimate cop-out: EIO[0] (it could mean anything, like "Syntax 
+error" from a compiler).
+
+[0]
+Ah yes, the System/360 Extended Instruction[1] ("EI") console command.
+
+[1]
+Not to be confused with Execute Programmer Immediate, etc.
+
+-- Dave
+
+
+From cowan at mercury.ccil.org  Mon Sep 29 00:06:35 2014
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sun, 28 Sep 2014 10:06:35 -0400
+Subject: [TUHS] made up errno contest, at an early USENIX
+In-Reply-To: <201409271919.s8RJJwPx019024@skeeve.com>
+References: <201409271919.s8RJJwPx019024@skeeve.com>
+Message-ID: <20140928140635.GC16370@mercury.ccil.org>
+
+Aharon Robbins scripsit:
+
+> 	is busy, hung, or dead.
+
+FWIW, I remember seeing "Host busy, hung, or dead" error messages myself
+on the ARPANET back in 1974.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+If I have not seen as far as others, it is because giants were standing
+on my shoulders.  --Hal Abelson
+
+
+From ron at ronnatalie.com  Mon Sep 29 01:04:49 2014
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Sun, 28 Sep 2014 11:04:49 -0400
+Subject: [TUHS] made up errno contest, at an early USENIX
+In-Reply-To: <alpine.BSF.2.00.1409281954320.43296@aneurin.horsfall.org>
+References: <201409271919.s8RJJwPx019024@skeeve.com>
+ <alpine.BSF.2.00.1409280622570.43296@aneurin.horsfall.org>
+ <alpine.BSF.2.00.1409281954320.43296@aneurin.horsfall.org>
+Message-ID: <EB9BD910-EE98-46A7-ABC8-79EF066D75B1@ronnatalie.com>
+
+Of the real ones ENOTTY (not a typewriter) was always the most puzzling to new users.
+
+My favorite from that contest was
+
+ELECTROLUX =  Your code needs cleaning up.
+
+
+
+From jaapna at xs4all.nl  Mon Sep 29 02:22:44 2014
+From: jaapna at xs4all.nl (Jaap Akkerhuis)
+Date: Sun, 28 Sep 2014 19:22:44 +0300
+Subject: [TUHS] made up errno contest, at an early USENIX
+In-Reply-To: <EB9BD910-EE98-46A7-ABC8-79EF066D75B1@ronnatalie.com>
+References: <201409271919.s8RJJwPx019024@skeeve.com>
+ <alpine.BSF.2.00.1409280622570.43296@aneurin.horsfall.org>
+ <alpine.BSF.2.00.1409281954320.43296@aneurin.horsfall.org>
+ <EB9BD910-EE98-46A7-ABC8-79EF066D75B1@ronnatalie.com>
+Message-ID: <84755DDB-455E-4720-9522-BEF3A689ECDC@xs4all.nl>
+
+
+> My favorite from that contest was
+> 
+> ELECTROLUX =  Your code needs cleaning up.
+
+When the contest was rerun at the EUUG in Roma (IT) the winner was
+
+ENOTOBACCO == Reading from an empty pipe
+
+	jaap
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 235 bytes
+Desc: Message signed with OpenPGP using GPGMail
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140928/b28fd8ff/attachment.sig>
+
+From doug at cs.dartmouth.edu  Tue Sep 30 01:24:44 2014
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Mon, 29 Sep 2014 11:24:44 -0400
+Subject: [TUHS] TMG and B
+Message-ID: <201409291524.s8TFOiPk016264@mail.cs.dartmouth.edu>
+
+scj wrote:
+
+> There was a compiler/compiler in use at the Labs, imported I think by Doug
+> McIlroy, called TMG.
+
+Sorry for straying from direct Unix history, but this remark spurred a lot
+of memories.
+
+TMG (from "transmogrify", defined in Webster as "to change or alter, often
+with grotesque or humorous effect") was imported from Bob McClure, erstwhile
+Bell Labs person, then at Texas Instruments. And an interesting import
+job it was. McClure had written TMG for the CDC 1604 in machine language. He
+sent me green coding sheets hand-transliterated into 7090 code. Interesting
+debugging: one knew that the logic of the code was sound, but the opcodes
+might not always be right. Sometimes, for example, the wrong one of the two
+accumulator-load instructions, CLA and CAL, was used.
+
+Clem Pease converted TMG to the GE 635 for Multics by the artifice of defining
+7090 opcodes as 635 macros--sometimes many instructions long to slavishly
+emulate the 7090's peculiar accumulator (which mixed 38-bit sign-magnitude
+with 37-bit twos-complement and 36-bit ones-complement arithmetic). It's
+amusing to speculate about the progressive inflation of TMG had McClure sent
+me a similar translation for the 7090.
+
+TMG had a higher-level language written in TMG, which evolved during the
+Multics project into something considerably more elaborate than McClure's
+original, including features like syntax functions, e.g. seplist(a,b) denoted
+a sequence of a's separated by b's, for arbitary syntactic categories a and
+b. Syntax functions took TMG beyond the domain of context-free languages.
+
+Multics was to be written in PL/I, a compiler for which was commissioned from
+Digitek. They had brilliant Fortran technology, but flubbed PL/I.  When it
+appeared that the Digitek compiler was hopeless, Bob Morris proposed that
+we write a quick and dirty one in TMG. Despite being slow (an interpreter
+running on an emulated 7090) and providing only three diagnostics, this
+compiler carried the project for a couple of years.
+
+When Unix came along, we were again faced with how to bootstrap TMG across
+machines. This time I wrote a bare-bones interpreter in PDP7 assembler, then
+by stages grew the language back to the Multics state. Ken, in a compliment
+I still treasure, once called this the most amazing program on the original
+Unix machine.
+
+I believe TMG was involved in the initial evolution of B, but the
+real tour-de-force in B was the ability of an interpreted version to
+exploit software paging and transcend the limited memory of the PDP-11.
+The following scenario  was to be repeated several times in the early days
+of Unix.  When the native version of B ran out of steam, the interpreted
+version would be used to introduce some new optimization that would squeeze
+the native version back to fit. (Bigger input, smaller output!) Subsequently
+we saw the same thing happen with C and the kernel.  When the kernel grew
+too big, a new optimization would be introduced in C to squeeze it. (And to
+squeeze the compiler, too. The compiler, though, never enjoyed B's advantage
+of being able temporarily to run in a bigger arena.)
+
+Doug
+
+
+
+From scj at yaccman.com  Tue Sep 30 04:30:57 2014
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Mon, 29 Sep 2014 11:30:57 -0700
+Subject: [TUHS] TMG and B
+In-Reply-To: <201409291524.s8TFOiPk016264@mail.cs.dartmouth.edu>
+References: <201409291524.s8TFOiPk016264@mail.cs.dartmouth.edu>
+Message-ID: <64d15481273092988af8eb0cb97a82be.squirrel@webmail.yaccman.com>
+
+doug wrote
+
+>
+> Sorry for straying from direct Unix history, but this remark spurred a lot
+> of memories.
+>
+
+Memories, indeed!  I remember Dennis remarking that when he added the
+keyword "register" to B, the compiler actually got smaller.  However, my
+memories of that transition are more painful.  The keywords actually took
+up slots in the symbol table, and, unbeknownst to me, Yacc had completely
+filled the symbol table before that change.  When he installed the new
+compiler, Yacc broke.  I still remember spending a couple of days figuring
+out to rewrite a very complicated piece of code so it would use one fewer
+variable name!
+
+
+
+
+From jnc at mercury.lcs.mit.edu  Tue Sep 30 10:58:11 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon, 29 Sep 2014 20:58:11 -0400 (EDT)
+Subject: [TUHS] TMG and B
+Message-ID: <20140930005811.DA20418C101@mercury.lcs.mit.edu>
+
+    > From: Doug McIlroy <doug at cs.dartmouth.edu>
+
+    > Sorry for straying from direct Unix history
+
+Au contraire. This was a fascinating account, and very valuable to have it
+noted down for history. Please stray like that anytime you feel like it! :-)
+
+	Noel
+
+
+From lm at mcvoy.com  Tue Sep 30 11:01:31 2014
+From: lm at mcvoy.com (Larry McVoy)
+Date: Mon, 29 Sep 2014 18:01:31 -0700
+Subject: [TUHS] TMG and B
+In-Reply-To: <20140930005811.DA20418C101@mercury.lcs.mit.edu>
+References: <20140930005811.DA20418C101@mercury.lcs.mit.edu>
+Message-ID: <20140930010131.GF5785@mcvoy.com>
+
+On Mon, Sep 29, 2014 at 08:58:11PM -0400, Noel Chiappa wrote:
+>     > From: Doug McIlroy <doug at cs.dartmouth.edu>
+> 
+>     > Sorry for straying from direct Unix history
+> 
+> Au contraire. This was a fascinating account, and very valuable to have it
+> noted down for history. Please stray like that anytime you feel like it! :-)
+> 
+> 	Noel
+
+What he said.  I love "war stories".  Grab a glass of wine/beer/whatever 
+and wax poetic about the history.  I (and I suspect others) are jealous
+that we weren't there with you; hearing about it from someone who was is
+very cool.
+-- 
+---
+Larry McVoy            	     lm at mcvoy.com             http://www.mcvoy.com/lm 
+
+
+From arnold at skeeve.com  Tue Sep 30 18:52:00 2014
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Tue, 30 Sep 2014 02:52:00 -0600
+Subject: [TUHS] TMG and B
+In-Reply-To: <20140930010131.GF5785@mcvoy.com>
+References: <20140930005811.DA20418C101@mercury.lcs.mit.edu>
+ <20140930010131.GF5785@mcvoy.com>
+Message-ID: <201409300852.s8U8q0ab032379@freefriends.org>
+
+Larry McVoy <lm at mcvoy.com> wrote:
+
+> On Mon, Sep 29, 2014 at 08:58:11PM -0400, Noel Chiappa wrote:
+> >     > From: Doug McIlroy <doug at cs.dartmouth.edu>
+> > 
+> >     > Sorry for straying from direct Unix history
+> > 
+> > Au contraire. This was a fascinating account, and very valuable to have it
+> > noted down for history. Please stray like that anytime you feel like it! :-)
+> > 
+> > 	Noel
+>
+> What he said.  I love "war stories".  Grab a glass of wine/beer/whatever 
+> and wax poetic about the history.  I (and I suspect others) are jealous
+> that we weren't there with you; hearing about it from someone who was is
+> very cool.
+
+Seconded!!  I could not have said this better myself.
+
+Speaking at least for myself, it was clear at the time that UNIX and
+what was happening was extremely special, and many of the people I went
+to school with lusted after jobs at Bell Labs / AT&T in order to be
+involved with it.  Those of you who were there really were part of a
+"golden age".  Computing isn't nearly as much fun anymore.
+
+So, the more stories the better!
+
+Arnold
+
+
+From jnc at mercury.lcs.mit.edu  Tue Sep 30 23:52:28 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Tue, 30 Sep 2014 09:52:28 -0400 (EDT)
+Subject: [TUHS] TMG and B
+Message-ID: <20140930135228.4147A18C0FB@mercury.lcs.mit.edu>
+
+    > From: arnold at skeeve.com
+
+    > it was clear at the time that UNIX and what was happening was extremely
+    > special .. Those of you who were there really were part of a "golden
+    > age".
+
+I once observed to Jerry Saltzer that when I started at the MIT CS labs, I
+had been bummed because I had missed what I considered their 'Golden Age' -
+the work on CTSS and Multics.
+
+When I showed up there, I did a deal where they let me use a PDP-11/40 to
+explore some OS ideas I had, if I woule write diagnostics on it for a ring
+interface they were working on - part of a project on networking that
+included work on something called internetworking.
+
+I had no idea what I was getting into!
+
+And of course the networking work soon sucked me in completely. In that
+message to Jerry, I said something to the effect of 'clearly I've lived
+through a second golden age, and only now am I understanding that'.
+
+	Noel
+
+

@@ -1,0 +1,1356 @@
+From mrox128 at gmail.com  Tue Jan  1 02:01:06 2013
+From: mrox128 at gmail.com (Rox 64)
+Date: Mon, 31 Dec 2012 17:01:06 +0100
+Subject: [TUHS] Unable to boot v7 UNIX
+In-Reply-To: <1356948770.6404.1084.camel@papa>
+References: <CAGWMD9FhF4JBV_=hTdCai71VDSa91cCx397mH8BwpV0i7OaSVQ@mail.gmail.com>
+ <1356948770.6404.1084.camel@papa>
+Message-ID: <CAGWMD9H1VoBAYM-RMQFNHEE0YNmOEtL6kbUX0=XPd3ujsxx_3w@mail.gmail.com>
+
+>   -  substitute 'tm' for the tape in all commands
+>
+Yes, I did it, I was very careful about not screwing up things by not
+writing 'tm'
+
+>   -  substitute 'hp' for the disk in all commands
+>
+Yes too
+
+>   -  use hptmunix when booting
+>
+Yes, I wrote 'hp(0,0)hptmunix'
+
+>   -  do a 'mv hptmunix unix' in preparing further bootstraps
+>
+Yes, and then I removed all instances except 'unix' with the commands 'RM
+HP*IX' and 'RM RP*IX' as according to this site:
+http://gunkies.org/wiki/Installing_v7_on_SIMH (don't worry, your HOWTO as
+my main guide, I just used that wiki entry as a companion). Maybe should I
+leave HPTMUNIX and RP*IX?
+
+>   -  'make rp04' and 'make tm' in /dev for creating devices
+>
+Yes
+
+>   -  use 153406 as size for the filesystem on /dev/rp3
+>
+Yes, I was about to type 74000 but then I saw 153406 is the correct value
+for RP04/5
+
+>   -  copy /usr/mdec/hpuboot as boot block?
+>
+Yes, I wrote 'dd if=/usr/mdec/hpuboot of=/dev/rp0 count=1'
+
+So I'm not sure what's the problem. I will try it again with the shipped
+Ubuntu package and I will be more careful. If it fails then I will compile
+3.9-0. And if it fails again I will use Clem Cole's suggestions. Wish me
+luck!
+
+BTW, what version of SIMH did you use when writing your guide, Hellwig?
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20121231/41d74795/attachment.html>
+
+From hellwig.geisse at mni.thm.de  Tue Jan  1 02:14:31 2013
+From: hellwig.geisse at mni.thm.de (Hellwig Geisse)
+Date: Mon, 31 Dec 2012 17:14:31 +0100
+Subject: [TUHS] Unable to boot v7 UNIX
+In-Reply-To: <CAGWMD9H1VoBAYM-RMQFNHEE0YNmOEtL6kbUX0=XPd3ujsxx_3w@mail.gmail.com>
+References: <CAGWMD9FhF4JBV_=hTdCai71VDSa91cCx397mH8BwpV0i7OaSVQ@mail.gmail.com>
+ <1356948770.6404.1084.camel@papa>
+ <CAGWMD9H1VoBAYM-RMQFNHEE0YNmOEtL6kbUX0=XPd3ujsxx_3w@mail.gmail.com>
+Message-ID: <1356970471.6404.1104.camel@papa>
+
+On Mon, 2012-12-31 at 17:01 +0100, Rox 64 wrote:
+
+
+> BTW, what version of SIMH did you use when writing your guide,
+> Hellwig?
+
+The simulator is included in the package... ;-)
+A quick look reveals (in file sim_rev.h):
+
+#define SIM_MAJOR       3
+#define SIM_MINOR       6
+#define SIM_PATCH       0
+
+Hellwig
+
+
+
+From mrox128 at gmail.com  Tue Jan  1 02:25:56 2013
+From: mrox128 at gmail.com (Rox 64)
+Date: Mon, 31 Dec 2012 17:25:56 +0100
+Subject: [TUHS] Unable to boot v7 UNIX
+In-Reply-To: <1356970471.6404.1104.camel@papa>
+References: <CAGWMD9FhF4JBV_=hTdCai71VDSa91cCx397mH8BwpV0i7OaSVQ@mail.gmail.com>
+ <1356948770.6404.1084.camel@papa>
+ <CAGWMD9H1VoBAYM-RMQFNHEE0YNmOEtL6kbUX0=XPd3ujsxx_3w@mail.gmail.com>
+ <1356970471.6404.1104.camel@papa>
+Message-ID: <CAGWMD9G6bq54hb67=nYqkJ+BjW9J6xTCPeyxhF=vxxmQMDWQSw@mail.gmail.com>
+
+That's funny, now it works! I'm not sure what did I do wrong in my previous
+test. The only difference I know is that then I did 'cd /' before
+'/etc/mkfs /dev/rp3 153406', and now I have skipped 'cd /'.
+
+Aaaah, nice to be able to use V7 Unix on modern computers =)
+        PDP-11 simulator V3.8-1
+        Disabling XQ
+        boot
+        Boot
+        : hp(0,0)unix
+        mem = 177344
+        # RESTRICTED RIGHTS: USE, DUPLICATION, OR DISCLOSURE
+        IS SUBJECT TO RESTRICTIONS STATED IN YOUR CONTRACT WITH
+        WESTERN ELECTRIC COMPANY, INC.
+        WED DEC 31 19:08:26 EST 1969
+
+        login: root
+        Password:
+        You have mail
+
+I don't see a '@', but otherwise it works now ^^. Now I'm going to play a
+little, add new users and fix the time zone =). Thanks for all!
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20121231/864a1db7/attachment.html>
+
+From random832 at fastmail.us  Tue Jan  1 06:50:27 2013
+From: random832 at fastmail.us (Random832)
+Date: Mon, 31 Dec 2012 15:50:27 -0500
+Subject: [TUHS] Unable to boot v7 UNIX
+In-Reply-To: <CAGWMD9G6bq54hb67=nYqkJ+BjW9J6xTCPeyxhF=vxxmQMDWQSw@mail.gmail.com>
+References: <CAGWMD9FhF4JBV_=hTdCai71VDSa91cCx397mH8BwpV0i7OaSVQ@mail.gmail.com>
+ <1356948770.6404.1084.camel@papa>
+ <CAGWMD9H1VoBAYM-RMQFNHEE0YNmOEtL6kbUX0=XPd3ujsxx_3w@mail.gmail.com>
+ <1356970471.6404.1104.camel@papa>
+ <CAGWMD9G6bq54hb67=nYqkJ+BjW9J6xTCPeyxhF=vxxmQMDWQSw@mail.gmail.com>
+Message-ID: <50E1FA93.2070707@fastmail.us>
+
+On 12/31/2012 11:25 AM, Rox 64 wrote:
+> I don't see a '@', but otherwise it works now ^^. Now I'm going to 
+> play a little, add new users and fix the time zone =). Thanks for all!
+
+Speaking of time zones, has anyone written code to update ctime.c for 
+the changes to the US rules in 2007? (let alone any non-US rules) and 
+have a list of what binaries need to be recompiled for changes to 
+daylight saving rules?
+
+Also, I'm looking at ctime.c, and i'm not sure if the current code 
+handles leap years correctly.
+
+It might be nice to have a repository for little things like that, 
+y2k-compliance (there are a couple 19112's in there IIRC), and so on.
+
+
+From asbesto at freaknet.org  Mon Jan  7 05:13:50 2013
+From: asbesto at freaknet.org (asbesto)
+Date: Sun, 6 Jan 2013 20:13:50 +0100
+Subject: [TUHS] Museo dell'Informatica Funzionante - PRESS RELEASE
+Message-ID: <20130106191350.GA3733@freaknet.org>
+
+
+Museo dell'Informatica Funzionante
+Computer Museum in Palazzolo Acreide, Italy
+http://museum.freaknet.org
+
+Just a few lines to announce that some of our historical
+computers are back online 24/7 for free use!
+
+We have 2 VAX/VMS systems and an emulated PDP-11/34 running
+RT-11 (that's the exact copy of our physical RL01 boot disk)
+
+Have a look here, and enjoy! :) 
+
+http://museo.freaknet.org/en/computer-storici-vaxvms-nuovamente-online/
+
+
+From wkt at tuhs.org  Wed Jan 23 09:57:21 2013
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 23 Jan 2013 10:57:21 +1100
+Subject: [TUHS] OpenLook CDs in the Unix Archive
+Message-ID: <20130122235721.GA9292@www.oztivo.net>
+
+Hi all,
+	Arnold Robbins has donated a couple of OpenLook CDs to the Unix
+Archive. I've put them into Applications/OpenLook.
+
+Here is his note:
+
+	I have a CD from ian at darwinsys.com dated 9/2005 with
+	OpenLook-XView-1.0e on it, and what looks like another one with
+	the same date with version 1.2.  I'm still extracting the first
+	one onto disk; it's in the 550+ Megabyte range. Files are dated 1995.
+
+Right now it's only on minnie until the mirrors pick it up:
+
+	http://minnie.tuhs.org/Archive/Applications/OpenLook/
+
+Cheers & thanks Arnold & Ian,
+	Warren
+
+
+From nevin at eviloverlord.com  Wed Jan 23 14:03:54 2013
+From: nevin at eviloverlord.com (Nevin Liber)
+Date: Tue, 22 Jan 2013 22:03:54 -0600
+Subject: [TUHS] History of strncpy
+Message-ID: <CAGg_6+MMAB9pqrMkiD7kd8gGyRYdSDeV9AZ7zaAOC9etO=GP1Q@mail.gmail.com>
+
+On another list I am on, a discussion about the history and purpose of
+strncpy has arisen.  The only reference I have found to it is <
+http://lwn.net/Articles/507432/>:
+
+The original reason for strncpy() was when directory names were limited to
+14 chars. The other two bytes contained the inode number. For that
+particular case, strncpy() worked quite well.
+
+Is that really the reason it came into being?
+
+Just a bit curious,
+-- 
+ Nevin ":-)" Liber  <mailto:nevin at eviloverlord.com>  (847) 691-1404
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130122/95c97f5e/attachment.html>
+
+From wkt at tuhs.org  Wed Jan 23 14:41:08 2013
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 23 Jan 2013 14:41:08 +1000
+Subject: [TUHS] History of strncpy
+In-Reply-To: <CAGg_6+MMAB9pqrMkiD7kd8gGyRYdSDeV9AZ7zaAOC9etO=GP1Q@mail.gmail.com>
+References: <CAGg_6+MMAB9pqrMkiD7kd8gGyRYdSDeV9AZ7zaAOC9etO=GP1Q@mail.gmail.com>
+Message-ID: <20130123044108.GA2871@neddie.local.net>
+
+On Tue, Jan 22, 2013 at 10:03:54PM -0600, Nevin Liber wrote:
+>   The original reason for strncpy() was when directory names were limited to
+>   14 chars. The other two bytes contained the inode number. For that
+>   particular case, strncpy() worked quite well.
+> 
+> Is that really the reason it came into being?
+
+strncpy() was introduced in 7th Edition Unix. From a quick perusal through
+the V7 source code, these files used strncpy():
+
+usr/src/cmd/ranlib.c		strncpy(firstname, arp.ar_name, 14);
+usr/src/cmd/login.c		#define SCPYN(a, b) strncpy(a, b, sizeof(a))
+usr/src/cmd/expr.y		strncpy(Mstring[0], p, num);
+usr/src/cmd/atrun.c		strncpy(file, dirent.d_name, DIRSIZ);
+usr/src/cmd/ed.c		strncpy(buf, keyp, 8);
+usr/src/cmd/mkdir.c		strncpy(pname, d, slash);
+usr/src/cmd/xsend/lib.c		strncpy(buf, s, 10);
+usr/src/cmd/crypt.c		strncpy(buf, pw, 8);
+
+Only two of these (ranlib.c and atrun.c) appear to be specifically related
+to the 14-byte filename limit in V7. So I'd say that strncpy() wasn't
+introduced solely to deal with 14-byte filenames.
+
+Cheers,
+	Warren
+
+
+From imp at bsdimp.com  Wed Jan 23 14:58:03 2013
+From: imp at bsdimp.com (Warner Losh)
+Date: Tue, 22 Jan 2013 21:58:03 -0700
+Subject: [TUHS] History of strncpy
+In-Reply-To: <CAGg_6+MMAB9pqrMkiD7kd8gGyRYdSDeV9AZ7zaAOC9etO=GP1Q@mail.gmail.com>
+References: <CAGg_6+MMAB9pqrMkiD7kd8gGyRYdSDeV9AZ7zaAOC9etO=GP1Q@mail.gmail.com>
+Message-ID: <E902777D-B4BC-48DB-AFAC-858C757AEEE4@bsdimp.com>
+
+A quick search of the archive shows that it appears, with strcpy, in v7, which suggests that this isn't the only reason...
+
+Warner
+On Jan 22, 2013, at 9:03 PM, Nevin Liber wrote:
+
+> On another list I am on, a discussion about the history and purpose of strncpy has arisen.  The only reference I have found to it is <http://lwn.net/Articles/507432/>:
+> 
+> The original reason for strncpy() was when directory names were limited to 14 chars. The other two bytes contained the inode number. For that particular case, strncpy() worked quite well.
+> 
+> Is that really the reason it came into being?
+> 
+> Just a bit curious,
+> -- 
+>  Nevin ":-)" Liber  <mailto:nevin at eviloverlord.com>  (847) 691-1404
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From clemc at ccc.com  Thu Jan 24 00:16:59 2013
+From: clemc at ccc.com (Clem Cole)
+Date: Wed, 23 Jan 2013 09:16:59 -0500
+Subject: [TUHS] History of strncpy
+In-Reply-To: <CAGg_6+MMAB9pqrMkiD7kd8gGyRYdSDeV9AZ7zaAOC9etO=GP1Q@mail.gmail.com>
+References: <CAGg_6+MMAB9pqrMkiD7kd8gGyRYdSDeV9AZ7zaAOC9etO=GP1Q@mail.gmail.com>
+Message-ID: <CAC20D2N_XbQ1Hb=bh-rAChVrRw+C3LOErWS0M845VreFvPaPTQ@mail.gmail.com>
+
+Nevin/Warren,
+
+RE: strncpy being related the DIRSIZ
+
+I do not think so, certainly not my memory of programming at the time.
+ Back then, many other languages I was using such as SAIL and some of the
+Algol family had similarly named functions.  I wish he were still with us
+to ask, but I really think that when Dennis rewrote the V5/V6 "portable C
+library" into what would become stdio and friends, adding the str*.c family
+was natural - all the other cool kids had one and it was just a
+convenient function
+when we all were writing code for C to have it also.
+
+This is pre "white book" (aka V5 & 6) but I have definite memories of the
+late Ted Kowalski teaching me what function libraries that were available
+for C.  One of my first programs (after helping Ted with fsck) was
+rewriting a SAIL based 6502 assembler in C and needing string functions.
+I have distinct memory of b*tching to Ted about having to write my own
+string functions.
+
+By the mid-late 70s a number of "ctools"or "c libraries" would appear from
+UCB, CMU, MIT et al with many of the same basic functions just with
+slightly different parameters.  Go look in the old USENIX tapes, you should
+see the same stuff getting recreated in many places.
+
+Clem
+
+
+On Tue, Jan 22, 2013 at 11:03 PM, Nevin Liber <nevin at eviloverlord.com>wrote:
+
+> On another list I am on, a discussion about the history and purpose of
+> strncpy has arisen.  The only reference I have found to it is <
+> http://lwn.net/Articles/507432/>:
+>
+> The original reason for strncpy() was when directory names were limited to
+> 14 chars. The other two bytes contained the inode number. For that
+> particular case, strncpy() worked quite well.
+>
+> Is that really the reason it came into being?
+>
+> Just a bit curious,
+> --
+>  Nevin ":-)" Liber  <mailto:nevin at eviloverlord.com>  (847) 691-1404
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130123/0b64e705/attachment.html>
+
+From ron at ronnatalie.com  Thu Jan 24 01:01:04 2013
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Wed, 23 Jan 2013 10:01:04 -0500
+Subject: [TUHS] History of strncpy
+In-Reply-To: <CAC20D2N_XbQ1Hb=bh-rAChVrRw+C3LOErWS0M845VreFvPaPTQ@mail.gmail.com>
+References: <CAGg_6+MMAB9pqrMkiD7kd8gGyRYdSDeV9AZ7zaAOC9etO=GP1Q@mail.gmail.com>
+ <CAC20D2N_XbQ1Hb=bh-rAChVrRw+C3LOErWS0M845VreFvPaPTQ@mail.gmail.com>
+Message-ID: <5CE5BCC9-06CF-423D-AEBA-636952773EDA@ronnatalie.com>
+
+I agree with uh Clem.   First off, Nevin's rememberence is wrong.   The I-node number was the first two bytes of the V6 directory entry followed by a FIXED 14 spaces for the name (null terminated or not depending on whether the length was there).
+
+I can guarantee there was no STRNCPY in the kernel, and my memory is with Clem, the V6 and even the phototypesetter versions of the C compiler and libraries didn't have these functions.
+By the time Version 7 rolled around, the variable length directories had also appeared in the filesystem.    I suspect strcpy arrived with the "portable I/O library", an abomination that eventually evolved into the stdio library and to this day is still stinking up the standard C language.
+
+Amusingly, removing a file only zeroed out the inumber field.   This could lead the creative hacker to leave all sorts of fun messages in the directory by creating and removing files carefully.
+We had an alternate shell that was removed for security reasons and one day I found if you did "cat /tmp" there was some noise at the top for the current user of it but then a bunch of new lines and a message that said "Looking for a ghost of nosh?"
+
+
+
+From aps at ieee.org  Thu Jan 24 01:24:26 2013
+From: aps at ieee.org (Armando Stettner)
+Date: Wed, 23 Jan 2013 09:24:26 -0600
+Subject: [TUHS] History of strncpy
+In-Reply-To: <5CE5BCC9-06CF-423D-AEBA-636952773EDA@ronnatalie.com>
+References: <CAGg_6+MMAB9pqrMkiD7kd8gGyRYdSDeV9AZ7zaAOC9etO=GP1Q@mail.gmail.com>
+ <CAC20D2N_XbQ1Hb=bh-rAChVrRw+C3LOErWS0M845VreFvPaPTQ@mail.gmail.com>
+ <5CE5BCC9-06CF-423D-AEBA-636952773EDA@ronnatalie.com>
+Message-ID: <12408BE9-5FC8-4ECA-93C1-38D27EF1DA23@ieee.org>
+
+I also second/support Ron's and uh Clem's view.  In addition to zeroing out the inumber field, "removing" a file decremented the reference count in the i-node causing it to be freed (not cleared) when the reference count went to zero.  There was no strncpy() in the kernel.  Was there a strcpy() (other than a macro) in the kernel??  Long live movtuc.
+
+Begin forwarded message:
+
+> From: Ronald Natalie <ron at ronnatalie.com>
+> Subject: Re: [TUHS] History of strncpy
+> Date: January 23, 2013 9:01:04 AM CST
+> To: Clem Cole <clemc at ccc.com>
+> Cc: tuhs at minnie.tuhs.org
+> 
+> I agree with uh Clem.   First off, Nevin's rememberence is wrong.   The I-node number was the first two bytes of the V6 directory entry followed by a FIXED 14 spaces for the name (null terminated or not depending on whether the length was there).
+> 
+> I can guarantee there was no STRNCPY in the kernel, and my memory is with Clem, the V6 and even the phototypesetter versions of the C compiler and libraries didn't have these functions.
+> By the time Version 7 rolled around, the variable length directories had also appeared in the filesystem.    I suspect strcpy arrived with the "portable I/O library", an abomination that eventually evolved into the stdio library and to this day is still stinking up the standard C language.
+> 
+> Amusingly, removing a file only zeroed out the inumber field.   This could lead the creative hacker to leave all sorts of fun messages in the directory by creating and removing files carefully.
+> We had an alternate shell that was removed for security reasons and one day I found if you did "cat /tmp" there was some noise at the top for the current user of it but then a bunch of new lines and a message that said "Looking for a ghost of nosh?"
+> 
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+> 
+
+
+From boomer3200 at gmail.com  Thu Jan 24 03:18:28 2013
+From: boomer3200 at gmail.com (Dan Plassche)
+Date: Wed, 23 Jan 2013 12:18:28 -0500
+Subject: [TUHS] Museo dell'Informatica Funzionante - PRESS RELEASE
+In-Reply-To: <20130106191350.GA3733@freaknet.org>
+References: <20130106191350.GA3733@freaknet.org>
+Message-ID: <CAM4k_MCVy89bWnTUgYvb0_=VGLArgWvJxV29smrrx9aX8f38aQ@mail.gmail.com>
+
+I am wondering if the Kent UNIX tape will going back online at
+http://freaknet.org/martin/tape or if anyone has a copy.  There
+are some interesting documents and bits of code there.
+
+
+Dan
+
+
+On Sun, Jan 6, 2013 at 2:13 PM, asbesto <asbesto at freaknet.org> wrote:
+
+>
+> Museo dell'Informatica Funzionante
+> Computer Museum in Palazzolo Acreide, Italy
+> http://museum.freaknet.org
+>
+> Just a few lines to announce that some of our historical
+> computers are back online 24/7 for free use!
+>
+> We have 2 VAX/VMS systems and an emulated PDP-11/34 running
+> RT-11 (that's the exact copy of our physical RL01 boot disk)
+>
+> Have a look here, and enjoy! :)
+>
+> http://museo.freaknet.org/en/computer-storici-vaxvms-nuovamente-online/
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+
+-- 
+Dan Plassche
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130123/6e603ab7/attachment.html>
+
+From scj at yaccman.com  Thu Jan 24 03:49:13 2013
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Wed, 23 Jan 2013 09:49:13 -0800
+Subject: [TUHS] History of strncpy
+In-Reply-To: <12408BE9-5FC8-4ECA-93C1-38D27EF1DA23@ieee.org>
+References: <CAGg_6+MMAB9pqrMkiD7kd8gGyRYdSDeV9AZ7zaAOC9etO=GP1Q@mail.gmail.com>
+ <CAC20D2N_XbQ1Hb=bh-rAChVrRw+C3LOErWS0M845VreFvPaPTQ@mail.gmail.com>
+ <5CE5BCC9-06CF-423D-AEBA-636952773EDA@ronnatalie.com>
+ <12408BE9-5FC8-4ECA-93C1-38D27EF1DA23@ieee.org>
+Message-ID: <0634b28b28366379e2767e9cc43c3e96.squirrel@webmail.yaccman.com>
+
+This does indeed bring up memories.  The earliest Unix manuals printed
+data structure definitions (e.g., inode structure) in the manual. 
+Programmers copied these structures into their code.  When we ported Unix
+to 32-bits, this turned out to be a disaster.  The whole constellation of
+header files, etc. was invented to get these declarations out of user code
+and into a place that could adapt to different machines.  The earliest
+lint programs checked that system calls that passed pointers to structures
+had not just compatible definitions but got their structure definitions
+from the same physical location on disc.  After several painful weeks, we
+had cleaned these embedded definitions out of the system and most user
+code.
+
+Something like strncpy must have existed in Unix very early, however.  The
+earliest Unix systems had file names limited to 6 characters (shades of
+FORTRAN!).  If you used a longer name, it was truncated.  This led to some
+nasty traps.  You could edit a file "smile.c" and write it out, where it
+went into the file system as "smile."  Repeated edits would continue to
+work just fine.  But when you compiled the sucker, the compiler created
+the file "smile.o" and wrote it out, where it also entered the file system
+as "smile." and wiped out the source file!
+
+
+
+From ron at ronnatalie.com  Thu Jan 24 04:19:46 2013
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Wed, 23 Jan 2013 13:19:46 -0500
+Subject: [TUHS] History of strncpy
+In-Reply-To: <12408BE9-5FC8-4ECA-93C1-38D27EF1DA23@ieee.org>
+References: <CAGg_6+MMAB9pqrMkiD7kd8gGyRYdSDeV9AZ7zaAOC9etO=GP1Q@mail.gmail.com>
+ <CAC20D2N_XbQ1Hb=bh-rAChVrRw+C3LOErWS0M845VreFvPaPTQ@mail.gmail.com>
+ <5CE5BCC9-06CF-423D-AEBA-636952773EDA@ronnatalie.com>
+ <12408BE9-5FC8-4ECA-93C1-38D27EF1DA23@ieee.org>
+Message-ID: <0A836D4A-A8D0-4A5D-98F3-AA962CC38EF0@ronnatalie.com>
+
+Decrementing the reference count in the inode also cleared an allocated bit in the flags (unless it was held open after deleted).    It also added it to an ersatz-free list of 100 entries, but unlike the disk freespace, that didn't have a provision to link to more entries.   After the inode freetable was exhausted, the inodes were scanned to find more free ones to replenish the list.
+
+The original v6 filesystem code wasn't very transaction safe.   When the machine crashed, you can almost count on a file in the process of deletion having either a mismatched number of appearances in directories versus the reference count in the inode.    The program "dcheck" was run to reconcile these.    Of course, dcheck only reported the errors.   Fixing them was more fun (especially since fsdb was yet to be written).    Any files that were open but deleted would be left allocated with 0-0 link count and references.     A program "clri" would zero out the entire inode for these files to fix that.   Of course, that's a bit brute force (and hard to reverse if you screwed up and did the wrong one).    We rewrote it to only reset the allocated bit.
+
+The kernel didn't have any string functions either.   Namei (the function that handles mapping file names to inodes) just used char*'s to traverse, compare, and copy the strings.   The code that handled the arguments for exec did the same.   m45.s where many assembler utility functions lived had some block copying (although they are not heavily used by the C code which just as soon would copy things with loops)  but nothing that knew anything about strings.
+
+On Jan 23, 2013, at 10:24 AM, Armando Stettner wrote: 
+
+> I also second/support Ron's and uh Clem's view.  In addition to zeroing out the inumber field, "removing" a file decremented the reference count in the i-node causing it to be freed (not cleared) when the reference count went to zero.  There was no strncpy() in the kernel.  Was there a strcpy() (other than a macro) in the kernel??  Long live movtuc.
+> 
+>> 
+
+
+
+From ron at ronnatalie.com  Thu Jan 24 05:33:37 2013
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Wed, 23 Jan 2013 14:33:37 -0500
+Subject: [TUHS] History of strncpy
+In-Reply-To: <0A836D4A-A8D0-4A5D-98F3-AA962CC38EF0@ronnatalie.com>
+References: <CAGg_6+MMAB9pqrMkiD7kd8gGyRYdSDeV9AZ7zaAOC9etO=GP1Q@mail.gmail.com>
+ <CAC20D2N_XbQ1Hb=bh-rAChVrRw+C3LOErWS0M845VreFvPaPTQ@mail.gmail.com>
+ <5CE5BCC9-06CF-423D-AEBA-636952773EDA@ronnatalie.com>
+ <12408BE9-5FC8-4ECA-93C1-38D27EF1DA23@ieee.org>
+ <0A836D4A-A8D0-4A5D-98F3-AA962CC38EF0@ronnatalie.com>
+Message-ID: <0E95A92F-43AD-4DA2-9921-57265426830B@ronnatalie.com>
+
+I did some searching and the previous answer is correct.   Neither V6 or PWB 1 have any of the str functions.    V7 and 32V both have them (including strncpy).
+I was wrong in my conjecture it came over with the portable (later to be std) io library.   It seems to have happened in the revamping of libc into seperate subdirectories.
+
+
+
+
+From clemc at ccc.com  Thu Jan 24 05:59:58 2013
+From: clemc at ccc.com (Clem Cole)
+Date: Wed, 23 Jan 2013 14:59:58 -0500
+Subject: [TUHS] History of strncpy
+In-Reply-To: <0E95A92F-43AD-4DA2-9921-57265426830B@ronnatalie.com>
+References: <CAGg_6+MMAB9pqrMkiD7kd8gGyRYdSDeV9AZ7zaAOC9etO=GP1Q@mail.gmail.com>
+ <CAC20D2N_XbQ1Hb=bh-rAChVrRw+C3LOErWS0M845VreFvPaPTQ@mail.gmail.com>
+ <5CE5BCC9-06CF-423D-AEBA-636952773EDA@ronnatalie.com>
+ <12408BE9-5FC8-4ECA-93C1-38D27EF1DA23@ieee.org>
+ <0A836D4A-A8D0-4A5D-98F3-AA962CC38EF0@ronnatalie.com>
+ <0E95A92F-43AD-4DA2-9921-57265426830B@ronnatalie.com>
+Message-ID: <CAC20D2Mz=DGcJ=u5ZZaWiyt1aXbQeCy+4TqHLO5X8sVUeSScaA@mail.gmail.com>
+
+On Wed, Jan 23, 2013 at 2:33 PM, Ronald Natalie <ron at ronnatalie.com> wrote:
+
+> It seems to have happened in the revamping of libc into seperate
+> subdirectories.
+
+
+Tanks Ron - that makes sense.
+
+As I said, there were functions like that in other languages, plus their
+was beginning to be a number of library toolkits for C that people were
+cons-ing up in that timeframe --> particularly by stripping helper routines
+from other programs.   Horton & Joy's termcap and eventually curses came to
+live that way.
+
+I just did a little searching of my own code archives and sure enough I
+found a file called support.c that has the functions len, copy and comp in
+it, which I must have used pre-V7  {code's ugly too - so it was clearly
+early C for me - I was still fighting the one-true-brace-style having come
+over from SAIL, Algol and BLISS}.
+
+Clem
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130123/88ca3f80/attachment.html>
+
+From msokolov at ivan.Harhan.ORG  Thu Jan 24 03:56:14 2013
+From: msokolov at ivan.Harhan.ORG (Michael Spacefalcon)
+Date: Wed, 23 Jan 2013 17:56:14 GMT
+Subject: [TUHS] History of strncpy
+Message-ID: <1301231756.AA27240@ivan.Harhan.ORG>
+
+Ronald Natalie <ron at ronnatalie.com> wrote:
+
+> I suspect strcpy arrived with the "portable I/O library", an abomination
+> that eventually evolved into the stdio library and to this day is still
+> stinking up the standard C language.
+
+What's so bad about stdio?  That's a genuine question - I've never had
+a reason to dislike stdio...
+
+SF
+
+
+From ron at ronnatalie.com  Thu Jan 24 07:39:47 2013
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Wed, 23 Jan 2013 16:39:47 -0500
+Subject: [TUHS] History of strncpy
+In-Reply-To: <1301231756.AA27240@ivan.Harhan.ORG>
+References: <1301231756.AA27240@ivan.Harhan.ORG>
+Message-ID: <B8FAD0BB-8796-4A0F-B441-0688405736E9@ronnatalie.com>
+
+It's really in my mind the opposite of C and unix in design.    It's not very consistent.   Why does the FILE
+structure go as the first argument in some functions (similar to the way UNIX tends to do things) and at the end of others?
+Why on earth did they preserve the silly fread/fwrite size feature that just multiplies the two middle args together long
+after it was realized that portability doesn't demand making such a distinction.   Why is there no consistency in
+return values?    It's was poorly thought out as the portable I/O library (which apparently never really got ported\
+anywhere) and just condified in all it's ugliness.
+
+On Jan 23, 2013, at 12:56 PM, Michael Spacefalcon wrote:
+
+> Ronald Natalie <ron at ronnatalie.com> wrote:
+> 
+>> I suspect strcpy arrived with the "portable I/O library", an abomination
+>> that eventually evolved into the stdio library and to this day is still
+>> stinking up the standard C language.
+> 
+> What's so bad about stdio?  That's a genuine question - I've never had
+> a reason to dislike stdio...
+> 
+> SF
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From lm at bitmover.com  Thu Jan 24 07:08:53 2013
+From: lm at bitmover.com (Larry McVoy)
+Date: Wed, 23 Jan 2013 13:08:53 -0800
+Subject: [TUHS] History of strncpy
+In-Reply-To: <1301231756.AA27240@ivan.Harhan.ORG>
+References: <1301231756.AA27240@ivan.Harhan.ORG>
+Message-ID: <20130123210853.GG22032@bitmover.com>
+
+On Wed, Jan 23, 2013 at 05:56:14PM +0000, Michael Spacefalcon wrote:
+> Ronald Natalie <ron at ronnatalie.com> wrote:
+> > I suspect strcpy arrived with the "portable I/O library", an abomination
+> > that eventually evolved into the stdio library and to this day is still
+> > stinking up the standard C language.
+> 
+> What's so bad about stdio?  That's a genuine question - I've never had
+> a reason to dislike stdio...
+
+Well, there are little incompats that make cross platform unpleasant.
+We (bitkeeper source management guys) gave up and imported the NetBSD
+stdio library and ship that.  Which did enable some fun enhancements.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From cowan at mercury.ccil.org  Thu Jan 24 07:46:51 2013
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Wed, 23 Jan 2013 16:46:51 -0500
+Subject: [TUHS] History of strncpy
+In-Reply-To: <B8FAD0BB-8796-4A0F-B441-0688405736E9@ronnatalie.com>
+References: <1301231756.AA27240@ivan.Harhan.ORG>
+ <B8FAD0BB-8796-4A0F-B441-0688405736E9@ronnatalie.com>
+Message-ID: <20130123214651.GF22559@mercury.ccil.org>
+
+Ronald Natalie scripsit:
+
+> Why does the FILE structure go as the first argument in some functions
+> (similar to the way UNIX tends to do things) and at the end of others?
+
+I think it goes at the end in every case except for varargs functions,
+where we wouldn't be able to know which one was last easily.
+
+> Why on earth did they preserve the silly fread/fwrite size feature
+> that just multiplies the two middle args together long after it was
+> realized that portability doesn't demand making such a distinction.
+
+I like the idea: essentially it's about reading or writing an array
+of a specified type.
+
+-- 
+John Cowan  cowan at ccil.org    http://ccil.org/~cowan
+No man is an island, entire of itself; every man is a piece of the
+continent, a part of the main.  If a clod be washed away by the sea,
+Europe is the less, as well as if a promontory were, as well as if a
+manor of thy friends or of thine own were: any man's death diminishes me,
+because I am involved in mankind, and therefore never send to know for
+whom the bell tolls; it tolls for thee.  --John Donne
+
+
+From mah at mhorton.net  Thu Jan 24 08:43:10 2013
+From: mah at mhorton.net (Mary Ann Horton)
+Date: Wed, 23 Jan 2013 14:43:10 -0800
+Subject: [TUHS] History of strncpy
+In-Reply-To: <5CE5BCC9-06CF-423D-AEBA-636952773EDA@ronnatalie.com>
+References: <CAGg_6+MMAB9pqrMkiD7kd8gGyRYdSDeV9AZ7zaAOC9etO=GP1Q@mail.gmail.com>
+ <CAC20D2N_XbQ1Hb=bh-rAChVrRw+C3LOErWS0M845VreFvPaPTQ@mail.gmail.com>
+ <5CE5BCC9-06CF-423D-AEBA-636952773EDA@ronnatalie.com>
+Message-ID: <5100677E.3060902@mhorton.net>
+
+While I agree with the other excellent comments in this thread (I just 
+dig out my document for the original "Portable C Library (on UNIX)", 
+complete with functions beginning with "C"), I have one small correction.
+
+Variable length file names in directories actually didn't come out until 
+the Berkeley Fast Filesystem in 4BSD.  They were not in V7 or even 3BSD.
+
+> By the time Version 7 rolled around, the variable length directories had also appeared in the filesystem.    I suspect strcpy arrived with the "portable I/O library", an abomination that eventually evolved into the stdio library and to this day is still stinking up the standard C language.
+>
+>
+
+
+
+From clemc at ccc.com  Thu Jan 24 10:01:43 2013
+From: clemc at ccc.com (Clem Cole)
+Date: Wed, 23 Jan 2013 19:01:43 -0500
+Subject: [TUHS] History of strncpy
+In-Reply-To: <5100677E.3060902@mhorton.net>
+References: <CAGg_6+MMAB9pqrMkiD7kd8gGyRYdSDeV9AZ7zaAOC9etO=GP1Q@mail.gmail.com>
+ <CAC20D2N_XbQ1Hb=bh-rAChVrRw+C3LOErWS0M845VreFvPaPTQ@mail.gmail.com>
+ <5CE5BCC9-06CF-423D-AEBA-636952773EDA@ronnatalie.com>
+ <5100677E.3060902@mhorton.net>
+Message-ID: <CAC20D2PD375-7Xkeq8vbcJ13a6K1oWvtoesAeOgq3tOLikbRmA@mail.gmail.com>
+
+Not to put too fine a point on it, Kirk's filesystem does not show up in
+the mainstream outside of Berkeley until 4.2BSD IIRC mid 1984.   4.1 was
+still based on the V7/TSS file systems [inside UCB we had 4.1A, 4.1B, 4.1C
+- although if my memory serves me 4.1C was semi-available - I know I took
+it Masscomp, SUN had it, and Armando you must have had it at DEC].
+
+Anyway, the post 4.1 BSD system was when Fast File systems and Berkeley
+directory system calls were added, to make some of the operations atomic
+and the user space code more portable.
+
+Henry Spencer's famous quip in the early 1980s:  *"**4.2BSD does everything
+UNIX does, only differently."*
+*
+*
+Looking back on it, ideas like the VFS layer would take a few years more.
+ But without moving the directory specifics out of user space code like it
+was V7 and earlier, it would have been hard to create something as clean as
+VFS.
+
+
+On Wed, Jan 23, 2013 at 5:43 PM, Mary Ann Horton <mah at mhorton.net> wrote:
+
+> While I agree with the other excellent comments in this thread (I just dig
+> out my document for the original "Portable C Library (on UNIX)", complete
+> with functions beginning with "C"), I have one small correction.
+>
+> Variable length file names in directories actually didn't come out until
+> the Berkeley Fast Filesystem in 4BSD.  They were not in V7 or even 3BSD.
+>
+>
+>  By the time Version 7 rolled around, the variable length directories had
+>> also appeared in the filesystem.    I suspect strcpy arrived with the
+>> "portable I/O library", an abomination that eventually evolved into the
+>> stdio library and to this day is still stinking up the standard C language.
+>>
+>>
+>>
+> ______________________________**_________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/**mailman/listinfo/tuhs<https://minnie.tuhs.org/mailman/listinfo/tuhs>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130123/95688214/attachment.html>
+
+From jgevaryahu at hotmail.com  Thu Jan 24 10:37:51 2013
+From: jgevaryahu at hotmail.com (Jonathan Gevaryahu)
+Date: Wed, 23 Jan 2013 19:37:51 -0500
+Subject: [TUHS] History of strncpy
+In-Reply-To: <CAGg_6+MMAB9pqrMkiD7kd8gGyRYdSDeV9AZ7zaAOC9etO=GP1Q@mail.gmail.com>
+References: <CAGg_6+MMAB9pqrMkiD7kd8gGyRYdSDeV9AZ7zaAOC9etO=GP1Q@mail.gmail.com>
+Message-ID: <BLU0-SMTP2151BBABA96D8058115B46BC7140@phx.gbl>
+
+I don't know about strncpy but strcmp appears (not under that name but 
+with identical functionality) in speak.c from 1973ish...
+
+On 1/22/2013 11:03 PM, Nevin Liber wrote:
+> On another list I am on, a discussion about the history and purpose of 
+> strncpy has arisen.  The only reference I have found to it is 
+> <http://lwn.net/Articles/507432/>:
+>
+> The original reason for strncpy() was when directory names were 
+> limited to 14 chars. The other two bytes contained the inode number. 
+> For that particular case, strncpy() worked quite well.
+> Is that really the reason it came into being?
+>
+> Just a bit curious,
+> -- 
+>  Nevin ":-)" Liber  <mailto:nevin at eviloverlord.com 
+> <mailto:nevin at eviloverlord.com>> (847) 691-1404
+>
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+-- 
+Jonathan Gevaryahu AKA Lord Nightmare
+jgevaryahu at gmail.com
+jgevaryahu at hotmail.com
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130123/a87489b2/attachment.html>
+
+From lm at bitmover.com  Thu Jan 24 16:02:05 2013
+From: lm at bitmover.com (Larry McVoy)
+Date: Wed, 23 Jan 2013 22:02:05 -0800
+Subject: [TUHS] History of strncpy
+In-Reply-To: <20130123214651.GF22559@mercury.ccil.org>
+References: <1301231756.AA27240@ivan.Harhan.ORG>
+ <B8FAD0BB-8796-4A0F-B441-0688405736E9@ronnatalie.com>
+ <20130123214651.GF22559@mercury.ccil.org>
+Message-ID: <20130124060205.GQ24498@bitmover.com>
+
+On Wed, Jan 23, 2013 at 04:46:51PM -0500, John Cowan wrote:
+> Ronald Natalie scripsit:
+> > Why on earth did they preserve the silly fread/fwrite size feature
+> > that just multiplies the two middle args together long after it was
+> > realized that portability doesn't demand making such a distinction.
+> 
+> I like the idea: essentially it's about reading or writing an array
+> of a specified type.
+
+As a SPARC guy (in the past), I think it may have had something to do 
+about alignment.
+
+That said, I hate the fread/fwrite interfaces.  We're fixing them in 
+our stdio.  freadn(f, buf, n).
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From ron at ronnatalie.com  Fri Jan 25 00:42:59 2013
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Thu, 24 Jan 2013 09:42:59 -0500
+Subject: [TUHS] History of strncpy
+In-Reply-To: <20130124060205.GQ24498@bitmover.com>
+References: <1301231756.AA27240@ivan.Harhan.ORG>
+ <B8FAD0BB-8796-4A0F-B441-0688405736E9@ronnatalie.com>
+ <20130123214651.GF22559@mercury.ccil.org>
+ <20130124060205.GQ24498@bitmover.com>
+Message-ID: <1AFADE66-7F72-4776-8738-EC27748DAF33@ronnatalie.com>
+
+
+On Jan 24, 2013, at 1:02 AM, Larry McVo
+> As a SPARC guy (in the past), I think it may have had something to do 
+> about alignment.
+> 
+> That said, I hate the fread/fwrite interfaces.  We're fixing them in 
+> our stdio.  freadn(f, buf, n).
+> 
+Amen.    For practical matters, there is no way given the rest of the library that an implementation can do
+anything other than multiply the two middle args together.    The stream still needs to be a byte stream
+and passing things as void* sort of divorces any clue as to what alignment or other portability requirements
+are (and I've worked on C on some rather odd word sized machines like 36 and 60 as well as machines
+that encode the word size in the pointer... believe me there were TONS of bugs in 4BSD with regard to that
+one where they would stuff a char* into a union and retrieve it with a int* thwarting any possible conversion
+(as we put in place when you casted one pointer to other).
+
+It's not true that FILE went at the end, except in vararg'd functions.   It goes at the beginning of ftell (which
+mimics the UNIX  tell call).    As with Larry, I'd much perferred they mimic'd most of the UNIX calls when
+possible.   They were reasonably thought out.
+
+
+
+From imp at bsdimp.com  Fri Jan 25 00:52:34 2013
+From: imp at bsdimp.com (Warner Losh)
+Date: Thu, 24 Jan 2013 07:52:34 -0700
+Subject: [TUHS] History of strncpy
+In-Reply-To: <1AFADE66-7F72-4776-8738-EC27748DAF33@ronnatalie.com>
+References: <1301231756.AA27240@ivan.Harhan.ORG>
+ <B8FAD0BB-8796-4A0F-B441-0688405736E9@ronnatalie.com>
+ <20130123214651.GF22559@mercury.ccil.org>
+ <20130124060205.GQ24498@bitmover.com>
+ <1AFADE66-7F72-4776-8738-EC27748DAF33@ronnatalie.com>
+Message-ID: <EC8F3C9A-F979-4B6E-911A-12947F061FD2@bsdimp.com>
+
+
+On Jan 24, 2013, at 7:42 AM, Ronald Natalie wrote:
+
+> 
+> On Jan 24, 2013, at 1:02 AM, Larry McVo
+>> As a SPARC guy (in the past), I think it may have had something to do 
+>> about alignment.
+>> 
+>> That said, I hate the fread/fwrite interfaces.  We're fixing them in 
+>> our stdio.  freadn(f, buf, n).
+>> 
+> Amen.    For practical matters, there is no way given the rest of the library that an implementation can do
+> anything other than multiply the two middle args together.    The stream still needs to be a byte stream
+> and passing things as void* sort of divorces any clue as to what alignment or other portability requirements
+> are (and I've worked on C on some rather odd word sized machines like 36 and 60 as well as machines
+> that encode the word size in the pointer... believe me there were TONS of bugs in 4BSD with regard to that
+> one where they would stuff a char* into a union and retrieve it with a int* thwarting any possible conversion
+> (as we put in place when you casted one pointer to other).
+
+Historically the only implementation I know that didn't just multiply the two args together was on VAX/VMS's VAXC. The underlying filesystem had a notion of a file of records, so you'd get very different result from n * size, 1 and n, size. The former would produce one record that was n * size, while the latter would produce n records, each of which was size in length. As with all things on that compiler, this was only sometimes, and it greatly depended on how the file was created... Mostly a royal pain, except in some very rare instances where it was what you wanted to happen.
+
+Warner
+
+> It's not true that FILE went at the end, except in vararg'd functions.   It goes at the beginning of ftell (which
+> mimics the UNIX  tell call).    As with Larry, I'd much perferred they mimic'd most of the UNIX calls when
+> possible.   They were reasonably thought out.
+> 
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From ron at ronnatalie.com  Fri Jan 25 02:01:41 2013
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Thu, 24 Jan 2013 11:01:41 -0500
+Subject: [TUHS] History of strncpy
+In-Reply-To: <EC8F3C9A-F979-4B6E-911A-12947F061FD2@bsdimp.com>
+References: <1301231756.AA27240@ivan.Harhan.ORG>
+ <B8FAD0BB-8796-4A0F-B441-0688405736E9@ronnatalie.com>
+ <20130123214651.GF22559@mercury.ccil.org>
+ <20130124060205.GQ24498@bitmover.com>
+ <1AFADE66-7F72-4776-8738-EC27748DAF33@ronnatalie.com>
+ <EC8F3C9A-F979-4B6E-911A-12947F061FD2@bsdimp.com>
+Message-ID: <74E8EAAB-FC12-49BE-9B1A-CE991DFDA39D@ronnatalie.com>
+
+Ah yes, VAX C.   You're right about that one.   It had a completing different internal implementation of the FILE
+struct.    While I supervised a team of VAX VMS programmers, that's one of the platforms I never dabbled in directly.
+
+
+
+From tih at hamartun.priv.no  Fri Jan 25 04:31:57 2013
+From: tih at hamartun.priv.no (Tom Ivar Helbekkmo)
+Date: Thu, 24 Jan 2013 19:31:57 +0100
+Subject: [TUHS] History of strncpy
+In-Reply-To: <74E8EAAB-FC12-49BE-9B1A-CE991DFDA39D@ronnatalie.com> (Ronald
+ Natalie's message of "Thu, 24 Jan 2013 11:01:41 -0500")
+References: <1301231756.AA27240@ivan.Harhan.ORG>
+ <B8FAD0BB-8796-4A0F-B441-0688405736E9@ronnatalie.com>
+ <20130123214651.GF22559@mercury.ccil.org>
+ <20130124060205.GQ24498@bitmover.com>
+ <1AFADE66-7F72-4776-8738-EC27748DAF33@ronnatalie.com>
+ <EC8F3C9A-F979-4B6E-911A-12947F061FD2@bsdimp.com>
+ <74E8EAAB-FC12-49BE-9B1A-CE991DFDA39D@ronnatalie.com>
+Message-ID: <m2txq677qa.fsf@athene.hamartun.priv.no>
+
+Ronald Natalie <ron at ronnatalie.com> writes:
+
+> Ah yes, VAX C.  You're right about that one.  It had a completing
+> different internal implementation of the FILE struct.  While I
+> supervised a team of VAX VMS programmers, that's one of the platforms
+> I never dabbled in directly.
+
+I ported C-TeX to VAX/VMS many years ago, and got a huge performance
+increase when I swapped the built-in FILE interface to RMS stream files
+for one I wrote myself, which explicitly did block I/O on RMS binary
+files instead.  That was a fun project.  :)
+
+-tih
+-- 
+It doesn't matter how beautiful your theory is, it doesn't matter how smart
+you are. If it doesn't agree with experiment, it's wrong.  -Richard Feynman
+
+
+From clemc at ccc.com  Fri Jan 25 02:21:36 2013
+From: clemc at ccc.com (Clem Cole)
+Date: Thu, 24 Jan 2013 11:21:36 -0500
+Subject: [TUHS] History of strncpy
+In-Reply-To: <EC8F3C9A-F979-4B6E-911A-12947F061FD2@bsdimp.com>
+References: <1301231756.AA27240@ivan.Harhan.ORG>
+ <B8FAD0BB-8796-4A0F-B441-0688405736E9@ronnatalie.com>
+ <20130123214651.GF22559@mercury.ccil.org>
+ <20130124060205.GQ24498@bitmover.com>
+ <1AFADE66-7F72-4776-8738-EC27748DAF33@ronnatalie.com>
+ <EC8F3C9A-F979-4B6E-911A-12947F061FD2@bsdimp.com>
+Message-ID: <CAC20D2OjbQquS-c5w5L29kw55u=3q+TnuPZYvOZM3ViQua1rQw@mail.gmail.com>
+
+Right on..
+
+Funny, just last week I got into an argument with a VMS person defending
+Culter's RMS on a DEC mailing list.
+Here at Intel in NH, many of the old DEC compiler guys still work in the
+building (and still hack on a FTN compiler to run codes on systems we are
+still creating).   Since, I often eat lunch with them, I just did a little
+research on the fact from that compiler to verify what I thought I
+remembered.
+
+So I had laughed that you mention that Culter's compiler could on certain
+cases support RMS.  Please remember that it was C and that compiler that
+forced him to add stream I/O to VMS.   As time went on, many ( ?most? ) VMS
+developers (including the FTN team) stopped using the RMS library and
+started to use stream since it was >>so<< much easier.
+
+To dmr's credit at the time of stdio, record I/O was popular on
+"enterprise" class systems - ney  mainframes of IBM and BUNCH companies.
+ Which is why VMS's I/O system was record based - DEC wanted a piece of
+that action (and got it).   The Multics family widely used the idea of a
+byte stream and not needing some sort of "facility" or "record" system to
+do the work; but at the time it was not clear which would "win."
+
+So the fact that Dennis was trying to provide an interface that could work
+on those machines, is again not surprising.  I wonder what things todays
+engineers will get crapped on because it was not clear at the time which
+way things would go.
+
+Clem
+
+BTW, I 100% agree that the inconsistency of the interfaces, return codes
+sins et al, certainly have damaged us.   But then again, who knew?   Other
+systems (like VMS) which were much more consistent, but were not as
+flexible or "open" died, while C, FORTRAN and UNIX live on.
+
+
+
+
+
+
+On Thu, Jan 24, 2013 at 9:52 AM, Warner Losh <imp at bsdimp.com> wrote:
+
+>
+> On Jan 24, 2013, at 7:42 AM, Ronald Natalie wrote:
+>
+> >
+> > On Jan 24, 2013, at 1:02 AM, Larry McVo
+> >> As a SPARC guy (in the past), I think it may have had something to do
+> >> about alignment.
+> >>
+> >> That said, I hate the fread/fwrite interfaces.  We're fixing them in
+> >> our stdio.  freadn(f, buf, n).
+> >>
+> > Amen.    For practical matters, there is no way given the rest of the
+> library that an implementation can do
+> > anything other than multiply the two middle args together.    The stream
+> still needs to be a byte stream
+> > and passing things as void* sort of divorces any clue as to what
+> alignment or other portability requirements
+> > are (and I've worked on C on some rather odd word sized machines like 36
+> and 60 as well as machines
+> > that encode the word size in the pointer... believe me there were TONS
+> of bugs in 4BSD with regard to that
+> > one where they would stuff a char* into a union and retrieve it with a
+> int* thwarting any possible conversion
+> > (as we put in place when you casted one pointer to other).
+>
+> Historically the only implementation I know that didn't just multiply the
+> two args together was on VAX/VMS's VAXC. The underlying filesystem had a
+> notion of a file of records, so you'd get very different result from n *
+> size, 1 and n, size. The former would produce one record that was n * size,
+> while the latter would produce n records, each of which was size in length.
+> As with all things on that compiler, this was only sometimes, and it
+> greatly depended on how the file was created... Mostly a royal pain, except
+> in some very rare instances where it was what you wanted to happen.
+>
+> Warner
+>
+> > It's not true that FILE went at the end, except in vararg'd functions.
+> It goes at the beginning of ftell (which
+> > mimics the UNIX  tell call).    As with Larry, I'd much perferred they
+> mimic'd most of the UNIX calls when
+> > possible.   They were reasonably thought out.
+> >
+> > _______________________________________________
+> > TUHS mailing list
+> > TUHS at minnie.tuhs.org
+> > https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130124/b82df22d/attachment.html>
+
+From usotsuki at buric.co  Thu Jan 24 16:34:27 2013
+From: usotsuki at buric.co (Steve Nickolas)
+Date: Thu, 24 Jan 2013 01:34:27 -0500 (EST)
+Subject: [TUHS] History of strncpy
+In-Reply-To: <20130124060205.GQ24498@bitmover.com>
+References: <1301231756.AA27240@ivan.Harhan.ORG>
+ <B8FAD0BB-8796-4A0F-B441-0688405736E9@ronnatalie.com>
+ <20130123214651.GF22559@mercury.ccil.org>
+ <20130124060205.GQ24498@bitmover.com>
+Message-ID: <alpine.DEB.2.02.1301240132540.3249@Ryou-VM1.yauncle.net>
+
+On Wed, 23 Jan 2013, Larry McVoy wrote:
+
+> On Wed, Jan 23, 2013 at 04:46:51PM -0500, John Cowan wrote:
+>> Ronald Natalie scripsit:
+>>> Why on earth did they preserve the silly fread/fwrite size feature
+>>> that just multiplies the two middle args together long after it was
+>>> realized that portability doesn't demand making such a distinction.
+>>
+>> I like the idea: essentially it's about reading or writing an array
+>> of a specified type.
+>
+> As a SPARC guy (in the past), I think it may have had something to do
+> about alignment.
+>
+> That said, I hate the fread/fwrite interfaces.  We're fixing them in
+> our stdio.  freadn(f, buf, n).
+>
+
+That syntax makes sense.  Though you'd prolly need a "#define 
+fread(b,s,n,f) freadn(f,b,((s)*(n)))", right?  For backward compatibility.
+
+
+From imp at bsdimp.com  Fri Jan 25 12:06:03 2013
+From: imp at bsdimp.com (Warner Losh)
+Date: Thu, 24 Jan 2013 19:06:03 -0700
+Subject: [TUHS] History of strncpy
+In-Reply-To: <m2txq677qa.fsf@athene.hamartun.priv.no>
+References: <1301231756.AA27240@ivan.Harhan.ORG>
+ <B8FAD0BB-8796-4A0F-B441-0688405736E9@ronnatalie.com>
+ <20130123214651.GF22559@mercury.ccil.org>
+ <20130124060205.GQ24498@bitmover.com>
+ <1AFADE66-7F72-4776-8738-EC27748DAF33@ronnatalie.com>
+ <EC8F3C9A-F979-4B6E-911A-12947F061FD2@bsdimp.com>
+ <74E8EAAB-FC12-49BE-9B1A-CE991DFDA39D@ronnatalie.com>
+ <m2txq677qa.fsf@athene.hamartun.priv.no>
+Message-ID: <BB50C8ED-DB62-4557-BEAB-DC553CC115BE@bsdimp.com>
+
+
+On Jan 24, 2013, at 11:31 AM, Tom Ivar Helbekkmo wrote:
+
+> Ronald Natalie <ron at ronnatalie.com> writes:
+> 
+>> Ah yes, VAX C.  You're right about that one.  It had a completing
+>> different internal implementation of the FILE struct.  While I
+>> supervised a team of VAX VMS programmers, that's one of the platforms
+>> I never dabbled in directly.
+> 
+> I ported C-TeX to VAX/VMS many years ago, and got a huge performance
+> increase when I swapped the built-in FILE interface to RMS stream files
+> for one I wrote myself, which explicitly did block I/O on RMS binary
+> files instead.  That was a fun project.  :)
+
+TeX was one of the programs I was thinking of. GNU Emacs was another... I ported about a dozen different unix programs back in the day, and had to put lots of different hacks in...  The C FILE interface definitely was somewhat suboptimal...
+
+Warner
+
+
+
+From arnold at skeeve.com  Mon Jan 28 13:22:02 2013
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Mon, 28 Jan 2013 05:22:02 +0200
+Subject: [TUHS] can anyone use QIC 6250 tape cartridges?
+Message-ID: <201301280322.r0S3M2Va016937@skeeve.com>
+
+Hi. I have two QIC 6250 tape cartridges that have been in (I hope) dry
+boxes for over 15 years. I suspect they're still usable but have no
+equipment with which to test them or try to read them.
+
+It'd be nice to get a CD back with copies of what's on them if that's
+possible, but that'd be icing on the cake.
+
+Drop me a note and we'll see if we can figure something out for mailing
+them.
+
+Thanks,
+
+Arnold
+
+
+From lm at bitmover.com  Mon Jan 28 13:44:31 2013
+From: lm at bitmover.com (Larry McVoy)
+Date: Sun, 27 Jan 2013 19:44:31 -0800
+Subject: [TUHS] can anyone use QIC 6250 tape cartridges?
+In-Reply-To: <201301280322.r0S3M2Va016937@skeeve.com>
+References: <201301280322.r0S3M2Va016937@skeeve.com>
+Message-ID: <20130128034431.GA15903@bitmover.com>
+
+Heh.  I did a raid thing over a bunch of QIC 150 drives.  Called it
+safe(1).  Worked pretty well.
+
+Like the 9 track, no way to read them, good luck.
+
+On Mon, Jan 28, 2013 at 05:22:02AM +0200, Aharon Robbins wrote:
+> Hi. I have two QIC 6250 tape cartridges that have been in (I hope) dry
+> boxes for over 15 years. I suspect they're still usable but have no
+> equipment with which to test them or try to read them.
+> 
+> It'd be nice to get a CD back with copies of what's on them if that's
+> possible, but that'd be icing on the cake.
+> 
+> Drop me a note and we'll see if we can figure something out for mailing
+> them.
+> 
+> Thanks,
+> 
+> Arnold
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From jcapp at anteil.com  Mon Jan 28 15:04:40 2013
+From: jcapp at anteil.com (Jim Capp)
+Date: Mon, 28 Jan 2013 00:04:40 -0500
+Subject: [TUHS] can anyone use QIC 6250 tape cartridges?
+In-Reply-To: <201301280322.r0S3M2Va016937@skeeve.com>
+References: <201301280322.r0S3M2Va016937@skeeve.com>
+Message-ID: <5BF199E6-060D-4B9E-98CE-7032D2289AD9@anteil.com>
+
+Aharon,
+
+I still have drives that will read QIC 6150/6250.  Contact me off-list if you're interested in data extraction / conversion. 
+
+Cheers,
+
+Jim
+
+
+
+
+On Jan 27, 2013, at 10:22 PM, Aharon Robbins <arnold at skeeve.com> wrote:
+
+> Hi. I have two QIC 6250 tape cartridges that have been in (I hope) dry
+> boxes for over 15 years. I suspect they're still usable but have no
+> equipment with which to test them or try to read them.
+> 
+> It'd be nice to get a CD back with copies of what's on them if that's
+> possible, but that'd be icing on the cake.
+> 
+> Drop me a note and we'll see if we can figure something out for mailing
+> them.
+> 
+> Thanks,
+> 
+> Arnold
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From peter at rulingia.com  Mon Jan 28 15:29:51 2013
+From: peter at rulingia.com (Peter Jeremy)
+Date: Mon, 28 Jan 2013 16:29:51 +1100
+Subject: [TUHS] can anyone use QIC 6250 tape cartridges?
+In-Reply-To: <201301280322.r0S3M2Va016937@skeeve.com>
+References: <201301280322.r0S3M2Va016937@skeeve.com>
+Message-ID: <20130128052951.GE29105@server.rulingia.com>
+
+On 2013-Jan-28 05:22:02 +0200, Aharon Robbins <arnold at skeeve.com> wrote:
+>Hi. I have two QIC 6250 tape cartridges that have been in (I hope) dry
+>boxes for over 15 years. I suspect they're still usable but have no
+>equipment with which to test them or try to read them.
+
+I don't think I can directly help you but did something similar
+recently with very mixed results.  I found a box of QIC-6150 tapes of
+a similar vintage and tried to read them.  Whilst I could read some
+of the tapes, most of them failed in 2 ways:
+1) The tensioning band broke.  Where I thought the contents would be
+   interesting, I opened the cases & swapped the band for one that
+   worked.
+2) There's no error correction (and I'm not sure how good the error
+   detection is).  In many cases, I'd get lots of retries and then
+   some resultant data - but if I tried again, I'd get a different
+   length result.
+
+I also had a couple of tapes that were visibly moldy - I didn't take
+them out of their protective cases.
+
+-- 
+Peter Jeremy
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 196 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130128/2c6d98ad/attachment.sig>
+
+From asbesto at freaknet.org  Wed Jan 30 19:08:54 2013
+From: asbesto at freaknet.org (asbesto)
+Date: Wed, 30 Jan 2013 10:08:54 +0100
+Subject: [TUHS] Museo dell'Informatica Funzionante - PRESS RELEASE
+In-Reply-To: <CAM4k_MCVy89bWnTUgYvb0_=VGLArgWvJxV29smrrx9aX8f38aQ@mail.gmail.com>
+References: <20130106191350.GA3733@freaknet.org>
+ <CAM4k_MCVy89bWnTUgYvb0_=VGLArgWvJxV29smrrx9aX8f38aQ@mail.gmail.com>
+Message-ID: <20130130090853.GC11044@freaknet.org>
+
+Wed, Jan 23, 2013 at 12:18:28PM -0500, Dan Plassche wrote:
+
+> I am wondering if the Kent UNIX tape will going back online at
+> http://freaknet.org/martin/tape or if anyone has a copy.  There
+> are some interesting documents and bits of code there.
+
+we will work to restore that ASAP! 
+
+-- 
+[ ::::::::: 73 de IW9HGS : http://freaknet.org/asbesto ::::::::::: ]
+[ Freaknet Medialab :: Poetry Hacklab : Dyne.Org :: Radio Cybernet ]
+[ NON SCRIVERMI USANDO LETTERE ACCENTATE  -  NON MANDARMI ALLEGATI ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC and SPAM ]
+
+
+From boomer3200 at gmail.com  Thu Jan 31 10:45:04 2013
+From: boomer3200 at gmail.com (Dan Plassche)
+Date: Wed, 30 Jan 2013 19:45:04 -0500
+Subject: [TUHS] Museo dell'Informatica Funzionante - PRESS RELEASE
+In-Reply-To: <20130130090853.GC11044@freaknet.org>
+References: <20130106191350.GA3733@freaknet.org>
+ <CAM4k_MCVy89bWnTUgYvb0_=VGLArgWvJxV29smrrx9aX8f38aQ@mail.gmail.com>
+ <20130130090853.GC11044@freaknet.org>
+Message-ID: <CAM4k_MC74Gbo3Qwcyf4_M_fnHQfaL58WEwyYqt=+Xv8VXjfbiQ@mail.gmail.com>
+
+Thank you.  No rush intended.  I just happened to be looking again
+recently  and did not know if you were aware about that section of the site
+being down.   This seemed like the best place to let you know given the
+contents of the tape and my limited Italian.
+On Jan 30, 2013 4:08 AM, "asbesto" <asbesto at freaknet.org> wrote:
+
+> Wed, Jan 23, 2013 at 12:18:28PM -0500, Dan Plassche wrote:
+>
+> > I am wondering if the Kent UNIX tape will going back online at
+> > http://freaknet.org/martin/tape or if anyone has a copy.  There
+> > are some interesting documents and bits of code there.
+>
+> we will work to restore that ASAP!
+>
+> --
+> [ ::::::::: 73 de IW9HGS : http://freaknet.org/asbesto ::::::::::: ]
+> [ Freaknet Medialab :: Poetry Hacklab : Dyne.Org :: Radio Cybernet ]
+> [ NON SCRIVERMI USANDO LETTERE ACCENTATE  -  NON MANDARMI ALLEGATI ]
+> [ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC and SPAM ]
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130130/d103e8e7/attachment.html>
+
+From asbesto at freaknet.org  Thu Jan 31 21:58:19 2013
+From: asbesto at freaknet.org (asbesto)
+Date: Thu, 31 Jan 2013 12:58:19 +0100
+Subject: [TUHS] Museo dell'Informatica Funzionante - PRESS RELEASE
+In-Reply-To: <CAM4k_MC74Gbo3Qwcyf4_M_fnHQfaL58WEwyYqt=+Xv8VXjfbiQ@mail.gmail.com>
+References: <20130106191350.GA3733@freaknet.org>
+ <CAM4k_MCVy89bWnTUgYvb0_=VGLArgWvJxV29smrrx9aX8f38aQ@mail.gmail.com>
+ <20130130090853.GC11044@freaknet.org>
+ <CAM4k_MC74Gbo3Qwcyf4_M_fnHQfaL58WEwyYqt=+Xv8VXjfbiQ@mail.gmail.com>
+Message-ID: <20130131115819.GA16007@freaknet.org>
+
+Wed, Jan 30, 2013 at 07:45:04PM -0500, Dan Plassche wrote:
+
+> Thank you.  No rush intended.  I just happened to be looking again
+> recently  and did not know if you were aware about that section of the site
+
+> > > I am wondering if the Kent UNIX tape will going back online at
+> > > http://freaknet.org/martin/tape or if anyone has a copy.  There
+
+Now it's back online, hope this is the last version, I will
+contact Martin as he's the owner of that tape we restored many
+years ago. :)
+
+-- 
+[ ::::::::: 73 de IW9HGS : http://freaknet.org/asbesto ::::::::::: ]
+[ Freaknet Medialab :: Poetry Hacklab : Dyne.Org :: Radio Cybernet ]
+[ NON SCRIVERMI USANDO LETTERE ACCENTATE  -  NON MANDARMI ALLEGATI ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC and SPAM ]
+
+

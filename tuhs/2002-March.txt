@@ -1,0 +1,1541 @@
+From cpg at aladdin.de  Fri Mar  1 02:32:27 2002
+From: cpg at aladdin.de (Christian Groessler)
+Date: 28 Feb 2002 17:32:27 +0100
+Subject: [pups] missing space in 2.11_rp_unknown
+Message-ID: <87664hva78.fsf@panther.aladdin.de>
+
+Hi,
+
+On 02/27/2002 03:25:22 PM PST "Steven M. Schultz" wrote:
+>
+>Hello again -
+>
+>> From: Christian Groessler <cpg at aladdin.de>
+>> Regarding the patchlevels, how do I find out which patchlevel my
+>> system is at?
+>
+>	Look at the /VERSION file.  The first or second line will have
+>	the patchlevel.   That file's updated by each patch.
+
+I have 400. I assume www.2bsd.com contains the newest patches? So 442
+is the latest?
+
+regards,
+chris
+
+
+
+From sms at 2BSD.COM  Fri Mar  1 02:53:34 2002
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Thu, 28 Feb 2002 08:53:34 -0800 (PST)
+Subject: [pups] missing space in 2.11_rp_unknown
+Message-ID: <200202281653.g1SGrY720084@moe.2bsd.com>
+
+Hi -
+
+> From: Christian Groessler <cpg at aladdin.de>
+> >	Look at the /VERSION file.  The first or second line will have
+> >	the patchlevel.   That file's updated by each patch.
+> 
+> I have 400. I assume www.2bsd.com contains the newest patches? So 442
+> is the latest?
+
+	Wow, that is quite old.
+
+	A faster link is at FTP.TO.GD-ES.COM (that's a T-1 vs the ISDL 
+	link I have at home).
+
+	It _might_ be easier to create an install tape from the files in
+	the 2.11 portion of the PUPS archive - I think that was updated
+	to about patchlevel 432 or so.   There is documentation on how to
+	create a boot tape, etc from the compressed files.
+
+	On the other hand it might be instructive/interesting/whatever to
+	apply the 42 updates manually - just be sure to read the instructions
+	that come with each one :)
+
+	Cheers,
+
+	Steven
+
+
+
+From talmage at cmf.nrl.navy.mil  Fri Mar  1 09:06:53 2002
+From: talmage at cmf.nrl.navy.mil (David W Talmage)
+Date: Thu, 28 Feb 2002 18:06:53 -0500
+Subject: [pups] reading and writing 2.11BSD disk images
+Message-ID: <2683.1014937613@paul.cmf.nrl.navy.mil>
+
+This must be a FAQ but I couldn't find the answer anywhere.
+
+I have some 2.11BSD disk images that I want to copy large files onto on a 
+NetBSD box.  Can someone please point me to a tool that can do it?
+
+These are disk images that I use with p11.  For various reasons, using p11 
+simulated tape drive isn't an option.  I use kermit to inject small files into 
+the running p11 + 2.11BSD.  It takes many minutes to 300KB.  It takes much, 
+much more time to copy 12MB.
+
+David Talmage
+
+
+
+
+From cdl at mpl.ucsd.edu  Sat Mar  2 03:28:19 2002
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Fri, 1 Mar 2002 09:28:19 -0800 (PST)
+Subject: [pups] PDP 11
+Message-ID: <200203011728.JAA12253@chiton.ucsd.edu>
+
+> From: Nutech <repro at nutechgroup.net>
+> To: pups at minnie.tuhs.org
+> Subject: [pups] PDP 11
+> Date: Sun, 24 Feb 2002 01:27:40 +0530
+> 
+> I post this message with hope that someone out there can help me with a
+> problem I have at hand.
+> 
+> My company recently bought a preowned printing machine, which uses a
+> PDP11/73 BA23
+> connected to a VT240 terminal to control the functions of the machine.
+> Needless to say that we are unable to make the PDP run since we have no
+> knowledge of the machine and have no one to look upto for guidance..
+> 
+> While we are able to power on the PDP, the VT240 is dead.
+
+Problems like this are much more easily solved in person than by email
+correspondence.  Why not tell everyone where you are physically located,
+and perhaps someone nearby can help.
+
+The VT240 could be replaced by any of several terminals, or even by a PC
+running a terminal emulation program.
+
+    carl
+    
+        carl lowenstein         marine physical lab     u.c. san diego
+                                                  clowenstein at ucsd.edu
+
+
+From cpg at aladdin.de  Sat Mar  2 08:28:19 2002
+From: cpg at aladdin.de (Christian Groessler)
+Date: 01 Mar 2002 23:28:19 +0100
+Subject: [pups] missing space in 2.11_rp_unknown
+Message-ID: <87elj3ncsc.fsf@power.cnet.aladdin.de>
+
+Hi,
+
+On 02/28/2002 08:53:34 AM PST "Steven M. Schultz" wrote:
+>
+>> From: Christian Groessler <cpg at aladdin.de>
+>> >	Look at the /VERSION file.  The first or second line will have
+>> >	the patchlevel.   That file's updated by each patch.
+>>
+>> I have 400. I assume www.2bsd.com contains the newest patches? So 442
+>> is the latest?
+>
+>	It _might_ be easier to create an install tape from the files in
+>	the 2.11 portion of the PUPS archive - I think that was updated
+>	to about patchlevel 432 or so.   There is documentation on how to
+>	create a boot tape, etc from the compressed files.
+
+I just last week installed v6 from tape image. I have to admit, I like
+working boot images more :-) (Since I only have an emulator and not
+the real thing, I don't have the need to physically transfer the
+stuff.)
+
+>	On the other hand it might be instructive/interesting/whatever to
+>	apply the 42 updates manually - just be sure to read the instructions
+>	that come with each one :)
+
+Hmm, I just did this now, but I have to admit, I only browsed the
+instructions of most of them. I followed the instructions of 412/413
+because I feared I'd forget to update init before rebooting the new
+kernel.
+But otherwise I applied all patches to 442, and then rebuilt the
+kernel, rebooted, and did "make build; make installsrc". Seemed to
+work.
+
+I noticed 2 patches, which patched /usr/src/sys/GENERIC/Makefile, but
+this is a generated file I think. At least it wasn't present, because
+I removed /usr/src/sys/GENERIC.
+
+regards,
+chris
+
+
+
+From sms at 2BSD.COM  Sun Mar  3 19:47:34 2002
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Sun, 3 Mar 2002 01:47:34 -0800 (PST)
+Subject: [pups] missing space in 2.11_rp_unknown
+Message-ID: <200203030947.g239lYx02183@moe.2bsd.com>
+
+Howdy -
+
+> From: Christian Groessler <cpg at aladdin.de>
+> I just last week installed v6 from tape image. I have to admit, I like
+> working boot images more :-) (Since I only have an emulator and not
+
+	An emualtor of course would use an emulated tape image ;)   That's
+	how I typically install.   There are instructions and sources to
+	the program to create the 'virtual tape' from the dump and tar files.
+
+> the real thing, I don't have the need to physically transfer the stuff.)
+
+	I keep forgetting that not everyone has a SCSI<->Qbus adaptor :)
+
+	(it was _expensive_ at the time but gosh, after 10 years the initial
+	 $ pain is long long gone and I've gotten a lot of use out of it)
+
+> Hmm, I just did this now, but I have to admit, I only browsed the
+> instructions of most of them. I followed the instructions of 412/413
+> because I feared I'd forget to update init before rebooting the new kernel.
+
+	Yes, screwing up 'init' is, to put it mildly, catastrophic.   During
+	the development and testing of that set of updates I did render my
+	system unbootable.   Thankfully I had a spare OS installed on the
+	SCSI Zip drive - I just booted from "DU 1" and put back a working
+	'init' (turns out that a 100MB Zip disk can contain a *full* 2.11BSD
+	system - not a lot of space left, but it includes all sources and
+	will boot).
+
+> But otherwise I applied all patches to 442, and then rebuilt the
+> kernel, rebooted, and did "make build; make installsrc". Seemed to work.
+
+	That's fantastic to hear!  
+
+> I noticed 2 patches, which patched /usr/src/sys/GENERIC/Makefile, but
+> this is a generated file I think. At least it wasn't present, because
+
+	Yes and No.  YES - it is generated by running './config' in /sys/conf.
+	NO - it's an integral part of the OS as distributed.
+
+> I removed /usr/src/sys/GENERIC.
+
+	You really didn't want to do that ;)
+
+	The Make* files for custom kernels will (100% guaranteed) diverge
+	from the defaults.   That's expected.   The GENERIC kernel is a special
+	case though.  When changes are made to the Make* files (overlay sizes
+	change for example) the patches will not attempt to find and "fix"
+	any locally created kernels - but the guarantee has always been that
+	the GENERIC kernel _will_ build, thus the patches presume that the
+	/sys/GENERIC directory hasn't been removed.   Indeed the kernel patches
+	usually suggest rebuilding GENERIC.
+
+	It is a Good Idea (saved my system a couple times) to keep a known
+	good working _non_networking kernel (i.e. GENERIC) in /genunix.   That
+	way if you are tinkering around (or a bad patch ends up in /unix) you
+	have something to boot.   Many is the time (during development, testing
+	of course) that I've had to rely on a /genunix to get the system
+	back alive.
+
+	Glad to hear you're current and are not seeing 'df' weirdness.   You
+	may want to upgrade P11 to 2.9 though - that would, I think, have 
+	fixed that problem before you saw it ;)
+
+	Cheers,
+	Steven Schultz
+	sms at 2bsd.com
+
+
+From cpg at aladdin.de  Wed Mar  6 02:38:37 2002
+From: cpg at aladdin.de (Christian Groessler)
+Date: 05 Mar 2002 17:38:37 +0100
+Subject: [pups] missing space in 2.11_rp_unknown
+Message-ID: <871yez6kc2.fsf@panther.aladdin.de>
+
+Hi,
+
+On 03/03/2002 01:47:34 AM PST "Steven M. Schultz" wrote:
+>
+>	Glad to hear you're current and are not seeing 'df' weirdness.   You
+>	may want to upgrade P11 to 2.9 though - that would, I think, have
+>	fixed that problem before you saw it ;)
+
+No, wouldn't :-)
+I used 2.10a all the time.
+
+regards,
+chris
+
+
+
+From jwillis at arielusa.com  Wed Mar  6 03:16:10 2002
+From: jwillis at arielusa.com (John Willis)
+Date: Tue, 5 Mar 2002 10:16:10 -0700
+Subject: [pups] ersatz11
+Message-ID: <2DA7A129907A664E8C5DA8462AD4D94C2B8AA5@deathstar.ARIELNET.COM>
+
+Any hints on making the v7_rk05_1145 boot image work with Ersatz11 v3
+demo?
+
+John Perkins Willis
+Software Engineer/Database Architect
+Ariel Technologies
+(505) 524-6860
+jwillis at arielusa.com
+
+
+
+From wkt at minnie.tuhs.org  Wed Mar  6 08:17:38 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 6 Mar 2002 08:17:38 +1000 (EST)
+Subject: [pups] Re: PWB licensing
+In-Reply-To: <1015356632.3c851cd832201@w3.fwn.rug.nl> from Lars Buitinck at "Mar
+ 5, 2002 08:30:32 pm"
+Message-ID: <200203052217.g25MHcC28779@minnie.tuhs.org>
+
+In article by Lars Buitinck:
+> ftp://minnie.tuhs.org/UnixArchive/COPYRIGHTS
+> says "See Caldera-license.pdf for [Caldera's] license conditions
+> for thrse [sic] systems," where "these systems" includes PWB.
+> The Caldera license doesn't even mention PWB.  It's (apparently)
+> still illegal to copy PWB (unless they consider it a version of
+> V6?).  I don't think they'll prosecute you for it (:-) but I'd
+> change it anyway.
+> Lars
+
+I think the phrase `successor systems' covers PWB, as PWB is derived
+from 6th Edition. Yes, I suppose we could ask for Mini-UNIX, PWB,
+Mert, RT and TS also to be added to the list.
+
+Cheers,
+	Warren
+
+P.S I'll fix thrse at least :)
+
+
+From johnh at psych.usyd.edu.au  Thu Mar  7 06:49:26 2002
+From: johnh at psych.usyd.edu.au (John Holden)
+Date: Thu, 7 Mar 2002 07:49:26 +1100 (EST)
+Subject: [pups] Mert (was PWB licensing)
+Message-ID: <200203062049.HAA16653@psychwarp.psych.usyd.edu.au>
+
+Warren wrote :- 
+
+>I think the phrase `successor systems' covers PWB, as PWB is derived
+>from 6th Edition. Yes, I suppose we could ask for Mini-UNIX, PWB,
+>Mert, RT and TS also to be added to the list.
+
+I'd really like to get my hands on MERT, but past correspondence from DMR
+suggests that it was probably never released outside the labs.  So, are there
+any tapes lying about?
+
+
+From wkt at minnie.tuhs.org  Thu Mar  7 07:17:58 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Thu, 7 Mar 2002 07:17:58 +1000 (EST)
+Subject: [pups] Mert (was PWB licensing)
+In-Reply-To: <200203062049.HAA16653@psychwarp.psych.usyd.edu.au> from John Holden
+ at "Mar 7, 2002 07:49:26 am"
+Message-ID: <200203062117.g26LHwY38302@minnie.tuhs.org>
+
+In article by John Holden:
+> I'd really like to get my hands on MERT, but past correspondence from DMR
+> suggests that it was probably never released outside the labs.  So, are there
+> any tapes lying about?
+
+I've asked around a few times, but nobody has had any. I could pass on the
+correspondence to you, if you wanted to do any further digging. Like you,
+all I heard was that it never got out of the labs.
+
+	Warren
+
+
+From wkt at minnie.tuhs.org  Thu Mar  7 07:25:31 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Thu, 7 Mar 2002 07:25:31 +1000 (EST)
+Subject: [pups] Re: PWB licensing
+In-Reply-To: <6F63E31101C6D41196490008C7B2BFC304B4E5@mwnt4.microwalt.nl> from
+ "Fred N. van Kempen" at "Mar 6, 2002 01:39:11 am"
+Message-ID: <200203062125.g26LPVa38378@minnie.tuhs.org>
+
+In article by Fred N. van Kempen:
+> Isn't PWB more closely related to USG and/or Sys III ?
+> --f
+
+SysIII is related to PWB and TS, which means both PWB and TS came
+before SysIII and so are covered by the Caldera license.
+
+I still have a number of PWB `things' in the archive: supposed releases,
+parts of releases, etc. I need to sit down one day and try to reconstitute
+a canonical release set from these bits and pieces.
+
+	Warren
+
+
+From wkt at minnie.tuhs.org  Thu Mar  7 07:27:26 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Thu, 7 Mar 2002 07:27:26 +1000 (EST)
+Subject: [pups] ersatz11
+In-Reply-To: <2DA7A129907A664E8C5DA8462AD4D94C2B8AA5@deathstar.ARIELNET.COM>
+ from John Willis at "Mar 5, 2002 10:16:10 am"
+Message-ID: <200203062127.g26LRQQ38397@minnie.tuhs.org>
+
+In article by John Willis:
+> Any hints on making the v7_rk05_1145 boot image work with Ersatz11 v3
+> demo?
+> 
+
+For v2.0, it was:
+
+set cpu 45
+mount DM0: v7_rk05.dsk
+boot DM0:
+
+Hopefully, this will still work for v3.
+
+	Warren
+
+
+From lars at fwn.rug.nl  Fri Mar  8 05:01:52 2002
+From: lars at fwn.rug.nl (Lars Buitinck)
+Date: Thu, 07 Mar 2002 20:01:52 +0100 (CET)
+Subject: [pups] Mert (was PWB licensing)
+In-Reply-To: <200203062117.g26LHwY38302@minnie.tuhs.org>
+References: <200203062117.g26LHwY38302@minnie.tuhs.org>
+Message-ID: <1015527712.3c87b920d9bef@w3.fwn.rug.nl>
+
+silly question: what are MERT and RT anyway?
+all the timelines list them, but not one actually expands the acronym.
+
+
+From tls at rek.tjls.com  Fri Mar  8 05:27:19 2002
+From: tls at rek.tjls.com (Thor Lancelot Simon)
+Date: Thu, 7 Mar 2002 14:27:19 -0500
+Subject: [pups] Mert (was PWB licensing)
+In-Reply-To: <1015527712.3c87b920d9bef@w3.fwn.rug.nl>
+References: <200203062117.g26LHwY38302@minnie.tuhs.org> <1015527712.3c87b920d9bef@w3.fwn.rug.nl>
+Message-ID: <20020307192719.GA25862@rek.tjls.com>
+
+On Thu, Mar 07, 2002 at 08:01:52PM +0100, Lars Buitinck wrote:
+> silly question: what are MERT and RT anyway?
+> all the timelines list them, but not one actually expands the acronym.
+
+Early realtime variants of Unix.  I don't think it's correct to state
+that MERT "never made it outside the Labs" -- wasn't dMERT ("duplex 
+MERT") the original operating system for the multiprocessor 3B20 in
+the #4 and #5ESS telephone switches?  Indeed, vestiges of this use
+have crept into more modern AT&T Unix releases; for instance, there
+are references to MERT system call and signal numbers in various SVR4
+header files.
+
+-- 
+ Thor Lancelot Simon	                                      tls at rek.tjls.com
+   But as he knew no bad language, he had called him all the names of common
+ objects that he could think of, and had screamed: "You lamp!  You towel!  You
+ plate!" and so on.              --Sigmund Freud
+
+
+From lothar.felten at gmx.net  Mon Mar 18 07:05:21 2002
+From: lothar.felten at gmx.net (lothar felten)
+Date: Sun, 17 Mar 2002 22:05:21 +0100
+Subject: [pups] pdp 11/44,unibus configuration and 20mA
+Message-ID: <PKEKIKBJNMFKLFAMAKINOECHCCAA.lothar.felten@gmx.net>
+
+My first unibus-pdp...
+
+I picked up the box this weekend, without any additional equipment or
+information.
+They also told me is is configured for a 20 mA current loop, but i don't
+have a working current loop term. is there a easy way of converting 20mA
+current loop to RS-232 ?
+I found a posting in classiccmp that says M7090 might be configured for
+RS232 or current loop(i don't know if they meant the MUX or the CIM M7090
+or both), is there a way to find out without blowing things up ? i do have
+a VT420, maybe i can do current loop <-> rs422 ?
+
+i didn't power up the box yet, first i'd like to connect the correct
+console and check the configuration. maybe reduce the configuration to
+RL11, DEUNA and disk-controller? another problem is the media, i'd like to
+install 2.9BSD, but how ? i still hope that one of those unidentified cards
+turns out to be a ciphertape-controller (Pertec-interface for my second
+cipher F880).
+
+any help, information or link is very welcome.
+
+-- regards, lothar
+
+
+
+This is the actual configuration:
+<-power supply / frontpanel->
+
+M 7090 -  -  -  -     dual height KD11-Z 11/44 console interface module
+ -  -  -  -  -  -     empty (this is where the optional CIS belongs)
+------M 7093------    hex height FP11-F 11/44 floating point module
+------M 7094------    hex height KD11-Z 11/44 data path module
+------M 7095------    hex height KD11-Z 11/44 control module
+------M 7096------    hex height KD11-Z 11/44 multifunction module
+------M 7097------    hex height KK11-B 11/44 4-Kword cache module
+------M 7098------    hex height KD11-Z 11/44 UNIBUS interface
+------M 8743------    hex height MS11-PB 1-Mbyte ECC RAM (-BH)
+ -  -  -  -  -  -     empty
+------M 7486------    hex height UDA52 Controller for SDI disk drives (UDA
+SI)
+------M 7485------    hex height UDA50-A UNIBUS to radial disk interface
+------M 7762------    hex height RL11 RL01/02 disk controller
+M 9202 ---M 8729--    dual height M9202 / quad height M8729 no info.
+M 9202 -  -  -  -     empty (badge says hex SPC slot)
+ -  -  -  -  -  -     empty
+ -  -  -  -  -  -     empty
+ -  -  -  F  -  -     empty, F is a bus grant continuity (single height)
+------SC4110------    hex height
+------M 7814------    hex height  DZ11-C 8-line 20mA data MUX, 50 to
+100-Kbaud
+------M 7792------    hex height  see below
+------M 7793------    hex height  see below
+ -  -  --Ramtek---    quad height no info
+ -  -  -  -  -  -
+
+addition to descriptions:
+
+M7485-YA  UDA50-A UNIBUS to radial disk interface PR board with blasted
+ROMs
+M7792 DEUNA port module, UNIBUS to ethernet microprocessor. (1 of 2)
+M7793 DEUNA link module, M7792 to ethernet bus line unit. (2 of 2)
+i don't have any reliable description for the M8729, i found a with google:
+"DRU-11 CA" parallel DMA.
+the SC4110 (Emulex) is probably a SMD disk controller, at least the heavy
+disk was attached to it.
+there are two cards for which i found nothing:
+Ramtek 508295/508297 (has a 50 pin connector)
+Eikonix 821-015cs (handwritten: 785-283)(has two 50 pin connectors)
+
+while cleaning the box i found three bus grant continuity cards (single
+height). it is possible they fell out during transport.
+i've read akos varga's unibus basics, but i still can't tell if this is a
+valid configuration. i found a badge on top of the box, which says the
+M8729 is in a SPC slot and the "second" part of the M9202 is in a hex. SPC
+slot.
+
+
+
+From bill at cs.scranton.edu  Tue Mar 19 23:01:09 2002
+From: bill at cs.scranton.edu (Bill Gunshannon)
+Date: Tue, 19 Mar 2002 08:01:09 -0500 (EST)
+Subject: [pups] pdp 11/44,unibus configuration and 20mA
+In-Reply-To: <PKEKIKBJNMFKLFAMAKINOECHCCAA.lothar.felten@gmx.net>
+Message-ID: <20020319075853.X63248-100000@server2.cs.scranton.edu>
+
+Here's a little help, I hope.  I scanned in the CIM and MFM pages from the
+PDP-11/44 Maintenance Card.  These explain the settings for the console
+serial port.
+   http://www.cs.uofs.edu/~bill/PDP11-44
+
+Good luck.
+
+bill
+
+-- 
+Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three wolves
+bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+University of Scranton   |
+Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+
+
+
+
+From ardaulas at yahoo.com  Thu Mar 21 19:47:01 2002
+From: ardaulas at yahoo.com (=?iso-8859-1?q?Arda=20Ulas=20Unlu?=)
+Date: Thu, 21 Mar 2002 10:47:01 +0100 (CET)
+Subject: [pups] (no subject)
+Message-ID: <20020321094701.92488.qmail@web11108.mail.yahoo.com>
+
+ 
+ 
+
+___________________________________________________________
+Do You Yahoo!? -- Une adresse @yahoo.fr gratuite et en français !
+Yahoo! Mail : http://fr.mail.yahoo.com
+
+
+From lothar.felten at gmx.net  Fri Mar 22 02:19:55 2002
+From: lothar.felten at gmx.net (lothar felten)
+Date: Thu, 21 Mar 2002 17:19:55 +0100
+Subject: [pups] pdp 11/44: terminte UNIBUS ?
+Message-ID: <PKEKIKBJNMFKLFAMAKINMEDDCCAA.lothar.felten@gmx.net>
+
+Hi there,
+The pdp 11/44 is working with a minimal configuration!
+Thanks to Bill Gunshannon and Milo Velmimirovic.
+The M7090 CIM is now doing RS 232 and gives me output (i get the console
+prompt >>>) the backplane only contains memory and the cpu-cards.
+The connector M9202 connects the two planes. I tried to boot the RL11 with
+one of my RL02's but i didn't work, i guess this is because i don't have a
+UNIBUS terminator. is it possible to make one myself ?  i could make a
+dual-sided PCB. or is it possible that the backplane itself is terminated
+(like small qbus-systems have)?
+
+>> "DRU-11 CA" parallel DMA.
+>
+>Looks like it's a parallel interface module. Are there two 40-pin BERG
+>headers on the board?
+yes there are two 40 pin connectors. so it's a interface, i guess i don't
+use this...
+
+i guess i might use the Ethernet cards, the SMD-diskcontroller and the
+RL11. does anyone have the pinout of the M7792/M7793 Ethernet-controller ?
+i also still have no idea what those cards might be:
+> Ramtek 508295/508297 (has a 50 pin connector)
+> Eikonix 821-015cs (handwritten: 785-283)(has two 50 pin connectors)
+
+if anyone has a spare unibus-controller for ciphertapes (pertec-interface),
+please contact me.
+
+-- regards, lothar.
+
+
+
+From chd_1 at nktelco.net  Fri Mar 22 11:22:17 2002
+From: chd_1 at nktelco.net (Chuck Dickman)
+Date: Thu, 21 Mar 2002 20:22:17 -0500
+Subject: [pups] MSCP Initialization
+Message-ID: <3C9A8749.AA90F74A@nktelco.net>
+
+I am trying to get a KFQSA to work with 2.11BSD on a pdp-11. It always 
+fails with an error in the SA register during the transition between 
+STEP 3 and STEP 4 of the initialization sequence.
+
+The SA register ends up with the value 101513. The error bit is set and 
+I think that the rest is an error code. I can't find a reference to 
+describe these error codes. 
+
+An RQDX3 and a CQD-223 in the same machine initialize fine. The KFQSA 
+initializes in an MVIII using NetBSD 1.5.
+
+I have looked over the initialization code from NetBSD, Ultrix-32, 
+4.4BSD, Ultrix-11, and 2.11BSD. The values being sent, are all very 
+similar. One difference is that the VAXen OS use polling during the 
+init, and the pdp-11 code uses interrupts.
+
+Any suggestions or comments about the MSCP 4 step init and how it works 
+on the KFQSA?
+
+A pointer to error code reference would be great too.
+
+-chuck
+
+
+From mjcrehan at earthlink.net  Sun Mar 24 05:43:43 2002
+From: mjcrehan at earthlink.net (Martin Crehan)
+Date: Sat, 23 Mar 2002 11:43:43 -0800
+Subject: [pups] Interesting PDP/Xenix History
+Message-ID: <5.1.0.14.0.20020323114245.0391c2b8@earthlink.net>
+
+ From a thread on Slashdot about Microsoft's Ancient History w/Unix
+http://slashdot.org/articles/02/03/23/1422243.shtml?tid=130
+
+  First Unix/Xenix (Score:1)
+by presearch on Saturday March 23, @01:58PM (#3213453)
+(User #214913 Info)
+
+In 1979 all that existed of Xenix was a silver brochure from Microsoft
+but there was no distribution. I wanted it to run it/sell it, seeing that
+you could do the timesharing thing just like back at college, except
+without a giant machine behind glass. I contacted the then tiny
+Microsoft, asked, begged, pleaded but they had nothing to sell.
+
+After multiple inquiries, they finally told me that they didn't have
+Xenix yet, but they expected it to arrive shortly. Arrive? From where?
+I was told, from Human Computing Resources (HCR) in Toronto.
+Ahh, interesting. So I called HCR somehow got them to commit
+to an early delivery. After a few weeks, and several dollars, the
+day came. MS wanted a PDP-11 and 68000 version and was
+only after the PDP-11 distro, I was 1 week ahead in the queue
+from Microsoft. So, as I was told from HCR, I had the first Xenix
+distribution in the US, ahead of Microsoft. I ran it on a LSI-11/23
+with insanely expensive 256Kb of memory and a giant 20Mb
+drive from Charles River Data Systems. It also had 2 eight inch
+floppies (errrtt, clunk, clunk, errrrttt), and 2 four port serial cards
+that each ran a VT100. The distro came on a 9-track tape (which
+I still have) and the take drive was this weird, front loading thing
+where you loaded the tape in the front like a big floppy and it
+auto threaded the tape (sometimes). As I remember, it seemed
+pretty fast, I'd start up stuff on all of the terminals, just to do it.
+Of course, it wasn't that fast but at the time....
+
+The Unix itself was a more or less pure Unix v7. The only thing,
+as I remember that made is Xenix, was the boot message and
+the captions on the man pages. There was no vi at that time,
+the editor of choice was "ed". It did have a nice /usr/games
+and I got a Zork for it from a friend.
+
+We ended up selling a few of the boxes. The company was
+called MSD. The only record of such is in a 1981 (Jan?) issue
+of Byte with our little ad in the back. And that's the story of the
+first commercial Unix sold in the US. 
+
+
+
+From wkt at minnie.tuhs.org  Sun Mar 24 14:26:30 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Sun, 24 Mar 2002 14:26:30 +1000 (EST)
+Subject: [pups] Interesting PDP/Xenix History
+In-Reply-To: <5.1.0.14.0.20020323114245.0391c2b8@earthlink.net> from Martin Crehan
+ at "Mar 23, 2002 11:43:43 am"
+Message-ID: <200203240426.g2O4QZV48436@minnie.tuhs.org>
+
+In article by Martin Crehan:
+>  From a thread on Slashdot about Microsoft's Ancient History w/Unix
+> http://slashdot.org/articles/02/03/23/1422243.shtml?tid=130
+> 
+>   First Unix/Xenix (Score:1)
+> by presearch on Saturday March 23, @01:58PM (#3213453)
+> (User #214913 Info)
+
+I've left a comment in the thread asking if they would
+donate a copy of the tape's contents to our Archive.
+
+	Warren
+
+
+From frank at wortner.com  Mon Mar 25 12:39:38 2002
+From: frank at wortner.com (Frank Wortner)
+Date: Sun, 24 Mar 2002 21:39:38 -0500
+Subject: [pups] Interesting PDP/Xenix History
+Message-ID: <B8C3F81A.44D7%frank@wortner.com>
+
+on 3/23/02 11:26 PM, Warren Toomey at wkt at minnie.tuhs.org wrote:
+
+> In article by Martin Crehan:
+>>  From a thread on Slashdot about Microsoft's Ancient History w/Unix
+>> http://slashdot.org/articles/02/03/23/1422243.shtml?tid=130
+>> 
+>>   First Unix/Xenix (Score:1)
+>> by presearch on Saturday March 23, @01:58PM (#3213453)
+>> (User #214913 Info)
+> 
+> I've left a comment in the thread asking if they would
+> donate a copy of the tape's contents to our Archive.
+
+I also remember running PDP/11 Xenix.  The article is basically correct,
+although Microsoft (or HCR) did add a working paging system that enabled
+simulation of split I&D on small PDP/11s like the 11/23, 11/34, and 11/40.
+I also remember that my copy of the installation document had been printed
+by Microsoft's PDP/10 (referred to as the "Microsoft Heating Plant" :-) in
+the printout).   I wish I still had the tape and that printout.  Sigh ...
+
+-- 
+Frank
+
+"I don't hold with all this washing.  This modern Behind-the-ears nonsense."
+* Eeyore, "Winnie the Pooh"
+
+
+
+From bqt at update.uu.se  Mon Mar 25 20:15:15 2002
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Mon, 25 Mar 2002 11:15:15 +0100 (CET)
+Subject: [pups] Interesting PDP/Xenix History
+In-Reply-To: <B8C3F81A.44D7%frank@wortner.com>
+Message-ID: <Pine.LNX.4.21.0203251113360.25840-100000@Tempo.Update.UU.SE>
+
+On Sun, 24 Mar 2002, Frank Wortner wrote:
+
+> on 3/23/02 11:26 PM, Warren Toomey at wkt at minnie.tuhs.org wrote:
+> 
+> > I've left a comment in the thread asking if they would
+> > donate a copy of the tape's contents to our Archive.
+> 
+> I also remember running PDP/11 Xenix.  The article is basically correct,
+> although Microsoft (or HCR) did add a working paging system that enabled
+> simulation of split I&D on small PDP/11s like the 11/23, 11/34, and 11/40.
+
+I don't understand how any paging system could simulate split I/D space?
+Do you remember any details?
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From rob at vetsystems.com  Mon Mar 25 20:38:20 2002
+From: rob at vetsystems.com (Robert Tillyard)
+Date: Mon, 25 Mar 2002 10:38:20 +0000
+Subject: [pups] Interesting PDP/Xenix History
+References: <B8C3F81A.44D7%frank@wortner.com>
+Message-ID: <3C9EFE1C.E58CB607@vetsystems.com>
+
+Frank Wortner wrote:
+> 
+> on 3/23/02 11:26 PM, Warren Toomey at wkt at minnie.tuhs.org wrote:
+> 
+> > In article by Martin Crehan:
+> >>  From a thread on Slashdot about Microsoft's Ancient History w/Unix
+> >> http://slashdot.org/articles/02/03/23/1422243.shtml?tid=130
+> >>
+> >>   First Unix/Xenix (Score:1)
+> >> by presearch on Saturday March 23, @01:58PM (#3213453)
+> >> (User #214913 Info)
+> >
+> > I've left a comment in the thread asking if they would
+> > donate a copy of the tape's contents to our Archive.
+> 
+> I also remember running PDP/11 Xenix.  The article is basically correct,
+> although Microsoft (or HCR) did add a working paging system that enabled
+> simulation of split I&D on small PDP/11s like the 11/23, 11/34, and 11/40.
+> I also remember that my copy of the installation document had been printed
+> by Microsoft's PDP/10 (referred to as the "Microsoft Heating Plant" :-) in
+> the printout).   I wish I still had the tape and that printout.  Sigh ...
+> 
+> --
+> Frank
+
+Would SCO->Caldera have copies of this? SCO did the Intel port of Xenix
+so they would probably have started with the PDP source. Would tapes be
+copyright to Microsoft?
+
+I doubt that they would release the source for the Intel version as it
+is still in use today although I don't think that SCO/Caldera will sell
+it anymore.
+
+Rob.
+
+
+From frank at wortner.com  Tue Mar 26 01:18:28 2002
+From: frank at wortner.com (Frank Wortner)
+Date: Mon, 25 Mar 2002 10:18:28 -0500
+Subject: [pups] Interesting PDP/Xenix History
+In-Reply-To: <Pine.LNX.4.21.0203251113360.25840-100000@Tempo.Update.UU.SE>
+Message-ID: <B8C4A9F3.44F9%frank@wortner.com>
+
+> I don't understand how any paging system could simulate split I/D space?
+> Do you remember any details?
+
+Sure.  (Perhaps I used an incorrect term,  but "paging" seemed reasonable.)
+The executing image consisted of 3 parts:  2 8K segments of instructions,
+and 1 48K segment of data/stack.  One of the 8K instruction segments was
+always resident in core and contained some program code and sort of jump
+table.  As the program executed,  it used the jump table to map appropriate
+8K sections of code into the other 8K instruction segment.  The 48K data
+segment was always resident in memory.  The net effect was a slow pseudo
+split I&D area with 56K instruction space and 48K data space.  For the most
+part,  this was adequate to run system utilities.
+
+The link edit scheme was fairly complicated.  You first had to build two
+executables:  a standard shared text executable,  and a standard split I&D
+executable.  Then you had to run a special program which took those two
+binaries as input and constructed the final image.  If any of your
+subroutines couldn't fit into 8K,  you were out of luck.  Fortunately,  the
+C compiler driver had a option to do this silliness automatically.
+
+I remember being frustrated by the fact that Microsoft had,  for reasons
+unknown,  forgotten to build /usr/bin/sort as one of these special binaries.
+Instead,  it was a conventional split I&D executable.  I had to convince a
+friend of mine whose institution had a source license to let me "borrow" the
+source to sort so I could build an executable that ran on a PDP 11/23.
+
+Robert Tillyard asked "Would SCO->Caldera have copies of this [PDP/11
+XENIX]?"  I remember asking that same question on this very list several
+years ago.  Warren's answer was essentially "No."  If I remember correctly,
+he said that they really had no archival material at all.
+
+I don't remember what happened to the copy I worked with.  It probably
+vanished into a dumpster when the company I worked for went "belly up."
+
+If anyone *does* still have a copy,  it would be great to see it in the PUPS
+Archives,  since it is probably the "rarest" PDP/11 Unix variant.
+-- 
+Frank
+
+"They haven't got Brains,  any of them,  only grey fluff that's blown into
+their heads by mistake,  and they don't Think."
+* Eeyore,  "The House at Pooh Corner"
+
+
+
+
+From MichaelDavidson at pacbell.net  Tue Mar 26 17:41:01 2002
+From: MichaelDavidson at pacbell.net (Michael Davidson)
+Date: Mon, 25 Mar 2002 23:41:01 -0800
+Subject: [pups] Interesting PDP/Xenix History
+References: <B8C4A9F3.44F9%frank@wortner.com>
+Message-ID: <3CA0260D.AADA0A9F@pacbell.net>
+
+Frank Wortner wrote:
+>  
+> The link edit scheme was fairly complicated.  You first had to build two
+> executables:  a standard shared text executable,  and a standard split I&D
+> executable.  Then you had to run a special program which took those two
+> binaries as input and constructed the final image.  If any of your
+> subroutines couldn't fit into 8K,  you were out of luck.  Fortunately,  the
+> C compiler driver had a option to do this silliness automatically.
+
+The program that did this was called "23fix" (since it "fixed" things
+so that they could be run on a non split i&d 11/23) 
+
+> Robert Tillyard asked "Would SCO->Caldera have copies of this [PDP/11
+> XENIX]?"  I remember asking that same question on this very list several
+> years ago.  Warren's answer was essentially "No."  If I remember correctly,
+> he said that they really had no archival material at all.
+
+Unfortunately all of the "official" SCO archives from this era went
+into some offsite storage facility about 10 years ago, never to be
+seen again. I expect that there are still a few copies around, but
+I don't personally have one.
+
+By the way, just to complicate things even more, SCO really didn't
+do much at all with XENIX/11 since they already had their own V7
+based UNIX, called "Dynix" (a name which was later sold to Sequent).
+Most of the actual XENIX/11 systems that I encountered were actually
+supplied by the "Software Products Group" of Logica (which was
+ultimately acquired by SCO back in 1986)
+
+
+From frank at wortner.com  Wed Mar 27 04:06:06 2002
+From: frank at wortner.com (Frank Wortner)
+Date: Tue, 26 Mar 2002 13:06:06 -0500
+Subject: [pups] Interesting PDP/Xenix History
+In-Reply-To: <3CA0260D.AADA0A9F@pacbell.net>
+Message-ID: <B8C622BE.466A%frank@wortner.com>
+
+on 3/26/02 2:41 AM, Michael Davidson at MichaelDavidson at pacbell.net wrote:
+
+> The program that did this was called "23fix"
+
+Yes!   Thank you for reminding me;  I had forgotten its name.
+
+> Unfortunately all of the "official" SCO archives from this era went
+> into some offsite storage facility about 10 years ago, never to be
+> seen again.
+
+Too bad.  It would be nice if a tape of XENIX/11 surfaced.  I'll look in my
+attic again,  but I doubt I have anything from that era.
+-- 
+Frank
+
+"Plez cnoke if an rnsr is not reqid."
+Sign on Owl's Door, "Winnie the Pooh"
+
+
+
+
+From wkt at minnie.tuhs.org  Wed Mar 27 09:41:11 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 27 Mar 2002 09:41:11 +1000 (EST)
+Subject: [pups] Interesting PDP/Xenix History
+In-Reply-To: <3C9EFE1C.E58CB607@vetsystems.com> from Robert Tillyard at "Mar
+ 25, 2002 10:38:20 am"
+Message-ID: <200203262341.g2QNfBr97659@minnie.tuhs.org>
+
+In article by Robert Tillyard:
+> Would SCO->Caldera have copies of this? SCO did the Intel port of Xenix
+> so they would probably have started with the PDP source. Would tapes be
+> copyright to Microsoft?
+> 
+> I doubt that they would release the source for the Intel version as it
+> is still in use today although I don't think that SCO/Caldera will sell
+> it anymore.
+> 
+> Rob.
+
+SCO/Caldera only have what we have given them from the Unix Archive.
+That's pretty ironical 8-)
+
+I assume that any tapes of Xenix we found would be (c) HCR or Microsoft.
+I don't even want to contemplate getting the release permissions :-(
+
+	Warren
+
+
+From m_d at pacbell.net  Wed Mar 27 10:47:33 2002
+From: m_d at pacbell.net (Michael Davidson)
+Date: Tue, 26 Mar 2002 16:47:33 -0800
+Subject: [pups] Interesting PDP/Xenix History
+References: <200203262341.g2QNfBr97659@minnie.tuhs.org>
+Message-ID: <3CA116A5.59F6B603@pacbell.net>
+
+Warren Toomey wrote:
+> 
+> In article by Robert Tillyard:
+> > Would SCO->Caldera have copies of this? SCO did the Intel port of Xenix
+> > so they would probably have started with the PDP source. Would tapes be
+> > copyright to Microsoft?
+
+As I mentioned in another message, I believe that SCO really had
+very little to do with XENIX/11, because they already had their
+own commercial version of V7, called Dynix.
+
+[ when I arrived at SCO in 1986 there was what appeared to
+  be a pretty complete archive of everything the company had
+  ever done in the "media library" - there were lots of Dynix
+  and V7 tapes in there, but I can't recall ever actually seeing
+  one labelled XENIX/11 ]
+
+Most of the XENIX/11 systems that I am aware of actually came
+from Logica.
+
+There were several variants of the "Intel" port of XENIX
+which supported the 8086, the 80286 and, ultimately, the 80386.
+
+There were also a number of OEM versions, notably one from IBM 
+(for the PC/AT) and several from Altos for machines such as the
+Altos 586 (8086 processor) and Altos 986 (80286 processor).
+
+Most of the work on these systems was actually done by Microsoft.
+
+SCO's contribution was in three main areas:
+
+- device drivers
+- the "no MMU" port for vanilla 8086 / 8088 systems such as the PC/XT
+- packaging and creation of a "shrinkwrapped" product which sold
+  through distribution channels
+
+
+From lars at fwn.rug.nl  Thu Mar 28 09:24:11 2002
+From: lars at fwn.rug.nl (Lars Buitinck)
+Date: Thu, 28 Mar 2002 00:24:11 +0100 (CET)
+Subject: [pups] Interesting PDP/Xenix History
+In-Reply-To: <3CA116A5.59F6B603@pacbell.net>
+References: <200203262341.g2QNfBr97659@minnie.tuhs.org> <3CA116A5.59F6B603@pacbell.net>
+Message-ID: <1017271451.3ca2549b6692c@w3.fwn.rug.nl>
+
+I'm getting really confused with all these companies.  If I understand
+correctly...
+
+AT&T/Western Electric sold UNIX rights to Microsoft.
+Microsoft had HCR develop XENIX from V7.
+SCO licensed XENIX from Microsoft.
+SCO then subsubsublicensed XENIX to various vendors.
+
+Please correct me.  I must be wrong.
+
+(What happened to our MERT discussion anyway? :-)
+
+Long & winding PS.: I read this really cute book about Linux at my local
+library some time ago.  It discussed UNIX, Linux, their relation, and the
+current state of affairs when it was written -- in 1994.  The book
+started out with an etymology of XENIX, which would have been derived
+from Dutch "'k Zie niks," meaning "I don't see a thing" -- the first
+thing Dutch users uttered when XENIX booted.
+Last year, I talked to a fellow member of the HCC (Hobby Computer Club)
+UNIX gg (gebruikersgroep, user group) who remembered his worst
+experience with UNIX -- having to use XENIX.  He was still shocked by its
+Microsoftian performance.
+
+
+From MichaelDavidson at pacbell.net  Thu Mar 28 09:58:13 2002
+From: MichaelDavidson at pacbell.net (Michael Davidson)
+Date: Wed, 27 Mar 2002 15:58:13 -0800
+Subject: [pups] Interesting PDP/Xenix History
+References: <200203262341.g2QNfBr97659@minnie.tuhs.org>
+ <3CA116A5.59F6B603@pacbell.net> <1017271451.3ca2549b6692c@w3.fwn.rug.nl>
+Message-ID: <3CA25C95.4050808@pacbell.net>
+
+Lars Buitinck wrote:
+
+>I'm getting really confused with all these companies.  If I understand
+>correctly...
+>
+It  was all very complicated ...
+... much too complicated to describe accurately in a short piece of email.
+
+One thing to understand is that the companies that you mention (and, of
+course, many others, all had ongoing relationships with each other that
+often lasted for a period of several years, so licenses and technology
+transfers weren't usually just "one-time" events.
+
+I have added a few comments below which may help to add to the confusion.
+
+>
+>
+>AT&T/Western Electric sold UNIX rights to Microsoft.
+>
+Not exactly. The only time that UNIX *rights* were really *sold* or 
+transferred
+were with the various changes in ownership of the group which developed
+UNIX. ie the USL -> Novell -> SCO -> Caldera  series of transactions.
+
+Microsoft was just another licensee of various versions of UNIX, starting
+with V7 and ending up with System V Release 3.2
+
+>
+>Microsoft had HCR develop XENIX from V7.
+>
+Once again it isn't as simple as that - I'm not sure of the exact 
+sequence of
+events - HCR (which was acquired by SCO in the early 1990's)  was yet
+another independent licensee of various versions of UNIX and had done
+work on both V6 and V7. Perhaps Mike Tilson can shed some more
+light on exactly what went on back in those days - I will ask him when I
+get the chance.
+
+>
+>SCO licensed XENIX from Microsoft.
+>
+Yes.
+
+>
+>SCO then subsubsublicensed XENIX to various vendors.
+>
+Yes, although SCO's main business was in selling shrinkwrapped OS
+products for standard Intel hardware - SCO did sublicense the code
+to a few people - mainly large OEMs.
+
+
+
+
+From grog at lemis.com  Thu Mar 28 11:28:08 2002
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Thu, 28 Mar 2002 11:58:08 +1030
+Subject: [pups] Interesting PDP/Xenix History
+In-Reply-To: <1017271451.3ca2549b6692c@w3.fwn.rug.nl>
+References: <200203262341.g2QNfBr97659@minnie.tuhs.org> <3CA116A5.59F6B603@pacbell.net> <1017271451.3ca2549b6692c@w3.fwn.rug.nl>
+Message-ID: <20020328115808.C6079@wantadilla.lemis.com>
+
+On Thursday, 28 March 2002 at  0:24:11 +0100, Lars Buitinck wrote:
+> I'm getting really confused with all these companies.  If I understand
+> correctly...
+>
+> AT&T/Western Electric sold UNIX rights to Microsoft.
+> Microsoft had HCR develop XENIX from V7.
+> SCO licensed XENIX from Microsoft.
+> SCO then subsubsublicensed XENIX to various vendors.
+>
+> Please correct me.  I must be wrong.
+>
+> (What happened to our MERT discussion anyway? :-)
+>
+> Long & winding PS.: I read this really cute book about Linux at my local
+> library some time ago.  It discussed UNIX, Linux, their relation, and the
+> current state of affairs when it was written -- in 1994.  The book
+> started out with an etymology of XENIX, which would have been derived
+> from Dutch "'k Zie niks," meaning "I don't see a thing" -- the first
+> thing Dutch users uttered when XENIX booted.
+
+Note that in English, the X is usually pronounced like an S ("zie
+niks").  Siemens made a pun on this with their Sinix product; "Sinix"
+in German is pronounced the same way as "XENIX" in English :-)
+
+> Last year, I talked to a fellow member of the HCC (Hobby Computer
+> Club) UNIX gg (gebruikersgroep, user group) who remembered his worst
+> experience with UNIX -- having to use XENIX.  He was still shocked
+> by its Microsoftian performance.
+
+I've used XENIX/386 in the early 90s.  The development tools were
+terrible, but I found somebody who had ported the GNU tools to XENIX
+(doing it yourself would rob you of your sanity).  After that, it
+wasn't too bad, but it was a pretty limited system.  I ended up
+building a cross-build environment on UnixWare.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+
+From peter.jeremy at alcatel.com.au  Thu Mar 28 12:33:20 2002
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Thu, 28 Mar 2002 13:33:20 +1100
+Subject: [pups] Interesting PDP/Xenix History
+In-Reply-To: <20020328115808.C6079@wantadilla.lemis.com>; from grog@lemis.com
+ on Thu, Mar 28, 2002 at 11:58:08AM +1030
+References: <200203262341.g2QNfBr97659@minnie.tuhs.org>
+ <3CA116A5.59F6B603@pacbell.net> <1017271451.3ca2549b6692c@w3.fwn.rug.nl>
+ <20020328115808.C6079@wantadilla.lemis.com>
+Message-ID: <20020328133320.K78085@gsmx07.alcatel.com.au>
+
+On 2002-Mar-28 11:58:08 +1030, Greg 'groggy' Lehey <grog at lemis.com> wrote:
+>I've used XENIX/386 in the early 90s.
+
+I recall using XENIX/286 in the mid 80's.  We were porting some
+software from Micro/RSX on a PDP-11/03.  The AT-class box (an ITT
+XTRA/XL) was significantly faster.  And later, having 8 developers on
+one 8MHz 80286 was, err, interesting.  I also remember having it panic
+when it tried to fork a large (~2MB) process.
+
+>  The development tools were terrible,
+
+And unbundled.  I don't recall too many problems with the C compiler,
+but we were porting Pascal - and the Pascal compiler was atrocious.
+The object code (and whether a piece of code would compile at all)
+seemed to depend on whim of the compiler.  Obviously whoever wrote it
+hadn't grasped the concepts of initialising variables, making arrays
+large enough to fit their contents or only using a single piece of
+memory to store one thing at a time :-).
+
+> but I found somebody who had ported the GNU tools to XENIX
+>(doing it yourself would rob you of your sanity).
+
+I don't think you could get any of the GNU tools to run on a 286 so I
+was mostly limited to the SCO tools.  I recall doctoring MicroEmacs so
+that it was all small model but allocated the buffers in "far" memory
+- that gave me the ability to edit large files with acceptable
+performance.
+
+Peter
+
+
+From ardaulas at yahoo.com  Thu Mar 28 17:23:27 2002
+From: ardaulas at yahoo.com (=?iso-8859-1?q?Arda=20Ulas=20Unlu?=)
+Date: Thu, 28 Mar 2002 08:23:27 +0100 (CET)
+Subject: [pups] Linux Question
+In-Reply-To: <200203270206.g2R26vm99577@minnie.tuhs.org>
+Message-ID: <20020328072327.31718.qmail@web11103.mail.yahoo.com>
+
+
+Hello,
+
+I'm writing a new networking protocol into the Linux kernel. I have to find the place in which the multiplexing of the incoming packets are done and sent to the initial handling functions of the appropriate protocols, according to the protocol types (x25,ax25,ip,appletalk,etc...). I think net_rx_action function does this. (version 2.4.8). W
+
+Why does it searches two lists, why 2 lists (ptype_all-ptype_base)?
+
+Second, what is the mission of dev_add_pack dev_remove pack functions in net/core/dev.h. I've heard they deal with protocols. But I am not sure.
+
+Anyone interested in or know any person who knows about???
+
+Arda...
+
+
+
+---------------------------------
+Yahoo! Mail -- Une adresse @yahoo.fr gratuite et en français !
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20020328/aa1457be/attachment.html>
+
+From asmodai at wxs.nl  Thu Mar 28 18:12:08 2002
+From: asmodai at wxs.nl (Jeroen Ruigrok/asmodai)
+Date: Thu, 28 Mar 2002 09:12:08 +0100
+Subject: [pups] Linux Question
+In-Reply-To: <20020328072327.31718.qmail@web11103.mail.yahoo.com>
+References: <200203270206.g2R26vm99577@minnie.tuhs.org> <20020328072327.31718.qmail@web11103.mail.yahoo.com>
+Message-ID: <20020328081208.GH13206@daemon.ninth-circle.org>
+
+[Explicitely CC:'d to the list in order to stop overwhelming responses to
+OP's email and to inform other of the existance of the list.  Apologies for
+the bad netiquette of this.]
+
+-On [20020328 08:45], Arda Ulas Unlu (ardaulas at yahoo.com) wrote:
+
+[snip Linux specific networking question]
+
+>Anyone interested in or know any person who knows about???
+
+You are asking the wrong list.
+
+This is a discussion list about Unix from a historical pespective.
+
+FYI: use the Linux-netdev list from oss.sgi.com, which is all about
+networking development on Linux.
+
+HTH,
+
+-- 
+Jeroen Ruigrok van der Werven / asmodai / Kita no Mono
+asmodai@[wxs.nl|xmach.org], finger asmodai at ninth-circle.org
+http://www.softweyr.com/asmodai/ | http://www.[tendra|xmach].org/
+For dust thou art, and unto dust shalt thou return.
+
+
+From lars at fwn.rug.nl  Sat Mar 30 07:36:43 2002
+From: lars at fwn.rug.nl (Lars Buitinck)
+Date: Fri, 29 Mar 2002 22:36:43 +0100 (CET)
+Subject: [pups] Interesting PDP/Xenix History
+In-Reply-To: <3CA25C95.4050808@pacbell.net>
+References: <200203262341.g2QNfBr97659@minnie.tuhs.org> <3CA116A5.59F6B603@pacbell.net> <1017271451.3ca2549b6692c@w3.fwn.rug.nl> <3CA25C95.4050808@pacbell.net>
+Message-ID: <1017437803.3ca4de6b125f6@w3.fwn.rug.nl>
+
+Thus spake Michael Davidson <MichaelDavidson at pacbell.net>:
+> It  was all very complicated ...
+> ... much too complicated to describe accurately in a short piece of
+> email.
+
+thanks for trying.  it helped!
+
+> >AT&T/Western Electric sold UNIX rights to Microsoft.
+> >
+> Not exactly. The only time that UNIX *rights* were really *sold* or 
+> transferred
+> were with the various changes in ownership of the group which developed
+> UNIX. ie the USL -> Novell -> SCO -> Caldera  series of transactions.
+
+I meant licensed.  sorry.
+
+> >SCO then subsubsublicensed XENIX to various vendors.
+> >
+> Yes, although SCO's main business was in selling shrinkwrapped OS
+> products for standard Intel hardware - SCO did sublicense the code
+> to a few people - mainly large OEMs.
+
+Tandy, right?
+
+
+this brings up memories of my first experiences in computing...
+being +-6 years old and impressed by my cousin's 286/20 (we had a /12)
+
+
+From lars at fwn.rug.nl  Sat Mar 30 21:03:28 2002
+From: lars at fwn.rug.nl (Lars Buitinck)
+Date: Sat, 30 Mar 2002 12:03:28 +0100 (CET)
+Subject: [pups] Interesting PDP/Xenix History
+In-Reply-To: <20020328115808.C6079@wantadilla.lemis.com>
+References: <200203262341.g2QNfBr97659@minnie.tuhs.org> <3CA116A5.59F6B603@pacbell.net> <1017271451.3ca2549b6692c@w3.fwn.rug.nl> <20020328115808.C6079@wantadilla.lemis.com>
+Message-ID: <1017486208.3ca59b80ccd80@w3.fwn.rug.nl>
+
+Thus spake Greg 'groggy' Lehey <grog at lemis.com>:
+> 
+> Note that in English, the X is usually pronounced like an S ("zie
+> niks").  Siemens made a pun on this with their Sinix product; "Sinix"
+> in German is pronounced the same way as "XENIX" in English :-)
+> 
+
+Siemens' computer division is (or was) called Nixdorf...
+I always read Sinix as SIemens NIXdorf
+
+
+From grog at lemis.com  Sun Mar 31 09:38:46 2002
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Sun, 31 Mar 2002 09:08:46 +0930
+Subject: [pups] Interesting PDP/Xenix History
+In-Reply-To: <1017486208.3ca59b80ccd80@w3.fwn.rug.nl>
+References: <200203262341.g2QNfBr97659@minnie.tuhs.org> <3CA116A5.59F6B603@pacbell.net> <1017271451.3ca2549b6692c@w3.fwn.rug.nl> <20020328115808.C6079@wantadilla.lemis.com> <1017486208.3ca59b80ccd80@w3.fwn.rug.nl>
+Message-ID: <20020331090846.Z62150@wantadilla.lemis.com>
+
+On Saturday, 30 March 2002 at 12:03:28 +0100, Lars Buitinck wrote:
+> Thus spake Greg 'groggy' Lehey <grog at lemis.com>:
+>>
+>> Note that in English, the X is usually pronounced like an S ("zie
+>> niks").  Siemens made a pun on this with their Sinix product; "Sinix"
+>> in German is pronounced the same way as "XENIX" in English :-)
+>
+> Siemens' computer division is (or was) called Nixdorf...
+
+No, Siemens and Nixdorf merged in the early 90s.
+
+> I always read Sinix as SIemens NIXdorf
+
+Interesting derivation, but Sinix has been around since before Siemens
+and Nixdorf merged.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+
+
+From steve at smdconsulting.com  Fri Mar  1 02:34:25 2002
+From: steve at smdconsulting.com (Davidson, Steve)
+Date: Thu, 28 Feb 2002 11:34:25 -0500
+Subject: [pups] Venix
+Message-ID: <51E99925D01CD511B2FA00A0244EE8EE03EC83@SMDCONSULTING01>
+
+Warren,
+
+Does the archive contain any Venix images that are not in "tdo" format?  I
+have been unsuccessful in creating the floppies using that method.  If I
+could get an image from "dd", I could use my VAX or PDP to create images for
+my Pro-380.
+
+Thanks,
+
+			-Steve Davidson
+
+
+
+From cyrille.lefevre at laposte.net  Sun Mar  3 22:51:25 2002
+From: cyrille.lefevre at laposte.net (Cyrille Lefevre)
+Date: Sun, 3 Mar 2002 13:51:25 +0100 (CET)
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <200201301952.g0UJq0E39966@ducky.net>
+Message-ID: <200203031251.g23CpQI17595@gits.dyndns.org>
+
+Mike Haertel wrote:
+> >Anyhow I have started gathering the tools (Watcom C compiler now
+> >open source and free!  www.openwatcom.org)
+> 
+> They have announced that it *will be* open source and free,
+> but so far as far as I can tell there is nothing available
+> at openwatcom.org except a binary-only patch to upgrade 
+> the last commercial version 11 to 11.0c.
+> 
+> So, it isn't yet.  Right now it's just vaporware.
+
+as of march 2002, try the download page to get the "binary" compiler.
+
+	http://www.openwatcom.com/download.html
+
+Cyrille.
+-- 
+Cyrille Lefevre                 mailto:cyrille.lefevre at laposte.net
+
+
+From peter.jeremy at alcatel.com.au  Mon Mar  4 06:14:48 2002
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Mon, 04 Mar 2002 07:14:48 +1100
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <200203031251.g23CpQI17595@gits.dyndns.org>; from
+ cyrille.lefevre@laposte.net on Sun, Mar 03, 2002 at 01:51:25PM +0100
+References: <200201301952.g0UJq0E39966@ducky.net>
+ <200203031251.g23CpQI17595@gits.dyndns.org>
+Message-ID: <20020304071448.P78085@gsmx07.alcatel.com.au>
+
+On 2002-Mar-03 13:51:25 +0100, Cyrille Lefevre <cyrille.lefevre at laposte.net> wrote:
+>Mike Haertel wrote:
+>> >Anyhow I have started gathering the tools (Watcom C compiler now
+>> >open source and free!  www.openwatcom.org)
+>> 
+>> They have announced that it *will be* open source and free,
+>> but so far as far as I can tell there is nothing available
+>> at openwatcom.org except a binary-only patch to upgrade 
+>> the last commercial version 11 to 11.0c.
+>> 
+>> So, it isn't yet.  Right now it's just vaporware.
+>
+>as of march 2002, try the download page to get the "binary" compiler.
+>
+>	http://www.openwatcom.com/download.html
+
+For several years now, Sybase has been announcing that it will release
+the source code to its C/C++ and FORTRAN compilers.  This is _still_
+vaporware.  Their latest press release suggests that they have decided
+on a License - but won't even make that public at present.
+
+You can download a Windoze executable, but that is not of much use for
+Unix.  And the size of the download suggests that there will need to
+be a fair bit of work to make it run natively in a 16-bit environment.
+
+At this time, the only open-source 16-bit x86 C compiler I know of is
+Bruce Evans' C compiler (bcc).
+
+Peter
+
+
+From shoppa at trailing-edge.com  Mon Mar  4 06:46:23 2002
+From: shoppa at trailing-edge.com (Tim Shoppa)
+Date: Sun, 3 Mar 2002 15:46:23 -0500 (EST)
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <20020304071448.P78085@gsmx07.alcatel.com.au> from "Peter Jeremy" at Mar 04, 2002 07:14:48 AM
+Message-ID: <20020303204623.C9DF518336@mudd.trailing-edge.com>
+
+> At this time, the only open-source 16-bit x86 C compiler I know of is
+> Bruce Evans' C compiler (bcc).
+
+Don't forget James Hendrix's "Small C", which has been around since
+what feels like forever.  80x86 and many other ports are available.
+
+  http://www.ddjembedded.com/languages/smallc/
+
+The sources are available and widely distributed, though the license
+is certainly not a carbon-copy of the GPL (i.e. some will call it
+"not open" for one reason or another).
+
+Tim.
+
+
+From peter.jeremy at alcatel.com.au  Mon Mar  4 07:07:00 2002
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Mon, 04 Mar 2002 08:07:00 +1100
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <20020303204623.C9DF518336@mudd.trailing-edge.com>; from
+ shoppa@trailing-edge.com on Sun, Mar 03, 2002 at 03:46:23PM -0500
+References: <20020304071448.P78085@gsmx07.alcatel.com.au>
+ <20020303204623.C9DF518336@mudd.trailing-edge.com>
+Message-ID: <20020304080659.R78085@gsmx07.alcatel.com.au>
+
+On 2002-Mar-03 15:46:23 -0500, Tim Shoppa <shoppa at trailing-edge.com> wrote:
+>> At this time, the only open-source 16-bit x86 C compiler I know of is
+>> Bruce Evans' C compiler (bcc).
+>
+>Don't forget James Hendrix's "Small C", which has been around since
+>what feels like forever.  80x86 and many other ports are available.
+>
+>  http://www.ddjembedded.com/languages/smallc/
+
+I remember when that came out...  I hadn't considered it because as I
+recall, it was a fairly small subset - I though it was too small to be
+useful for Unix porting.  Looking at v2.2 for x86, it doesn't support
+floating point, short, long, unsigned, sizeof, casts, non-automatic
+locals, arrays of pointers, structs or unions.  This makes it too
+restrictive for porting Unix.
+
+Peter
+
+
+From asbesto at freaknet.org  Wed Mar  6 05:26:28 2002
+From: asbesto at freaknet.org (Asbesto Molesto)
+Date: Tue, 5 Mar 2002 19:26:28 +0000 (UTC)
+Subject: [TUHS] pdp11/34 in catania, italy
+Message-ID: <Pine.LNX.4.20.0203051925530.19982-100000@medialab.freaknet.org>
+
+hi all, here's asbesto from FreakNet Medialab in Catania, Italy.
+
+our pdp11/34 is still alive !!!
+
+the local mayor and the municipalty shutted down electric power in our
+old place. now we have a new place for our computers (here in italy
+we have a really bad politic situation so the municipalty hate us)
+
+the pdp11 was so cutted in parts and mounted again, and it seem
+working ... only a weird sound come from the rl01 disk when working. 
+
+it SEEM the sound of the disk head "touching" the disk .. maybe ? 
+
+the disk is ok and a copy test of all files is working. 
+
+any idea ? :)
+
+p.s. soon i will ask HELP to install any kind of UNIX on this pdp11/34:
+we have no tape. only 8" floppy disks and the rl01 (and, of course, serial
+port for terminal & printer)
+
+sorry for my bad english, i'm very tired now
+
+to know more about us, http://www.freaknet.org
+
+gabriele "asbesto"
+
+
+
+
+From AErickson at resumeauthor.com  Wed Mar 13 14:57:08 2002
+From: AErickson at resumeauthor.com (Adam Erickson)
+Date: Tue, 12 Mar 2002 23:57:08 -0500
+Subject: [TUHS] Career Oportunities
+Message-ID: <200203130459.g2D4x9x08598@chmls20.mediaone.net>
+
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20020312/2e751af4/attachment.html>
+
+From asbesto at freaknet.org  Wed Mar 20 22:50:30 2002
+From: asbesto at freaknet.org (asbesto)
+Date: Wed, 20 Mar 2002 12:50:30 +0000
+Subject: [TUHS] rsync problem ?
+In-Reply-To: <200203091437.g29EbKm68144@minnie.tuhs.org>; from tuhs-request@minnie.tuhs.org on Sun, Mar 10, 2002 at 12:37:20AM +1000
+References: <200203091437.g29EbKm68144@minnie.tuhs.org>
+Message-ID: <20020320125029.A14636@freaknet.org>
+
+hi,
+i never used rsync, so sorry for my question, but i have some
+problems ...
+
+1) i can't find any CD image in the "Mirroring" directory
+
+2) launching
+
+rsync -avuz --exclude 'CD_IMAGE.*' minnie.tuhs.org::UA_Mirroring  Mirroring
+
+as explained in http://www.tuhs.org/mirroring.html give me no result ...
+no files nor dir. are written and the rsync exit without any kind of
+error ...
+
+what's wrong ? 
+
+we at freaknet medialab really want to mirror the site and distribute
+the 2 CD package :)
+
+tnx all, 
+
+-- 
+[asbesto :  freaknet medialab :  GPG key available on keyservers  ]
+[MAIL ATTACH SPAM HTML WORD and msgs larger than 150K >/dev/null  ]
+[http://www.freaknet.org/~asbesto : http://kyuzz.org/radiocybernet]
+
+

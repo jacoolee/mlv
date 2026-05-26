@@ -1,0 +1,847 @@
+From wkt at tuhs.org  Tue Jun 28 10:11:40 2011
+From: wkt at tuhs.org (Warren Toomey)
+Date: Tue, 28 Jun 2011 10:11:40 +1000
+Subject: [TUHS] Ideas for a Unix paper I'm writing
+Message-ID: <20110628001140.GA23711@minnie.tuhs.org>
+
+All, IEEE Spectrum have asked me to write a paper on Unix to celebrate the
+40th anniversary of the release of 1st Edition in November 1971. I'm after
+ideas & suggestions!
+
+I think my general thrust is that Unix is an elegant design, and the
+design elements are still relevant today. The implementation is mostly
+irrelevant (consider how much the code has changed from assembly -> C,
+from the simple data structures in V7 through to current BSD), but the
+original API is classic. Note that about 28 of the 1st Ed syscalls are
+retained in current BSDs and Linux, and with the same syscall numbers.
+
+I'm having some trouble thinking of the right way to explain what is
+an elegant design at the OS/syscall level, so any inspirations/ideas
+would be most welcome. I might highlight a couple of syscall groups:
+open/close/read/write, and fork/exec/exit/wait.
+
+If you have any references/URLs you think I should look at, please
+pass them on to me.
+
+I'm also trying to chase down some quotes; my memory seems to be failing me
+but I'm sure I've seen these somewhere:
+
+ - in a paper, I think by Thompson & Ritchie, where they assert that the
+   kernel should provide no more than the most minimal services to the
+   userland programs. I thought this was the CACM paper, but I can't spot
+   this bit. Maybe it's in Thompson's preface to the Lions Commentary,
+   of which my copy is elsewere at present.
+
+ - I'm sure I remember someome (Kernighan?) say that Ritchie encouraged
+   them to espouse the use of processes as context switching was cheap,
+   but later measurements showed that in fact it wasn't that cheap in
+   the early versions of Unix.
+
+Anyway, if you can think of good ideas/references about the elegance of
+Unix, especially from the design perspective, I would much appreciate them.
+
+Cheers,
+	Warren 
+
+
+From downing.nick+tuhs at gmail.com  Tue Jun 28 10:32:58 2011
+From: downing.nick+tuhs at gmail.com (Nick Downing)
+Date: Tue, 28 Jun 2011 10:32:58 +1000
+Subject: [TUHS] Ideas for a Unix paper I'm writing
+In-Reply-To: <20110628001140.GA23711@minnie.tuhs.org>
+References: <20110628001140.GA23711@minnie.tuhs.org>
+Message-ID: <BANLkTinJQfffbvMiq8JakmsLv1GqMUrLJQ@mail.gmail.com>
+
+I think you definitely need to say that the idea of file descriptors
+in the unix API anticipated the current style (fad?) of
+object-oriented programming by about 20 years, languages like
+Smalltalk/C++, more recently java/ruby, use opaque objects with
+polymorphism to provide services, which is exactly what unix does, an
+object hierarchy would look something like:
+- read/write capable (file descriptor) objects
+  - seek capable (storage) objects
+    - truncate capable (file) objects
+    - non truncate capable (block) objects
+  - non seek capable (stream) objects
+    - pipes
+    - sockets
+      - stream oriented sockets
+      - datagram oriented sockets
+    - terminals
+For terminals, the extension to the API over the basic read/write
+capable object is via an ioctl, whereas for sockets it is via its own
+API (connect/accept/listen/etc), but conceptually there is no reason
+why read/write/lseek/etc couldn't be ioctls as well, since the mapping
+from userspace calls (such as lseek or stty/gtty) to syscalls is up to
+the standard library.  pipe() is a java-style constructor, whereas
+socket() or open() is conceptually a static factory as it can return
+different types of objects depending on the request, the constructors
+for the corresponding objects are conceptually private constructors.
+An errno is basically a checked exception that can be thrown, each
+syscall effectively has a java style "throws ..." clause and well
+designed userland code catches or rethrows these.
+cheers, Nick
+
+On Tue, Jun 28, 2011 at 10:11 AM, Warren Toomey <wkt at tuhs.org> wrote:
+> All, IEEE Spectrum have asked me to write a paper on Unix to celebrate the
+> 40th anniversary of the release of 1st Edition in November 1971. I'm after
+> ideas & suggestions!
+>
+> I think my general thrust is that Unix is an elegant design, and the
+> design elements are still relevant today. The implementation is mostly
+> irrelevant (consider how much the code has changed from assembly -> C,
+> from the simple data structures in V7 through to current BSD), but the
+> original API is classic. Note that about 28 of the 1st Ed syscalls are
+> retained in current BSDs and Linux, and with the same syscall numbers.
+>
+> I'm having some trouble thinking of the right way to explain what is
+> an elegant design at the OS/syscall level, so any inspirations/ideas
+> would be most welcome. I might highlight a couple of syscall groups:
+> open/close/read/write, and fork/exec/exit/wait.
+>
+> If you have any references/URLs you think I should look at, please
+> pass them on to me.
+>
+> I'm also trying to chase down some quotes; my memory seems to be failing me
+> but I'm sure I've seen these somewhere:
+>
+>  - in a paper, I think by Thompson & Ritchie, where they assert that the
+>   kernel should provide no more than the most minimal services to the
+>   userland programs. I thought this was the CACM paper, but I can't spot
+>   this bit. Maybe it's in Thompson's preface to the Lions Commentary,
+>   of which my copy is elsewere at present.
+>
+>  - I'm sure I remember someome (Kernighan?) say that Ritchie encouraged
+>   them to espouse the use of processes as context switching was cheap,
+>   but later measurements showed that in fact it wasn't that cheap in
+>   the early versions of Unix.
+>
+> Anyway, if you can think of good ideas/references about the elegance of
+> Unix, especially from the design perspective, I would much appreciate them.
+>
+> Cheers,
+>        Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+From lm at bitmover.com  Tue Jun 28 10:26:31 2011
+From: lm at bitmover.com (Larry McVoy)
+Date: Mon, 27 Jun 2011 17:26:31 -0700
+Subject: [TUHS] Ideas for a Unix paper I'm writing
+In-Reply-To: <20110628001140.GA23711@minnie.tuhs.org>
+References: <20110628001140.GA23711@minnie.tuhs.org>
+Message-ID: <20110628002631.GC26343@bitmover.com>
+
+On Tue, Jun 28, 2011 at 10:11:40AM +1000, Warren Toomey wrote:
+> Anyway, if you can think of good ideas/references about the elegance of
+> Unix, especially from the design perspective, I would much appreciate them.
+
+This may just be me getting old or something, but here's a story that lead
+to an aha! moment for me.  Long winded, so let me go get a glass of wine...
+
+I was an undergrad and a grad student in CS at the University of Wisconsin-
+Madison, a school that contributed a bit to Unix dev, especially 4BSD series.
+
+It took me a while but eventually I got a login on an 11/750 named slovax
+which held the sources.  As a nerd, I spent a lot of time just reading the
+sources.  I really didn't know shit, I had read K&R so I could do hello
+world as good as the next guy but I was trying to move on.  I had not
+yet read Rochkinds book, that would have helped but it came later (for
+me at least).
+
+I did not just read the kernel, I read libc, wandered through all of that
+stuff.  Had some aha's when I say varargs, but the big one for me was
+popen().  I was so naive it just had never occurred to me that a library
+call would create a new process to do your bidding.  I didn't have a 
+mental model as to how it should work, I just knew popen() did something,
+but when I read the (small) amount of could I was stunned.  To me it 
+was really cool, it changed how I thought about programming.  popen()
+is a pretty elegant combining of the kernel interfaces to make a very
+useful interface.
+
+I have to believe that others here had similar (and better) aha moments,
+maybe a series of those would make a nice appendix or something?
+
+Good luck with the paper, writing is hard, if you run out of reviewers
+I cna try and find some time to make comments if that helps.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From tim.newsham at gmail.com  Tue Jun 28 11:00:57 2011
+From: tim.newsham at gmail.com (Tim Newsham)
+Date: Mon, 27 Jun 2011 15:00:57 -1000
+Subject: [TUHS] Ideas for a Unix paper I'm writing
+In-Reply-To: <20110628001140.GA23711@minnie.tuhs.org>
+References: <20110628001140.GA23711@minnie.tuhs.org>
+Message-ID: <BANLkTi=buK8s==0rZKDBXPEqQac08+Ek5Q@mail.gmail.com>
+
+my two cents:
+
+ - system unity - the system was designed from the ground up,
+   including design tools such as assembler and language
+   and compiler, by a small group of people.  This allowed
+   the designers to get great unity.
+ - Utility - the designers used the system, and made sure the system
+   they built was useful for them.  This ensured that it was also useful
+   for other people like them, and it turns out for lots of other people
+   less like them, too.
+ - simplicity - perhaps a result of the small team of people, the system
+   was understandable.  The designers sometimes chose simplicity over
+   generality or even elegance (ie. EAGAIN, making callers job harder, but
+   simplifying kernel).  I think there's a great deal of pragmatism here that
+   worked well with the unity.  They knew the whole system and were able
+   to see where to give a little and where to take a little.
+ - Open design - the fact that unix came with readable and understandable
+   documentation and source code helped it immensely!  Users were free
+   to take the system, study it, change it and tailor it to their needs.  Others
+   were able to imitate and extend (for better or worse).
+
+and like any popular system, a dash of good luck.
+
+Tim
+
+On Mon, Jun 27, 2011 at 2:11 PM, Warren Toomey <wkt at tuhs.org> wrote:
+> All, IEEE Spectrum have asked me to write a paper on Unix to celebrate the
+> 40th anniversary of the release of 1st Edition in November 1971. I'm after
+> ideas & suggestions!
+>
+> I think my general thrust is that Unix is an elegant design, and the
+> design elements are still relevant today. The implementation is mostly
+> irrelevant (consider how much the code has changed from assembly -> C,
+> from the simple data structures in V7 through to current BSD), but the
+> original API is classic. Note that about 28 of the 1st Ed syscalls are
+> retained in current BSDs and Linux, and with the same syscall numbers.
+>
+> I'm having some trouble thinking of the right way to explain what is
+> an elegant design at the OS/syscall level, so any inspirations/ideas
+> would be most welcome. I might highlight a couple of syscall groups:
+> open/close/read/write, and fork/exec/exit/wait.
+>
+> If you have any references/URLs you think I should look at, please
+> pass them on to me.
+>
+> I'm also trying to chase down some quotes; my memory seems to be failing me
+> but I'm sure I've seen these somewhere:
+>
+>  - in a paper, I think by Thompson & Ritchie, where they assert that the
+>   kernel should provide no more than the most minimal services to the
+>   userland programs. I thought this was the CACM paper, but I can't spot
+>   this bit. Maybe it's in Thompson's preface to the Lions Commentary,
+>   of which my copy is elsewere at present.
+>
+>  - I'm sure I remember someome (Kernighan?) say that Ritchie encouraged
+>   them to espouse the use of processes as context switching was cheap,
+>   but later measurements showed that in fact it wasn't that cheap in
+>   the early versions of Unix.
+>
+> Anyway, if you can think of good ideas/references about the elegance of
+> Unix, especially from the design perspective, I would much appreciate them.
+>
+> Cheers,
+>        Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+
+-- 
+Tim Newsham | www.thenewsh.com/~newsham | thenewsh.blogspot.com
+
+
+From grog at lemis.com  Tue Jun 28 14:13:02 2011
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Tue, 28 Jun 2011 14:13:02 +1000
+Subject: [TUHS] Ideas for a Unix paper I'm writing
+In-Reply-To: <20110628001140.GA23711@minnie.tuhs.org>
+References: <20110628001140.GA23711@minnie.tuhs.org>
+Message-ID: <20110628041302.GR39651@dereel.lemis.com>
+
+On Tuesday, 28 June 2011 at 10:11:40 +1000, Warren Toomey wrote:
+>
+> I'm having some trouble thinking of the right way to explain what is
+> an elegant design at the OS/syscall level, so any inspirations/ideas
+> would be most welcome. I might highlight a couple of syscall groups:
+> open/close/read/write, and fork/exec/exit/wait.
+
+The system call interface is one thing, but I'm not sure it's the most
+important one.  Older operating systems (in my experience, IBM OS/360
+and UNIVAC Omega and OS 1100) had similar interfaces.  Omega also had
+the concept of integer file descriptors (including 0, 1 and 2
+preassigned).  All of these systems had open/close/read/write, for
+example.
+
+I came to UNIX relatively late, and my first impression wasn't
+favourable.  It took me a while to realise what the real advantages
+were.  For me, they're:
+
+- Text files.  At the time, any data of any importance was stored in
+  custom-designed file formats.  That was more efficient, both in
+  terms of processing time and space, but it made things difficult if
+  anything went wrong.
+
+- The file system itself.  I think the design of the file system,
+  especially the separation of names and the files themselves, but
+  also special files, is one of the most far-reaching designs I've
+  ever come across.  To this day, I haven't found anything that even
+  comes close.
+
+You might also get some ideas from
+http://en.wikipedia.org/wiki/Unix_philosophy
+
+Greg
+--
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  See
+http://www.lemis.com/grog/email/signed-mail.php for more details.
+If your Microsoft MUA reports problems, please read
+http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 196 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110628/f9fe4d71/attachment.sig>
+
+From jcapp at anteil.com  Tue Jun 28 13:53:37 2011
+From: jcapp at anteil.com (Jim Capp)
+Date: Mon, 27 Jun 2011 23:53:37 -0400 (EDT)
+Subject: [TUHS] Ideas for a Unix paper I'm writing
+In-Reply-To: <20110628001140.GA23711@minnie.tuhs.org>
+Message-ID: <108042.7420.1309233217884.JavaMail.root@zimbraanteil>
+
+Warren,
+
+Two more excerpts if I may:
+
+The UNIX Time-Sharing System, Dennis M. Ritchie and Ken Thompson, Bell Laboratories, CACM July 1974, pp. 374:
+
+"Our goals throughout the effort, when articulated at all, have always concerned themselves with building a comfortable relationship with the machine and with exploring ideas and inventions in operating systems. We have not been faced with the need to satisfy someone else's requirements, and for this freedom we are grateful."
+
+ and
+
+"The success of 'UNIX' lies not so much in new inventions but rather in the full exploitation of a carefully selected set of fertile ideas, and especially in showing that they can be keys to the implementation of a small yet powerful operating system."
+
+Cheers,
+
+Jim
+
+
+
+----- Original Message -----
+From: "Warren Toomey" <wkt at tuhs.org>
+To: tuhs at tuhs.org
+Sent: Monday, June 27, 2011 8:11:40 PM
+Subject: [TUHS] Ideas for a Unix paper I'm writing
+
+All, IEEE Spectrum have asked me to write a paper on Unix to celebrate the
+40th anniversary of the release of 1st Edition in November 1971. I'm after
+ideas & suggestions!
+
+I think my general thrust is that Unix is an elegant design, and the
+design elements are still relevant today. The implementation is mostly
+irrelevant (consider how much the code has changed from assembly -> C,
+from the simple data structures in V7 through to current BSD), but the
+original API is classic. Note that about 28 of the 1st Ed syscalls are
+retained in current BSDs and Linux, and with the same syscall numbers.
+
+I'm having some trouble thinking of the right way to explain what is
+an elegant design at the OS/syscall level, so any inspirations/ideas
+would be most welcome. I might highlight a couple of syscall groups:
+open/close/read/write, and fork/exec/exit/wait.
+
+If you have any references/URLs you think I should look at, please
+pass them on to me.
+
+I'm also trying to chase down some quotes; my memory seems to be failing me
+but I'm sure I've seen these somewhere:
+
+ - in a paper, I think by Thompson & Ritchie, where they assert that the
+   kernel should provide no more than the most minimal services to the
+   userland programs. I thought this was the CACM paper, but I can't spot
+   this bit. Maybe it's in Thompson's preface to the Lions Commentary,
+   of which my copy is elsewere at present.
+
+ - I'm sure I remember someome (Kernighan?) say that Ritchie encouraged
+   them to espouse the use of processes as context switching was cheap,
+   but later measurements showed that in fact it wasn't that cheap in
+   the early versions of Unix.
+
+Anyway, if you can think of good ideas/references about the elegance of
+Unix, especially from the design perspective, I would much appreciate them.
+
+Cheers,
+	Warren 
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From downing.nick+tuhs at gmail.com  Tue Jun 28 15:48:39 2011
+From: downing.nick+tuhs at gmail.com (Nick Downing)
+Date: Tue, 28 Jun 2011 15:48:39 +1000
+Subject: [TUHS] Ideas for a Unix paper I'm writing
+In-Reply-To: <20110628041302.GR39651@dereel.lemis.com>
+References: <20110628001140.GA23711@minnie.tuhs.org>
+	<20110628041302.GR39651@dereel.lemis.com>
+Message-ID: <BANLkTimsOLLvkj1BpdmUq1XBP9WAb1RjmA@mail.gmail.com>
+
+Greg, it is very interesting what you've said about the origin of file
+descriptors... it might be worth looking into the history of this a
+bit deeper, but from what you've said the earlier systems didn't have
+the polymorphic file descriptors that unix has, from what I understand
+of your post the device nodes in the filesystem were new with unix?  I
+totally agree that the text format and the filesystem work together to
+promote inter-operability and user `ownership' of their data (a recent
+phenomenon along the same lines is XML so we might say that unix
+predicts current trends by 20-25 years in this respect as well).
+Another really important thing to mention is the Bourne shell, it's
+kind of the glue that sticks it all together, and a bit of a
+masterpiece in itself, being fraught with compromise but having
+programmability and a batch capability without taking away from its
+main purpose of being a useable interactive shell.
+cheers, Nick
+
+On Tue, Jun 28, 2011 at 2:13 PM, Greg 'groggy' Lehey <grog at lemis.com> wrote:
+> On Tuesday, 28 June 2011 at 10:11:40 +1000, Warren Toomey wrote:
+>>
+>> I'm having some trouble thinking of the right way to explain what is
+>> an elegant design at the OS/syscall level, so any inspirations/ideas
+>> would be most welcome. I might highlight a couple of syscall groups:
+>> open/close/read/write, and fork/exec/exit/wait.
+>
+> The system call interface is one thing, but I'm not sure it's the most
+> important one.  Older operating systems (in my experience, IBM OS/360
+> and UNIVAC Omega and OS 1100) had similar interfaces.  Omega also had
+> the concept of integer file descriptors (including 0, 1 and 2
+> preassigned).  All of these systems had open/close/read/write, for
+> example.
+>
+> I came to UNIX relatively late, and my first impression wasn't
+> favourable.  It took me a while to realise what the real advantages
+> were.  For me, they're:
+>
+> - Text files.  At the time, any data of any importance was stored in
+>  custom-designed file formats.  That was more efficient, both in
+>  terms of processing time and space, but it made things difficult if
+>  anything went wrong.
+>
+> - The file system itself.  I think the design of the file system,
+>  especially the separation of names and the files themselves, but
+>  also special files, is one of the most far-reaching designs I've
+>  ever come across.  To this day, I haven't found anything that even
+>  comes close.
+>
+> You might also get some ideas from
+> http://en.wikipedia.org/wiki/Unix_philosophy
+>
+> Greg
+> --
+> Finger grog at FreeBSD.org for PGP public key.
+> See complete headers for address and phone numbers.
+> This message is digitally signed.  See
+> http://www.lemis.com/grog/email/signed-mail.php for more details.
+> If your Microsoft MUA reports problems, please read
+> http://tinyurl.com/broken-mua
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+
+
+From tim.newsham at gmail.com  Tue Jun 28 17:22:58 2011
+From: tim.newsham at gmail.com (Tim Newsham)
+Date: Mon, 27 Jun 2011 21:22:58 -1000
+Subject: [TUHS] Ideas for a Unix paper I'm writing
+In-Reply-To: <BANLkTimsOLLvkj1BpdmUq1XBP9WAb1RjmA@mail.gmail.com>
+References: <20110628001140.GA23711@minnie.tuhs.org>
+	<20110628041302.GR39651@dereel.lemis.com>
+	<BANLkTimsOLLvkj1BpdmUq1XBP9WAb1RjmA@mail.gmail.com>
+Message-ID: <BANLkTi=y8tJALGwDq-J9MhhBkQvWieOR+A@mail.gmail.com>
+
+On Mon, Jun 27, 2011 at 7:48 PM, Nick Downing
+<downing.nick+tuhs at gmail.com> wrote:
+> Another really important thing to mention is the Bourne shell, it's
+> kind of the glue that sticks it all together, and a bit of a
+> masterpiece in itself, being fraught with compromise but having
+> programmability and a batch capability without taking away from its
+> main purpose of being a useable interactive shell.
+
+... but not a great feature to talk about when celebrating 1st
+editions 10th birthday,
+since 1st edition didn't have that fancy shmancy shell :)
+   http://man.cat-v.org/unix-1st/1/sh
+
+> cheers, Nick
+>
+> On Tue, Jun 28, 2011 at 2:13 PM, Greg 'groggy' Lehey <grog at lemis.com> wrote:
+>> On Tuesday, 28 June 2011 at 10:11:40 +1000, Warren Toomey wrote:
+>>>
+>>> I'm having some trouble thinking of the right way to explain what is
+>>> an elegant design at the OS/syscall level, so any inspirations/ideas
+>>> would be most welcome. I might highlight a couple of syscall groups:
+>>> open/close/read/write, and fork/exec/exit/wait.
+>>
+>> The system call interface is one thing, but I'm not sure it's the most
+>> important one.  Older operating systems (in my experience, IBM OS/360
+>> and UNIVAC Omega and OS 1100) had similar interfaces.  Omega also had
+>> the concept of integer file descriptors (including 0, 1 and 2
+>> preassigned).  All of these systems had open/close/read/write, for
+>> example.
+>>
+>> I came to UNIX relatively late, and my first impression wasn't
+>> favourable.  It took me a while to realise what the real advantages
+>> were.  For me, they're:
+>>
+>> - Text files.  At the time, any data of any importance was stored in
+>>  custom-designed file formats.  That was more efficient, both in
+>>  terms of processing time and space, but it made things difficult if
+>>  anything went wrong.
+>>
+>> - The file system itself.  I think the design of the file system,
+>>  especially the separation of names and the files themselves, but
+>>  also special files, is one of the most far-reaching designs I've
+>>  ever come across.  To this day, I haven't found anything that even
+>>  comes close.
+>>
+>> You might also get some ideas from
+>> http://en.wikipedia.org/wiki/Unix_philosophy
+>>
+>> Greg
+>> --
+>> Finger grog at FreeBSD.org for PGP public key.
+>> See complete headers for address and phone numbers.
+>> This message is digitally signed.  See
+>> http://www.lemis.com/grog/email/signed-mail.php for more details.
+>> If your Microsoft MUA reports problems, please read
+>> http://tinyurl.com/broken-mua
+>>
+>> _______________________________________________
+>> TUHS mailing list
+>> TUHS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>>
+>>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+
+-- 
+Tim Newsham | www.thenewsh.com/~newsham | thenewsh.blogspot.com
+
+
+From wkb at xs4all.nl  Tue Jun 28 17:32:13 2011
+From: wkb at xs4all.nl (Wilko Bulte)
+Date: Tue, 28 Jun 2011 09:32:13 +0200
+Subject: [TUHS] Ideas for a Unix paper I'm writing
+In-Reply-To: <20110628001140.GA23711@minnie.tuhs.org>
+References: <20110628001140.GA23711@minnie.tuhs.org>
+Message-ID: <20110628073213.GA1771@freebie.xs4all.nl>
+
+Quoting Warren Toomey, who wrote on Tue, Jun 28, 2011 at 10:11:40AM +1000 ..
+> All, IEEE Spectrum have asked me to write a paper on Unix to celebrate the
+> 40th anniversary of the release of 1st Edition in November 1971. I'm after
+> ideas & suggestions!
+
+...
+
+> Anyway, if you can think of good ideas/references about the elegance of
+> Unix, especially from the design perspective, I would much appreciate them.
+
+How about touching upon the fact that UNIX (& derivatives) have run & still
+run on next to everything from a Cray or NEC SX super to a lowly SOHO
+AP/router or a smartphone?
+
+Wilko
+
+
+From wes.parish at paradise.net.nz  Wed Jun 29 00:18:59 2011
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Wed, 29 Jun 2011 02:18:59 +1200
+Subject: [TUHS] Ideas for a Unix paper I'm writing
+In-Reply-To: <20110628041302.GR39651@dereel.lemis.com>
+References: <20110628001140.GA23711@minnie.tuhs.org>
+	<20110628041302.GR39651@dereel.lemis.com>
+Message-ID: <31BD4AA9-40E3-4441-A4A7-757B1B046897@paradise.net.nz>
+
+FWIW, the Unix habit of leaving the files as streams, instead of  
+diving into the then-current concept of files as either hierarchical  
+database or network database files. That left the FILE interface  
+simple, and allowed the applications to do all the necessary work.
+
+Then there's Lion's comment about the nearest - at the time -  
+competitor for teaching, Brinch Hansen's Solo Concurrent Pascal OS  
+and permutations thereof, which he didn't think was anywhere near the  
+same standard. I've read the Loin's books and the Concurrent Pascal  
+book, and I can see his point. You can do things with Unix V6 that  
+you couldn't think of with Solo.
+
+Just my 0.02c,from a Unix latecomer.
+
+Wesley Parish
+
+
+On 28/06/2011, at 4:13 PM, Greg 'groggy' Lehey wrote:
+
+> On Tuesday, 28 June 2011 at 10:11:40 +1000, Warren Toomey wrote:
+>>
+>> I'm having some trouble thinking of the right way to explain what is
+>> an elegant design at the OS/syscall level, so any inspirations/ideas
+>> would be most welcome. I might highlight a couple of syscall groups:
+>> open/close/read/write, and fork/exec/exit/wait.
+>
+> The system call interface is one thing, but I'm not sure it's the most
+> important one.  Older operating systems (in my experience, IBM OS/360
+> and UNIVAC Omega and OS 1100) had similar interfaces.  Omega also had
+> the concept of integer file descriptors (including 0, 1 and 2
+> preassigned).  All of these systems had open/close/read/write, for
+> example.
+>
+> I came to UNIX relatively late, and my first impression wasn't
+> favourable.  It took me a while to realise what the real advantages
+> were.  For me, they're:
+>
+> - Text files.  At the time, any data of any importance was stored in
+>   custom-designed file formats.  That was more efficient, both in
+>   terms of processing time and space, but it made things difficult if
+>   anything went wrong.
+>
+> - The file system itself.  I think the design of the file system,
+>   especially the separation of names and the files themselves, but
+>   also special files, is one of the most far-reaching designs I've
+>   ever come across.  To this day, I haven't found anything that even
+>   comes close.
+>
+> You might also get some ideas from
+> http://en.wikipedia.org/wiki/Unix_philosophy
+>
+> Greg
+> --
+> Finger grog at FreeBSD.org for PGP public key.
+> See complete headers for address and phone numbers.
+> This message is digitally signed.  See
+> http://www.lemis.com/grog/email/signed-mail.php for more details.
+> If your Microsoft MUA reports problems, please read
+> http://tinyurl.com/broken-mua
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From aek at bitsavers.org  Wed Jun 29 01:22:24 2011
+From: aek at bitsavers.org (Al Kossow)
+Date: Tue, 28 Jun 2011 08:22:24 -0700
+Subject: [TUHS] Ideas for a Unix paper I'm writing
+In-Reply-To: <20110628001140.GA23711@minnie.tuhs.org>
+References: <20110628001140.GA23711@minnie.tuhs.org>
+Message-ID: <4E09F1B0.90805@bitsavers.org>
+
+On 6/27/11 5:11 PM, Warren Toomey wrote:
+> All, IEEE Spectrum have asked me to write a paper on Unix to celebrate the
+> 40th anniversary of the release of 1st Edition in November 1971. I'm after
+> ideas&  suggestions!
+>
+
+The notion that Unix provided a good enough set of system services that people
+got on with building systems with a common set of tools. This included things
+like the RATFOR-based portable operating systems that came out of Georgia Tech
+and Laurence Livermore Labs. It took most of the 70's to get going, but by the
+80's microprocessors were powerful enough that Unix would run well on them, and
+that dovetailed with Stallman's efforts to get a freely available tool chain.
+
+Contrast this with VMS/WinNT and the dozens of proprietary systems which survived
+by vendor lock in.
+
+Having lived through the OS wars inside Apple, it became clear that there weren't
+enough developer resources available to build a new system from scratch, and the
+value added wasn't in the core OS and tools, but the user environment. This appears
+to have occurred to almost everyone else now as well. Go for product differentiators
+and leverage as much freely available system infrastructure as you can.
+
+I was just digging through some CDC documents we just received concerning the joint
+CDC/NCR developments that happened in the early 70's, and was thinking how fast the
+pace of system change is now. The system they started on in 1973 was ultimately
+released almost 10 years later as the CYBER 180. By the end of the 80's they were
+thinking of porting Unix to it. I can't imagine anyone taking 10 years today to
+develop a new computer system, or thinking of writing an operating system and tool
+chain from scratch.
+
+Building on the 40 years of experience and not reinventing wheels
+is the ultimate legacy of the Unix system.
+
+
+
+
+
+
+
+
+
+From a.phillip.garcia at gmail.com  Wed Jun 29 11:30:29 2011
+From: a.phillip.garcia at gmail.com (A. P. Garcia)
+Date: Tue, 28 Jun 2011 20:30:29 -0500
+Subject: [TUHS] Ideas for a Unix paper I'm writing
+Message-ID: <BANLkTikwAFs=ugP7dj+enTnPs4cKFqN8Ug@mail.gmail.com>
+
+> All, IEEE Spectrum have asked me to write a paper on Unix to celebrate the
+> 40th anniversary of the release of 1st Edition in November 1971. I'm after
+> ideas & suggestions!
+
+of course this quote is always good for a chuckle:
+
+Ken Thompson was once asked what he would do differently if he were
+redesigning the UNIX system. His reply: "I'd spell creat with an e."
+[http://en.wikiquote.org/wiki/Kenneth_Thompson]
+
+
+and I always liked this quote from Linus Torvalds:
+
+On Tue, 22 Jun 1999, Rik van Riel wrote:
+
+> The real issue here is paradigms. The classical "everything's
+> a file" broke down with the advent of networking, sockets and
+> non-blocking reads. At the moment the file paradigm is so much
+> out of touch with computational reality that web servers need
+> to fork for each client and people are crying out for asynchronous
+> sendfile and other weird interfaces.
+
+Sure. But I think it's still a valid paradigm to consider "everything is a
+stream of bytes". And that's _really_ what the UNIX paradigm has been from
+the first: the whole notion of pipes etc is not all that different from
+networking.
+
+[http://groups.google.com/group/fa.linux.kernel/msg/7bcbbfeaea2b93c9?hl=en&dmode=source]
+
+
+
+> I'm also trying to chase down some quotes; my memory seems to be failing me
+> but I'm sure I've seen these somewhere:
+
+ugh..my memory is failing too at the moment. I'm sure I once read a
+nice rant of sorts about how Unix has proven to be of sound design
+that has adapted well to changes in the computing landscape...
+
+
+From jcapp at anteil.com  Tue Jun 28 13:36:17 2011
+From: jcapp at anteil.com (Jim Capp)
+Date: Mon, 27 Jun 2011 23:36:17 -0400 (EDT)
+Subject: [TUHS] Ideas for a Unix paper I'm writing
+In-Reply-To: <20110628001140.GA23711@minnie.tuhs.org>
+Message-ID: <32496006.7412.1309232177333.JavaMail.root@zimbraanteil>
+
+Warren,
+
+In regard to Unix, the most important revelations to me personally are:
+
+1) detailed documentation of every aspect of the system - Having instant access to consistent documentation on commands, system calls, libraries, and the bit level formats of inodes, directory structures, and the filesystem, was a revelation both in terms of productivity and expanse of knowledge.
+
+2) uniform device handling - Rendering all I/O as a stream of bytes, without regard to content or record sizes, provided a universal foundation for data exchange among heterogenous devices.
+
+3) pipelining - In my opinion, this is the computing equivalent to the invention of interchangeable parts.  Many programming tasks could be completed by the successive processing of a stream of data by a series of small but well defined set of utility programs.
+
+4) C - Writing 90% of the system in a "portable assembler" reduced the cost of implemention on new architectures by a magnitude.
+
+For these reasons, I jumped on board and Unix became a central part (if not the foundation) of my career in software development.
+
+
+I'm sure you've read these at one time or another, but here are a few of my favorites. Some of them might help you chase down the quotes you are looking for:
+
+Excerpt from UNIX Time-Sharing System: UNIX Implementation, By K. Thompson, The Bell System Technical Journal, Vol. 57, No. 6, July-August 1978, pp. 1931:
+
+"The kernel is the only UNIX code that cannot be substituted by a user to his own liking.  For this reason, the kernel should make as few real decisions as possible.  This does not mean to allow the user a million options to do the same thing.  Rather, it means to allow only one way to do one thing, but have that way be the least-common divisor of all the options that might have been provided."
+
+
+Excerpt from UNIX Time-Sharing System: A Retrospective, By D. M. Ritchie, The Bell System Technical Journal, Vol. 57, No. 6, July-August 1978, pp. 1948:
+
+"UNIX was never a 'project'; it was not designed to meet any specific need except that felt by its major author, Ken Thompson, and soon after its origin by the author of this paper, for a pleasant environment in which to write and use programs."
+
+
+Excerpt from The UNIX Programming Environment, By Brian W. Kernighan & Rob Pike, Prentice-Hall 1984, pp. viii:
+
+"Even though the UNIX system introduces a number of innovative programs and techniques, no single program or idea makes it work well.  Instead, what makes it effective is an approach to programming, a philosophy of using the computer.  Although that philosophy can't be written down in a single sentence, at its heart is the idea that the power of a system comes more from the relationships among programs than from the programs themselves.  Many UNIX programs do quite trivial tasks in isolation, but, combined with other programs, become general and useful tools."
+
+
+Finally, attached is a .png of a collage that I had intended to put together for the 40th Anniversary of UNIX last year.  I hope that you find it interesting at least.
+
+Cheers,
+
+Jim
+
+
+
+----- Original Message -----
+From: "Warren Toomey" <wkt at tuhs.org>
+To: tuhs at tuhs.org
+Sent: Monday, June 27, 2011 8:11:40 PM
+Subject: [TUHS] Ideas for a Unix paper I'm writing
+
+All, IEEE Spectrum have asked me to write a paper on Unix to celebrate the
+40th anniversary of the release of 1st Edition in November 1971. I'm after
+ideas & suggestions!
+
+I think my general thrust is that Unix is an elegant design, and the
+design elements are still relevant today. The implementation is mostly
+irrelevant (consider how much the code has changed from assembly -> C,
+from the simple data structures in V7 through to current BSD), but the
+original API is classic. Note that about 28 of the 1st Ed syscalls are
+retained in current BSDs and Linux, and with the same syscall numbers.
+
+I'm having some trouble thinking of the right way to explain what is
+an elegant design at the OS/syscall level, so any inspirations/ideas
+would be most welcome. I might highlight a couple of syscall groups:
+open/close/read/write, and fork/exec/exit/wait.
+
+If you have any references/URLs you think I should look at, please
+pass them on to me.
+
+I'm also trying to chase down some quotes; my memory seems to be failing me
+but I'm sure I've seen these somewhere:
+
+ - in a paper, I think by Thompson & Ritchie, where they assert that the
+   kernel should provide no more than the most minimal services to the
+   userland programs. I thought this was the CACM paper, but I can't spot
+   this bit. Maybe it's in Thompson's preface to the Lions Commentary,
+   of which my copy is elsewere at present.
+
+ - I'm sure I remember someome (Kernighan?) say that Ritchie encouraged
+   them to espouse the use of processes as context switching was cheap,
+   but later measurements showed that in fact it wasn't that cheap in
+   the early versions of Unix.
+
+Anyway, if you can think of good ideas/references about the elegance of
+Unix, especially from the design perspective, I would much appreciate them.
+
+Cheers,
+	Warren 
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: CACM-collage.png
+Type: image/png
+Size: 437184 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110627/95f3b43a/attachment.png>
+

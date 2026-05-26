@@ -1,0 +1,2148 @@
+From random832 at fastmail.us  Fri Feb  1 09:52:22 2013
+From: random832 at fastmail.us (Random832)
+Date: Thu, 31 Jan 2013 18:52:22 -0500
+Subject: [TUHS] History of strncpy
+In-Reply-To: <EC8F3C9A-F979-4B6E-911A-12947F061FD2@bsdimp.com>
+References: <1301231756.AA27240@ivan.Harhan.ORG>
+ <B8FAD0BB-8796-4A0F-B441-0688405736E9@ronnatalie.com>
+ <20130123214651.GF22559@mercury.ccil.org>
+ <20130124060205.GQ24498@bitmover.com>
+ <1AFADE66-7F72-4776-8738-EC27748DAF33@ronnatalie.com>
+ <EC8F3C9A-F979-4B6E-911A-12947F061FD2@bsdimp.com>
+Message-ID: <510B03B6.6010708@fastmail.us>
+
+On 1/24/2013 9:52 AM, Warner Losh wrote:
+> On Jan 24, 2013, at 7:42 AM, Ronald Natalie wrote:
+>> Amen. For practical matters, there is no way given the rest of the 
+>> library that an implementation can do anything other than multiply 
+>> the two middle args together. 
+
+
+Is there any part of the rest of the library that will be broken if it 
+does something like call (e.g. on UNIX) fflush (or _flsbuf), fileno, and 
+write in a loop?
+
+vfprintf doesn't call fwrite, so it won't break sprintf.
+
+In theory all I can even think of is if some piece of userspace code 
+made assumptions about the state of a setvbuf buffer.
+
+> Historically the only implementation I know that didn't just multiply the two args together was on VAX/VMS's VAXC. The underlying filesystem had a notion of a file of records, so you'd get very different result from n * size, 1 and n, size.
+
+You might get a different result in terms of the resulting underlying 
+file, and maybe in terms of performance, but given the requirements the 
+standard puts on fread (which I don't imagine it would do if a 
+then-prominent implementation violated them), I have to wonder what 
+would happen, if this is the case, if you attempted to call fread when 
+the file pointer is positioned on a different sized record, or in the 
+middle of a record.
+
+Because for all the concessions to non-unix-like file systems the 
+standard _does_ make (binary files may be padded with extra zero bytes 
+[because they may not be able to be an arbitrary size], text files may 
+have a maximum line length and may not be able to contain some control 
+characters, heck, _everything_ the standard says about text files is 
+non-unix-like), it's IIRC rather strict about "fread has equivalent 
+results to getc in a loop".
+
+
+From imp at bsdimp.com  Fri Feb  1 10:06:26 2013
+From: imp at bsdimp.com (Warner Losh)
+Date: Thu, 31 Jan 2013 17:06:26 -0700
+Subject: [TUHS] History of strncpy
+In-Reply-To: <510B03B6.6010708@fastmail.us>
+References: <1301231756.AA27240@ivan.Harhan.ORG>
+ <B8FAD0BB-8796-4A0F-B441-0688405736E9@ronnatalie.com>
+ <20130123214651.GF22559@mercury.ccil.org>
+ <20130124060205.GQ24498@bitmover.com>
+ <1AFADE66-7F72-4776-8738-EC27748DAF33@ronnatalie.com>
+ <EC8F3C9A-F979-4B6E-911A-12947F061FD2@bsdimp.com>
+ <510B03B6.6010708@fastmail.us>
+Message-ID: <56033419-2AFA-4E3D-ADB6-261B1B79B55B@bsdimp.com>
+
+
+On Jan 31, 2013, at 4:52 PM, Random832 wrote:
+
+> On 1/24/2013 9:52 AM, Warner Losh wrote:
+>> On Jan 24, 2013, at 7:42 AM, Ronald Natalie wrote:
+>>> Amen. For practical matters, there is no way given the rest of the library that an implementation can do anything other than multiply the two middle args together. 
+> 
+> 
+> Is there any part of the rest of the library that will be broken if it does something like call (e.g. on UNIX) fflush (or _flsbuf), fileno, and write in a loop?
+> 
+> vfprintf doesn't call fwrite, so it won't break sprintf.
+> 
+> In theory all I can even think of is if some piece of userspace code made assumptions about the state of a setvbuf buffer.
+> 
+>> Historically the only implementation I know that didn't just multiply the two args together was on VAX/VMS's VAXC. The underlying filesystem had a notion of a file of records, so you'd get very different result from n * size, 1 and n, size.
+> 
+> You might get a different result in terms of the resulting underlying file, and maybe in terms of performance, but given the requirements the standard puts on fread (which I don't imagine it would do if a then-prominent implementation violated them), I have to wonder what would happen, if this is the case, if you attempted to call fread when the file pointer is positioned on a different sized record, or in the middle of a record.
+
+VAXC would crash and burn, signaling your programming error if you dared try to do this.
+
+> Because for all the concessions to non-unix-like file systems the standard _does_ make (binary files may be padded with extra zero bytes [because they may not be able to be an arbitrary size], text files may have a maximum line length and may not be able to contain some control characters, heck, _everything_ the standard says about text files is non-unix-like), it's IIRC rather strict about "fread has equivalent results to getc in a loop".
+
+The standard makes no such requirements on non-standard files. This behavior had to be explicitly asked for using non-standard cards/args to open, iirc. However, I think early versions of VAX C didn't allow a choice and often you'd find you couldn't do things with files you thought you should be able to. I do believe later versions fixed this to be more standards conforming, but it was quite a shock to get this behavior when I first ran into it.
+
+Then again, VAX C wasn't completely standards compliant for most of the time I used it in college.
+
+Warner
+
+From lm at bitmover.com  Fri Feb  1 10:28:24 2013
+From: lm at bitmover.com (Larry McVoy)
+Date: Thu, 31 Jan 2013 16:28:24 -0800
+Subject: [TUHS] History of strncpy
+In-Reply-To: <CAC20D2OjbQquS-c5w5L29kw55u=3q+TnuPZYvOZM3ViQua1rQw@mail.gmail.com>
+References: <1301231756.AA27240@ivan.Harhan.ORG>
+ <B8FAD0BB-8796-4A0F-B441-0688405736E9@ronnatalie.com>
+ <20130123214651.GF22559@mercury.ccil.org>
+ <20130124060205.GQ24498@bitmover.com>
+ <1AFADE66-7F72-4776-8738-EC27748DAF33@ronnatalie.com>
+ <EC8F3C9A-F979-4B6E-911A-12947F061FD2@bsdimp.com>
+ <CAC20D2OjbQquS-c5w5L29kw55u=3q+TnuPZYvOZM3ViQua1rQw@mail.gmail.com>
+Message-ID: <20130201002824.GQ7285@bitmover.com>
+
+On Thu, Jan 24, 2013 at 11:21:36AM -0500, Clem Cole wrote:
+> BTW, I 100% agree that the inconsistency of the interfaces, return codes
+> sins et al, certainly have damaged us.   But then again, who knew?   Other
+> systems (like VMS) which were much more consistent, but were not as
+> flexible or "open" died, while C, FORTRAN and UNIX live on.
+
+What we have done, as I think I mentioned, is include NetBSD's stdio in
+our product.  Our libc.a is 1.9MB and it includes stdio, a stacking
+file system layer, associative arrays, lz4, my version of Oz's sdbm 
+that I changed to use mmap so you could read/write in place, Oz's
+regex, all the string functions, the tcp layer from LMbench, zlib,
+our utility functions including stacking stdio layers that provide
+transparent CRC's over the data, transparent compression (both
+zlib and lz4), and a paging layer.
+
+All that crud in 1.9MB unstripped.
+
+Personally, I think that stdio ought to evolve, it's really useful but
+I don't think people have pushed it hard enough.  You can do some pretty
+neat stuff with it if you work a little.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From reed at reedmedia.net  Fri Feb  1 10:06:15 2013
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Thu, 31 Jan 2013 18:06:15 -0600 (CST)
+Subject: [TUHS] history of sbin?
+Message-ID: <alpine.NEB.2.02.1301311747070.26654@t1.m.reedmedia.net>
+
+I have heard the story a few times about sbin split is due to disk 
+space, such as told at 
+http://www.osnews.com/story/25556/Understanding_the_bin_sbin_usr_bin_usr_sbin_Split/
+http://lists.busybox.net/pipermail/busybox/2010-December/074114.html
+
+But I don't see any mention of it in 32V and not in BSD until around 
+Net2 (like in 1991 src.README said ``... there has been a major 
+reorganization of the file system.  (You may have seen similar 
+reorganizations on systems shipped by Sun Microsytems [sic] and Digital 
+Equipment Corporation, among others.)  ... /sbin same as /bin, but 
+binaries for the root user''. The slides from Feb. 1988 for a BSD BOF at 
+USENIX mentioned this sbin reorganization.
+
+Looking at "Unix Text Processing" (1987) and "Life with Unix" (1989) I 
+didn't see any use of sbin/. (I didn't look at my other old books.)  
+>From searching old 1980 usenet archives I only saw a few mentions (like 
+/usr/brl/sbin/...).
+
+When did some (non-BSD) systems ship and document /sbin, /usr/sbin?
+Is the common story (liked linked above) the right story?
+
+  Jeremy C. Reed
+
+echo uggc://errqzrqvn.arg/obbxf/ofq-uvfgbel/ | \
+ tr "noqruvxzabcefgl" "abdehikmnoprsty"
+
+
+
+From random832 at fastmail.us  Fri Feb  1 11:28:40 2013
+From: random832 at fastmail.us (Random832)
+Date: Thu, 31 Jan 2013 20:28:40 -0500
+Subject: [TUHS] history of sbin?
+In-Reply-To: <alpine.NEB.2.02.1301311747070.26654@t1.m.reedmedia.net>
+References: <alpine.NEB.2.02.1301311747070.26654@t1.m.reedmedia.net>
+Message-ID: <510B1A48.1080703@fastmail.us>
+
+On 1/31/2013 7:06 PM, Jeremy C. Reed wrote:
+> I have heard the story a few times about sbin split is due to disk
+> space, such as told at
+> http://www.osnews.com/story/25556/Understanding_the_bin_sbin_usr_bin_usr_sbin_Split/
+> http://lists.busybox.net/pipermail/busybox/2010-December/074114.html
+>
+Well, keeping in mind the stuff in /sbin used to be in /etc, in e.g. v7 
+- it's possible the real reason is simply they wanted binaries out of 
+/etc and didn't want to put them in /bin where normal users might wonder 
+"what is this?".
+
+
+From imp at bsdimp.com  Fri Feb  1 11:37:42 2013
+From: imp at bsdimp.com (Warner Losh)
+Date: Thu, 31 Jan 2013 18:37:42 -0700
+Subject: [TUHS] history of sbin?
+In-Reply-To: <510B1A48.1080703@fastmail.us>
+References: <alpine.NEB.2.02.1301311747070.26654@t1.m.reedmedia.net>
+ <510B1A48.1080703@fastmail.us>
+Message-ID: <7BCD8FE7-E064-4248-BDE1-DE8F9701CF7E@bsdimp.com>
+
+
+On Jan 31, 2013, at 6:28 PM, Random832 wrote:
+
+> On 1/31/2013 7:06 PM, Jeremy C. Reed wrote:
+>> I have heard the story a few times about sbin split is due to disk
+>> space, such as told at
+>> http://www.osnews.com/story/25556/Understanding_the_bin_sbin_usr_bin_usr_sbin_Split/
+>> http://lists.busybox.net/pipermail/busybox/2010-December/074114.html
+>> 
+> Well, keeping in mind the stuff in /sbin used to be in /etc, in e.g. v7 - it's possible the real reason is simply they wanted binaries out of /etc and didn't want to put them in /bin where normal users might wonder "what is this?".
+
+The split was for /usr and slash. Those things in / were local on small disks needed to boot the system just enough to mount a shared /usr remotely or to do some very limited recovery. This is why there's both /usr/bin and /bin.
+
+It doesn't explain the /sbin and /bin split though.
+
+I recall from SunOS 3.x documentation that I no longer have access to that the split was done to improve exec times for normal users. They didn't want the hash list to get too long with all the extra stuff in /sbin and /usr/sbin. the movement of the files from /etc also included movement to /libexec or /usr/libexec for many of the daemons that started out life in /etc. things like ifconfig moved to /sbin where people could more easily run them.  Maybe the original /etc and /bin split was for PATH reasons?
+
+Warner
+
+
+
+From wkt at tuhs.org  Fri Feb  1 11:41:49 2013
+From: wkt at tuhs.org (Warren Toomey)
+Date: Fri, 1 Feb 2013 11:41:49 +1000
+Subject: [TUHS] history of sbin?
+In-Reply-To: <alpine.NEB.2.02.1301311747070.26654@t1.m.reedmedia.net>
+References: <alpine.NEB.2.02.1301311747070.26654@t1.m.reedmedia.net>
+Message-ID: <20130201014149.GA9456@neddie.local.net>
+
+On Thu, Jan 31, 2013 at 06:06:15PM -0600, Jeremy C. Reed wrote:
+> http://lists.busybox.net/pipermail/busybox/2010-December/074114.html
+
+A few inaccuracies:
+
+    When the operating system grew too big to fit on the first RK05 disk
+    pack (their root filesystem) they let it leak into the second one,
+    which is where all the user home directories lived (which is why
+    the mount was called /usr).  They replicated all the OS directories
+    under there (/bin, /sbin, /lib, /tmp...) and wrote files to those
+    new directories because their original disk was out of space.
+    When they got a third disk, they mounted it on /home and relocated
+    all the user directories to there so the OS could consume all the
+    space on both disks and grow to THREE WHOLE MEGABYTES (ooooh!).
+
+Research Unix never had /sbin nor /home, and the tale of the third disk
+doesn't ring any bells to me.
+
+7th Edition has /usr/dmr and /usr/ken, not /home/dmr nor /usr/home/dmr :)
+
+Cheers,
+	Warren
+
+
+From ramble1035 at dslextreme.com  Fri Feb  1 11:53:16 2013
+From: ramble1035 at dslextreme.com (ramble1035 @dslextreme.com)
+Date: Thu, 31 Jan 2013 17:53:16 -0800
+Subject: [TUHS] history of sbin?
+In-Reply-To: <20130201014149.GA9456@neddie.local.net>
+References: <alpine.NEB.2.02.1301311747070.26654@t1.m.reedmedia.net>
+ <20130201014149.GA9456@neddie.local.net>
+Message-ID: <CAFn3HkO0_M-iNsJTHtVeQ_7SojZ5A87PK1LiqcH5noDrDuuXiw@mail.gmail.com>
+
+Based on some vague recollections of early days at Sun...  I seem to recall
+that one of the main differences between /bin and /sbin was that the /sbin
+binaries were all built with static libraries rather than shared.  I heard
+/sbin described as "single-user bin"...
+
+I don't know when /sbin first appeared, though.
+
+  -- Chris
+
+
+On Thu, Jan 31, 2013 at 5:41 PM, Warren Toomey <wkt at tuhs.org> wrote:
+
+> On Thu, Jan 31, 2013 at 06:06:15PM -0600, Jeremy C. Reed wrote:
+> > http://lists.busybox.net/pipermail/busybox/2010-December/074114.html
+>
+> A few inaccuracies:
+>
+>     When the operating system grew too big to fit on the first RK05 disk
+>     pack (their root filesystem) they let it leak into the second one,
+>     which is where all the user home directories lived (which is why
+>     the mount was called /usr).  They replicated all the OS directories
+>     under there (/bin, /sbin, /lib, /tmp...) and wrote files to those
+>     new directories because their original disk was out of space.
+>     When they got a third disk, they mounted it on /home and relocated
+>     all the user directories to there so the OS could consume all the
+>     space on both disks and grow to THREE WHOLE MEGABYTES (ooooh!).
+>
+> Research Unix never had /sbin nor /home, and the tale of the third disk
+> doesn't ring any bells to me.
+>
+> 7th Edition has /usr/dmr and /usr/ken, not /home/dmr nor /usr/home/dmr :)
+>
+> Cheers,
+>         Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130131/efb314c4/attachment.html>
+
+From lm at bitmover.com  Fri Feb  1 12:01:16 2013
+From: lm at bitmover.com (Larry McVoy)
+Date: Thu, 31 Jan 2013 18:01:16 -0800
+Subject: [TUHS] history of sbin?
+In-Reply-To: <CAFn3HkO0_M-iNsJTHtVeQ_7SojZ5A87PK1LiqcH5noDrDuuXiw@mail.gmail.com>
+References: <alpine.NEB.2.02.1301311747070.26654@t1.m.reedmedia.net>
+ <20130201014149.GA9456@neddie.local.net>
+ <CAFn3HkO0_M-iNsJTHtVeQ_7SojZ5A87PK1LiqcH5noDrDuuXiw@mail.gmail.com>
+Message-ID: <20130201020116.GT7285@bitmover.com>
+
+Exactly.  /sbin on sun was all the statically linked stuff that you could
+count on when in single user mode trying to unscramble the mess that was
+your disk.  fsdb et al.
+
+On Thu, Jan 31, 2013 at 05:53:16PM -0800, ramble1035 @dslextreme.com wrote:
+> Based on some vague recollections of early days at Sun...  I seem to recall
+> that one of the main differences between /bin and /sbin was that the /sbin
+> binaries were all built with static libraries rather than shared.  I heard
+> /sbin described as "single-user bin"...
+> 
+> I don't know when /sbin first appeared, though.
+> 
+>   -- Chris
+> 
+> 
+> On Thu, Jan 31, 2013 at 5:41 PM, Warren Toomey <wkt at tuhs.org> wrote:
+> 
+> > On Thu, Jan 31, 2013 at 06:06:15PM -0600, Jeremy C. Reed wrote:
+> > > http://lists.busybox.net/pipermail/busybox/2010-December/074114.html
+> >
+> > A few inaccuracies:
+> >
+> >     When the operating system grew too big to fit on the first RK05 disk
+> >     pack (their root filesystem) they let it leak into the second one,
+> >     which is where all the user home directories lived (which is why
+> >     the mount was called /usr).  They replicated all the OS directories
+> >     under there (/bin, /sbin, /lib, /tmp...) and wrote files to those
+> >     new directories because their original disk was out of space.
+> >     When they got a third disk, they mounted it on /home and relocated
+> >     all the user directories to there so the OS could consume all the
+> >     space on both disks and grow to THREE WHOLE MEGABYTES (ooooh!).
+> >
+> > Research Unix never had /sbin nor /home, and the tale of the third disk
+> > doesn't ring any bells to me.
+> >
+> > 7th Edition has /usr/dmr and /usr/ken, not /home/dmr nor /usr/home/dmr :)
+> >
+> > Cheers,
+> >         Warren
+> > _______________________________________________
+> > TUHS mailing list
+> > TUHS at minnie.tuhs.org
+> > https://minnie.tuhs.org/mailman/listinfo/tuhs
+> >
+
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From wkt at tuhs.org  Fri Feb  1 12:03:32 2013
+From: wkt at tuhs.org (Warren Toomey)
+Date: Fri, 1 Feb 2013 12:03:32 +1000
+Subject: [TUHS] 1974 CACM Paper, was Re: history of sbin?
+In-Reply-To: <alpine.NEB.2.02.1301311747070.26654@t1.m.reedmedia.net>
+References: <alpine.NEB.2.02.1301311747070.26654@t1.m.reedmedia.net>
+Message-ID: <20130201020332.GA9737@neddie.local.net>
+
+Does anybody have a PDF of the 1974 Unix CACM paper, I seem to have
+misplaced my copy.
+
+The 6th Edition update to the CACM paper says:
+
+	Our PDP-11 has a 1M byte fixed-head disk, used for file system
+	storage and swapping, four moving-head disk drives which each
+	provide 2.5M bytes on removable disk cartridges, and a single
+	moving-head disk drive which uses removable 40M byte disk packs.
+
+The 7th Edition update says:
+
+	Our own PDP-11 has two 200-Mb moving-head disks for file system
+	storage and swapping.
+
+Thanks,
+	Warren
+
+
+From aps at ieee.org  Fri Feb  1 12:02:06 2013
+From: aps at ieee.org (Armando Stettner)
+Date: Thu, 31 Jan 2013 21:02:06 -0500
+Subject: [TUHS] history of sbin?
+In-Reply-To: <CAFn3HkO0_M-iNsJTHtVeQ_7SojZ5A87PK1LiqcH5noDrDuuXiw@mail.gmail.com>
+References: <alpine.NEB.2.02.1301311747070.26654@t1.m.reedmedia.net>
+ <20130201014149.GA9456@neddie.local.net>
+ <CAFn3HkO0_M-iNsJTHtVeQ_7SojZ5A87PK1LiqcH5noDrDuuXiw@mail.gmail.com>
+Message-ID: <B42FA21C-5386-4CD3-ACB0-6D6F46AF886C@ieee.org>
+
+This all reminds me of UNIX-gurus on Usenet....  :)
+
+  decvax!aps
+
+
+Begin forwarded message:
+
+> From: "ramble1035 @dslextreme.com" <ramble1035 at dslextreme.com>
+> Subject: Re: [TUHS] history of sbin?
+> Date: January 31, 2013 8:53:16 PM EST
+> To: tuhs at tuhs.org
+> 
+> Based on some vague recollections of early days at Sun...  I seem to recall that one of the main differences between /bin and /sbin was that the /sbin binaries were all built with static libraries rather than shared.  I heard /sbin described as "single-user bin"...
+> 
+> I don't know when /sbin first appeared, though.
+> 
+>   -- Chris
+> 
+> 
+> On Thu, Jan 31, 2013 at 5:41 PM, Warren Toomey <wkt at tuhs.org> wrote:
+> On Thu, Jan 31, 2013 at 06:06:15PM -0600, Jeremy C. Reed wrote:
+> > http://lists.busybox.net/pipermail/busybox/2010-December/074114.html
+> 
+> A few inaccuracies:
+> 
+>     When the operating system grew too big to fit on the first RK05 disk
+>     pack (their root filesystem) they let it leak into the second one,
+>     which is where all the user home directories lived (which is why
+>     the mount was called /usr).  They replicated all the OS directories
+>     under there (/bin, /sbin, /lib, /tmp...) and wrote files to those
+>     new directories because their original disk was out of space.
+>     When they got a third disk, they mounted it on /home and relocated
+>     all the user directories to there so the OS could consume all the
+>     space on both disks and grow to THREE WHOLE MEGABYTES (ooooh!).
+> 
+> Research Unix never had /sbin nor /home, and the tale of the third disk
+> doesn't ring any bells to me.
+> 
+> 7th Edition has /usr/dmr and /usr/ken, not /home/dmr nor /usr/home/dmr :)
+> 
+> Cheers,
+>         Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+> 
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130131/6714cde0/attachment.html>
+
+From BHuntsman at mail2.cu-portland.edu  Fri Feb  1 11:55:43 2013
+From: BHuntsman at mail2.cu-portland.edu (Benjamin Huntsman)
+Date: Fri, 1 Feb 2013 01:55:43 +0000
+Subject: [TUHS] 10th Edition, 8th Edition
+Message-ID: <5782C16A7C920E469B74E11B5608B8E733F68813@Kriegler.ntdom.cupdx>
+
+While the subject of historical stuff has been brought up, anyone thought about going another round with Attachmate to see if they'd extend the Ancient UNIX License to include v10, v9, and v8?  Attachmate is the current owner these days, aren't they?
+I'm sure they, Novell, AT&T, and Lucent all don't care.  But someone's still got to sign the line.  I'm really hoping to see v10x86, like v7x86 someday!!
+
+I've got a copy of v8 I'd love to make available some day, and I know there are at least one or two copies of v10 still in existence.  last I heard, there was no v9.
+
+Anyone here know anybody at Attachmate?
+
+Many thanks!
+
+-Ben
+
+
+
+
+From wkt at tuhs.org  Fri Feb  1 12:14:16 2013
+From: wkt at tuhs.org (Warren Toomey)
+Date: Fri, 1 Feb 2013 12:14:16 +1000
+Subject: [TUHS] 1974 CACM Paper, was Re: history of sbin?
+In-Reply-To: <20130201020332.GA9737@neddie.local.net>
+References: <alpine.NEB.2.02.1301311747070.26654@t1.m.reedmedia.net>
+ <20130201020332.GA9737@neddie.local.net>
+Message-ID: <20130201021415.GA9948@neddie.local.net>
+
+On Fri, Feb 01, 2013 at 12:03:32PM +1000, Warren Toomey wrote:
+> The 6th Edition update to the CACM paper says:
+> 
+> 	Our PDP-11 has a 1M byte fixed-head disk, used for file system
+> 	storage and swapping, four moving-head disk drives which each
+> 	provide 2.5M bytes on removable disk cartridges, and a single
+> 	moving-head disk drive which uses removable 40M byte disk packs.
+> 
+> The 7th Edition update says:
+> 
+> 	Our own PDP-11 has two 200-Mb moving-head disks for file system
+> 	storage and swapping.
+
+And Dennis' paper on the Evolution of Unix says:
+
+	During the last half of 1971, we supported three typists from
+	the Patent department, who spent the day busily typing, editing,
+	and formatting patent applications, and meanwhile tried to carry
+	on our own work. Unix has a reputation for supplying interesting
+	services on modest hardware, and this period may mark a high
+	point in the benefit/equipment ratio; on a machine with no memory
+	protection and a single .5 MB disk, every test of a new program
+	required care and boldness, because it could easily crash the
+	system, and every few hours’ work by the typists meant pushing
+	out more information onto DECtape, because of the very small disk.
+
+Any guesses as to the hardware?
+
+0.5MB: RF11-A/RS11
+1.0MB: RS04/EJS04
+2.5MB: RK05/RK11-D
+40MB:  RP03/RP11-C
+200MB: My peripherals handbooks only go up to 1975.
+
+Cheers,
+	Warren
+
+
+From norman at oclsc.org  Fri Feb  1 12:20:15 2013
+From: norman at oclsc.org (Norman Wilson)
+Date: Thu, 31 Jan 2013 21:20:15 -0500 (EST)
+Subject: [TUHS]  1974 CACM Paper, was Re: history of sbin?
+Message-ID: <20130201022016.0D3161DE374@lignose.oclsc.org>
+
+Herr Doctor Wkt:
+
+  Does anybody have a PDF of the 1974 Unix CACM paper, I seem to have
+  misplaced my copy.
+
+=======
+
+It appears to be generally available via the ACM Digital Library,
+of all places.  (No, I'm not so smart: Google pointed me there.)
+
+http://dl.acm.org/citation.cfm?id=361061
+
+It appears to be the genuine 1974 version, though my paper copy
+of that issue of CACM is buried behind too many boxes right now
+for me to dig it out and check.  Disk storage for `The PDP-11/45
+on which our UNIX installation is implemented' is as Warren
+describes for the 6th Edition update: 1MB fixed-head disk,
+four 2.5MB removable-cartridge drives, and a single 40MB
+removable-pack drive.
+
+Norman Wilson
+Toronto ON
+
+
+From wkt at tuhs.org  Fri Feb  1 12:34:19 2013
+From: wkt at tuhs.org (Warren Toomey)
+Date: Fri, 1 Feb 2013 12:34:19 +1000
+Subject: [TUHS] 1974 CACM Paper
+In-Reply-To: <20130201020332.GA9737@neddie.local.net>
+References: <alpine.NEB.2.02.1301311747070.26654@t1.m.reedmedia.net>
+ <20130201020332.GA9737@neddie.local.net>
+Message-ID: <20130201023419.GA10684@neddie.local.net>
+
+On Fri, Feb 01, 2013 at 12:03:32PM +1000, Warren Toomey wrote:
+> Does anybody have a PDF of the 1974 Unix CACM paper, I seem to have
+> misplaced my copy.
+
+I found it online: http://dl.acm.org/citation.cfm?id=361061. Says the
+same thing as the 6th Ed version: 1M byte fixed-head disk, four 2.5M
+disks and a removable 40M byte disk pack.
+
+Cheers,
+	Warren
+
+
+From wkt at tuhs.org  Fri Feb  1 12:54:16 2013
+From: wkt at tuhs.org (Warren Toomey)
+Date: Fri, 1 Feb 2013 12:54:16 +1000
+Subject: [TUHS] history of sbin?
+In-Reply-To: <20130201020332.GA9737@neddie.local.net>
+References: <alpine.NEB.2.02.1301311747070.26654@t1.m.reedmedia.net>
+ <20130201020332.GA9737@neddie.local.net>
+Message-ID: <20130201025416.GA11175@neddie.local.net>
+
+And finally (I'll shut up now), the 2nd Edition kernel had hard-coded
+drivers for RF-11 and RK03 disks.
+
+Cheers,
+	Warren
+
+
+From lm at bitmover.com  Fri Feb  1 13:09:05 2013
+From: lm at bitmover.com (Larry McVoy)
+Date: Thu, 31 Jan 2013 19:09:05 -0800
+Subject: [TUHS] history of sbin?
+In-Reply-To: <B42FA21C-5386-4CD3-ACB0-6D6F46AF886C@ieee.org>
+References: <alpine.NEB.2.02.1301311747070.26654@t1.m.reedmedia.net>
+ <20130201014149.GA9456@neddie.local.net>
+ <CAFn3HkO0_M-iNsJTHtVeQ_7SojZ5A87PK1LiqcH5noDrDuuXiw@mail.gmail.com>
+ <B42FA21C-5386-4CD3-ACB0-6D6F46AF886C@ieee.org>
+Message-ID: <20130201030905.GV7285@bitmover.com>
+
+On Thu, Jan 31, 2013 at 09:02:06PM -0500, Armando Stettner wrote:
+> This all reminds me of UNIX-gurus on Usenet....  :)
+> 
+>   decvax!aps
+
+...!uwvax!lm
+
+Though it took me a while, for a long time I was
+
+...!uwvax!geowhiz!lm
+
+Which was OK.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From aps at ieee.org  Fri Feb  1 13:24:02 2013
+From: aps at ieee.org (Armando Stettner)
+Date: Thu, 31 Jan 2013 22:24:02 -0500
+Subject: [TUHS] history of sbin?
+In-Reply-To: <B42FA21C-5386-4CD3-ACB0-6D6F46AF886C@ieee.org>
+References: <alpine.NEB.2.02.1301311747070.26654@t1.m.reedmedia.net>
+ <20130201014149.GA9456@neddie.local.net>
+ <CAFn3HkO0_M-iNsJTHtVeQ_7SojZ5A87PK1LiqcH5noDrDuuXiw@mail.gmail.com>
+ <B42FA21C-5386-4CD3-ACB0-6D6F46AF886C@ieee.org>
+Message-ID: <DC8B1F73-C48F-4A0E-A8FC-866FC611908C@ieee.org>
+
+I stand corrected: UNIX-wizards....
+
+Thanks, Ron.  :)
+
+
+Begin forwarded message:
+
+> From: Armando Stettner <aps at ieee.org>
+> Subject: Re: [TUHS] history of sbin?
+> Date: January 31, 2013 9:02:06 PM EST
+> To: "ramble1035 @dslextreme.com" <ramble1035 at dslextreme.com>
+> Cc: tuhs at tuhs.org
+> 
+> This all reminds me of UNIX-gurus on Usenet....  :)
+> 
+>   decvax!aps
+> 
+> 
+> Begin forwarded message:
+> 
+>> From: "ramble1035 @dslextreme.com" <ramble1035 at dslextreme.com>
+>> Subject: Re: [TUHS] history of sbin?
+>> Date: January 31, 2013 8:53:16 PM EST
+>> To: tuhs at tuhs.org
+>> 
+>> Based on some vague recollections of early days at Sun...  I seem to recall that one of the main differences between /bin and /sbin was that the /sbin binaries were all built with static libraries rather than shared.  I heard /sbin described as "single-user bin"...
+>> 
+>> I don't know when /sbin first appeared, though.
+>> 
+>>   -- Chris
+>> 
+>> 
+>> On Thu, Jan 31, 2013 at 5:41 PM, Warren Toomey <wkt at tuhs.org> wrote:
+>> On Thu, Jan 31, 2013 at 06:06:15PM -0600, Jeremy C. Reed wrote:
+>> > http://lists.busybox.net/pipermail/busybox/2010-December/074114.html
+>> 
+>> A few inaccuracies:
+>> 
+>>     When the operating system grew too big to fit on the first RK05 disk
+>>     pack (their root filesystem) they let it leak into the second one,
+>>     which is where all the user home directories lived (which is why
+>>     the mount was called /usr).  They replicated all the OS directories
+>>     under there (/bin, /sbin, /lib, /tmp...) and wrote files to those
+>>     new directories because their original disk was out of space.
+>>     When they got a third disk, they mounted it on /home and relocated
+>>     all the user directories to there so the OS could consume all the
+>>     space on both disks and grow to THREE WHOLE MEGABYTES (ooooh!).
+>> 
+>> Research Unix never had /sbin nor /home, and the tale of the third disk
+>> doesn't ring any bells to me.
+>> 
+>> 7th Edition has /usr/dmr and /usr/ken, not /home/dmr nor /usr/home/dmr :)
+>> 
+>> Cheers,
+>>         Warren
+>> _______________________________________________
+>> TUHS mailing list
+>> TUHS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>> 
+>> _______________________________________________
+>> TUHS mailing list
+>> TUHS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130131/0aed610f/attachment.html>
+
+From cyrille.lefevre-lists at laposte.net  Fri Feb  1 14:53:22 2013
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Fri, 01 Feb 2013 05:53:22 +0100
+Subject: [TUHS] 1974 CACM Paper, was Re: history of sbin?
+In-Reply-To: <20130201022016.0D3161DE374@lignose.oclsc.org>
+References: <20130201022016.0D3161DE374@lignose.oclsc.org>
+Message-ID: <510B4A42.3000801@laposte.net>
+
+Le 01/02/2013 03:20, Norman Wilson a écrit :
+> Herr Doctor Wkt:
+>
+>    Does anybody have a PDF of the 1974 Unix CACM paper, I seem to have
+>    misplaced my copy.
+>
+> =======
+>
+> It appears to be generally available via the ACM Digital Library,
+> of all places.  (No, I'm not so smart: Google pointed me there.)
+>
+> http://dl.acm.org/citation.cfm?id=361061
+
+yet another place :
+
+The UNIX Time-Sharing System: july 1978
+http://www3.alcatel-lucent.com/bstj/vol57-1978/bstj-vol57-issue06.html
+
+
+Regards,
+
+Cyrille Lefevre
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+
+From norman at oclsc.org  Fri Feb  1 14:58:25 2013
+From: norman at oclsc.org (Norman Wilson)
+Date: Thu, 31 Jan 2013 23:58:25 -0500
+Subject: [TUHS] history of sbin?
+Message-ID: <1359694961.28530.for-standards-violators@oclsc.org>
+
+Armando Stettner:
+
+>   decvax!aps
+
+Larry McVoy:
+
+  ...!uwvax!lm
+
+=====
+
+Well, if we're going to play the one-up game:
+
+research!norman
+
+though for a few years before that it was
+
+research!cithep!norman
+
+Norman Wilson
+(now) Toronto ON
+
+
+From aap at papnet.eu  Fri Feb  1 22:20:57 2013
+From: aap at papnet.eu (Angelo Papenhoff)
+Date: Fri, 01 Feb 2013 13:20:57 +0100
+Subject: [TUHS] 10th Edition, 8th Edition
+In-Reply-To: <5782C16A7C920E469B74E11B5608B8E733F68813@Kriegler.ntdom.cupdx>
+References: <5782C16A7C920E469B74E11B5608B8E733F68813@Kriegler.ntdom.cupdx>
+Message-ID: <82d6f574a75e78bc92dcc9f21a2e1542@localhost>
+
+On Fri, 1 Feb 2013 01:55:43 +0000, Benjamin Huntsman wrote:
+> While the subject of historical stuff has been brought up, anyone
+> thought about going another round with Attachmate to see if they'd
+> extend the Ancient UNIX License to include v10, v9, and v8?
+> Attachmate is the current owner these days, aren't they?
+> I'm sure they, Novell, AT&T, and Lucent all don't care.  But
+> someone's still got to sign the line.  I'm really hoping to see
+> v10x86, like v7x86 someday!!
+>
+> I've got a copy of v8 I'd love to make available some day, and I know
+> there are at least one or two copies of v10 still in existence.  last
+> I heard, there was no v9.
+>
+> Anyone here know anybody at Attachmate?
+>
+> Many thanks!
+>
+> -Ben
+
+Great to hear there still exist copies of later research Unices.
+We should definitely ask for an extension of the Ancient UNIX License
+(possibly to include SysIII or even SysV as well?).
+
+
+
+From wes.parish at paradise.net.nz  Sat Feb  2 16:58:31 2013
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Sat, 02 Feb 2013 19:58:31 +1300
+Subject: [TUHS] 10th Edition, 8th Edition
+In-Reply-To: <82d6f574a75e78bc92dcc9f21a2e1542@localhost>
+References: <5782C16A7C920E469B74E11B5608B8E733F68813@Kriegler.ntdom.cupdx>
+ <82d6f574a75e78bc92dcc9f21a2e1542@localhost>
+Message-ID: <D3B5149F-34E0-45EF-99DD-D6A8EC43B8A9@paradise.net.nz>
+
+That would make sense. SysV is about twenty years old, and its status  
+as an ultra-holy reliquary of trade secrets and whatnot has been  
+severely dented by Sun's open-sourcing of Solaris.
+
+If anyone knows who to contact at Attachmate, I'd say, go for the  
+full bag, of Research Unix and commercial Unix.
+
+Wesley Parish
+
+On 2/02/2013, at 1:20 AM, Angelo Papenhoff wrote:
+
+> On Fri, 1 Feb 2013 01:55:43 +0000, Benjamin Huntsman wrote:
+>> While the subject of historical stuff has been brought up, anyone
+>> thought about going another round with Attachmate to see if they'd
+>> extend the Ancient UNIX License to include v10, v9, and v8?
+>> Attachmate is the current owner these days, aren't they?
+>> I'm sure they, Novell, AT&T, and Lucent all don't care.  But
+>> someone's still got to sign the line.  I'm really hoping to see
+>> v10x86, like v7x86 someday!!
+>>
+>> I've got a copy of v8 I'd love to make available some day, and I know
+>> there are at least one or two copies of v10 still in existence.  last
+>> I heard, there was no v9.
+>>
+>> Anyone here know anybody at Attachmate?
+>>
+>> Many thanks!
+>>
+>> -Ben
+>
+> Great to hear there still exist copies of later research Unices.
+> We should definitely ask for an extension of the Ancient UNIX License
+> (possibly to include SysIII or even SysV as well?).
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From ron at ronnatalie.com  Sat Feb  2 17:38:32 2013
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Sat, 2 Feb 2013 02:38:32 -0500
+Subject: [TUHS] 10th Edition, 8th Edition
+In-Reply-To: <D3B5149F-34E0-45EF-99DD-D6A8EC43B8A9@paradise.net.nz>
+References: <5782C16A7C920E469B74E11B5608B8E733F68813@Kriegler.ntdom.cupdx>
+ <82d6f574a75e78bc92dcc9f21a2e1542@localhost>
+ <D3B5149F-34E0-45EF-99DD-D6A8EC43B8A9@paradise.net.nz>
+Message-ID: <524AD5A3-3471-4656-91D6-CECBAA805513@ronnatalie.com>
+
+
+On Feb 2, 2013, at 1:58 AM, Wesley Parish <wes.parish at paradise.net.nz> wrote:
+
+> That would make sense. SysV is about twenty years old, and its status as an ultra-holy reliquary of trade secrets and whatnot has been severely dented by Sun's open-sourcing of Solaris.
+
+
+Twenty years is pretty much when USL got out of the UNIX biz entirely.   System V actually started thirty years ago or so.   I worked on System V over BSD project with Doug Gwyn when still at BRL and I left there in 1987.   Amusingly, I continued to find copies of the "Ron" shell kicking around for decades after that.
+
+
+
+From mrox128 at gmail.com  Mon Feb  4 01:34:48 2013
+From: mrox128 at gmail.com (Rox 64)
+Date: Sun, 3 Feb 2013 16:34:48 +0100
+Subject: [TUHS] 10th Edition, 8th Edition
+In-Reply-To: <524AD5A3-3471-4656-91D6-CECBAA805513@ronnatalie.com>
+References: <5782C16A7C920E469B74E11B5608B8E733F68813@Kriegler.ntdom.cupdx>
+ <82d6f574a75e78bc92dcc9f21a2e1542@localhost>
+ <D3B5149F-34E0-45EF-99DD-D6A8EC43B8A9@paradise.net.nz>
+ <524AD5A3-3471-4656-91D6-CECBAA805513@ronnatalie.com>
+Message-ID: <CAGWMD9EpTJ-uo+03sXWsKkcQMNDeriWyKZVr0dHyt-Y2j1mo7A@mail.gmail.com>
+
+Well, maybe Benjamin could release his tapes "by accident". Dennis Ritchie
+had a similar "problem" with uriel from cat-v and the Eighth Edition
+manuals ;)
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130203/e0107dde/attachment.html>
+
+From lm at bitmover.com  Mon Feb  4 02:37:52 2013
+From: lm at bitmover.com (Larry McVoy)
+Date: Sun, 3 Feb 2013 08:37:52 -0800
+Subject: [TUHS] 10th Edition, 8th Edition
+In-Reply-To: <CAGWMD9EpTJ-uo+03sXWsKkcQMNDeriWyKZVr0dHyt-Y2j1mo7A@mail.gmail.com>
+References: <5782C16A7C920E469B74E11B5608B8E733F68813@Kriegler.ntdom.cupdx>
+ <82d6f574a75e78bc92dcc9f21a2e1542@localhost>
+ <D3B5149F-34E0-45EF-99DD-D6A8EC43B8A9@paradise.net.nz>
+ <524AD5A3-3471-4656-91D6-CECBAA805513@ronnatalie.com>
+ <CAGWMD9EpTJ-uo+03sXWsKkcQMNDeriWyKZVr0dHyt-Y2j1mo7A@mail.gmail.com>
+Message-ID: <20130203163752.GH27484@bitmover.com>
+
+I hate it when those "problems" happen.  Such a shame.
+
+On Sun, Feb 03, 2013 at 04:34:48PM +0100, Rox 64 wrote:
+> Well, maybe Benjamin could release his tapes "by accident". Dennis Ritchie
+> had a similar "problem" with uriel from cat-v and the Eighth Edition
+> manuals ;)
+
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From arnold at skeeve.com  Tue Feb 12 04:11:21 2013
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Mon, 11 Feb 2013 20:11:21 +0200
+Subject: [TUHS] [9fans] Ancient History: "Electronic Mail Without
+	Aliases"
+In-Reply-To: <3b6a67956d8b807d3d3319a395892b67@9srv.net>
+Message-ID: <201302111811.r1BIBL3I003454@skeeve.com>
+
+Adding the TUHS people...
+
+In article <3b6a67956d8b807d3d3319a395892b67 at 9srv.net> you write:
+>Does anyone on the list have a copy of or pointer to
+>"Electronic Mail Without Aliases", by Elliott and Lesk?
+>It's referenced in the 8th Edition Unix manual, but
+>I've never read it (and only have vol1 of the manual).
+
+Thanks,
+
+Arnold
+-- 
+Aharon (Arnold) Robbins 			arnold AT skeeve DOT com
+P.O. Box 354		Home Phone: +972 8 979-0381
+Nof Ayalon
+D.N. Shimshon 9978500	ISRAEL
+
+
+From arnold at skeeve.com  Thu Feb 14 04:20:34 2013
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Wed, 13 Feb 2013 20:20:34 +0200
+Subject: [TUHS] "Electronic Mail Without Aliases"
+Message-ID: <20130213182034.GA2498@chumley>
+
+Hi All.
+
+Mike Lesk sent me the paper and gave me permission to send it out.
+See attached.
+
+Warren, please find a spot for this in the archives.
+
+Thanks!
+
+Arnold
+-- 
+Aharon (Arnold) Robbins 			arnold AT skeeve DOT com
+P.O. Box 354		Home Phone: +972 8 979-0381
+Nof Ayalon
+D.N. Shimshon 9978500	ISRAEL
+-------------- next part --------------
+>From lesk at rci.rutgers.edu  Wed Feb 13 20:10:38 2013
+Return-Path: <lesk at rci.rutgers.edu>
+
+From lesk at rci.rutgers.edu  Wed Feb 13 07:11:11 2013
+From: lesk at rci.rutgers.edu (Michael Lesk)
+Date: Tue, 12 Feb 2013 16:11:11 -0500 (EST)
+Subject: looking for "Electronic Mail Without Aliases"
+In-Reply-To: <201302122105.r1CL5Yhd022015@freefriends.org>
+References: <201302121736.r1CHajQJ003671@skeeve.com> <alpine.LFD.2.03.1302121255030.2669@rci.rutgers.edu> <201302122105.r1CL5Yhd022015@freefriends.org>
+Message-ID: <alpine.LFD.2.03.1302121610280.4457@rci.rutgers.edu>
+
+No objection.  There can't be anything proprietary after this many years.
+Michael
+
+
+On Tue, 12 Feb 2013, arnold at skeeve.com wrote:
+
+> Michael Lesk <lesk at rci.rutgers.edu> wrote:
+>
+>> Found an electronic copy.  Attached as source.  Let me know
+>> if you would like me to try to run it through groff and give
+>> you pdf.
+>
+> Thanks!  I can try that myself.
+>
+> Do you have objections to my passing this on to the Unix Historical
+> Society?
+>
+> Arnold
+>
+
+
+--Boundary_(ID_K9nmJAsiOpLGPUzg7dZ/0Q)
+Content-type: text/texmacs; NAME=post.tm; CHARSET=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-disposition: attachment; filename=post.tm
+
+.if n .ls 2
+.ds M post
+.TM "80-1273-7 80-1274-11" 39199 39199-11
+.ND September 30, 1980
+.TL
+Electronic Mail Without Aliases
+.AU "MH 2C-511" 2879
+R. Jane Elliott
+.AU "MH 2C-572" 6377
+Michael Lesk
+.OK
+UNIX
+Electronic mail
+.\".so /usr/mel/newCS
+.AB
+Electronic mail at Bell Labs is usually routed to a system and a user-id.
+There are now over 100 BTL UNIX systems connected by the UUCP network,
+and it is more and more of a nuisance to remember where your correspondents
+log in and what user-id they use.
+The new utility
+.I \*M
+looks up the real names of people in a database of BTL UNIX
+users, and sends mail appropriately.
+The most specific kind of address is of the form
+``ruby.jane.elliott-mh-1273''
+but everything except ``elliott'' is optional.
+When someone has
+no computer address, the mail is routed to a nearby clerk,
+with appropriate labels so that the mail need merely be printed
+and then put in the company mail.
+If the eventual address is not only non-electronic but outside
+the company (e.g. at AT&T) the mail is routed to a clerk
+near the sender and addressed for the U.S. Mail.
+.PP
+The names, room numbers, and department numbers of all employees
+are updated automatically from the standard company files;
+userids can be updated by the users themselves, simply by sending
+the appropriate electronic mail.
+A line of the form
+.DS C
+.ft PO
+UPDATE: research!mel IS michael.e.lesk-mh-1274
+.DE
+mailed to
+.I \(gapostoffice\(ga!mailroom
+.ft 1
+will update the appropriate listing.
+.PP
+As with other data bases, there is the usual choice between
+distributing the data base or routing all queries to a single site.
+The
+.I \*M
+command may be used with local directories of users, or all mail
+may be sent to a central site which has a phone book and then
+the central site can
+route and deliver the message.
+In addition, it is possible to route some mail locally and then
+forward other mail to the central site.
+The individual user may also have a directory
+of abbreviations;
+thus the directory is really a hierarchy of directories
+running through personal directories, local site directories,
+and finally large central directories.
+.AE
+.CS 5 0 5 1 0 2
+.SH
+Introduction
+.PP
+There are over 100 Bell Labs UNIX systems now in the UUCP network.
+It's hard to remember where everyone you know works so that you
+can send them electronic mail.
+The trend from somewhat meaningful system names
+(e.g.
+.I mhwpa
+or
+.I ihuxa)
+to meaningless ones
+(e.g.
+.I alice,
+.I eagle,
+or
+.I groucho)
+makes it even more difficult to remember who works where.
+As a result, electronic mail is largely used
+within single systems, with
+only 13% of all mail being to another system.
+By contrast, 19% of regular BTL paper mail
+goes not just to other groups but to other locations.
+.\"this number came from reading mail envelopes, if
+.\"anyone ever asks. 15 of 80 addresses changed loc.
+..
+To make it easier to send electronic mail,
+the command
+.I \*M
+maintains data bases of userids and real names.
+It can be used to address electronic mail to people
+by their real names.
+.PP
+We maintain a data base which gives, for all Bell Labs employees,
+their real name, department number, location and room number,
+UNIX system name, and user-id.
+Non-employees can also be entered in the data base if
+we wish to send them mail (e.g. AT&T users of BTL computer systems).
+The real name, department, and room address of each employee
+are taken from the Bell Labs phone book and regularly updated.
+We keep a list of UNIX names and user-ids.
+We store the data in a B-tree, using Peter Weinberger's programs,
+.[
+%A P. J. Weinberger
+%T UNIX B-trees
+%M TM 80-1272-xx
+%O To appear.
+.]
+and can retrieve either the address of a particular individual or
+the real name of a computer user.
+A smaller data base of clerks is also maintained.  This is a list,
+similar to the last, of people with computer addresses who can
+be asked to take paper mail and put it in
+mailboxes.
+.SH
+Implementation
+.PP
+Given a letter and a destination name, the program first
+identifies the person in its name list.  If the name is
+ambiguous, and the user is at the terminal, a menu of
+possible individuals is presented and the user
+is asked to choose one.
+When the program has identified the addressee, it dispatches the
+mail if possible.  Several routes are available:
+.IP 1.
+If the addressee has an electronic mail address, the mail is
+sent electronically.
+.IP 2.
+If the addressee is at Bell Labs but has no login user-id, the
+mail is formatted for paper and sent electronically to
+the closest clerk to the addressee.  ``Closest'' is defined
+by the organization number; i.e. same department if possible,
+otherwise same laboratory if possible, otherwise same division.
+If no clerk is registered anywhere in that organization,
+then the program selects a clerk at that main location.
+.IP 3.
+If the addressee is not at Bell Labs, but the sender is, the
+mail is formatted for paper and sent electronically to the
+closest clerk to the sender.  This clerk then puts the letter
+in the external mail.
+.IP 4.
+If we have no electronic address for the addressee, and neither
+the addressee nor the sender is at Bell Labs, then at present
+we abandon the mail.  There is no reason in principle not to
+have a list of clerks outside BTL, at least at Western and AT&T,
+but at the moment we have decided not to keep such a list.
+.LP
+In any case, the mail is identified as to the sender: we look up
+the user invoking the command in our data base, and supply his
+real name and department in the mail.
+The pattern of operation is shown in the figure below.
+The mail moves electronically until it reaches either
+the final destination or the clerk.
+If the destination is at BTL, the clerk is near the
+recipient; otherwise the clerk is near the
+sender.
+.PS
+ box "sender"
+arrow
+Box1:
+ box "mailroom" "computer"
+arrow up from Box1.n
+ box "phone" "book"
+arrow down from Box1.s
+ box "user" "list"
+move to Box1
+move right
+move right
+{
+move up
+Box4:
+box "target" "system"
+}
+{
+move down
+Box5:
+box "nearby" "clerk"
+}
+move right
+move right
+Box6:
+ box "recipient"
+arrow from Box1.e to Box4.sw
+arrow from Box1.e to Box5.nw
+arrow from Box4.se to Box6.w "electronic " rjust
+arrow from Box5.ne to Box6.w "paper " rjust
+.PE
+.PP
+Clearly,
+.I \*M
+can only be used to communicate with sites in
+.I uucp
+communication with the mailroom computer.
+We hope that some administrative solution, perhaps similar to the
+one proposed by Grampp, Koenig, and Ritchie,
+.[
+%A F. T. Grampp
+%A A. R. Koenig
+%A D. M. Ritchie
+%T Directory assistance for UUCP
+%M MF 3644-800318.01
+%D March 18, 1980
+.]
+will provide for general updating of
+.I uucp
+lists.
+In any case keeping these mail lists up to date on
+one computer is less work than keeping them up to date
+everywhere.
+.SH
+Usage
+.PP
+The
+.I \*M
+command is used just as the regular
+.I mail
+command is used.
+There is no difference at all if you intend to
+read mail, since
+.I \*M
+invoked without arguments just executes
+ordinary
+.I mail.
+If the user has a shell environment parameter MAILP set, it
+provides the name of the mail program; otherwise ``mail''
+is used.
+This permits a user who prefers Berkeley mail or other mail
+variants to have it invoked instead of the standard mail command.
+To send mail, you type
+.I
+\*M addressee1 addressee2 ...
+.R
+and supply the message on the standard input.
+The usual
+.I -R
+option is also recognized (this specifies ``return receipt requested''
+to give positive confirmation that the mail has been received and read).
+The format for addressee is
+.I firstname.middle.lastname-location-department
+in which everything but the last name is optional.
+Upper and lower case letters are equivalent throughout, and
+the location and department may be in either order.
+Location should be specified as the ordinary Bell Labs
+2-letter code;
+AT&T building numbers are not recognized.
+The first name, middle name, and department may be searched as
+prefixes, i.e. initials will match names and as many digits
+of the department number as are known may be used.
+.PP
+To update your listing, send mail to
+``\(gapostoffice\(ga!mailroom''
+of the form
+.DS C
+.ft PO
+UPDATE: system!userid IS john.a.smith-ho-3456
+.DE
+where 3456 is the department number.
+This produces a listing in the directory as indicated,
+changing the previous one if one existed.
+The Bell Labs location and room number are obtained from
+the standard Bell Labs telephone book data and are not
+supplied by the user.
+To register a U.S. mail address only, and not
+a computer address, send
+.DS C
+.ft PO
+UPDATE: john.smith USADDR WECo.; 220 Broadway; New York 10007
+.DE
+Sometimes, it may be desirable to define a particular userid,
+but not to direct mail there.  It may, for example, be a secondary
+userid for the user in question; or, although primary, it may be
+a userid for someone who rarely uses the computer.
+It is nevertheless useful for
+.I \*M
+to know who owns the userid, so that it can identify mail sent
+from that userid.  To indicate ownership of a userid without
+getting mail sent to it, send
+.DS C
+.ft PO
+UPDATE: system!userid ANOTHER john.smith
+.DE
+to the same place
+(\(gapostoffice\(ga!mailroom).
+To simply delete a listing, without replacing it,
+send mail of the form
+.DS C
+.ft PO
+UPDATE: system!userid WAS john.a.smith-ho-3456
+.DE
+to the usual place.
+Changes in room number or location are picked up automatically from
+the Bell Labs telephone directory and need not be sent in.
+We hope that cooperating systems will, perhaps once a week, send
+in a current list of their users so that people will not need to
+send their own change of address forms.
+To aid in system administration, there is another update
+command
+.ft PO
+NEWPASSWD
+.ft 1
+which is used in the normal way, i.e.
+.DS
+.ft PO
+UPDATE: system!userid NEWPASSWD john.a.smith-ho-3456
+.DE
+and is taken to mean ``IS'' if the userid does not already appear
+in the lists and ``ANOTHER'' if it does.  This is thus
+an appropriate command when a new password file is received
+from a remote site and all the names in it, old and new, are to
+be fed to the updating program.
+.PP
+There are two ways this command can be made available on other systems.
+First, the data bases could be distributed.
+Although perfectly feasible, this involves distributing
+about 1,200,000 bytes of information.
+Secondly, a site can define
+.I \*M
+as
+.DS C
+.ft PO
+uux - "\(gapostoffice\(ga!\*M -u (`uname -n`!`logname`) $*"
+.DE
+where
+.I uname
+and
+.I logname
+are the standard USG commands which print, respectively, the system
+name and the user name.  Systems deriving from Research versions
+will need to replace
+.I \(gauname\(ga
+by the explicit name of the system and
+.I logname
+by the equivalent command, which is named
+.I getuid.
+This will invoke
+.I \*M
+remotely via
+.I uux;
+the mailroom system will then process the mail and forward it.
+In this case, diagnostics are returned when
+a direct invocation of the program would have resulted
+in a choice of several names.
+.PP
+We have specified the name of the mailroom computer through
+a
+.I postoffice
+command which prints its name.
+At present the appropriate name
+is
+.I alice
+and the
+.I postoffice
+command should just be
+.I "echo alice"
+or any equivalent.
+In the future the ``mailroom'' computer may be moved to
+a different site, depending on administrative decisions.
+Several sites might be used, particularly if it is desired
+to take advantage of local area networks
+in some locations.
+Another reason for using several sites might be
+to permit security-sensitive sites to avoid having
+to join even the UUCP public network and yet exchange
+mail among themselves.
+In either case, the data bases would have to be distributed,
+possibly with deletions for security reasons.
+.SH
+Local and Personal Lists
+.PP
+To avoid typing of long addresses, and to facilitate the
+maintenance of mailing lists,
+.I \*M
+permits users to maintain their own lists of abbreviations.
+All names are first looked for in a file
+.I $HOME/lib/mail.aliases
+where
+.I $HOME
+is the invoker's login directory.
+This file, if it exists, should contain lines like
+.DS
+jane	elliott-127
+sandy	a.g.fraser-mh
+steve	s.c.johnson-1273
+\&\s+2.\|.\|.\s0
+1273	jane sandy steve  \s+2.\|.\|.\s0
+.DE
+and can be used either for giving mailing lists or expanding
+abbreviations.
+If an address matches the first word on any line,
+mail is sent to the names that follow on the line.
+The following names must either be in normal
+.I \*M
+addressee format,
+or must be ordinary
+.I system!userid
+names (discouraged, since it requires you to do your own list maintenance),
+or must be defined elsewhere
+in the file.
+Infinite loops of definitions are rejected (infinite
+is defined as five or greater).
+The entire local directory system requires, of course, that you actually
+have a copy of
+.I \*M
+on your system, and not merely
+the
+.I uux
+command to execute on a remote postoffice.
+.PP
+When
+.I \*M
+is unable to find a name in its telephone book,
+it can forward the request to another system.
+We imagine that systems are likely to maintain a database of their
+own users.
+This prevents local messages from requiring
+a remote call (the time
+for
+.I uucp
+between systems is 2 minutes or so).
+The non-local mail can still be forwarded to
+a central site.
+If this is desired, the local site must have its own
+copy of the
+.I \*M
+command, installed as such, and must have
+the
+.I uux
+line given above as a command
+.I genpost.
+The
+.I genpost
+command will be invoked by
+.I \*M
+for the names it can not handle locally.
+.PP
+At present, we envisage one central Bell Laboratories directory.
+However, if some group of systems is connected by a hardwired network,
+and wishes to speed up service, they may want to have a copy of the
+full directory.
+For example, it may be reasonable to provide another postoffice system
+at Indian Hill.
+It is also possible, if this system spreads to Bell System
+computers outside BTL, that there should
+be a master list of all participating UNIX
+systems and their users,
+to permit company to company electronic mail.
+The disadvantage of this hierarchical arrangement, of course,
+is that it delays the error message on ordinary misspellings
+of names.
+Some experience will be necessary to
+decide how best to arrange matters.
+.SH
+Future Plans
+.PP
+Conceivably, traffic may get so large that we will be forced to dedicate
+a computer system to electronic mail.
+An average mail message to a remote site takes 6.8 seconds of
+11/70 CPU time (all but about 1 second is in ordinary mail).
+Although this could be reduced somewhat by avoiding as many
+process invocations as now occur,
+even so it seems there is a capacity for thousands of
+remote messages per day, which seems adequate for a long time.
+The mail traffic from people on our system, for example, is around 140 messages
+sent per day, of which 30 go to remote sites.
+.PP
+A dedicated machine could be rather small; it would need only perhaps
+a 5Mbyte disk, and all of the mail programs fit in
+about 30K address space.
+However, note that a large number of ACUs would be desirable;
+consider, for example, the 11/70, which takes 7 CPU seconds per call
+of 2 minutes real time each.
+This implies about 18 calls at a time, and if half are
+outgoing a need for 9 ACUs.
+An 11/23, which is much slower, might need perhaps 3 ACUs.
+.PP
+In the event that special hardware is dedicated to
+electronic mail, it may be necessary to charge
+separately in order to recover the costs.
+We thus envisage the eventual design and sale of UNIX stamps,
+to be used for electronic postage.  However, following the
+example of the Trucial States and San Marino, we see no reason
+why these could not be sold to collectors, thus turning a net profit.
+.SH
+Acknowledgment
+.PP
+The help and encouragement of A. G. Fraser is gratefully acknowledged;
+also, the suggestions of R. F. Rosin have been most valuable.
+.SG
+
+--Boundary_(ID_K9nmJAsiOpLGPUzg7dZ/0Q)--
+
+
+From arnold at skeeve.com  Fri Feb 15 18:06:51 2013
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Fri, 15 Feb 2013 01:06:51 -0700
+Subject: [TUHS] "Electronic Mail Without Aliases"
+In-Reply-To: <20130215080134.GK21800@mercury.ccil.org>
+References: <20130213182034.GA2498@chumley>
+ <20130215080134.GK21800@mercury.ccil.org>
+Message-ID: <201302150806.r1F86pVq017529@freefriends.org>
+
+> > Mike Lesk sent me the paper and gave me permission to send it out.
+> > See attached.
+
+John Cowan <cowan at mercury.ccil.org> wrote:
+> What's the correct troff command line to format this?
+
+First, edit post.tm and change the PO font to CW.  Then
+
+	refer post.tm | pic | troff -ms | ps2pdf - post.pdf
+
+I sent Warren (off list) a copy that I dorked with a bit, using groff and
+the original V7 ms macros to produce a farily authentic looking Bell Labs
+style memorandum.  He answered that he is out of the country but will
+deal with putting things into the archive when he gets back.
+
+Thanks,
+
+Arnold
+
+
+From cowan at mercury.ccil.org  Fri Feb 15 18:18:57 2013
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Fri, 15 Feb 2013 03:18:57 -0500
+Subject: [TUHS] "Electronic Mail Without Aliases"
+In-Reply-To: <201302150806.r1F86pVq017529@freefriends.org>
+References: <20130213182034.GA2498@chumley>
+ <20130215080134.GK21800@mercury.ccil.org>
+ <201302150806.r1F86pVq017529@freefriends.org>
+Message-ID: <20130215081856.GM21800@mercury.ccil.org>
+
+arnold at skeeve.com scripsit:
+
+> First, edit post.tm and change the PO font to CW.  Then
+> 
+> 	refer post.tm | pic | troff -ms | ps2pdf - post.pdf
+
+I changed the line terminators to LFs and removed the undefined .TM
+macro in line 3 of post.tm.  I then got these errors from troff:
+
+post.tm:116: macro error: unknown reference type `5'
+post.tm:208: macro error: unknown reference type `5'
+
+Dr. Google can provide no explanation of these.  Lines 116 and 208 (or
+117 and 209 of the original source) are ordinary lines of text with
+no special controls.
+
+Then I get the following error from ps2pdf:
+
+Error: /undefined in x
+Operand stack:
+
+Execution stack:
+   %interp_exit   .runexec2   --nostringval--   --nostringval--   --nostringval--   2   %stopped_push   --nostringval--   --nostringval--   --nostringval--   false   1   %stopped_push   1910   1   3   %oparray_pop   1909   1   3   %oparray_pop   1893   1   3   %oparray_pop   1787   1   3   %oparray_pop   --nostringval--   %errorexec_pop   .runexec2   --nostringval--   --nostringval--   --nostringval--   2   %stopped_push   --nostringval--
+Dictionary stack:
+   --dict:1171/1684(ro)(G)--   --dict:0/20(G)--   --dict:77/200(L)--
+Current allocation mode is local
+GPL Ghostscript 9.06: Unrecoverable error, exit code 1
+
+The resulting PDF contains a single blank page.
+
+I'm using groff 1.21 and GPL Ghostscript 9.06.
+
+-- 
+John Cowan   cowan at ccil.org    http://ccil.org/~cowan
+I am he that buries his friends alive and drowns them and draws them
+alive again from the water. I came from the end of a bag, but no bag
+went over me.  I am the friend of bears and the guest of eagles. I am
+Ringwinner and Luckwearer; and I am Barrel-rider.  --Bilbo to Smaug
+
+
+From cowan at mercury.ccil.org  Fri Feb 15 18:01:34 2013
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Fri, 15 Feb 2013 03:01:34 -0500
+Subject: [TUHS] "Electronic Mail Without Aliases"
+In-Reply-To: <20130213182034.GA2498@chumley>
+References: <20130213182034.GA2498@chumley>
+Message-ID: <20130215080134.GK21800@mercury.ccil.org>
+
+Aharon Robbins scripsit:
+
+> Mike Lesk sent me the paper and gave me permission to send it out.
+> See attached.
+
+What's the correct troff command line to format this?
+
+-- 
+It was dreary and wearisome.  Cold clammy winter still held sway in this
+forsaken country.  The only green was the scum of livid weed on the dark
+greasy surfaces of the sullen waters.  Dead grasses and rotting reeds loomed
+up in the mists like ragged shadows of long-forgotten summers.
+        --"The Passage of the Marshes"          http://www.ccil.org/~cowan
+
+
+From steve at quintile.net  Fri Feb 15 18:39:54 2013
+From: steve at quintile.net (Steve Simon)
+Date: Fri, 15 Feb 2013 08:39:54 +0000
+Subject: [TUHS] "Electronic Mail Without Aliases"
+In-Reply-To: <201302150806.r1F86pVq017529@freefriends.org>
+Message-ID: <25f99fd0f7b928e42724129c6d055372@quintile.net>
+
+>	refer post.tm | pic | troff -ms | ps2pdf - post.pdf
+
+I have put a copy rendered on plan9 which looks OK, though
+the Lucent logo doesn't fit properly on the cover sheet and
+looks a bit out of character with the age of the paper,
+but it will do until somone generates a better one.
+
+http://www.quintile.net/doorstep/Electronic_Mail_Without_Aliases.pdf
+
+-Steve
+-------------- next part --------------
+An embedded message was scrubbed...
+From: unknown sender
+Subject: no subject
+Date: no date
+Size: 38
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20130215/fad59cf6/attachment.mht>
+
+From arnold at skeeve.com  Fri Feb 15 18:06:51 2013
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Fri, 15 Feb 2013 01:06:51 -0700
+Subject: [TUHS] "Electronic Mail Without Aliases"
+In-Reply-To: <20130215080134.GK21800@mercury.ccil.org>
+References: <20130213182034.GA2498@chumley>
+ <20130215080134.GK21800@mercury.ccil.org>
+Message-ID: <201302150806.r1F86pVq017529@freefriends.org>
+
+> > Mike Lesk sent me the paper and gave me permission to send it out.
+> > See attached.
+
+John Cowan <cowan at mercury.ccil.org> wrote:
+> What's the correct troff command line to format this?
+
+First, edit post.tm and change the PO font to CW.  Then
+
+	refer post.tm | pic | troff -ms | ps2pdf - post.pdf
+
+I sent Warren (off list) a copy that I dorked with a bit, using groff and
+the original V7 ms macros to produce a farily authentic looking Bell Labs
+style memorandum.  He answered that he is out of the country but will
+deal with putting things into the archive when he gets back.
+
+Thanks,
+
+Arnold
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+--upas-fqbhfykoygzrgmfxnmviiothrs--
+
+
+From cyrille.lefevre-lists at laposte.net  Fri Feb 15 21:59:46 2013
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Fri, 15 Feb 2013 12:59:46 +0100
+Subject: [TUHS] "Electronic Mail Without Aliases"
+In-Reply-To: <20130215081856.GM21800@mercury.ccil.org>
+References: <20130213182034.GA2498@chumley>
+ <20130215080134.GK21800@mercury.ccil.org>
+ <201302150806.r1F86pVq017529@freefriends.org>
+ <20130215081856.GM21800@mercury.ccil.org>
+Message-ID: <511E2332.6060302@laposte.net>
+
+Le 15/02/2013 09:18, John Cowan a écrit :
+> arnold at skeeve.com scripsit:
+>
+>> First, edit post.tm and change the PO font to CW.  Then
+>>
+>> 	refer post.tm | pic | troff -ms | ps2pdf - post.pdf
+ >>
+>
+> I changed the line terminators to LFs and removed the undefined .TM
+> macro in line 3 of post.tm.  I then got these errors from troff:
+>
+> post.tm:116: macro error: unknown reference type `5'
+> post.tm:208: macro error: unknown reference type `5'
+>
+> Dr. Google can provide no explanation of these.  Lines 116 and 208 (or
+> 117 and 209 of the original source) are ordinary lines of text with
+> no special controls.
+>
+> Then I get the following error from ps2pdf:
+>
+> Error: /undefined in x
+> Operand stack:
+
+take a look at your file content, this is not postscript, but ditroff 
+intermediate output.
+
+using DWB, the dpost filter should be added.
+
+refer post.tm | pic | troff -ms | dpost | ps2pdf - post.pdf
+
+using GROFF, groff should be used instead of troff.
+
+refer post.tm | pic | groff -ms | ps2pdf - post.pdf
+
+using DWB, the AT&T Bell Labs logo looks perfect ;^)
+
+http://cyrillelefevre.free.fr/tmp/post.pdf
+
+PS : DWB is here :
+
+http://www2.research.att.com/~gsf/download/tgz/dwb.1993-02-04.tgz
+
+to build DWB under cygwin, use this patch :
+
+http://cyrillelefevre.free.fr/dwb/dwb.1993-02-04.2011-05-29.patch.bz2
+
+also, DWBHOME should be exported to the installation path.
+
+Regards,
+
+Cyrille Lefevre
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+
+From wkt at tuhs.org  Sat Feb 16 16:47:50 2013
+From: wkt at tuhs.org (Warren Toomey)
+Date: Sat, 16 Feb 2013 16:47:50 +1000
+Subject: [TUHS] "Electronic Mail Without Aliases"
+In-Reply-To: <20130213182034.GA2498@chumley>
+References: <20130213182034.GA2498@chumley>
+Message-ID: <20130216064750.GA5772@neddie.local.net>
+
+On Wed, Feb 13, 2013 at 08:20:34PM +0200, Aharon Robbins wrote:
+> Hi All.
+> Mike Lesk sent me the paper and gave me permission to send it out.
+> See attached.
+> Warren, please find a spot for this in the archives.
+
+I've put in at
+http://minnie.tuhs.org/Archive/Documentation/Papers/Email_No_Aliases/
+
+Thanks,
+	Warren
+
+
+From dds at aueb.gr  Sun Feb 17 22:28:54 2013
+From: dds at aueb.gr (Diomidis Spinellis)
+Date: Sun, 17 Feb 2013 14:28:54 +0200
+Subject: [TUHS] Login names of early Unix contributors
+Message-ID: <5120CD06.9040100@aueb.gr>
+
+Does anyone have a record or pointer regarding the login names of the 
+early Unix contributors?  A few (aho, dmr, bwk, doug) are listed in 
+http://www.cs.bell-labs.com/who/, but many others seem to be missing.
+
+In particular I'm interested in the login names of following people:
+
+S. R. Bourne
+D. Haight
+S. C. Johnson
+J. F. Maranzano
+L. E. McMahon
+S. I. Feldman
+J. F. Ossanna
+M. E. Lesk
+R. H. Morris
+D. A. Nowitz
+
+I guess the /etc/passwd file from a Bell Labs system of the mid 1970s 
+would be ideal, but even partial recollections would help me.
+
+
+From meillo at marmaro.de  Mon Feb 18 03:16:08 2013
+From: meillo at marmaro.de (markus schnalke)
+Date: Sun, 17 Feb 2013 18:16:08 +0100
+Subject: [TUHS] Login names of early Unix contributors
+In-Reply-To: <5120CD06.9040100@aueb.gr>
+References: <5120CD06.9040100@aueb.gr>
+Message-ID: <1U77qS-2zx-00@marmaro.de>
+
+[2013-02-17 14:28] Diomidis Spinellis <dds at aueb.gr>
+> 
+> In particular I'm interested in the login names of following people:
+> 
+> S. R. Bourne
+
+`srb' as printed in his book ``The UNIX System''.
+
+Others will likely be able to help in a larger scale.
+
+
+meillo
+
+
+P.S.
+Hello mailing list. :-)
+
+
+From meillo at marmaro.de  Mon Feb 18 05:36:30 2013
+From: meillo at marmaro.de (markus schnalke)
+Date: Sun, 17 Feb 2013 20:36:30 +0100
+Subject: [TUHS] Login names of early Unix contributors
+In-Reply-To: <5120CD06.9040100@aueb.gr>
+References: <5120CD06.9040100@aueb.gr>
+Message-ID: <1U7A2I-6uf-00@marmaro.de>
+
+[2013-02-17 14:28] Diomidis Spinellis <dds at aueb.gr>
+> 
+> J. F. Ossanna
+
+I found him in http://man.cat-v.org/unix-1st/1/roff
+
+	jfo
+
+
+meillo
+
+
+From dds at aueb.gr  Mon Feb 18 06:54:14 2013
+From: dds at aueb.gr (Diomidis Spinellis)
+Date: Sun, 17 Feb 2013 22:54:14 +0200
+Subject: [TUHS] Login names of early Unix contributors
+In-Reply-To: <5120CD06.9040100@aueb.gr>
+References: <5120CD06.9040100@aueb.gr>
+Message-ID: <51214376.60608@aueb.gr>
+
+On 17/02/2013 14:28, Diomidis Spinellis wrote:
+> Does anyone have a record or pointer regarding the login names of the
+> early Unix contributors?
+[...]
+> In particular I'm interested in the login names of following people:
+ > S. R. Bourne
+ > D. Haight
+ > S. C. Johnson
+ > J. F. Maranzano
+ > L. E. McMahon
+ > S. I. Feldman
+ > J. F. Ossanna
+ > M. E. Lesk
+ > R. H. Morris
+ > D. A. Nowitz
+[...]
+
+I got off-list the following full reply; thank you!
+
+On 17/02/2013 15:50, arnold at skeeve.com wrote:
+ > See below, from Brian Kernighan (I asked :-)
+ >
+ > And FWIW, I note that in the "Electronic Mail Without Aliases" paper from
+ > 1980, Mike Lesk uses "research!mel" as his own email address.
+ >
+ > Arnold
+ > ------------------------------------
+ >> Date: Sun, 17 Feb 2013 08:17:29 -0500 (EST)
+ >> From: Brian Kernighan
+ >> To: arnold at skeeve.com
+ >> Subject: Re: FYI: query for Login names of early Unix contributors
+ >>
+ >> srb
+ >> rhaight? [can't recall; why not ask: rhaight at accn.org]
+ >> scj
+ >> jfm
+ >> sif
+ >> jfo
+ >> mel / lesk; can't recall when he switched
+ >> rhm
+ >> dan
+
+
+
+
+From cyrille.lefevre-lists at laposte.net  Tue Feb 19 12:00:29 2013
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Tue, 19 Feb 2013 03:00:29 +0100
+Subject: [TUHS] "Electronic Mail Without Aliases"
+In-Reply-To: <511E2332.6060302@laposte.net>
+References: <20130213182034.GA2498@chumley>
+ <20130215080134.GK21800@mercury.ccil.org>
+ <201302150806.r1F86pVq017529@freefriends.org>
+ <20130215081856.GM21800@mercury.ccil.org> <511E2332.6060302@laposte.net>
+Message-ID: <5122DCBD.8000207@laposte.net>
+
+Le 15/02/2013 12:59, Cyrille Lefevre a écrit :
+<snip>
+> take a look at your file content, this is not postscript, but ditroff
+> intermediate output.
+>
+> using DWB, the dpost filter should be added.
+
+also, as someone on the list did me, the output was incomplete !
+
+first of, forgot to say that DWB is missing refer, so I use the GNU one.
+after some investigations, I found that DWB pic eat a great part
+of the initial document. the use of GNU pic -n solve the problem.
+refer may be used w/ or w/o the -e option, I prefer w/o.
+
+the final commands are :
+
+export DWBHOME=/opt/dwb
+
+ln -s CW $DWBHOME/lib/font/devpost/PO
+
+dos2unix < post.tm  |
+refer | pic -n |
+/opt/dwb/bin/troff -ms |
+/opt/dwb/bin/dpost |
+tee post.ps | ps2pdf - post.pdf
+
+using DWB, the AT&T Bell Labs logo looks perfect ;^)
+
+http://cyrillelefevre.free.fr/tmp/post.ps
+http://cyrillelefevre.free.fr/tmp/post.pdf
+http://cyrillelefevre.free.fr/tmp/post-e.ps
+http://cyrillelefevre.free.fr/tmp/post-e.pdf
+
+> PS : DWB is here :
+>
+> http://www2.research.att.com/~gsf/download/tgz/dwb.1993-02-04.tgz
+>
+> to build DWB under cygwin, use this patch :
+>
+> http://cyrillelefevre.free.fr/dwb/dwb.1993-02-04.2011-05-29.patch.bz2
+>
+> also, DWBHOME should be exported to the installation path.
+
+Regards,
+
+Cyrille Lefevre
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+
+From cyrille.lefevre-lists at laposte.net  Wed Feb 20 14:15:37 2013
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Wed, 20 Feb 2013 05:15:37 +0100
+Subject: [TUHS] opensolaris.org will be close soon
+Message-ID: <51244DE9.2060901@laposte.net>
+
+Hi,
+
+FYI, as seen on opensolaris.org :
+
+ATTENTION: This website and all services within the opensolaris.org 
+domain will be unavailable after March 24, 2013.
+
+at least, http://hub.opensolaris.org/ and http://dlc.sun.com/osol/
+will be available at :
+
+http://web.archive.org/web/*/http://hub.opensolaris.org/
+http://web.archive.org/web/*/http://dlc.sun.com/osol/
+
+but not http://src.opensolaris.org/source/ due to robot.txt
+
+any other subdomain to check ?
+
+Regards,
+
+Cyrille Lefevre
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+From Sheila.Morrissey at ithaka.org  Fri Feb 22 01:33:07 2013
+From: Sheila.Morrissey at ithaka.org (Sheila M. Morrissey)
+Date: Thu, 21 Feb 2013 10:33:07 -0500
+Subject: [TUHS] TUHS Digest, Vol 100, Issue 12
+In-Reply-To: <mailman.7.1361408401.29629.tuhs@minnie.tuhs.org>
+References: <mailman.7.1361408401.29629.tuhs@minnie.tuhs.org>
+Message-ID: <F97F47BD80DAC743AD31671587804846019EA54E64@pr1vmexch02.office.share.org>
+
+Thanks for this alert
+Sheila
+
+-----Original Message-----
+From: tuhs-bounces at minnie.tuhs.org [mailto:tuhs-bounces at minnie.tuhs.org] On Behalf Of tuhs-request at minnie.tuhs.org
+Sent: Wednesday, February 20, 2013 8:00 PM
+To: tuhs at minnie.tuhs.org
+Subject: TUHS Digest, Vol 100, Issue 12
+
+Send TUHS mailing list submissions to
+	tuhs at minnie.tuhs.org
+
+To subscribe or unsubscribe via the World Wide Web, visit
+	https://minnie.tuhs.org/mailman/listinfo/tuhs
+or, via email, send a message with subject or body 'help' to
+	tuhs-request at minnie.tuhs.org
+
+You can reach the person managing the list at
+	tuhs-owner at minnie.tuhs.org
+
+When replying, please edit your Subject line so it is more specific than "Re: Contents of TUHS digest..."
+
+
+Today's Topics:
+
+   1. opensolaris.org will be close soon (Cyrille Lefevre)
+
+
+----------------------------------------------------------------------
+
+Message: 1
+Date: Wed, 20 Feb 2013 05:15:37 +0100
+From: Cyrille Lefevre <cyrille.lefevre-lists at laposte.net>
+To: tuhs at tuhs.org
+Subject: [TUHS] opensolaris.org will be close soon
+Message-ID: <51244DE9.2060901 at laposte.net>
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+
+Hi,
+
+FYI, as seen on opensolaris.org :
+
+ATTENTION: This website and all services within the opensolaris.org domain will be unavailable after March 24, 2013.
+
+at least, http://hub.opensolaris.org/ and http://dlc.sun.com/osol/ will be available at :
+
+http://web.archive.org/web/*/http://hub.opensolaris.org/
+http://web.archive.org/web/*/http://dlc.sun.com/osol/
+
+but not http://src.opensolaris.org/source/ due to robot.txt
+
+any other subdomain to check ?
+
+Regards,
+
+Cyrille Lefevre
+--
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+------------------------------
+
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+End of TUHS Digest, Vol 100, Issue 12
+*************************************
+
+
+From steve at quintile.net  Wed Feb 27 10:28:48 2013
+From: steve at quintile.net (Steve Simon)
+Date: Wed, 27 Feb 2013 00:28:48 +0000
+Subject: [TUHS] xargs - where from?
+Message-ID: <d1a20a835b6a986011c71fa498808b83@quintile.net>
+
+Ok,
+
+another trivia question.
+
+where did xargs come from? I started with Edition 7 (Perkin Elmer
+V7 + bits of BSD 2.1) and I am pretty sure it wasn't there.
+
+I have a feeling it was printed in a book as shell script, somthing
+like Bourne's book, or Kernighan and Pike but I'am not sure.
+
+Anyone remember?
+
+-Steve
+
+
+From mah at mhorton.net  Wed Feb 27 11:54:33 2013
+From: mah at mhorton.net (Mary Ann Horton)
+Date: Tue, 26 Feb 2013 17:54:33 -0800
+Subject: [TUHS] xargs - where from?
+In-Reply-To: <d1a20a835b6a986011c71fa498808b83@quintile.net>
+References: <d1a20a835b6a986011c71fa498808b83@quintile.net>
+Message-ID: <512D6759.4030908@mhorton.net>
+
+My recollection (supported by my 1990 book) is that xargs came from PWB 
+for use with the Mashey shell, before we had the `command` construct.
+
+On 02/26/2013 04:28 PM, Steve Simon wrote:
+> Ok,
+>
+> another trivia question.
+>
+> where did xargs come from? I started with Edition 7 (Perkin Elmer
+> V7 + bits of BSD 2.1) and I am pretty sure it wasn't there.
+>
+> I have a feeling it was printed in a book as shell script, somthing
+> like Bourne's book, or Kernighan and Pike but I'am not sure.
+>
+> Anyone remember?
+>
+> -Steve
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From mascheck at in-ulm.de  Wed Feb 27 13:27:22 2013
+From: mascheck at in-ulm.de (Sven Mascheck)
+Date: Wed, 27 Feb 2013 04:27:22 +0100
+Subject: [TUHS] xargs - where from?
+In-Reply-To: <512D6759.4030908@mhorton.net>
+References: <d1a20a835b6a986011c71fa498808b83@quintile.net>
+ <512D6759.4030908@mhorton.net>
+Message-ID: <20130227032722.GA10487@lisa.in-ulm.de>
+
+On Tue, Feb 26, 2013 at 05:54:33PM -0800, Mary Ann Horton wrote:
+> My recollection (supported by my 1990 book) is that xargs came from
+> PWB for use with the Mashey shell, before we had the `command`
+> construct.
+
+oh indeed, PWB/UNIX 1.0, here's even some source:
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=PWB1/sys/source/s2/xargs.c
+
+Sven
+
+
+From scotnospam12 at sj.sdf.org  Wed Feb 27 12:03:26 2013
+From: scotnospam12 at sj.sdf.org (Scot Jenkins)
+Date: Tue, 26 Feb 2013 20:03:26 -0600
+Subject: [TUHS] xargs - where from?
+In-Reply-To: <512D6759.4030908@mhorton.net>
+References: <d1a20a835b6a986011c71fa498808b83@quintile.net>
+ <512D6759.4030908@mhorton.net>
+Message-ID: <512D696E.2080107@sj.sdf.org>
+
+> On 02/26/2013 04:28 PM, Steve Simon wrote:
+> 
+>> where did xargs come from? I started with Edition 7 (Perkin Elmer
+>> V7 + bits of BSD 2.1) and I am pretty sure it wasn't there.
+>>
+>> -Steve
+
+Mary Ann Horton wrote:
+> My recollection (supported by my 1990 book) is that xargs came from PWB 
+> for use with the Mashey shell, before we had the `command` construct.
+> 
+
+FreeBSD [1] and NetBSD [2] man pages (see HISTORY section)
+seem to confirm PWB as the source.
+
+[1] 
+http://www.freebsd.org/cgi/man.cgi?query=xargs&apropos=0&sektion=0&manpath=FreeBSD+9.1-RELEASE&arch=default&format=html
+
+[2] http://netbsd.gw.com/cgi-bin/man-cgi?xargs++NetBSD-current
+
+scot
+
+

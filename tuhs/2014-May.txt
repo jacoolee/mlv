@@ -1,0 +1,2713 @@
+From spedraja at gmail.com  Sun May  4 08:14:32 2014
+From: spedraja at gmail.com (SPC)
+Date: Sun, 4 May 2014 00:14:32 +0200
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <20140430021954.6E6FB18C0FC@mercury.lcs.mit.edu>
+References: <20140430021954.6E6FB18C0FC@mercury.lcs.mit.edu>
+Message-ID: <CACytpF8u2sn10jfvp2tUKiEfYMiDX6pVCxusPFzp9EfxHJPtfQ@mail.gmail.com>
+
+Of course I am :-)
+
+Kind Regards
+SPc.
+
+
+2014-04-30 4:19 GMT+02:00 Noel Chiappa <jnc at mercury.lcs.mit.edu>:
+
+> Hello, all: I'm working (long-term) on a project to bring back to life the
+> V6+ Unix system (it wasn't vanilla V6 - it looks like it had some PWB stuff
+> added) that was used on a number of machines at the Laboratory for Computer
+> Science at MIT in the late 70s - early 80s.
+>
+>
+> As part of that, I've been playing with bringing up V6 on a PDP11
+> simulator,
+> and have written some stuff that would probably be useful to anyone who's
+> interested in bringing up Unix on a PDP-11 simulator.
+>
+> I used the Ersatz-11 simulator from D-Bit (for no particularly good reason,
+> except it runs under Windoze, and the "FAQ on the Unix Archive and Unix on
+> the PDP-11" page said it was the fastest).
+>
+> I have been very pleased with this simulator; it is indeed fast (my
+> simulated
+> 11/70 runs at about 100 MIPS on a relatively elderly Athlon, which is about
+> 30 times as fast as a real one used to :-), and it has lots of nice
+> features
+> (e.g. you can TELNET in to a terminal port on the simulated PDP-11).
+>
+> It also has this nice virtual device that allows a program running on the
+> simulated PDP-11 i) access to files in the Windows file system, and ii) to
+> issue commands to the emulator. I have written a V6 driver for it (should
+> be
+> fairly easy to adapt to V7 or later), and a suite of Unix commands to grab
+> a
+> file off the Windows file system (both binary and text mode), and issue
+> various commands to the simulator.
+>
+> Finally, I have a number of Windows commands to do various useful things,
+> such as read a file off a simulated Unix V6 file system (hosted in a
+> Windows
+> file), including ports of a number of Unix commands (e.g. ncheck, nm,
+> etc); I
+> don't detail them all here as I don't want this email to get too long (and
+> boring).
+>
+>
+> I'm not sure if anyone's interested in any of this; if so, I can send
+> in more info (or whip up a Web page, whichever would be better).
+>
+> I also ran into a number of pitfalls on the way to getting V6 running,
+> using
+> RK05 disk images from the TUHS archive, and I can do a short writeup on
+> 'How
+> to bring up V6 under Ersatz-11' if anyone's interested.
+>
+>         Noel
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+
+-- 
+Gracias | Regards
+
+Saludos - Greetings - Freundliche Grüße - Salutations
+-- 
+*Sergio Pedraja*
+
+twitter: @sergio_pedraja
+skype: Sergio Pedraja
+http://plus.google.com/u/0/101292256663392735405
+http://www.linkedin.com/in/sergiopedraja
+http://www.quora.com/Sergio-Pedraja
+http://spedraja.wordpress.com
+https://www.xing.com/profile/Sergio_Pedraja <http://spedraja.wordpress.com/>
+http://www.viadeo.com
+http://www.avalonred.com/
+-----
+No crea todo lo que ve, ni crea que está viéndolo todo
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140504/e0e290fe/attachment.html>
+
+From gregg.drwho8 at gmail.com  Sun May  4 08:20:55 2014
+From: gregg.drwho8 at gmail.com (Gregg Levine)
+Date: Sat, 3 May 2014 18:20:55 -0400
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <CACytpF8u2sn10jfvp2tUKiEfYMiDX6pVCxusPFzp9EfxHJPtfQ@mail.gmail.com>
+References: <20140430021954.6E6FB18C0FC@mercury.lcs.mit.edu>
+ <CACytpF8u2sn10jfvp2tUKiEfYMiDX6pVCxusPFzp9EfxHJPtfQ@mail.gmail.com>
+Message-ID: <CAC5iaNHasa2JaRXRa1pKTM7R=Bo+jKqf5h+xh45mtWExigy14g@mail.gmail.com>
+
+Hello!
+What he said. I believe we all are interested.
+-----
+Gregg C Levine gregg.drwho8 at gmail.com
+"This signature fought the Time Wars, time and again."
+
+
+On Sat, May 3, 2014 at 6:14 PM, SPC <spedraja at gmail.com> wrote:
+> Of course I am :-)
+>
+> Kind Regards
+> SPc.
+>
+>
+> 2014-04-30 4:19 GMT+02:00 Noel Chiappa <jnc at mercury.lcs.mit.edu>:
+>
+>> Hello, all: I'm working (long-term) on a project to bring back to life the
+>> V6+ Unix system (it wasn't vanilla V6 - it looks like it had some PWB
+>> stuff
+>> added) that was used on a number of machines at the Laboratory for
+>> Computer
+>> Science at MIT in the late 70s - early 80s.
+>>
+>>
+>> As part of that, I've been playing with bringing up V6 on a PDP11
+>> simulator,
+>> and have written some stuff that would probably be useful to anyone who's
+>> interested in bringing up Unix on a PDP-11 simulator.
+>>
+>> I used the Ersatz-11 simulator from D-Bit (for no particularly good
+>> reason,
+>> except it runs under Windoze, and the "FAQ on the Unix Archive and Unix on
+>> the PDP-11" page said it was the fastest).
+>>
+>> I have been very pleased with this simulator; it is indeed fast (my
+>> simulated
+>> 11/70 runs at about 100 MIPS on a relatively elderly Athlon, which is
+>> about
+>> 30 times as fast as a real one used to :-), and it has lots of nice
+>> features
+>> (e.g. you can TELNET in to a terminal port on the simulated PDP-11).
+>>
+>> It also has this nice virtual device that allows a program running on the
+>> simulated PDP-11 i) access to files in the Windows file system, and ii) to
+>> issue commands to the emulator. I have written a V6 driver for it (should
+>> be
+>> fairly easy to adapt to V7 or later), and a suite of Unix commands to grab
+>> a
+>> file off the Windows file system (both binary and text mode), and issue
+>> various commands to the simulator.
+>>
+>> Finally, I have a number of Windows commands to do various useful things,
+>> such as read a file off a simulated Unix V6 file system (hosted in a
+>> Windows
+>> file), including ports of a number of Unix commands (e.g. ncheck, nm,
+>> etc); I
+>> don't detail them all here as I don't want this email to get too long (and
+>> boring).
+>>
+>>
+>> I'm not sure if anyone's interested in any of this; if so, I can send
+>> in more info (or whip up a Web page, whichever would be better).
+>>
+>> I also ran into a number of pitfalls on the way to getting V6 running,
+>> using
+>> RK05 disk images from the TUHS archive, and I can do a short writeup on
+>> 'How
+>> to bring up V6 under Ersatz-11' if anyone's interested.
+>>
+>>         Noel
+>> _______________________________________________
+>> TUHS mailing list
+>> TUHS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+>
+>
+> --
+> Gracias | Regards
+>
+> Saludos - Greetings - Freundliche Grüße - Salutations
+> --
+> Sergio Pedraja
+>
+> twitter: @sergio_pedraja
+> skype: Sergio Pedraja
+> http://plus.google.com/u/0/101292256663392735405
+> http://www.linkedin.com/in/sergiopedraja
+> http://www.quora.com/Sergio-Pedraja
+> http://spedraja.wordpress.com
+> https://www.xing.com/profile/Sergio_Pedraja
+> http://www.viadeo.com
+> http://www.avalonred.com/
+> -----
+> No crea todo lo que ve, ni crea que está viéndolo todo
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+From lm at bitmover.com  Sun May  4 08:22:25 2014
+From: lm at bitmover.com (Larry McVoy)
+Date: Sat, 3 May 2014 15:22:25 -0700
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <CAC5iaNHasa2JaRXRa1pKTM7R=Bo+jKqf5h+xh45mtWExigy14g@mail.gmail.com>
+References: <20140430021954.6E6FB18C0FC@mercury.lcs.mit.edu>
+ <CACytpF8u2sn10jfvp2tUKiEfYMiDX6pVCxusPFzp9EfxHJPtfQ@mail.gmail.com>
+ <CAC5iaNHasa2JaRXRa1pKTM7R=Bo+jKqf5h+xh45mtWExigy14g@mail.gmail.com>
+Message-ID: <20140503222225.GV6478@bitmover.com>
+
+On Sat, May 03, 2014 at 06:20:55PM -0400, Gregg Levine wrote:
+> Hello!
+> What he said. I believe we all are interested.
+
+11/70 was my favorite assembly, so pleasant.  I'd play with it :)
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From doug at cs.dartmouth.edu  Sun May  4 13:20:00 2014
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Sat, 03 May 2014 23:20:00 -0400
+Subject: [TUHS] TUHS Digest, Vol 112, Issue 1
+In-Reply-To: <mailman.1.1399168801.21332.tuhs@minnie.tuhs.org>
+References: <mailman.1.1399168801.21332.tuhs@minnie.tuhs.org>
+Message-ID: <201405040320.s443K0s0021553@stowe.cs.dartmouth.edu>
+
+> V6 ...  on a number of machines at the Laboratory for Computer
+> Science at MIT in the late 70s - early 80s
+
+Interesting. I didn't realize that MIT had PDP-11 Unixes. When
+university CS departments were snapping up licenses right and
+left, MIT demurred because AT&T licensed it as a trade secret
+and MIT's lawyers (probably rightly) feared there was no way
+they could keep Unix knowledge from contaminating research
+projects. Other places didn't worry about it, with John Lyons'
+V6 book being the biggest leak. AT&T lawyers did clamp down
+on general distribution of the book, but Bell Labs eagerly
+hired Lyons for a sabbatical visit.
+
+Did MIT's lawyers relent by V6 time, or did LCS somehow
+circumvent them?
+
+Doug
+
+
+From treese at acm.org  Mon May  5 07:06:23 2014
+From: treese at acm.org (Win Treese)
+Date: Sun, 4 May 2014 17:06:23 -0400
+Subject: [TUHS] TUHS Digest, Vol 112, Issue 1
+In-Reply-To: <201405040320.s443K0s0021553@stowe.cs.dartmouth.edu>
+References: <mailman.1.1399168801.21332.tuhs@minnie.tuhs.org>
+ <201405040320.s443K0s0021553@stowe.cs.dartmouth.edu>
+Message-ID: <25C3B777-2253-4F8C-93E2-89003F9E88D8@acm.org>
+
+
+On May 3, 2014, at 11:20 PM, Doug McIlroy <doug at cs.dartmouth.edu> wrote:
+
+>> V6 ...  on a number of machines at the Laboratory for Computer
+>> Science at MIT in the late 70s - early 80s
+> 
+> Interesting. I didn't realize that MIT had PDP-11 Unixes. When
+> university CS departments were snapping up licenses right and
+> left, MIT demurred because AT&T licensed it as a trade secret
+> and MIT's lawyers (probably rightly) feared there was no way
+> they could keep Unix knowledge from contaminating research
+> projects. Other places didn't worry about it, with John Lyons'
+> V6 book being the biggest leak. AT&T lawyers did clamp down
+> on general distribution of the book, but Bell Labs eagerly
+> hired Lyons for a sabbatical visit.
+> 
+> Did MIT's lawyers relent by V6 time, or did LCS somehow
+> circumvent them?
+
+As I understood it, MIT’s main objection was that they didn’t
+want to get entangled in anything that would require students
+to sign non-disclosure agreements. At some point, MIT did have
+a license with Western Electric that did not have such a requirement.
+I’m pretty sure it was at least V7, and possibly 32V; not sure about V6.
+
+The first UNIX system I used was on a PDP-11/44 running V7m from
+DEC. It was at the MIT Center for Cognitive Science.
+
+ - Win
+
+
+
+
+From jnc at mercury.lcs.mit.edu  Mon May  5 09:54:26 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Sun,  4 May 2014 19:54:26 -0400 (EDT)
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+Message-ID: <20140504235426.4EF2418C0AA@mercury.lcs.mit.edu>
+
+    > On Sat, May 03, 2014 at 06:20:55PM -0400, Gregg Levine wrote:
+
+    > What he said. I believe we all are interested.
+
+OK, I have whipped up some material on how to bring V6 up under Ersatz-11.
+See here:
+
+  http://ana-3.lcs.mit.edu/~jnc/tech/unix/V6Unix.html
+
+That page covers i) how to get the emulator, V6 Unix disks, and what you need
+to do start it running, and then ii) some of the initial steps to take past
+that to improve to working environment. Included in that are a couple of
+things I tripped over, and how to avoid them.
+
+The latter part assumes you want to do something more than just start it, so
+you can see it start up; it includes coverage of the commands that work with
+the emulator's "DOS device" to do things like read files off the host machine
+into the Unix; a serious problem on V6 Unix having to do with 21st Century
+dates; a 'more' command for V6 Unix (Vanilla V6 was back before the days of
+video terminals... :-); the ability to TELNET into the emulator; and some
+useful Windows commands (e.g. to read files out of the Unix into the host
+machine, and create blank disk pack files); and finally configuration file
+for the E11 emulator.
+
+
+There is more content/pages coming: the start of an 'advanced things you can
+do to improve your V6 Unix' page, which includes the new C compiler [the
+'vanilla' V6 C compiler does not handle longs, unsigned, casts, and a bunch
+of other things]; tar; the Standard I/O library; etc is already there, but
+unfinished. And I have some material on things you can trip over in porting
+stuff back and forth (I found some doozies trying to make V6 commands run
+under Windoze), etc. But that will be later.
+
+
+For now, I'm interested in hearing: of any errors or issues with the first
+page; whether people find it completely incomprensible, or totally fantastic
+(or whereever on the axis between them it lies); what additional topics I
+should cover; etc, etc.
+
+Let me know! And enjoy your V6 experience!
+	
+	Noel
+
+
+From jnc at mercury.lcs.mit.edu  Mon May  5 11:11:30 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Sun,  4 May 2014 21:11:30 -0400 (EDT)
+Subject: [TUHS] TUHS Digest, Vol 112, Issue 1
+Message-ID: <20140505011130.14A8618C0AA@mercury.lcs.mit.edu>
+
+    > From: Doug McIlroy <doug at cs.dartmouth.edu>
+
+    > I didn't realize that MIT had PDP-11 Unixes.
+
+Yes; I don't know exactly when the first one arrived, but I'm pretty sure it
+was around the end of my freshman year (i.e. the summmer of '75), because I
+remember a friend showing me Unix sometime in my sophmore year, and they
+already had it as a going concern then.
+
+The first one (I think) at MIT was the 11/70 belonging to the Domain-Specific
+Systems Research group at LCS (DSSR). I got a copy of theirs for the Computer
+Systems Research group (CSR) at LCS, that would have been in the fall of '77.
+I don't think the AI Lab ever had one; with us all together in 545 Tech Sq I
+think I would have heard (although maybe the Turtle guys on the third floor
+had one).
+
+There were probably others on campus, but Unixes could be pretty small, and
+MIT is big enough that the left hand wouldn't know of the right (and 545 Tech
+Sq was kind of insulated from the rest of campus anyway). One I recollect on
+main campus later on was somewhere in the EE department - maybe Speech? They
+had the CHAOS protocols installed on it - that was later, say '79-'80 or so.
+
+    > Other places didn't worry about it, with John Lyons' V6 book being the
+    > biggest leak.
+
+Not to mention things like the ACM paper, which was public domain...
+
+
+    > From: Win Treese <treese at acm.org>
+
+    > As I understood it, MIT's main objection was that they didn't want to
+    > get entangled in anything that would require students to sign
+     non-disclosure agreements.
+
+That sounds likely.
+
+    > At some point, MIT did have a license with Western Electric that did
+    > not have such a requirement. I'm pretty sure it was at least V7, and
+    > possibly 32V; not sure about V6.
+
+Well, I don't know about the license (MIT had a student who was an intern at
+Bell, and I think a lot of stuff slipped out the back door with him :-), but
+MIT definitely had V6 in 1976 or so, and V7 wasn't released until 1979. So we
+had it long before V7. Plus to which I have listings of the kernel; it's
+definitely pre-V7, but it's not vanilla V6, it has some other stuff in it (I
+think it's probably PWB).
+
+	Noel
+
+
+From cowan at mercury.ccil.org  Mon May  5 11:53:56 2014
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sun, 4 May 2014 21:53:56 -0400
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <20140504235426.4EF2418C0AA@mercury.lcs.mit.edu>
+References: <20140504235426.4EF2418C0AA@mercury.lcs.mit.edu>
+Message-ID: <20140505015356.GF27065@mercury.ccil.org>
+
+Noel Chiappa scripsit:
+
+> OK, I have whipped up some material on how to bring V6 up under Ersatz-11.
+> See here:
+> 
+>   http://ana-3.lcs.mit.edu/~jnc/tech/unix/V6Unix.html
+
+If you haven't already, see
+<http://pdos.csail.mit.edu/6.828/2004/homework/hw5.html> et seqq.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Where the wombat has walked, it will inevitably walk again.
+   (even through brick walls!)
+
+
+From spedraja at gmail.com  Mon May  5 18:10:58 2014
+From: spedraja at gmail.com (SPC)
+Date: Mon, 5 May 2014 10:10:58 +0200
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <20140505015356.GF27065@mercury.ccil.org>
+References: <20140504235426.4EF2418C0AA@mercury.lcs.mit.edu>
+ <20140505015356.GF27065@mercury.ccil.org>
+Message-ID: <CACytpF8o7NaXTbdoiS7XS2xmcTgbdoF641e4QWSGFCcj_3xrCw@mail.gmail.com>
+
+Absolutely pretty works. Thanks !
+
+​​--
+Gracias | Regards
+Saludos - Greetings - Freundliche Grüße - Salutations
+-- 
+*Sergio Pedraja*
+
+twitter: @sergio_pedraja
+skype: Sergio Pedraja
+http://plus.google.com/u/0/101292256663392735405
+http://www.linkedin.com/in/sergiopedraja
+http://www.quora.com/Sergio-Pedraja
+http://spedraja.wordpress.com
+https://www.xing.com/profile/Sergio_Pedraja <http://spedraja.wordpress.com/>
+-----
+No crea todo lo que ve, ni crea que está viéndolo todo​
+
+
+2014-05-05 3:53 GMT+02:00 John Cowan <cowan at mercury.ccil.org>:
+
+> Noel Chiappa scripsit:
+>
+> > OK, I have whipped up some material on how to bring V6 up under
+> Ersatz-11.
+> > See here:
+> >
+> >   http://ana-3.lcs.mit.edu/~jnc/tech/unix/V6Unix.html
+>
+> If you haven't already, see
+> <http://pdos.csail.mit.edu/6.828/2004/homework/hw5.html> et seqq.
+>
+> --
+> John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+> Where the wombat has walked, it will inevitably walk again.
+>    (even through brick walls!)
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+​
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140505/111f9cc7/attachment.html>
+
+From khm at sciops.net  Mon May  5 23:50:31 2014
+From: khm at sciops.net (Kurt H Maier)
+Date: Mon, 05 May 2014 13:50:31 +0000
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <20140430021954.6E6FB18C0FC@mercury.lcs.mit.edu>
+References: <20140430021954.6E6FB18C0FC@mercury.lcs.mit.edu>
+Message-ID: <20140505135031.Horde.qxQneCeyy2nuNJQiH4r2cg2@ssl.eumx.net>
+
+A related fun thing to play with is aiju's in-browser pdp-11 emulator, which
+is a huge javascript program found here: http://pdp11.aiju.de/
+
+It also runs V6.
+
+klhm
+
+
+
+
+From jnc at mercury.lcs.mit.edu  Tue May  6 01:32:10 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon,  5 May 2014 11:32:10 -0400 (EDT)
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+Message-ID: <20140505153210.392EF18C0CE@mercury.lcs.mit.edu>
+
+    > From: John Cowan <cowan at mercury.ccil.org>
+
+    > If you haven't already, see
+    > <http://pdos.csail.mit.edu/6.828/2004/homework/hw5.html> et seqq.
+
+I had seen a later variant of that course; I wasn't aware that an earlier one
+used Unix; thanks for the pointer.
+
+It's a bit unfortunate (from my PoV) that in the Unix coverage they seemed to
+mostly focus on the low-level mechanics (e.g. how stacks are switched, etc,
+etc), and not on the (to me) more interesting lessons to be learned from V6 -
+most notably, how to get so much bang for so little buck! (I am convinced
+that one of the primary challenges facing computer science these days is
+control of complexity, but I don't want to get way off-topic, so I'll stop
+there.)
+
+Although I suppose things like that have to be covered at some point, and
+they might as well do it in V6 as in anything else!
+
+	Noel
+
+
+From jnc at mercury.lcs.mit.edu  Sat May 10 07:07:29 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Fri,  9 May 2014 17:07:29 -0400 (EDT)
+Subject: [TUHS] An amusing error message
+Message-ID: <20140509210729.6D80618C09B@mercury.lcs.mit.edu>
+
+Found in:
+
+  http://minnie.tuhs.org/cgi-bin/utree.pl?file=1BSD/s6/man.c
+
+this minor gem:
+
+	execl("/bin/ssp", "ssp", 0);
+	execl("/usr/bin/ssp", "ssp", 0);
+	printf("Can't find ssp!\n");
+	execl("/bin/cat", "cat", 0);
+	printf("or cat - gott in himmel!\n");
+	exit(1);
+
+Not as good as "hodie natus" (Google it if you don't know of it - it's a
+classic), but mildly amusing.
+
+	  Noel
+
+
+
+From sdaoden at yandex.com  Sat May 10 09:20:11 2014
+From: sdaoden at yandex.com (Steffen Nurpmeso)
+Date: Sat, 10 May 2014 01:20:11 +0200
+Subject: [TUHS] An amusing error message
+In-Reply-To: <20140509210729.6D80618C09B@mercury.lcs.mit.edu>
+References: <20140509210729.6D80618C09B@mercury.lcs.mit.edu>
+Message-ID: <20140510002011.IEnjtHhZ%sdaoden@yandex.com>
+
+ |Found in:
+ |
+ |  http://minnie.tuhs.org/cgi-bin/utree.pl?file=1BSD/s6/man.c
+ |
+ |this minor gem:
+ |
+ | execl("/bin/ssp", "ssp", 0);
+ | execl("/usr/bin/ssp", "ssp", 0);
+ | printf("Can't find ssp!\n");
+ | execl("/bin/cat", "cat", 0);
+ | printf("or cat - gott in himmel!\n");
+ | exit(1);
+ |
+ |Not as good as "hodie natus" (Google it if you don't know of it - it's a
+ |classic), but mildly amusing.
+
+Correct Deutsch would however be "Gott im Himmel".
+
+--steffen
+
+
+From gilbertmm at sdf.org  Sat May 10 09:44:27 2014
+From: gilbertmm at sdf.org (Gilbert Morgan)
+Date: Fri, 9 May 2014 19:44:27 -0400
+Subject: [TUHS] An amusing error message
+In-Reply-To: <20140510002011.IEnjtHhZ%sdaoden@yandex.com>
+References: <20140509210729.6D80618C09B@mercury.lcs.mit.edu>
+ <20140510002011.IEnjtHhZ%sdaoden@yandex.com>
+Message-ID: <8AE10DB9-3685-4E07-AA94-B991D41D8D9D@sdf.org>
+
+Haha, wasn't Mark Twain who famously butchered it this way?
+
+
+---
+gilbertmm at sdf.org
+SDF Public Access UNIX System -http://sdf.org
+
+> On May 9, 2014, at 7:20 PM, Steffen Nurpmeso <sdaoden at yandex.com> wrote:
+> 
+> |Found in:
+> |
+> |  http://minnie.tuhs.org/cgi-bin/utree.pl?file=1BSD/s6/man.c
+> |
+> |this minor gem:
+> |
+> | execl("/bin/ssp", "ssp", 0);
+> | execl("/usr/bin/ssp", "ssp", 0);
+> | printf("Can't find ssp!\n");
+> | execl("/bin/cat", "cat", 0);
+> | printf("or cat - gott in himmel!\n");
+> | exit(1);
+> |
+> |Not as good as "hodie natus" (Google it if you don't know of it - it's a
+> |classic), but mildly amusing.
+> 
+> Correct Deutsch would however be "Gott im Himmel".
+> 
+> --steffen
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140509/30428970/attachment.html>
+
+From sdaoden at yandex.com  Sat May 10 20:51:58 2014
+From: sdaoden at yandex.com (Steffen Nurpmeso)
+Date: Sat, 10 May 2014 12:51:58 +0200
+Subject: [TUHS] An amusing error message
+In-Reply-To: <8AE10DB9-3685-4E07-AA94-B991D41D8D9D@sdf.org>
+References: <20140509210729.6D80618C09B@mercury.lcs.mit.edu>
+ <20140510002011.IEnjtHhZ%sdaoden@yandex.com>
+ <8AE10DB9-3685-4E07-AA94-B991D41D8D9D@sdf.org>
+Message-ID: <20140510115158.x+L+UNYY%sdaoden@yandex.com>
+
+Gilbert Morgan <gilbertmm at sdf.org> wrote:
+ |Haha, wasn't Mark Twain who famously butchered it this way?
+
+The two languages are so alike -- how pleasant that is; we say
+'Ach! Gott!' you say 'Goddamn.'”
+
+--steffen
+
+
+From gregg.drwho8 at gmail.com  Sun May 11 01:05:17 2014
+From: gregg.drwho8 at gmail.com (Gregg Levine)
+Date: Sat, 10 May 2014 11:05:17 -0400
+Subject: [TUHS] An amusing error message
+In-Reply-To: <20140510115158.x+L+UNYY%sdaoden@yandex.com>
+References: <20140509210729.6D80618C09B@mercury.lcs.mit.edu>
+ <20140510002011.IEnjtHhZ%sdaoden@yandex.com>
+ <8AE10DB9-3685-4E07-AA94-B991D41D8D9D@sdf.org>
+ <20140510115158.x+L+UNYY%sdaoden@yandex.com>
+Message-ID: <CAC5iaNGGjvnaa-HTs0bpHtsDMn9G---K_1=gyaRSHraNAib3iw@mail.gmail.com>
+
+Hello!
+Let us also consider the dialect of Yiddish. It contains many
+expressions originally in German, and an equally ungrammatical
+smattering of Hebrew.
+
+You'd be surprised what a lot of us say when our programs crash. Me? I
+simply wish that the designer of the system go end up like a turnip.
+-----
+Gregg C Levine gregg.drwho8 at gmail.com
+"This signature fought the Time Wars, time and again."
+
+
+On Sat, May 10, 2014 at 6:51 AM, Steffen Nurpmeso <sdaoden at yandex.com> wrote:
+> Gilbert Morgan <gilbertmm at sdf.org> wrote:
+>  |Haha, wasn't Mark Twain who famously butchered it this way?
+>
+> The two languages are so alike -- how pleasant that is; we say
+> 'Ach! Gott!' you say 'Goddamn.'”
+>
+> --steffen
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From cowan at mercury.ccil.org  Sun May 11 06:18:01 2014
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sat, 10 May 2014 16:18:01 -0400
+Subject: [TUHS] An amusing error message
+In-Reply-To: <CAC5iaNGGjvnaa-HTs0bpHtsDMn9G---K_1=gyaRSHraNAib3iw@mail.gmail.com>
+References: <20140509210729.6D80618C09B@mercury.lcs.mit.edu>
+ <20140510002011.IEnjtHhZ%sdaoden@yandex.com>
+ <8AE10DB9-3685-4E07-AA94-B991D41D8D9D@sdf.org>
+ <20140510115158.x+L+UNYY%sdaoden@yandex.com>
+ <CAC5iaNGGjvnaa-HTs0bpHtsDMn9G---K_1=gyaRSHraNAib3iw@mail.gmail.com>
+Message-ID: <20140510201801.GE17946@mercury.ccil.org>
+
+Gregg Levine scripsit:
+
+> Let us also consider the dialect of Yiddish. It contains many
+> expressions originally in German, and an equally ungrammatical
+> smattering of Hebrew.
+
+I know this is said in jest, but to speak in earnest for a moment,
+Yiddish hasn't borrowed much from German: rather, Yiddish and modern
+German are descended from a common ancestor, and so Yiddish is no more
+ungrammatical German than English is ungrammatical Dutch.
+
+See also generally <http://mercury.ccil.org/~cowan/essential.html>
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Your worships will perhaps be thinking that it is an easy thing
+to blow up a dog? [Or] to write a book?
+    --Don Quixote, Introduction
+
+
+From sdaoden at yandex.com  Sun May 11 07:39:42 2014
+From: sdaoden at yandex.com (Steffen Nurpmeso)
+Date: Sat, 10 May 2014 23:39:42 +0200
+Subject: [TUHS] An amusing error message
+In-Reply-To: <20140510201801.GE17946@mercury.ccil.org>
+References: <20140509210729.6D80618C09B@mercury.lcs.mit.edu>
+ <20140510002011.IEnjtHhZ%sdaoden@yandex.com>
+ <8AE10DB9-3685-4E07-AA94-B991D41D8D9D@sdf.org>
+ <20140510115158.x+L+UNYY%sdaoden@yandex.com>
+ <CAC5iaNGGjvnaa-HTs0bpHtsDMn9G---K_1=gyaRSHraNAib3iw@mail.gmail.com>
+ <20140510201801.GE17946@mercury.ccil.org>
+Message-ID: <20140510223942.e6o0M3U0%sdaoden@yandex.com>
+
+I was born '72 ...
+Jiddisch does no longer exist in Germany.
+(And i'm living in the hope the borders remain where they are.)
+
+John Cowan <cowan at mercury.ccil.org> wrote:
+ |Gregg Levine scripsit:
+ |> Let us also consider the dialect of Yiddish. It contains many
+ |> expressions originally in German, and an equally ungrammatical
+ |> smattering of Hebrew.
+ |
+ |I know this is said in jest, but to speak in earnest for a moment,
+ |Yiddish hasn't borrowed much from German: rather, Yiddish and modern
+ |German are descended from a common ancestor, and so Yiddish is no more
+ |ungrammatical German than English is ungrammatical Dutch.
+
+The "Jiddisch" entry in the german Wikipedia classifies it as
+a "Middle German Dialect".
+
+--steffen
+
+
+From cowan at mercury.ccil.org  Sun May 11 08:20:34 2014
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sat, 10 May 2014 18:20:34 -0400
+Subject: [TUHS] An amusing error message
+In-Reply-To: <20140510223942.e6o0M3U0%sdaoden@yandex.com>
+References: <20140509210729.6D80618C09B@mercury.lcs.mit.edu>
+ <20140510002011.IEnjtHhZ%sdaoden@yandex.com>
+ <8AE10DB9-3685-4E07-AA94-B991D41D8D9D@sdf.org>
+ <20140510115158.x+L+UNYY%sdaoden@yandex.com>
+ <CAC5iaNGGjvnaa-HTs0bpHtsDMn9G---K_1=gyaRSHraNAib3iw@mail.gmail.com>
+ <20140510201801.GE17946@mercury.ccil.org>
+ <20140510223942.e6o0M3U0%sdaoden@yandex.com>
+Message-ID: <20140510222034.GO17946@mercury.ccil.org>
+
+Steffen Nurpmeso scripsit:
+
+> The "Jiddisch" entry in the german Wikipedia classifies it as a
+> "Middle German Dialect".
+
+Well, that's true enough.  It's also true that modern standard German is
+a "Middle German dialect", in the technical sense of the English word
+"dialect", which is not the same as the technical sense of the German
+words "Dialekt" and "Mundart".  That is, both have been handed down
+from parents to children directly from Middle German, spoken in many
+varieties throughout the German-speaking lands in the 11th to 15th C.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+                I am a member of a civilization. --David Brin
+
+
+From khm at sciops.net  Sun May 11 09:30:13 2014
+From: khm at sciops.net (Kurt H Maier)
+Date: Sat, 10 May 2014 23:30:13 +0000
+Subject: [TUHS] An amusing error message
+In-Reply-To: <20140510222034.GO17946@mercury.ccil.org>
+References: <20140509210729.6D80618C09B@mercury.lcs.mit.edu>
+ <20140510002011.IEnjtHhZ%sdaoden@yandex.com>
+ <8AE10DB9-3685-4E07-AA94-B991D41D8D9D@sdf.org>
+ <20140510115158.x+L+UNYY%sdaoden@yandex.com>
+ <CAC5iaNGGjvnaa-HTs0bpHtsDMn9G---K_1=gyaRSHraNAib3iw@mail.gmail.com>
+ <20140510201801.GE17946@mercury.ccil.org>
+ <20140510223942.e6o0M3U0%sdaoden@yandex.com>
+ <20140510222034.GO17946@mercury.ccil.org>
+Message-ID: <20140510233013.Horde.5bXDKJY0upPXRcotFXOX6w4@ssl.eumx.net>
+
+I don't think there's any actual disagreement on your points, just a lot
+of useless syntactic fiddling.  Claiming German isn't German because it's
+*different* German is going to lead to someone claiming by analogy that
+Beowulf isn't English, and then the world will end.
+
+What do you stand to gain here?
+
+khm
+
+
+
+From cowan at mercury.ccil.org  Sun May 11 09:41:20 2014
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sat, 10 May 2014 19:41:20 -0400
+Subject: [TUHS] An amusing error message
+In-Reply-To: <20140510233013.Horde.5bXDKJY0upPXRcotFXOX6w4@ssl.eumx.net>
+References: <20140509210729.6D80618C09B@mercury.lcs.mit.edu>
+ <20140510002011.IEnjtHhZ%sdaoden@yandex.com>
+ <8AE10DB9-3685-4E07-AA94-B991D41D8D9D@sdf.org>
+ <20140510115158.x+L+UNYY%sdaoden@yandex.com>
+ <CAC5iaNGGjvnaa-HTs0bpHtsDMn9G---K_1=gyaRSHraNAib3iw@mail.gmail.com>
+ <20140510201801.GE17946@mercury.ccil.org>
+ <20140510223942.e6o0M3U0%sdaoden@yandex.com>
+ <20140510222034.GO17946@mercury.ccil.org>
+ <20140510233013.Horde.5bXDKJY0upPXRcotFXOX6w4@ssl.eumx.net>
+Message-ID: <20140510234120.GS17946@mercury.ccil.org>
+
+Kurt H Maier scripsit:
+
+> I don't think there's any actual disagreement on your points, just a lot
+> of useless syntactic fiddling.  Claiming German isn't German because it's
+> *different* German is going to lead to someone claiming by analogy that
+> Beowulf isn't English, and then the world will end.
+
+If this is addressed to me (there's no way to tell), I am not claiming
+anything of the sort.  Yiddish and German are sibling languages.
+Yiddish has borrowed a lot of Hebrew, but is not genetically related
+to it.  That's all.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+That you can cover for the plentiful and often gaping errors, misconstruals
+and disinformation in your posts through sheer volume -- that is another
+misconception.  --Mike to Peter
+
+
+From jnc at mercury.lcs.mit.edu  Sun May 11 10:51:33 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Sat, 10 May 2014 20:51:33 -0400 (EDT)
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+Message-ID: <20140511005133.C05DA18C0B7@mercury.lcs.mit.edu>
+
+    > OK, I have whipped up some material on how to bring V6 up under
+    > Ersatz-11. See here:
+    >   http://ana-3.lcs.mit.edu/~jnc/tech/unix/V6Unix.html
+
+New location (although the old one still works):
+
+  http://www.chiappa.net/~jnc/tech/V6Unix.html
+
+So it turns out there was a bogon on the old version of this page: it claimed
+the Windoze version of 'tar' needed Unix system mods (which is incorrect, it
+was the version for V6 which needed the mods - cut and paste error). Fixed now
+(it's useful to have a Windoze 'tar' because some of the old TAR files in the
+archive can't be read by modern tools), and a certain amount of new material
+added to the page overall.
+
+
+    > There is more content/pages coming: the start of an 'advanced things
+    > you can do to improve your V6 Unix' page
+
+I've upgraded that somewhat to a complete page (although I'll probably add
+more at some point in the future, e.g. I have a version of 'ps' which shows
+sleep channels symbolically, text slots as ordinals, etc but I need to tweak
+it a bit before I bring it out). The page is here:
+
+  http://www.chiappa.net/~jnc/tech/ImprovingV6.html
+
+now, although the main page links to it too.
+
+And I have another page coming, e.g. a 'what to look out for when you're
+porting stuff to and from V6' guide. Etc, etc.
+
+	Noel
+
+
+From lm at bitmover.com  Sun May 11 10:57:38 2014
+From: lm at bitmover.com (Larry McVoy)
+Date: Sat, 10 May 2014 17:57:38 -0700
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <20140511005133.C05DA18C0B7@mercury.lcs.mit.edu>
+References: <20140511005133.C05DA18C0B7@mercury.lcs.mit.edu>
+Message-ID: <20140511005738.GB10882@bitmover.com>
+
+This may have been answered and I missed it while I was out weedwacking
+but have you gotten to a point where you can rebuild the world and install
+your newly built stuff?
+
+At Sun this was called "make bootstrap" but I bet that predates Sun.  The
+bootstrap process, as I remember it, had the compiler build the compiler,
+then the new compiler built the kernel and userland, then there was an
+install step, and presto, you were running on bits you had built yourself.
+All of them.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From cowan at mercury.ccil.org  Sun May 11 11:27:56 2014
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sat, 10 May 2014 21:27:56 -0400
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <20140511005738.GB10882@bitmover.com>
+References: <20140511005133.C05DA18C0B7@mercury.lcs.mit.edu>
+ <20140511005738.GB10882@bitmover.com>
+Message-ID: <20140511012756.GU17946@mercury.ccil.org>
+
+Larry McVoy scripsit:
+
+> At Sun this was called "make bootstrap" but I bet that predates Sun.  The
+> bootstrap process, as I remember it, had the compiler build the compiler,
+> then the new compiler built the kernel and userland, then there was an
+> install step, and presto, you were running on bits you had built yourself.
+> All of them.
+
+Well, provided the compiler is honest, contra Dennis.
+
+An interesting fact about the Squeak Smalltalk image (which runs on the
+Squeak VM as well as other VMs) is that there are bits in it which were
+set prior to 1980, and consequently are not the consequence of any of
+the source code provided with it.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+The Imperials are decadent, 300 pound   John Cowan <cowan at ccil.org>
+free-range chickens (except they have   http://www.ccil.org/~cowan
+teeth, arms instead of wings, and
+dinosaurlike tails).                        --Elyse Grasso
+
+
+From lm at bitmover.com  Sun May 11 11:58:54 2014
+From: lm at bitmover.com (Larry McVoy)
+Date: Sat, 10 May 2014 18:58:54 -0700
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <20140511012756.GU17946@mercury.ccil.org>
+References: <20140511005133.C05DA18C0B7@mercury.lcs.mit.edu>
+ <20140511005738.GB10882@bitmover.com>
+ <20140511012756.GU17946@mercury.ccil.org>
+Message-ID: <20140511015854.GA15678@bitmover.com>
+
+On Sat, May 10, 2014 at 09:27:56PM -0400, John Cowan wrote:
+> Larry McVoy scripsit:
+> 
+> > At Sun this was called "make bootstrap" but I bet that predates Sun.  The
+> > bootstrap process, as I remember it, had the compiler build the compiler,
+> > then the new compiler built the kernel and userland, then there was an
+> > install step, and presto, you were running on bits you had built yourself.
+> > All of them.
+> 
+> Well, provided the compiler is honest, contra Dennis.
+
+With all due respect (and I'm not trolling John, I've got respect for you)
+I think it was Ken.
+
+http://cm.bell-labs.com/who/ken/trust.html
+
+/me misses the days where it was all about what the bell labs guys would do
+next.  Those were fun.  These days it seems like we all have to try and hope
+google isn't going to be really evil.  Wasn't it more fun when it was about
+science?
+
+
+From jnc at mercury.lcs.mit.edu  Sun May 11 12:06:18 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Sat, 10 May 2014 22:06:18 -0400 (EDT)
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+Message-ID: <20140511020618.8E98E18C0BB@mercury.lcs.mit.edu>
+
+    > From: Larry McVoy <lm at bitmover.com>
+
+    > have you gotten to a point where you can rebuild the world and install
+    > your newly built stuff?
+
+Well, I haven't tried to do that (it's not something that I'm that interested
+in), but it _should_ be possible, since the 'vanilla' V6 distribution does
+include the source for pretty much everything (including the C compiler,
+assembler, loader, etc).
+
+
+(This does not include the stuff from the Shoppa disk, like the new C
+compiler, where I don't have the source. [The PWB distribution, which
+includes a C compiler from 1977, is probably pretty close. Looking into
+the PWB stuff is one of my next projects; we have 17 different versions
+of that stuff, and I'd like to see what the differences among them are,
+and maybe create a 'canonical' PWB.]
+
+Also, per the 'Improvements' page, I have source for the Standard I/O
+Library, but I'm using the binary library from the Shoppa disk, which may or
+may not correspond to that source.)
+
+	Noel
+
+
+From gregg.drwho8 at gmail.com  Sun May 11 12:31:40 2014
+From: gregg.drwho8 at gmail.com (Gregg Levine)
+Date: Sat, 10 May 2014 22:31:40 -0400
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <20140511020618.8E98E18C0BB@mercury.lcs.mit.edu>
+References: <20140511020618.8E98E18C0BB@mercury.lcs.mit.edu>
+Message-ID: <CAC5iaNEO1fH+ZZqgchH4v_+bVcJQ029mgq=00GuY57CY2NnMQw@mail.gmail.com>
+
+Hello!
+By Shoppa disk do you mean, Shoppe disk, and any of the set of disks
+that are in the distributions portion of the site with his name on
+them? I've been trying to figure out how to attach them to the E11 one
+to bring the whole thing up.
+-----
+Gregg C Levine gregg.drwho8 at gmail.com
+"This signature fought the Time Wars, time and again."
+
+
+On Sat, May 10, 2014 at 10:06 PM, Noel Chiappa <jnc at mercury.lcs.mit.edu> wrote:
+>     > From: Larry McVoy <lm at bitmover.com>
+>
+>     > have you gotten to a point where you can rebuild the world and install
+>     > your newly built stuff?
+>
+> Well, I haven't tried to do that (it's not something that I'm that interested
+> in), but it _should_ be possible, since the 'vanilla' V6 distribution does
+> include the source for pretty much everything (including the C compiler,
+> assembler, loader, etc).
+>
+>
+> (This does not include the stuff from the Shoppa disk, like the new C
+> compiler, where I don't have the source. [The PWB distribution, which
+> includes a C compiler from 1977, is probably pretty close. Looking into
+> the PWB stuff is one of my next projects; we have 17 different versions
+> of that stuff, and I'd like to see what the differences among them are,
+> and maybe create a 'canonical' PWB.]
+>
+> Also, per the 'Improvements' page, I have source for the Standard I/O
+> Library, but I'm using the binary library from the Shoppa disk, which may or
+> may not correspond to that source.)
+>
+>         Noel
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From gregg.drwho8 at gmail.com  Sun May 11 12:34:46 2014
+From: gregg.drwho8 at gmail.com (Gregg Levine)
+Date: Sat, 10 May 2014 22:34:46 -0400
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <CAC5iaNEO1fH+ZZqgchH4v_+bVcJQ029mgq=00GuY57CY2NnMQw@mail.gmail.com>
+References: <20140511020618.8E98E18C0BB@mercury.lcs.mit.edu>
+ <CAC5iaNEO1fH+ZZqgchH4v_+bVcJQ029mgq=00GuY57CY2NnMQw@mail.gmail.com>
+Message-ID: <CAC5iaNGU3MzFJDemCir02CstfmhprZtr1x991szfJjQMp6foXg@mail.gmail.com>
+
+Hello!
+My mistake, you did mean Shoppa disk.
+-----
+Gregg C Levine gregg.drwho8 at gmail.com
+"This signature fought the Time Wars, time and again."
+
+
+On Sat, May 10, 2014 at 10:31 PM, Gregg Levine <gregg.drwho8 at gmail.com> wrote:
+> Hello!
+> By Shoppa disk do you mean, Shoppe disk, and any of the set of disks
+> that are in the distributions portion of the site with his name on
+> them? I've been trying to figure out how to attach them to the E11 one
+> to bring the whole thing up.
+> -----
+> Gregg C Levine gregg.drwho8 at gmail.com
+> "This signature fought the Time Wars, time and again."
+>
+>
+> On Sat, May 10, 2014 at 10:06 PM, Noel Chiappa <jnc at mercury.lcs.mit.edu> wrote:
+>>     > From: Larry McVoy <lm at bitmover.com>
+>>
+>>     > have you gotten to a point where you can rebuild the world and install
+>>     > your newly built stuff?
+>>
+>> Well, I haven't tried to do that (it's not something that I'm that interested
+>> in), but it _should_ be possible, since the 'vanilla' V6 distribution does
+>> include the source for pretty much everything (including the C compiler,
+>> assembler, loader, etc).
+>>
+>>
+>> (This does not include the stuff from the Shoppa disk, like the new C
+>> compiler, where I don't have the source. [The PWB distribution, which
+>> includes a C compiler from 1977, is probably pretty close. Looking into
+>> the PWB stuff is one of my next projects; we have 17 different versions
+>> of that stuff, and I'd like to see what the differences among them are,
+>> and maybe create a 'canonical' PWB.]
+>>
+>> Also, per the 'Improvements' page, I have source for the Standard I/O
+>> Library, but I'm using the binary library from the Shoppa disk, which may or
+>> may not correspond to that source.)
+>>
+>>         Noel
+>> _______________________________________________
+>> TUHS mailing list
+>> TUHS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From cowan at mercury.ccil.org  Sun May 11 12:40:29 2014
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sat, 10 May 2014 22:40:29 -0400
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <20140511015854.GA15678@bitmover.com>
+References: <20140511005133.C05DA18C0B7@mercury.lcs.mit.edu>
+ <20140511005738.GB10882@bitmover.com>
+ <20140511012756.GU17946@mercury.ccil.org>
+ <20140511015854.GA15678@bitmover.com>
+Message-ID: <20140511024029.GV17946@mercury.ccil.org>
+
+Larry McVoy scripsit:
+
+> With all due respect (and I'm not trolling John, I've got respect for
+> you) I think it was Ken.
+
+It was indeed.  As I age, brain farts are multiplying in what I am
+pleased to call my mind.  To make it worse, I'll probably say "Dennis"
+a few more times before I get it fixed.  Google helps compensate, and
+I'm getting better about verifying things, but not always.
+
+> /me misses the days where it was all about what the bell labs guys
+> would do next.  Those were fun.  These days it seems like we all have
+> to try and hope google isn't going to be really evil.  Wasn't it more
+> fun when it was about science?
+
+I postdate that era, alas.  Still, I'm sure they had their politics too.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Is a chair finely made tragic or comic? Is the portrait of Mona Lisa
+good if I desire to see it? Is the bust of Sir Philip Crampton lyrical,
+epical or dramatic?  If a man hacking in fury at a block of wood make
+there an image of a cow, is that image a work of art? If not, why not?
+                --Stephen Dedalus
+
+
+From jnc at mercury.lcs.mit.edu  Sun May 11 13:13:29 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Sat, 10 May 2014 23:13:29 -0400 (EDT)
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+Message-ID: <20140511031329.6220418C0AD@mercury.lcs.mit.edu>
+
+    > From: Gregg Levine <gregg.drwho8 at gmail.com>
+
+    > By Shoppa disk do you mean, Shoppe disk
+
+The root pack (linked to from my page):
+
+  http://www.tuhs.org/Archive/PDP-11/Distributions/other/Tim_Shoppa_v6/unix_v6.rl02.gz
+
+It contains lots of V6 goodies - but not, alas, source for most of them. (E.g.
+I had to disassemble the RL bootstrap(s) from it.)
+
+
+    > I've been trying to figure out how to attach them to the E11 one to
+    > bring the whole thing up.
+
+The others are junk (see below). To boot up the root pack (I don't think I
+did this at any point; I've always mounted it as a subsidiary drive) you'd
+need to say:
+
+  mount dl0: unix_v6.rl02 /RL02
+
+and then:
+
+  boot dl0:
+
+The disk has a working RL bootstrap in block 0, it should boot OK. Then you
+get to take your pick of which unix to boot! There are 7 to chose from:
+
+  77 -rwxrwxr-x  1 root    38598 Aug 22  1984 oldunix
+  77 -rwxrwxr-x  1 root    38504 Jul 19  1984 oldunix.25.7
+  77 -rwxrwxr-x  1 root    38568 Feb 20  1985 unix
+  74 -rwxrwxr-x  1 4       36956 Mar  9  1983 unix.jones
+  69 -rwxrwxr-x  1 root    34408 Aug 16  1983 unix.mlab
+  76 -rwxrwxr-x  1 4       38316 Sep  3  1982 unix.rxrl
+  68 -rwxrwxr-x  1 root    33958 Jun  6  1983 unix.tmp        
+
+and I have no idea how they all differ - or what each one expects to use for
+a root device and swap device.
+
+Looking at 'unix', it gives both rootdev and swapdev as '01000' (which is
+probably the RL, I'm too lazy to grovel around in bdevsw and make sure). The
+super block reports 19000 as the size of the file system, and sure enough,
+swplo is reported as 045070 (19000), and nswap as 02710 (1480). So it's
+probably set up to run and swap on RL/0.
+
+
+    > and any of the set of disks that are in the distributions portion of
+    > the site with his name on them?
+
+All of the other disks in the V6 folder with his name on it:
+
+  http://www.tuhs.org/Archive/PDP-11/Distributions/other/Tim_Shoppa_v6
+
+are junk; here's a brief rundown on each one:
+
+ copy_num1_user.rl02:
+ user0_backup.rl02:
+ user_backup2.rl02:
+
+All very similar to the 'unlabeled' disk (below) - lots of random user files
+for biology stuff, little if anything of any use/interest.
+
+There is a file which isn't listed in the README:
+
+ unlabeled.rl02:
+
+It looks like another /user disk, full of random biology stuff; nothing
+interesting except a copy of a nice-looking Kermit written in C (by someone
+at Columbia, IIRC).
+
+ junk:
+
+An RL01 pack (the others are all RL02's); it has a boot block with PDP-11
+code in it; I mounted it on a simulator and booted it, and it says it's an
+RSX-11M V3.2 disk.
+
+ user01.rl02:
+
+This is also an RSX pack (I think), but when I tried to boot it, it said
+"THIS VOLUME DOES NOT CONTAIN A HARDWARE BOOTABLE SYSTEM", and since I don't
+know how to mount disks under RSX-11 I left it at that.
+
+ scratch_disk_1123.rl02: 
+
+This does indeed seem to be something that was used for disk diagnostics: the
+boot block contains gubble, including (in the first RL11 block) lots of words
+with all ones, and a lot of 52525's.
+
+	Noel
+
+
+From jnc at mercury.lcs.mit.edu  Sun May 11 13:26:17 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Sat, 10 May 2014 23:26:17 -0400 (EDT)
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+Message-ID: <20140511032617.8935D18C0AD@mercury.lcs.mit.edu>
+
+    >> From: Larry McVoy <lm at bitmover.com>
+
+    >> have you gotten to a point where you can rebuild the world and install
+    >> your newly built stuff?
+
+    > Well, I haven't tried to do that (it's not something that I'm that
+    > interested in), but it _should_ be possible, since the 'vanilla' V6
+    > distribution does include the source for pretty much everything
+    > (including the C compiler, assembler, loader, etc).
+
+So, just for grins, because I was curious (after your question), I did try
+recompiling the C compiler, to see what I'd get.
+
+What I got were three files (c0, c1 and c2) which were _the exact same size_
+(down to the byte) as the binaries on the V6 Research distro, but had a
+number of differences when compared with 'cmp -l'. Odd!
+
+I don't know what the differences result from (and it's too late now to dig
+into why, I'm fading). I'll take a gander tomorrow and try and work it out.
+Too bad the binaries in the Research distro have had their symbol tables
+stripped! That would have made it much easier...
+
+My guess is something like 'libraries in different order, so two library
+routines are swapped around in the linked binary', or something like that
+(given that the size is an exact match). But I'll need to dig a bit...
+
+	Noel
+
+
+From cowan at mercury.ccil.org  Sun May 11 14:20:42 2014
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sun, 11 May 2014 00:20:42 -0400
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <20140511031329.6220418C0AD@mercury.lcs.mit.edu>
+References: <20140511031329.6220418C0AD@mercury.lcs.mit.edu>
+Message-ID: <20140511042042.GX17946@mercury.ccil.org>
+
+Noel Chiappa scripsit:
+
+>  junk:
+> 
+> An RL01 pack (the others are all RL02's); it has a boot block with PDP-11
+> code in it; I mounted it on a simulator and booted it, and it says it's an
+> RSX-11M V3.2 disk.
+> 
+>  user01.rl02:
+> 
+> This is also an RSX pack (I think), but when I tried to boot it, it said
+> "THIS VOLUME DOES NOT CONTAIN A HARDWARE BOOTABLE SYSTEM", and since I don't
+> know how to mount disks under RSX-11 I left it at that.
+
+If it's ODS-1 (aka FILES-11) format, it should be possible to mount it
+on a Vax or Alpha system, as it is a down-level version of the OpenVMS
+format ODS-2.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Let's face it: software is crap. Feature-laden and bloated, written under
+tremendous time-pressure, often by incapable coders, using dangerous
+languages and inadequate tools, trying to connect to heaps of broken or
+obsolete protocols, implemented equally insufficiently, running on
+unpredictable hardware -- we are all more than used to brokenness.
+                   --Felix Winkelmann
+
+
+From ori at helicontech.co.il  Sun May 11 15:14:06 2014
+From: ori at helicontech.co.il (Ori Idan)
+Date: Sun, 11 May 2014 08:14:06 +0300
+Subject: [TUHS] An amusing error message
+In-Reply-To: <20140510223942.e6o0M3U0%sdaoden@yandex.com>
+References: <20140509210729.6D80618C09B@mercury.lcs.mit.edu>
+ <20140510002011.IEnjtHhZ%sdaoden@yandex.com>
+ <8AE10DB9-3685-4E07-AA94-B991D41D8D9D@sdf.org>
+ <20140510115158.x+L+UNYY%sdaoden@yandex.com>
+ <CAC5iaNGGjvnaa-HTs0bpHtsDMn9G---K_1=gyaRSHraNAib3iw@mail.gmail.com>
+ <20140510201801.GE17946@mercury.ccil.org>
+ <20140510223942.e6o0M3U0%sdaoden@yandex.com>
+Message-ID: <CACyhTREi3yZSLPsBx2uA3S+c+RNT-rVS_P2KVU4AJTW87cKriQ@mail.gmail.com>
+
+On Sun, May 11, 2014 at 12:39 AM, Steffen Nurpmeso <sdaoden at yandex.com>wrote:
+
+> I was born '72 ...
+> Jiddisch does no longer exist in Germany.
+> (And i'm living in the hope the borders remain where they are.)
+>
+> John Cowan <cowan at mercury.ccil.org> wrote:
+>  |Gregg Levine scripsit:
+>  |> Let us also consider the dialect of Yiddish. It contains many
+>  |> expressions originally in German, and an equally ungrammatical
+>  |> smattering of Hebrew.
+>  |
+>  |I know this is said in jest, but to speak in earnest for a moment,
+>  |Yiddish hasn't borrowed much from German: rather, Yiddish and modern
+>  |German are descended from a common ancestor, and so Yiddish is no more
+>  |ungrammatical German than English is ungrammatical Dutch.
+>
+> The "Jiddisch" entry in the german Wikipedia classifies it as
+> a "Middle German Dialect".
+>
+
+In Israel Yiddisch still exists and spoken mainly by old people who came
+from Germany. As much as I know there is still a newspaper written in
+Yiddisch.
+Yiddisch writing is even stranger as it uses the Hebrew alphabet.
+There is even a Yiddisch literature course in universities here.
+
+-- 
+Ori Idan
+
+
+> --steffen
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140511/e53bd08d/attachment.html>
+
+From cowan at mercury.ccil.org  Sun May 11 16:00:59 2014
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sun, 11 May 2014 02:00:59 -0400
+Subject: [TUHS] An amusing error message
+In-Reply-To: <CACyhTREi3yZSLPsBx2uA3S+c+RNT-rVS_P2KVU4AJTW87cKriQ@mail.gmail.com>
+References: <20140509210729.6D80618C09B@mercury.lcs.mit.edu>
+ <20140510002011.IEnjtHhZ%sdaoden@yandex.com>
+ <8AE10DB9-3685-4E07-AA94-B991D41D8D9D@sdf.org>
+ <20140510115158.x+L+UNYY%sdaoden@yandex.com>
+ <CAC5iaNGGjvnaa-HTs0bpHtsDMn9G---K_1=gyaRSHraNAib3iw@mail.gmail.com>
+ <20140510201801.GE17946@mercury.ccil.org>
+ <20140510223942.e6o0M3U0%sdaoden@yandex.com>
+ <CACyhTREi3yZSLPsBx2uA3S+c+RNT-rVS_P2KVU4AJTW87cKriQ@mail.gmail.com>
+Message-ID: <20140511060058.GZ17946@mercury.ccil.org>
+
+Ori Idan scripsit:
+
+> In Israel Yiddisch still exists and spoken mainly by old people who
+> came from Germany. As much as I know there is still a newspaper written
+> in Yiddisch.
+
+There's one in New York City, too:  <http://yiddish.forward.com>.
+It's hard to count, but there are probably between 1 and 2 million
+Yiddish-speakers worldwide.  In particular, many Haredi (so-called
+ultra-Orthodox) Jews outside Israel use it as a home language, so it is
+still being passed on to children, and it is still used as a language
+of religious education.
+
+> Yiddisch writing is even stranger as it uses the Hebrew alphabet.
+
+Before mass literacy, Jews (who were almost all literate in Hebrew,
+at least the males) traditionally wrote the language of the country
+they were in using the Hebrew alphabet.  Consequently, there were and
+in some cases still are Jewish versions of French, German, Spanish,
+Georgian, various Arabic colloquials, Aramaic, Tat, and other languages.
+Yiddish is the most different of these from the goyish version.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+And they pack their lyrics till they're so damn dense
+You could put 'em in your yard and you could use 'em for a fence.
+      --Alan Chapman, "Everybody Wants to Be Sondheim"
+
+
+From norman at oclsc.org  Mon May 12 02:16:09 2014
+From: norman at oclsc.org (Norman Wilson)
+Date: Sun, 11 May 2014 12:16:09 -0400 (EDT)
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+Message-ID: <1399824978.4798.for-standards-violators@oclsc.org>
+
+  This is also an RSX pack (I think), but when I tried to boot it, it said
+  "THIS VOLUME DOES NOT CONTAIN A HARDWARE BOOTABLE SYSTEM", and since I don't
+  know how to mount disks under RSX-11 I left it at that.
+
+There exists somewhere a UNIX program that reads an ODS-1 file-system
+image and produces directory listings and extracts named files.
+
+I know it exists because it was written by a friend (and probably hacked
+around a little by me) almost 35 years ago, when we both worked in a
+place that had some UNIX and some RSX-11.  That means `somewhere'
+probably includes some place in my old files.  I'll see if I can
+dig it out, upgrade it to work cleanly with modern C (it's just possible
+I have an ODS-1 file system image lying around somewher too), and
+post it either somewhere on the web or just to the list.
+
+Norman Wilson
+Toronto ON
+
+
+From cowan at mercury.ccil.org  Mon May 12 02:45:51 2014
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sun, 11 May 2014 12:45:51 -0400
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <1399824978.4798.for-standards-violators@oclsc.org>
+References: <1399824978.4798.for-standards-violators@oclsc.org>
+Message-ID: <20140511164551.GC17946@mercury.ccil.org>
+
+Norman Wilson scripsit:
+
+>   This is also an RSX pack (I think), but when I tried to boot it, it said
+>   "THIS VOLUME DOES NOT CONTAIN A HARDWARE BOOTABLE SYSTEM", and since I don't
+>   know how to mount disks under RSX-11 I left it at that.
+> 
+> There exists somewhere a UNIX program that reads an ODS-1 file-system
+> image and produces directory listings and extracts named files.
+
+I also found an ODS-2/ODS-5 driver for Linux at
+<http://www.vms2linux.de/ods5fs.html>.  Whether it would handle ODS-1,
+I don't know.
+
+In any case, it would be worth transferring these two images to bitsavers
+so that they can be found by people who want RSX-11M volumes.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+It's the old, old story.  Droid meets droid.  Droid becomes chameleon.
+Droid loses chameleon, chameleon becomes blob, droid gets blob back
+again.  It's a classic tale.  --Kryten, Red Dwarf
+
+
+From clemc at ccc.com  Mon May 12 03:21:39 2014
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 11 May 2014 13:21:39 -0400
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <20140511020618.8E98E18C0BB@mercury.lcs.mit.edu>
+References: <20140511020618.8E98E18C0BB@mercury.lcs.mit.edu>
+Message-ID: <6E54FFD0-B049-4168-B119-B54F835F3C12@ccc.com>
+
+Noel
+
+I wonder if that is the so called "Typesetter C" compiler which was released independently of the system -  you needed it compile the new troff and support for other typesetters besides the CAT.   my memory which is hazy now was that typesetter C was what Mashey used for what would become PWB.   we should ask him
+
+Clem
+
+On May 10, 2014, at 10:06 PM, jnc at mercury.lcs.mit.edu (Noel Chiappa) wrote:
+
+>> From: Larry McVoy <lm at bitmover.com>
+> 
+>> have you gotten to a point where you can rebuild the world and install
+>> your newly built stuff?
+> 
+> Well, I haven't tried to do that (it's not something that I'm that interested
+> in), but it _should_ be possible, since the 'vanilla' V6 distribution does
+> include the source for pretty much everything (including the C compiler,
+> assembler, loader, etc).
+> 
+> 
+> (This does not include the stuff from the Shoppa disk, like the new C
+> compiler, where I don't have the source. [The PWB distribution, which
+> includes a C compiler from 1977, is probably pretty close. Looking into
+> the PWB stuff is one of my next projects; we have 17 different versions
+> of that stuff, and I'd like to see what the differences among them are,
+> and maybe create a 'canonical' PWB.]
+> 
+> Also, per the 'Improvements' page, I have source for the Standard I/O
+> Library, but I'm using the binary library from the Shoppa disk, which may or
+> may not correspond to that source.)
+> 
+>    Noel
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From clemc at ccc.com  Mon May 12 03:24:01 2014
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 11 May 2014 13:24:01 -0400
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <6E54FFD0-B049-4168-B119-B54F835F3C12@ccc.com>
+References: <20140511020618.8E98E18C0BB@mercury.lcs.mit.edu>
+ <6E54FFD0-B049-4168-B119-B54F835F3C12@ccc.com>
+Message-ID: <7B25231E-5133-47E9-862F-6A89E0468284@ccc.com>
+
+one way to tell.   do you have the standard I/o lib or the portable I/O library.  the former was first released as part of typesetter C
+
+> On May 11, 2014, at 1:21 PM, Clem Cole <clemc at ccc.com> wrote:
+> 
+> Noel
+> 
+> I wonder if that is the so called "Typesetter C" compiler which was released independently of the system -  you needed it compile the new troff and support for other typesetters besides the CAT.   my memory which is hazy now was that typesetter C was what Mashey used for what would become PWB.   we should ask him
+> 
+> Clem
+> 
+> On May 10, 2014, at 10:06 PM, jnc at mercury.lcs.mit.edu (Noel Chiappa) wrote:
+> 
+>>> From: Larry McVoy <lm at bitmover.com>
+>> 
+>>> have you gotten to a point where you can rebuild the world and install
+>>> your newly built stuff?
+>> 
+>> Well, I haven't tried to do that (it's not something that I'm that interested
+>> in), but it _should_ be possible, since the 'vanilla' V6 distribution does
+>> include the source for pretty much everything (including the C compiler,
+>> assembler, loader, etc).
+>> 
+>> 
+>> (This does not include the stuff from the Shoppa disk, like the new C
+>> compiler, where I don't have the source. [The PWB distribution, which
+>> includes a C compiler from 1977, is probably pretty close. Looking into
+>> the PWB stuff is one of my next projects; we have 17 different versions
+>> of that stuff, and I'd like to see what the differences among them are,
+>> and maybe create a 'canonical' PWB.]
+>> 
+>> Also, per the 'Improvements' page, I have source for the Standard I/O
+>> Library, but I'm using the binary library from the Shoppa disk, which may or
+>> may not correspond to that source.)
+>> 
+>>   Noel
+>> _______________________________________________
+>> TUHS mailing list
+>> TUHS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From ron at ronnatalie.com  Mon May 12 04:50:09 2014
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Sun, 11 May 2014 14:50:09 -0400
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <6E54FFD0-B049-4168-B119-B54F835F3C12@ccc.com>
+References: <20140511020618.8E98E18C0BB@mercury.lcs.mit.edu>
+ <6E54FFD0-B049-4168-B119-B54F835F3C12@ccc.com>
+Message-ID: <3B889910-78BC-476A-AEAC-241DA0B934D9@ronnatalie.com>
+
+Yes, we got the typesetter C and the C version of nroff/troff well in advance of Version 7 coming out.
+You can tell some of the vagaries of the typesetter C as it has some of the later things like += (rather than =+)
+but not the full up language features.
+
+There's a whole generation of people who won't recognize the concept
+
+PS->integ
+
+
+
+From pechter at gmail.com  Mon May 12 08:19:01 2014
+From: pechter at gmail.com (pechter at gmail.com)
+Date: Sun, 11 May 2014 18:19:01 -0400
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <20140511164551.GC17946@mercury.ccil.org>
+References: <1399824978.4798.for-standards-violators@oclsc.org>
+ <20140511164551.GC17946@mercury.ccil.org>
+Message-ID: <b017aad5-75f8-4cab-b372-eb38d8c6ff3b.maildroid@localhost>
+
+The web page mentions files-11 which is ODS-1.
+
+
+
+Bill
+
+
+
+
+-----Original Message-----
+From: John Cowan <cowan at mercury.ccil.org>
+To: Norman Wilson <norman at oclsc.org>
+Cc: tuhs at minnie.tuhs.org
+Sent: Sun, 11 May 2014 12:46
+Subject: Re: [TUHS] Work I've done with a PDP-11 simulator
+
+Norman Wilson scripsit:
+
+>   This is also an RSX pack (I think), but when I tried to boot it, it said
+>   "THIS VOLUME DOES NOT CONTAIN A HARDWARE BOOTABLE SYSTEM", and since I don't
+>   know how to mount disks under RSX-11 I left it at that.
+> 
+> There exists somewhere a UNIX program that reads an ODS-1 file-system
+> image and produces directory listings and extracts named files.
+
+I also found an ODS-2/ODS-5 driver for Linux at
+<http://www.vms2linux.de/ods5fs.html>.  Whether it would handle ODS-1,
+I don't know.
+
+In any case, it would be worth transferring these two images to bitsavers
+so that they can be found by people who want RSX-11M volumes.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+It's the old, old story.  Droid meets droid.  Droid becomes chameleon.
+Droid loses chameleon, chameleon becomes blob, droid gets blob back
+again.  It's a classic tale.  --Kryten, Red Dwarf
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From norman at oclsc.org  Mon May 12 09:13:29 2014
+From: norman at oclsc.org (Norman Wilson)
+Date: Sun, 11 May 2014 19:13:29 -0400 (EDT)
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+Message-ID: <1399850019.15503.for-standards-violators@oclsc.org>
+
+  The web page mentions files-11 which is ODS-1.
+
+Technically (it is all coming back to me now):
+
+FILES-11 is a family of file systems that started in RSX-11
+(or perhaps before but that's the oldest instance I know).
+
+ODS-1 is really FILES-11 ODS-1; ODS is `on-disk [something].'
+
+RSX-11 used ODS-1.  VMS used ODS-2.  I'm not sure of all
+the differences offhand, but they were substantial enough
+that we ended up writing two different programs to fetch
+files to UNIX from RSX and VMS volumes (we had the latter
+to deal with too).  Certainly the directory entries were
+different between the two: ODS-1 used RADIX-50-encoded
+file names with at most six characters plus an at-most-three-
+character `extension' (a term which newbies sometimes
+improperly import into UNIX as well); I forget the exact
+filename rules in VMS, but filenames certainly could be
+longer than six characters.
+
+I've found the early-1980s programs I remembered.  There
+were two, getrsx.c and getvms.c; two programs, one for
+each file-system format.  They are surely full of ancient
+sloppiness that won't compile or won't work right under
+a modern C compiler, and they make assumptions about byte
+order.  I'll spend some time in the next few days going over
+them and see if I can quickly get something workable.
+
+A footnote as to their origin: in the world where we wrote
+these programs, we had not only multiple systems, but
+shared disk drives.  The disk drives themselves were
+dual-ported; the controllers we used could connect to
+multiple hosts as well.  Each system had its own dedicated
+disk drives, but the UNIX systems could also see the drives
+belonging to the RSX and VMS systems; hence the file-fetching
+programs, since this was well before the sort of networking
+we take for granted these days.
+
+On the other hand, we had several UNIX systems which spoke
+uucp to one another, and that was occasionally used for
+large file transfers.  To speed that up, I taught uucico
+a new protocol, whereby control information still went over
+a serial line, but data blocks were transferred over a
+chunk of raw shared disk (with appropriate locks, of course).
+
+It was a simpler world back then, but that made it a lot more fun.
+
+Norman Wilson
+Toronto ON
+
+
+From cowan at mercury.ccil.org  Mon May 12 15:29:02 2014
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Mon, 12 May 2014 01:29:02 -0400
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <1399850019.15503.for-standards-violators@oclsc.org>
+References: <1399850019.15503.for-standards-violators@oclsc.org>
+Message-ID: <20140512052901.GR17946@mercury.ccil.org>
+
+Norman Wilson scripsit:
+
+> Certainly the directory entries were different between the two: ODS-1
+> used RADIX-50-encoded file names with at most six characters plus an
+> at-most-three- character `extension'
+
+Ah, yes, of course.
+
+> (a term which newbies sometimes improperly import into UNIX as well);
+
+To be fair, there are programs, notably "make", which behave as if Unix
+had extensions.
+
+> I forget the exact filename rules in VMS, but filenames certainly
+> could be longer than six characters.
+
+39 characters of name and 39 characters of extension in ODS-2, no
+definite limits (and Unicode to boot)imits in ODS-5.  ODS-5 is close to
+NTFS.
+
+> I'll spend some time in the next few days going over them and see if I
+> can quickly get something workable.
+
+Excellent!
+
+> To speed that up, I taught uucico a new protocol, whereby control
+> information still went over a serial line, but data blocks were
+> transferred over a chunk of raw shared disk (with appropriate locks,
+> of course).
+
+Clever.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+I now introduce Professor Smullyan, who will prove to you that either
+he doesn't exist or you don't exist, but you won't know which.
+                               --Melvin Fitting
+
+
+From jnc at mercury.lcs.mit.edu  Tue May 13 00:49:44 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon, 12 May 2014 10:49:44 -0400 (EDT)
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+Message-ID: <20140512144944.F3AB618C0D2@mercury.lcs.mit.edu>
+
+    > To boot up the root pack (I don't think I did this at any point; I've
+    > always mounted it as a subsidiary drive)
+    > ...
+    > The disk has a working RL bootstrap in block 0, it should boot OK. 
+
+So I recently had to reboot my machine, and I took the opportunity to try
+this; it worked right off, booted 'unix' OK. (I didn't try any of the other
+Unixes in the root directory.) I had only that pack mounted on DL0, nothing
+else.
+
+
+    > So, just for grins, because I was curious (after your question), I did
+    > try recompiling the C compiler, to see what I'd get.
+    > What I got were three files (c0, c1 and c2) which were _the exact same
+    > size_ (down to the byte) as the binaries on the V6 Research distro, but
+    > had a number of differences when compared with 'cmp -l'. Odd!
+    > ...
+    > I'll take a gander tomorrow and try and work it out.
+
+So, this turned out to be because I had replaced the csv.o in libc.a with a
+new one, because the standard V6 one doesn't work with long returns (which
+use R1 as well as R0, and the V6 cret bashed R1). I put the old csv.o back,
+and re-linked them, and this time c? all turned out identical.
+
+So the source in the distro really is the source for the running compiler on
+it.
+
+What was wierd was that in the new one, the routine csv is one word shorter
+(and so is csv.o). So now I don't understand what made them the same sizes!?
+The new ones should have been one word shorter!? Still poking into this...
+
+I understand most of the differences between the versions of c? with the old
+and new csv.o; in all the jumps to cret, the indirect word in the instruction
+was off by two (because cret was one word lower because csv was one word
+shorter); that, along with different contents in csv.o, created most of the
+differences.
+
+Why one word shorter? Because in csv:
+
+	tst     -(sp)	/ creates a temporary on top of the stack
+	jmp     (r0)
+
+had been replaced with:
+
+        jsr     pc,(r0)
+
+(saving one instruction, and making it one word smaller).
+
+	Noel
+
+
+From jnc at mercury.lcs.mit.edu  Tue May 13 03:06:17 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon, 12 May 2014 13:06:17 -0400 (EDT)
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+Message-ID: <20140512170617.32C2318C0DB@mercury.lcs.mit.edu>
+
+    > From: John Cowan <cowan at mercury.ccil.org>
+
+    > Well, provided the compiler is honest, contra [Ken].
+
+A thought on this:
+
+The C compiler actually produces assembler, which can be (fairly easily)
+visually audited; yes, yes, I know about disassembly, but trust me, having
+done some recently (the RL bootstrap(s)), disassembled code is a lot harder
+to grok!
+
+So, really, to find the Thompson hack, we'd have to edit the binaries of the
+assembler!
+
+For real grins, we could write a program to convert .s format assembler to
+.mac syntax, run the results through Macro-11, and link it with the other
+linker... :-)
+
+
+Also, I found on what's going on here:
+
+    > What was wierd was that in the new one, the routine csv is one word
+    > shorter (and so is csv.o). So now I don't understand what made them the
+    > same sizes!? The new ones should have been one word shorter!? Still
+    > poking into this...
+
+The C compiler is linked with the -n flag, which produces pure code. What
+the linker documentation doesn't say (and I never realized this 'back in the
+day') is that when this option is used, it rounds up the size of the text
+segment to the nearest click (0100).
+
+So, in c2 (which is what I was looking at), the last instruction is at
+015446, _etext is at 015450, but if you look at the executable header, it
+lists a text size of 015500 - i.e. 030 more bytes. And indeed there are 014
+words of '0' in the executable file before the data starts.
+
+And if you link c2 _without_ the -n flag, it shows 015450 in the header as
+the text size.
+
+So that's why the two versions of all the C compiler phases were the same
+size (as files); it rounded up to the same place in both, hiding the one-word
+difference in text size. 
+
+	Noel
+
+
+From spedraja at gmail.com  Tue May 13 03:20:48 2014
+From: spedraja at gmail.com (SPC)
+Date: Mon, 12 May 2014 19:20:48 +0200
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <20140512170617.32C2318C0DB@mercury.lcs.mit.edu>
+References: <20140512170617.32C2318C0DB@mercury.lcs.mit.edu>
+Message-ID: <CACytpF9EXy+prwSnz1tsSsiKG46cgQMRjhmvStNizMoXVDdE0Q@mail.gmail.com>
+
+Mmm... clearly a marginal case (derive it to another thread if you consider
+it opportune), but... I got one PDP-11/23-PLUS without any kind of disk (by
+now, I got one RL12 board plus one RL02 drive pending of cleaning and
+arrangement)... I guess if could be possible to run V6 in this machine.
+There's any kind of adaptation of this Unix version (or whatever) to run
+under ?
+
+Kind regards
+
+Saludos | Greetings | Freundliche Grüße | Salutations
+​
+-- 
+*Sergio Pedraja*
+-- 
+mobile: +34-699-996568
+twitter: @sergio_pedraja | skype: Sergio Pedraja
+--
+http://plus.google.com/u/0/101292256663392735405
+http://www.linkedin.com/in/sergiopedraja
+http://www.quora.com/Sergio-Pedraja
+http://spedraja.wordpress.com
+https://www.xing.com/profile/Sergio_Pedraja <http://spedraja.wordpress.com/>
+-----
+No crea todo lo que ve, ni crea que está viéndolo todo
+
+
+
+2014-05-12 19:06 GMT+02:00 Noel Chiappa <jnc at mercury.lcs.mit.edu>:
+
+>     > From: John Cowan <cowan at mercury.ccil.org>
+>
+>     > Well, provided the compiler is honest, contra [Ken].
+>
+> A thought on this:
+>
+> The C compiler actually produces assembler, which can be (fairly easily)
+> visually audited; yes, yes, I know about disassembly, but trust me, having
+> done some recently (the RL bootstrap(s)), disassembled code is a lot harder
+> to grok!
+>
+> So, really, to find the Thompson hack, we'd have to edit the binaries of
+> the
+> assembler!
+>
+> For real grins, we could write a program to convert .s format assembler to
+> .mac syntax, run the results through Macro-11, and link it with the other
+> linker... :-)
+>
+>
+> Also, I found on what's going on here:
+>
+>     > What was wierd was that in the new one, the routine csv is one word
+>     > shorter (and so is csv.o). So now I don't understand what made them
+> the
+>     > same sizes!? The new ones should have been one word shorter!? Still
+>     > poking into this...
+>
+> The C compiler is linked with the -n flag, which produces pure code. What
+> the linker documentation doesn't say (and I never realized this 'back in
+> the
+> day') is that when this option is used, it rounds up the size of the text
+> segment to the nearest click (0100).
+>
+> So, in c2 (which is what I was looking at), the last instruction is at
+> 015446, _etext is at 015450, but if you look at the executable header, it
+> lists a text size of 015500 - i.e. 030 more bytes. And indeed there are 014
+> words of '0' in the executable file before the data starts.
+>
+> And if you link c2 _without_ the -n flag, it shows 015450 in the header as
+> the text size.
+>
+> So that's why the two versions of all the C compiler phases were the same
+> size (as files); it rounded up to the same place in both, hiding the
+> one-word
+> difference in text size.
+>
+>         Noel
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140512/67af16d1/attachment.html>
+
+From scj at yaccman.com  Tue May 13 04:44:57 2014
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Mon, 12 May 2014 11:44:57 -0700
+Subject: [TUHS] short file names...
+Message-ID: <4eb9ad31a5725d1e67cfabbcfc5eac3d.squirrel@webmail.yaccman.com>
+
+Erg!  Discussion of file name length brought back some chilling memories
+of very early Unix, when file names were at most 6 characters long. 
+Longer names were accepted but truncated at 6 characters.  So you could
+edit ABCDE.c, store it, read it and edit it again, but the file system
+knew it as "ABCDE."   So when you compiled the program, the compiler
+produced ABCDE.o, which overwrote the source code!
+
+
+
+From jnc at mercury.lcs.mit.edu  Tue May 13 05:10:33 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon, 12 May 2014 15:10:33 -0400 (EDT)
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+Message-ID: <20140512191033.8794118C0E2@mercury.lcs.mit.edu>
+
+    > From: SPC <spedraja at gmail.com>
+
+    > I got one PDP-11/23-PLUS without any kind of disk (by now, I got one
+    > RL12 board plus one RL02 drive pending of cleaning and arrangement)...
+    > I guess if could be possible to run V6 in this machine. There's any
+    > kind of adaptation of this Unix version (or whatever) to run under ?
+
+As I mentioned in a previous message on this thread, when I took that root
+pack image from the Shoppa group, I could get it to boot to Unix right off.
+All it needs is a single RL02 drive (RL/0) (and the console terminal, of
+course).
+
+I looked at the 'unix' on it, and it's for an 11/40 type machine (which
+includes 11/23's); IIRC the README page for that set of disk images indicates
+that in fact they originally came off an 11/23, so they should run fine on
+yours.
+
+That Unix has a couple of other devices built into it (looks like an RX and
+some sort of A-D), but as long as you don't try and touch them, they will not
+be an issue.
+
+Let me know if you need any help getting it up (once you have a working RL02).
+
+	Noel
+
+
+From cowan at mercury.ccil.org  Tue May 13 05:50:46 2014
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Mon, 12 May 2014 15:50:46 -0400
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <20140512170617.32C2318C0DB@mercury.lcs.mit.edu>
+References: <20140512170617.32C2318C0DB@mercury.lcs.mit.edu>
+Message-ID: <20140512195046.GD17946@mercury.ccil.org>
+
+Noel Chiappa scripsit:
+
+> The C compiler is linked with the -n flag, which produces pure code. What
+> the linker documentation doesn't say (and I never realized this 'back in the
+> day') is that when this option is used, it rounds up the size of the text
+> segment to the nearest click (0100).
+
+Yeah, that makes sense.  Without -n, the .data segment starts right at
+the top of .text, but you can't do that if you are going to share
+.text but not .data.  So it's painless to round up the size of .text
+so that .data starts at a memory protection boundary.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Historians aren't constantly confronted with people who carry on
+self-confidently about the rule against adultery in the sixth amendment to
+the Declamation of Independence, as written by Benjamin Hamilton. Computer
+scientists aren't always having to correct people who make bold assertions
+about the value of Objectivist Programming, as examplified in the HCNL
+entities stored in Relaxational Databases.  --Mark Liberman
+
+
+From spedraja at gmail.com  Tue May 13 06:59:49 2014
+From: spedraja at gmail.com (SPC)
+Date: Mon, 12 May 2014 22:59:49 +0200
+Subject: [TUHS] Work I've done with a PDP-11 simulator
+In-Reply-To: <20140512191033.8794118C0E2@mercury.lcs.mit.edu>
+References: <20140512191033.8794118C0E2@mercury.lcs.mit.edu>
+Message-ID: <CACytpF9YC4mJ0EXLpTYZfgMkSV5UxHG3G0Cr8LtKiHvYN4wH8g@mail.gmail.com>
+
+I'll do !
+
+Thank you very much.
+
+Gracias | Regards - Saludos | Greetings | Freundliche Grüße | Salutations
+​
+-- 
+*Sergio Pedraja*
+-- 
+mobile: +34-699-996568
+twitter: @sergio_pedraja | skype: Sergio Pedraja
+--
+http://plus.google.com/u/0/101292256663392735405
+http://www.linkedin.com/in/sergiopedraja
+http://www.quora.com/Sergio-Pedraja
+http://spedraja.wordpress.com
+https://www.xing.com/profile/Sergio_Pedraja <http://spedraja.wordpress.com/>
+-----
+No crea todo lo que ve, ni crea que está viéndolo todo
+
+
+
+2014-05-12 21:10 GMT+02:00 Noel Chiappa <jnc at mercury.lcs.mit.edu>:
+
+>     > From: SPC <spedraja at gmail.com>
+>
+>     > I got one PDP-11/23-PLUS without any kind of disk (by now, I got one
+>     > RL12 board plus one RL02 drive pending of cleaning and
+> arrangement)...
+>     > I guess if could be possible to run V6 in this machine. There's any
+>     > kind of adaptation of this Unix version (or whatever) to run under ?
+>
+> As I mentioned in a previous message on this thread, when I took that root
+> pack image from the Shoppa group, I could get it to boot to Unix right off.
+> All it needs is a single RL02 drive (RL/0) (and the console terminal, of
+> course).
+>
+> I looked at the 'unix' on it, and it's for an 11/40 type machine (which
+> includes 11/23's); IIRC the README page for that set of disk images
+> indicates
+> that in fact they originally came off an 11/23, so they should run fine on
+> yours.
+>
+> That Unix has a couple of other devices built into it (looks like an RX and
+> some sort of A-D), but as long as you don't try and touch them, they will
+> not
+> be an issue.
+>
+> Let me know if you need any help getting it up (once you have a working
+> RL02).
+>
+>         Noel
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140512/55f7e746/attachment.html>
+
+From jnc at mercury.lcs.mit.edu  Thu May 15 10:41:32 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Wed, 14 May 2014 20:41:32 -0400 (EDT)
+Subject: [TUHS] Unix on an 11/23 (Was: Work I've done with a PDP-11
+	simulator)
+Message-ID: <20140515004132.88ADF18C101@mercury.lcs.mit.edu>
+
+    >> I got one PDP-11/23-PLUS without any kind of disk (by now, I got one
+    >> RL12 board plus one RL02 drive pending of cleaning and arrangement)...
+    >> I guess if could be possible to run V6 in this machine. There's any
+    >> kind of adaptation of this Unix version (or whatever) to run under ?
+
+    > IIRC the README page for that set of disk images indicates that in fact
+    > they originally came off an 11/23, so they should run fine on yours.
+
+So I was idly looking through main.c for the Shoppa Unix (because it printed
+some unusual messages when it started, and I wanted to see that code), and I
+noticed it had some fancy code for dealing with the clock, and that tickled a
+very dim memory that LSI-11's had some unusual clock thing. So I decided I
+had better check up on that...
+
+I got out an LSI-11 manual, and it looked like the 23 should work, even for
+the 'vanilla' V6 from the Bell distro. But I decided I had better check it to
+be sure, so I fired up the simulator, mounted a Bell disk, set the cpu type
+to '23', and booted 'rkunix'. Which promptly halted!
+
+After a bit of digging, it turned out that the problem is that the 11/23
+doesn't have a switch register! It hit a kernel NXM trying to touch it -
+and then another trying to read it in the putchar() routine trying to do a
+panic(), at which point it died a horrible death.
+
+So I added a SR (you can create all sorts of bizarre hybrids like that with
+Ersatz-11, like 11/40's with 11/45 type floating point :-), and then it
+booted fine. The clock even worked!
+
+
+So you will have to use the Shoppa disk to boot (but see below), or we'll
+have to spin you a special vanilla V6 Unix that doesn't try to touch the SR -
+that shouldn't be much work, I only found two place in the code that touch it.
+
+I did try the Shoppa 'unix', and it booted fine on an 11/23.
+
+Two things to check for, though: first, your 11/23 _has_ to have the MMU chip
+(that's the large DIP package with one chip on it nearest the edge of the
+card), so if yours looks like this:
+
+  http://www.psych.usyd.edu.au/pdp-11/Images/23.jpeg
+
+you're OK. Without the MMU chip, most variants of Unix will not run on the 23
+(although there's something called MiniUnix, IIRC, which runs on an LSI-11,
+which would probably run on a /23 without an MMU).
+
+
+Here's the part that might be a problem: To run any of the Unixes on the
+Shoppa disk, you also have to have the FPP chip too (that's the second large
+DIP package with two chips on it - the image above does not include that
+chip, so if yours looks like that, you have a minor problem, and I will have
+to build you a Unix or something).
+
+All of the Unixes on the Shoppa disk have to have the FPP, except one - and
+that one wants an RX floppy as the root/swap device! The others will all
+crash (I tried one, to make sure) if you try and boot them on an 11/23
+without the FPP.
+
+I could try patching the binary on the one that doesn't expect to use the FPP
+to use the RL as the root, or either i) build you a vanilla V6 for a 23
+(above), or ii) figure out how to build systems on the Shoppa disk, and build
+you a Unix there which i) uses the RL as the root/swap, and ii) does not
+expect to have the FPP.
+
+But let's first find out exactly what you have...
+
+	Noel
+
+
+From cowan at mercury.ccil.org  Thu May 15 12:03:52 2014
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Wed, 14 May 2014 22:03:52 -0400
+Subject: [TUHS] Unix on an 11/23 (Was: Work I've done with a PDP-11
+ simulator)
+In-Reply-To: <20140515004132.88ADF18C101@mercury.lcs.mit.edu>
+References: <20140515004132.88ADF18C101@mercury.lcs.mit.edu>
+Message-ID: <20140515020351.GA13350@mercury.ccil.org>
+
+Noel Chiappa scripsit:
+
+> (although there's something called MiniUnix, IIRC, which runs on an LSI-11,
+> which would probably run on a /23 without an MMU).
+
+Mini-Unix is for PDP-11s without memory management: one process
+in memory at a time, no pipes/prof/ptrace.  The LSI-11 specific
+system, which preceded Mini-Unix and was even less capable, is LSX.
+See <http://minnie.tuhs.org/pipermail/pups/2001-March/000273.html>
+and search on the page for "Heinz" for details.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+People go through the bother of Christmas because Christmas helps them
+to understand why they go through the bother of living out their lives
+the rest of the year. For one brief instant, we see human society as it
+should and could be, a world in which business has become the exchanging
+of presents and in which nothing is important except the happiness and
+well-being of the ultimate consumer.  --Northrop Frye (1948)
+
+
+From wkt at tuhs.org  Thu May 15 14:48:15 2014
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 15 May 2014 14:48:15 +1000
+Subject: [TUHS] Unix on an 11/23 (Was: Work I've done with a PDP-11
+ simulator)
+In-Reply-To: <20140515020351.GA13350@mercury.ccil.org>
+References: <20140515004132.88ADF18C101@mercury.lcs.mit.edu>
+ <20140515020351.GA13350@mercury.ccil.org>
+Message-ID: <20140515044815.GA10479@www.oztivo.net>
+
+On Wed, May 14, 2014 at 10:03:52PM -0400, John Cowan wrote:
+> Mini-Unix is for PDP-11s without memory management: one process
+> in memory at a time, no pipes/prof/ptrace.  The LSI-11 specific
+> system, which preceded Mini-Unix and was even less capable, is LSX.
+> See <http://minnie.tuhs.org/pipermail/pups/2001-March/000273.html>
+> and search on the page for "Heinz" for details.
+
+Also see: http://www.tuhs.org/Archive/PDP-11/Distributions/usdl/LSX/
+          http://www.tuhs.org/Archive/PDP-11/Distributions/usdl/Mini-Unix/
+	  http://minnie.tuhs.org/cgi-bin/utree.pl?file=Mini-Unix
+	  http://minnie.tuhs.org/cgi-bin/utree.pl?file=LSX
+
+and also apologies to Noel who has e-mailed me several times and I
+haven't responded. New job, extra training and I'm just starting to
+get on top of things. Glad to see all the people here helping out!
+
+Cheers, Warren
+
+
+From spedraja at gmail.com  Thu May 15 16:51:15 2014
+From: spedraja at gmail.com (SPC)
+Date: Thu, 15 May 2014 08:51:15 +0200
+Subject: [TUHS] Unix on an 11/23 (Was: Work I've done with a PDP-11
+	simulator)
+In-Reply-To: <20140515004132.88ADF18C101@mercury.lcs.mit.edu>
+References: <20140515004132.88ADF18C101@mercury.lcs.mit.edu>
+Message-ID: <CACytpF8OoatuVFF6NFycO2T0rKE-pQ=_b6ib+cVcDhcdF5Qpjg@mail.gmail.com>
+
+Great work, Noel. A lot of thanks (to you but for the rest of helpers too).
+
+I'll keep a reference of this message and try it as soon as possible... the
+disruptive fact (in terms of time) here is to put up-to-date both the
+PDP-11/23-PLUS and RL02. Once I do that will embark on your hack.
+
+
+Gracias | Regards - Saludos | Greetings | Freundliche Grüße | Salutations
+​
+-- 
+*Sergio Pedraja*
+-- 
+mobile: +34-699-996568
+twitter: @sergio_pedraja | skype: Sergio Pedraja
+--
+http://plus.google.com/u/0/101292256663392735405
+http://www.linkedin.com/in/sergiopedraja
+http://www.quora.com/Sergio-Pedraja
+http://spedraja.wordpress.com
+https://www.xing.com/profile/Sergio_Pedraja <http://spedraja.wordpress.com/>
+-----
+No crea todo lo que ve, ni crea que está viéndolo todo
+
+
+
+2014-05-15 2:41 GMT+02:00 Noel Chiappa <jnc at mercury.lcs.mit.edu>:
+
+>     >> I got one PDP-11/23-PLUS without any kind of disk (by now, I got one
+>     >> RL12 board plus one RL02 drive pending of cleaning and
+> arrangement)...
+>     >> I guess if could be possible to run V6 in this machine. There's any
+>     >> kind of adaptation of this Unix version (or whatever) to run under ?
+>
+>     > IIRC the README page for that set of disk images indicates that in
+> fact
+>     > they originally came off an 11/23, so they should run fine on yours.
+>
+> So I was idly looking through main.c for the Shoppa Unix (because it
+> printed
+> some unusual messages when it started, and I wanted to see that code), and
+> I
+> noticed it had some fancy code for dealing with the clock, and that
+> tickled a
+> very dim memory that LSI-11's had some unusual clock thing. So I decided I
+> had better check up on that...
+>
+> I got out an LSI-11 manual, and it looked like the 23 should work, even for
+> the 'vanilla' V6 from the Bell distro. But I decided I had better check it
+> to
+> be sure, so I fired up the simulator, mounted a Bell disk, set the cpu type
+> to '23', and booted 'rkunix'. Which promptly halted!
+>
+> After a bit of digging, it turned out that the problem is that the 11/23
+> doesn't have a switch register! It hit a kernel NXM trying to touch it -
+> and then another trying to read it in the putchar() routine trying to do a
+> panic(), at which point it died a horrible death.
+>
+> So I added a SR (you can create all sorts of bizarre hybrids like that with
+> Ersatz-11, like 11/40's with 11/45 type floating point :-), and then it
+> booted fine. The clock even worked!
+>
+>
+> So you will have to use the Shoppa disk to boot (but see below), or we'll
+> have to spin you a special vanilla V6 Unix that doesn't try to touch the
+> SR -
+> that shouldn't be much work, I only found two place in the code that touch
+> it.
+>
+> I did try the Shoppa 'unix', and it booted fine on an 11/23.
+>
+> Two things to check for, though: first, your 11/23 _has_ to have the MMU
+> chip
+> (that's the large DIP package with one chip on it nearest the edge of the
+> card), so if yours looks like this:
+>
+>   http://www.psych.usyd.edu.au/pdp-11/Images/23.jpeg
+>
+> you're OK. Without the MMU chip, most variants of Unix will not run on the
+> 23
+> (although there's something called MiniUnix, IIRC, which runs on an LSI-11,
+> which would probably run on a /23 without an MMU).
+>
+>
+> Here's the part that might be a problem: To run any of the Unixes on the
+> Shoppa disk, you also have to have the FPP chip too (that's the second
+> large
+> DIP package with two chips on it - the image above does not include that
+> chip, so if yours looks like that, you have a minor problem, and I will
+> have
+> to build you a Unix or something).
+>
+> All of the Unixes on the Shoppa disk have to have the FPP, except one - and
+> that one wants an RX floppy as the root/swap device! The others will all
+> crash (I tried one, to make sure) if you try and boot them on an 11/23
+> without the FPP.
+>
+> I could try patching the binary on the one that doesn't expect to use the
+> FPP
+> to use the RL as the root, or either i) build you a vanilla V6 for a 23
+> (above), or ii) figure out how to build systems on the Shoppa disk, and
+> build
+> you a Unix there which i) uses the RL as the root/swap, and ii) does not
+> expect to have the FPP.
+>
+> But let's first find out exactly what you have...
+>
+>         Noel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20140515/a3d9fe88/attachment.html>
+
+From jnc at mercury.lcs.mit.edu  Fri May 16 06:56:59 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Thu, 15 May 2014 16:56:59 -0400 (EDT)
+Subject: [TUHS] Unix on an 11/23 (Was: Work I've done with a PDP-11
+	simulator)
+Message-ID: <20140515205659.1FED918C0C0@mercury.lcs.mit.edu>
+
+    > From: SPC <spedraja at gmail.com>
+
+    > I'll keep a reference of this message and try it as soon as possible...
+
+No rush! Take your time...
+
+
+    > the disruptive fact (in terms of time) here is to put up-to-date both
+    > the PDP-11/23-PLUS and RL02. 
+
+My apologies, I just now noticed that you have an 11/23-PLUS (it is slightly
+different from a plain 11/23).
+
+I am not very familiar with the 11/23-PLUS (I never worked with one), but from
+documentation I just dug out, it seems that they normally come with the MMU
+chip, so we don't need to worry about that. However, the FPP is not standard,
+so that is still an issue for bringing up Unix.
+
+In fact, there are two different FPP options for the 11/23-PLUS (and,
+actually, for the 11/23 as well): one is the KEF-11AA chip which goes on the
+CPU card (on the 11/23-PLUS, in the middle large DIP holder), and the other is
+something called the FPF-11 card, which is basically hardware floating point
+(the KEF-11A is just microcode), for people who are doing serious number
+crunching. It's a quad-size card which has a cable with a DIP header on the
+end which plugs into the same DIP holder on the CPU card as the KEF-11A. They
+look the same to software; one is just faster than the other.
+
+Anyway, if you don't have either one, we'll have to produce a new Unix
+load for you (not a big problem, if it is needed).
+
+	Noel
+
+
+From jnc at mercury.lcs.mit.edu  Sun May 18 22:05:38 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Sun, 18 May 2014 08:05:38 -0400 (EDT)
+Subject: [TUHS] MERT available anywhere?
+Message-ID: <20140518120538.2117118C0BA@mercury.lcs.mit.edu>
+
+Does anyone know if the source for an early PDP-11 version of MERT is
+available anywhere?
+
+(For those who aren't familiar with MERT, it was a micro-kernel [as we would
+name it now] which provided message-passing and [potentially shared] memory
+segments, intended for real-time applications; it supported several levels of
+protection, using the 'Supervisor' mode available in the 11/45 and 11/70. One
+set of supervisor processes provided a Unix environment; the combination was
+called UNIX/RT - hence my asking about it here.)
+
+Thanks!
+
+	Noel
+
+
+From asbesto at freaknet.org  Mon May 19 23:44:49 2014
+From: asbesto at freaknet.org (asbesto)
+Date: Mon, 19 May 2014 15:44:49 +0200
+Subject: [TUHS] Unix on an 11/23 (Was: Work I've done with a PDP-11
+ simulator)
+In-Reply-To: <20140515205659.1FED918C0C0@mercury.lcs.mit.edu>
+References: <20140515205659.1FED918C0C0@mercury.lcs.mit.edu>
+Message-ID: <20140519134448.GB20174@freaknet.org>
+
+Thu, May 15, 2014 at 04:56:59PM -0400, Noel Chiappa wrote:
+
+>     > the disruptive fact (in terms of time) here is to put up-to-date both
+>     > the PDP-11/23-PLUS and RL02. 
+> 
+> My apologies, I just now noticed that you have an 11/23-PLUS (it is slightly
+> different from a plain 11/23).
+> 
+> I am not very familiar with the 11/23-PLUS (I never worked with one), but from
+> documentation I just dug out, it seems that they normally come with the MMU
+> chip, so we don't need to worry about that. However, the FPP is not standard,
+> so that is still an issue for bringing up Unix.
+
+Just in these days we restored a PDP-11/23PLUS here at our
+Museum! :) 
+
+we had to create the power supply with a normal PC PSU and also
+we made the 50Hz signal clock using a PIC. CPU is working and
+we're trying to boot from a RL02 unit :) 
+
+we're experiencing problems at our website so we have pictures
+and info only on our facebook group, sorry for that. 
+
+https://www.facebook.com/groups/musif/
+http://museum.freaknet.org
+
+
+
+-- 
+[ ::::::::: 73 de IW9HGS : http://freaknet.org/asbesto ::::::::::: ]
+[ Freaknet Medialab :: Poetry Hacklab : Dyne.Org :: Radio Cybernet ]
+[ NON SCRIVERMI USANDO LETTERE ACCENTATE  -  NON MANDARMI ALLEGATI ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC and SPAM ]
+
+
+From jnc at mercury.lcs.mit.edu  Tue May 20 12:19:13 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon, 19 May 2014 22:19:13 -0400 (EDT)
+Subject: [TUHS] Unix on an 11/23 (Was: Work I've done with a PDP-11
+	simulator)
+Message-ID: <20140520021913.040B418C0C3@mercury.lcs.mit.edu>
+
+    > From: asbesto <asbesto at freaknet.org>
+
+    > Just in these days we restored a PDP-11/23PLUS here at our Museum! :)
+    > ...
+    > CPU is working
+
+That is good to hear! You all seem to have been very resourceful in making
+the power supply for it!
+
+    > and we're trying to boot from a RL02 unit :)
+
+Is your RL02 drive and RLV11 controller all working? Here are some
+interesting pages:
+
+  http://www.retrocmp.com/pdp-11/pdp-1144/my-pdp-1144/rl02-disk-trouble
+  http://www.retrocmp.com/pdp-11/pdp-1144/my-pdp-1144/more-on-rl01rl02
+
+from someone in Germany about getting their RL11 and RL02 to work.
+
+Also, when you say "boot from an RL02", what are you trying to boot? Do you
+have an RL02 pack with a working system on it? If so, what kind - a Unix
+of some sort, or some DEC operating system?
+
+
+    > From: SPC <spedraja at gmail.com>
+
+    > I'll keep a reference of this message and try it as soon as possible...
+
+Speaking of getting Unix to run on an 11/23 with an RL02... I just realized
+that the hard part of getting a Unix running, for you, will not be getting V6
+to run on a machine without a switch register (which is actually pretty easy
+- I have worked out a way to do it that involves changing one line in
+param.h, and adding two lines of code to main.c).
+
+The hard part is going getting the bits onto the disk! If all you have is an
+RL02, you are going to have to load bits into the computer over a serial line.
+
+WKT has done this for V7 Unix:
+
+  http://www.tuhs.org/Archive/PDP-11/Tools/Tapes/Vtserver/
+
+but V7 really wants a machine with split I/D (which the /23 does not have). I
+guess V7 'sort of' works on a machine without I/D, but I'm not a V7 expert,
+so I can't say for sure.
+
+It would not be hard to do something similar to the VTServer thing for V6,
+though. If you would like to go this way, let me know, I would be very
+interested in helping with this.
+
+
+Also, do you only have one working RL02 drive, or more than one? If you only
+have one, you will not be able to do backups (unless you have something else
+connected to the machine, e.g. some sort of tape drive, or something).
+
+	Noel
+
+
+From asbesto at freaknet.org  Tue May 20 23:51:08 2014
+From: asbesto at freaknet.org (asbesto)
+Date: Tue, 20 May 2014 15:51:08 +0200
+Subject: [TUHS] Unix on an 11/23 (Was: Work I've done with a PDP-11
+ simulator)
+In-Reply-To: <20140520021913.040B418C0C3@mercury.lcs.mit.edu>
+References: <20140520021913.040B418C0C3@mercury.lcs.mit.edu>
+Message-ID: <20140520135108.GB22212@freaknet.org>
+
+Mon, May 19, 2014 at 10:19:13PM -0400, Noel Chiappa wrote:
+
+>     > Just in these days we restored a PDP-11/23PLUS here at our Museum! :)
+> That is good to hear! You all seem to have been very resourceful in making
+> the power supply for it!
+
+yes :) we are good in electronics & restoration of those
+computers :D
+
+> Is your RL02 drive and RLV11 controller all working? Here are some
+> interesting pages:
+
+well - problem is now that disk doesn't spin. Something happened
+in those years - I remember we used this RL02 unit some time ago
+to dump all our disk packs... I have to check.
+
+> Also, when you say "boot from an RL02", what are you trying to boot? Do you
+> have an RL02 pack with a working system on it? If so, what kind - a Unix
+> of some sort, or some DEC operating system?
+
+We have about 40 disks, with RT-11 on them (and an add on
+operating system for RT-11 called TSX), plus some diagnostics &
+other stuff. This PDP-11/34 was used for a medical CAT
+equipment, it's called "GAMMA-11" so it has special boards and
+special software on it for image processing... (we don't have a
+monitor for it)
+
+> Also, do you only have one working RL02 drive, or more than one? If you only
+> have one, you will not be able to do backups (unless you have something else
+> connected to the machine, e.g. some sort of tape drive, or something).
+
+We made backup connecting this RL02 unit (that now is not
+working) into a MicroVAX-II, making it boot thru a DECNET
+connection into a SimH emulated vax; from this, we can make
+backup of the disks and have files on the simh pc; they are
+available for our online emulator at "telnet poetry.voyanet.org
+1134" (now only one disk pack boot, I need time to create a menu
+to choose which disk pack to boot :D )
+
+
+-- 
+[ ::::::::: 73 de IW9HGS : http://freaknet.org/asbesto ::::::::::: ]
+[ Freaknet Medialab :: Poetry Hacklab : Dyne.Org :: Radio Cybernet ]
+[ NON SCRIVERMI USANDO LETTERE ACCENTATE  -  NON MANDARMI ALLEGATI ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC and SPAM ]
+
+
+From jnc at mercury.lcs.mit.edu  Thu May 22 05:39:14 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Wed, 21 May 2014 15:39:14 -0400 (EDT)
+Subject: [TUHS] Unix on an 11/23 (Was: Work I've done with a PDP-11
+	simulator)
+Message-ID: <20140521193914.9AA0918C0E4@mercury.lcs.mit.edu>
+
+    > From: asbesto <asbesto at freaknet.org>
+
+    > We have about 40 disks, with RT-11 on them
+
+Ah. You should definitely try Unix - a much more pleasant computing/etc
+environment!
+
+Although without a video editor... although I hope to have one available
+'soon', from the MIT V6+ system (I think I have found some backup tapes from
+it).
+
+    > This PDP-11/34 was used for a medical CAT equipment
+
+As, so it probably has the floating point, then. If so, you should be able to
+use the Shoppa V6 Unix disk as it is, then - that has a Unix on it which will
+work on an 11/23 (which don't have the switch register that V6 normally
+requires).
+
+But if not, let me know, and I can provide a V6 Unix for it (I already have
+the tweaked version running on a /23 in the simulator).
+
+	Noel
+
+PS: For those who downloaded the 'fixed' ctime.c (if anyone :-), it turns out
+there was a bug in my fix - in some cases, one variable wasn't initialized
+properly. There's a fixed one up there now.
+
+
+From jnc at mercury.lcs.mit.edu  Sat May 31 23:15:04 2014
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Sat, 31 May 2014 09:15:04 -0400 (EDT)
+Subject: [TUHS] Bugs in V6 'dcheck'
+Message-ID: <20140531131504.AC41E18C0C8@mercury.lcs.mit.edu>
+
+So it turns out the 'dcheck' distributed with V6 has two (well, three, but
+the third one was only a potential problem for me) bugs it.
+
+
+The first was a fence-post error on a table clearing operation; it could
+cause the entry for the last inode of the disk in the constructed table of
+directory entry counts to start with a non-zero count when a second disk was
+scanned. However, it was only triggered in very specific circumstances:
+
+- A larger disk was listed before a smaller one (either in the command line,
+    or compiled in)
+- The inode on the larger disk corresponding to the last inode on the smaller
+    one was in use
+
+I can understand how they never ran across this one.
+
+
+The other one, however, which was an un-initalized variable, should have
+bitten them anytime they had more than one disk listed! It caused the
+constructed table of directory entry counts to be partially or wholly
+(depending on the size of the two disks) blank in all disks after the first
+one, causing numerous (bogus) error reports.
+
+(It was also amusing to find an un-used procedure in the source; it looks
+like dcheck was written starting with the code for 'icheck' - which explains
+the second bug; since the logic in icheck is subtly different, that variable
+_is_ set properly in icheck.)
+
+How this bug never bit them I cannot understand - unless they saw it, and
+couldn't be bothered to find and fix it!
+
+To me, it's completely amazing to find such a serious bug in such a critical
+piece of widely-distributd code! A lesson for archaeologists...
+
+
+Anyway, a fixed version is here:
+
+  http://ana-3.lcs.mit.edu/~jnc/tech/unix/ucmd/dcheck.c
+
+if anyone cares/needs it.
+
+	Noel
+
+
+From ron at ronnatalie.com  Sat May 31 23:23:31 2014
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Sat, 31 May 2014 09:23:31 -0400
+Subject: [TUHS] Bugs in V6 'dcheck'
+In-Reply-To: <20140531131504.AC41E18C0C8@mercury.lcs.mit.edu>
+References: <20140531131504.AC41E18C0C8@mercury.lcs.mit.edu>
+Message-ID: <C7AF0B07-ADE0-4F93-A57D-B15215D6472A@ronnatalie.com>
+
+If I understand what you are saying, it only occurs when you run dcheck with mutliple volumes at one time?
+I can't say I EVER did that back in the pre-fsck days.
+
+We did icheck and then dcheck on each disk in sequence.
+I don't even think we had a shell script.    It was incumbent on the operator to check each of the system disks and any user volumes that were mounted at the time the system crash.
+
+Bugs are entirely not uncommon.     This is why BSD and JHU and UT had their own distributions.       Having been a V6 UNIX systems programmer at a university back in the day as we had students who found it an extracurricular activity (nobody took computing seriously back then) to break security or just plain crash the system.    Tons of worse bugs than dcheck issues.    
+
+I actually spent some time before they elevated me to system programmer doing some exploration in to problems (authorized by the staff).
+I decided to test all the setuid programs against vulnerabilities of playing with the file descriptors before invoking them.      I found a half a dozen problems and mailed of the details before I decided to give up and go home.    The next morning our log had a message about the first eight characters of the system accounting file being corrupted.   I told the guys recovering from that that I might know how that had happened.    They said they figured I would because it was my user  name that was found overwritten on the file.
+
+
+
+From norman at oclsc.org  Sat May 31 23:30:51 2014
+From: norman at oclsc.org (Norman Wilson)
+Date: Sat, 31 May 2014 09:30:51 -0400 (EDT)
+Subject: [TUHS]  Bugs in V6 'dcheck'
+Message-ID: <20140531133051.5F2531DE37F@lignose.oclsc.org>
+
+Noel Chiappa:
+
+  To me, it's completely amazing to find such a serious bug in such a critical
+  piece of widely-distributd code! A lesson for archaeologists...
+
+======
+
+To me it's not surprising at all.
+
+On one hand, current examples of widely-distributed critical
+code containing serious flaws are legion.  What, after all,
+were the Heartbleed and OS X goto fail; bugs?  What is every
+version of Internet Explorer?
+
+On the other hand, Ken and Dennis and the other guys behind
+the earliest UNIX code were smart guys and good programmers,
+but they were far from perfect; and back in those days we
+were all a lot sloppier.
+
+So surprising?  No.  Interesting?  Certainly.  All bugs are
+interesting.
+
+(To me, anyway.  Back in the 1980s, when I was at Bell Labs,
+SP&E published a paper by Don Knuth discussing all the many
+bugs found in TeX, including some statistical analysis.  I
+thought it fascinating and revealing and think reading it
+made me a better programmer.  Rob Pike thought it was terribly
+boring and shouldn't have been published.  Decidedly different
+viewpoints.)
+
+Norman Wilson
+Toronto ON
+
+

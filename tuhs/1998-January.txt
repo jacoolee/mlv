@@ -1,0 +1,223 @@
+From erin at corliss.com  Mon Jan  5 15:23:23 1998
+From: erin at corliss.com (Erin Corliss)
+Date: Sun, 04 Jan 1998 21:23:23 -0800
+Subject: ...
+Message-ID: <34B06E4B.20CDBAA@corliss.com>
+
+Hello.  I have a free operating system directory at:
+
+http://rio.com/~zomad
+
+I have a link to the PUPS home page for PDP-11 Unix & was wondering if
+you can add a link to my page.
+
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.5/8.8.5) id PAA18889
+	for pups-liszt; Fri, 30 Jan 1998 15:40:48 +1100 (EST)
+X-Authentication-Warning: minnie.cs.adfa.oz.au: major set sender to owner-pups at minnie.cs.adfa.oz.au using -f
+
+From wkt at henry.cs.adfa.oz.au  Fri Jan 30 14:40:50 1998
+From: wkt at henry.cs.adfa.oz.au (Warren Toomey)
+Date: Fri, 30 Jan 1998 15:40:50 +1100 (EST)
+Subject: Installing PDP-11 UNIX w. no tape - solution
+Message-ID: <199801300440.PAA04976@henry.cs.adfa.oz.au>
+
+Hi all,
+
+	Last year I mentioned the idea of installing PDP-11 UNIX over a
+serial line, for those people who have real PDP-11s but no tape drives.
+
+I've written the code to do this over the past few days, and its time to
+pass it to someone who actually has a PDP-11 and no tape drive! The code
+is of course alpha-quality, but I'm using a PC running John Wilson's Ersatz
+to install 7th Edition on a simulated RK05 right now.
+
+I need someone who has a:
+
+	+ PDP-11 which _will_ run 7th Edition
+	+ Spare RK05, RP03, RP04, RP05 or RP06 disk
+	+ A DL/KL-11 serial port at vector 0176500 (i.e 2nd unit)
+	+ An RS-232 null modem with hardware handshaking lines
+	+ A machine running a 32-bit Unix to host the other end of the
+	  serial connection
+	+ Spare time, and a tendency for masochism :-)
+
+Someone who also has a PDP-11 running v7, and a source license would
+be a bonus, as they might be able to help with the debugging.
+
+I'm at the point where I can bring in the `boot' file (record 0) off the
+simulated UNIX install tape, load and run cat, mkfs, icheck and restor.
+
+I get some error messages with restor (``Missing address (header) block''),
+which I believe are to do with the 10,240 byte record requests from restor.
+My code expects 512-byte requests, and I'm doing 20 a time to fulfill the
+10,240 request, but still problems.
+
+Once the code is solid, I'd like to add other disks (RL02s etc.), and write
+a user-mode program to read from the tape once UNIX has booted off disk.
+This will allow other tape formats (e.g tar) to be read in.
+
+If anybody would be willing to participate in getting this stuff to work
+well, could they e-mail me next week?!
+
+Thanks in advance,
+
+	Warren	wkt at cs.adfa.oz.au
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.5/8.8.5) id BAA20201
+	for pups-liszt; Sat, 31 Jan 1998 01:46:41 +1100 (EST)
+X-Authentication-Warning: minnie.cs.adfa.oz.au: major set sender to owner-pups at minnie.cs.adfa.oz.au using -f
+
+From allisonp at world.std.com  Sat Jan 31 00:46:31 1998
+From: allisonp at world.std.com (Allison J Parent)
+Date: Fri, 30 Jan 1998 09:46:31 -0500
+Subject: Installing PDP-11 UNIX w. no tape - solution
+Message-ID: <199801301446.AA19117@world.std.com>
+
+
+<I get some error messages with restor (``Missing address (header) block''
+<which I believe are to do with the 10,240 byte record requests from resto
+<My code expects 512-byte requests, and I'm doing 20 a time to fulfill th
+<10,240 request, but still problems.
+
+Try slowing down.  You may be overflowing the input buffer.  This was
+a common problem on TU58s hooked to the 2nd DL on some systems at speeds
+above either 4800 or 9600.  It only happend in the TU58 to host direction
+(read) as the opposite path expected a handshake every 128 bytes(to allow 
+the tu58 to actually do the write to tape).  It seems the tu58 would send 
+a 512byte block as 4 128byte packets at a sustained rate fast enough to 
+overrun the PDP-11 host input buffer; before it could be emptied.  You 
+may be emulating a similar problem.  PCs do not service interrupts all 
+that fast and OS overhead can make that longer.
+
+Note PDP-11s can have enough overhead and higher priority stuff ahead of 
+the 2nd DL that it cannot take data at greater than 4800 baud (sustained 
+rate) without some kind of handshake to allow processing in between.
+If the system is basically unloaded like my minimal 11/23 it can run at 
+38.4!  The most likely time when this overrun can happen is while doing 
+processing to write (via file system) to disk and recieving data at the 
+same time.
+
+Allison
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.5/8.8.5) id JAA21620
+	for pups-liszt; Sat, 31 Jan 1998 09:06:40 +1100 (EST)
+X-Authentication-Warning: minnie.cs.adfa.oz.au: major set sender to owner-pups at minnie.cs.adfa.oz.au using -f
+
+From wkt at henry.cs.adfa.oz.au  Sat Jan 31 08:06:42 1998
+From: wkt at henry.cs.adfa.oz.au (Warren Toomey)
+Date: Sat, 31 Jan 1998 09:06:42 +1100 (EST)
+Subject: Installing PDP-11 UNIX w. no tape - solution
+In-Reply-To: <199801301446.AA19117@world.std.com> from Allison J Parent at "Jan 30, 98 09:46:31 am"
+Message-ID: <199801302206.JAA07375@henry.cs.adfa.oz.au>
+
+In article by Allison J Parent:
+> 
+> <I get some error messages with restor (``Missing address (header) block''
+> <which I believe are to do with the 10,240 byte record requests from resto
+> <My code expects 512-byte requests, and I'm doing 20 a time to fulfill th
+> <10,240 request, but still problems.
+> 
+> Try slowing down.  You may be overflowing the input buffer. 
+
+I found the problem - my dump image was corrupt :-). I now have a clean
+v7 dump of /, and there are no complaints from restor.
+
+I've had a few people volunteer to try out the code. I'll clean it up,
+finish off the docs, and put it up for ftp in a few days, with an email
+on the PUPS mailing list on how to retrieve it.
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.5/8.8.5) id QAA22547
+	for pups-liszt; Sat, 31 Jan 1998 16:52:16 +1100 (EST)
+X-Authentication-Warning: minnie.cs.adfa.oz.au: major set sender to owner-pups at minnie.cs.adfa.oz.au using -f
+
+From sms at moe.2bsd.com  Sat Jan 31 15:36:05 1998
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Fri, 30 Jan 1998 21:36:05 -0800 (PST)
+Subject: Installing PDP-11 UNIX w. no tape - solution
+Message-ID: <199801310536.VAA23209@moe.2bsd.com>
+
+Hi -
+
+	I thought I'd chime in with my experience with "high" speed serial
+	transfers...
+
+> From: allisonp at world.std.com (Allison J Parent)
+> 
+> Try slowing down.  You may be overflowing the input buffer.  This was
+> a common problem on TU58s hooked to the 2nd DL on some systems at speeds
+> above either 4800 or 9600.  It only happend in the TU58 to host direction
+
+	The TU58's lack of flow control (unless you were on the Vax-750 with
+	something I believed was called the MRSP roms) made them all but
+	useless except in a 'standalone' environment.  As a boot device they
+	were just "slower than molasses in January".  As a data storage device
+	to be used while the system was up and doing other stuff the TU58 was
+	quite poor.
+
+	I tried to use the TU58 on an 11/44 once and it just wouldn't work
+	reliably when trying to transfer a file from TU58 to disk.  The first
+	time the system had to tape a couple milliseconds to write a block to
+	disk you had a DL11 overrun and the transfer was corrupt.
+
+> (read) as the opposite path expected a handshake every 128 bytes(to allow 
+> the tu58 to actually do the write to tape).  It seems the tu58 would send 
+> a 512byte block as 4 128byte packets at a sustained rate fast enough to 
+> overrun the PDP-11 host input buffer; before it could be emptied.  You 
+
+	The DL-11 to which the TU58 was attached (could it be hooked up to
+	something a bit better?  I would think so but don't know for sure)
+	had no buffering/silo - at 9600 there was only 1 millisecond to get
+	the character and that's cutting things a bit too fine on a ~.5 mips
+	machine, especially if other things are going on at the same time.
+
+> may be emulating a similar problem.  PCs do not service interrupts all 
+> that fast and OS overhead can make that longer.
+
+	Ummm, 'PC's I'm used to don't seem terribly upset at 10 or 20 thousand
+	interrupts per second - that should be sufficient to handle any 9600
+	baud serial line I'd think.
+
+> Note PDP-11s can have enough overhead and higher priority stuff ahead of 
+> the 2nd DL that it cannot take data at greater than 4800 baud (sustained 
+
+	Not 'overhead' as much as just 'slowness'.  An 11/44 is about .6 mips
+	(an 11/73 is about 15% less) - that's quite a bit less than even a
+	286.
+
+	The biggest problem I ran into was the fact that the disk systems
+	all used SPL-5 while the serial ports (DL11,etc) were at 4.  A disk
+	interrupt would (and did) come in and would delay things just enough
+	that the DL running at 9600 with no flow control would overrun.
+
+> rate) without some kind of handshake to allow processing in between.
+> If the system is basically unloaded like my minimal 11/23 it can run at 
+> 38.4!  The most likely time when this overrun can happen is while doing 
+
+	If it's not doing too much else.  I don't see an 11/xx handling high
+	serial line rates without some form of RTS/CTS flowcontrol while a
+	kernel recompile is going on ;-)  If you're using a DHV-11 the
+	data flow rate is quite a bit less than 38.4k - the bit timings are
+	that fast but the board can't handle it and the effective rate is
+	lower.  A DHQ-11 is quite a bit better but all in all anything over
+	9600 requires hardware flow control, especially if the data has to
+	make its way to disk.
+
+	Steven Schultz
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.5/8.8.5) id FAA24275
+	for pups-liszt; Sun, 1 Feb 1998 05:19:03 +1100 (EST)
+X-Authentication-Warning: minnie.cs.adfa.oz.au: major set sender to owner-pups at minnie.cs.adfa.oz.au using -f
+

@@ -1,0 +1,409 @@
+From dugo at xs4all.nl  Fri Apr 10 08:43:44 2015
+From: dugo at xs4all.nl (Jacob Goense)
+Date: Fri, 10 Apr 2015 00:43:44 +0200
+Subject: [TUHS] Thompson at Berkeley on an 11/70
+Message-ID: <a62dd2d1166754c2198232011a97237e@xs4all.nl>
+
+I'm experimenting with adapting Unix history and lore using the new
+EXPECT/SEND feature in simh. My favorite guinea pig is the story of Ken
+Thompsons sabbatical at Berkeley where he brings up V6 on new 11/70 with
+Bob Kridle and Jeff Schriebman. Any details not yet recorded in obvious
+places[1] are of course more than welcome!
+
+One of the things I'm trying to get right is what they actually brought
+up there initially in 1975. This must have been standard V6 or the
+Bell UNIX Ken brought with him, but I can't figure it out.
+
+Salus has Schriebman, Haley and Joy installing the fixes on the 50 bugs
+tape late summer 1976. This suggests it was stock V6 initially, but they
+might have been playing on a different system or working from a fresh
+install in 1976.
+
+If it was stock V6 initially, what were they waiting for? Legal stuff?
+
+If it was 1975 Bell UNIX, can I reconstruct this using the 54 patches
+collected by Mike O'Brien[2], or is that going to be way off from what
+Thompson left in Urbana-Champaign with Greg Chesson in 1975?
+
+[1] http://www.tuhs.org/books.html minus the Bell journals for example
+[2] Hidden in /usr/sys/v6unix/unix_changes in one of the Spencer tapes   
+   http://www.tuhs.org/Archive/Applications/Spencer_Tapes/unsw3.tar.gz
+
+
+From reed at reedmedia.net  Fri Apr 10 11:44:01 2015
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Thu, 9 Apr 2015 20:44:01 -0500 (CDT)
+Subject: [TUHS] Thompson at Berkeley on an 11/70
+In-Reply-To: <a62dd2d1166754c2198232011a97237e@xs4all.nl>
+References: <a62dd2d1166754c2198232011a97237e@xs4all.nl>
+Message-ID: <alpine.NEB.2.11.1504091920090.509@t1.m.reedmedia.net>
+
+On Fri, 10 Apr 2015, Jacob Goense wrote:
+
+> If it was stock V6 initially, what were they waiting for? Legal stuff?
+>
+> If it was 1975 Bell UNIX, can I reconstruct this using the 54 patches
+> collected by Mike O'Brien[2], or is that going to be way off from what
+> Thompson left in Urbana-Champaign with Greg Chesson in 1975?
+
+When Thompson arrived, the Math and Statistics department had a shared 
+machine running RSTS-E and Unix part time. McKusick wrote that the 11/70 
+arrived in Fall of 1975 and it was installed with Version 6. (Marshall 
+Kirk McKusick. A BERKELEY ODYSSEY: Ten years of BSD history. Unix 
+Review. January 1985. Volume 3. Pages 31-42.) But the Quarter Century 
+book (page 155) says it was upgraded to V6 after Thompson left (he told 
+me he left right after exams in June). Thompson told me he brought up 
+the 11/70 for the EECS (but didn't tell me the version). (Jolitz and 
+Allman told me the shared 11/45 also used for CS classes ran v6 (and 
+RSTS-E) but I don't when it was upgraded to v6. The INGRES group also  
+their own dedicated computer which ran 5th Edition and then v6.)
+
+(Thompson told me that he wrote his Pascal between quarter 1 and 
+quarter 2 and that Fabry used it for his instruction the next quarter. 
+Fabry told me that Thompson's students completed their programming 
+assignments using the Cory Hall PDP-11/70 running Unix.)
+
+O'Brien suggested to me that the annotated fifty changes wouldn't apply 
+to Berkeley's already hacked kernel.
+
+Allman and Fabry told me that in their code reading sessions, Thompson 
+had the John Lions' annotated code for the v6 kernel. I believe these 
+(Lions') lecture notes were from May 1976 (so not much time before 
+Thompson left).
+
+> [2] Hidden in /usr/sys/v6unix/unix_changes in one of the Spencer tapes
+> http://www.tuhs.org/Archive/Applications/Spencer_Tapes/unsw3.tar.gz
+
+Thank you so much for pointing me to this. Too bad there aren't dates 
+mentioned in the code or diff files. I am authoring a book that includes 
+this same story (and I had basically the same questions).
+
+
+  Jeremy C. Reed
+
+echo 'EhZ[h ^jjf0%%h[[Zc[Z_W$d[j%Xeeai%ZW[ced#]dk#f[d]k_d%' | \
+  tr            '#-~'            '\-.-{'
+
+
+
+
+From doug at cs.dartmouth.edu  Sat Apr 11 04:37:25 2015
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Fri, 10 Apr 2015 14:37:25 -0400
+Subject: [TUHS] Thompson at Berkeley on an 11/70
+Message-ID: <201504101837.t3AIbPcI011217@coolidge.cs.dartmouth.edu>
+
+To tell whether Ken installed v6 or a copy of his home
+system, look at /usr/dict/words. On the home system
+that file is the wordlist from Webster's Collegiate
+Dictionary, 7th edition, licensed for Bell Labs use
+only. On distribution systems we substituted the wordlist
+for "spell". The latter list contains many more proper
+names, acronyms, etc than the dictionary did, in
+particular names that appear in Unix documentation
+such as Ritchie, Kernighan, and McIlroy. It also lacks
+lots of trivially derivable words like "organizationally".
+
+If you do have the Webster file rather than the spell
+file, please don't propagate it.
+
+Doug
+
+
+From grog at lemis.com  Sat Apr 11 14:45:29 2015
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Sat, 11 Apr 2015 14:45:29 +1000
+Subject: [TUHS] Thompson at Berkeley on an 11/70
+In-Reply-To: <201504101837.t3AIbPcI011217@coolidge.cs.dartmouth.edu>
+References: <201504101837.t3AIbPcI011217@coolidge.cs.dartmouth.edu>
+Message-ID: <20150411044528.GN27709@eureka.lemis.com>
+
+On Friday, 10 April 2015 at 14:37:25 -0400, Doug McIlroy wrote:
+> To tell whether Ken installed v6 or a copy of his home
+> system, look at /usr/dict/words. On the home system
+> that file is the wordlist from Webster's Collegiate
+> Dictionary, 7th edition, licensed for Bell Labs use
+> only. On distribution systems we substituted the wordlist
+> for "spell". The latter list contains many more proper
+> names, acronyms, etc than the dictionary did, in
+> particular names that appear in Unix documentation
+> such as Ritchie, Kernighan, and McIlroy. It also lacks
+> lots of trivially derivable words like "organizationally".
+
+In FreeBSD there are two files /usr/share/dict/web2 and
+/usr/share/dict/web2a, suggesting that they're Webster.  web2 sounds
+like the words file, while web2a apparently consists of compounds.
+web2 doesn't contain Ritchie or McIlroy, though it does contain
+"organizationally".  The oldest entry in the svn history is:
+
+r1638 | rgrimes | 1994-05-31 05:09:18 +1000 (Tue, 31 May 1994) | 2 lines
+
+BSD 4.4 Lite Share Sources
+
+I don't have sccs, so I can't check the origins of that file.
+
+Comments?
+
+Greg
+--
+Sent from my desktop computer.
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft MUA reports
+problems, please read http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 196 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150411/b59178c3/attachment.sig>
+
+From doug at cs.dartmouth.edu  Sat Apr 11 16:39:52 2015
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Sat, 11 Apr 2015 02:39:52 -0400
+Subject: [TUHS] Thompson at Berkeley on an 11/70
+In-Reply-To: <20150411044528.GN27709@eureka.lemis.com>
+References: <201504101837.t3AIbPcI011217@coolidge.cs.dartmouth.edu>
+ <20150411044528.GN27709@eureka.lemis.com>
+Message-ID: <201504110639.t3B6dq0Y002679@coolidge.cs.dartmouth.edu>
+
+"Greg 'groggy' Lehey" <grog at lemis.com> wrote:
+In FreeBSD there are two files /usr/share/dict/web2 and
+/usr/share/dict/web2a, suggesting that they're Webster.  web2 sounds
+like the words file, while web2a apparently consists of compounds.
+web2 doesn't contain Ritchie or McIlroy, though it does contain
+"organizationally".  The oldest entry in the svn history is:
+
+r1638 | rgrimes | 1994-05-31 05:09:18 +1000 (Tue, 31 May 1994) | 2 lines
+
+BSD 4.4 Lite Share Sources
+
+
+Those files are Webster's Unabridged. They were derived from
+a tape produced by the army and distributed without restrictions.
+The provenance is more fully described at puzzlers.org; burrow
+down their file tree from "Solving Tools of the NPL" to "The NPL
+Wordlists" and "Our Wordlists" to "Doug McIlroy's Wordlists"
+
+Doug
+
+
+From dugo at xs4all.nl  Sun Apr 12 00:23:53 2015
+From: dugo at xs4all.nl (Jacob Goense)
+Date: Sat, 11 Apr 2015 16:23:53 +0200
+Subject: [TUHS] Thompson at Berkeley on an 11/70
+In-Reply-To: <201504101837.t3AIbPcI011217@coolidge.cs.dartmouth.edu>
+References: <201504101837.t3AIbPcI011217@coolidge.cs.dartmouth.edu>
+Message-ID: <c60f2273b5439e6924114b29060e93f8@xs4all.nl>
+
+On 2015-04-10 20:37, Doug McIlroy wrote:
+> To tell whether Ken installed v6 or a copy of his home
+> system, look at /usr/dict/words. On the home system
+> that file is the wordlist from Webster's Collegiate
+> Dictionary, 7th edition, licensed for Bell Labs use
+> only. On distribution systems we substituted the wordlist
+> for "spell". The latter list contains many more proper
+> names, acronyms, etc than the dictionary did, in
+> particular names that appear in Unix documentation
+> such as Ritchie, Kernighan, and McIlroy. It also lacks
+> lots of trivially derivable words like "organizationally".
+> 
+> If you do have the Webster file rather than the spell
+> file, please don't propagate it.
+
+Good to know, I doubt I'll ever run into a dump of a 1975 CORY though.
+
+For now I assume Thompson erred on the safe side and brought his home
+system as reference material rather than install media.
+
+/Jacob
+
+
+From imp at bsdimp.com  Sun Apr 12 00:41:36 2015
+From: imp at bsdimp.com (Warner Losh)
+Date: Sat, 11 Apr 2015 08:41:36 -0600
+Subject: [TUHS] Thompson at Berkeley on an 11/70
+In-Reply-To: <201504110639.t3B6dq0Y002679@coolidge.cs.dartmouth.edu>
+References: <201504101837.t3AIbPcI011217@coolidge.cs.dartmouth.edu>
+ <20150411044528.GN27709@eureka.lemis.com>
+ <201504110639.t3B6dq0Y002679@coolidge.cs.dartmouth.edu>
+Message-ID: <3DE629EC-628F-4F61-BEF2-BAB012FF32B1@bsdimp.com>
+
+
+> On Apr 11, 2015, at 12:39 AM, Doug McIlroy <doug at cs.dartmouth.edu> wrote:
+> 
+> "Greg 'groggy' Lehey" <grog at lemis.com> wrote:
+> In FreeBSD there are two files /usr/share/dict/web2 and
+> /usr/share/dict/web2a, suggesting that they're Webster.  web2 sounds
+> like the words file, while web2a apparently consists of compounds.
+> web2 doesn't contain Ritchie or McIlroy, though it does contain
+> "organizationally".  The oldest entry in the svn history is:
+> 
+> r1638 | rgrimes | 1994-05-31 05:09:18 +1000 (Tue, 31 May 1994) | 2 lines
+> 
+> BSD 4.4 Lite Share Sources
+> 
+> 
+> Those files are Webster's Unabridged. They were derived from
+> a tape produced by the army and distributed without restrictions.
+> The provenance is more fully described at puzzlers.org; burrow
+> down their file tree from "Solving Tools of the NPL" to "The NPL
+> Wordlists" and "Our Wordlists" to "Doug McIlroy's Wordlists"
+
+More importantly, it was from Websters 1913 edition, which had passed from
+copyright protection at the time it was produced. There’s several words in it
+that have shifted in accepted spelling since that edition which I noticed when
+a spelling program flagged the now-correct spelling years ago…
+
+There were other word lists floating around the Internet in the 80’s that one
+could obtain with some effort that differed. I may have been on a system once
+that had both lists. There’s about 30 words that are different, and about 200
+words in that other file not in web2. The system I know that had this word list
+on it has been turned off for 20 years now, so I can’t easily check these
+numbers. I assume other file was the file talked about as being licensed to
+Bell Labs…
+
+Warner
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 842 bytes
+Desc: Message signed with OpenPGP using GPGMail
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150411/c113fcb2/attachment.sig>
+
+From reed at reedmedia.net  Sun Apr 12 01:37:52 2015
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Sat, 11 Apr 2015 10:37:52 -0500 (CDT)
+Subject: [TUHS] Thompson at Berkeley on an 11/70
+In-Reply-To: <20150411044528.GN27709@eureka.lemis.com>
+References: <201504101837.t3AIbPcI011217@coolidge.cs.dartmouth.edu>
+ <20150411044528.GN27709@eureka.lemis.com>
+Message-ID: <alpine.NEB.2.11.1504111011300.1753@t1.m.reedmedia.net>
+
+On Sat, 11 Apr 2015, Greg 'groggy' Lehey wrote:
+
+> In FreeBSD there are two files /usr/share/dict/web2 and
+> /usr/share/dict/web2a, suggesting that they're Webster.  web2 sounds
+> like the words file, while web2a apparently consists of compounds.
+> web2 doesn't contain Ritchie or McIlroy, though it does contain
+> "organizationally".  The oldest entry in the svn history is:
+> 
+> r1638 | rgrimes | 1994-05-31 05:09:18 +1000 (Tue, 31 May 1994) | 2 lines
+> 
+> BSD 4.4 Lite Share Sources
+> 
+> I don't have sccs, so I can't check the origins of that file.
+> 
+> Comments?
+
+There is no existing SCCS history for those two files.
+But you can see the background about it in the README from the SCCS.
+http://svnweb.freebsd.org/csrg/share/dict/README?revision=49371&view=markup
+(Also in the later FreeBSD README too.)
+
+The web2 files were first introduced in 4.3BSD as documented in the 
+changes documentation (between the 4.2BSD distribution of July 1983 and 
+the 4.3 revision in 1986) 4.3BSD's usr/doc/smm/12.uchanges/7.t (but I 
+don't see this in the SCCS history).
+
+We only have the complete operating system as of 3BSD and later and they 
+include "words" file from 32V. It doesn't have "Kernighan", "McIlroy", 
+nor "organizationally". The version continued from 32V is 
+http://svnweb.freebsd.org/csrg/share/dict/words?view=log
+
+
+
+From slapinid at gmail.com  Mon Apr 20 14:01:57 2015
+From: slapinid at gmail.com (Sergey Lapin)
+Date: Mon, 20 Apr 2015 07:01:57 +0300
+Subject: [TUHS] Project Athena archive
+Message-ID: <CAFZPMoYMzurs5H27Be84OKWJiAqKBN2dq_ZQa=HXsaz5J2=vOA@mail.gmail.com>
+
+Hi, all!
+
+Is there some archives of project Athena?
+I'd like to see how it was back then...
+
+Thanks,
+S.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150420/59aa20f8/attachment.html>
+
+From jnc at mercury.lcs.mit.edu  Mon Apr 20 22:29:36 2015
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon, 20 Apr 2015 08:29:36 -0400 (EDT)
+Subject: [TUHS] Project Athena archive
+Message-ID: <20150420122936.301D718C0EA@mercury.lcs.mit.edu>
+
+    > From: Sergey Lapin
+
+    > Is there some archives of project Athena?
+    > I'd like to see how it was back then...
+
+There is an _very_ extensive online archive of stuff here:
+
+  http://web.mit.edu/afs/
+
+and what you're looking for might be in there _somewhere_.
+
+If not, I know some people I can ask (I never used it myself). But, if so, a
+bit more detail? Athena was huge, presumably you don't want all the students'
+files! But just the operating system? (IIRC it was initially mostly 4.3BSD,
+with some minor extensions.) Or the tools and applications they wrote as well?
+(E.g. X-Windows, IIRC, came from Athena.) Most of that does seem to be in
+that archive.
+
+	Noel
+
+
+From treese at acm.org  Sat Apr 25 00:41:25 2015
+From: treese at acm.org (Win Treese)
+Date: Fri, 24 Apr 2015 10:41:25 -0400
+Subject: [TUHS] Project Athena archive
+In-Reply-To: <20150420122936.301D718C0EA@mercury.lcs.mit.edu>
+References: <20150420122936.301D718C0EA@mercury.lcs.mit.edu>
+Message-ID: <C2A36E24-3CD9-44C2-8958-E783F39B37E5@acm.org>
+
+
+> On Apr 20, 2015, at 8:29 AM, Noel Chiappa <jnc at mercury.lcs.mit.edu> wrote:
+> 
+>> From: Sergey Lapin
+> 
+>> Is there some archives of project Athena?
+>> I'd like to see how it was back then...
+> 
+> There is an _very_ extensive online archive of stuff here:
+> 
+>  http://web.mit.edu/afs/
+> 
+> and what you're looking for might be in there _somewhere_.
+
+I don’t have much in the way of archives, but I worked there
+from 1984 to 1988. The best set of technical papers was
+the set presented at the Winter 1988 USENIX Conference
+in Dallas (disclaimer: I wrote one of them), and
+I probably have some PDFs of them stashed away. Those
+included papers about the X Window System, the changes to
+4.3BSD, the Kerberos authentication system, the Hesiod name
+service, the Zephyr notification system, and the Moira service
+management system. There was also a paper on the Online
+Consulting system that (I think) appeared later.
+
+Also, the Associate Director of Athena from Digital Equipment,
+George Champine, wrote a book called "MIT Project Athena:
+Model for Distributed Campus Computing”.
+
+I’d be happy to answer any questions about the work at Athena
+from that time.
+
+Best,
+
+Win Treese
+treese at acm.org
+
+
+

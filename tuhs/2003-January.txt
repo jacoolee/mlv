@@ -1,0 +1,2130 @@
+From michael_davidson at pacbell.net  Wed Jan  1 02:02:37 2003
+From: michael_davidson at pacbell.net (Michael Davidson)
+Date: Tue, 31 Dec 2002 08:02:37 -0800
+Subject: [pups] V7 setjmp/longjmp
+References: <200212311307.gBVD7p600218@bsd.korb>
+Message-ID: <3E11BF9D.5010903@pacbell.net>
+
+Wolfgang Helbig wrote:
+
+>Michael Davidson distrusted:
+>
+>>Note that this means that r4, r3 and r2 get restored to the values
+>>that they had at the time that the next stack frame was established
+>>(ie when the "next" function down was called from the original context)
+>>and that these are not necessarily the values that they had at the
+>>moment when the original call to setjnp returned. Hence the various
+>>caveats about not relying on the value of any register variables
+>>after returning via longjmp.
+>>
+>
+>You can trust register variables when setjmp() returns the second time. Then
+>the registers are restored to the values they had when the "next" function was 
+>called, that is the "values as of the time longjmp() was called" (quoted from
+>longjmp(3)'s man page. Thus any variable behaves the same, regardless of its
+>storage class.
+>
+Yes, you are right - V7 restores the register variables to a state which
+is consistent with the other auto variables in the function - ie the value
+which they had when longjmp was called.
+
+The caveats about not relying on register variables applied to V6.
+
+
+
+
+From rlhamil at mindwarp.smart.net  Mon Jan  6 23:55:01 2003
+From: rlhamil at mindwarp.smart.net (Richard L. Hamilton)
+Date: Mon, 6 Jan 2003 08:55:01 -0500 (EST)
+Subject: [pups] V7 RL02 driver questions
+Message-ID: <200301061355.h06Dt1601978@mindwarp.smart.net>
+
+The files
+
+http://minnie.tuhs.org/UnixTree/V7/usr/sys/dev/rl.c
+http://minnie.tuhs.org/UnixTree/V7/usr/sys/conf/mkconf.c
+
+don't seem to match - mkconf.c wants to generate references to
+rlopen() and rlclose(), which don't exist in that version of rl.c.
+
+What I'm really looking for is the right version of driver(s) etc.
+so that I can regenerate the rl2unix kernel in the V7 image
+available for use with simh, so that I can add or tweak drivers, eventually
+adding the dz driver so I can run multiple "terminals" with telnet access.
+
+-- 
+mailto:rlhamil at mindwarp.smart.net  http://www.smart.net/~rlhamil
+
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Tue Jan  7 04:01:45 2003
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Mon, 6 Jan 2003 19:01:45 +0100 (MET)
+Subject: [pups] Mail delivery failed: returning message to sender
+Message-ID: <200301062005.h06K5ah00493@bsd.korb>
+
+Richard L. Hamilton searches:
+>The files
+>
+>http://minnie.tuhs.org/UnixTree/V7/usr/sys/dev/rl.c
+>http://minnie.tuhs.org/UnixTree/V7/usr/sys/conf/mkconf.c
+>
+>don't seem to match - mkconf.c wants to generate references to
+>rlopen() and rlclose(), which don't exist in that version of rl.
+>What I'm really looking for is the right version of driver(s) etc.
+
+It seems that a version of the rl driver that matches
+mkconf, was never supplied by the bell labs.
+
+As a workaround delete the rl entry in cdevsw and the line
+"int rlopen,..." from c.c. This will give you a block device of the rl disk,
+but no raw device. 
+
+Greetings,
+
+Wolfgang
+
+
+
+From pete at dunnington.u-net.com  Tue Jan  7 08:28:09 2003
+From: pete at dunnington.u-net.com (pete at dunnington.u-net.com)
+Date: Mon, 6 Jan 2003 22:28:09 GMT
+Subject: [pups] Mail delivery failed: returning message to sender
+In-Reply-To: Wolfgang Helbig <helbig@Informatik.BA-Stuttgart.DE>
+        "[pups] Mail delivery failed: returning message to sender" (Jan  6, 19:01)
+References: <200301062005.h06K5ah00493@bsd.korb>
+Message-ID: <10301062228.ZM25510@mindy.dunnington.u-net.com>
+
+On Jan 6, 19:01, Wolfgang Helbig wrote:
+> Richard L. Hamilton searches:
+> >The files
+> >
+> >http://minnie.tuhs.org/UnixTree/V7/usr/sys/dev/rl.c
+> >http://minnie.tuhs.org/UnixTree/V7/usr/sys/conf/mkconf.c
+> >
+> >don't seem to match - mkconf.c wants to generate references to
+> >rlopen() and rlclose(), which don't exist in that version of rl.
+> >What I'm really looking for is the right version of driver(s) etc.
+>
+> It seems that a version of the rl driver that matches
+> mkconf, was never supplied by the bell labs.
+>
+> As a workaround delete the rl entry in cdevsw and the line
+> "int rlopen,..." from c.c. This will give you a block device of the rl
+disk,
+> but no raw device.
+
+Hmm... my 7th Edition distribution  /usr/sys/dev/rl.c  certainly *does*
+have rlopen() and rlclose().  If you want them, I can send rl.c and the
+matching mkconf.c  to you, or to Warren, along with the rl1conf and rl2conf
+(for RL01 and RL02 disks) from  /usr/sys/conf/  and any other files needed
+(if someone can tell me what might be required -- it's a long long time
+since I looked at any of this.   The distribution came for an 11/23 with 2
+x RL02, and it also has some special source files for 11/23, 11/34, etc
+("small machines") including tests for recovery from segmentation traps in
+floating point (which isn't the same on all PDP-11 models), and an RK
+driver from the Boston Children's Museum which handles overlapped seeks on
+multiple drives.
+
+I'll be away for a couple of days so don't expect a prompt reply, but the
+source is online here so I can easily copy a few files when I get back.
+
+-- 
+Pete						Peter Turnbull
+						Network Manager
+						University of York
+
+
+From dfevans at bbcr.uwaterloo.ca  Thu Jan 16 06:48:31 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Wed, 15 Jan 2003 15:48:31 -0500
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+Message-ID: <20030115154831.A9065@bcr10.uwaterloo.ca>
+
+  Howdy.
+
+  I'd like to confirm that somebody has successfully made a TK50 boot tape
+for 2.11BSD using a TK50Z attached to some other Unix box.  In my case it will
+likely have to be Linux, though IRIX might be doable.  It *should* work, after
+all, but, well, you know.  :)
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From jkunz at unixag-kl.fh-kl.de  Thu Jan 16 07:50:31 2003
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Wed, 15 Jan 2003 22:50:31 +0100
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+In-Reply-To: <20030115154831.A9065@bcr10.uwaterloo.ca>; from dfevans@bbcr.uwaterloo.ca on Wed, Jan 15, 2003 at 21:48:31 CET
+References: <20030115154831.A9065@bcr10.uwaterloo.ca>
+Message-ID: <20030115225031.S57315@MissSophie.unixag-kl.fh-kl.de>
+
+On 2003.01.15 21:48 David Evans wrote:
+
+>   I'd like to confirm that somebody has successfully made a TK50 boot
+> tape for 2.11BSD using a TK50Z attached to some other Unix box.  
+Well, the TK50z sems to be rather quirky. I had not much luck with it.
+The TZ30 is not much better. You don't happen to have a QBus VAX? I used
+a MicroVAX 4000-200 with NetBSD to write the 2.11BSD tape. 
+
+Use the maketape programm from the archive. dd will not work proper. 
+-- 
+
+
+
+tschüß,
+         Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+From dfevans at bbcr.uwaterloo.ca  Fri Jan 17 00:40:37 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Thu, 16 Jan 2003 09:40:37 -0500
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+In-Reply-To: <20030115225031.S57315@MissSophie.unixag-kl.fh-kl.de>; from jkunz@unixag-kl.fh-kl.de on Wed, Jan 15, 2003 at 10:50:31PM +0100
+References: <20030115154831.A9065@bcr10.uwaterloo.ca> <20030115225031.S57315@MissSophie.unixag-kl.fh-kl.de>
+Message-ID: <20030116094037.B28194@bcr10.uwaterloo.ca>
+
+On Wed, Jan 15, 2003 at 10:50:31PM +0100, Jochen Kunz wrote:
+> Well, the TK50z sems to be rather quirky.
+
+  That's a kind way to describe it.  I made a tape last night using
+"maketape" and it didn't boot.
+
+> You don't happen to have a QBus VAX? I used
+> a MicroVAX 4000-200 with NetBSD to write the 2.11BSD tape. 
+> 
+
+  I have a KA650 boardset.  It's been misbehaving, but I haven't thorougly
+explored why.  Given the troubles with the TK50Z, though, I'll likely invest
+some time into troubleshooting it.
+
+> Use the maketape programm from the archive. dd will not work proper. 
+
+  That's truly weird.
+
+  Anyway, thanks.  :)
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From luvisi at andru.sonoma.edu  Fri Jan 17 01:53:02 2003
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Thu, 16 Jan 2003 07:53:02 -0800 (PST)
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+In-Reply-To: <20030116094037.B28194@bcr10.uwaterloo.ca>
+Message-ID: <Pine.LNX.4.44.0301160744570.11570-100000@gladen>
+
+On Thu, 16 Jan 2003, David Evans wrote:
+[snip]
+> > Use the maketape programm from the archive. dd will not work proper.
+>
+>   That's truly weird.
+
+maketape will pad each of "mtboot", "mtboot", and "boot" out to an even
+length of 512 bytes.  The "cat | dd" method will not pad the first two
+out.
+
+I discovered this while trying to create a bootable tape image for simh.
+I needed to emulate the maketape behavior for it to work.
+
+Andru
+-- 
+Andru Luvisi, Programmer/Analyst
+
+Quote Of The Moment:
+  Quidquid latine dictum sit, altum viditur.
+  ( Whatever is said in Latin sounds profound. )
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Fri Jan 17 02:06:43 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Thu, 16 Jan 2003 11:06:43 -0500
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+In-Reply-To: <Pine.LNX.4.44.0301160744570.11570-100000@gladen>; from luvisi@andru.sonoma.edu on Thu, Jan 16, 2003 at 07:53:02AM -0800
+References: <20030116094037.B28194@bcr10.uwaterloo.ca> <Pine.LNX.4.44.0301160744570.11570-100000@gladen>
+Message-ID: <20030116110643.B28361@bcr10.uwaterloo.ca>
+
+On Thu, Jan 16, 2003 at 07:53:02AM -0800, Andru Luvisi wrote:
+> maketape will pad each of "mtboot", "mtboot", and "boot" out to an even
+> length of 512 bytes.  The "cat | dd" method will not pad the first two
+> out.
+> 
+
+  Ahhh--of course.  One would have to do a series of "dd"s in order to
+get the padding happening.
+
+> I discovered this while trying to create a bootable tape image for simh.
+> I needed to emulate the maketape behavior for it to work.
+> 
+
+  That's not a bad idea.  Perhaps I should just make a minimal bootable image
+using simh or such, dd it to a SCSI disk, and then attach that to my 11/73.
+Might be easier than endless futzing with the TK50.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From luvisi at andru.sonoma.edu  Fri Jan 17 03:34:16 2003
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Thu, 16 Jan 2003 09:34:16 -0800 (PST)
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+In-Reply-To: <20030116110643.B28361@bcr10.uwaterloo.ca>
+Message-ID: <Pine.LNX.4.44.0301160932070.11570-100000@gladen>
+
+On Thu, 16 Jan 2003, David Evans wrote:
+> On Thu, Jan 16, 2003 at 07:53:02AM -0800, Andru Luvisi wrote:
+> > maketape will pad each of "mtboot", "mtboot", and "boot" out to an even
+> > length of 512 bytes.  The "cat | dd" method will not pad the first two
+> > out.
+> >
+>
+>   Ahhh--of course.  One would have to do a series of "dd"s in order to
+> get the padding happening.
+
+But then they would end up in separate tape files.  :-(
+
+> > I discovered this while trying to create a bootable tape image for simh.
+> > I needed to emulate the maketape behavior for it to work.
+> >
+>
+>   That's not a bad idea.  Perhaps I should just make a minimal bootable image
+> using simh or such, dd it to a SCSI disk, and then attach that to my 11/73.
+> Might be easier than endless futzing with the TK50.
+
+I already made one.  It's part of
+http://www.tuhs.org/Archive/PDP-11/Boot_Images/2.11_on_Simh/211bsd.tar.gz
+along with the Perl script I wrote to make it.
+
+Andru
+-- 
+Andru Luvisi, Programmer/Analyst
+
+Quote Of The Moment:
+  I'm not normal.  I know it.  I don't care!
+       - Ace Of Base
+
+
+
+From bqt at update.uu.se  Fri Jan 17 03:28:30 2003
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Thu, 16 Jan 2003 18:28:30 +0100 (CET)
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+In-Reply-To: <20030116110643.B28361@bcr10.uwaterloo.ca>
+Message-ID: <Pine.LNX.4.21.0301161819350.6829-100000@Tempo.Update.UU.SE>
+
+On Thu, 16 Jan 2003, David Evans wrote:
+
+> On Thu, Jan 16, 2003 at 07:53:02AM -0800, Andru Luvisi wrote:
+> > maketape will pad each of "mtboot", "mtboot", and "boot" out to an even
+> > length of 512 bytes.  The "cat | dd" method will not pad the first two
+> > out.
+> 
+>   Ahhh--of course.  One would have to do a series of "dd"s in order to
+> get the padding happening.
+
+Probably not. Repeated "dd"s will not produce the same result. This is the
+typical error when not understanding that tapes actually are not a stream
+of characters. (And also a good example when the Unix paradigm fails 
+pretty bad).
+Each write to the tape device will create a block. You cannot do two
+writes after each other to extend the block. You will instead get two
+different blocks.
+
+Boot tapes for VAXen (and PDP-11s) are expected to have 512 byte
+blocks. Actually, the first block should be repeated twice, and this is
+the primary boot block. After that you can put whatever you want. Most
+primary boot blocks however also expects to read 512 byte blocks, which
+means that the next file (secondary booter or the system itself) also most
+often is written with 512 byte blocks.
+
+> > I discovered this while trying to create a bootable tape image for simh.
+> > I needed to emulate the maketape behavior for it to work.
+> 
+>   That's not a bad idea.  Perhaps I should just make a minimal bootable image
+> using simh or such, dd it to a SCSI disk, and then attach that to my 11/73.
+> Might be easier than endless futzing with the TK50.
+
+Don't. The moment you copy a tape file to disk, you will loose meta
+information unless you use a program specifically designed to preserve
+that information.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Fri Jan 17 03:30:51 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Thu, 16 Jan 2003 12:30:51 -0500
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+In-Reply-To: <Pine.LNX.4.44.0301160932070.11570-100000@gladen>; from luvisi@andru.sonoma.edu on Thu, Jan 16, 2003 at 09:34:16AM -0800
+References: <20030116110643.B28361@bcr10.uwaterloo.ca> <Pine.LNX.4.44.0301160932070.11570-100000@gladen>
+Message-ID: <20030116123051.D28733@bcr10.uwaterloo.ca>
+
+On Thu, Jan 16, 2003 at 09:34:16AM -0800, Andru Luvisi wrote:
+> On Thu, 16 Jan 2003, David Evans wrote:
+> > On Thu, Jan 16, 2003 at 07:53:02AM -0800, Andru Luvisi wrote:
+> > > maketape will pad each of "mtboot", "mtboot", and "boot" out to an even
+> > > length of 512 bytes.  The "cat | dd" method will not pad the first two
+> > > out.
+> > >
+> >
+> >   Ahhh--of course.  One would have to do a series of "dd"s in order to
+> > get the padding happening.
+> 
+> But then they would end up in separate tape files.  :-(
+> 
+
+  Ahh--I was asleep at the wheel and forgot that there's no convenient way
+to concatenate the files using dd.  Duh.
+
+> I already made one.  It's part of
+> http://www.tuhs.org/Archive/PDP-11/Boot_Images/2.11_on_Simh/211bsd.tar.gz
+> along with the Perl script I wrote to make it.
+> 
+
+  Oh yeah--I saw that but forgot about it.
+
+  Just not my day.  :P
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From dfevans at bbcr.uwaterloo.ca  Fri Jan 17 03:33:54 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Thu, 16 Jan 2003 12:33:54 -0500
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+In-Reply-To: <Pine.LNX.4.21.0301161819350.6829-100000@Tempo.Update.UU.SE>; from bqt@update.uu.se on Thu, Jan 16, 2003 at 06:28:30PM +0100
+References: <20030116110643.B28361@bcr10.uwaterloo.ca> <Pine.LNX.4.21.0301161819350.6829-100000@Tempo.Update.UU.SE>
+Message-ID: <20030116123354.E28733@bcr10.uwaterloo.ca>
+
+On Thu, Jan 16, 2003 at 06:28:30PM +0100, Johnny Billquist wrote:
+> >   Ahhh--of course.  One would have to do a series of "dd"s in order to
+> > get the padding happening.
+> 
+> Probably not. Repeated "dd"s will not produce the same result. This is the
+> typical error when not understanding that tapes actually are not a stream
+> of characters. (And also a good example when the Unix paradigm fails 
+> pretty bad).
+
+  If you could do something like
+
+(dd if=mtboot sync bs=512 |+ dd if=mtboot sync bs=512 |+ dd if=boot sync bs=512) | dd of=/dev/whatever obs=512
+
+in order to concatenate the multiple copies of mtboot then all would be well.
+
+> >   That's not a bad idea.  Perhaps I should just make a minimal bootable image
+> > using simh or such, dd it to a SCSI disk, and then attach that to my 11/73.
+> > Might be easier than endless futzing with the TK50.
+> 
+> Don't. The moment you copy a tape file to disk, you will loose meta
+> information unless you use a program specifically designed to preserve
+> that information.
+> 
+
+  I meant an actual bootable system, not the tape image.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From luvisi at andru.sonoma.edu  Fri Jan 17 03:42:14 2003
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Thu, 16 Jan 2003 09:42:14 -0800 (PST)
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+In-Reply-To: <Pine.LNX.4.21.0301161819350.6829-100000@Tempo.Update.UU.SE>
+Message-ID: <Pine.LNX.4.44.0301160938310.11570-100000@gladen>
+
+On Thu, 16 Jan 2003, Johnny Billquist wrote:
+> On Thu, 16 Jan 2003, David Evans wrote:
+[snip]
+> >   That's not a bad idea.  Perhaps I should just make a minimal
+> > bootable image using simh or such, dd it to a SCSI disk, and then
+> > attach that to my 11/73. Might be easier than endless futzing with the
+> > TK50.
+>
+> Don't. The moment you copy a tape file to disk, you will loose meta
+> information unless you use a program specifically designed to preserve
+> that information.
+
+I misread David's post the first time.  I thought he was thinking of doing
+an installation on simh (using a bootable tape image) and then dd'ing the
+disk image onto a SCSI disk to boot the real PDP-11 from.  Is there any
+reason this wouldn't work?
+
+Andru
+-- 
+Andru Luvisi, Programmer/Analyst
+
+Quote Of The Moment:
+  If you tell the truth you don't have to remember anything.
+                  -- Mark Twain
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Fri Jan 17 03:45:11 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Thu, 16 Jan 2003 12:45:11 -0500
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+In-Reply-To: <Pine.LNX.4.21.0301161838280.6829-100000@Tempo.Update.UU.SE>; from bqt@update.uu.se on Thu, Jan 16, 2003 at 06:40:24PM +0100
+References: <Pine.LNX.4.44.0301160938310.11570-100000@gladen> <Pine.LNX.4.21.0301161838280.6829-100000@Tempo.Update.UU.SE>
+Message-ID: <20030116124511.C29094@bcr10.uwaterloo.ca>
+
+On Thu, Jan 16, 2003 at 06:40:24PM +0100, Johnny Billquist wrote:
+> 
+> Ah. Maybe I misunderstood things. Copying a bootable disk image should
+> work just fine. I thought he wanted the tape image moved over.
+> 
+ 
+  No, bootable disk is what I was after.  The tape image idea floated into my
+brain for a moment, but it didn't last long since I'm certain it would not
+work.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From bqt at update.uu.se  Fri Jan 17 03:40:24 2003
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Thu, 16 Jan 2003 18:40:24 +0100 (CET)
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+In-Reply-To: <Pine.LNX.4.44.0301160938310.11570-100000@gladen>
+Message-ID: <Pine.LNX.4.21.0301161838280.6829-100000@Tempo.Update.UU.SE>
+
+On Thu, 16 Jan 2003, Andru Luvisi wrote:
+
+> On Thu, 16 Jan 2003, Johnny Billquist wrote:
+> > On Thu, 16 Jan 2003, David Evans wrote:
+> [snip]
+> > >   That's not a bad idea.  Perhaps I should just make a minimal
+> > > bootable image using simh or such, dd it to a SCSI disk, and then
+> > > attach that to my 11/73. Might be easier than endless futzing with the
+> > > TK50.
+> >
+> > Don't. The moment you copy a tape file to disk, you will loose meta
+> > information unless you use a program specifically designed to preserve
+> > that information.
+> 
+> I misread David's post the first time.  I thought he was thinking of doing
+> an installation on simh (using a bootable tape image) and then dd'ing the
+> disk image onto a SCSI disk to boot the real PDP-11 from.  Is there any
+> reason this wouldn't work?
+
+Ah. Maybe I misunderstood things. Copying a bootable disk image should
+work just fine. I thought he wanted the tape image moved over.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From luvisi at andru.sonoma.edu  Fri Jan 17 04:01:35 2003
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Thu, 16 Jan 2003 10:01:35 -0800 (PST)
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+In-Reply-To: <20030116123354.E28733@bcr10.uwaterloo.ca>
+Message-ID: <Pine.LNX.4.44.0301160958120.11570-100000@gladen>
+
+On Thu, 16 Jan 2003, David Evans wrote:
+[snip]
+>   If you could do something like
+>
+> (dd if=mtboot sync bs=512 |+ dd if=mtboot sync bs=512 |+ dd if=boot sync bs=512) | dd of=/dev/whatever obs=512
+>
+> in order to concatenate the multiple copies of mtboot then all would be well.
+
+How about:
+(
+  dd if=mtboot conv=sync bs=512
+  dd if=mtboot conv=sync bs=512
+  dd if=boot conv=sync bs=512
+) |dd of=/dev/whatever bs=512
+
+Andru
+-- 
+Andru Luvisi, Programmer/Analyst
+
+Quote Of The Moment:
+  It has been said very justly that every virtue is, as it were, a
+  middle course between two opposite vices. Thus, courage is midway
+  between cowardice and rashness; thrift is midway between
+  acquisitiveness and improvidence; morality is midway between prudery
+  and licentiousness; and so forth. In like manner, justification stands
+  half-way between the faults of pedantry, on the one hand, and the
+  failures of ignorance, on the other.
+  
+  	- Nevil Maskelyne
+
+
+
+From norman at nose.cs.utoronto.ca  Fri Jan 17 03:53:59 2003
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Thu, 16 Jan 2003 12:53:59 -0500
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+Message-ID: <200301161754.h0GHsbn49154@minnie.tuhs.org>
+
+If all that is needed is to concatenate three files into a single
+tape file, with each new file aligned on a block boundary, isn't
+
+	(for f in f1 f2 f3; do dd <$f conv=sync; done) >/dev/rmt0
+
+sufficient?
+
+The only time I had to do anything like this, the target system was
+a MicroVAX; hence the tape had to have ISO labels, and the program
+to be booted a particular tape filename.  I don't remember how I
+handled that; probably I used one of the several public-domain
+tape-label-writing programs.  But that was a VAX; I would assume
+an 11/73 doesn't have so much enforced complexity in its firmware.
+
+
+From dfevans at bbcr.uwaterloo.ca  Fri Jan 17 03:55:38 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Thu, 16 Jan 2003 12:55:38 -0500
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+In-Reply-To: <Pine.LNX.4.44.0301160958120.11570-100000@gladen>; from luvisi@andru.sonoma.edu on Thu, Jan 16, 2003 at 10:01:35AM -0800
+References: <20030116123354.E28733@bcr10.uwaterloo.ca> <Pine.LNX.4.44.0301160958120.11570-100000@gladen>
+Message-ID: <20030116125538.A29181@bcr10.uwaterloo.ca>
+
+On Thu, Jan 16, 2003 at 10:01:35AM -0800, Andru Luvisi wrote:
+> How about:
+> (
+>   dd if=mtboot conv=sync bs=512
+>   dd if=mtboot conv=sync bs=512
+>   dd if=boot conv=sync bs=512
+> ) |dd of=/dev/whatever bs=512
+> 
+
+  Will that actually work?  I'll give it a try.  I haven't had to do much with
+dd in almost ten years.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From emu at ecubics.com  Fri Jan 17 04:24:25 2003
+From: emu at ecubics.com (emanuel stiebler)
+Date: Thu, 16 Jan 2003 11:24:25 -0700
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+References: <20030115154831.A9065@bcr10.uwaterloo.ca>
+Message-ID: <3E26F8D9.3040104@ecubics.com>
+
+David Evans wrote:
+ >   Howdy.
+ >
+ >   I'd like to confirm that somebody has successfully made a TK50 boot 
+tape
+ > for 2.11BSD using a TK50Z attached to some other Unix box.
+
+Yes. Did it to a TK50Z & TZ30 many times. Slow, but works ...
+
+ > In my case it will
+ > likely have to be Linux, though IRIX might be doable.  It *should* 
+work, after
+ > all, but, well, you know.  :)
+
+What version is your "linux" ? There were problems in earlier version 
+(redhat before 7.x ?) exactly with the block command on tapes, and 
+that's what bites you :(
+
+Just make sure your tape drive is clean, check if you get any errors 
+during writing the tape.
+
+And don't use any scripts, just compile the maketape.c, it worked for me 
+many times.
+
+cheers
+
+
+
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Fri Jan 17 04:59:52 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Thu, 16 Jan 2003 13:59:52 -0500
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+In-Reply-To: <3E26F8D9.3040104@ecubics.com>; from emu@ecubics.com on Thu, Jan 16, 2003 at 11:24:25AM -0700
+References: <20030115154831.A9065@bcr10.uwaterloo.ca> <3E26F8D9.3040104@ecubics.com>
+Message-ID: <20030116135952.A29189@bcr10.uwaterloo.ca>
+
+On Thu, Jan 16, 2003 at 11:24:25AM -0700, emanuel stiebler wrote:
+> What version is your "linux" ? There were problems in earlier version 
+> (redhat before 7.x ?) exactly with the block command on tapes, and 
+> that's what bites you :(
+> 
+
+  This is a Debian setup running a 2.4.18 kernel.  I'm not really surprised
+that it didn't work...Linux always seems to hose me when I try to do something
+vaguely "tricky."
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From emu at ecubics.com  Fri Jan 17 05:45:56 2003
+From: emu at ecubics.com (emanuel stiebler)
+Date: Thu, 16 Jan 2003 12:45:56 -0700
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+References: <20030115154831.A9065@bcr10.uwaterloo.ca> <3E26F8D9.3040104@ecubics.com> <20030116135952.A29189@bcr10.uwaterloo.ca>
+Message-ID: <3E270BF4.7030205@ecubics.com>
+
+David Evans wrote:
+
+>   This is a Debian setup running a 2.4.18 kernel.  I'm not really surprised
+> that it didn't work...Linux always seems to hose me when I try to do something
+> vaguely "tricky."
+
+Just because you try to boot a 2.11BSD, the last three letters should 
+tell you something. Go for FreeBSD, NetBSD, or something with a "BSD" in 
+the name ... ;-)
+
+
+
+From jkunz at unixag-kl.fh-kl.de  Fri Jan 17 03:39:13 2003
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Thu, 16 Jan 2003 18:39:13 +0100
+Subject: [pups] Making a TK50 2.11BSD boot tape for an 11/73
+In-Reply-To: <20030116110643.B28361@bcr10.uwaterloo.ca>; from dfevans@bbcr.uwaterloo.ca on Thu, Jan 16, 2003 at 17:06:43 CET
+References: <20030116094037.B28194@bcr10.uwaterloo.ca> <Pine.LNX.4.44.0301160744570.11570-100000@gladen> <20030116110643.B28361@bcr10.uwaterloo.ca>
+Message-ID: <20030116183913.Y57315@MissSophie.unixag-kl.fh-kl.de>
+
+On 2003.01.16 17:06 David Evans wrote:
+
+>   Ahhh--of course.  One would have to do a series of "dd"s in order to
+> get the padding happening.
+That is only half the thing. It is also important to use the proper tape
+block size. maketape uses some ioctls to set this, dd don't know about
+this. 
+
+> That's not a bad idea.  Perhaps I should just make a minimal
+> bootable image using simh or such, dd it to a SCSI disk, and
+> then attach that to my 11/73.
+A common solution. 
+
+> Might be easier than endless futzing with the TK50.
+Whimp. ;-) 
+-- 
+
+
+
+tschüß,
+         Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+From dfevans at bbcr.uwaterloo.ca  Fri Jan 17 13:29:51 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Thu, 16 Jan 2003 22:29:51 -0500
+Subject: [pups] PDP-11 happily booted
+Message-ID: <20030116222951.A1396@bcr10.uwaterloo.ca>
+
+  Yanked a SCSI disk and the penguin could manage dding the simh image on to
+it.  The PDP-11 booted quite happily.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From migieger at bawue.de  Sun Jan 19 23:02:47 2003
+From: migieger at bawue.de (M. Giegerich)
+Date: Sun, 19 Jan 2003 18:32:47 +0530
+Subject: [pups] FreeBSD-4.7, p11-2.9, 2.11bsd
+Message-ID: <20030119130247.GA18906@luva.home>
+
+I'm trying to run 2.11 BSD on the p11 emulator...
+The 2.11 BSD boot image I'm using is 211_on_rl2
+(which works on sim, but without network sup-
+port).
+
+Before downloading 2.11_rp_unknown.gz that seems
+to work for sure with p11 (at least I found enough
+posts hinting at that), I would like to know if
+anybody has successfully used the 211_on_rl2 distro
+to boot 2.11 BSD on p11.
+
+My results so far are p11 boots (after FIGHTING
+with p11conf), recognizes the 4 rl and 5 rk disks
+and images and gives me a @-prompt.
+Telnetting to the defined ports won't do :-(
+
+Any hints anybody?
+
+-- 
+M. Giegerich, mail: migieger at vsnl.com, phone: +91.(0)80.5530154
+
+
+From migieger at bawue.de  Mon Jan 20 01:58:23 2003
+From: migieger at bawue.de (M. Giegerich)
+Date: Sun, 19 Jan 2003 21:28:23 +0530
+Subject: [pups] FreeBSD-4.7, p11-2.9, 2.11bsd
+In-Reply-To: <20030119130247.GA18906@luva.home>
+References: <20030119130247.GA18906@luva.home>
+Message-ID: <20030119155823.GA19800@luva.home>
+
+I shouldn't do this, I know...
+
+On Sun, Jan 19, 2003 at 06:32:47PM +0530, M. Giegerich wrote:
+> I'm trying to run 2.11 BSD on the p11 emulator...
+> The 2.11 BSD boot image I'm using is 211_on_rl2
+> (which works on sim, but without network sup-
+> port).
+> 
+> Before downloading 2.11_rp_unknown.gz that seems
+> to work for sure with p11 (at least I found enough
+> posts hinting at that), I would like to know if
+> anybody has successfully used the 211_on_rl2 distro
+> to boot 2.11 BSD on p11.
+> 
+> My results so far are p11 boots (after FIGHTING
+> with p11conf), recognizes the 4 rl and 5 rk disks
+> and images and gives me a @-prompt.
+> Telnetting to the defined ports won't do :-(
+> 
+> Any hints anybody?
+
+@17773000g did the magic... Amazing, this was really
+well hidden.
+
+The kernel on the rl images isn't set-up for networ-
+king. So, I'm trying to rebuild it - getting stuck
+at "make: out of memory" or "ld: too big for type
+431"...
+We'll see.
+
+-- 
+M. Giegerich, mail: migieger at vsnl.com, phone: +91.(0)80.5530154
+
+
+From dfevans at bbcr.uwaterloo.ca  Mon Jan 20 14:18:11 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Sun, 19 Jan 2003 23:18:11 -0500
+Subject: [pups] FreeBSD-4.7, p11-2.9, 2.11bsd
+In-Reply-To: <20030119155823.GA19800@luva.home>; from migieger@bawue.de on Sun, Jan 19, 2003 at 09:28:23PM +0530
+References: <20030119130247.GA18906@luva.home> <20030119155823.GA19800@luva.home>
+Message-ID: <20030119231811.B29049@bcr4.uwaterloo.ca>
+
+On Sun, Jan 19, 2003 at 09:28:23PM +0530, M. Giegerich wrote:
+> The kernel on the rl images isn't set-up for networ-
+> king. So, I'm trying to rebuild it - getting stuck
+> at "make: out of memory" or "ld: too big for type
+> 431"...
+
+  For the "431" business, check out the man page for ld and read the
+section on overlay sizes.  Then check in the Makefile and move some .o
+files between overlays so that they are all under 8192 bytes.  That
+worked for me.  A little combo of sed and awk might be handy to check
+the total size of the objects included in each overlay.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From jkunz at unixag-kl.fh-kl.de  Mon Jan 20 18:07:10 2003
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Mon, 20 Jan 2003 09:07:10 +0100
+Subject: [pups] FreeBSD-4.7, p11-2.9, 2.11bsd
+In-Reply-To: <20030119231811.B29049@bcr4.uwaterloo.ca>; from dfevans@bbcr.uwaterloo.ca on Mon, Jan 20, 2003 at 05:18:11 CET
+References: <20030119130247.GA18906@luva.home> <20030119155823.GA19800@luva.home> <20030119231811.B29049@bcr4.uwaterloo.ca>
+Message-ID: <20030120090710.M57315@MissSophie.unixag-kl.fh-kl.de>
+
+On 2003.01.20 05:18 David Evans wrote:
+
+> A little combo of sed and awk might be handy to check
+> the total size of the objects included in each overlay.
+Been there, done that. ;-) 
+Check the mail archive for a mail from me, sent at Jun 18, 2002 with
+subject "Re: [pups] bsd2.11 kernel compile". It contains a Makefile
+supplement that eases overly calculation. 
+-- 
+
+
+
+tschüß,
+         Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+From dfevans at bbcr.uwaterloo.ca  Tue Jan 21 10:41:35 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Mon, 20 Jan 2003 19:41:35 -0500
+Subject: [pups] The infamous 2.11BSD patch archive
+Message-ID: <20030120194135.A19753@bcr10.uwaterloo.ca>
+
+  This *must* be a FAQ, but I didn't find a real answer to it anywhere.
+
+  What's up with the 2.11BSD patch archive?  I assume that the version
+in the Unix Archive is the original release and does not have these
+patches applied.  The mirror to which 2bsd.com referrs is gone and I
+don't want to pound on Steve's site if I don't have to.  Any
+suggestions?  Once I get the files I presume I'm just supposed to feed them
+through patch in sequence (with the appropriate options, of course).
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From sms at 2BSD.COM  Tue Jan 21 11:17:09 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Mon, 20 Jan 2003 17:17:09 -0800 (PST)
+Subject: [pups] The infamous 2.11BSD patch archive
+Message-ID: <200301210117.h0L1H9o11718@moe.2bsd.com>
+
+Hi -
+
+> From: David Evans <dfevans at bbcr.uwaterloo.ca>
+>   What's up with the 2.11BSD patch archive?  I assume that the version
+
+	Both it and the mirror are up and running.   There are quite a few
+	netblocks that have portscanned/spammed/whatever me here (dialups
+	and cablemodems for the most part) and they're listed in the packet
+	filters so if you're seeing timeouts, etc connecting that's probably
+	the reason.
+
+> in the Unix Archive is the original release and does not have these
+> patches applied.  The mirror to which 2bsd.com referrs is gone and I
+
+	Companies play the "musical domain name" everytime they have a
+	re-organization (and, sigh, another one is in the works as I type).
+	What was listed was probably a name from the last reorganization and
+	of course it's very difficult to track down all the places that an
+	old name was used.    
+
+	The mirror I maintain at work is:
+
+		ftp://ftp.cato.gd-ais.com
+
+	(for some time yet it will also respond to 'ftp.to.gd-es.com')
+
+	There may be other sites that also mirror
+
+> don't want to pound on Steve's site if I don't have to.  Any
+
+	Others have done that - usually it's not too bad, especially if I'm
+	asleep at the time :)
+
+> suggestions?  Once I get the files I presume I'm just supposed to feed them
+> through patch in sequence (with the appropriate options, of course).
+
+	Sequence is important because the patches are diffs against the last
+	current version of a file.
+
+	Each patch has rather good (if I do say so myself ;)) instructions and
+	explainations of what was changed, how to apply, what to rebuild 
+	immediately (and what can be deferred until it is convenient).
+
+	Have Fun!
+
+	Steven Schultz
+	sms at 2bsd.com
+
+
+From migieger at bawue.de  Tue Jan 21 12:45:06 2003
+From: migieger at bawue.de (M. Giegerich)
+Date: Tue, 21 Jan 2003 08:15:06 +0530
+Subject: [pups] FreeBSD-4.7, p11-2.9, 2.11bsd
+In-Reply-To: <20030120090710.M57315@MissSophie.unixag-kl.fh-kl.de>
+References: <20030119130247.GA18906@luva.home> <20030119155823.GA19800@luva.home> <20030119231811.B29049@bcr4.uwaterloo.ca> <20030120090710.M57315@MissSophie.unixag-kl.fh-kl.de>
+Message-ID: <20030121024506.GA369@luva.home>
+
+On Mon, Jan 20, 2003 at 09:07:10AM +0100, Jochen Kunz wrote:
+> On 2003.01.20 05:18 David Evans wrote:
+> 
+> > A little combo of sed and awk might be handy to check
+> > the total size of the objects included in each overlay.
+> Been there, done that. ;-) 
+> Check the mail archive for a mail from me, sent at Jun 18, 2002 with
+> subject "Re: [pups] bsd2.11 kernel compile". It contains a Makefile
+> supplement that eases overly calculation. 
+
+Yes, I did read this before posting...
+
+It was easy to change the objects in the overlays
+as only the first was 200 bytes too big while others
+had plenty of space left. So compiling went well...
+
+Unfortunately after installing and rebooting the
+system panick'ed. After toying for too long with it,
+I decided to download the rp image and give it a
+try instead. Good decision as now everything is
+working well (incl. networking to/fro the host).
+
+The host is a dual P3 800 with FreeBSD-4.7R, p11-2.9
+PDP 11 emulator and (the begemot 2.11bsd image on)
+2.11_rp_unknown.gz.
+
+I may post a summary on how to get this running
+as I needed quite some reading in different mails
+of the pups archive... (may make life easier for
+others).
+
+-- 
+M. Giegerich, mail: migieger at vsnl.com, phone: +91.(0)80.5530154
+
+
+From migieger at bawue.de  Wed Jan 22 12:38:37 2003
+From: migieger at bawue.de (M. Giegerich)
+Date: Wed, 22 Jan 2003 08:08:37 +0530
+Subject: [pups] FreeBSD-4.7, p11-2.9, 2.11bsd
+In-Reply-To: <20030121024506.GA369@luva.home>
+References: <20030119130247.GA18906@luva.home> <20030119155823.GA19800@luva.home> <20030119231811.B29049@bcr4.uwaterloo.ca> <20030120090710.M57315@MissSophie.unixag-kl.fh-kl.de> <20030121024506.GA369@luva.home>
+Message-ID: <20030122023837.GA385@luva.home>
+
+On Tue, Jan 21, 2003 at 08:15:06AM +0530, M. Giegerich wrote:
+...
+> I may post a summary on how to get this running
+> as I needed quite some reading in different mails
+> of the pups archive... (may make life easier for
+> others).
+
+Done before memory fades away...
+
+If there is anybody trying this out, I would appre-
+ciate some feedback on this primer.
+
+
+Installing 2.11BSD on the PDP11 emulator p11 on FreeBSD
+=======================================================
+
+This relates to FreeBSD 4.7-RELEASE-p3 (the most current
+4.7 RELEASE as on Jan. 19, 2003).
+
+You'll need Harti Brandt's PDP11 emulator. I used the
+latest non-beta release p11-2.9 dated Mar. 1st, 2001.
+To build p11, libbegemot is needed too (libbegemot-1.9
+dated Mar. 1st, 2001). Both are available at
+ftp://ftp.fokus.gmd.de/pub/cats/usr/harti/p11.
+
+116847 Mar  1  2001 libbegemot-1.9.tar.gz
+298755 Mar  1  2001 p11-2.9.tar.gz
+MD5 (libbegemot-1.9.tar.gz) = 92bc75e99c5bc778f59adf412ea085ea
+MD5 (p11-2.9.tar.gz) = ffabf9752895d34396b2d5b38947c8dc
+
+(My decision to use p11 was based on the fact, that
+it's much less cpu hungry than Bob Supnik's sim
+package).
+
+The 2.11BSD distribution I use is 2.11_rp_unknown.gz
+from http://www.tuhs.org/Archive/PDP-11/Boot_Images.
+
+34600118 Feb  1 1998 2.11_rp_unknown.gz
+MD5 (2.11_rp_unknown.gz) = d57863a498edc4598da84eb5bc88b3a2
+
+After downloading you'll want to build libbegemot
+and p11. Both is painless.
+
+Building libbegemot
+-------------------
+
+cd work
+tar xvzf ../libbegemot-1.9.tar.gz
+find libbegemot-1.9 | xargs chown user.group
+(May be omitted, but on my system file ownership
+was messed up).
+cd libbegemot-1.9
+./configure
+gmake
+gmake install
+
+Building p11
+------------
+
+cd work
+tar xvzf ../p11-2.9.tar.gz
+find p11-2.9 | xargs chown user.group
+(May be omitted, but on my system file ownership
+was messed up).
+cd p11-2.9
+./configure --with-begemot=/usr/local
+gmake
+gmake install
+
+Configuring p11
+---------------
+
+The config file is in /usr/local/share/p11/p11conf.
+Minimal changes are required:
+
+Check for "define diskdir /home/private/p11/disks"
+and change according to your setup. I gunzip'ed
+2.11_rp_unknown.gz to /var/tmp/disks/RP_211bsd_root
+to maintain the file naming of Harti. Beware, it
+expands to 174 MB.
+
+I also changed the sync time for the emulated rp
+disk from 600000 to 4000 (as indicated in the docu-
+mentation of p11.texi).
+That is "ctrl rp 17776700 0254 5 4000" instead of
+the original "ctrl rp 17776700 0254 5 600000".
+
+(I changed the deqna's network driver from tun0
+to tun3 too, as I'm using tun0 for dialup pur-
+poses).
+
+Last, I commented out the Linux tun and tap as well
+as the FreeBSD tap networking entries.
+
+My p11conf reads
+
+/usr/local/share/p11/p11conf
+++++++++++++++++++++++++++++
+
+--- snip --- snip --- snip ---
+# Copyright (c)1994-2000 Begemot Computer Associates. All rights reserved.
+# See the file COPYRIGHT for details of redistribution and use.
+#
+# $Id: p11conf.in,v 1.6 2000/12/01 12:27:00 hbb Exp $
+
+#
+# This configuration file is somehow tailored to my setup, but it is usable
+# as a fallback in any case. Make a private copy and change it as you need it.
+#
+
+#
+# Documentation for the configuration syntax is not yet ready :-( so here
+# is a short version. You may look also in main.c
+#
+# The file is read line by line. If the line is empty or starts with a #
+# it is ignored. The first word of each line is a keyword and determines how
+# the rest of the line is interpreted:
+#
+#  define NAME [VALUE]
+#	Define a variable (or change it's value). Variables can be access by
+#	the $(NAME) construct. Substitution takes place on VALUE, but not on
+#	NAME. Referencing an undefined variable is an error unless the form
+#	$(NAME?) is used, in which case an empty string is substituted.
+#
+#  set OPTION [VALUE]
+#	Set OPTION to value and define a variable OPTION with the given VALUE.
+#	There are global and controller specific options. Global options
+#	should be set outside all controller declarations (outside 'ctrl'-'end'
+#	blocks.
+#	Subsitution is done on VALUE but not on OPTION.
+#	Options are:
+#
+#	libdir		- this is where help and configuration files are looked
+#			  for as well as rom images (global).
+#	iodir		- directory for the IO programs (global).
+#	clock_rate	- clock ticks per second (usually 50 or 60). (global).
+#	cpu_options	- these are the jumpers on the KDJ11A (ctrl KDJ11A).
+#	csw_enable	- enable the console switch register (default) (ctrl KDJ11A).
+#	csw		- starting contents of the switches (ctrl KDJ11).
+#	maxreq		- maximum number of pending line clock interrupts
+#			  (default is 1) (ctrl KDJ11A).
+#	localtime	- toy clock should report local time, not GMT (ctrl toy).
+#
+#  include FILE
+#	Include the given FILE. Substitution takes place on FILE.
+#
+#  print LINE
+#	Print LINE on stdout after performing substitutions.
+#
+#  if EXPR
+#	Substitute on EXPR, evaluate it and process the following lines up to
+#	a matching else, elif of endif if EXPR is non-zero. There is a limit
+#	on nested if's.
+#
+#  elif EXPR
+#	If all if-clauses where false up to now, perform substitution, compute
+#	EXPR and process all lines up to the matching else, elif or endif if
+#	EXPR is non-zero.
+#
+#  else
+#	If all if-clauses where false up to now, process all lines up to the
+#	matching endif.
+#
+#  endif
+#	Ends an if construct.
+#
+#  ctrl NAME [ARGS]
+#	Plug in the given controller into the backplane. Substitution is done
+#	on ARGS. What ARGS are needed depends on the concrete controller.
+#	Note, that controllers are plugged in bottom-down, i.e. the last one
+#	gets nearest to memory (which is automatically inserted), which in turn
+#	gets nearest to the CPU. The controller line may be followed by
+#	device lines which must be followed by end 'end' line.
+#
+#  dev [ARGS]
+#	Connect a device to the current controller. Substitution is done on
+#	ARGS and if this yields empy ARGS, the line is ignored. ARGS depends
+#	on the controller.
+#
+#  end
+#	End the current controller definition.
+#
+#  eval NAME [EXPR]
+#	Compute EXPR after performing substitutions and assign the result as
+#	a signed decimal integer to NAME.
+#
+#
+# Expressions consists of the usual +, -, *, /, %, (, ), == and !=.
+# The following builtin functions are available:
+#
+#	acess(FILE, MODE)
+#		Check whether FILE is accessable (mode may be one or more
+#		of 'f', 'r', 'w' and 'x'. Returns 1 if ok.
+#
+#	eq(STR1,STR2)
+#		Compare the two strings after stripping leading and trailing
+#		space and return 1 of they are equal.
+#
+#	exec(COMMAND)
+#		Execute COMMAND with sh -c and return the exit code of the
+#		shell (this may or may not be the exit code of the command).
+#
+
+if !defined(diskdir)
+  define diskdir /var/tmp/disks
+endif
+
+define RP_211_BOOT	0 $(diskdir)/RP_211bsd_root 1999
+define RP_41_BOOT	0 $(diskdir)/RP_rsx_4.1boot 2000
+define RP_41_SRC	1 $(diskdir)/RP_rsx_4.1src 2001
+
+#
+# standard rlv12 controller with four drives attached
+# numbers are csr, vector, interrupt level and ms between msyncs
+#
+ctrl rl 017774400 0160 4 60000
+end
+
+#
+# rp06 disk controller with 2 drives attached
+# numbers are csr, vector, interrupt level and ms between msyncs
+#
+ctrl rp 017776700 0254 5 4000
+if defined(BOOT)
+ if eq($(BOOT),211)
+  print Booting 2.11BSD
+	dev $(RP_211_BOOT)
+ elif eq($(BOOT),RSX)
+  print Booting RSX4.1
+	dev $(RP_41_BOOT)
+	dev $(RP_41_SRC)
+ endif
+endif
+end
+
+#
+# kl11a async interface with up to 4 lines
+# kl0 is console
+# numbers are csr, vectors, interrupt level, driver program and parameters
+# for driver program
+# drivers:
+#	tty_tty [-7] device
+#	tty_net [-7] [-t] [-lLogFile] port-number
+#	tty_xterm [-7] [-t title] [-g geometry] [-p position] [-i] [-x xterm-args]
+#	tty_fifo [-7] fifo-name
+#	tty_file [-7] [-p pidfile] [-e eof-seq] [-c] file-or-prog [args...]
+#
+ctrl kl
+	dev 017777560 060 064 4 tty_net -t -7 10000
+	dev 017776500 0300 0304 4 tty_net -t -7 10001
+#	dev 017776510 0310 0314 4 tty_fifo /tmp/fifo
+end
+
+#
+# MRV12 rom option
+# args are csr and file containing boot-rom
+#
+if !defined(BOOT_ROM)
+  if access(boot.rom, r)
+    define BOOT_ROM boot.rom
+  elif access(Boot/boot.rom, r)
+    define BOOT_ROM Boot/boot.rom
+  else
+    define BOOT_ROM $(libdir)/boot.rom
+  endif
+endif
+ctrl mr 017777520 $(BOOT_ROM)
+end
+
+#
+# parallel lp interface
+# numbers are csr, vector and interrupt level
+# the device line contains either a filename or a '|' which creates a pipe
+# followed by the program to pipe in and optional args
+#
+ctrl lp 017777514 0200 4
+end
+
+#
+# DEQNA ethernet controller
+# I can't distribute my ROM's image. So check whether there is any. If not
+# don't plug in the thing. You can create a file consisting of 0's and use
+# that instead. Use either tun or tap (hey - tap let's you use MOPR/MOPDL or
+# DreckNet or ...)
+#
+if !defined(QNA_ROM)
+  if access(qna.rom, r)
+    define QNA_ROM qna.rom
+  elif access($(libdir)/qna.rom, r)
+    define QNA_ROM $(libdir)/qna.rom
+  endif
+endif
+
+if defined(QNA_ROM)
+  ctrl qna 017774440 5 0x08:0x00:0x2b:0x07:0x82:0x6c 0xf8:0x7a $(QNA_ROM)
+# FreeBSD:
+	dev epp_tun /dev/tun3 0x08:0x00:0x2b:0x07:0x82:0x6c 0x08:0x00:0x2b:0x07:0x82:0x00
+# Linux:
+#	dev epp_tun /dev/net/tun 0x08:0x00:0x2b:0x07:0x82:0x6c 0x08:0x00:0x2b:0x07:0x82:0x00
+
+# FreeBSD:
+#	dev epp_tap /dev/tap0
+# Linux:
+#	dev epp_tap /dev/net/tun
+
+#	eval dummy exec(ifconfig tap0 <your host> up)
+#	eval dummy exec(ifconfig tap0)
+  end
+endif
+
+#
+# Tape controller
+#
+ctrl tm 017772520 0224 5
+end
+
+#
+# The toy clock.
+#
+ctrl toy 017777526
+#  set localtime yes
+#  set offs_year 10
+#  set settoy 12:30:00 12/31/74
+end
+
+#
+# Plug in the memory board.
+#
+ctrl mem
+end
+
+#
+# Plug in processor board
+#
+ctrl KDJ11A
+  if defined(CSW)
+    set csw $(CSW)
+  endif
+end
+--- snip --- snip --- snip ---
+
+Next create a 4096 byte file called qna.rom in
+/usr/local/share/p11 filled with binary 0s as per
+instructions in p11conf.
+
+That's it.
+
+Running p11
+-----------
+
+Invoke the emulator as `p11 -DBOOT=211` and you will
+be presented with
+
+--- screen output ---
+# p11 -DBOOT=211
+/usr/local/share/p11/p11conf,126: Booting 2.11BSD
+173000 K -> 17773000 = 000005:	reset	
+@
+--- screen output ---
+
+Then switch to another virtual terminal (vty) and
+telnet into the p11 emulator on port 10000.
+
+--- screen output ---
+# telnet localhost 10000
+Trying ::1...
+telnet: connect to address ::1: Connection refused
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+--- screen output ---
+
+Switch back to the p11 emulator vty and enter
+
+--- screen output ---
+@17773000g (without the @, that's p11's prompt).
+--- screen output ---
+
+And one more switch back to the 2.11bsd vty will
+show you
+
+--- screen output ---
+Begemot boot PROM; V0.3
+Copyright (c) 1998-2000 Begemot Computer Associates. All rights reserved.
+boot>
+--- screen output ---
+
+Enter
+
+--- screen output ---
+boot>BOOT RP (again without "boot>")
+--- screen output ---
+
+and you will get
+
+--- screen output ---
+73Boot from xp(0,0,0) at 0176700
+: 
+--- screen output ---
+
+Hit enter, wait a little  and you will be greeted by
+
+--- screen output ---
+: xp(0,0,0)unix
+Boot: bootdev=05000 bootcsr=0176700
+
+2.11 BSD UNIX #11: Tue Jan 6 16:57:02 MET 1998
+    root at pdp11.begemot.com:/usr/src/sys/HIPPON
+
+attaching qe0 csr 174440
+qe0: DEC DEQNA addr 08:00:2b:07:82:6c
+attaching lo0
+
+phys mem  = 2097152
+avail mem = 1647872
+user mem  = 307200
+
+January 20 19:51:18 init: configure system
+
+lp 0 csr 177514 vector 200 attached
+rl 0 csr 174400 vector 160 attached
+tm 0 csr 172520 vector 224 attached
+xp 0 csr 176700 vector 254 attached
+cn 1 csr 176500 vector 300 attached
+cn 2 csr 176510 vector 310 skipped:  No CSR.
+cn 3 csr 176520 vector 320 skipped:  No CSR.
+cn 4 csr 176530 vector 330 skipped:  No CSR.
+erase, kill ^U, intr ^C
+#
+--- screen output ---
+
+That's 2.11BSD's single user console.
+
+Configure 2.11BSD for networking
+--------------------------------
+
+(Do yourself a favour and invoke tcsh).
+
+You'll need to configure 
+
+/etc/hosts
+/etc/netstart
+/etc/networks
+/etc/resolv.conf
+
+and invoke once `/etc/mkhosts /etc/hosts`.
+
+To explain the entries in these files, I'll use
+freebsd.home and 192.168.0.33 as the hostname and
+the ip address of the FreeBSD host system, pdp11
+and 192.168.0.45 as the hostname and ip address
+of the 2.11BSD system on the p11 emulator. The
+domain name for both will be home.
+
+/etc/hosts
+++++++++++
+
+--- snip --- snip --- snip ---
+127.0.0.1	localhost
+192.168.0.33	freebsd.home
+192.168.0.45	pdp11.home
+--- snip --- snip --- snip ---
+
+/etc/netstart
++++++++++++++
+
+--- snip --- snip --- snip ---
+#!/bin/sh -
+
+#	@(#)netstart	5.2.1 (2.11BSD) 1996/11/16
+
+INET=`testnet`
+if [ $INET = YES ]; then
+	echo Assuming NETWORKING system ...		>/dev/console 2>&1
+else
+	echo Assuming non-networking system ...		>/dev/console 2>&1
+fi
+export INET
+
+# DON'T EVEN THINK ABOUT RUNNING ROUTED ON A PDP-11!!!  Just set routedflags
+# to "NO" and set up a default gateway below.
+#
+routedflags=NO
+rwhod=YES
+named=NO
+
+# myname is my symbolic name
+# my-netmask is specified in /etc/networks
+# my-default-address should be set to some machine where you
+#	want to send all your packets, by default.
+#
+
+hostname=pdp11.home
+hostid=2B07826C
+netmask=255.255.255.0
+broadcast=192.168.0.255
+default=freebsd.home
+
+hostname $hostname					>/dev/console 2>&1
+hostid $hostid						>/dev/console 2>&1
+
+if [ $INET = YES ]; then
+	# ifconfig imp0 inet netmask $netmask $hostname broadcast $broadcast up -trailers >/dev/console 2>&1
+	# ifconfig en0 inet netmask $netmask $hostname broadcast $broadcast up -trailers >/dev/console 2>&1
+	# ifconfig ec0 inet netmask $netmask $hostname broadcast $broadcast up -trailers arp >/dev/console 2>&1
+	# ifconfig il0 inet netmask $netmask $hostname broadcast $broadcast up -trailers >/dev/console 2>&1
+	ifconfig qe0 inet netmask $netmask $hostname broadcast $broadcast up -trailers >/dev/console 2>&1
+	arp -s hippo 08:00:2b:07:82:00
+	# ifconfig sl0 inet 192.254.254.2 192.254.254.1 -arp -trailers >/dev/console 2>&1
+	# slattach /dev/ttyS6 9600
+	arp -s 192.168.0.45 08:00:2b:07:82:6c pub
+	arp -s 192.168.0.33 00:06:29:13:7a:18 pub
+	ifconfig lo0 inet localhost up -trailers	>/dev/console 2>&1
+
+	route add $hostname localhost 0		>/dev/console 2>&1
+	route add default $default 1		>/dev/console 2>&1
+fi
+--- snip --- snip --- snip ---
+
+/etc/networks
++++++++++++++
+
+--- snip --- snip --- snip ---
+localnet 127
+home 192.168.0
+--- snip --- snip --- snip ---
+
+/etc/resolv.conf
+++++++++++++++++
+
+--- snip --- snip --- snip ---
+domain home
+nameserver 192.168.0.33
+--- snip --- snip --- snip ---
+
+In /etc/netstart you need to set the arp entries
+of both freebsd and pdp11 with their respective
+ethernet mac addresses (pdp11's qe0 mac address
+is set in p11conf). See /etc/netstart above.
+
+Now don't forget to invoke `/etc/mkhosts /etc/hosts`.
+
+After that (exit tcsh, if you were in and) exit csh
+hitting .
+The 2.11BSD system will go multi user and show you
+
+--- screen output ---
+# ^D
+Fast boot ... skipping disk checks
+checking quotas: done.
+Assuming NETWORKING system ...
+add host pdp11.home: gateway localhost
+add net default: gateway freebsd.home
+starting system logger
+preserving editor files
+clearing /tmp
+standard daemons: update cron accounting.
+starting network daemons: inetd rwhod printer.
+starting local daemons:.
+Mon Jan 20 20:27:36 PST 2003
+Jan 20 20:27:36 pdp11 January 20 20:27:36 init: kernel security level changed from 0 to 1
+
+
+2.11 BSD UNIX (pdp11.home) (console)
+
+login:
+--- screen output ---
+
+You login as root with password "begemot1" (without
+the "").
+
+--- screen output ---
+login: root
+Password:
+
+Last login: Mon Jan 20 20:15:16 from freebsd
+2.11 BSD UNIX #11: Tue Jan 6 16:57:02 MET 1998
+[1] root--> 
+--- screen output ---
+
+Before you'll be able to network to freebsd, you'll
+need to setup the tun device on its side. Switch
+to a vty on freebsd and as root enter `ifconfig
+tun0 freebsd pdp11 up`.
+
+Go back to the pdp11 vty and try
+
+--- screen output ---
+[1] root--> ping freebsd.home
+PING freebsd.home (192.168.0.33): 56 data bytes
+64 bytes from 192.168.0.33: icmp_seq=0 ttl=64 time=40 ms
+64 bytes from 192.168.0.33: icmp_seq=1 ttl=64 time=40 ms
+64 bytes from 192.168.0.33: icmp_seq=2 ttl=64 time=40 ms
+64 bytes from 192.168.0.33: icmp_seq=3 ttl=64 time=40 ms
+^C
+--- freebsd.home ping statistics ---
+4 packets transmitted, 4 packets received, 0% packet loss
+round-trip min/avg/max = 40/0/40 ms
+[2] root-->
+--- screen output ---
+
+Shutting down
+-------------
+
+To shut down pdp11 issue `halt`:
+
+--- screen output ---
+[2] root--> halt
+Jan 20 20:29:12 pdp11 January 20 20:29:12 halt: -; halted by root
+Jan 20 20:29:13 pdp11 syslogd: going down on signal 15
+syncing disks... done
+halting
+--- screen output ---
+
+After pdp11 is halted you switch to the p11 vty and
+issue "x" (without "")
+
+--- screen output ---
+@17773000g
+000014 K -> 00123214 = 012767:	mov	#1,12456
+[4   - kl]
+@xDCOK = 1 asserted
+--- screen output ---
+ ^
+The emulator returns you to the command prompt of
+your FreeBSD system. 
+There issue `ifconfig tun0 freebsd pdp11 down` to
+delete the unneeded tun interface.
+
+Todos
+-----
+
+Explore which patches (if any) from ftp://moe.2bsd.com/
+pub/2.11BSD are incorporated into this 2.11BSD distri-
+bution. Maybe Steven can comment on this...
+
+-- 
+M. Giegerich, mail: migieger at vsnl.com, phone: +91.(0)80.5530154
+
+
+From dfevans at bbcr.uwaterloo.ca  Thu Jan 30 14:49:25 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Wed, 29 Jan 2003 23:49:25 -0500
+Subject: [pups] DLVJ1 confusion on 2.11BSD
+Message-ID: <20030129234925.C18445@bcr10.uwaterloo.ca>
+
+  So the DLVJ1 has four serial ports.  According to the info at
+
+http://www.ibiblio.org/pub/academic/computer-science/history/pdp-11/hardware/DLVJ1.info
+
+they essentially appear as four separate gizmos, with independant CSRs
+and vectors.  So should I therefore set NKL to 5 (the console plus
+these four) and then have appropriate entries for devices 1 through 4
+in /etc/dtab?  Sounds like it.
+
+  My DHV11 seems to work happily, so I already have rediculously more
+serial ports than I need.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Sat Jan  4 19:48:46 2003
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Sat, 4 Jan 2003 10:48:46 +0100 (MET)
+Subject: [TUHS] db(I) in Unix V6
+Message-ID: <200301041152.h04BqQL00209@bsd.korb>
+
+Hi,
+tinkering at V6--now I need db(I). It works fine, but three features
+that are described in its manual page seem to be missing:
+- The names of the general registers (r0, ...) are not build in, at least
+  db only responds with `?' to `r0'. I can examine the registers
+  via the `$' command though.
+- The '*' feature doesn't work, i.e. `*_main' gives me a `?'.
+- I can't specify a number being relocatable, i.e. '10r' gives me a `?'.
+
+Is this an exercise to the user? Did anyone solve the exercise. Or did I
+just not understand the manual page?
+
+Greetings,
+
+Wolfgang
+
+
+
+From norman at nose.cs.utoronto.ca  Wed Jan  8 23:42:24 2003
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Wed, 08 Jan 2003 08:42:24 -0500
+Subject: [TUHS] Re: Patches to improve 6th Edition
+Message-ID: <200301081343.h08Dhin48421@minnie.tuhs.org>
+
+A belated rejoinder to:
+
+  This bug existed from (at least) the Fifth up until the Eighth
+  editions from 1127 (BTL research). The Ninth edition had much
+  rewrites in the kernel and the algorthim was changed at that point.
+
+You're welcome.  I can't remember, though, whether I fixed it on
+purpose or as part of the many general cleanups and restructurings
+I did at that point.  And I didn't do enough of it; recently I
+discovered a dumb problem that I probably introduced in the same
+cleanups, wherein the i-node allocated for a file that couldn't be
+created because the file system was full and the directory entry
+couldn't be written was left allocated but nameless ...
+
+Norman Wilson
+Toronto ON
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Sat Jan 11 10:20:01 2003
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Sat, 11 Jan 2003 01:20:01 +0100 (MET)
+Subject: [TUHS] unsigned division in V7's C
+Message-ID: <200301110224.h0B2O8500309@bsd.korb>
+
+Hi,
+while wondering how unsigned integer division is implemented in C 
+I found a bug in V7: a/b and a%b with b >= 2^15 does not give the expected
+results, if a and b are unsigned int's.
+
+Was this bug ever noticed or even fixed?
+
+Greetings,
+
+Wolfgang
+
+Here is a program showing the bug:
+main()
+{
+        unsigned int a, b;
+        a = 60000;
+        b = 40000;
+        printf("a/b: %u, a%%b: %u\n", a/b, a%b);
+        b = 25000;
+        printf("a/b: %u, a%%b: %u\n", a/b, a%b);
+}
+
+The above program prints
+a/b: 65534, a%b: 8928
+a/b: 2, a%b: 10000
+
+The first line should be of course
+a/b: 1, a%b: 20000
+
+
+
+
+
+From dmr at plan9.bell-labs.com  Sat Jan 11 17:32:41 2003
+From: dmr at plan9.bell-labs.com (Dennis Ritchie)
+Date: Sat, 11 Jan 2003 02:32:41 -0500
+Subject: [TUHS] re: unsigned division in V7's C
+Message-ID: <e16957b5aed653e277797d2d630c5b4b@plan9.bell-labs.com>
+
+Helbig observed
+
+  > while wondering how unsigned integer division is implemented in C
+  > I found a bug in V7: a/b and a%b with b >= 2^15 does not give the expected
+  > results, if a and b are unsigned int's.
+
+Does
+
+  http://www.cs.bell-labs.com/who/dmr/odd.html#muldiv
+
+suffice to explain the behavior?
+
+	Dennis
+
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Sun Jan 12 09:16:42 2003
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Sun, 12 Jan 2003 00:16:42 +0100 (MET)
+Subject: [TUHS] unsigned division in V7's C
+Message-ID: <200301120120.h0C1KrR00556@bsd.korb>
+
+Warren replies:
+>Not sure if:
+>
+>http://www.tuhs.org/Archive/PDP-11/Bug_Fixes/Net.v7bugs/0017
+>
+>is a bug fix for this.
+
+And Dennis replies:
+>Does
+
+>  http://www.cs.bell-labs.com/who/dmr/odd.html#muldiv
+
+>suffice to explain the behavior
+
+Thanks for the replies, but the bug I found is about unsigned int's and
+not long int's.
+
+The V7 C code simply the DIV instruction for unsigned division. The dividend
+is put in the low word of a register pair with the upper word cleared.
+
+When the divisor is >= 2^15, DIV interprets it as a negative integer
+and produces the result (N = 2^16):
+	 N - a/(N-b)	instead of a/b, and
+	 a%(N-b)	instead of a%b.
+
+This explains the bug I've sent yesterday. I is easily fixed, since
+when b >= N/2 and a < N, then a/b is either zero or one.
+
+And there is another bug when using DIV for unsigned integers: If b = 1 and
+a >= N/2, then a/b >= N/2, that is a signed overflow. With V7 on Bob Supniks
+simulator (2.10), I get
+	60000/1: 0, 60000%1: 60000
+DIV did not change the dividend because of overflow.
+
+Again a fix is easy: With unsigned ints, don't use DIV to divide by one.
+
+In all other cases, DIV produces the correct unsigned results, if the dividend
+is less N, that is its high word is zero.
+
+I wonder why these bugs went unnoticed.
+
+Greetings
+
+Wolfgang
+
+
+
+From Extern.David.Lange at gedas.com  Thu Jan 23 22:25:42 2003
+From: Extern.David.Lange at gedas.com (Lange, David)
+Date: Thu, 23 Jan 2003 07:25:42 -0500
+Subject: [TUHS] The ^ = | ?
+Message-ID: <47F5ADC94EF3C14AA51386CD1A20DDB8036D5EB6@usvwoaahs51>
+
+Greetings,
+
+I've been searching for some reference to the ^ symbol being the same a | in
+Bourne shell. Does anyone remember seeing anything like this? I've searched
+the early manpages to no avail.
+
+Regards,
+
+	D.
+
+
+From johnh at psych.usyd.edu.au  Fri Jan 24 10:04:38 2003
+From: johnh at psych.usyd.edu.au (John Holden)
+Date: Fri, 24 Jan 2003 11:04:38 +1100 (EST)
+Subject: [TUHS] The ^ = | ?
+Message-ID: <200301240004.LAA06145@psychwarp.psych.usyd.edu.au>
+
+> I've been searching for some reference to the ^ symbol being the same a |
+
+Yes, pre Bourne shell, edition 6 and earlier used ^ for piped. Also chdir
+insteads of the shortened 'cd'
+
+
+
+From imp at bsdimp.com  Fri Jan 24 10:05:18 2003
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Thu, 23 Jan 2003 17:05:18 -0700 (MST)
+Subject: [TUHS] The ^ = | ?
+In-Reply-To: <47F5ADC94EF3C14AA51386CD1A20DDB8036D5EB6@usvwoaahs51>
+References: <47F5ADC94EF3C14AA51386CD1A20DDB8036D5EB6@usvwoaahs51>
+Message-ID: <20030123.170518.49361029.imp@bsdimp.com>
+
+In message: <47F5ADC94EF3C14AA51386CD1A20DDB8036D5EB6 at usvwoaahs51>
+            "Lange, David" <Extern.David.Lange at gedas.com> writes:
+: I've been searching for some reference to the ^ symbol being the same a | in
+: Bourne shell. Does anyone remember seeing anything like this? I've searched
+: the early manpages to no avail.
+
+OS-MP 4.3D (SunOS 4.1.3) man pages say:
+
+     A pipeline is a sequence of one or more  commands  separated
+     by  `|'  (or,  for  historical  compatibility, by `^').  The
+
+Warner
+
+
+From cdl at mpl.ucsd.edu  Fri Jan 24 12:09:23 2003
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Thu, 23 Jan 2003 18:09:23 -0800 (PST)
+Subject: [TUHS] The ^ = | ?
+Message-ID: <200301240209.SAA20717@opihi.ucsd.edu>
+
+> From: "Lange, David" <Extern.David.Lange at gedas.com>
+> To: "'tuhs at minnie.tuhs.org'" <tuhs at minnie.tuhs.org>
+> Subject: [TUHS] The ^ = | ?
+> 
+> Greetings,
+> 
+> I've been searching for some reference to the ^ symbol being the same a | in
+> Bourne shell. Does anyone remember seeing anything like this? I've searched
+> the early manpages to no avail.
+
+It's here in my printed copy of the 6th Edition Unix Programmer's Manual.
+
+Page entitled SH(I)
+Section DESCRIPTION
+Subsection Command lines.  One or more commands separated by '|' or '^'
+constitute a chain of filters.  . . .
+
+    carl
+
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+
+From norman at nose.cs.utoronto.ca  Fri Jan 24 13:09:51 2003
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Thu, 23 Jan 2003 22:09:51 -0500
+Subject: [TUHS] The ^ = | ?
+Message-ID: <pGdcVJPx3rqv.zrrJXl9y@192.168.0.10>
+
+The earliest UNIX Programmer's Manual to describe shell
+pipelines is the Third Edition, February 1973.  It gives a
+syntax quite different from the modern one:
+
+	com1 > com2 > com3 > outfile
+
+meant what we would now write as
+
+	com1 | com2 | com3 > outfile
+
+This original syntax was pretty cumbersome; pretty
+obviously it was put in as a quick hack (as were many
+things in those early days).  Because > and < applied
+only to the following word, pipelined commands with
+arguments had to be quoted:
+
+	who > "grep ken" >/tmp/kenlogins
+
+Even worse, the shell had no inherent way to tell whether
+the final word was a file or a program; if the last element
+in a pipeline was to write to standard output, you had to
+say so explicitly:
+
+	who > "grep ken" >
+
+On the other hand the syntax was symmetric: you could
+also write
+
+	"grep ken" < who <
+
+pipe(II) also debuted in the Third Edition.
+
+By the Fourth Edition (November 1973) there had evidently
+been more time to think about the syntax; the modern notation
+is shown, except that ^ is allowed as a synonym for |.  I have
+long guessed that was because in those dark days of the
+past, some upper-case-only terminals (remember stty lcase?)
+offered no way to type | (and perhaps likewise {}`~) but I don't
+really know.  Dennis?
+
+Norman Wilson
+Toronto ON
+
+
+
+
+From wkt at minnie.tuhs.org  Fri Jan 24 15:37:45 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Fri, 24 Jan 2003 15:37:45 +1000 (EST)
+Subject: [TUHS] The ^ = | ?
+In-Reply-To: <pGdcVJPx3rqv.zrrJXl9y@192.168.0.10> from Norman Wilson at "Jan
+ 23, 2003 10:09:51 pm"
+Message-ID: <200301240537.h0O5bjd60797@minnie.tuhs.org>
+
+In article by Norman Wilson:
+> The earliest UNIX Programmer's Manual to describe shell
+> pipelines is the Third Edition.
+
+I don't have Peter Salus' book `A Quarter Century of UNIX'
+here at home, but I think this topic is discussed in the
+book. Dennis Ritchie's paper:
+
+http://cm.bell-labs.com/cm/cs/who/dmr/hist.html
+
+talks about the change from > to `another symbol', but not explicitly
+the ^.
+
+
+From lars at nocrew.org  Fri Jan 24 17:07:33 2003
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: 24 Jan 2003 08:07:33 +0100
+Subject: [TUHS] The ^ = | ?
+In-Reply-To: <200301240537.h0O5bjd60797@minnie.tuhs.org>
+References: <200301240537.h0O5bjd60797@minnie.tuhs.org>
+Message-ID: <854r7z9gay.fsf@junk.nocrew.org>
+
+Warren Toomey <wkt at minnie.tuhs.org> writes:
+> From my memory of Salus' book, the > syntax was relaced by ^, but
+> when Ken went to the U.K to give a talk, he made the decision to
+> switch over to the | symbol.
+> 
+> Anyway, I could be completely wrong about this being in Salus'
+> book, so if I am, I'll have to hunt down where this info came from.
+
+You are right.  Pages 51-53 (in the 1995 reprint).
+
+-- 
+Lars Brinkhoff          http://lars.nocrew.org/     Linux, GCC, PDP-10,
+Brinkhoff Consulting    http://www.brinkhoff.se/    HTTP programming
+
+
+From dmr at plan9.bell-labs.com  Fri Jan 24 17:22:12 2003
+From: dmr at plan9.bell-labs.com (Dennis Ritchie)
+Date: Fri, 24 Jan 2003 02:22:12 -0500
+Subject: [TUHS] re: The ^ = | ?
+Message-ID: <a38e20f346810e5ccfaa9b6436166506@plan9.bell-labs.com>
+
+As Norman said, the earliest notation for
+pipes used an extension (or abuse) of the semantics
+of > and < .
+
+Warren's memory of what Salus wrote (it's on p. 52-53)
+is correct about the introduction of | (though I suspect
+that McIlroy (whom Salus quotes) is being kind to me
+when he said "he [Ken] couldn't bear to reveal my [Doug's]
+ugly syntax."  Actually, I was responsible for the
+particular < and > syntax as implemented, although the
+whole idea came from much earlier on blackboard-only
+ideas, and the blackboard was Doug's.
+
+As to the original question: probably the ^ as an alternative
+to | (which does seem to be there from the start, i.e. 4th
+Edition) did have to do with character-set convenience
+on upper-case-only terminals.  The TTY driver accepted
+\! as an escape for |, but this was somewhat of a pain.
+
+	Dennis
+
+
+
+From sven.mascheck at student.uni-ulm.de  Fri Jan 24 20:32:37 2003
+From: sven.mascheck at student.uni-ulm.de (Sven Mascheck)
+Date: Fri, 24 Jan 2003 11:32:37 +0100
+Subject: [TUHS] The ^ = | ?
+In-Reply-To: <pGdcVJPx3rqv.zrrJXl9y@192.168.0.10>
+References: <pGdcVJPx3rqv.zrrJXl9y@192.168.0.10>
+Message-ID: <20030124103237.GA2265@wega.rz.uni-ulm.de>
+
+Norman Wilson wrote:
+
+> The earliest UNIX Programmer's Manual to describe shell
+> pipelines is the Third Edition, February 1973.
+
+BTW: As the manual source isn't trivial to process on many new systems,
+i had converted sh(1) from V3, V4, V6, PWB and V7 into html:
+<http://www.uni-ulm.de/~s_smasch/various/bourne/#predecessors>
+
+Sven
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Sat Jan 25 18:46:47 2003
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Sat, 25 Jan 2003 09:46:47 +0100 (MET)
+Subject: [TUHS] The ^ = | ?
+Message-ID: <200301251051.h0PApbC00222@bsd.korb>
+
+>I've been searching for some reference to the ^ symbol being the same a | in
+>Bourne shell. Does anyone remember seeing anything like this? I've searched
+>the early manpages to no avail.
+
+Look at
+	http://www.ba-stuttgart.de/~helbig/os/v6/doc/index.html
+for the Unix V6 sh(I) man page. 
+
+Greetings,
+
+Wolfgang
+
+
+
+
+From grog at lemis.com  Sun Jan 26 11:40:03 2003
+From: grog at lemis.com (Greg Lehey)
+Date: Sun, 26 Jan 2003 09:40:03 +0800
+Subject: [TUHS] The ^ = | ?
+In-Reply-To: <pGdcVJPx3rqv.zrrJXl9y@192.168.0.10>
+References: <pGdcVJPx3rqv.zrrJXl9y@192.168.0.10>
+Message-ID: <20030126014003.GA3818@sydney.worldwide.lemis.com>
+
+On Thursday, 23 January 2003 at 22:09:51 -0500, Norman Wilson wrote:
+>
+> By the Fourth Edition (November 1973) there had evidently been more
+> time to think about the syntax; the modern notation is shown, except
+> that ^ is allowed as a synonym for |.  I have long guessed that was
+> because in those dark days of the past, some upper-case-only
+> terminals (remember stty lcase?)  offered no way to type | (and
+> perhaps likewise {}`~) but I don't really know.
+
+Certainly the [AK]SR-33 didn't have {}~.  I had this funny feeling
+that they did have |, but it doesn't make sense, and I'm probably
+wrong.
+
+A thing to recall is that the shape of some of the symbols was
+somewhat different in those days.  In particular, _ was a backarrow
+(pointing left), and ^ was an uparrow, making it look much more like |
+than it appears nowadays.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+

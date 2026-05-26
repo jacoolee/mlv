@@ -1,0 +1,1173 @@
+From wkt at cs.adfa.edu.au  Fri Oct  1 12:11:52 1999
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Fri, 1 Oct 1999 12:11:52 +1000 (EST)
+Subject: Access to PUPS Archive
+In-Reply-To: <Pine.3.89.9909300949.A26346-0100000@crue.jdwarren.com> from Lord Isildur at "Sep 30, 1999  9:58:17 am"
+Message-ID: <199910010211.MAA03219@henry.cs.adfa.edu.au>
+
+In article by Lord Isildur:
+> hello,
+> 
+> alas, i do not have an account on the PUPS Archive machine! could i have one? 
+> i remember vaguely something about requiring pgp-signed stuff, and i dont 
+> use pgp, and so dont have a public (or any other) key. 
+> isildur
+ 
+
+Here's the policy for the machine holding the PUPS Archive:
+ 
+        + People with UNIX source licenses can get at least
+          guest FTP access to the archive, with S/Key as the
+          authentication mechanism.
+ 
+        + People with UNIX source licenses, and who either
+          help to maintain the archive, or who have volunteered
+          to distribute the archive, can get ssh access to the
+          machine.
+ 
+        + No telnet access, no e-mail. The box runs with `reserved
+          tolerance' from the real system administrators :-)
+ 
+If you fall into either category, and can prove you have a UNIX source
+license, then I can either PGP e-mail you, or fax you, the access 
+details. 
+ 
+Apologies for the cross-post to the 3 old UNIX-related mailing lists!
+ 
+Cheers,
+        Warren
+
+
+
+From grog at lemis.com  Sat Oct  2 19:03:49 1999
+From: grog at lemis.com (Greg Lehey)
+Date: Sat, 2 Oct 1999 18:33:49 +0930
+Subject: UNIX Milestones (was: Unix Calendar in Germany (Request for some help))
+Message-ID: <19991002183348.C40186@freebie.lemis.com>
+
+Anybody here interested in helping?
+
+Greg
+
+----- Forwarded message from Christoph Kaeder <hh-city at lehmanns.de> -----
+
+> Delivered-To: freebsd-questions at freebsd.org
+> Date: Thu, 30 Sep 1999 23:53:14 +0200
+> Organization: Lehmanns Fachbuchhandlung
+> X-Mailer: Mozilla 4.03 [de] (Win95; I)
+> To: freebsd-questions at FreeBSD.ORG
+> X-Loop: FreeBSD.ORG
+> Precedence: bulk
+> 
+> Hello.
+> 
+> Lehmanns bookshop in Germany will print a
+> Unix-Freeware-Calender in
+> postersize and give it away for FREE  (300.000 copies /
+> 4-colour!).
+> 
+> The calendar will include over 100 remarkable days from the
+> History of Unix, Linux, Freeware and Open Source.
+> 
+> 
+> Would you like to add some remarkable days from the
+> FreeBSD-History?
+> Release days or ...
+> 
+> 
+> - calendar-home : http://www.lob.de/cal0
+> - first look (JPEG): http://www.lob.de/cal1
+> - a detail: http://www.lob.de/cal2
+> - form to add your remarkable days: http://www.lob.de/cal3
+> 
+> And if you agree we would like to add the FreeBSD Daemon on
+> this calender beside the Tux, TeX-Lion, Perl Camel ...
+> 
+> Do you agree to this and can you send us a Tif or JPEG?
+> We need it with 300 dpi, 4-colour, about 1 inch high
+> 
+> Thanks.
+> Christoph Kaeder
+> -- 
+> 
+> * - * - * - * - * - * - * - * - * - * - * - * - * - * - * -
+> * -- *
+> Lehmanns Fachbuchhandlung fuer Informatik, Medizin und
+> Psychologie
+> Hermannstrasse 17 / 20095 Hamburg / GERMANY / 
+> hh-city at lehmanns.de
+> Telefon 040 - 336384 / Fax 040-338955 / International:
+> 0049-40-...
+> http://www.lob.de / Mo - Fr von 10 bis 20 und Sa von 10 bis
+> 16 Uhr
+> * - * - * - * - * - * - * - * - * - * - * - * - * - * - * -
+> * -- *
+> 
+> 
+> To Unsubscribe: send mail to majordomo at FreeBSD.org
+> with "unsubscribe freebsd-questions" in the body of the message
+
+----- End forwarded message -----
+
+-- 
+See complete headers for address, home page and phone numbers
+finger grog at lemis.com for PGP public key
+
+
+From wkt at cs.adfa.edu.au  Thu Oct 14 16:34:43 1999
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 14 Oct 1999 16:34:43 +1000
+Subject: vtserver
+In-Reply-To: <NCBBJNGJOKBGLBMAMJILGEDJDAAA.kbd@ndx.net>; from Kirk Davis on Wed, Oct 06, 1999 at 11:19:54PM -0700
+References: <NCBBJNGJOKBGLBMAMJILGEDJDAAA.kbd@ndx.net>
+Message-ID: <19991014163422.C41213@henry.cs.adfa.edu.au>
+
+On Wed, Oct 06, 1999 at 11:19:54PM -0700, Kirk Davis wrote:
+> Warren,
+> I've been checking out your vtserver program. It's a great idea
+> and it's been fun to play with. I'm bringing up a /34 and have been
+> collecting parts for it for a few months. I've got it set up  with
+> a few RL02's on it. Few questions for you:
+> 
+> Do you know of anyone that has used it on a /34? I've punched in the
+> bootstrap and ran it. It loads the boot file from my Linux system.
+> It appears to call it but it halts somewhere in the 70000-70040 region.
+> Nothing comes up on the console. Looks like the memory is over written 
+> with the same values over and over again in this area. Any thoughts?
+> 
+> I'm working on getting a source license from SCO. I'd love to hack on
+> this with you if you are interested in any help.
+
+Sorry for the delay Kirk. It could be that the V7 bootstrap expects
+split I/D, or a different I/O mapping then what's provided on the /34.
+
+I'll punt this to the PUPS mailing list. I have a suspicion that
+you won't be able to install V7, but you should be able to install V6
+or 2.9BSD instead.
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id DAA02824
+	for pups-liszt; Fri, 15 Oct 1999 03:40:02 +1000 (EST)
+
+From wilko at yedi.iaf.nl  Fri Oct 15 03:18:02 1999
+From: wilko at yedi.iaf.nl (Wilko Bulte)
+Date: Thu, 14 Oct 1999 19:18:02 +0200 (CEST)
+Subject: vtserver
+In-Reply-To: <19991014163422.C41213@henry.cs.adfa.edu.au> from Warren Toomey at "Oct 14, 1999  4:34:43 pm"
+Message-ID: <199910141718.TAA01066@yedi.iaf.nl>
+
+As Warren Toomey wrote ...
+> On Wed, Oct 06, 1999 at 11:19:54PM -0700, Kirk Davis wrote:
+> > Warren,
+> > I've been checking out your vtserver program. It's a great idea
+> > and it's been fun to play with. I'm bringing up a /34 and have been
+> > collecting parts for it for a few months. I've got it set up  with
+> > a few RL02's on it. Few questions for you:
+> > 
+> > Do you know of anyone that has used it on a /34? I've punched in the
+> > bootstrap and ran it. It loads the boot file from my Linux system.
+> > It appears to call it but it halts somewhere in the 70000-70040 region.
+> > Nothing comes up on the console. Looks like the memory is over written 
+> > with the same values over and over again in this area. Any thoughts?
+> > 
+> > I'm working on getting a source license from SCO. I'd love to hack on
+> > this with you if you are interested in any help.
+> 
+> Sorry for the delay Kirk. It could be that the V7 bootstrap expects
+> split I/D, or a different I/O mapping then what's provided on the /34.
+> 
+> I'll punt this to the PUPS mailing list. I have a suspicion that
+> you won't be able to install V7, but you should be able to install V6
+> or 2.9BSD instead.
+
+I once had Ultrix-11 3.1 running on a dual RK05 11/34. What I'd call a
+very minimal system ;-) But it ran
+
+-- 
+|   / o / /  _  	 Arnhem, The Netherlands	- Powered by FreeBSD -
+|/|/ / / /( (_) Bulte 	 WWW  : http://www.tcja.nl 	http://www.freebsd.org
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id EAA03106
+	for pups-liszt; Fri, 15 Oct 1999 04:38:33 +1000 (EST)
+
+From sms at moe.2bsd.com  Fri Oct 15 04:36:52 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Thu, 14 Oct 1999 11:36:52 -0700 (PDT)
+Subject: vtserver
+Message-ID: <199910141836.LAA21478@moe.2bsd.com>
+
+Hi -
+
+> From: Wilko Bulte <wilko at yedi.iaf.nl>
+
+	I will be doing some more research on this when I get home from
+	work tonight.
+
+> I once had Ultrix-11 3.1 running on a dual RK05 11/34. What I'd call a
+> very minimal system ;-) But it ran
+
+	That is because DEC put the extra effort into supporting non-split I/D
+	machines.  The "stock" V7 really wanted a 11/70.  In fact there was a
+	chapter in the back of one of the manuals/books detailing what it took
+	to get V7 running on an 11/40 (it was a non-trivial project).
+
+	Several things conspire against V7 and later on 11/34 (or 35, 40, 60,
+	etc).  The two most notable ones are the limited address space,  
+	everything (drivers, data structures, general kernel code) must fit 
+	in 56kb instead of 120kb - (8kb reserved for the I/O page) and lack 
+	of instruction restart on MMU faults.
+
+	I'll take a look at the V7 layout later but my memory is that it
+	wanted an 11/70.
+
+	Steven Schultz
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id GAA03622
+	for pups-liszt; Fri, 15 Oct 1999 06:04:30 +1000 (EST)
+
+From m at mbsks.franken.de  Fri Oct 15 05:59:50 1999
+From: m at mbsks.franken.de (Matthias Bruestle)
+Date: Thu, 14 Oct 1999 21:59:50 +0200 (MET DST)
+Subject: vtserver
+In-Reply-To: <199910141718.TAA01066@yedi.iaf.nl> from Wilko Bulte at "Oct 14, 99 07:18:02 pm"
+Message-ID: <m11br2U-000jzQC@mbsks.franken.de>
+
+Mahlzeit
+
+
+As Warren Toomey wrote ...
+> Sorry for the delay Kirk. It could be that the V7 bootstrap expects
+> split I/D, or a different I/O mapping then what's provided on the /34.
+
+I'm 99% sure, that it's V7 which I have running (for lower values
+of running, because one drive is dead and the power supply needs
+to be replaced) on my 11/34A with 128kB RAM and two RL01. I think
+I wanted to install V6, but installed V7 because of the RL01 drivers.
+I stripped V7 down, so I only needed one RL01 disk pack (I have only
+two.) and transfered the disk image via kermit.
+
+I want to install 2.11BSD on my M70 with 512kB RAM (No, more RAM is
+to expensive here. 1MB for over US$500.) and a 120MB ST506-type disk,
+but had not much time. I want to avoid the way of the disk image,
+because I have no BSD installed for the emulator and don't know,
+if the transfere of slices of the disk image would be successfull.
+(The RT-11 only handles 32MB "disks".) I think the best way would
+be to boot from a 2.11BSD floppy and install it via serial port.
+(TU-58 emu? Are there 1.2MB 2.11BSD floppies somewhere?)
+
+
+Mahlzeit
+
+endergone Zwiebeltuete
+
+-- 
+insanity inside
+
+
+From RBROADWAY at tbs-ltd.co.uk  Fri Oct 15 18:08:32 1999
+From: RBROADWAY at tbs-ltd.co.uk (Broadway, Rusel)
+Date: Fri, 15 Oct 1999 09:08:32 +0100
+Subject: Help!
+Message-ID: <9114940C5E0FD31186950008C7B9A6021844C2@coexch.tbs-ltd.co.uk>
+
+Hi.
+
+I have been given a Bull DSP 2/300 system. The machine is running B.O.S.
+version 02.00.12. The machine boots and runs fine and I cal login as Root
+and look around the system. The problem I have is that the B.O.S. operating
+system is a Unix look-a-like and I can find no-one who actually knows
+anything about the box. Most Unix commands work but, being a VMS guy, I
+can't run the machine like my Digital MV 2's. Does anyone know anything
+about these machines? I particularly want to have a bash at programming the
+machine. It appears to have C (This should be fun. I've not touched C for 12
+years!)
+
+Also. I have two Digital Micro Vax 2's. The both have hardware problems in
+that a) One machine has a system disk which will not come up to speed and b)
+The other has a corrupted system_primitives.exe on VMS 5.5-H and so I can't
+run either of them! Anyone know where I can get spares which are pre-loaded?
+
+I really would appreciate any help or advice/ pointers etc that anyone can
+give.
+
+Rusel Broadway
+Senior Systems Analyst
+
+DDI: 01206-25-5745
+
+********************** N O T I C E *********************************
+
+This information transmitted is intended only for the person or entity
+to which it is addressed and may contain confidential and/or privileged
+material. Any review , retransmission, dissemination or other use of,
+or taking of any action in reliance upon, this information by persons
+or entities other than the intended recipient is prohibited.
+
+If you received this error, please contact the sender and delete all
+copies of the message.
+
+This footnote also confirms that this email message has been swept for
+the presence of computer viruses, however we cannot guarantee that this
+message is free from such problems.
+
+**********************************************************************
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id FAA17930
+	for pups-liszt; Sun, 17 Oct 1999 05:02:44 +1000 (EST)
+
+From simul8 at simul8.demon.co.uk  Sun Oct 17 05:11:03 1999
+From: simul8 at simul8.demon.co.uk (James Lothian)
+Date: Sat, 16 Oct 1999 20:11:03 +0100
+Subject: vtserver
+References: <199910141836.LAA21478@moe.2bsd.com>
+Message-ID: <3808CDC7.210BC969@simul8.demon.co.uk>
+
+Hmm.. I seem to remember, from when I was thinking about rolling my own 
+11 OS a few years ago, that the /34 differs from most of the other
+mid-range
+11s in automatically restoring the CPU registers on a page fault. I
+think I
+picked this up from the differences table in the /04, /34 & /60 CPU
+handbook.
+(This was unfortunately no use at all to me, as I've got a /40 not a
+/34.) 
+
+Of course, that was a while ago and I might be wrong.
+
+James
+
+"Steven M. Schultz" wrote:
+> 
+> Hi -
+> 
+> > From: Wilko Bulte <wilko at yedi.iaf.nl>
+> 
+>         I will be doing some more research on this when I get home from
+>         work tonight.
+> 
+> > I once had Ultrix-11 3.1 running on a dual RK05 11/34. What I'd call a
+> > very minimal system ;-) But it ran
+> 
+>         That is because DEC put the extra effort into supporting non-split I/D
+>         machines.  The "stock" V7 really wanted a 11/70.  In fact there was a
+>         chapter in the back of one of the manuals/books detailing what it took
+>         to get V7 running on an 11/40 (it was a non-trivial project).
+> 
+>         Several things conspire against V7 and later on 11/34 (or 35, 40, 60,
+>         etc).  The two most notable ones are the limited address space,
+>         everything (drivers, data structures, general kernel code) must fit
+>         in 56kb instead of 120kb - (8kb reserved for the I/O page) and lack
+>         of instruction restart on MMU faults.
+> 
+>         I'll take a look at the V7 layout later but my memory is that it
+>         wanted an 11/70.
+> 
+>         Steven Schultz
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id FAA18139
+	for pups-liszt; Sun, 17 Oct 1999 05:47:02 +1000 (EST)
+
+From sms at moe.2bsd.com  Sun Oct 17 05:42:14 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Sat, 16 Oct 1999 12:42:14 -0700 (PDT)
+Subject: vtserver
+Message-ID: <199910161942.MAA18843@moe.2bsd.com>
+
+Hi -
+
+> From: James Lothian <simul8 at simul8.demon.co.uk>
+> 
+> Hmm.. I seem to remember, from when I was thinking about rolling my own 
+> 11 OS a few years ago, that the /34 differs from most of the other
+> mid-range 11s in automatically restoring the CPU registers on a page fault. I
+
+	It's not the automatically restoring that is the problem - the /34, /40
+	(/60, etc) lack the MMU registers that record by how much the cpu
+	registers have incremented/decremented at the time an instruction has
+	faulted. SSR1 and SSR2 located at 0177574 and 0177576 respectively.
+
+	From the module which handles the instruction restart (mch_backup.s):
+
+* 11/40 version of backup, for use with no SSR1 and SSR2.  Actually SSR1
+* usually exists for all processors except the '34 and '40 but always
+* reads as zero on those without separate I&D ...
+
+	What is a dozen lines of code if those registers exist turns into
+	over 300 lines and even then there is no guarantee (fortunately the
+	C compiler does not generate the sequences that can not be handled)
+	it will work.
+
+	What's instruction restart used for?  The most common case is growing
+	the stack.  The stack for a process starts out small and then kernel
+	will automatically extend it downwards IF an instruction faults when
+	accessing the stack area:
+
+
+		sub	$N,sp
+		mov	$xxx, XX(sp)
+		mov	-(r4), X(sp)
+
+	for dealing with local variables in a function.  The other case
+	is when calling a function:
+
+		mov	(r0)+, -(sp)
+		mov	$xxx, -(sp)
+		jsr	pc, function
+
+	If the reference to (sp) is made and the instruction faults the
+	kernel will determine if the current stack needs to be extended.  It
+	will then restart the faulted instruction - but to do that it needs
+	to know what other registers ('r0', 'r4', etc...) might have been
+	already changed so that it can back out those changes before 
+	restarting the instruction.
+
+	In the case of the 11/44, 70, 73, etc there are MMU registers that
+	will record the fact that "R0" or "r4" or whatever was changed by
+	2 or not.  On the /34 and /40 that capability does not exist and
+	the kernel can not _always_ guarantee things will work.  MOST of the
+	time it will but...
+
+	Interestingly enough there is a difference between the KDJ-11 (11/73)
+	family and the other 11s which have the SSR1, and 2.   From the
+	bug report and fix for 2.11BSD (update #150):
+
+	"The problem  is that the KDJ-11 processes the double word store
+        of the 'movfi' differently than the 11/44 or 11/70.  On other
+        systems (such as the 11/44) the first word is stored successfully
+        at 0175000 then the program faults when trying to access 0174776
+        but SP is left at 0174776 with SSR1 (memory management
+        status register 1) indicating that 'sp' was decremented by 4.  The
+        kernel adjusts 'sp', grows the stack and restarts the instruction.
+        The 'movfi' then completes successfully.
+
+        On a KDJ-11 cpu the story is different.  The fault is generated
+        as expected BUT 'SP' IS STILL 0175002!  The kernel sees that 'sp'
+        is still within the "valid stack region" and DOES NOT grow the
+        stack at all.   SSR1 indicates that no registers were modified
+        so the kernel does no adjustment of 'sp'.  The instruction is
+        NOT restarted and a SIGSEGV signal is sent to the program.
+
+        The problem appears to be only when doing FP instructions, fixed point 
+        operations do not experience any difficulty.  The instruction
+        "cmp -(sp),-(sp)" for example is handled correctly."
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id GAA18253
+	for pups-liszt; Sun, 17 Oct 1999 06:08:29 +1000 (EST)
+
+From sms at moe.2bsd.com  Sun Oct 17 06:07:04 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Sat, 16 Oct 1999 13:07:04 -0700 (PDT)
+Subject: vtserver
+Message-ID: <199910162007.NAA19063@moe.2bsd.com>
+
+> From: Warren Toomey <wkt at cs.adfa.edu.au>
+> > To: Kirk Davis <kbd at ndx.net>
+> > Do you know of anyone that has used it on a /34? I've punched in the
+> > bootstrap and ran it. It loads the boot file from my Linux system.
+> > It appears to call it but it halts somewhere in the 70000-70040 region.
+> > Nothing comes up on the console. Looks like the memory is over written 
+> > with the same values over and over again in this area. Any thoughts?
+> > 
+> Sorry for the delay Kirk. It could be that the V7 bootstrap expects
+> split I/D, or a different I/O mapping then what's provided on the /34.
+> 
+> I'll punt this to the PUPS mailing list. I have a suspicion that
+> you won't be able to install V7, but you should be able to install V6
+> or 2.9BSD instead.
+
+	I _think_ I know what the problem is...
+
+	While the /34 (and /40, etc) can run a stripped down V7 (the necessary
+	mch.s code exists for example) the kernels that come with the 
+	distribution are split I&D kernels.  /hptmunix, etc are all split I/D
+	executables.   Thus you'll be able to toggle in the bootstrap and
+	get /boot loaded but then fault when loading and/or trying to execute
+	the kernel.
+
+	As I recall the usual way to get Unix on to a /23, 34,etc was to
+	have a 11/70 around to do the build on, then stage/create the media
+	(usually an RL02 or similar) on the 70 and sneakernet the pack over
+	to the /34.
+
+	At least that is how it was done when we shoehorned V7 into an 11/23.
+	Of course we "cheated" in that we had a fellow around who made the
+	necessary changes to the assembler/compiler/linker to handle kernel
+	overlays (preceeded the use of them in 2BSD by several years).  Thus
+	we could run a larger kernel than a pure/stock V7.  It was an
+	"interesting" experience running V7 on an 11/23 (maxed out with 248kb
+	of memory which was fairly expensive at the time).   There was just
+	enough memory left after the kernel was loaded for a couple user 
+	processes.  Thus as the '#' prompt you would run "ls" the shell ('sh')
+	would get swapped out, the 'ls' would run, and then 'sh' would get
+	swapped back in.   Uh, slowed things down just a _little_ bit :-)
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+
+From pups at mrynet.com  Wed Oct 20 23:28:36 1999
+From: pups at mrynet.com (PUPS mailing list)
+Date: Wed, 20 Oct 1999 13:28:36 +0000
+Subject: booting archived Sys III and Ultrix 3.x images
+Message-ID: <199910202028.NAA49448@mrynet.com>
+
+Has anyone successfully booted either the System III 
+(...Distributions/usdl/SysIII/) or Ultrix (...Distritutions/dec/Ultrix*)
+tape images?  I don't have a real PDP-11 any more, however both the
+Begemot P11 and the Supnik emulators produce the following on a 
+generated boot disk:
+
+#0=unixhptm
+ka6 = 1535
+aps = 141774
+pc = 1476 ps = 30010
+trap type 0
+ka6 = 1535
+aps = 141666
+pc = 113444 ps = 30300
+trap type 0
+panic: trap
+
+The Ultrix images both fail to actually boot from tape, as they
+quit after reading the first boot block.  Thus I am unable get as
+far as being able to generate a disk image for booting.
+
+I'm somewhat confident that my tape image booting and system generation
+procedures used with the Supnik emulator are working properly, since I
+successfully generate disk systems from both the V7 (Bostic) and
+the 2.11BSD boot-tape images.
+
+Any info and interest of others gleefully appreciated :)
+
+	-skots
+--
+Scott G. Akmentins-Taylor     InterNet: staylor at mrynet.com
+MRY Systems			        staylor at mrynet.lv
+    (Skots Gregorijs Akmentins-Teilors -- just call me "Skots")
+		----- Labak miris neka sarkans -----
+
+
+From sms at moe.2bsd.com  Thu Oct 21 12:59:53 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Wed, 20 Oct 1999 19:59:53 -0700 (PDT)
+Subject: booting archived Sys III and Ultrix 3.x images
+Message-ID: <199910210259.TAA16059@moe.2bsd.com>
+
+Howdy -
+
+> From: pups at mrynet.com (PUPS mailing list)
+> 
+> Has anyone successfully booted either the System III 
+> (...Distributions/usdl/SysIII/) or Ultrix (...Distritutions/dec/Ultrix*)
+> tape images?  I don't have a real PDP-11 any more, however both the
+
+	I don't know what the problem with Ultrix is but I suspect
+	your trouble with System-III is similar to what I wasted a couple
+	days on eons ago
+
+	Spent a fruitless couple days trying to get Sys-III going on a 11/44
+	only to have it dawn on me that Sys-III didn't have *any* UMR support
+	except for the DH-11 - thus an 11/70 with MASSBUS devices was the
+	only thing Sys-III would run on.   
+
+	As far as I know no effort was put into Sys-III to deal with 22
+	bit machines that didn't have a MASSBUS (a la 11/70).  PERHAPS
+	that is what is biting you?   Feels likely.   I know that no effort 
+	was put in to supporting UMRs on 22bit systems such as the 11/44.
+
+	The Supnik and Begemot emulators offer up a ~kdj-11 (11/53, 73, ...)
+	and not an 11/70 so it could be that Sys-III is trying to do 
+	something 11/70'ish that KDJ-11 based systems don't offer.
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id NAA00889
+	for pups-liszt; Thu, 21 Oct 1999 13:39:50 +1000 (EST)
+
+From basker at protocol.ece.iisc.ernet.in  Thu Oct 21 13:04:09 1999
+From: basker at protocol.ece.iisc.ernet.in (P.BASKER)
+Date: Thu, 21 Oct 1999 08:34:09 +0530 (IST)
+Subject: assembler?
+In-Reply-To: <199910210259.TAA16059@moe.2bsd.com>
+Message-ID: <Pine.LNX.3.96.991021082828.24006A-100000@protocol.ece.iisc.ernet.in>
+
+Hi ,
+	Im interested in a PDP-11 assembler that has the MACRO-11 syntax,
+I got a book, "Introduction to Computer Systems using the PDP-11 and
+Pascal" by McEwans, Thought it would be nice to have the assembler to
+check out. I hope the assembler is a load and go assembler cum simulator.
+I want to check out some PDP-11 assembly on my linux machine.
+
+Does anyone remember a program called "apout" I think that might work for
+cross development (learning).
+
+		Bye
+			P.Basker
+			Research Program Asst, ECE Dept IISc, India
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id OAA01039
+	for pups-liszt; Thu, 21 Oct 1999 14:03:45 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Thu Oct 21 14:02:36 1999
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 21 Oct 1999 14:02:36 +1000 (EST)
+Subject: assembler?
+In-Reply-To: <Pine.LNX.3.96.991021082828.24006A-100000@protocol.ece.iisc.ernet.in> from "P.BASKER" at "Oct 21, 1999  8:34: 9 am"
+Message-ID: <199910210402.OAA00539@henry.cs.adfa.edu.au>
+
+In article by P.BASKER:
+> Hi ,
+> 	Im interested in a PDP-11 assembler that has the MACRO-11 syntax,
+> I got a book, "Introduction to Computer Systems using the PDP-11 and
+> Pascal" by McEwans, Thought it would be nice to have the assembler to
+> check out. I hope the assembler is a load and go assembler cum simulator.
+> I want to check out some PDP-11 assembly on my linux machine.
+> 
+> Does anyone remember a program called "apout" I think that might work for
+> cross development (learning).
+> 		Bye
+
+Yes, I wrote Apout. It runs user-mode programs from V5, V6, V7, 2.9BSD
+and 2.11BSD. So if you could find an assembler for any of these systems
+which met your requirements, and produced .o files which could be linked
+using the normal Unix linker, you'd be okay.
+
+However, I haven't heard of a Unix assembler with MACRO-11 syntax, and
+Apout only runs PDP-11 Unix binaries. So you probably would be better
+off with a full emulator running a DEC OS with MACRO-11.
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id RAA01742
+	for pups-liszt; Thu, 21 Oct 1999 17:06:23 +1000 (EST)
+
+From wilko at yedi.iaf.nl  Thu Oct 21 09:01:53 1999
+From: wilko at yedi.iaf.nl (Wilko Bulte)
+Date: Thu, 21 Oct 1999 01:01:53 +0200 (CEST)
+Subject: booting archived Sys III and Ultrix 3.x images
+In-Reply-To: <199910202028.NAA49448@mrynet.com> from PUPS mailing list at "Oct 20, 1999  1:28:36 pm"
+Message-ID: <199910202301.BAA44603@yedi.iaf.nl>
+
+As PUPS mailing list wrote ...
+> Has anyone successfully booted either the System III 
+> (...Distributions/usdl/SysIII/) or Ultrix (...Distritutions/dec/Ultrix*)
+> tape images?  I don't have a real PDP-11 any more, however both the
+
+Ultrix-11 V3.1 works just fine on my 11/83. I supplied the binary images
+to PUPS from the .5" reel tape ;-) So, yes it can work. My PDP is now
+running 2.11BSD btw.
+
+-- 
+|   / o / /  _  	 Arnhem, The Netherlands	- Powered by FreeBSD -
+|/|/ / / /( (_) Bulte 	 WWW  : http://www.tcja.nl 	http://www.freebsd.org
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id AAA03366
+	for pups-liszt; Fri, 22 Oct 1999 00:56:31 +1000 (EST)
+
+From msokolov at meson.jpsystems.com  Fri Oct 22 00:54:58 1999
+From: msokolov at meson.jpsystems.com (Michael Sokolov)
+Date: Thu, 21 Oct 99 09:54:58 -0500
+Subject: Program to read unknown tapes
+Message-ID: <9910211454.AA25265@meson.jpsystems.com>
+
+Hi everyone,
+
+I have already posted this program to the PUPS list back in December 1998, but
+people are asking for it again, and also there are people on the Quasijarus
+list and not on the PUPS list who want it, so I'm posting it again, to both
+lists.
+
+This program can read a tape on a UNIX box without the user having to know
+anything about its format. This program automatically determines how many files
+are on the tape, what is the record size for each, and whether there are any
+oddities such as partial records. It saves each tape file into a separate disk
+file and produces a log of everything found on the tape.
+
+It's a simple C program and should compile and run on virtually any UNIX or
+UNIX-like system. The original version was written by one guy I met on another
+list once and then it was significantly enhanced by me. I include it below as
+a uuencoded 'compress -s'ed tarball.
+
+--
+Michael Sokolov				Harhan Computer Operation Facility
+Special Agent				615 N GOOD LATIMER EXPY #4
+International Free Computing Task Force	DALLAS TX 75204-5852 USA
+					Phone: +1-214-824-7693
+					ARPA INET: msokolov at meson.jpsystems.com
+
+Enclosure: uuencoded cptape.tar.Z:
+
+begin 644 cptape.tar.Z
+M'Z'M6&U3&S<0YJOU*P0T at PW&^,`X&3NF0PBT:0G,0-(WFNF(.YU]PUER[^08
+MFO#?N[LZ^>X<4MK.0#[D=B;#25KMR[-O<EZ+*QE&L5QZ0/+:[6ZGPY<X]]K=
+M'?S+.[NTMN1UGG+>[>[L[NZTM[UM8FOO+O'V0QKE:)H:D7"^-+Y..]U_X'L[
+M#,X?PYY'IE6V"A%XG64!#W7"_8D1$\E6&3M]\<. at -A:1:FEV?G:0??N,'1P=
+M[W]W/JAMGC)FV7NU;^K`WF`UW^?VDV]J)XM]:3<K^@R='>Z_?'WXL#KNJ7^O
+MLUVH_YVGR-;>[5;U_QAD"Y0G4 at 0I%YP6D>):29Z.M&GR22S\2`VY%/[('E.C
+MB)31P)_*B4B$D3R(TBM&)T(%/-;#(5XR(^2$IC(6)M**BTL]-:#,UTG`T^@O
+MF;9<`R%%,OTW>NR)$F,9\#7\;BFUUN2SD4PD4XI'*2DV,[T91,/(P.T_IU*9
+M2,1<3<>7,N$Z)!82!'81.^JL@^^!]*.QB!DFAD$O9I$9\;;7:/$W(YG:6P!6
+M(KD/N!FP(K(B_&F2@!XP$EPT.KEI\2-HJ&84I0PX4ZW(2D5PHV3!E9R1YB9!
+M/M/3..`*\8KCFTP\<,T%4H..3)/Y`0=@X(OP3J8J:[4\3/08C4DD0'LREV0/
+M(:2HX%+2#9&"N#C6L[0WC\)F3.98%Y^G$\!"Q'N,$;CYAL,8@^#`3(1U!0!\
+M'_F at S/(27$TN6\-6DVW!V99*QJ:-8(*0613'N9]W!99<IJQ8C!9#U\N7YK:O
+MV:@)'D>I00L!ACRM4GM*5N?)R)RFUM<SK^Q$?U@=]_3_W=UNN]#_V\BVW?6J
+M_O\8M+7.^+IK#YO<UY.;8IE`X4S5E=(SY0HEEFIH1G!IB['52/GQ-,"^8()(
+MMT9[A:W05R8N;\DD40M<Z4VZ194.NVPU at .*%-GCRXNU1C9X&J".D-=^#5?E>
+MI/U, at U1!%#(&PX(/I=$3P^N-/I/71B;0&$<0X'78%,EPOHFLL!6IH(E_P;)^
+MKA_4G;_Z[=":T-UYUJEMK?-]'_VGJ:;Y&,99O=-H\K&XMGA=QMJ_LFVD!@2@
+M8C<Y/SA_1>>I:UP_[?^"S=/K_MC*&+?(<!9H!+^._3L$HV"$(BX-<LIN]MG1
+MJ^-#OIX=]=D'AA9"`IO(ASBET5!!$R1_+Z=A*).+S)-W?>*<L\0:W+`!5=J>
+MD1J0JB<PGP:\O7`#CR"@<.+E_$:C4;@BG;`$+NS$%\_NU$CST4>,`&P\1HCJ
+M_?[<E(V-!O_`:L1\>6-DBH,2>&N4.=:LVOP`UOAG#IGUN>G"!QE0@^2IY_S/
+M>9ODH^H)B-1)?67^_%E!?CQ)I)E"AGA]6D'D<7YCS(3B=`E#5KOE,H:W0%G!
+M8%#0@$<.T8;=@A,RR8]U*NL(7P-.:KA=M`D>29.I#4>/$R\91SSR.C)UCY:W
+M\&^20"#"^LH;<&,LDBL8M#`4H6QI*JX^:6]/?U<K31<_NI=];VRX11YS4G%K
+M_Z!_N=E at 4'J'&H3/&I?!5A"2093!`4`21JF&)T, at C'#M!AYH".BGZ4*XSI+(
+M&*DP"1RHRW>@ZG`X=X^VW/]F<<;W^).XA$@SPQ5H'D?R!S7-B]#RA)F6;+O)
+M5X[^NY8[5*69W+R`0#1U192\$#W,&@@6O9E*-]K=;G=NN>4:\$WO_ at 1#29]-
+ML$)^>#;,ME2S?*GE-0T[A9K]-),6BG%Y4.@')2.S4/XL$@61[#E at 5P'3<F9C
+M4>(F"46XRR@[4_,H+.#N$JH0YMJG,?X?=MRO^C;+YV)CFR=&EO.PC5^V4>3M
+MK23(N5"ZMUR(1,.6QUV!)^&EXO7ZME#S-N=*F=KU+9Z%]H1E-7UR^N;L</_@
+M^\.7N&O=HGF&+\LZC%P??J(DP_=VD.&ZS^Q$7L=M-\3PT"_,$C?DZ`?&@)^\
+M/3ZVIZ416#JQ]V at 8W'4QGZ,<RR+?!&?#>&AC0)NS$8JNUWW8L\^)@A^0$'%O
+MI=%`D`]/CPC>%'Y-P.^3ND\K7T#36XO7>A:]LB/N&6*##0&Z at F]X=HAI;'KN
+M[K?NKC6-&G61/XN&M1:CG[GP\6/VID'CT&1HL1[9Y+(:WFG`"SY,4S'$VK</
+MOPOXV9?9^8Y`@B3&O*!>L-WH+^HK^)0-;!>.$'M%\1QTS5;<*%[.*ZT\AHL"
+M,V?S/E1R=R&^&)(+Z_2[?H$C(*S!E")_DY_^<?;R].3X5^B6F5<TI;,;U"[1
+MGWFY@`1Z\=G_%G&EDV/CE;')RN at S3[D^E,>7?N]75%%%%554444555111155
+/5%%%7Q_]#6D82E<`*```
+`
+end
+
+
+From bdc at world.std.com  Tue Oct 26 02:34:40 1999
+From: bdc at world.std.com (Brian D Chase)
+Date: Mon, 25 Oct 1999 09:34:40 -0700
+Subject: When did the `dc' command first appear?
+Message-ID: <Pine.SGI.4.04.9910250931400.1849-100000@world.std.com>
+
+Just a quick question.  Was the `dc' command introduced with one of the
+BSD releases or did it exist in an earlier version of Unix like the 6th or
+7th Edition?
+
+-brian.
+--- Brian Chase | bdc at world.std.com | http://world.std.com/~bdc/ -----
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id DAA27477
+	for pups-liszt; Tue, 26 Oct 1999 03:20:12 +1000 (EST)
+
+From pups at mrynet.com  Mon Oct 25 20:19:54 1999
+From: pups at mrynet.com (PUPS mailing list)
+Date: Mon, 25 Oct 1999 10:19:54 +0000
+Subject: When did the `dc' command first appear?
+Message-ID: <199910251719.KAA77523@mrynet.com>
+
+Brian Chase asked:
+
+> Just a quick question.  Was the `dc' command introduced with one of the
+> BSD releases or did it exist in an earlier version of Unix like the 6th or
+> 7th Edition?
+
+I see it on the System III and Version 7 systems.   I don't see it in V6 distro 
+however.
+
+Cheers,
+		-skots
+--
+Scott G. Akmentins-Taylor     InterNet: staylor at mrynet.com
+MRY Systems			        staylor at mrynet.lv
+    (Skots Gregorijs Akmentins-Teilors -- just call me "Skots")
+		----- Labak miris neka sarkans -----
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id EAA27681
+	for pups-liszt; Tue, 26 Oct 1999 04:03:31 +1000 (EST)
+
+From enf at pobox.com  Tue Oct 26 04:15:15 1999
+From: enf at pobox.com (Eric Fischer)
+Date: Mon, 25 Oct 1999 13:15:15 -0500 (CDT)
+Subject: When did the `dc' command first appear?
+In-Reply-To: <Pine.SGI.4.04.9910250931400.1849-100000@world.std.com>
+References: <Pine.SGI.4.04.9910250931400.1849-100000@world.std.com>
+Message-ID: <199910251815.NAA25814@216-80-13-97.d.enteract.com>
+
+Brian D. Chase writes,
+
+> Just a quick question.  Was the `dc' command introduced with one of the
+> BSD releases or did it exist in an earlier version of Unix like the 6th or
+> 7th Edition?
+
+It appears in the First Edition manual, and according to A Quarter
+Century of Unix, it's even older than that.  "There was also a version
+of dc, desk calculator, a very very early program.  That was actually
+the first program that ran on the PDP-11.  It ran standalone before
+there was an operating system." (p. 35)
+
+eric
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id EAA27847
+	for pups-liszt; Tue, 26 Oct 1999 04:24:20 +1000 (EST)
+
+From mark at cs.ualberta.ca  Tue Oct 26 04:23:48 1999
+From: mark at cs.ualberta.ca (Mark Green)
+Date: Mon, 25 Oct 1999 12:23:48 -0600 (MDT)
+Subject: When did the `dc' command first appear?
+In-Reply-To: <Pine.SGI.4.04.9910250931400.1849-100000@world.std.com> from Brian D Chase at "Oct 25, 1999 09:34:40 am"
+Message-ID: <19991025182355Z433932-29789+188@scapa.cs.ualberta.ca>
+
+> Just a quick question.  Was the `dc' command introduced with one of the
+> BSD releases or did it exist in an earlier version of Unix like the 6th or
+> 7th Edition?
+> 
+
+I think it was in 6th, but thats straining my memory a bit.
+
+-- 
+Dr. Mark Green                                 mark at cs.ualberta.ca
+Professor                                      (780) 492-4584
+Director, Research Institute for Multimedia Systems (RIMS)
+Department of Computing Science                (780) 492-1071 (FAX)
+University of Alberta, Edmonton, Alberta, T6G 2H1, Canada
+
+
+From wkt at cs.adfa.edu.au  Tue Oct 26 10:07:44 1999
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Tue, 26 Oct 1999 10:07:44 +1000 (EST)
+Subject: When did the `dc' command first appear?
+In-Reply-To: <199910251815.NAA25814@216-80-13-97.d.enteract.com> from Eric Fischer at "Oct 25, 1999  1:15:15 pm"
+Message-ID: <199910260007.KAA16993@henry.cs.adfa.edu.au>
+
+In article by Eric Fischer:
+> Brian D. Chase writes,
+> 
+> > Just a quick question.  Was the `dc' command introduced with one of the
+> > BSD releases or did it exist in an earlier version of Unix like the 6th or
+> > 7th Edition?
+> 
+> It appears in the First Edition manual, and according to A Quarter
+> Century of Unix, it's even older than that.
+> eric
+
+There's a binary of dc from either 1st or 2nd Edition in the PUPS Archive:
+
+	-r---wxrw- 0/0            6846 Apr 14 06:50 1973 bin/dc
+
+Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA29099
+	for pups-liszt; Tue, 26 Oct 1999 10:24:03 +1000 (EST)
+
+From bdc at world.std.com  Tue Oct 26 10:23:42 1999
+From: bdc at world.std.com (Brian D Chase)
+Date: Mon, 25 Oct 1999 17:23:42 -0700
+Subject: When did the `dc' command first appear?
+In-Reply-To: <199910260007.KAA16993@henry.cs.adfa.edu.au>
+Message-ID: <Pine.SGI.4.04.9910251718360.7714-100000@world.std.com>
+
+On Tue, 26 Oct 1999, Warren Toomey wrote:
+
+> There's a binary of dc from either 1st or 2nd Edition in the PUPS Archive:
+> 
+> 	-r---wxrw- 0/0            6846 Apr 14 06:50 1973 bin/dc
+
+Hmmm... did the permissions on files have the same meaning back in 1973 as
+they do now?  Group and "other" writeable system binaries?  Tsk tsk tsk.
+
+Well I suppose just because someone has written the Unix operating system,
+it doesn't necessarily mean that they're a very good Unix sysadmin.
+
+-brian.
+--- Brian Chase | bdc at world.std.com | http://world.std.com/~bdc/ -----
+ "Captain, we're experiencing a high rate of packet collisions!" -- K.
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA29144
+	for pups-liszt; Tue, 26 Oct 1999 10:27:16 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Tue Oct 26 10:27:09 1999
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Tue, 26 Oct 1999 10:27:09 +1000 (EST)
+Subject: When did the `dc' command first appear?
+In-Reply-To: <Pine.SGI.4.04.9910251718360.7714-100000@world.std.com> from Brian D Chase at "Oct 25, 1999  5:23:42 pm"
+Message-ID: <199910260027.KAA17113@henry.cs.adfa.edu.au>
+
+In article by Brian D Chase:
+> On Tue, 26 Oct 1999, Warren Toomey wrote:
+> 
+> > There's a binary of dc from either 1st or 2nd Edition in the PUPS Archive:
+> > 
+> > 	-r---wxrw- 0/0            6846 Apr 14 06:50 1973 bin/dc
+> 
+> Hmmm... did the permissions on files have the same meaning back in 1973 as
+> they do now?  Group and "other" writeable system binaries?  Tsk tsk tsk.
+> 
+> Well I suppose just because someone has written the Unix operating system,
+> it doesn't necessarily mean that they're a very good Unix sysadmin.
+
+No, the perms have got stuffed up in conversion from 1st Ed permissions
+to the tar archive. 1st Edition had no groups, and only had perms 
+
+	01 write for other
+	02 read for other
+	04 write for owner		[ all octal values ]
+	10 read for owner
+	20 executable
+	40 set-UID
+
+Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA29265
+	for pups-liszt; Tue, 26 Oct 1999 10:36:34 +1000 (EST)
+
+From dave at fgh.geac.com.au  Tue Oct 26 10:33:59 1999
+From: dave at fgh.geac.com.au (Dave Horsfall)
+Date: Tue, 26 Oct 1999 10:33:59 +1000 (EST)
+Subject: When did the `dc' command first appear?
+In-Reply-To: <Pine.SGI.4.04.9910251718360.7714-100000@world.std.com>
+Message-ID: <Pine.GSO.4.20.9910261031430.7382-100000@fgh>
+
+On Mon, 25 Oct 1999, Brian D Chase wrote:
+
+> > 	-r---wxrw- 0/0            6846 Apr 14 06:50 1973 bin/dc
+> 
+> Hmmm... did the permissions on files have the same meaning back in 1973 as
+> they do now?  Group and "other" writeable system binaries?  Tsk tsk tsk.
+
+I don't believe the concept of group permissions existed then...
+
+> Well I suppose just because someone has written the Unix operating system,
+> it doesn't necessarily mean that they're a very good Unix sysadmin.
+
+On the other hand, people actually trusted each other, because you
+all worked with each other, and it was common for someone to write a
+utility and stick it on the system.  Hint: /usr wasn't called that for
+no reason...
+
+-- 
+Dave Horsfall VK2KFU  dave at geac.com.au  Ph: +61 2 9978-7493 Fx: +61 2 9978-7422
+Geac Computers P/L (FGH Division) 2/57 Christie St, St Leonards 2065, Australia
+
+
+
+From grog at lemis.com  Wed Oct 27 12:15:01 1999
+From: grog at lemis.com (Greg Lehey)
+Date: Tue, 26 Oct 1999 22:15:01 -0400
+Subject: When did the `dc' command first appear?
+In-Reply-To: <199910260007.KAA16993@henry.cs.adfa.edu.au>; from Warren Toomey on Tue, Oct 26, 1999 at 10:07:44AM +1000
+References: <199910251815.NAA25814@216-80-13-97.d.enteract.com> <199910260007.KAA16993@henry.cs.adfa.edu.au>
+Message-ID: <19991026221501.47539@mojave.worldwide.lemis.com>
+
+On Tuesday, 26 October 1999 at 10:07:44 +1000, Warren Toomey wrote:
+> In article by Eric Fischer:
+>> Brian D. Chase writes,
+>>
+>>> Just a quick question.  Was the `dc' command introduced with one of the
+>>> BSD releases or did it exist in an earlier version of Unix like the 6th or
+>>> 7th Edition?
+>>
+>> It appears in the First Edition manual, and according to A Quarter
+>> Century of Unix, it's even older than that.
+>> eric
+>
+> There's a binary of dc from either 1st or 2nd Edition in the PUPS Archive:
+>
+> 	-r---wxrw- 0/0            6846 Apr 14 06:50 1973 bin/dc
+
+Wouldn't that be the Third Edition with that timestamp?  I won't
+comment again about the permissions.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+
+From wkt at cs.adfa.edu.au  Thu Oct 28 09:48:08 1999
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 28 Oct 1999 09:48:08 +1000 (EST)
+Subject: When did the `dc' command first appear?
+In-Reply-To: <19991026221501.47539@mojave.worldwide.lemis.com> from Greg Lehey at "Oct 26, 1999 10:15: 1 pm"
+Message-ID: <199910272348.JAA26787@henry.cs.adfa.edu.au>
+
+In article by Greg Lehey:
+> > There's a binary of dc from either 1st or 2nd Edition in the PUPS Archive:
+> > 	-r---wxrw- 0/0            6846 Apr 14 06:50 1973 bin/dc
+> 
+> Wouldn't that be the Third Edition with that timestamp?  I won't
+> comment again about the permissions.
+> Greg
+
+The binary is an 0405 a.out file. I'm told by Norman Wilson, who has
+paper copies of the 2nd & 3rd Edition manuals, that 0405 binaries didn't
+exist in 2nd & 3rd Edition.
+
+I also believe that the files in the s2.tar tarball sent in by Dennis
+are a whole year off, and so the date above should be Apr 14, 1972.
+That dates the file just before the release of 2nd Edition.
+
+I really need to sit down & outline my reasons for believing that the
+dates are a year out. I'll do so soon & email it here!
+
+Cheers all,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id JAA41918
+	for pups-liszt; Thu, 28 Oct 1999 09:49:29 +1000 (EST)
+
+From norman at nose.cita.utoronto.ca  Thu Oct 28 09:48:50 1999
+From: norman at nose.cita.utoronto.ca (norman at nose.cita.utoronto.ca)
+Date: Wed, 27 Oct 1999 19:48:50 -0400
+Subject: dc and date numerology
+Message-ID: <199910272349.JAA41914@minnie.cs.adfa.edu.au>
+
+Greg Lehey wondered about the date in
+
+> There's a binary of dc from either 1st or 2nd Edition in the PUPS Archive:
+>
+> 	-r---wxrw- 0/0            6846 Apr 14 06:50 1973 bin/dc
+
+1973 is indeed post-Second-Edition.  But it's not the right date; just as
+the permission flags were different in the early years, so was the date
+representation.  Here are some gleanings from old manuals that tell the
+story.
+
+The relatively recent ls or tar or whatnot that printed the line above
+presumably interpreted the date as if it were in modern form: seconds since
+1 Jan 1970 UTC.  So the raw number stored in the i-node was probably about
+105000000 decimal (30 Apr 1973 in my time zone), or about 1200 days into the
+epoch.
+
+But the file system described in the First Edition manual takes the date
+as a count of clock ticks since 1 Jan 1971.  The clock ticked at 60Hz,
+so the date is really about 1200/60 = 20 days into the epoch; if this file
+came from a 1e file system, it was written on 21 Jan 1971.
+
+The trouble with keeping a 60Hz clock in a 32-bit number is that it takes just
+a couple of years before it overflows.  A band-aid had been stuck on by the time
+the Third Edition manual was printed: the base date changed to 1 Jan 1972.  So
+maybe bin/dc was written on 21 Jan 1972 instead.  There's no way to tell just
+from the bits in the i-node.
+
+The modern time format (1-second resolution) appeared in the Fourth Edition manual.
+It is probably not a coincidence that the file system format changed a lot at
+the same time; groups appeared, permission modes changed to approximately their
+current form, directory entries changed, and so on.
+
+The 60Hz scheme seems to have come from the PDP-7, on which it made more sense;
+the -7 has 36-bit words, so a 60Hz counter lasts 16 times longer.  I bet the
+base date changed at least once between the original PDP-7 system and the PDP-11
+as well, since 1 Jan 1971 seems too recent for the PDP-7 system.
+
+See http://www.cita.utoronto.ca/~norman/old-unix/old-fs.html for many more such
+grotty details, collected in an insomniac night with a stack of old manuals some
+months ago.
+
+Norman Wilson
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA42069
+	for pups-liszt; Thu, 28 Oct 1999 10:02:33 +1000 (EST)
+
+From wkt at cs.adfa.edu.au  Thu Oct 28 10:02:25 1999
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Thu, 28 Oct 1999 10:02:25 +1000 (EST)
+Subject: dc and date numerology
+In-Reply-To: <199910272349.JAA41914@minnie.cs.adfa.edu.au> from "norman@nose.cita.utoronto.ca" at "Oct 27, 1999  7:48:50 pm"
+Message-ID: <199910280002.KAA26898@henry.cs.adfa.edu.au>
+
+In article by norman at nose.cita.utoronto.ca:
+> Greg Lehey wondered about the date in
+> > 	-r---wxrw- 0/0            6846 Apr 14 06:50 1973 bin/dc
+> 
+> 1973 is indeed post-Second-Edition.  But it's not the right date; just as
+> the permission flags were different in the early years, so was the date
+> representation.  Here are some gleanings from old manuals that tell the
+> story.
+
+[ much omitted ]
+ 
+Norman details the fact that early Unixes stored time in 60ths of a second,
+i.e the normal clock tick, and as such, a 32-bit integer overflows in
+around 2.5 years.
+
+However, I think Norman is not exactly right when he said that the
+tar archive was reinterpreting this 1/60 sec time in units of seconds.
+
+Dennis Ritchie, with help from Keith Bostic and a DECtape drive, managed to
+retrieve these files from an old DECtape. These old files were stored in
+tap(1) archive format.
+
+Dennis wrote a program to read in the tap(1) format archives and extract
+their contents while trying to maintain the _correct_ permissions and
+timestamps. Here is his email describing this:
+
+	The tapes were written in either the 'tap' or 'tp' format, which
+	are similar in that they have a directory of up to 192 entries at
+	the start with names and other information including the size and
+	tape address of the files.  'tp' was the later format, and was in
+	use by November 1973, the date of the 4th edition manual.  With
+	`tap', the times associated with the files were recorded in pre-modern
+	units: sixtieths of a second, from an origin that changed.  The
+	first three editions of the manual had BUGS sections noting that
+	32 bits can represent only about 2.5 years in this unit, and this
+	implied continuing crises as the time overflowed.
+
+	I believe that the change to use seconds for Unix time took place
+	along with the change to the C version of the operating system,
+	which occurred about the end of the summer of 1973, and also that
+	the change from `tap' to `tp' took place at the same time.  (This
+	is consistent with the dates of the 3rd and 4th edition manuals).
+	
+	Thus the dates recorded with the `tp' tapes probably correspond
+	reliably to the modification dates of the files at the time of
+	saving them (of course, this gives only a upper bound on their
+	creation, since they might have been copied or trivially touched
+	just before saving them).
+	
+	Recovering the proper dates for the `tap' tapes is less reliable,
+	because there was at least one change of epoch (from 1971 to 1972)
+	during the period they could possibly have been produced.  I believe
+	that the 1972 epoch is most likely the correct one for the tapes here.
+
+In other words, Dennis had to guess the epoch when recovering these files.
+He got it right with the `nsys' kernel files, because there is enough other
+data lying around documenting the kernel rewrite from assembly to C, and
+the inclusion of pipes into the kernel.
+
+However, with the s2.tar archive, I think Dennis got the epoch one year out,
+i.e everything should be dated a year earlier. The most obvious is that
+there are so many 0405 magic a.out files in the archive, and apparently
+this a.out format disappeared in the 2nd Edition.
+
+Cheers all,
+	Warren
+
+

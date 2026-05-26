@@ -1,0 +1,1637 @@
+From markfptuson at gmail.com  Sun Sep 26 02:29:01 2010
+From: markfptuson at gmail.com (Mark Tuson)
+Date: Sat, 25 Sep 2010 17:29:01 +0100
+Subject: [pups] PDP-11 (SIMH), Seventh Edition UNIX
+Message-ID: <4C9E234D.4020705@gmail.com>
+
+Hi everyone, this is my first message, after being on the mailing list 
+for the best part of three years :)
+
+I've a couple of [hopefully] simple questions about running Seventh 
+Edition UNIX on SIMH.
+
+The first question is: how can I get the C compiler to work properly? 
+When I've tried to compile programs, I get 'cannot create temp' - here's 
+a full list of what's on the screen:
+
+@boot
+New Boot, known devices are hp ht rk rl rp tm vt
+: rl(0,0)rl2unix
+mem = 177856
+# Thu Sep 22 07:50:47 EDT 1988
+
+login: mark
+$ ed
+a
+main() {
+   printf("  Hello.\n");
+   return; }
+
+.
+w a.c
+46
+q
+$ cc a.c
+cc: cannot create temp
+$
+
+Also, how can I get the backspace key to erase? I've done /stty erase 
+'^H'/ but I have to actually type <CTRL>+H to erase.
+
+The other thing I want to ask about is: can I compile SIMH on DOS, so it 
+doesn't display any messages except those of the simulated software, and 
+so it ignores ^E?
+
+I'm asking because I want v7 on an ancient laptop I've got lying around 
+- a 486 with 24M of core. v7x86 won't work on it, and I don't really 
+fancy putting Slack 3 back on it - if I'm going to go outdated, I might 
+as well go the whole hog and go /really/ outdated.
+
+Though I might consider 2.11BSD, if that'll work on a machine with 24M 
+of core, and if the escapes will display properly, because
+
+[24;1H[?1h=[;H[2J
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~
+                  ~[H
+
+is a little bit difficult to work with when I'm wanting to edit source code.
+
+Thanks very much. Mark Tuson.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100925/d87af47d/attachment.html>
+
+From frank at wortner.com  Wed Sep 29 11:03:27 2010
+From: frank at wortner.com (Frank Wortner)
+Date: Tue, 28 Sep 2010 21:03:27 -0400
+Subject: [pups] PDP-11 (SIMH), Seventh Edition UNIX
+In-Reply-To: <4C9E234D.4020705@gmail.com>
+References: <4C9E234D.4020705@gmail.com>
+Message-ID: <AANLkTinp2DwX_cmxYMqZeLCwRvUfjv5nouzg-zvS=4qL@mail.gmail.com>
+
+On Sat, Sep 25, 2010 at 12:29 PM, Mark Tuson <markfptuson at gmail.com> wrote:
+
+> The first question is: how can I get the C compiler to work properly? When
+> I've tried to compile programs, I get 'cannot create temp'
+>
+
+Try checking to see if there is any disk space left on the root RL device.
+It may be full -- these were tiny by today's standards -- disk drives.  10
+Mb, if I recall correctly.
+
+The other possibility is that the /tmp directory has the wron permission.
+It should be read/write to all (drwxrwxrwx).  If not, try running chmod 0777
+/tmp as root, then try compiling again.
+
+
+>
+> Also, how can I get the backspace key to erase? I've done *stty erase '^H'
+> * but I have to actually type <CTRL>+H to erase.
+>
+> The other thing I want to ask about is: can I compile SIMH on DOS, so it
+> doesn't display any messages except those of the simulated software, and so
+> it ignores ^E?
+>
+
+You can fix the control E problem by running the command
+
+SET CONSOLE WRU char
+
+... where char is the charcter you wish to use.  (WRU stands for "where are
+you" according to the SIMH documentation
+http://simh.trailing-edge.com/pdf/simh_doc.pdf).
+
+
+
+
+> I'm asking because I want v7 on an ancient laptop I've got lying around - a
+> 486 with 24M of core. v7x86 won't work on it, and I don't really fancy
+> putting Slack 3 back on it - if I'm going to go outdated, I might as well go
+> the whole hog and go *really* outdated.
+>
+> Though I might consider 2.11BSD, if that'll work on a machine with 24M of
+> core, and if the escapes will display properly, because
+>
+
+The biggest PDP-11 had 4 Mb of memory, so you certainly won't be limited
+there.  I suspect that if you run nothing else,on the machine you will get
+fair perfomance on the emulated PDP-11.  2.11 BSD should run.
+
+As far as your other terminal problems, you probably just need an
+appropriate setting for the TERM environment variable to get vi to work.
+Usually TERM=vt100 works, but your mileage may vary.
+
+Real men use ed, though!  [?]  I always amaze people by being by being able
+to use ed.  Of course, that's because I'm very old -- old enough to have
+actually used V6 on a real PDP-11.  I think I'll take a nap now.
+
+-- 
+"Jazz music stimulates the minds and uplifts the souls of those who play it
+was well as of those who listen to immerse themselves in it. As the mind is
+stimulated and the soul uplifted, this is eventually reflected in the body."
+-- Horace Silver
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100928/a9519d72/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 330.gif
+Type: image/gif
+Size: 96 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100928/a9519d72/attachment.gif>
+
+From downing.nick at gmail.com  Wed Sep 29 10:22:54 2010
+From: downing.nick at gmail.com (Nick Downing)
+Date: Wed, 29 Sep 2010 10:22:54 +1000
+Subject: [pups] PDP-11 (SIMH), Seventh Edition UNIX
+In-Reply-To: <4C9E234D.4020705@gmail.com>
+References: <4C9E234D.4020705@gmail.com>
+Message-ID: <AANLkTikmPvJxM14HCtZBYTOKPNn5oWwWnWCAy2P9RPyB@mail.gmail.com>
+
+A cursory examination shows that only unix compilers are supported
+(see makefile) and Win32 (see build_mingw*.bat).  There is no reason
+in principle why you couldn't compile it with djgpp
+http://www.delorie.com/djgpp/ however.  This would probably be the
+easiest thing because djgpp is a version of gcc and the code is known
+to compile under gcc on the unix platforms.  As you won't be running
+in a Windows DOS box, you must provide a DOS extender (or more
+correctly a DPMI server), a free one is PMODE/W
+http://www.sid6581.net/pmodew/ which has worked for me in the past.
+Another option would be to compile with the free Watcom C/C++
+compilers which I believe come bundled with DOS/4GW (Rational Systems,
+now Tenberry Software) as the DOS extender.
+
+More of a problem is the devices, you realize that the more basic your
+system the more trouble you are going to have getting information in?
+If you only want to run the editor and C compiler for experimentation
+then you will get bored very quickly, I remember as a student we had
+access to unix terminals via a serial link and since I didn't
+understand telnet or ftp and didn't have any internet access and no
+way to put a file on or off the system it was totally useless to me.
+With SIMH you can transfer stuff via simulated tapes (basically tar
+files) but since you want to disable ^E you won't be able to do that.
+
+I would suggest you use 2.11BSD because it has networking features so
+you can easily transfer your source code/etc on and off the system.
+However that leads to a nasty problem, which is that you will have to
+obtain a DOS packet driver for your laptop
+http://www.brutman.com/Dos_Networking/packet_drivers.html and
+implement a simulated network device for SIMH, I did something like
+this a while ago and it isn't trivial.  (Another option would be to
+get a FOSSIL driver http://pcmicro.com/bnu/ and implement a simulated
+serial device for SIMH, you could then make a SLIP connection to a
+Linux or Windows machine).  All things considered I believe your best
+option is to restore Slackware 3 (or some other linux) and then run
+SIMH under that, with the TUN/TAP device or whatever to allow an
+ethernet connection.  Somewhere I have a set of floppy disk images, I
+think it was Slackware 4, which you could write out to floppy and
+install on the box.
+
+cheers, Nick
+
+On Sun, Sep 26, 2010 at 2:29 AM, Mark Tuson <markfptuson at gmail.com> wrote:
+> Hi everyone, this is my first message, after being on the mailing list for
+> the best part of three years :)
+>
+> I've a couple of [hopefully] simple questions about running Seventh Edition
+> UNIX on SIMH.
+>
+> The first question is: how can I get the C compiler to work properly? When
+> I've tried to compile programs, I get 'cannot create temp' - here's a full
+> list of what's on the screen:
+>
+> @boot
+> New Boot, known devices are hp ht rk rl rp tm vt
+> : rl(0,0)rl2unix
+> mem = 177856
+> # Thu Sep 22 07:50:47 EDT 1988
+>
+> login: mark
+> $ ed
+> a
+> main() {
+>   printf("  Hello.\n");
+>   return; }
+>
+> .
+> w a.c
+> 46
+> q
+> $ cc a.c
+> cc: cannot create temp
+> $
+>
+> Also, how can I get the backspace key to erase? I've done stty erase '^H'
+> but I have to actually type <CTRL>+H to erase.
+>
+> The other thing I want to ask about is: can I compile SIMH on DOS, so it
+> doesn't display any messages except those of the simulated software, and so
+> it ignores ^E?
+>
+> I'm asking because I want v7 on an ancient laptop I've got lying around - a
+> 486 with 24M of core. v7x86 won't work on it, and I don't really fancy
+> putting Slack 3 back on it - if I'm going to go outdated, I might as well go
+> the whole hog and go really outdated.
+>
+> Though I might consider 2.11BSD, if that'll work on a machine with 24M of
+> core, and if the escapes will display properly, because
+>
+> [24;1H[?1h=[;H[2J
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~[H
+>
+> is a little bit difficult to work with when I'm wanting to edit source code.
+>
+> Thanks very much. Mark Tuson.
+>
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/pups
+>
+>
+
+
+From bqt at softjar.se  Wed Sep 29 19:24:30 2010
+From: bqt at softjar.se (Johnny Billquist)
+Date: Wed, 29 Sep 2010 11:24:30 +0200
+Subject: [pups] PDP-11 (SIMH), Seventh Edition UNIX
+In-Reply-To: <4C9E234D.4020705@gmail.com>
+References: <4C9E234D.4020705@gmail.com>
+Message-ID: <4CA305CE.40807@softjar.se>
+
+Mark Tuson wrote:
+> Hi everyone, this is my first message, after being on the mailing list 
+> for the best part of three years :)
+> 
+> I've a couple of [hopefully] simple questions about running Seventh 
+> Edition UNIX on SIMH.
+
+Oh joy! :-)
+
+> The first question is: how can I get the C compiler to work properly? 
+> When I've tried to compile programs, I get 'cannot create temp' - here's 
+> a full list of what's on the screen:
+> 
+> @boot
+> New Boot, known devices are hp ht rk rl rp tm vt
+> : rl(0,0)rl2unix
+> mem = 177856
+> # Thu Sep 22 07:50:47 EDT 1988
+> 
+> login: mark
+> $ ed
+> a
+> main() {
+>   printf("  Hello.\n");
+>   return; }
+> 
+> .
+> w a.c
+> 46
+> q
+> $ cc a.c
+> cc: cannot create temp
+> $
+
+As others have mentioned, it could be problems with /tmp protection, as 
+well as checking if there actually is any free space there.
+
+> Also, how can I get the backspace key to erase? I've done /stty erase 
+> '^H'/ but I have to actually type <CTRL>+H to erase.
+
+You need to know what code the key you call "backspace" actually sends. 
+I suspect it is not sending a backspace, but a DEL (DEL is actually the 
+traditional character used to delete, BS is a modern perversion).
+
+> The other thing I want to ask about is: can I compile SIMH on DOS, so it 
+> doesn't display any messages except those of the simulated software, and 
+> so it ignores ^E?
+
+For the messages, I'm not sure what you are thinking of. Is it the ones 
+before boot time, or is there some other messages that you see?
+
+As for the ^E, that is configured in simh when running.
+
+> I'm asking because I want v7 on an ancient laptop I've got lying around 
+> - a 486 with 24M of core. v7x86 won't work on it, and I don't really 
+> fancy putting Slack 3 back on it - if I'm going to go outdated, I might 
+> as well go the whole hog and go /really/ outdated.
+
+:-)
+
+> Though I might consider 2.11BSD, if that'll work on a machine with 24M 
+> of core, and if the escapes will display properly, because
+> 
+> [24;1H[?1h=[;H[2J
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~
+>                  ~[H
+> 
+> is a little bit difficult to work with when I'm wanting to edit source code.
+
+2.11BSD won't make a difference. You'll see the same result. This is a 
+problem because you are running under DOS. It is the DOS screen handler 
+that needs to understand whatever codes are output by the programs 
+running inside simh. In this case, the program inside simh thinks it is 
+connected to a VT100 (or xterm, or something similar), and sends escape 
+codes based on that. I don't know why it thinks so, but I suspect you 
+told the system by setting the TERM variable. Please set it to something 
+that matches reality, or else fix reality. :-)
+
+	Johnny
+
+
+
+From frank at wortner.com  Wed Sep 29 21:49:55 2010
+From: frank at wortner.com (Frank Wortner)
+Date: Wed, 29 Sep 2010 07:49:55 -0400
+Subject: [pups] PDP-11 (SIMH), Seventh Edition UNIX
+In-Reply-To: <Pine.BSI.4.64.1009291120060.4063@dave.horsfall.org>
+References: <4C9E234D.4020705@gmail.com>
+	<AANLkTinp2DwX_cmxYMqZeLCwRvUfjv5nouzg-zvS=4qL@mail.gmail.com>
+	<Pine.BSI.4.64.1009291120060.4063@dave.horsfall.org>
+Message-ID: <64EDF1EC-441F-4FA8-9FD2-064097842400@wortner.com>
+
+You've bested me there -- by a little.  I only had the Sixth Edition on an 11/45.  Now I could probably emulate that system on this iPhone, and it would run faster than the actual hardware.
+
+Oh well, time to stop wallowing in nostalgia.  ;-)
+
+Sent from my iPhone
+
+On Sep 28, 2010, at 9:42 PM, Dave Horsfall <dave at horsfall.org> wrote:
+> And besides, I've used V5 on a /40 :-)
+> 
+> -- Dave, turning 58 next month
+
+
+From rde at tavi.co.uk  Wed Sep 29 21:56:41 2010
+From: rde at tavi.co.uk (Bob Eager)
+Date: Wed, 29 Sep 2010 12:56:41 +0100
+Subject: [pups] PDP-11 (SIMH), Seventh Edition UNIX
+In-Reply-To: <64EDF1EC-441F-4FA8-9FD2-064097842400@wortner.com>
+References: <4C9E234D.4020705@gmail.com>
+	<AANLkTinp2DwX_cmxYMqZeLCwRvUfjv5nouzg-zvS=4qL@mail.gmail.com>
+	<Pine.BSI.4.64.1009291120060.4063@dave.horsfall.org>
+	<64EDF1EC-441F-4FA8-9FD2-064097842400@wortner.com>
+Message-ID: <20100929125641.05d90167@raksha.tavi.co.uk>
+
+We had what I believe was one of the first (if not the first) UNIX
+system in England. Sixth Edition on an 11/40, with two RK05 drives.
+
+And I don't even know anyone else who tried Mini-UNIX - I put it on an
+11/20.
+
+
+On Wed, 29 Sep 2010 07:49:55 -0400
+Frank Wortner <frank at wortner.com> wrote:
+
+> You've bested me there -- by a little.  I only had the Sixth Edition
+> on an 11/45.  Now I could probably emulate that system on this
+> iPhone, and it would run faster than the actual hardware.
+> 
+> Oh well, time to stop wallowing in nostalgia.  ;-)
+> 
+> Sent from my iPhone
+> 
+> On Sep 28, 2010, at 9:42 PM, Dave Horsfall <dave at horsfall.org> wrote:
+> > And besides, I've used V5 on a /40 :-)
+> > 
+> > -- Dave, turning 58 next month
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From pechter at gmail.com  Thu Sep 30 00:02:38 2010
+From: pechter at gmail.com (Bill Pechter)
+Date: Wed, 29 Sep 2010 10:02:38 -0400
+Subject: [pups] PDP-11 (SIMH), Seventh Edition UNIX
+In-Reply-To: <4CA305CE.40807@softjar.se>
+References: <4C9E234D.4020705@gmail.com>
+	<4CA305CE.40807@softjar.se>
+Message-ID: <AANLkTik5Ni7SARxa4x9-_2M6UxYaD18OR2t_Y2Z4JeSf@mail.gmail.com>
+
+Anyone else here remember fansi-console's ansi emulator.
+
+Works great instead of ansi.sys and is a pretty good screen driver for dos.
+
+On Wed, Sep 29, 2010 at 5:24 AM, Johnny Billquist <bqt at softjar.se> wrote:
+
+> Mark Tuson wrote:
+>
+>> Hi everyone, this is my first message, after being on the mailing list for
+>> the best part of three years :)
+>>
+> Though I might consider 2.11BSD, if that'll work on a machine with 24M of
+> core, and if the escapes will display properly, because
+>
+>>
+>> [24;1H[?1h=[;H[2J
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~
+>>                 ~[H
+>>
+>> is a little bit difficult to work with when I'm wanting to edit source
+>> code.
+>>
+>
+> 2.11BSD won't make a difference. You'll see the same result. This is a
+> problem because you are running under DOS. It is the DOS screen handler that
+> needs to understand whatever codes are output by the programs running inside
+> simh. In this case, the program inside simh thinks it is connected to a
+> VT100 (or xterm, or something similar), and sends escape codes based on
+> that. I don't know why it thinks so, but I suspect you told the system by
+> setting the TERM variable. Please set it to something that matches reality,
+> or else fix reality. :-)
+>
+>        Johnny
+>
+
+
+Anyone else here remember fansi-console's ansi emulator.
+
+Works great instead of ansi.sys and is a pretty good screen driver for dos.
+
+http://www.highbeam.com/doc/1G1-11953307.html
+
+Bill
+
+--
+  d|i|g|i|t|a|l had it THEN.  Don't you wish you could still buy it now!
+ pechter-at-gmail.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100929/a5237924/attachment.html>
+
+From cube1 at charter.net  Thu Sep 30 10:48:52 2010
+From: cube1 at charter.net (Jay Jaeger)
+Date: Wed, 29 Sep 2010 19:48:52 -0500
+Subject: [pups] PDP-11 (SIMH), Seventh Edition UNIX
+In-Reply-To: <AANLkTik5Ni7SARxa4x9-_2M6UxYaD18OR2t_Y2Z4JeSf@mail.gmail.c
+ om>
+References: <4CA305CE.40807@softjar.se> <4C9E234D.4020705@gmail.com>
+	<4CA305CE.40807@softjar.se>
+Message-ID: <4.3.2.7.2.20100929194842.045f2ac8@cirithi>
+
+I do indeed.
+
+At 10:02 AM 9/29/2010 -0400, Bill Pechter wrote:
+>Anyone else here remember fansi-console's ansi emulator.
+>
+>Works great instead of ansi.sys and is a pretty good screen driver for dos.
+>
+>On Wed, Sep 29, 2010 at 5:24 AM, Johnny Billquist 
+><<mailto:bqt at softjar.se>bqt at softjar.se> wrote:
+>Mark Tuson wrote:
+>Hi everyone, this is my first message, after being on the mailing list for 
+>the best part of three years :)
+>
+>Though I might consider 2.11BSD, if that'll work on a machine with 24M of 
+>core, and if the escapes will display properly, because
+>[24;1H[?1h=[;H[2J
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~
+>                 ~[H
+>
+>is a little bit difficult to work with when I'm wanting to edit source code.
+>
+>
+>2.11BSD won't make a difference. You'll see the same result. This is a 
+>problem because you are running under DOS. It is the DOS screen handler 
+>that needs to understand whatever codes are output by the programs running 
+>inside simh. In this case, the program inside simh thinks it is connected 
+>to a VT100 (or xterm, or something similar), and sends escape codes based 
+>on that. I don't know why it thinks so, but I suspect you told the system 
+>by setting the TERM variable. Please set it to something that matches 
+>reality, or else fix reality. :-)
+>
+>        Johnny
+>
+>
+>
+>Anyone else here remember fansi-console's ansi emulator.
+>
+>Works great instead of ansi.sys and is a pretty good screen driver for dos.
+>
+><http://www.highbeam.com/doc/1G1-11953307.html>http://www.highbeam.com/doc/1G1-11953307.html
+>
+>Bill
+>
+>--
+>   d|i|g|i|t|a|l had it THEN.  Don't you wish you could still buy it now!
+>  <http://pechter-at-gmail.com>pechter-at-gmail.com
+>_______________________________________________
+>PUPS mailing list
+>PUPS at minnie.tuhs.org
+>https://minnie.tuhs.org/mailman/listinfo/pups
+
+---
+Jay R. Jaeger                                   The Computer Collection
+cube1 at charter.net 
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100929/db92333e/attachment.html>
+
+From cube1 at charter.net  Thu Sep 30 10:54:39 2010
+From: cube1 at charter.net (Jay Jaeger)
+Date: Wed, 29 Sep 2010 19:54:39 -0500
+Subject: [pups] PDP-11 (SIMH), Seventh Edition UNIX
+In-Reply-To: <20100929125641.05d90167@raksha.tavi.co.uk>
+References: <64EDF1EC-441F-4FA8-9FD2-064097842400@wortner.com>
+	<4C9E234D.4020705@gmail.com>
+	<AANLkTinp2DwX_cmxYMqZeLCwRvUfjv5nouzg-zvS=4qL@mail.gmail.com>
+	<Pine.BSI.4.64.1009291120060.4063@dave.horsfall.org>
+	<64EDF1EC-441F-4FA8-9FD2-064097842400@wortner.com>
+Message-ID: <4.3.2.7.2.20100929195251.022d02c0@cirithi>
+
+We had a tape at the Univ. of Wisconsin, and a friend played with it, also 
+on an 11/20 (of which I have two in my collection -- neither that 
+particular 11/20, though one is its very close relative).
+
+The image that is on PUPS came from that friend, via myself, to PUPS.
+
+At 12:56 PM 9/29/2010 +0100, Bob Eager wrote:
+>We had what I believe was one of the first (if not the first) UNIX
+>system in England. Sixth Edition on an 11/40, with two RK05 drives.
+>
+>And I don't even know anyone else who tried Mini-UNIX - I put it on an
+>11/20.
+>
+>
+>On Wed, 29 Sep 2010 07:49:55 -0400
+>Frank Wortner <frank at wortner.com> wrote:
+>
+> > You've bested me there -- by a little.  I only had the Sixth Edition
+> > on an 11/45.  Now I could probably emulate that system on this
+> > iPhone, and it would run faster than the actual hardware.
+> >
+> > Oh well, time to stop wallowing in nostalgia.  ;-)
+> >
+> > Sent from my iPhone
+> >
+> > On Sep 28, 2010, at 9:42 PM, Dave Horsfall <dave at horsfall.org> wrote:
+> > > And besides, I've used V5 on a /40 :-)
+> > >
+> > > -- Dave, turning 58 next month
+> > _______________________________________________
+> > PUPS mailing list
+> > PUPS at minnie.tuhs.org
+> > https://minnie.tuhs.org/mailman/listinfo/pups
+>
+>_______________________________________________
+>PUPS mailing list
+>PUPS at minnie.tuhs.org
+>https://minnie.tuhs.org/mailman/listinfo/pups
+
+---	
+Jay R. Jaeger					The Computer Collection
+cube1 at charter.net
+
+
+
+From tih at hamartun.priv.no  Fri Sep  3 21:22:07 2010
+From: tih at hamartun.priv.no (Tom Ivar Helbekkmo)
+Date: Fri, 03 Sep 2010 13:22:07 +0200
+Subject: [TUHS] 2.11 BSD question... (exe sizes)
+In-Reply-To: <AANLkTi=xUSRhv4zM6c90N5BifoWUB1WMT-mwWRWma4o8@mail.gmail.com>
+	(Jason Stevens's message of "Tue, 10 Aug 2010 18:23:00 -0400")
+References: <AANLkTi=xUSRhv4zM6c90N5BifoWUB1WMT-mwWRWma4o8@mail.gmail.com>
+Message-ID: <m2vd6n2hsw.fsf@athene.hamartun.priv.no>
+
+Jason Stevens <neozeed at gmail.com> writes:
+
+> I'll admit I'm not all that swift on the pdp-11, but I get the impression
+> that the maximum exe size is 128kb with 64kb of instructions, and 64kb of
+> data?  Isn't there something that can be done with overlays or some other
+> linker thing to act like an 8086/80286 with the large memory model (ie
+> multiple segments...?)
+
+There is. :)
+
+> I've been trying to build ircII-4.4 and I can't figure out how to link
+> something that big... I've tried the -Z and -O flags to ld to no avail.
+>
+> Clearly I'm doing either something wrong, or impossible or stupid.
+
+IIRC, you want something along the lines of:
+
+ld -i -o irc -Z a.o b.o -Z c.o d.o -Z e.o f.o -Y g.o h.o -lc
+
+where -i says to use split I/D (64KB for each), each -Z introduces a set
+of object modules to go into one overlay, and the -Y introduces the
+object modules that are not to be overlaid.  You'll want your main() to
+be in the -Y group, ideally along with the most used parts of the code.
+Each -Z group should ideally contain object modules that are all used at
+the same time; the idea is to minimize the number of overlay swaps that
+have to be done.
+
+There are binaries in 2.11BSD that are built in this way.  Look for the
+-Z flag in the Makefiles.
+
+Use size(1) on the a.out to see the sizes of the various overlays and
+the main area: you'll get error messages from ld(1), and size(1) will
+help you figure out how you need to move objects around to keep the main
+area under 56KB, and each overlay under 8KB.  (Actually, I seem to
+recall that those limits can also be 48 and 16, or 40 and 24, and so
+on.  'man ld' might be of help.)
+
+> FWIW, here is the size of the same program on the VAX
+>
+> myname# ls -l irc-4.4
+> -rwxr-xr-x  1 root       413696 Jun  8 08:46 irc-4.4*
+> myname# size irc-4.4
+> text    data    bss     dec     hex
+> 293888  67584   20784   382256  5d530
+>
+> I have a feeling that 300kb of text, along with 67kb of data is just too
+> much...?
+
+You might be able to squeeze it in.  Your data space usage will be less
+on a 16-bit system, and you may be able to reduce the sizes of arrays
+and allocations here and there by accepting limitations in the resulting
+program.
+
+-tih
+-- 
+I don't believe that souls or bodies can be changed by incantation.
+                                            --Christopher Hitchens
+
+
+From shadoooo at gmail.com  Sat Sep 11 16:44:08 2010
+From: shadoooo at gmail.com (shadoooo)
+Date: Sat, 11 Sep 2010 08:44:08 +0200
+Subject: [TUHS] DG/UX for DG AV5500?
+Message-ID: <4C8B2538.4050708@gmail.com>
+
+Hello.
+I have a working Data General Aviion AV5500.
+I'm searching for DG/UX tape images, documents and software for it, 
+specially
+development kits for C.
+Anybody has a machine like this or some data?
+Thanks
+Andrea
+
+
+From reed at reedmedia.net  Tue Sep 28 08:28:39 2010
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Mon, 27 Sep 2010 17:28:39 -0500 (CDT)
+Subject: [TUHS] where to download 4.1BSD, 4.1a, 4.1b, 4.1c and others?
+Message-ID: <alpine.NEB.2.01.1009271721390.28795@t1.m.reedmedia.net>
+
+I see The Unix Tree has browsable "4.1c BSD". Where can I download this 
+(so I don't have to browse)?
+
+Also where can I find downloads for 4.1BSD and 4.1aBSD and 4.1cBSD and 
+anything after 2BSD but before 2.79BSD?
+
+Thanks
+
+Jeremy C. Reed
+
+
+From jhell at DataIX.net  Tue Sep 28 09:17:38 2010
+From: jhell at DataIX.net (jhell)
+Date: Mon, 27 Sep 2010 19:17:38 -0400
+Subject: [TUHS] where to download 4.1BSD, 4.1a, 4.1b, 4.1c and others?
+In-Reply-To: <alpine.NEB.2.01.1009271721390.28795@t1.m.reedmedia.net>
+References: <alpine.NEB.2.01.1009271721390.28795@t1.m.reedmedia.net>
+Message-ID: <4CA12612.7020509@DataIX.net>
+
+On 09/27/2010 18:28, Jeremy C. Reed wrote:
+> I see The Unix Tree has browsable "4.1c BSD". Where can I download this 
+> (so I don't have to browse)?
+> 
+> Also where can I find downloads for 4.1BSD and 4.1aBSD and 4.1cBSD and 
+> anything after 2BSD but before 2.79BSD?
+> 
+> Thanks
+> 
+> Jeremy C. Reed
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+All the information you need is right here my friend
+
+http://minnie.tuhs.org/TUHS/archive_sites.html
+
+-- 
+
+ jhell,v
+
+
+From downing.nick at gmail.com  Tue Sep 28 15:54:26 2010
+From: downing.nick at gmail.com (Nick Downing)
+Date: Tue, 28 Sep 2010 15:54:26 +1000
+Subject: [TUHS] 2.11BSD cross compiler
+Message-ID: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+
+hi everyone,
+
+Just to let you all know that a few years ago I adapted the 2.11BSD
+source so that it could be built on a modern system and transferred
+across to the PDP-11.  The changes are:
+
+1. The PDP-11 assembler was written in assembler so made a
+line-by-line translation into C code.
+2. The C compiler required access to PDP-11 math e.g. for constant
+folding, so I inserted some code from Bob Supnik's emulator in those
+places.
+3. Basically everything that runs from a makefile (e.g. "sh", "make",
+"yacc", etc) has been upgraded to a more modern coding style with non
+portable code fixed up, independence on type sizes, prototypes added,
+etc, and the build system now generates two versions where
+appropriate, one for running locally (compiled with gcc or whatever
+your local compiler is) and one for inclusion in the distribution
+(compiled with the PDP-11 cross toolchain).
+4. I also fixed a number of "just plain bugs" that obviously had
+remained undiscovered under PDP-11 conditions.
+
+I used conditional compilation and macros where appropriate so as not
+to break the PDP-11's ability to run the toolchain locally.  I used a
+binary comparison between the locally compiled build and the cross
+compiled build to weed out bugs, and it did seem to be pretty robust
+as I left it.  The only reason I didn't make this work available
+generally (apart from laziness), was that there's quite a few
+experimental changes in addition to points 1-4, for example:
+
+5. A reworking of the (existing) system that extracts strings and puts
+them in the code segment (necessary to get the PDP-11 to run large
+executables such as nethack).  I can't really remember why I did this,
+probably just to clean things up, but I don't think it's all that
+essential so perhaps could be removed for the sake of minimal change.
+6. Some changes to how "make" works, and to the Makefiles, intended to
+clean things up, which in retrospect weren't essential and should be
+removed (except for those changes necessary for point 3 above, need to
+untangle it somehow).  I didn't get around to converting all Makefiles
+so there's probably a bit of inconsistency there.  I might have broken
+some things like "make tags" and "make depend", not sure.
+7. Fortran stuff had to be disabled as the Fortran compiler is written
+in assembly language (IIRC) and would probably be difficult to convert
+into C (but I don't think this is a big deal).
+
+If anybody volunteers to sift through the changes and sort out the
+good from the dross then I will happily send the whole thing.
+
+cheers, Nick
+
+
+From newsham at lava.net  Wed Sep 29 10:24:45 2010
+From: newsham at lava.net (Tim Newsham)
+Date: Tue, 28 Sep 2010 14:24:45 -1000 (HST)
+Subject: [TUHS] 2.11BSD cross compiler
+In-Reply-To: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+Message-ID: <Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+
+> 7. Fortran stuff had to be disabled as the Fortran compiler is written
+> in assembly language (IIRC) and would probably be difficult to convert
+> into C (but I don't think this is a big deal).
+
+have you considered running Warren's emulator that can
+run individual binaries (rather than emulating the entire
+system)?  This could let you use a few (or many, if you chose)
+native tools in the build process without giving up portability.
+
+http://ftp.math.utah.edu/pub///mirrors/minnie.tuhs.org/PDP-11/Emulators/Apout/
+http://puszcza.gnu.org.ua/software/apout/
+
+> cheers, Nick
+
+Tim Newsham | www.thenewsh.com/~newsham | thenewsh.blogspot.com
+
+
+From lm at bitmover.com  Wed Sep 29 10:51:48 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Tue, 28 Sep 2010 17:51:48 -0700
+Subject: [TUHS] 2.11BSD cross compiler
+In-Reply-To: <Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+Message-ID: <20100929005148.GA8032@bitmover.com>
+
+There is close zero chance I'll ever use this stuff, unless I retire
+to teaching in which case I'll make people write PDP-11 assembler.
+
+But I had to come say thanks for doing this.  The PDP-11 was such
+an amazingly pleasant machine to program.  I can easily imagine that
+translating stuff from assembler to C is pretty straightforward.
+
+RIP DEC, you brought us some good stuff.
+
+On Tue, Sep 28, 2010 at 02:24:45PM -1000, Tim Newsham wrote:
+>> 7. Fortran stuff had to be disabled as the Fortran compiler is written
+>> in assembly language (IIRC) and would probably be difficult to convert
+>> into C (but I don't think this is a big deal).
+>
+> have you considered running Warren's emulator that can
+> run individual binaries (rather than emulating the entire
+> system)?  This could let you use a few (or many, if you chose)
+> native tools in the build process without giving up portability.
+>
+> http://ftp.math.utah.edu/pub///mirrors/minnie.tuhs.org/PDP-11/Emulators/Apout/
+> http://puszcza.gnu.org.ua/software/apout/
+>
+>> cheers, Nick
+>
+> Tim Newsham | www.thenewsh.com/~newsham | thenewsh.blogspot.com
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From cowan at ccil.org  Wed Sep 29 12:14:09 2010
+From: cowan at ccil.org (John Cowan)
+Date: Tue, 28 Sep 2010 22:14:09 -0400
+Subject: [TUHS] 2.11BSD cross compiler
+In-Reply-To: <20100929005148.GA8032@bitmover.com>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+	<20100929005148.GA8032@bitmover.com>
+Message-ID: <AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+
+On Tue, Sep 28, 2010 at 8:51 PM, Larry McVoy <lm at bitmover.com> wrote:
+
+> There is close zero chance I'll ever use this stuff, unless I retire
+> to teaching in which case I'll make people write PDP-11 assembler.
+
+That seems a tad archaic.  MIPS might be a better choice; it's 32-bit
+with 32 registers, and there are excellent simulators for it.
+
+
+From reed at reedmedia.net  Wed Sep 29 12:16:47 2010
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Tue, 28 Sep 2010 21:16:47 -0500 (CDT)
+Subject: [TUHS] where to download 4.1BSD, 4.1a, 4.1b, 4.1c and others?
+In-Reply-To: <4CA12612.7020509@DataIX.net>
+References: <alpine.NEB.2.01.1009271721390.28795@t1.m.reedmedia.net>
+	<4CA12612.7020509@DataIX.net>
+Message-ID: <alpine.NEB.2.01.1009282115270.28795@t1.m.reedmedia.net>
+
+On Mon, 27 Sep 2010, jhell wrote:
+
+> On 09/27/2010 18:28, Jeremy C. Reed wrote:
+> > I see The Unix Tree has browsable "4.1c BSD". Where can I download this 
+> > (so I don't have to browse)?
+> > 
+> > Also where can I find downloads for 4.1BSD and 4.1aBSD and 4.1cBSD and 
+> > anything after 2BSD but before 2.79BSD?
+
+> All the information you need is right here my friend
+> 
+> http://minnie.tuhs.org/TUHS/archive_sites.html
+
+
+I have looked many times (before I sent email). If you have a specific 
+URL, please point me to it.
+
+I also received multiple emails off-list telling me to buy
+McKusick's archives.
+
+
+From lm at bitmover.com  Wed Sep 29 12:38:19 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Tue, 28 Sep 2010 19:38:19 -0700
+Subject: [TUHS] 2.11BSD cross compiler
+In-Reply-To: <AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+	<20100929005148.GA8032@bitmover.com>
+	<AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+Message-ID: <20100929023819.GA12919@bitmover.com>
+
+On Tue, Sep 28, 2010 at 10:14:09PM -0400, John Cowan wrote:
+> On Tue, Sep 28, 2010 at 8:51 PM, Larry McVoy <lm at bitmover.com> wrote:
+> 
+> > There is close zero chance I'll ever use this stuff, unless I retire
+> > to teaching in which case I'll make people write PDP-11 assembler.
+> 
+> That seems a tad archaic.  MIPS might be a better choice; it's 32-bit
+> with 32 registers, and there are excellent simulators for it.
+
+Color me old school.  I like MIPS, I worked at SGI (got married to
+an old school MIPS gal) but PDP-11 is so frigging intuitive.  How
+can you not understand that instruction set?  If you can't, well,
+sorry, not so much in my book.  It's like a stripped down C.
+
+Come on - has anyone ever seen a better instruction set?  More 
+complicated, yeah, holy moly, yeah.  But cleaner?  We owe DEC
+for that one.
+
+That said, John is, as always, (probably) right.  He's certainly right
+if we are talking about skills that go to today's market, PDP-11 is not
+so much.  I said "probably" because I suspect there are some people for
+whom the light will go on if they do PDP-11 assembler but not so much
+on MIPS.
+
+Personally, I like anyone who can do any assembler.  One of my interview
+questions is "have you written swtch?"  If you don't get the question
+you are not an OS person, if you are, of course you get it.  In any
+assembler (I wrote it in VAX, M68K, NS32032 though that last one was
+wishful thinking - I still wish that one hadn't been so buggy).
+
+All this late night rambling aside, +1 on the efforts of Nick, +1 on
+anyone who groks PDP-11 assembly.  Those are soon to be lost skills
+and I admire them.  Had a TA who could read octal dumps just like they
+were C.  Ken Witte - wonder where he is now.  I used to bribe him with
+a six pack to come over and help me and he'd have a beer in his hand
+and the line printer output in the other and be laughing at me for some
+retarded thing I had done that he figured out from the octal.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From lm at bitmover.com  Wed Sep 29 12:39:51 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Tue, 28 Sep 2010 19:39:51 -0700
+Subject: [TUHS] where to download 4.1BSD, 4.1a, 4.1b, 4.1c and others?
+In-Reply-To: <alpine.NEB.2.01.1009282115270.28795@t1.m.reedmedia.net>
+References: <alpine.NEB.2.01.1009271721390.28795@t1.m.reedmedia.net>
+	<4CA12612.7020509@DataIX.net>
+	<alpine.NEB.2.01.1009282115270.28795@t1.m.reedmedia.net>
+Message-ID: <20100929023951.GB12919@bitmover.com>
+
+> I also received multiple emails off-list telling me to buy
+> McKusick's archives.
+
+As well you should, I'm pretty sure they have the SCCS history.  If you
+need a SCCS tool that can read 'em, we still have that though we're
+about to toss that compat mode.
+
+If not us, find some SCCS tool and start browsing, the history is fun.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From cowan at ccil.org  Wed Sep 29 12:59:22 2010
+From: cowan at ccil.org (John Cowan)
+Date: Tue, 28 Sep 2010 22:59:22 -0400
+Subject: [TUHS] 2.11BSD cross compiler
+In-Reply-To: <20100929023819.GA12919@bitmover.com>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+	<20100929005148.GA8032@bitmover.com>
+	<AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+	<20100929023819.GA12919@bitmover.com>
+Message-ID: <AANLkTin53c5N3wGpPfi5DQ1WdrqtV5+ENmSVSoiZwFXu@mail.gmail.com>
+
+On Tue, Sep 28, 2010 at 10:38 PM, Larry McVoy <lm at bitmover.com> wrote:
+
+> Color me old school.  I like MIPS, I worked at SGI (got married to
+> an old school MIPS gal) but PDP-11 is so frigging intuitive.  How
+> can you not understand that instruction set?  If you can't, well,
+> sorry, not so much in my book.  It's like a stripped down C.
+
+Yeah.  I used it on and off, but my serious assembler programming was
+on the PDP-8.  Now *that* was seriously small, but you had to know the
+tricks, like how to find out the absolute address of the 128-word
+memory page following the one you are on when writing PIC code for
+OS/8 device drivers, or how to microprogram the operate instructions
+get interesting constants into the AC.
+
+> Come on - has anyone ever seen a better instruction set?  More
+> complicated, yeah, holy moly, yeah.  But cleaner?  We owe DEC
+> for that one.
+
+I remember how appalled I was when I saw the VAX instruction set.
+Luckily, it didn't matter: I never did assembler again.  Still, trying
+to make people think in octal at this late date seems unnecessary.
+
+> Personally, I like anyone who can do any assembler.  One of my interview
+> questions is "have you written swtch?"
+
+/me chuckles.
+
+>  If you don't get the question you are not an OS person,
+> if you are, of course you get it.
+
+Well, I know what it is but I've never written it.  There was a bug in
+the V6 kernel version anyhow.
+
+> Ken Witte - wonder where he is now.
+
+Too many others out there, alas.
+
+
+From imp at bsdimp.com  Wed Sep 29 13:14:00 2010
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Tue, 28 Sep 2010 21:14:00 -0600 (MDT)
+Subject: [TUHS] 2.11BSD cross compiler
+In-Reply-To: <20100929023819.GA12919@bitmover.com>
+References: <20100929005148.GA8032@bitmover.com>
+	<AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+	<20100929023819.GA12919@bitmover.com>
+Message-ID: <20100928.211400.135748621321694136.imp@bsdimp.com>
+
+In message: <20100929023819.GA12919 at bitmover.com>
+            Larry McVoy <lm at bitmover.com> writes:
+: Had a TA who could read octal dumps just like they
+: were C.  Ken Witte - wonder where he is now.  I used to bribe him with
+: a six pack to come over and help me and he'd have a beer in his hand
+: and the line printer output in the other and be laughing at me for some
+: retarded thing I had done that he figured out from the octal.
+
+I used to impress the first year C students by typing 'more core' and
+then pointing to a random spot on the screen and saying "Oh, you
+passed NULL to strcmp here."  The sad thing was, I had about a 75% hit
+rate...  Not really a 'skill' but rather just knowing the common
+errors for the current assignment and being a lucky guesser :)
+
+Warner
+
+
+From lyricalnanoha at usotsuki.hoshinet.org  Wed Sep 29 13:17:33 2010
+From: lyricalnanoha at usotsuki.hoshinet.org (Steve Nickolas)
+Date: Wed, 29 Sep 2010 05:17:33 +0200 (CEST)
+Subject: [TUHS] 2.11BSD cross compiler
+In-Reply-To: <20100929023819.GA12919@bitmover.com>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+	<20100929005148.GA8032@bitmover.com>
+	<AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+	<20100929023819.GA12919@bitmover.com>
+Message-ID: <alpine.DEB.1.10.1009290516080.14504@ns305552.ovh.net>
+
+On Tue, 28 Sep 2010, Larry McVoy wrote:
+
+> Color me old school.  I like MIPS, I worked at SGI (got married to
+> an old school MIPS gal) but PDP-11 is so frigging intuitive.  How
+> can you not understand that instruction set?  If you can't, well,
+> sorry, not so much in my book.  It's like a stripped down C.
+>
+> Come on - has anyone ever seen a better instruction set?  More
+> complicated, yeah, holy moly, yeah.  But cleaner?  We owe DEC
+> for that one.
+
+Dunno, the only instruction set I really grok is 65C02, which is by your 
+standards probably little more than a toy.
+
+-uso.
+
+
+From lm at bitmover.com  Wed Sep 29 13:44:54 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Tue, 28 Sep 2010 20:44:54 -0700
+Subject: [TUHS] 2.11BSD cross compiler
+In-Reply-To: <AANLkTin53c5N3wGpPfi5DQ1WdrqtV5+ENmSVSoiZwFXu@mail.gmail.com>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+	<20100929005148.GA8032@bitmover.com>
+	<AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+	<20100929023819.GA12919@bitmover.com>
+	<AANLkTin53c5N3wGpPfi5DQ1WdrqtV5+ENmSVSoiZwFXu@mail.gmail.com>
+Message-ID: <20100929034454.GD12919@bitmover.com>
+
+On all this old school stuff - just in case you think it doesn't matter,
+it does.  One of the best guys I have here is a guy who did printer 
+firmware.  I had to teach him what a cache was, he had never seen one.
+But holy moly does he hold the whole picture in his head.  And has 
+forgotten more about SCM than I'll ever know (we do that stuff, 
+BitKeeper, etc).
+
+People who understand the hardware are useful.  I cringe at what we 
+call a CS degree these days.
+
+And BTW, if you are one of those old school guys and want a job, hit 
+me up.  We're very picky, we have a ~8 year retention rate, but that's
+because we make sure that you will be happy and we will be happy.  If
+we have one good hire a year I'm ecstatic.  Gotta be Bay Area for the
+first year though (you can live in my guest house in the redwoods :)
+
+--lm
+
+On Tue, Sep 28, 2010 at 10:59:22PM -0400, John Cowan wrote:
+> On Tue, Sep 28, 2010 at 10:38 PM, Larry McVoy <lm at bitmover.com> wrote:
+> 
+> > Color me old school.  I like MIPS, I worked at SGI (got married to
+> > an old school MIPS gal) but PDP-11 is so frigging intuitive.  How
+> > can you not understand that instruction set?  If you can't, well,
+> > sorry, not so much in my book.  It's like a stripped down C.
+> 
+> Yeah.  I used it on and off, but my serious assembler programming was
+> on the PDP-8.  Now *that* was seriously small, but you had to know the
+> tricks, like how to find out the absolute address of the 128-word
+> memory page following the one you are on when writing PIC code for
+> OS/8 device drivers, or how to microprogram the operate instructions
+> get interesting constants into the AC.
+> 
+> > Come on - has anyone ever seen a better instruction set?  More
+> > complicated, yeah, holy moly, yeah.  But cleaner?  We owe DEC
+> > for that one.
+> 
+> I remember how appalled I was when I saw the VAX instruction set.
+> Luckily, it didn't matter: I never did assembler again.  Still, trying
+> to make people think in octal at this late date seems unnecessary.
+> 
+> > Personally, I like anyone who can do any assembler.  One of my interview
+> > questions is "have you written swtch?"
+> 
+> /me chuckles.
+> 
+> >  If you don't get the question you are not an OS person,
+> > if you are, of course you get it.
+> 
+> Well, I know what it is but I've never written it.  There was a bug in
+> the V6 kernel version anyhow.
+> 
+> > Ken Witte - wonder where he is now.
+> 
+> Too many others out there, alas.
+
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From lm at bitmover.com  Wed Sep 29 13:55:34 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Tue, 28 Sep 2010 20:55:34 -0700
+Subject: [TUHS] 2.11BSD cross compiler
+In-Reply-To: <alpine.DEB.1.10.1009290516080.14504@ns305552.ovh.net>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+	<20100929005148.GA8032@bitmover.com>
+	<AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+	<20100929023819.GA12919@bitmover.com>
+	<alpine.DEB.1.10.1009290516080.14504@ns305552.ovh.net>
+Message-ID: <20100929035534.GE12919@bitmover.com>
+
+On Wed, Sep 29, 2010 at 05:17:33AM +0200, Steve Nickolas wrote:
+> On Tue, 28 Sep 2010, Larry McVoy wrote:
+>
+>> Color me old school.  I like MIPS, I worked at SGI (got married to
+>> an old school MIPS gal) but PDP-11 is so frigging intuitive.  How
+>> can you not understand that instruction set?  If you can't, well,
+>> sorry, not so much in my book.  It's like a stripped down C.
+>>
+>> Come on - has anyone ever seen a better instruction set?  More
+>> complicated, yeah, holy moly, yeah.  But cleaner?  We owe DEC
+>> for that one.
+>
+> Dunno, the only instruction set I really grok is 65C02, which is by your  
+> standards probably little more than a toy.
+
+Oh, no.  Useful.  There was similar Intel (i think) cpu that was flashable.
+I wrote code for it that muxed two lines over one serial line.  I'm sorta
+proud of this, this was back in the BLIT days (loved that terminal, holy
+crap, loved it).  I was a grad student at Wisconsin and we had one long
+serial port line to our office, no ethernet (this was back when 10Mbit
+was really weird).  Shared an office with another guy and we had one
+blit.  I talked the department out of another one, and did a wire wrapped
+board with that CPU on it and all it did was use the 8th bit to mux.
+Bit set, his blit, not set, my blit.
+
+Worked fantastic until the blits melted.  Still miss those, they were the
+X terminal ahead of their time. 
+
+Anyhoo, the 6502 is a fine little processor and knowing how to make it
+sing is a useful skill.
+
+It's not the toy-ness so much, it's what you do with it.  You can do a
+lot with that CPU, ask any car company.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From wkt at tuhs.org  Wed Sep 29 14:34:51 2010
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 29 Sep 2010 14:34:51 +1000
+Subject: [TUHS] 6502 and swtch, was Re: 2.11BSD cross compiler
+In-Reply-To: <20100929035534.GE12919@bitmover.com>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+	<20100929005148.GA8032@bitmover.com>
+	<AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+	<20100929023819.GA12919@bitmover.com>
+	<alpine.DEB.1.10.1009290516080.14504@ns305552.ovh.net>
+	<20100929035534.GE12919@bitmover.com>
+Message-ID: <20100929043451.GA2673@minnie.tuhs.org>
+
+> On Wed, Sep 29, 2010 at 05:17:33AM +0200, Steve Nickolas wrote:
+> > On Tue, 28 Sep 2010, Larry McVoy wrote:
+> > Dunno, the only instruction set I really grok is 65C02, which is by your  
+> > standards probably little more than a toy.
+
+On Tue, Sep 28, 2010 at 08:55:34PM -0700, Larry McVoy wrote:
+> Anyhoo, the 6502 is a fine little processor and knowing how to make it
+> sing is a useful skill.
+
+Argh, I wasn't going to post back but I can't resist. Back in the 80's I
+rewrote Xinu from C into 6502 assembly, and got very primitive multitasking
+working on the Apple ][. I guess that counts as writing swtch :-)
+
+ftp://minnie.tuhs.org/pub/apple2/apple2xinu.tar.gz
+
+Cheers,
+	Warren
+
+
+From lyricalnanoha at usotsuki.hoshinet.org  Wed Sep 29 15:13:37 2010
+From: lyricalnanoha at usotsuki.hoshinet.org (Steve Nickolas)
+Date: Wed, 29 Sep 2010 07:13:37 +0200 (CEST)
+Subject: [TUHS] 6502 and swtch, was Re: 2.11BSD cross compiler
+In-Reply-To: <20100929043451.GA2673@minnie.tuhs.org>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+	<20100929005148.GA8032@bitmover.com>
+	<AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+	<20100929023819.GA12919@bitmover.com>
+	<alpine.DEB.1.10.1009290516080.14504@ns305552.ovh.net>
+	<20100929035534.GE12919@bitmover.com>
+	<20100929043451.GA2673@minnie.tuhs.org>
+Message-ID: <alpine.DEB.1.10.1009290710170.20010@ns305552.ovh.net>
+
+On Wed, 29 Sep 2010, Warren Toomey wrote:
+
+> Argh, I wasn't going to post back but I can't resist. Back in the 80's I
+> rewrote Xinu from C into 6502 assembly, and got very primitive multitasking
+> working on the Apple ][. I guess that counts as writing swtch :-)
+>
+> ftp://minnie.tuhs.org/pub/apple2/apple2xinu.tar.gz
+
+Specific to, I'm guessing, the banking hardware of the Laser 3000/Dick 
+Smith Cat?  (I saw a disk image on Asimov with your name on it that 
+mentioned the Cat.  I've used a Laser 128, but never a 3000 which is 
+apparently a bit more different from a real ][.)
+
+It might be made to work on a real ][ with some heavy wizardry.  I think I 
+saw someone on comp.sys.apple2 talking about doing that a few months back.
+
+Running some sort of *x on an Apple ][ would be interesting, seeing as 
+it's been done on the C64.  I actually own an Apple //e.
+
+-uso.
+
+
+From john_finigan at yahoo.com  Thu Sep 30 02:20:41 2010
+From: john_finigan at yahoo.com (John Finigan)
+Date: Wed, 29 Sep 2010 09:20:41 -0700 (PDT)
+Subject: [TUHS] 2.11BSD cross compiler
+In-Reply-To: <mailman.2278.1285732537.1039.tuhs@minnie.tuhs.org>
+Message-ID: <311237.31998.qm@web37007.mail.mud.yahoo.com>
+
+> > There is close zero chance I'll ever use this stuff,
+> > unless I retire
+> > to teaching in which case I'll make people write
+> > PDP-11 assembler.
+> 
+> That seems a tad archaic.  MIPS might be a better
+> choice; it's 32-bit
+> with 32 registers, and there are excellent simulators for
+> it.
+
+At my university there's a grad class that's ostensibly on reverse
+engineering,but you can't really disassemble anything if you don't
+learn assembler, so you learn it.  The downside, I guess, is that
+I've read a decent amount of x86 assembler, but written very little.
+
+I don't think it's a bad way to learn, but of course, Larry was
+talking about teaching a nice instruction set, and you
+kind of lose that.  But you get Windows DLL function calling 
+back as a booby prize.  
+
+John Finigan
+
+
+
+From lm at bitmover.com  Thu Sep 30 07:34:41 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Wed, 29 Sep 2010 14:34:41 -0700
+Subject: [TUHS] 2.11BSD cross compiler
+In-Reply-To: <20100929205442.GA2858@server.vk2pj.dyndns.org>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+	<20100929005148.GA8032@bitmover.com>
+	<AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+	<20100929023819.GA12919@bitmover.com>
+	<alpine.DEB.1.10.1009290516080.14504@ns305552.ovh.net>
+	<20100929035534.GE12919@bitmover.com>
+	<20100929205442.GA2858@server.vk2pj.dyndns.org>
+Message-ID: <20100929213441.GE32130@bitmover.com>
+
+On Thu, Sep 30, 2010 at 06:54:42AM +1000, Peter Jeremy wrote:
+> On 2010-Sep-28 20:55:34 -0700, Larry McVoy <lm at bitmover.com> wrote:
+> >On Wed, Sep 29, 2010 at 05:17:33AM +0200, Steve Nickolas wrote:
+> >> Dunno, the only instruction set I really grok is 65C02, which is by your  
+> >> standards probably little more than a toy.
+> >
+> >Oh, no.  Useful.  There was similar Intel (i think) cpu that was flashable.
+> 
+> Maybe 8748.  There was a mask version of this in the PC keyboard
+> controller (and hence still buried in most if not all southbridges).
+> That was followed by the 8051 family (8751 would have been the EPROM
+> version) - which I believe was very popular in car ECUs.  It was also
+
+I think it was a variant of the 8051 that had EPROM and 3 UARTs.  Because
+I needed 3 - one for the long line to the CS building, and 2 for the 2
+terminals.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From grog at lemis.com  Thu Sep 30 14:22:29 2010
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Thu, 30 Sep 2010 14:22:29 +1000
+Subject: [TUHS] PDP-8 (was: 2.11BSD cross compiler)
+In-Reply-To: <AANLkTin53c5N3wGpPfi5DQ1WdrqtV5+ENmSVSoiZwFXu@mail.gmail.com>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+	<20100929005148.GA8032@bitmover.com>
+	<AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+	<20100929023819.GA12919@bitmover.com>
+	<AANLkTin53c5N3wGpPfi5DQ1WdrqtV5+ENmSVSoiZwFXu@mail.gmail.com>
+Message-ID: <20100930042229.GA66070@dereel.lemis.com>
+
+On Tuesday, 28 September 2010 at 22:59:22 -0400, John Cowan wrote:
+> On Tue, Sep 28, 2010 at 10:38 PM, Larry McVoy <lm at bitmover.com> wrote:
+>
+>> Color me old school.  I like MIPS, I worked at SGI (got married to
+>> an old school MIPS gal) but PDP-11 is so frigging intuitive.  How
+>> can you not understand that instruction set?  If you can't, well,
+>> sorry, not so much in my book.  It's like a stripped down C.
+>
+> Yeah.  I used it on and off, but my serious assembler programming
+> was on the PDP-8.  Now *that* was seriously small, but you had to
+> know the tricks, like how to find out the absolute address of the
+> 128-word memory page following the one you are on when writing PIC
+> code for OS/8 device drivers, or how to microprogram the operate
+> instructions get interesting constants into the AC.
+
+That was my first machine too (well, a PDP-12, which was really a
+hybrid PDP-8/LINC-8, but I only used the PDP-8 instructions).  That
+was a nice, compact instruction set.  It has the great advantage that
+I can still remember just about every instruction today.  Remember the
+autoincrement registers?  Even in those days they looked like a
+kludge, but they helped a lot.
+
+>> Come on - has anyone ever seen a better instruction set?  More
+>> complicated, yeah, holy moly, yeah.  But cleaner?  We owe DEC
+>> for that one.
+>
+> I remember how appalled I was when I saw the VAX instruction set.
+> Luckily, it didn't matter: I never did assembler again.  Still,
+> trying to make people think in octal at this late date seems
+> unnecessary.
+
+It's funny how long octal clung on.  It should have gone away with 8
+bit bytes.  But somehow I still have a soft spot for octal, and
+numbers like 7778 still look wrong.
+
+>> Personally, I like anyone who can do any assembler.  One of my interview
+>> questions is "have you written swtch?"
+>>
+>>  If you don't get the question you are not an OS person,
+>> if you are, of course you get it.
+
+Hmm.  Am I expected to understand this?  Seriously, I don't know how
+many people really wrote anything like swtch ().
+
+Greg
+--
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  See
+http://www.lemis.com/grog/email/signed-mail.php for more details.
+If your Microsoft MUA reports problems, please read
+http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 195 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100930/4857efaa/attachment.sig>
+
+From cowan at ccil.org  Thu Sep 30 14:53:55 2010
+From: cowan at ccil.org (John Cowan)
+Date: Thu, 30 Sep 2010 00:53:55 -0400
+Subject: [TUHS] PDP-8 (was: 2.11BSD cross compiler)
+In-Reply-To: <20100930042229.GA66070@dereel.lemis.com>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+	<20100929005148.GA8032@bitmover.com>
+	<AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+	<20100929023819.GA12919@bitmover.com>
+	<AANLkTin53c5N3wGpPfi5DQ1WdrqtV5+ENmSVSoiZwFXu@mail.gmail.com>
+	<20100930042229.GA66070@dereel.lemis.com>
+Message-ID: <AANLkTinuzxEGLQj5iiywT6OiYmjCng2hcdkCAkXEC1am@mail.gmail.com>
+
+On Thu, Sep 30, 2010 at 12:22 AM, Greg 'groggy' Lehey <grog at lemis.com> wrote:
+
+>  Remember the
+> autoincrement registers?  Even in those days they looked like a
+> kludge, but they helped a lot.
+
+I hardly ever used them, but I can't remember exactly why not.  I
+remember writing quite a few subroutine libraries in PAL/8, and of
+course you didn't want to steal them from the main program.
+
+> It's funny how long octal clung on.  It should have gone away with 8
+> bit bytes.
+
+Octal made some sense on the PDP-11, with its 3-bit register fields,
+even though the instructions were 16 bits.  I think the notation got
+stabilized in the culture just because it was included in C.  In my
+pre-announcement review of Go (not a work assignment, just something I
+went and did when I was at Google) I urged them to remove octal from
+integer, character, and string literals, but nope, they are still
+there.  For one thing, it means that literals interoperate among C,
+C++, and Go, though I don't know if that was the motivation.
+
+>  But somehow I still have a soft spot for octal, and
+> numbers like 7778 still look wrong.
+
+/me chuckles.
+
+> Hmm.  Am I expected to understand this?
+
+No.
+
+
+From peterjeremy at acm.org  Thu Sep 30 06:54:42 2010
+From: peterjeremy at acm.org (Peter Jeremy)
+Date: Thu, 30 Sep 2010 06:54:42 +1000
+Subject: [TUHS] 2.11BSD cross compiler
+In-Reply-To: <20100929035534.GE12919@bitmover.com>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+	<20100929005148.GA8032@bitmover.com>
+	<AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+	<20100929023819.GA12919@bitmover.com>
+	<alpine.DEB.1.10.1009290516080.14504@ns305552.ovh.net>
+	<20100929035534.GE12919@bitmover.com>
+Message-ID: <20100929205442.GA2858@server.vk2pj.dyndns.org>
+
+On 2010-Sep-28 20:55:34 -0700, Larry McVoy <lm at bitmover.com> wrote:
+>On Wed, Sep 29, 2010 at 05:17:33AM +0200, Steve Nickolas wrote:
+>> Dunno, the only instruction set I really grok is 65C02, which is by your  
+>> standards probably little more than a toy.
+>
+>Oh, no.  Useful.  There was similar Intel (i think) cpu that was flashable.
+
+Maybe 8748.  There was a mask version of this in the PC keyboard
+controller (and hence still buried in most if not all southbridges).
+That was followed by the 8051 family (8751 would have been the EPROM
+version) - which I believe was very popular in car ECUs.  It was also
+multi-sourced.  I've used both i8748 and a Philips 8051 clone at $work
+many years ago.
+
+>Anyhoo, the 6502 is a fine little processor and knowing how to make it
+>sing is a useful skill.
+
+For various reasons, I never learnt 6502.  I preferred the Motorola CPUs
+(though $work was very Intel based).
+
+-- 
+Peter Jeremy
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 196 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100930/ea6ae489/attachment.sig>
+
+From lm at bitmover.com  Thu Sep 30 23:50:29 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Thu, 30 Sep 2010 06:50:29 -0700
+Subject: [TUHS] PDP-8 (was: 2.11BSD cross compiler)
+In-Reply-To: <20100930042229.GA66070@dereel.lemis.com>
+References: <AANLkTikjXZJ1W-0Ae5eZYfU2Kh+i+uCAB_-W=nFR-TmJ@mail.gmail.com>
+	<Pine.BSI.4.64.1009281421370.25174@malasada.lava.net>
+	<20100929005148.GA8032@bitmover.com>
+	<AANLkTikSHg16z+JpqOkVOVZAJHV+r6cDf6Zboj97uOJ9@mail.gmail.com>
+	<20100929023819.GA12919@bitmover.com>
+	<AANLkTin53c5N3wGpPfi5DQ1WdrqtV5+ENmSVSoiZwFXu@mail.gmail.com>
+	<20100930042229.GA66070@dereel.lemis.com>
+Message-ID: <20100930135029.GB30928@bitmover.com>
+
+> >>  If you don't get the question you are not an OS person,
+> >> if you are, of course you get it.
+> 
+> Hmm.  Am I expected to understand this?  Seriously, I don't know how
+> many people really wrote anything like swtch ().
+
+You'd be amazed at how many people did their own user level threads.
+Gotta write swtch() for that.
+
+And it's not swtch() so much as do you understand the stack frames?
+If you could look at the stack frames and give me a stack trace
+that's more or less the same thing.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+

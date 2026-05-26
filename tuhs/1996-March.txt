@@ -1,0 +1,261 @@
+From rjm at swift.eng.ox.ac.uk  Wed Mar 20 20:16:10 1996
+From: rjm at swift.eng.ox.ac.uk (Bob Manners)
+Date: Wed, 20 Mar 1996 10:16:10 +0000 (GMT)
+Subject: UNIX for 11/23
+Message-ID: <m0tzKw7-00000DC@swift.eng.ox.ac.uk>
+
+
+Having met with storming success (thanks Warren) in getting UNIX v6
+and v7 up and running on my 11/34, and having recently (well
+yesterday) acquired an 11/23+, I'd like to put UNIX on the latter.
+
+Now, the 11/23 has 128Kw, a 10Mb RD51 winchester and an RX50 floppy. I
+need to get hold of a version of UNIX (pref. v7) The UNIX in question
+obviously needs to support the RD51. 
+
+In the case of the 11/34 I built a UNIX image under a PDP-11 emulator
+and KERMITed it to the 11/34. I plan to do the same in this case ...
+
+Any suggestions welcome. Does v7 support RD series drives? If not,
+what does?
+
+Cheers,
+Bob.
+
+-- 
+
+----------------------------------------------------------------------------
+Robert Manners                                  Osney Laboratory
+rjm at swift.eng.ox.ac.uk                          Dept of Engineering Science
+                                                University of Oxford
+                                                01865 288762
+Computer Museum: http://swift.eng.ox.ac.uk/rjm/museum.html
+Also:            http://swift.eng.ox.ac.uk
+
+        "The comfort you've demanded is now mandatory" - Jello Biafra
+----------------------------------------------------------------------------
+
+
+
+
+From wkt at dolphin.cs.adfa.oz.au  Thu Mar 21 09:23:49 1996
+From: wkt at dolphin.cs.adfa.oz.au (Warren Toomey)
+Date: Thu, 21 Mar 1996 09:23:49 +1000 (EST)
+Subject: UNIX for 11/23
+In-Reply-To: <m0tzKw7-00000DC@swift.eng.ox.ac.uk> from "Bob Manners" at Mar 20, 96 10:16:10 am
+Message-ID: <9603202323.AA23006@dolphin>
+
+In atricle by Bob Manners:
+> 
+> Now, the 11/23 has 128Kw, a 10Mb RD51 winchester and an RX50 floppy. I
+> need to get hold of a version of UNIX (pref. v7) The UNIX in question
+> obviously needs to support the RD51. 
+> 
+> Does v7 support RD series drives? If not, what does?
+
+v7 doesn't support RDs (just looked thru the archive), and I don't know
+of anything that does. You'd probably have to write your own device driver :-(
+
+	Warren
+
+
+From sms at wlv.iipo.gtegsc.com  Thu Mar 21 08:39:32 1996
+From: sms at wlv.iipo.gtegsc.com (Steven M. Schultz)
+Date: Wed, 20 Mar 1996 14:39:32 -0800 (PST)
+Subject: UNIX for 11/23
+Message-ID: <199603202239.OAA28894@wlv.iipo.gtegsc.com>
+
+Hi -
+
+> From: wkt at dolphin.cs.adfa.oz.au (Warren Toomey)
+> In article by Bob Manners:
+> > 
+> > Does v7 support RD series drives? If not, what does?
+> 
+> v7 doesn't support RDs (just looked thru the archive), and I don't know
+> of anything that does. You'd probably have to write your own device driver :-(
+> 	Warren
+
+	Warren's correct.  MSCP support did not enter the 'BSD' picture until
+	late 2.9BSD or early 2.10BSD.  TMSCP support for tapes didn't come
+	about until early 2.11BSD when I "borrowed" the driver from 4.3BSD
+	(who had earlier borrowed it from Ultrix).
+
+	It should be noted that the MSCP (and to a greater degree TMSCP)
+	is a *pig* - it's the largest driver in the system, rivaling the
+	TTY subsystem sizewise.
+
+	An 11/23 is already extremely cramped for address space even using
+	simpler/smaller drivers such as the RK, RL, etc.  I seriously doubt
+	the MSCP driver could be smashed in to a 11/23 kernel and leave room
+	for too much else.  
+
+	Steven Schultz
+	sms at wlv.iipo.gtegsc.com
+
+
+
+From rjm at swift.eng.ox.ac.uk  Thu Mar 21 19:44:37 1996
+From: rjm at swift.eng.ox.ac.uk (Bob Manners)
+Date: Thu, 21 Mar 1996 09:44:37 +0000 (GMT)
+Subject: UNIX for 11/23 (fwd)
+Message-ID: <m0tzgv7-00000DC@swift.eng.ox.ac.uk>
+
+Forwarded message:
+Subject: Re: UNIX for 11/23
+To: wkt at csadfa.cs.adfa.oz.au (Warren Toomey)
+Date: Thu, 21 Mar 1996 09:40:12 +0000 (GMT)
+In-Reply-To: <9603202323.AA23006 at dolphin> from "Warren Toomey" at Mar 21, 96 09:23:49 am
+X-Mailer: ELM [version 2.4 PL23]
+Content-Type: text
+
+>
+>In atricle by Bob Manners:
+>> 
+>> Now, the 11/23 has 128Kw, a 10Mb RD51 winchester and an RX50 floppy. I
+>> need to get hold of a version of UNIX (pref. v7) The UNIX in question
+>> obviously needs to support the RD51. 
+>> 
+>> Does v7 support RD series drives? If not, what does?
+>
+>v7 doesn't support RDs (just looked thru the archive), and I don't know
+>of anything that does. You'd probably have to write your own device driver :-(
+
+I beleive Digital's MV7 (I think) does support RDs. It is mentioned in
+the 11/23+ Owners Manual. I'll have to check. I guess this version
+isn't in the archive ...
+
+Cheers,
+Bob.
+
+-- 
+
+----------------------------------------------------------------------------
+Robert Manners                                  Osney Laboratory
+rjm at swift.eng.ox.ac.uk                          Dept of Engineering Science
+                                                University of Oxford
+                                                01865 288762
+Computer Museum: http://swift.eng.ox.ac.uk/rjm/museum.html
+Also:            http://swift.eng.ox.ac.uk
+
+        "The comfort you've demanded is now mandatory" - Jello Biafra
+----------------------------------------------------------------------------
+
+
+
+
+-- 
+
+----------------------------------------------------------------------------
+Robert Manners                                  Osney Laboratory
+rjm at swift.eng.ox.ac.uk                          Dept of Engineering Science
+                                                University of Oxford
+                                                01865 288762
+Computer Museum: http://swift.eng.ox.ac.uk/rjm/museum.html
+Also:            http://swift.eng.ox.ac.uk
+
+        "The comfort you've demanded is now mandatory" - Jello Biafra
+----------------------------------------------------------------------------
+
+
+
+
+From rjm at swift.eng.ox.ac.uk  Thu Mar 21 19:44:25 1996
+From: rjm at swift.eng.ox.ac.uk (Bob Manners)
+Date: Thu, 21 Mar 1996 09:44:25 +0000 (GMT)
+Subject: UNIX for 11/23 (fwd)
+Message-ID: <m0tzguv-00000DC@swift.eng.ox.ac.uk>
+
+Forwarded message:
+Subject: Re: UNIX for 11/23
+To: sms at wlv.iipo.gtegsc.com (Steven M. Schultz)
+Date: Thu, 21 Mar 1996 09:43:47 +0000 (GMT)
+In-Reply-To: <199603202239.OAA28894 at wlv.iipo.gtegsc.com> from "Steven M. Schultz" at Mar 20, 96 02:39:32 pm
+X-Mailer: ELM [version 2.4 PL23]
+Content-Type: text
+
+
+What about Digital's MV7 (or whatever it was called). This is
+mentioned in the 11/23+ owners' manual as supported. Thus it must run
+on the 11/23+ and support RD series disks. It is basically Bell Labs
+version 7 I think.
+
+>	Warren's correct.  MSCP support did not enter the 'BSD' picture until
+>	late 2.9BSD or early 2.10BSD.  TMSCP support for tapes didn't come
+>	about until early 2.11BSD when I "borrowed" the driver from 4.3BSD
+>	(who had earlier borrowed it from Ultrix).
+
+OK. I guess 2.x BSD (x>=9) requires separate I+D space? That would
+rule out the 11/23+ I think.
+
+>	It should be noted that the MSCP (and to a greater degree TMSCP)
+>	is a *pig* - it's the largest driver in the system, rivaling the
+>	TTY subsystem sizewise.
+
+Yes. I can believe that. Looks like writing my own driver would be no
+fun at all!
+
+>	An 11/23 is already extremely cramped for address space even using
+>	simpler/smaller drivers such as the RK, RL, etc.  I seriously doubt
+>	the MSCP driver could be smashed in to a 11/23 kernel and leave room
+>	for too much else.  
+
+The 11/23+ has plenty of address space (22 bit), but mine only has 128Kw ...
+
+Cheers,
+
+Bob.
+-- 
+
+----------------------------------------------------------------------------
+Robert Manners                                  Osney Laboratory
+rjm at swift.eng.ox.ac.uk                          Dept of Engineering Science
+                                                University of Oxford
+                                                01865 288762
+Computer Museum: http://swift.eng.ox.ac.uk/rjm/museum.html
+Also:            http://swift.eng.ox.ac.uk
+
+        "The comfort you've demanded is now mandatory" - Jello Biafra
+----------------------------------------------------------------------------
+
+
+
+
+-- 
+
+----------------------------------------------------------------------------
+Robert Manners                                  Osney Laboratory
+rjm at swift.eng.ox.ac.uk                          Dept of Engineering Science
+                                                University of Oxford
+                                                01865 288762
+Computer Museum: http://swift.eng.ox.ac.uk/rjm/museum.html
+Also:            http://swift.eng.ox.ac.uk
+
+        "The comfort you've demanded is now mandatory" - Jello Biafra
+----------------------------------------------------------------------------
+
+
+
+
+From sms at wlv.iipo.gtegsc.com  Fri Mar 22 02:31:20 1996
+From: sms at wlv.iipo.gtegsc.com (Steven M. Schultz)
+Date: Thu, 21 Mar 1996 08:31:20 -0800 (PST)
+Subject: UNIX for 11/23 (fwd)
+Message-ID: <199603211631.IAA19050@wlv.iipo.gtegsc.com>
+
+Robert -
+
+> I beleive Digital's MV7 (I think) does support RDs. It is mentioned in
+> the 11/23+ Owners Manual. I'll have to check. I guess this version
+> isn't in the archive ...
+
+	True - Ultrix-11 (what MV7 was called later on) does have MSCP
+	support in it.  I've not looked at how they handle the rather
+	prodigious data space requirements (~2kb per controller) yet.
+
+	Cheers.
+
+	Steven
+
+
+

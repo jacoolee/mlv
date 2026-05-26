@@ -1,0 +1,332 @@
+From reed at reedmedia.net  Thu Sep  1 01:08:05 2011
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Wed, 31 Aug 2011 10:08:05 -0500 (CDT)
+Subject: [TUHS] 4.0 BSD confusion....
+In-Reply-To: <8F0F32CC-B42B-4B26-B38B-11B9DFC01A62@orthanc.ca>
+References: <CA+rfG9YLGmYw9vWWvoL=Tdfb5A1Sanz9wajzprL_SL7Sj-rLhQ@mail.gmail.com>
+	<20110830010440.GI2818@dereel.lemis.com>
+	<8F0F32CC-B42B-4B26-B38B-11B9DFC01A62@orthanc.ca>
+Message-ID: <alpine.NEB.2.01.1108310936020.7362@t1.m.reedmedia.net>
+
+On Tue, 30 Aug 2011, Lyndon Nerenberg wrote:
+
+> >>From the start if the SCCS history (April 9, 1980 ) through May 17, 
+> >>machdep.c identified the system as version 3.1. Delta 3.6 (May 18) 
+> >>changed the version string to be the SCCS delta of machdep.c, thus 
+> >>the version number jumped from 3.1 to 3.6.  The version appears to 
+> >>have tracked the machdep.c delta until Nov 10 when it was hardwired 
+> >>to '4.1'. (I say appears because I didn't take the time to examine 
+> >>all 27 deltas between 3.6 and 4.1.)
+
+Yes. I saw the same, such as 3.6 to 4.1 (nothing between):
+
+-char   version[] = "VM/UNIX (Berkeley Version %I%) %H% \n";
++char   version[] = "VM/UNIX (Berkeley Version %I%) %G% \n";
+ 
+3.6     char    version[] = "VM/UNIX (Berkeley Version 3.34) 08/31/11 \n";
+(That is today's date per %H%.)
+
+4.1     char    version[] = "VM/UNIX (Berkeley Version 4.1) 11/10/80 \n";
+ 
+D 4.1 80/11/10 15:25:31 bill 42 35      00033/00011/00386
+
+D 3.34 80/10/22 09:34:05 bill 35 34     00001/00001/00396
+
+> After a cursory search I can't find any SCCS log references to a 4.0 
+> release.
+
+But search for "stamp for 4bsd" for example.  This happened from:
+
+D 4.1 80/11/09 16:29:06 bill 5 4        00000/00000/00094
+ to
+D 4.1 80/11/09 17:02:39 bill 2 1        00000/00000/00016
+
+The previous sccs timestamps are from:
+
+D 3.2 80/06/07 02:45:12 bill 2 1        00001/00001/00044
+  to
+D 3.29 80/11/09 16:07:34 bill 29 28     00015/00086/00749
+
+This seems to imply that the concept of 4.0 never existed in the source 
+tree.  Then again, as far as I see, the SCCS didn't support or use .0 as 
+a revision.
+
+This still doesn't explain why all the source files other than libpc are 
+same from 4.0bsd and 4.1bsd in the archives.
+
+(I had noticed this same problem a year ago at least.)
+
+If someone has their own 4.0BSD archive please check if different.
+
+
+From cyrille.lefevre-lists at laposte.net  Thu Sep  1 20:32:23 2011
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Thu, 01 Sep 2011 12:32:23 +0200
+Subject: [TUHS] Photos of PDP-11s running Unix
+In-Reply-To: <20110825232429.GA13720@minnie.tuhs.org>
+References: <20110825232429.GA13720@minnie.tuhs.org>
+Message-ID: <4E5F5F37.5000201@laposte.net>
+
+Le 26/08/2011 01:24, Warren Toomey a écrit :
+> Hi all,
+> 	As part of my IEEE Spectrum article on 40 years since 1st Edition
+> Unix, I've been asked for some suitable imagery/photos. Has anybody brought
+> 1st Edition up on a real PDP-11/20, and if so, could they take some photos
+> of the system?
+>
+> I think they would even be happy with photos of PDP-11s running V6 or V7.
+>
+> Anything that you can supply would be great - there is not a lot of
+> photos from the early days of Unix.
+
+much better than this, from the tuhs ml...
+
+so, if you'll have a wifi connection, you may even make a demo ! :-)
+
+Le 01/05/2011 20:38, Jason Stevens a écrit :
+ >
+ > I thought you guys may enjoy this...
+ >
+ > http://aiju.de/code/pdp11/
+ >
+ > It's a PDP-11 with a teletype console, and a RK05 with Unix v6.
+ >
+ > Because browsers are weird, here is some of the keycommands...
+ >
+ >
+ > DEL is the interrupt key (^C on modern *nix), Pause the quit key (^\
+ > or ^L) and PrtScr is EOF (^D).
+ >
+ > Jason
+
+Regards,
+
+Cyrille Lefevre
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+
+From jrvalverde at cnb.csic.es  Sat Sep  3 04:33:17 2011
+From: jrvalverde at cnb.csic.es (Jose R. Valverde)
+Date: Fri, 2 Sep 2011 20:33:17 +0200
+Subject: [TUHS] Ideas for a Unix paper I'm writing
+In-Reply-To: <20110807202648.GF5480@att.net>
+References: <20110628001140.GA23711@minnie.tuhs.org>
+	<32496006.7412.1309232177333.JavaMail.root@zimbraanteil>
+	<20110807202648.GF5480@att.net>
+Message-ID: <20110902203317.65496ed6@cnb.csic.es>
+
+Le 01/05/2011 20:38, Jason Stevens a écrit :
+ >
+ > I thought you guys may enjoy this...
+ >
+ > http://aiju.de/code/pdp11/
+ >
+ > It's a PDP-11 with a teletype console, and a RK05 with Unix v6.
+ >
+ > Because browsers are weird, here is some of the keycommands...
+ >
+ >
+ > DEL is the interrupt key (^C on modern *nix), Pause the quit key (^\
+ > or ^L) and PrtScr is EOF (^D).
+ >
+ > Jason
+
+Indeed, that may be cool. It seems trivial to modify the source code to
+run any OS you want. The point then is to contact the author and ask
+if he does mind someone else using his code. If there is no objection
+simply save the page (with depending files), this will get you the
+JS files, among them rk05.js which gets the disk image from a hard
+coded URL. All that would be needed is changing that URL to one 
+pointing to another UNIX version disk and give it a try. If it works
+one would be able to offer v1 on the web!
+
+Yes, it's slow as hell, but that only gives it a more realistic
+appearance. ;-)
+
+-- 
+			EMBnet/CNB
+		Scientific Computing Service
+	Solving all your computer needs for Scientific
+			Research.
+
+		http://bioportal.cnb.csic.es
+		  http://www.es.embnet.org
+
+
+From neozeed at gmail.com  Thu Sep  8 04:07:34 2011
+From: neozeed at gmail.com (Jason Stevens)
+Date: Wed, 7 Sep 2011 14:07:34 -0400
+Subject: [TUHS] UNIX V 6.9999999 ?
+Message-ID: <CA+rfG9Z7N03m2ss0sWJtF4BftK_kS_SficQXFKwqCZ7Z6xHCew@mail.gmail.com>
+
+While cruising olduse.net I came across this puzzling entry in net.general
+
+
+            Department of Computer Engineering and Science
+
+                    Case Western Reserve University
+
+                            Cleveland, Ohio
+
+
+
+        We would like to announce our connection to Usenet. We are a
+
+private university located in Cleveland, vacation spot of the midwest.
+
+
+
+        The department's primary facilities consist of:
+
+
+
+        VAX 11/780: hardware: RM05's, TU77, DZ-11, DH-11 (able), 2.5 Mbytes.
+
+                    software: 4.1 BSD
+
+
+
+        PDP 11/45:  hardware: RM02, DS330 (RP04), RK05, RX02, RS04(solid
+state)
+                              cache45 (able), DH-11
+
+                    software: UNIX V 6.9999999
+
+
+
+What is UNIX V 6.9999999?? I suspect it's v6 with a bunch of patches, but
+not quite v7?  I've seen from some Russian stuff that they prefered v6 on
+pdp-11's as it "ran faster" than v7 and needed far less ram/disk space... I
+know it's 30 years too late to ask them what it is but I figure someone may
+have actually ran/used 6.9999999...
+
+
+Thanks
+
+Jason Stevens
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110907/19f52f93/attachment.html>
+
+From jsteve at superglobalmegacorp.com  Thu Sep  8 13:32:42 2011
+From: jsteve at superglobalmegacorp.com (Jason Stevens)
+Date: Wed, 7 Sep 2011 23:32:42 -0400 
+Subject: [TUHS] UNIX V 6.9999999 ?
+Message-ID: <C1DCD24F4CD3E011B4240003FF08577C254D@EXCHANGE>
+
+Ah that makes sense, I could totally see that happening.. Esp with the cost
+of hardware back then!  It is insteresting reading about people haveing
+600MB of storage back in 1981.. I can only imagine how much it'd have cost!
+
+Thanks again!
+
+Jason
+-----Original Message-----
+From: Dave Horsfall [mailto:dave at horsfall.org]
+Sent: Wednesday, September 07, 2011 11:36 PM
+To: The Eunuchs Hysterical Society
+Subject: Re: [TUHS] UNIX V 6.9999999 ?
+
+
+On Wed, 7 Sep 2011, Jason Stevens wrote:
+
+> What is UNIX V 6.9999999?? I suspect it's v6 with a bunch of patches, 
+> but not quite v7?  I've seen from some Russian stuff that they prefered 
+> v6 on pdp-11's as it "ran faster" than v7 and needed far less ram/disk 
+> space... I know it's 30 years too late to ask them what it is but I 
+> figure someone may have actually ran/used 6.9999999...
+
+Back in the V6 days, I was known as Mr Unix 6-and-a-half, because I'd 
+spliced all sorts of V7 features into V6 - notably XON/XOFF, and there was 
+no way that V7 would run on the 11/40,
+
+I rewrote the Calcommp and Versatec plotter drivers to use the block 
+interface, and they went like a bat out of hell.
+
+Sigh...  We had fun in those days.
+
+-- Dave
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From keith at bostic.com  Thu Sep  8 23:10:47 2011
+From: keith at bostic.com (Keith Bostic)
+Date: Thu, 8 Sep 2011 09:10:47 -0400
+Subject: [TUHS] 4.0 BSD confusion....
+In-Reply-To: <201108301459.p7UEx2Hr018173@chez.mckusick.com>
+References: <20110830010440.GI2818@dereel.lemis.com>
+	<201108301459.p7UEx2Hr018173@chez.mckusick.com>
+Message-ID: <CAETFuj2ux9FU2TJYHQ57dOr5NjmhR88BzN=x-B8adfh_aF1AXQ@mail.gmail.com>
+
+> > Interesting.  I've taken a look at the sources from the CD set and
+
+> found that the text there (in /usr/src/sys/sys/machdep.c) is the same
+> > as above.  Looking further, the entire directory has the same files in
+> > 4.0 and 4.1, with the same modification dates.  So it looks as the 4.0
+> > sources accidentally got replaced by the 4.1 sources.
+>
+
+Hmmm, no, I don't have anything useful to add.
+
+I suspect you could check the modification dates on the files, and the file
+SCCS IDs, against the source-code revision logs to figure this out for sure.
+
+--keith
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Keith Bostic
+keith at bostic.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110908/31417e82/attachment.html>
+
+From lyndon at orthanc.ca  Sat Sep 10 08:23:20 2011
+From: lyndon at orthanc.ca (Lyndon Nerenberg (VE6BBM/VE7TFX))
+Date: Fri, 9 Sep 2011 15:23:20 -0700
+Subject: [TUHS] UNIX V 6.9999999 ?
+In-Reply-To: <C1DCD24F4CD3E011B4240003FF08577C254D@EXCHANGE>
+Message-ID: <e23dc3826fdd5c3c5a574a99ec7c7105@orthanc.ca>
+
+> It is insteresting reading about people haveing
+> 600MB of storage back in 1981
+
+You mean both of them?
+
+
+
+From jsteve at superglobalmegacorp.com  Sat Sep 10 13:03:50 2011
+From: jsteve at superglobalmegacorp.com (Jason Stevens)
+Date: Fri, 9 Sep 2011 23:03:50 -0400 
+Subject: [TUHS] UNIX V 6.9999999 ?
+Message-ID: <C1DCD24F4CD3E011B4240003FF08577C5ADA@EXCHANGE>
+
+That is kind of what I'd imagine... In 1983 I thought 160kb was infinate
+storage.. lol 
+
+> -----Original Message-----
+> From:	Lyndon Nerenberg (VE6BBM/VE7TFX) [SMTP:lyndon at orthanc.ca]
+> Sent:	Friday, September 09, 2011 6:23 PM
+> To:	jsteve at superglobalmegacorp.com; dave at horsfall.org; tuhs at tuhs.org
+> Subject:	Re: [TUHS] UNIX V 6.9999999 ?
+> 
+> > It is insteresting reading about people haveing
+> > 600MB of storage back in 1981
+> 
+> You mean both of them?
+
+
+From lm at bitmover.com  Sat Sep 17 04:45:32 2011
+From: lm at bitmover.com (Larry McVoy)
+Date: Fri, 16 Sep 2011 11:45:32 -0700
+Subject: [TUHS] System V Interface Definition?
+Message-ID: <20110916184532.GB4003@bitmover.com>
+
+Does anyone know where I might be get a bunch of copies of the 3 volume 
+SVID 2nd edition (the 1986 release)?
+
+

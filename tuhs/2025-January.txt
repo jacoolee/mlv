@@ -1,0 +1,3515 @@
+From tuhs at tuhs.org  Wed Jan  1 02:37:22 2025
+From: tuhs at tuhs.org (Chet Ramey via TUHS)
+Date: Tue, 31 Dec 2024 11:37:22 -0500
+Subject: [TUHS] "Webster's Second on the Head of a Pin"?
+In-Reply-To: <CAKH6PiXutpcVERuCwhCaLU7FO=37d=Z3swS59XNXpN1XWsmERA@mail.gmail.com>
+References: <CA+E3k904rDBqwoiJeDES8d_hQrv9A-SZR2p9uw-mJETYzQ06RQ@mail.gmail.com>
+ <CAKH6PiXutpcVERuCwhCaLU7FO=37d=Z3swS59XNXpN1XWsmERA@mail.gmail.com>
+Message-ID: <aaa2c965-5c31-441d-9e85-762e67f7c7d1@case.edu>
+
+On 12/29/24 8:44 AM, Douglas McIlroy wrote:
+> I can supply a copy if no one else has beaten me to it.
+> 
+> Ron Hardin subsequently pushed the limit even further. Unfortunately,
+> I do not have a record of that work.
+
+Along these same lines, does anyone on the list have a copy of
+
+"J. A. Reeds, /bin/sh: The biggest UNIX security Loophole,
+11217-840302-04TM, AT&T Bell Laboratories, Murray Hill, NJ (1984)"?
+
+Years ago, in another lifetime, I wrote and asked him for a copy, but
+never got a reply.
+
+-- 
+``The lyf so short, the craft so long to lerne.'' - Chaucer
+		 ``Ars longa, vita brevis'' - Hippocrates
+Chet Ramey, UTech, CWRU    chet at case.edu    http://tiswww.cwru.edu/~chet/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: OpenPGP_signature.asc
+Type: application/pgp-signature
+Size: 203 bytes
+Desc: OpenPGP digital signature
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20241231/d0de2711/attachment.sig>
+
+From tuhs at tuhs.org  Wed Jan  1 07:46:28 2025
+From: tuhs at tuhs.org (Warren Toomey via TUHS)
+Date: Wed, 1 Jan 2025 07:46:28 +1000
+Subject: [TUHS] Fwd: dmr DECtape Analysis, part N
+Message-ID: <Z3RmNOIIwiqOPzQa@minnie.tuhs.org>
+
+All, Yufeng Gao has done more amazing work at extracting binaries,
+source code and text documents from the DECtapes that Dennis Ritchie
+provided for the Unix Archive:
+https://www.tuhs.org/Archive/Applications/Dennis_Tapes/
+
+His latest e-mail is below. I've temporarily placed his attachments here:
+https://minnie.tuhs.org/wktcloud/index.php/s/aWkck2Ljay6c5sB
+
+He needs some help with formatting old *roff documents. If someone could offer
+him help, that would be great. His e-mail address is yufeng.gao AT uq.edu.au
+
+Cheers, Warren
+
+----- Forwarded message from Yufeng Gao -----
+
+Date: Tue, 31 Dec 2024
+Subject: RE: UNIX DECtapes from dmr
+
+   Hi Warren,
+
+   Happy New Year! Here's another update. I found more UNIX bins on
+   another tape ('ken-sky'). They appear to be between V3 and V4. I have
+   attached them as "ken_sky_bins.tar". I have also attached an updated
+   tarball of the V2/V3 bins recovered from the 'e-pi' tape (with a few
+   names corrected), see "identified_v2v3_bins_r2.tar".
+
+   So far, the rough timeline of UNIX binaries (RTM hereinafter refers to
+   the exact version of the OS described by the preserved manuals) is as
+   follows:
+
+   Sys: V1 RTM <= unix-study-src < s1/s2 < V2 RTM < V3 RTM < nsys < V4 RTM
+
+   Bin: V1 RTM < s1/s2 < epi-V2 < epi-V3 < ken-sky-bins < V4 RTM
+
+   There is a possibility that the V2 bins from the 'e-pi' tape belong to
+   V2 RTM, as they're all PDP-11/20 bins with V2 headers. In contrast,
+   most of the bins from the s1/s2 tapes are V1 bins. Some of them are
+   identical to those from the 's2' tape, and if the timestamps from the
+   's2' tape can be trusted, they're from May/June 1972.
+
+   The V3 bins from the 'e-pi' tape are most likely from late 1972 or
+   early 1973, but no later than Feb 1973, as they've been overwritten by
+   files from Feb 1973. This suggests they're from a V3 beta, supported by
+   the fact that some features described in the V3 manual are missing. The
+   files were laid out in perfect alphabetical order on the tape.
+
+   The bins from the 'ken-sky' tape fall somewhere between V3 RTM and V4
+   RTM. The directory structure and other elements match the V3 manual, as
+   do the syscalls (e.g., the arguments for kill(2) differ between V3 and
+   V4, and these bins use the V3 arguments). The features, however, are
+   closer to V4. For example, nm(1) had already been rewritten in C and
+   matches the V4 manual's description. The assembler also matches the V4
+   manual in terms of the number of temp files, and the C compiler refers
+   to the assembler as 'nas.' The assembler is located physically between
+   files starting with "n" and "o," and the files around it follow a weak
+   alphabetical order, so it is logical to assume that it was named "nas".
+
+   It is a bit difficult to version these binaries, especially without any
+   timestamps. The lines between versions for early UNIX are blurry, and
+   modern software versioning terms like "beta" and "RTM" don't really
+   apply well. If these binaries are to be preserved (which I hope they
+   will be, even though the kernels are long gone), I'd put the V2 bins
+   from 'e-pi' under V2, the V3 bins from 'e-pi' under V3, and the bins
+   from 'ken-sky' under V4 (I'd argue that nsys also falls under V4, as
+   the biggest change between V3 and V4 was the kernel being rewritten in C).
+
+   There are other overwritten files on the tapes, and I will address them
+   later. There are quite a few patents, papers, and memos in *roff
+   format, but I'm not entirely sure what to do with them. Among those, I
+   have picked out some V4 distribution documents and attached them as a
+   ZIP folder :-). If you know of ways to generate PDFs from these ancient
+   *roff files accurately, please lend a hand - I'm struggling to get
+   accurate results from groff.
+
+
+   Sincerely,
+   Yufeng
+----- End forwarded message -----
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: identified_v2v3_bins_r2.tar
+Type: application/x-tar
+Size: 267264 bytes
+Desc: identified_v2v3_bins_r2.tar
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250101/ca5dc0d8/attachment-0002.tar>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: ken_sky_bins.tar
+Type: application/x-tar
+Size: 61440 bytes
+Desc: ken_sky_bins.tar
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250101/ca5dc0d8/attachment-0003.tar>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: v4_dist_docs.zip
+Type: application/x-zip-compressed
+Size: 6959 bytes
+Desc: v4_dist_docs.zip
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250101/ca5dc0d8/attachment-0001.bin>
+
+From tuhs at tuhs.org  Wed Jan  1 07:52:13 2025
+From: tuhs at tuhs.org (Warren Toomey via TUHS)
+Date: Wed, 1 Jan 2025 07:52:13 +1000
+Subject: [TUHS] Fwd: dmr DECtape Analysis, part N
+In-Reply-To: <Z3RmNOIIwiqOPzQa@minnie.tuhs.org>
+References: <Z3RmNOIIwiqOPzQa@minnie.tuhs.org>
+Message-ID: <Z3RnjYxJbCiCSwbp@minnie.tuhs.org>
+
+On Wed, Jan 01, 2025 at 07:46:28AM +1000, Warren Toomey via TUHS wrote:
+> All, Yufeng Gao has done more amazing work at extracting binaries,
+> source code and text documents from the DECtapes that Dennis Ritchie
+> provided for the Unix Archive:
+
+The file `setup` in Yufeng's file `v4_dist_docs.zip` has this interesting end:
+
+If you would like to share any UNIX compatible software with others,
+please let us know about it. If you find bugs in the software or the
+documentation, again let us know. And finally if you need any help that
+we can provide we'll do all we can.
+We expect to have a UNIX seminar early in 1974.
+.pg
+Good luck.
+.br
+Ken Thompson
+.br
+Dennis Ritchie
+.br
+Bell Telephone Labs
+.br
+Murray Hill, NJ 07974
+
+From yuyi15968 at gmail.com  Wed Jan  1 10:41:05 2025
+From: yuyi15968 at gmail.com (Jackson Helie G)
+Date: Wed, 1 Jan 2025 08:41:05 +0800
+Subject: [TUHS] B programming language interpreter
+Message-ID: <CAFmyUGGv9F0dfapmT_wNvXGNqi0cZkFaCpcQyVsctRSuVbjoDw@mail.gmail.com>
+
+I am currently looking for an interpreter for the B programming language.
+Can anyone provide one?
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250101/17b3120f/attachment.htm>
+
+From g.branden.robinson at gmail.com  Wed Jan  1 11:37:53 2025
+From: g.branden.robinson at gmail.com (G. Branden Robinson)
+Date: Tue, 31 Dec 2024 19:37:53 -0600
+Subject: [TUHS] Fwd: dmr DECtape Analysis, part N
+In-Reply-To: <Z3RmNOIIwiqOPzQa@minnie.tuhs.org>
+References: <Z3RmNOIIwiqOPzQa@minnie.tuhs.org>
+Message-ID: <20250101013753.souswbbrnwbutwbc@illithid>
+
+At 2025-01-01T07:46:28+1000, Warren Toomey via TUHS wrote:
+> All, Yufeng Gao has done more amazing work at extracting binaries,
+> source code and text documents from the DECtapes that Dennis Ritchie
+> provided for the Unix Archive:
+> https://www.tuhs.org/Archive/Applications/Dennis_Tapes/
+> 
+> His latest e-mail is below. I've temporarily placed his attachments
+> here: https://minnie.tuhs.org/wktcloud/index.php/s/aWkck2Ljay6c5sB
+> 
+> He needs some help with formatting old *roff documents. If someone
+> could offer him help, that would be great. His e-mail address is
+> yufeng.gao AT uq.edu.au
+[...]
+>    There are other overwritten files on the tapes, and I will address
+>    them later. There are quite a few patents, papers, and memos in
+>    *roff format, but I'm not entirely sure what to do with them. Among
+>    those, I have picked out some V4 distribution documents and
+>    attached them as a ZIP folder :-). If you know of ways to generate
+>    PDFs from these ancient *roff files accurately, please lend a hand
+>    - I'm struggling to get accurate results from groff.
+
+Hi Yufeng,
+
+I maintain groff.  How can I be of assistance?
+
+Is there an exhibit of a troublesome document you'd like me to inspect?
+(It's possible given the era that you have some roff(1) documents rather
+than nroff(1) or troff(1) ones.)
+
+Regards,
+Branden
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 833 bytes
+Desc: not available
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20241231/815b0d2b/attachment.sig>
+
+From douglas.mcilroy at dartmouth.edu  Thu Jan  2 01:02:12 2025
+From: douglas.mcilroy at dartmouth.edu (Douglas McIlroy)
+Date: Wed, 1 Jan 2025 10:02:12 -0500
+Subject: [TUHS] "Webster's Second on the Head of a Pin"?
+In-Reply-To: <aaa2c965-5c31-441d-9e85-762e67f7c7d1@case.edu>
+References: <CA+E3k904rDBqwoiJeDES8d_hQrv9A-SZR2p9uw-mJETYzQ06RQ@mail.gmail.com>
+ <CAKH6PiXutpcVERuCwhCaLU7FO=37d=Z3swS59XNXpN1XWsmERA@mail.gmail.com>
+ <aaa2c965-5c31-441d-9e85-762e67f7c7d1@case.edu>
+Message-ID: <CAKH6PiU8DZGBsv_QPVWA+pKOLkRs8A8+0ghUB5q3UtLqVM-ZLg@mail.gmail.com>
+
+I have it and will try to scan it in the next few days. Bug me if it
+doesn't appear.
+
+Doug
+
+On Tue, Dec 31, 2024 at 11:37 AM Chet Ramey <chet.ramey at case.edu> wrote:
+>
+> On 12/29/24 8:44 AM, Douglas McIlroy wrote:
+> > I can supply a copy if no one else has beaten me to it.
+> >
+> > Ron Hardin subsequently pushed the limit even further. Unfortunately,
+> > I do not have a record of that work.
+>
+> Along these same lines, does anyone on the list have a copy of
+>
+> "J. A. Reeds, /bin/sh: The biggest UNIX security Loophole,
+> 11217-840302-04TM, AT&T Bell Laboratories, Murray Hill, NJ (1984)"?
+>
+> Years ago, in another lifetime, I wrote and asked him for a copy, but
+> never got a reply.
+>
+> --
+> ``The lyf so short, the craft so long to lerne.'' - Chaucer
+>                  ``Ars longa, vita brevis'' - Hippocrates
+> Chet Ramey, UTech, CWRU    chet at case.edu    http://tiswww.cwru.edu/~chet/
+
+From rik at rikfarrow.com  Thu Jan  2 04:11:13 2025
+From: rik at rikfarrow.com (Rik Farrow)
+Date: Wed, 1 Jan 2025 11:11:13 -0700
+Subject: [TUHS] "Webster's Second on the Head of a Pin"?
+In-Reply-To: <CAKH6PiU8DZGBsv_QPVWA+pKOLkRs8A8+0ghUB5q3UtLqVM-ZLg@mail.gmail.com>
+References: <CA+E3k904rDBqwoiJeDES8d_hQrv9A-SZR2p9uw-mJETYzQ06RQ@mail.gmail.com>
+ <CAKH6PiXutpcVERuCwhCaLU7FO=37d=Z3swS59XNXpN1XWsmERA@mail.gmail.com>
+ <aaa2c965-5c31-441d-9e85-762e67f7c7d1@case.edu>
+ <CAKH6PiU8DZGBsv_QPVWA+pKOLkRs8A8+0ghUB5q3UtLqVM-ZLg@mail.gmail.com>
+Message-ID: <CACY3YMFNWAVh+8_pHSrU7oxY4ouuAAW06Jh+fFv3PQxFmBLk5w@mail.gmail.com>
+
+I wonder what Reeds meant. I know there are issues. For example, the 3B2 I
+administered for a while in the late 80s had multiple accounts with rsh,
+the restricted shell, as the login shell. That was okay, unless you used su
+and then had access to a root shell.
+
+HP/UX was way worse, with over 120 SUID shell scripts in the 90s. A much
+more interesting example of insecurity. But somehow, I'm guessing that's
+not what Reeds wrote about.
+
+Rik
+
+
+On Wed, Jan 1, 2025 at 8:02 AM Douglas McIlroy <
+douglas.mcilroy at dartmouth.edu> wrote:
+
+> I have it and will try to scan it in the next few days. Bug me if it
+> doesn't appear.
+>
+> Doug
+>
+> On Tue, Dec 31, 2024 at 11:37 AM Chet Ramey <chet.ramey at case.edu> wrote:
+> >
+> > On 12/29/24 8:44 AM, Douglas McIlroy wrote:
+> > > I can supply a copy if no one else has beaten me to it.
+> > >
+> > > Ron Hardin subsequently pushed the limit even further. Unfortunately,
+> > > I do not have a record of that work.
+> >
+> > Along these same lines, does anyone on the list have a copy of
+> >
+> > "J. A. Reeds, /bin/sh: The biggest UNIX security Loophole,
+> > 11217-840302-04TM, AT&T Bell Laboratories, Murray Hill, NJ (1984)"?
+> >
+> > Years ago, in another lifetime, I wrote and asked him for a copy, but
+> > never got a reply.
+> >
+> > --
+> > ``The lyf so short, the craft so long to lerne.'' - Chaucer
+> >                  ``Ars longa, vita brevis'' - Hippocrates
+> > Chet Ramey, UTech, CWRU    chet at case.edu
+> http://tiswww.cwru.edu/~chet/
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250101/f3aee2b2/attachment.htm>
+
+From douglas.mcilroy at dartmouth.edu  Thu Jan  2 13:05:38 2025
+From: douglas.mcilroy at dartmouth.edu (Douglas McIlroy)
+Date: Wed, 1 Jan 2025 22:05:38 -0500
+Subject: [TUHS] "Webster's Second on the Head of a Pin"?
+In-Reply-To: <CACY3YMFNWAVh+8_pHSrU7oxY4ouuAAW06Jh+fFv3PQxFmBLk5w@mail.gmail.com>
+References: <CA+E3k904rDBqwoiJeDES8d_hQrv9A-SZR2p9uw-mJETYzQ06RQ@mail.gmail.com>
+ <CAKH6PiXutpcVERuCwhCaLU7FO=37d=Z3swS59XNXpN1XWsmERA@mail.gmail.com>
+ <aaa2c965-5c31-441d-9e85-762e67f7c7d1@case.edu>
+ <CAKH6PiU8DZGBsv_QPVWA+pKOLkRs8A8+0ghUB5q3UtLqVM-ZLg@mail.gmail.com>
+ <CACY3YMFNWAVh+8_pHSrU7oxY4ouuAAW06Jh+fFv3PQxFmBLk5w@mail.gmail.com>
+Message-ID: <CAKH6PiWRdQ0kxF6HAvrebnBccu97d1kudsFyn=KZCtOVcPR3Qw@mail.gmail.com>
+
+I think $IFS ranks at the top of Jim's cabinet of horrors. For our
+multilevel-secure Unix (https://www.cs.dartmouth.edu/~doug/IX), he
+took almost everything out of the administrative shell, nosh (the
+no-shell shell), The classic /bin/sh was not endowed with any of the
+capabilities necessary to override Bell-LaPadula-Biba secrecy or
+integrity constraints.
+
+On Wed, Jan 1, 2025 at 1:11 PM Rik Farrow <rik at rikfarrow.com> wrote:
+>
+> I wonder what Reeds meant. I know there are issues. For example, the 3B2 I administered for a while in the late 80s had multiple accounts with rsh, the restricted shell, as the login shell. That was okay, unless you used su and then had access to a root shell.
+>
+> HP/UX was way worse, with over 120 SUID shell scripts in the 90s. A much more interesting example of insecurity. But somehow, I'm guessing that's not what Reeds wrote about.
+>
+> Rik
+>
+>
+> On Wed, Jan 1, 2025 at 8:02 AM Douglas McIlroy <douglas.mcilroy at dartmouth.edu> wrote:
+>>
+>> I have it and will try to scan it in the next few days. Bug me if it
+>> doesn't appear.
+>>
+>> Doug
+>>
+>> On Tue, Dec 31, 2024 at 11:37 AM Chet Ramey <chet.ramey at case.edu> wrote:
+>> >
+>> > On 12/29/24 8:44 AM, Douglas McIlroy wrote:
+>> > > I can supply a copy if no one else has beaten me to it.
+>> > >
+>> > > Ron Hardin subsequently pushed the limit even further. Unfortunately,
+>> > > I do not have a record of that work.
+>> >
+>> > Along these same lines, does anyone on the list have a copy of
+>> >
+>> > "J. A. Reeds, /bin/sh: The biggest UNIX security Loophole,
+>> > 11217-840302-04TM, AT&T Bell Laboratories, Murray Hill, NJ (1984)"?
+>> >
+>> > Years ago, in another lifetime, I wrote and asked him for a copy, but
+>> > never got a reply.
+>> >
+>> > --
+>> > ``The lyf so short, the craft so long to lerne.'' - Chaucer
+>> >                  ``Ars longa, vita brevis'' - Hippocrates
+>> > Chet Ramey, UTech, CWRU    chet at case.edu    http://tiswww.cwru.edu/~chet/
+
+From tuhs at tuhs.org  Thu Jan  2 17:17:04 2025
+From: tuhs at tuhs.org (durtal via TUHS)
+Date: Thu, 2 Jan 2025 18:17:04 +1100 (AEDT)
+Subject: [TUHS] Bergson Quote, Forward, BSTJ, 57:6 1978
+Message-ID: <a3ce6cec-5aa9-29dd-091c-5962e5e3405d@sdf.org>
+
+
+I am curious about the apposite Bergson quote (intelligence...tools) found 
+at the beginning of the Forward mentioned in the subject. Specifically, I am
+wondering if the quote was originally discovered in _Creative Evolution_ 
+as a part of a course or through private reading.
+
+I am interested in the diffusion of Continental ideas concerning technology
+in English speaking countries during the 20th Century.
+
+Dr Rick Hayes
+
+durtal at sdf.org SDF Public 
+Access UNIX System - https://sdf.org
+
+From arnold at skeeve.com  Thu Jan  2 22:40:39 2025
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Thu, 02 Jan 2025 05:40:39 -0700
+Subject: [TUHS] Was the compressed dictionary used?
+Message-ID: <202501021240.502CedNC1415325@freefriends.org>
+
+Hi.
+
+The paper on compressing the dictionary was interesting. In the day
+of 20 meg disks, compressing a ~ 2.5 meg file down to ~ .5 meg is
+a big savings.
+
+Was the compressed dictionary put into use? I could imaging that
+spell(1) at least would have needed some library routines to return
+a stream of words from it.
+
+Just wondering.  Thanks,
+
+Arnold
+
+From tuhs at tuhs.org  Fri Jan  3 00:22:54 2025
+From: tuhs at tuhs.org (Chet Ramey via TUHS)
+Date: Thu, 2 Jan 2025 09:22:54 -0500
+Subject: [TUHS] "Webster's Second on the Head of a Pin"?
+In-Reply-To: <CACY3YMFNWAVh+8_pHSrU7oxY4ouuAAW06Jh+fFv3PQxFmBLk5w@mail.gmail.com>
+References: <CA+E3k904rDBqwoiJeDES8d_hQrv9A-SZR2p9uw-mJETYzQ06RQ@mail.gmail.com>
+ <CAKH6PiXutpcVERuCwhCaLU7FO=37d=Z3swS59XNXpN1XWsmERA@mail.gmail.com>
+ <aaa2c965-5c31-441d-9e85-762e67f7c7d1@case.edu>
+ <CAKH6PiU8DZGBsv_QPVWA+pKOLkRs8A8+0ghUB5q3UtLqVM-ZLg@mail.gmail.com>
+ <CACY3YMFNWAVh+8_pHSrU7oxY4ouuAAW06Jh+fFv3PQxFmBLk5w@mail.gmail.com>
+Message-ID: <bf1807e6-7852-4336-98f9-24dd0a4da7a3@case.edu>
+
+On 1/1/25 1:11 PM, Rik Farrow wrote:
+> I wonder what Reeds meant. I know there are issues.
+
+I've wondered myself. I am curious how many of these issues POSIX
+addresses (and bash, too, of course).
+
+> For example, the 3B2 I 
+> administered for a while in the late 80s had multiple accounts with rsh, 
+> the restricted shell, as the login shell. That was okay, unless you used su 
+> and then had access to a root shell.
+
+That's an administrator problem. Part of setting up a restricted shell
+environment is creating a directory of necessary binaries and setting
+PATH appropriately.
+
+Chet
+-- 
+``The lyf so short, the craft so long to lerne.'' - Chaucer
+		 ``Ars longa, vita brevis'' - Hippocrates
+Chet Ramey, UTech, CWRU    chet at case.edu    http://tiswww.cwru.edu/~chet/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: OpenPGP_signature.asc
+Type: application/pgp-signature
+Size: 203 bytes
+Desc: OpenPGP digital signature
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250102/086cdd9a/attachment.sig>
+
+From tuhs at tuhs.org  Fri Jan  3 00:28:16 2025
+From: tuhs at tuhs.org (Chet Ramey via TUHS)
+Date: Thu, 2 Jan 2025 09:28:16 -0500
+Subject: [TUHS] "Webster's Second on the Head of a Pin"?
+In-Reply-To: <CAKH6PiWRdQ0kxF6HAvrebnBccu97d1kudsFyn=KZCtOVcPR3Qw@mail.gmail.com>
+References: <CA+E3k904rDBqwoiJeDES8d_hQrv9A-SZR2p9uw-mJETYzQ06RQ@mail.gmail.com>
+ <CAKH6PiXutpcVERuCwhCaLU7FO=37d=Z3swS59XNXpN1XWsmERA@mail.gmail.com>
+ <aaa2c965-5c31-441d-9e85-762e67f7c7d1@case.edu>
+ <CAKH6PiU8DZGBsv_QPVWA+pKOLkRs8A8+0ghUB5q3UtLqVM-ZLg@mail.gmail.com>
+ <CACY3YMFNWAVh+8_pHSrU7oxY4ouuAAW06Jh+fFv3PQxFmBLk5w@mail.gmail.com>
+ <CAKH6PiWRdQ0kxF6HAvrebnBccu97d1kudsFyn=KZCtOVcPR3Qw@mail.gmail.com>
+Message-ID: <229f78c9-d0a8-4897-a66b-d047206965b7@case.edu>
+
+On 1/1/25 10:05 PM, Douglas McIlroy wrote:
+> I think $IFS ranks at the top of Jim's cabinet of horrors.
+
+Well, the Bourne shell's combination of importing IFS from the environment
+and then using it to split all words was particularly lethal.
+
+-- 
+``The lyf so short, the craft so long to lerne.'' - Chaucer
+		 ``Ars longa, vita brevis'' - Hippocrates
+Chet Ramey, UTech, CWRU    chet at case.edu    http://tiswww.cwru.edu/~chet/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: OpenPGP_signature.asc
+Type: application/pgp-signature
+Size: 203 bytes
+Desc: OpenPGP digital signature
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250102/3e014810/attachment.sig>
+
+From douglas.mcilroy at dartmouth.edu  Fri Jan  3 00:51:10 2025
+From: douglas.mcilroy at dartmouth.edu (Douglas McIlroy)
+Date: Thu, 2 Jan 2025 09:51:10 -0500
+Subject: [TUHS] Was the compressed dictionary used?
+In-Reply-To: <202501021240.502CedNC1415325@freefriends.org>
+References: <202501021240.502CedNC1415325@freefriends.org>
+Message-ID: <CAKH6PiX09m5P2Lr8yVGBowgr8-CeG2p-NgH=742Y-1dBFeuduw@mail.gmail.com>
+
+I am not aware that the compressed dictionary was used for anything.
+Steve Johnson's first shell-script spelling-checker did make a pass
+over a dictionary, but not Webster's second, which would have caused
+lots of false negatives because it contains so many exotic small words
+that could result from typos. My production spell aggresively stripped
+affixes and used hashing and other coding tricks to keep its
+"dictionary" in the limited memory of a PDP-11. (The whole story is
+told in https://www.cs.dartmouth.edu/~doug/spell.pdf and insightfully
+described by Jon Bentley in
+https://dl.acm.org/doi/pdf/10.1145/3532.315102.) When larger memory
+became available, these heroics were replaced by basic common-prefix
+coding patterned after Morris and Thompson, just as Arnold surmised.
+
+On Thu, Jan 2, 2025 at 7:41 AM <arnold at skeeve.com> wrote:
+>
+> Hi.
+>
+> The paper on compressing the dictionary was interesting. In the day
+> of 20 meg disks, compressing a ~ 2.5 meg file down to ~ .5 meg is
+> a big savings.
+>
+> Was the compressed dictionary put into use? I could imaging that
+> spell(1) at least would have needed some library routines to return
+> a stream of words from it.
+>
+> Just wondering.  Thanks,
+>
+> Arnold
+
+From imp at bsdimp.com  Fri Jan  3 01:12:45 2025
+From: imp at bsdimp.com (Warner Losh)
+Date: Thu, 2 Jan 2025 08:12:45 -0700
+Subject: [TUHS] Was the compressed dictionary used?
+In-Reply-To: <CAKH6PiX09m5P2Lr8yVGBowgr8-CeG2p-NgH=742Y-1dBFeuduw@mail.gmail.com>
+References: <202501021240.502CedNC1415325@freefriends.org>
+ <CAKH6PiX09m5P2Lr8yVGBowgr8-CeG2p-NgH=742Y-1dBFeuduw@mail.gmail.com>
+Message-ID: <CANCZdfoSNHzf7xyYZxKTGyLwo48EoKt_dZckNLpcafB4LHhZ7Q@mail.gmail.com>
+
+On Thu, Jan 2, 2025, 7:51 AM Douglas McIlroy <douglas.mcilroy at dartmouth.edu>
+wrote:
+
+> I am not aware that the compressed dictionary was used for anything.
+> Steve Johnson's first shell-script spelling-checker did make a pass
+> over a dictionary, but not Webster's second, which would have caused
+> lots of false negatives because it contains so many exotic small words
+> that could result from typos.
+
+
+Where did the Websters Second file come from? Did the labs give the public
+domain paper dictionary to the equivalent of a typing pool and had them
+enter it? It did it come from elsewhere? Or something else? How was it
+checked for accuracy?
+
+Warner
+
+
+My production spell aggresively stripped
+> affixes and used hashing and other coding tricks to keep its
+> "dictionary" in the limited memory of a PDP-11. (The whole story is
+> told in https://www.cs.dartmouth.edu/~doug/spell.pdf and insightfully
+> described by Jon Bentley in
+> https://dl.acm.org/doi/pdf/10.1145/3532.315102.) When larger memory
+> became available, these heroics were replaced by basic common-prefix
+> coding patterned after Morris and Thompson, just as Arnold surmised.
+>
+> On Thu, Jan 2, 2025 at 7:41 AM <arnold at skeeve.com> wrote:
+> >
+> > Hi.
+> >
+> > The paper on compressing the dictionary was interesting. In the day
+> > of 20 meg disks, compressing a ~ 2.5 meg file down to ~ .5 meg is
+> > a big savings.
+> >
+> > Was the compressed dictionary put into use? I could imaging that
+> > spell(1) at least would have needed some library routines to return
+> > a stream of words from it.
+> >
+> > Just wondering.  Thanks,
+> >
+> > Arnold
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250102/864eb399/attachment.htm>
+
+From tuhs at tuhs.org  Fri Jan  3 01:13:40 2025
+From: tuhs at tuhs.org (Grant Taylor via TUHS)
+Date: Thu, 2 Jan 2025 09:13:40 -0600
+Subject: [TUHS] Was the compressed dictionary used?
+In-Reply-To: <202501021240.502CedNC1415325@freefriends.org>
+References: <202501021240.502CedNC1415325@freefriends.org>
+Message-ID: <fee00d63-517e-5987-386d-df6e617a31c3@tnetconsulting.net>
+
+On 1/2/25 6:40 AM, arnold at skeeve.com wrote:
+> The paper on compressing the dictionary was interesting. In the day 
+> of 20 meg disks, compressing a ~ 2.5 meg file down to ~ .5 meg is a 
+> big savings.
+
+It's even more important when sending data across the wire.
+
+> Was the compressed dictionary put into use? I could imaging that 
+> spell(1) at least would have needed some library routines to return 
+> a stream of words from it.
+
+I couldn't help but think about the DNS on wire compression format which 
+will re-use part of the existing query name to de-duplicate later parts 
+of the same query name.
+
+I know it's not the same, but it felt un-ignorably close in both purpose 
+and method.
+
+
+
+-- 
+Grant. . . .
+unix || die
+
+
+From arnold at skeeve.com  Fri Jan  3 02:20:03 2025
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Thu, 02 Jan 2025 09:20:03 -0700
+Subject: [TUHS] Was the compressed dictionary used?
+In-Reply-To: <CAKH6PiX09m5P2Lr8yVGBowgr8-CeG2p-NgH=742Y-1dBFeuduw@mail.gmail.com>
+References: <202501021240.502CedNC1415325@freefriends.org>
+ <CAKH6PiX09m5P2Lr8yVGBowgr8-CeG2p-NgH=742Y-1dBFeuduw@mail.gmail.com>
+Message-ID: <202501021620.502GK3U91432598@freefriends.org>
+
+Douglas McIlroy <douglas.mcilroy at dartmouth.edu> wrote:
+
+> My production spell aggresively stripped
+> affixes and used hashing and other coding tricks to keep its
+> "dictionary" in the limited memory of a PDP-11. (The whole story is
+> told in https://www.cs.dartmouth.edu/~doug/spell.pdf and insightfully
+> described by Jon Bentley in
+> https://dl.acm.org/doi/pdf/10.1145/3532.315102.) When larger memory
+> became available, these heroics were replaced by basic common-prefix
+> coding patterned after Morris and Thompson, just as Arnold surmised.
+
+But all this would have been in the C code for spell, and not in
+the dictionary used, right?
+
+Thanks,
+
+Arnold
+
+P.S. A few years ago I made the v10 spell available for today's systems,
+see https://github.com/arnoldrobbins/v10spell.
+
+From douglas.mcilroy at dartmouth.edu  Fri Jan  3 03:20:41 2025
+From: douglas.mcilroy at dartmouth.edu (Douglas McIlroy)
+Date: Thu, 2 Jan 2025 12:20:41 -0500
+Subject: [TUHS] Was the compressed dictionary used?
+In-Reply-To: <CANCZdfoSNHzf7xyYZxKTGyLwo48EoKt_dZckNLpcafB4LHhZ7Q@mail.gmail.com>
+References: <202501021240.502CedNC1415325@freefriends.org>
+ <CAKH6PiX09m5P2Lr8yVGBowgr8-CeG2p-NgH=742Y-1dBFeuduw@mail.gmail.com>
+ <CANCZdfoSNHzf7xyYZxKTGyLwo48EoKt_dZckNLpcafB4LHhZ7Q@mail.gmail.com>
+Message-ID: <CAKH6PiX5o7G+UhGX6_7uw5=DNFL0vx41HcK215hFcvoniYCMRQ@mail.gmail.com>
+
+The word list of Webster's 2nd came from an Air Force project along
+with several other files, including a medical dictionary and an
+alphabetical list of tetragrams found in Web2--something one would
+expect to create for oneself nowadays. The files were freely
+distributed with no strings attached. We have not noticed any
+mistakes. The list includes 76205 entries that contain blanks or
+hyphens; these were omitted from the pinhead exercise.
+
+Doug
+
+On Thu, Jan 2, 2025 at 10:13 AM Warner Losh <imp at bsdimp.com> wrote:
+>
+>
+>
+> On Thu, Jan 2, 2025, 7:51 AM Douglas McIlroy <douglas.mcilroy at dartmouth.edu> wrote:
+>>
+>> I am not aware that the compressed dictionary was used for anything.
+>> Steve Johnson's first shell-script spelling-checker did make a pass
+>> over a dictionary, but not Webster's second, which would have caused
+>> lots of false negatives because it contains so many exotic small words
+>> that could result from typos.
+>
+>
+> Where did the Websters Second file come from? Did the labs give the public domain paper dictionary to the equivalent of a typing pool and had them enter it? It did it come from elsewhere? Or something else? How was it checked for accuracy?
+>
+> Warner
+>
+>
+>> My production spell aggresively stripped
+>> affixes and used hashing and other coding tricks to keep its
+>> "dictionary" in the limited memory of a PDP-11. (The whole story is
+>> told in https://www.cs.dartmouth.edu/~doug/spell.pdf and insightfully
+>> described by Jon Bentley in
+>> https://dl.acm.org/doi/pdf/10.1145/3532.315102.) When larger memory
+>> became available, these heroics were replaced by basic common-prefix
+>> coding patterned after Morris and Thompson, just as Arnold surmised.
+>>
+>> On Thu, Jan 2, 2025 at 7:41 AM <arnold at skeeve.com> wrote:
+>> >
+>> > Hi.
+>> >
+>> > The paper on compressing the dictionary was interesting. In the day
+>> > of 20 meg disks, compressing a ~ 2.5 meg file down to ~ .5 meg is
+>> > a big savings.
+>> >
+>> > Was the compressed dictionary put into use? I could imaging that
+>> > spell(1) at least would have needed some library routines to return
+>> > a stream of words from it.
+>> >
+>> > Just wondering.  Thanks,
+>> >
+>> > Arnold
+
+From rik at rikfarrow.com  Fri Jan  3 04:13:22 2025
+From: rik at rikfarrow.com (Rik Farrow)
+Date: Thu, 2 Jan 2025 11:13:22 -0700
+Subject: [TUHS] "Webster's Second on the Head of a Pin"?
+In-Reply-To: <bf1807e6-7852-4336-98f9-24dd0a4da7a3@case.edu>
+References: <CA+E3k904rDBqwoiJeDES8d_hQrv9A-SZR2p9uw-mJETYzQ06RQ@mail.gmail.com>
+ <CAKH6PiXutpcVERuCwhCaLU7FO=37d=Z3swS59XNXpN1XWsmERA@mail.gmail.com>
+ <aaa2c965-5c31-441d-9e85-762e67f7c7d1@case.edu>
+ <CAKH6PiU8DZGBsv_QPVWA+pKOLkRs8A8+0ghUB5q3UtLqVM-ZLg@mail.gmail.com>
+ <CACY3YMFNWAVh+8_pHSrU7oxY4ouuAAW06Jh+fFv3PQxFmBLk5w@mail.gmail.com>
+ <bf1807e6-7852-4336-98f9-24dd0a4da7a3@case.edu>
+Message-ID: <CACY3YMHty5T3mHgTADKuCEo8vcPVD7XMhszqbYYFbCE2t8JuWA@mail.gmail.com>
+
+On Thu, Jan 2, 2025 at 7:23 AM Chet Ramey <chet.ramey at case.edu> wrote:
+
+> On 1/1/25 1:11 PM, Rik Farrow wrote:
+> > For example, the 3B2 I
+> > administered for a while in the late 80s had multiple accounts with rsh,
+> > the restricted shell, as the login shell. That was okay, unless you used
+> su
+> > and then had access to a root shell.
+>
+> That's an administrator problem. Part of setting up a restricted shell
+> environment is creating a directory of necessary binaries and setting
+> PATH appropriately.
+>
+> Each of these special accounts did have a home directory with a .profile
+to set up the restricted environment, then run a shell script to perform
+some task as root. For example, logging in as 'backup' would run
+/user/backup/.profile and allow a non-privileged user to run a backup
+script as root.
+
+But typing "su backup" produced a root-owner shell without restrictions.
+You need to type "su - " to run the account's .profile script.
+
+Rik
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250102/3a6c3f7e/attachment-0001.htm>
+
+From tuhs at tuhs.org  Fri Jan  3 05:47:26 2025
+From: tuhs at tuhs.org (Chet Ramey via TUHS)
+Date: Thu, 2 Jan 2025 14:47:26 -0500
+Subject: [TUHS] "Webster's Second on the Head of a Pin"?
+In-Reply-To: <CACY3YMHty5T3mHgTADKuCEo8vcPVD7XMhszqbYYFbCE2t8JuWA@mail.gmail.com>
+References: <CA+E3k904rDBqwoiJeDES8d_hQrv9A-SZR2p9uw-mJETYzQ06RQ@mail.gmail.com>
+ <CAKH6PiXutpcVERuCwhCaLU7FO=37d=Z3swS59XNXpN1XWsmERA@mail.gmail.com>
+ <aaa2c965-5c31-441d-9e85-762e67f7c7d1@case.edu>
+ <CAKH6PiU8DZGBsv_QPVWA+pKOLkRs8A8+0ghUB5q3UtLqVM-ZLg@mail.gmail.com>
+ <CACY3YMFNWAVh+8_pHSrU7oxY4ouuAAW06Jh+fFv3PQxFmBLk5w@mail.gmail.com>
+ <bf1807e6-7852-4336-98f9-24dd0a4da7a3@case.edu>
+ <CACY3YMHty5T3mHgTADKuCEo8vcPVD7XMhszqbYYFbCE2t8JuWA@mail.gmail.com>
+Message-ID: <17895df2-19e5-45a0-aa7b-68af93522396@case.edu>
+
+On 1/2/25 1:13 PM, Rik Farrow wrote:
+> 
+> 
+> On Thu, Jan 2, 2025 at 7:23 AM Chet Ramey <chet.ramey at case.edu 
+> <mailto:chet.ramey at case.edu>> wrote:
+> 
+>     On 1/1/25 1:11 PM, Rik Farrow wrote:
+>      > For example, the 3B2 I
+>      > administered for a while in the late 80s had multiple accounts with
+>     rsh,
+>      > the restricted shell, as the login shell. That was okay, unless you
+>     used su
+>      > and then had access to a root shell.
+> 
+>     That's an administrator problem. Part of setting up a restricted shell
+>     environment is creating a directory of necessary binaries and setting
+>     PATH appropriately.
+> 
+> Each of these special accounts did have a home directory with a .profile to 
+> set up the restricted environment, then run a shell script to perform some 
+> task as root. For example, logging in as 'backup' would run /user/ 
+> backup/.profile and allow a non-privileged user to run a backup script as root.
+> 
+> But typing "su backup" produced a root-owner shell without restrictions. 
+> You need to type "su - " to run the account's .profile script.
+
+OK, I thought you meant the other way, breaking out of a restricted
+environment.
+
+-- 
+``The lyf so short, the craft so long to lerne.'' - Chaucer
+		 ``Ars longa, vita brevis'' - Hippocrates
+Chet Ramey, UTech, CWRU    chet at case.edu    http://tiswww.cwru.edu/~chet/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: OpenPGP_signature.asc
+Type: application/pgp-signature
+Size: 203 bytes
+Desc: OpenPGP digital signature
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250102/39b8233c/attachment.sig>
+
+From imp at bsdimp.com  Fri Jan  3 07:19:58 2025
+From: imp at bsdimp.com (Warner Losh)
+Date: Thu, 2 Jan 2025 14:19:58 -0700
+Subject: [TUHS] Was the compressed dictionary used?
+In-Reply-To: <CAKH6PiX5o7G+UhGX6_7uw5=DNFL0vx41HcK215hFcvoniYCMRQ@mail.gmail.com>
+References: <202501021240.502CedNC1415325@freefriends.org>
+ <CAKH6PiX09m5P2Lr8yVGBowgr8-CeG2p-NgH=742Y-1dBFeuduw@mail.gmail.com>
+ <CANCZdfoSNHzf7xyYZxKTGyLwo48EoKt_dZckNLpcafB4LHhZ7Q@mail.gmail.com>
+ <CAKH6PiX5o7G+UhGX6_7uw5=DNFL0vx41HcK215hFcvoniYCMRQ@mail.gmail.com>
+Message-ID: <CANCZdfpX6COi5F7-4XUfLFXAra3j75GVf8rBRusfS0NWt7UNgw@mail.gmail.com>
+
+The BSDs since 4.4lite have added a lot of missing words, but few
+corrections. From FreeBSD:
+
+Capitalized Transvaal, fixed 'stock certificate' to have a 't' and
+preconsoidate -> preconsolidate
+
+Ahtena, freen, unknowen and structurelessness were removed
+
+corelate (etc)  and freend were removed as typos and only thinly supported
+variants.
+
+Not bad for 50 years of nit-pickers pouring over the file.
+
+Warner
+
+On Thu, Jan 2, 2025 at 10:20 AM Douglas McIlroy <
+douglas.mcilroy at dartmouth.edu> wrote:
+
+> The word list of Webster's 2nd came from an Air Force project along
+> with several other files, including a medical dictionary and an
+> alphabetical list of tetragrams found in Web2--something one would
+> expect to create for oneself nowadays. The files were freely
+> distributed with no strings attached. We have not noticed any
+> mistakes. The list includes 76205 entries that contain blanks or
+> hyphens; these were omitted from the pinhead exercise.
+>
+> Doug
+>
+> On Thu, Jan 2, 2025 at 10:13 AM Warner Losh <imp at bsdimp.com> wrote:
+> >
+> >
+> >
+> > On Thu, Jan 2, 2025, 7:51 AM Douglas McIlroy <
+> douglas.mcilroy at dartmouth.edu> wrote:
+> >>
+> >> I am not aware that the compressed dictionary was used for anything.
+> >> Steve Johnson's first shell-script spelling-checker did make a pass
+> >> over a dictionary, but not Webster's second, which would have caused
+> >> lots of false negatives because it contains so many exotic small words
+> >> that could result from typos.
+> >
+> >
+> > Where did the Websters Second file come from? Did the labs give the
+> public domain paper dictionary to the equivalent of a typing pool and had
+> them enter it? It did it come from elsewhere? Or something else? How was it
+> checked for accuracy?
+> >
+> > Warner
+> >
+> >
+> >> My production spell aggresively stripped
+> >> affixes and used hashing and other coding tricks to keep its
+> >> "dictionary" in the limited memory of a PDP-11. (The whole story is
+> >> told in https://www.cs.dartmouth.edu/~doug/spell.pdf and insightfully
+> >> described by Jon Bentley in
+> >> https://dl.acm.org/doi/pdf/10.1145/3532.315102.) When larger memory
+> >> became available, these heroics were replaced by basic common-prefix
+> >> coding patterned after Morris and Thompson, just as Arnold surmised.
+> >>
+> >> On Thu, Jan 2, 2025 at 7:41 AM <arnold at skeeve.com> wrote:
+> >> >
+> >> > Hi.
+> >> >
+> >> > The paper on compressing the dictionary was interesting. In the day
+> >> > of 20 meg disks, compressing a ~ 2.5 meg file down to ~ .5 meg is
+> >> > a big savings.
+> >> >
+> >> > Was the compressed dictionary put into use? I could imaging that
+> >> > spell(1) at least would have needed some library routines to return
+> >> > a stream of words from it.
+> >> >
+> >> > Just wondering.  Thanks,
+> >> >
+> >> > Arnold
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250102/228e822a/attachment.htm>
+
+From douglas.mcilroy at dartmouth.edu  Fri Jan  3 09:32:41 2025
+From: douglas.mcilroy at dartmouth.edu (Douglas McIlroy)
+Date: Thu, 2 Jan 2025 18:32:41 -0500
+Subject: [TUHS] Was the compressed dictionary used?
+In-Reply-To: <CANCZdfpX6COi5F7-4XUfLFXAra3j75GVf8rBRusfS0NWt7UNgw@mail.gmail.com>
+References: <202501021240.502CedNC1415325@freefriends.org>
+ <CAKH6PiX09m5P2Lr8yVGBowgr8-CeG2p-NgH=742Y-1dBFeuduw@mail.gmail.com>
+ <CANCZdfoSNHzf7xyYZxKTGyLwo48EoKt_dZckNLpcafB4LHhZ7Q@mail.gmail.com>
+ <CAKH6PiX5o7G+UhGX6_7uw5=DNFL0vx41HcK215hFcvoniYCMRQ@mail.gmail.com>
+ <CANCZdfpX6COi5F7-4XUfLFXAra3j75GVf8rBRusfS0NWt7UNgw@mail.gmail.com>
+Message-ID: <CAKH6PiWFZ5upXttc5B874M-foe-mr-tQGMnPK2owZedmt855Uw@mail.gmail.com>
+
+Warner,
+
+Thanks for those bugs. Here's a similar list for lucky owners of
+Webster's 7th Collegiate:
+dissymmettric
+brecia
+belicoseness
+assaugement
+A space is missing in the pronunciation field for Ouija.
+There must be more bugs in other fields, which constitute the bulk of
+the Web7 files.
+
+Doug
+
+On Thu, Jan 2, 2025 at 4:20 PM Warner Losh <imp at bsdimp.com> wrote:
+>
+> The BSDs since 4.4lite have added a lot of missing words, but few corrections. From FreeBSD:
+>
+> Capitalized Transvaal, fixed 'stock certificate' to have a 't' and preconsoidate -> preconsolidate
+>
+> Ahtena, freen, unknowen and structurelessness were removed
+>
+> corelate (etc)  and freend were removed as typos and only thinly supported variants.
+>
+> Not bad for 50 years of nit-pickers pouring over the file.
+>
+> Warner
+>
+> On Thu, Jan 2, 2025 at 10:20 AM Douglas McIlroy <douglas.mcilroy at dartmouth.edu> wrote:
+>>
+>> The word list of Webster's 2nd came from an Air Force project along
+>> with several other files, including a medical dictionary and an
+>> alphabetical list of tetragrams found in Web2--something one would
+>> expect to create for oneself nowadays. The files were freely
+>> distributed with no strings attached. We have not noticed any
+>> mistakes. The list includes 76205 entries that contain blanks or
+>> hyphens; these were omitted from the pinhead exercise.
+>>
+>> Doug
+>>
+>> On Thu, Jan 2, 2025 at 10:13 AM Warner Losh <imp at bsdimp.com> wrote:
+>> >
+>> >
+>> >
+>> > On Thu, Jan 2, 2025, 7:51 AM Douglas McIlroy <douglas.mcilroy at dartmouth.edu> wrote:
+>> >>
+>> >> I am not aware that the compressed dictionary was used for anything.
+>> >> Steve Johnson's first shell-script spelling-checker did make a pass
+>> >> over a dictionary, but not Webster's second, which would have caused
+>> >> lots of false negatives because it contains so many exotic small words
+>> >> that could result from typos.
+>> >
+>> >
+>> > Where did the Websters Second file come from? Did the labs give the public domain paper dictionary to the equivalent of a typing pool and had them enter it? It did it come from elsewhere? Or something else? How was it checked for accuracy?
+>> >
+>> > Warner
+>> >
+>> >
+>> >> My production spell aggresively stripped
+>> >> affixes and used hashing and other coding tricks to keep its
+>> >> "dictionary" in the limited memory of a PDP-11. (The whole story is
+>> >> told in https://www.cs.dartmouth.edu/~doug/spell.pdf and insightfully
+>> >> described by Jon Bentley in
+>> >> https://dl.acm.org/doi/pdf/10.1145/3532.315102.) When larger memory
+>> >> became available, these heroics were replaced by basic common-prefix
+>> >> coding patterned after Morris and Thompson, just as Arnold surmised.
+>> >>
+>> >> On Thu, Jan 2, 2025 at 7:41 AM <arnold at skeeve.com> wrote:
+>> >> >
+>> >> > Hi.
+>> >> >
+>> >> > The paper on compressing the dictionary was interesting. In the day
+>> >> > of 20 meg disks, compressing a ~ 2.5 meg file down to ~ .5 meg is
+>> >> > a big savings.
+>> >> >
+>> >> > Was the compressed dictionary put into use? I could imaging that
+>> >> > spell(1) at least would have needed some library routines to return
+>> >> > a stream of words from it.
+>> >> >
+>> >> > Just wondering.  Thanks,
+>> >> >
+>> >> > Arnold
+
+From johnl at taugh.com  Fri Jan  3 13:14:43 2025
+From: johnl at taugh.com (John Levine)
+Date: 2 Jan 2025 22:14:43 -0500
+Subject: [TUHS] Was the compressed dictionary used?
+In-Reply-To: <fee00d63-517e-5987-386d-df6e617a31c3@tnetconsulting.net>
+References: <202501021240.502CedNC1415325@freefriends.org>
+ <fee00d63-517e-5987-386d-df6e617a31c3@tnetconsulting.net>
+Message-ID: <20250103031443.F13C0B1C8B4A@ary.qy>
+
+It appears that Grant Taylor via TUHS <gtaylor at tnetconsulting.net> said:
+>On 1/2/25 6:40 AM, arnold at skeeve.com wrote:
+>> The paper on compressing the dictionary was interesting. In the day 
+>> of 20 meg disks, compressing a ~ 2.5 meg file down to ~ .5 meg is a 
+>> big savings.
+>
+>It's even more important when sending data across the wire.
+>
+>> Was the compressed dictionary put into use? I could imaging that 
+>> spell(1) at least would have needed some library routines to return 
+>> a stream of words from it.
+>
+>I couldn't help but think about the DNS on wire compression format which 
+>will re-use part of the existing query name to de-duplicate later parts 
+>of the same query name.
+>
+>I know it's not the same, but it felt un-ignorably close in both purpose 
+>and method.
+
+Lempel and Ziv published the LZ77 paper in 1977 (hence the name) which uses
+back pointers into a sliding window of text.  Later tweaks brought us LZ78
+and compress and gzip.
+
+There's really only two ways to compress data: use a variable length coding scheme with
+the shortest codes for the most common tokens, or a dictionary that uses pointers to
+repeated strings.  Huffman invented the former in 1951, Lempel and Ziv the latter in
+1977, although as we've seen people did special purpose versions of the dictionary
+approach like this one.  Modern schemes use combinarions of both.
+
+The DNS data formats were invented in about 1982 but I have no idea whether
+Mockapetris was familar with LZ.  I suppose I could ask him.
+
+R's,
+John
+
+
+From rminnich at gmail.com  Sat Jan  4 08:17:01 2025
+From: rminnich at gmail.com (ron minnich)
+Date: Fri, 3 Jan 2025 14:17:01 -0800
+Subject: [TUHS] userland exec -- wasn't exec that way originally?
+Message-ID: <CAP6exY+_v4+XJ=cv_AqBFX0J-nBvtaU=9nawnXajDX6Lqn4sqg@mail.gmail.com>
+
+Do I remember correctly that the early linux exec as a userland exec?
+
+I think this came up before, I just can't recall.
+
+I just learned about:
+
+https://github.com/hardenedlinux/userland-exec
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250103/10ddf14e/attachment.htm>
+
+From tuhs at tuhs.org  Tue Jan  7 07:20:41 2025
+From: tuhs at tuhs.org (segaloco via TUHS)
+Date: Mon, 06 Jan 2025 21:20:41 +0000
+Subject: [TUHS] Bell-Era UNIX Audio/DSP Interfaces?
+Message-ID: <BWYwXjScYdFHM1NV0KEtgvazEfJM1PX7WaZ8lygZ45Bw2pEQG6JQr5OCtX-KMwEwr_k2zLDGXac7wymRCtifnU9VKnlsrJCrKFqGZSgM6-0=@protonmail.com>
+
+The sound situation in the UNIX world to me has always felt particularly
+fragmentary, with OSS offering some glimmer of hope but faltering under the long
+shadow of ALSA, with a hodge podge of PCM and other low level interfaces
+littered about other offerings.
+
+Given AT&T's involvement with the development of just about everything
+"sound over wires" for decades by the time UNIX comes along, one would suspect
+AT&T would be quite invested in standardizing interfaces for computers
+interacting with audio signals on copper wire.  Indeed much of the ESS R&D was
+taking in analog telephone signals, digitizing them, and then acting on those
+digitized results before converting back to analog to send to the other end.
+
+Where this has me curious is if there were any efforts in Bell Labs, prior to
+other industry players having their hands on the steering wheel, to establish an
+abstract UNIX interface pattern for interacting with streams of converted audio
+signal.  Of course modern formats didn't exist, but the general idea of PCM was
+well established, concepts like sampling rates, bit depths, etc. could be used
+in calculations to interpret and manipulate digitized audio streams.
+
+Any recollections?  Was the landscape of signal processing solutions just so
+particular that trying to create a centralized interface didn't make sense at
+the time?  Or was it a simple matter of priorities, with things like language
+development and system design taking center stage, leaving a dearth of resources
+to direct towards these sorts of matters?  Was there ever a chance of seeing,
+say, the 5ESS handling of PCM, extended out to non-switching applications, or
+was that stuff firmly siloed over in the switching groups, having no influence
+on signal processing outside?
+
+- Matt G.
+
+From steffen at sdaoden.eu  Tue Jan  7 07:51:43 2025
+From: steffen at sdaoden.eu (Steffen Nurpmeso)
+Date: Mon, 06 Jan 2025 22:51:43 +0100
+Subject: [TUHS] Bell-Era UNIX Audio/DSP Interfaces?
+In-Reply-To: <BWYwXjScYdFHM1NV0KEtgvazEfJM1PX7WaZ8lygZ45Bw2pEQG6JQr5OCtX-KMwEwr_k2zLDGXac7wymRCtifnU9VKnlsrJCrKFqGZSgM6-0=@protonmail.com>
+References: <BWYwXjScYdFHM1NV0KEtgvazEfJM1PX7WaZ8lygZ45Bw2pEQG6JQr5OCtX-KMwEwr_k2zLDGXac7wymRCtifnU9VKnlsrJCrKFqGZSgM6-0=@protonmail.com>
+Message-ID: <20250106215143.b3Q14AL1@steffen%sdaoden.eu>
+
+segaloco via TUHS wrote in
+ <BWYwXjScYdFHM1NV0KEtgvazEfJM1PX7WaZ8lygZ45Bw2pEQG6JQr5OCtX-KMwEwr_k2zLD\
+ GXac7wymRCtifnU9VKnlsrJCrKFqGZSgM6-0=@protonmail.com>:
+ |The sound situation in the UNIX world to me has always felt particularly
+ |fragmentary, with OSS offering some glimmer of hope but faltering under \
+ |the long
+ |shadow of ALSA, with a hodge podge of PCM and other low level interfaces
+ |littered about other offerings.
+
+Oh, but *how* great it was when FreeBSD came on over with those
+"virtual sound devices", in 4.7 or 4.9 i think it was.  Ie instead
+of one blocking device, one could open dev.1 and dev.2 and it was
+multiplexed in the kernel.  It did some format conversion in the
+kernel alongside this.
+
+It was *fantastic*!, and i had a recording program sitting on
+a Cyrix 166+ and it took me ~1.5 percent of (single) CPU to record
+our then still great Hessenradio HR3 for long hours (Clubnight
+with worldwide known DJs, Chill with great sets in the Sunday
+mornings), and oh yes HR2 with the wonderful Mr. Paul Bartholomäi
+in "Notenschlüssel" (classical music), and the fantastic "Voyager"
+hour with Robert Lug on Sunday evening.  It cannot be any better.
+I could code and compile and there was no stuttering alongside.
+1.5 percent of CPU, honestly!
+
+I say this because FreeBSD has replaced that very code last year,
+if i recall correctly.  It now all scales dynmically, if i read
+the patches that flew by right.  (So it may be even better as of
+now, but by then, over twenty years ago, it blew my mind.  And the
+solution was so simple, you know.  The number of concurrent
+devices was a compile time constant if i recall correctly, four by
+default.)
+
+I also say this because today i am lucky i can use ALSA on Linux,
+and apulse for the firefox i have to use (and do use, too
+.. i also browse the internet in such a monster, and at least in
+parts still like that).  I always hated those server solutions,
+where those masses of audio data flow through several context
+switches.  What for?  I never understood.  Someone convinced me to
+try that pulseaudio server, but i think it was about 20 percent of
+CPU for a simple stream, with a terrible GUI, and that on
+a i5-8250U CPU @ 1.60GHz with up to 3.4 Ghz (four core; the four
+HT are alwys disabled).  20 percent!!
+
+  ...
+ |Any recollections?[.]
+
+Sorry, the above is totally apart, but for me the above is still
+such a tremendous thing that someone did; and for free.  Whoever
+it was (i actually never tried to check it, now that i track their
+git for so many years), *thank you*!
+(And that includes the simple usual format conversions in between
+those 22050/44100 etc etc.  Just like that -- open a device and
+read it, no thousands of callbacks, nothing.  And 1.5 percent CPU.
+Maybe it is not good/exact enough for studio level audio editing.
+But i still have lots of those recordings, except that the "Balkan
+piss box" chill somehow disappeared.  (Sorry Pedja, shall you read
+this.))
+
+--steffen
+|
+|Der Kragenbaer,                The moon bear,
+|der holt sich munter           he cheerfully and one by one
+|einen nach dem anderen runter  wa.ks himself off
+|(By Robert Gernhardt)
+|
+|In Fall and Winter, feel "The Dropbear Bard"s pint(er).
+|
+|The banded bear
+|without a care,
+|Banged on himself for e'er and e'er
+|
+|Farewell, dear collar bear
+
+From stewart at serissa.com  Tue Jan  7 09:42:52 2025
+From: stewart at serissa.com (Serissa)
+Date: Mon, 6 Jan 2025 18:42:52 -0500
+Subject: [TUHS] Bell-Era UNIX Audio/DSP Interfaces?
+Message-ID: <6214AA9A-3A53-46C0-83E2-10171C07D10A@serissa.com>
+
+﻿
+In the lost-in-time department, my group at Digital Cambridge Research lab in 1993 did an audio interface patterned after the X Window system.  Paper in the Summer USENIX: https://www.usenix.org/legacy/publications/library/proceedings/cinci93/gettys.html
+
+For extra fun, the lab director of CRL at the time was Vic Vyssotsky.
+
+But there must have been some Bell work, because around 1983 (?) when I was doing Etherphone at PARC I visited John DeTreville at Holmdel.  He was building a voice - over - Ethernet system as well.
+
+-Larry
+
+> On Jan 6, 2025, at 4:51 PM, Steffen Nurpmeso <steffen at sdaoden.eu> wrote:
+> ﻿segaloco via TUHS wrote in
+> <BWYwXjScYdFHM1NV0KEtgvazEfJM1PX7WaZ8lygZ45Bw2pEQG6JQr5OCtX-KMwEwr_k2zLD\
+> GXac7wymRCtifnU9VKnlsrJCrKFqGZSgM6-0=@protonmail.com>:
+> |The sound situation in the UNIX world to me has always felt particularly
+> |fragmentary, with OSS offering some glimmer of hope but faltering under \
+> |the long
+> |shadow of ALSA, with a hodge podge of PCM and other low level interfaces
+> |littered about other offerings.
+> 
+> Oh, but *how* great it was when FreeBSD came on over with those
+> "virtual sound devices", in 4.7 or 4.9 i think it was.  Ie instead
+> of one blocking device, one could open dev.1 and dev.2 and it was
+> multiplexed in the kernel.  It did some format conversion in the
+> kernel alongside this.
+> 
+> It was *fantastic*!, and i had a recording program sitting on
+> a Cyrix 166+ and it took me ~1.5 percent of (single) CPU to record
+> our then still great Hessenradio HR3 for long hours (Clubnight
+> with worldwide known DJs, Chill with great sets in the Sunday
+> mornings), and oh yes HR2 with the wonderful Mr. Paul Bartholomäi
+> in "Notenschlüssel" (classical music), and the fantastic "Voyager"
+> hour with Robert Lug on Sunday evening.  It cannot be any better.
+> I could code and compile and there was no stuttering alongside.
+> 1.5 percent of CPU, honestly!
+> 
+> I say this because FreeBSD has replaced that very code last year,
+> if i recall correctly.  It now all scales dynmically, if i read
+> the patches that flew by right.  (So it may be even better as of
+> now, but by then, over twenty years ago, it blew my mind.  And the
+> solution was so simple, you know.  The number of concurrent
+> devices was a compile time constant if i recall correctly, four by
+> default.)
+> 
+> I also say this because today i am lucky i can use ALSA on Linux,
+> and apulse for the firefox i have to use (and do use, too
+> .. i also browse the internet in such a monster, and at least in
+> parts still like that).  I always hated those server solutions,
+> where those masses of audio data flow through several context
+> switches.  What for?  I never understood.  Someone convinced me to
+> try that pulseaudio server, but i think it was about 20 percent of
+> CPU for a simple stream, with a terrible GUI, and that on
+> a i5-8250U CPU @ 1.60GHz with up to 3.4 Ghz (four core; the four
+> HT are alwys disabled).  20 percent!!
+> 
+>  ...
+> |Any recollections?[.]
+> 
+> Sorry, the above is totally apart, but for me the above is still
+> such a tremendous thing that someone did; and for free.  Whoever
+> it was (i actually never tried to check it, now that i track their
+> git for so many years), *thank you*!
+> (And that includes the simple usual format conversions in between
+> those 22050/44100 etc etc.  Just like that -- open a device and
+> read it, no thousands of callbacks, nothing.  And 1.5 percent CPU.
+> Maybe it is not good/exact enough for studio level audio editing.
+> But i still have lots of those recordings, except that the "Balkan
+> piss box" chill somehow disappeared.  (Sorry Pedja, shall you read
+> this.))
+> 
+> --steffen
+> |
+> |Der Kragenbaer,                The moon bear,
+> |der holt sich munter           he cheerfully and one by one
+> |einen nach dem anderen runter  wa.ks himself off
+> |(By Robert Gernhardt)
+> |
+> |In Fall and Winter, feel "The Dropbear Bard"s pint(er).
+> |
+> |The banded bear
+> |without a care,
+> |Banged on himself for e'er and e'er
+> |
+> |Farewell, dear collar bear
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250106/d979eeb7/attachment.htm>
+
+From mrochkind at gmail.com  Tue Jan  7 11:16:25 2025
+From: mrochkind at gmail.com (Marc Rochkind)
+Date: Mon, 6 Jan 2025 18:16:25 -0700
+Subject: [TUHS] A Retrospective on the Source Code Control System
+Message-ID: <CAOkr1zXc8t9qSnPG0VaiVnTOh7Esi4VeJMk4Eiv7Jc+B5f=DJw@mail.gmail.com>
+
+I mentioned a few weeks ago that I was writing this invited paper for an
+upcoming 50-year anniversary of the first issue of IEEE Transactions on
+Software Engineering.
+
+The paper has now been accepted for publication and here's a preprint
+version of it:
+
+https://www.mrochkind.com/mrochkind/docs/SCCSretro2.pdf
+
+Marc
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250106/f415b36b/attachment.htm>
+
+From lm at mcvoy.com  Tue Jan  7 11:49:19 2025
+From: lm at mcvoy.com (Larry McVoy)
+Date: Mon, 6 Jan 2025 17:49:19 -0800
+Subject: [TUHS] A Retrospective on the Source Code Control System
+In-Reply-To: <CAOkr1zXc8t9qSnPG0VaiVnTOh7Esi4VeJMk4Eiv7Jc+B5f=DJw@mail.gmail.com>
+References: <CAOkr1zXc8t9qSnPG0VaiVnTOh7Esi4VeJMk4Eiv7Jc+B5f=DJw@mail.gmail.com>
+Message-ID: <20250107014919.GE13346@mcvoy.com>
+
+Nice.
+
+For what it is worth, your SCCS supports merging just fine.  We used
+SCCS to do merges without copying by using your includes.  If SCCS had
+had a -m for merge, it would have included the branch but then all the
+other deltas going up to the GCA.  Much like the tip means the tip
+but all the other deltas going back to 1.1.
+
+SCCS was a big contribution to the state of the art, I am forever
+grateful that you did it.  To this day I don't think people know
+what you did.  When we were a business, every time some SCM came out,
+Rick or I would ask "is there a weave" like you had done, if not,
+we didn't care.  That weave format that you did 50 years ago is
+awesome.  
+
+
+On Mon, Jan 06, 2025 at 06:16:25PM -0700, Marc Rochkind wrote:
+> I mentioned a few weeks ago that I was writing this invited paper for an
+> upcoming 50-year anniversary of the first issue of IEEE Transactions on
+> Software Engineering.
+> 
+> The paper has now been accepted for publication and here's a preprint
+> version of it:
+> 
+> https://www.mrochkind.com/mrochkind/docs/SCCSretro2.pdf
+> 
+> Marc
+
+-- 
+---
+Larry McVoy           Retired to fishing          http://www.mcvoy.com/lm/boat
+
+From mrochkind at gmail.com  Tue Jan  7 11:55:55 2025
+From: mrochkind at gmail.com (Marc Rochkind)
+Date: Mon, 6 Jan 2025 18:55:55 -0700
+Subject: [TUHS] A Retrospective on the Source Code Control System
+In-Reply-To: <20250107014919.GE13346@mcvoy.com>
+References: <CAOkr1zXc8t9qSnPG0VaiVnTOh7Esi4VeJMk4Eiv7Jc+B5f=DJw@mail.gmail.com>
+ <20250107014919.GE13346@mcvoy.com>
+Message-ID: <CAOkr1zUobJLKSGw3DSP==AjHmukiOhG4892qUVQDUme59F0CKA@mail.gmail.com>
+
+Thanks for the kind words, Larry.
+
+Marc
+
+On Mon, Jan 6, 2025 at 6:49 PM Larry McVoy <lm at mcvoy.com> wrote:
+
+> Nice.
+>
+> For what it is worth, your SCCS supports merging just fine.  We used
+> SCCS to do merges without copying by using your includes.  If SCCS had
+> had a -m for merge, it would have included the branch but then all the
+> other deltas going up to the GCA.  Much like the tip means the tip
+> but all the other deltas going back to 1.1.
+>
+> SCCS was a big contribution to the state of the art, I am forever
+> grateful that you did it.  To this day I don't think people know
+> what you did.  When we were a business, every time some SCM came out,
+> Rick or I would ask "is there a weave" like you had done, if not,
+> we didn't care.  That weave format that you did 50 years ago is
+> awesome.
+>
+>
+> On Mon, Jan 06, 2025 at 06:16:25PM -0700, Marc Rochkind wrote:
+> > I mentioned a few weeks ago that I was writing this invited paper for an
+> > upcoming 50-year anniversary of the first issue of IEEE Transactions on
+> > Software Engineering.
+> >
+> > The paper has now been accepted for publication and here's a preprint
+> > version of it:
+> >
+> > https://www.mrochkind.com/mrochkind/docs/SCCSretro2.pdf
+> >
+> > Marc
+>
+> --
+> ---
+> Larry McVoy           Retired to fishing
+> http://www.mcvoy.com/lm/boat
+>
+
+
+-- 
+Subscribe to my Photo-of-the-Week emails at my website mrochkind.com.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250106/2553724f/attachment.htm>
+
+From luther.johnson at makerlisp.com  Tue Jan  7 12:50:04 2025
+From: luther.johnson at makerlisp.com (Luther Johnson)
+Date: Mon, 6 Jan 2025 19:50:04 -0700
+Subject: [TUHS] A Retrospective on the Source Code Control System
+In-Reply-To: <20250107014919.GE13346@mcvoy.com>
+References: <CAOkr1zXc8t9qSnPG0VaiVnTOh7Esi4VeJMk4Eiv7Jc+B5f=DJw@mail.gmail.com>
+ <20250107014919.GE13346@mcvoy.com>
+Message-ID: <d748eba6-6f22-31f2-777e-abae57ecfc85@makerlisp.com>
+
+I never knew the technical details of what you had done, but I enjoyed
+using SCCS in the mid-80's when I started using UNIX, and it helped me
+develop an understanding of source code management disciplines.
+Sometimes I had to use RCS when SCCS wasn't available, later I used
+everything else, as we all did, but I always liked the way SCCS worked
+on those first SunOS and Ultrix systems where I encountered it,
+especially when it was well understood by the make utility. Thank you
+for this great contribution, and I enjoyed reading your paper just now.
+
+On 01/06/2025 06:49 PM, Larry McVoy wrote:
+> Nice.
+>
+> For what it is worth, your SCCS supports merging just fine.  We used
+> SCCS to do merges without copying by using your includes.  If SCCS had
+> had a -m for merge, it would have included the branch but then all the
+> other deltas going up to the GCA.  Much like the tip means the tip
+> but all the other deltas going back to 1.1.
+>
+> SCCS was a big contribution to the state of the art, I am forever
+> grateful that you did it.  To this day I don't think people know
+> what you did.  When we were a business, every time some SCM came out,
+> Rick or I would ask "is there a weave" like you had done, if not,
+> we didn't care.  That weave format that you did 50 years ago is
+> awesome.
+>
+>
+> On Mon, Jan 06, 2025 at 06:16:25PM -0700, Marc Rochkind wrote:
+>> I mentioned a few weeks ago that I was writing this invited paper for an
+>> upcoming 50-year anniversary of the first issue of IEEE Transactions on
+>> Software Engineering.
+>>
+>> The paper has now been accepted for publication and here's a preprint
+>> version of it:
+>>
+>> https://www.mrochkind.com/mrochkind/docs/SCCSretro2.pdf
+>>
+>> Marc
+
+
+From arnold at skeeve.com  Tue Jan  7 19:01:04 2025
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Tue, 07 Jan 2025 02:01:04 -0700
+Subject: [TUHS] A Retrospective on the Source Code Control System
+In-Reply-To: <CAOkr1zXc8t9qSnPG0VaiVnTOh7Esi4VeJMk4Eiv7Jc+B5f=DJw@mail.gmail.com>
+References: <CAOkr1zXc8t9qSnPG0VaiVnTOh7Esi4VeJMk4Eiv7Jc+B5f=DJw@mail.gmail.com>
+Message-ID: <202501070901.507914wk2068428@freefriends.org>
+
+Marc Rochkind <mrochkind at gmail.com> wrote:
+
+> I mentioned a few weeks ago that I was writing this invited paper for an
+> upcoming 50-year anniversary of the first issue of IEEE Transactions on
+> Software Engineering.
+>
+> The paper has now been accepted for publication and here's a preprint
+> version of it:
+>
+> https://www.mrochkind.com/mrochkind/docs/SCCSretro2.pdf
+>
+> Marc
+
+This is a nice paper. Marc, I think you're a little too hard on your
+24-year old self. To have created the weave at the age of 24 indicates
+(to me) that you were certainly a well above average programmer /
+computer scientist.  Many of the other things you criticize could be
+attributed to simply not knowing better (= not having yet had enough
+experience).
+
+My two cents, anyway.  Again, a nice paper.
+
+Arnold
+
+From douglas.mcilroy at dartmouth.edu  Wed Jan  8 00:42:14 2025
+From: douglas.mcilroy at dartmouth.edu (Douglas McIlroy)
+Date: Tue, 7 Jan 2025 09:42:14 -0500
+Subject: [TUHS] Bell-Era UNIX Audio/DSP Interfaces?
+Message-ID: <CAKH6PiWrc1uCgysPe56vCTHNsvxUExqxB+-oOtXOMXBPsMFsAg@mail.gmail.com>
+
+> Was the landscape of signal processing solutions just so
+> particular that trying to create a centralized interface didn't make
+sense at
+> the time?  Or was it a simple matter of priorities, with things like
+language
+> development and system design taking center stage, leaving a dearth of
+resources
+> to direct towards these sorts of matters?  Was there ever a chance of
+seeing,
+> say, the 5ESS handling of PCM, extended out to non-switching
+applications,
+
+In the early days of Unix there were intimate ties between CS Research and
+Visual and Acoustic Research. V&A were Bell Labs' pioneer minicomputer
+users because they needed interactive access to graphics and audio, which
+would have been prohibitively expensive on the Labs' pre-timesharing
+mainframes. Also they generally had EE backgrounds, so were comfortable
+working hands-on with hardware, whereas CS had been largely spun off from
+the math department.
+
+Ed David, who led Bell Labs into Multics, without which Unix might not have
+happened, had transferred from V&A to CS. So had Vic Vyssotsky and Elliot
+Pinson (Dennis's department head and coauthor with me of the introduction
+to the 1978 BSTJ Unix issue). John Kelly, a brilliant transferee who died
+all too young pre-Unix, had collaborated with Vic on BLODI, the first
+dataflow language, which took digital signal processing off breadboards and
+into computers. One central member of the Unix lab, Lee McMahon, never left
+V&A.
+
+The PDP-7 of Unix v0 was a hand-me-down from Pinson's time in V&A. And the
+PDP-11 of v1 was supported by a year-end fund surplus from there.
+
+People came from V&A to CS because their interests had drifted from signal
+processing to computing per se. With hindsight, one can see that CS
+recruiting--even when it drew on engineering or physics
+talent--concentrated on similarly motivated people. There was dabbling in
+acoustics, such as my "speak" text-to-speech program. And there were
+workers dedicated to a few specialties, such as Henry Baird in optical
+character recognition. But unlike text processing, say, these fields never
+reached a critical mass of support that might have stimulated a wider array
+of I/O drivers or full toolkits to use them.
+
+Meanwhile, in V&A Research linguists adopted Unix, but most others
+continued to roll their own one-off platforms. It's interesting to
+speculate whether the lack of audio interfaces in Unix was a cause or a
+result of this do-it-yourself impulse.
+
+Doug
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250107/abe71d59/attachment-0001.htm>
+
+From g.branden.robinson at gmail.com  Wed Jan  8 01:22:34 2025
+From: g.branden.robinson at gmail.com (G. Branden Robinson)
+Date: Tue, 7 Jan 2025 09:22:34 -0600
+Subject: [TUHS] Bell-Era UNIX Audio/DSP Interfaces?
+In-Reply-To: <CAKH6PiWrc1uCgysPe56vCTHNsvxUExqxB+-oOtXOMXBPsMFsAg@mail.gmail.com>
+References: <CAKH6PiWrc1uCgysPe56vCTHNsvxUExqxB+-oOtXOMXBPsMFsAg@mail.gmail.com>
+Message-ID: <20250107152234.uodqvpi3hgb4vxaj@illithid>
+
+At 2025-01-07T09:42:14-0500, Douglas McIlroy wrote:
+> The PDP-7 of Unix v0 was a hand-me-down from Pinson's time in V&A. And
+> the PDP-11 of v1 was supported by a year-end fund surplus from there.
+
+Hi Doug,
+
+This seems to clarify something I'm a bit murky on in early Unix/nroff
+history, because I have read (and repeated, in groff's roff(7), the
+claim that revenue from internal AT&T deployments of nroff were a major
+aid to getting the CSRC on its feet hardware-wise.  But that's in some
+tension with the story of Ossanna being able to deliver to the patent
+application typists a new line numbering feature in the (n)roff
+formatter "by tomorrow" if it was only after nroff's success that these
+revenues showed up.
+
+I also seem to remember from the preface to the v3 or v4 manual that the
+CSRC was trying to get itself and its Unix users everywhere away from
+the PDP-11/20 as fast as possibly, because that model didn't have memory
+protection.
+
+I thus have these questions:
+
+What model of PDP-11 was v1 Unix developed and run on at the CSRC?
+
+What model did the CSRC acquire next?  Specifically, which one did
+(n)roff make possible?
+
+Regards,
+Branden
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 833 bytes
+Desc: not available
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250107/540914aa/attachment.sig>
+
+From imp at bsdimp.com  Wed Jan  8 02:37:15 2025
+From: imp at bsdimp.com (Warner Losh)
+Date: Tue, 7 Jan 2025 09:37:15 -0700
+Subject: [TUHS] Bell-Era UNIX Audio/DSP Interfaces?
+In-Reply-To: <20250107152234.uodqvpi3hgb4vxaj@illithid>
+References: <CAKH6PiWrc1uCgysPe56vCTHNsvxUExqxB+-oOtXOMXBPsMFsAg@mail.gmail.com>
+ <20250107152234.uodqvpi3hgb4vxaj@illithid>
+Message-ID: <CANCZdfqvbO=Rv1p+p7Sujo4oYUd2GZcZsKBGTDxt6bvSKLC4=Q@mail.gmail.com>
+
+On Tue, Jan 7, 2025 at 8:22 AM G. Branden Robinson <
+g.branden.robinson at gmail.com> wrote:
+
+> At 2025-01-07T09:42:14-0500, Douglas McIlroy wrote:
+> > The PDP-7 of Unix v0 was a hand-me-down from Pinson's time in V&A. And
+> > the PDP-11 of v1 was supported by a year-end fund surplus from there.
+>
+> Hi Doug,
+>
+> This seems to clarify something I'm a bit murky on in early Unix/nroff
+> history, because I have read (and repeated, in groff's roff(7), the
+> claim that revenue from internal AT&T deployments of nroff were a major
+> aid to getting the CSRC on its feet hardware-wise.  But that's in some
+> tension with the story of Ossanna being able to deliver to the patent
+> application typists a new line numbering feature in the (n)roff
+> formatter "by tomorrow" if it was only after nroff's success that these
+> revenues showed up.
+>
+> I also seem to remember from the preface to the v3 or v4 manual that the
+> CSRC was trying to get itself and its Unix users everywhere away from
+> the PDP-11/20 as fast as possibly, because that model didn't have memory
+> protection.
+>
+
+Yes. V1 and V2 ran on the 11/20 without an MMU, while V3 and later was the
+port to the 11/45 with an MMU. I touch on these transitions in my history
+of unix
+talk.
+
+And I didn't know the connections that Douglas just relayed before my talk.
+It
+would have made it more interesting to include. Unix has always been about
+making it easier to collaborate and collaboration has a multiplier effect.
+
+
+> I thus have these questions:
+>
+> What model of PDP-11 was v1 Unix developed and run on at the CSRC?
+>
+> What model did the CSRC acquire next?  Specifically, which one did
+> (n)roff make possible?
+>
+
+I'd love to hear this info first hand too. I've delved and discovered what I
+think the answers are, but I have no primary sources for them.
+
+Warner
+
+
+> Regards,
+> Branden
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250107/bc1f9630/attachment.htm>
+
+From phil at ultimate.com  Wed Jan  8 03:53:22 2025
+From: phil at ultimate.com (Phil Budne)
+Date: Tue, 07 Jan 2025 12:53:22 -0500
+Subject: [TUHS] Bell-Era UNIX Audio/DSP Interfaces?
+In-Reply-To: <20250107152234.uodqvpi3hgb4vxaj@illithid>
+References: <CAKH6PiWrc1uCgysPe56vCTHNsvxUExqxB+-oOtXOMXBPsMFsAg@mail.gmail.com>
+ <20250107152234.uodqvpi3hgb4vxaj@illithid>
+Message-ID: <202501071753.507HrMwZ043959@ultimate.com>
+
+G. Branden Robinson wrote:
+> What model of PDP-11 was v1 Unix developed and run on at the CSRC?
+
+For what it's worth, there is a roff.s in the PDP-7 sources.
+
+The command list:
+https://github.com/DoctorWkt/pdp7-unix/blob/master/src/cmd/roff.s#L189
+
+> What model did the CSRC acquire next?  Specifically, which one did
+> (n)roff make possible?
+
+The first was an 11/20, initially, I seem to recall running without
+any MMU (I remember a story that it was customary to yell out "a.out"
+in the terminal room before running a newly compiled binary to give
+everyone a chance to save their files).
+
+I believe the step up was to the high-end 11/45, which I believe came
+out before the 11/40 (a mid-range system with MMU but not separate
+Instruction & Data spaces).
+
+See https://gunkies.org/wiki/PDP-11
+
+From lars at nocrew.org  Wed Jan  8 04:19:25 2025
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: Tue, 07 Jan 2025 18:19:25 +0000
+Subject: [TUHS] Bell-Era UNIX Audio/DSP Interfaces?
+In-Reply-To: <CANCZdfqvbO=Rv1p+p7Sujo4oYUd2GZcZsKBGTDxt6bvSKLC4=Q@mail.gmail.com>
+ (Warner Losh's message of "Tue, 7 Jan 2025 09:37:15 -0700")
+References: <CAKH6PiWrc1uCgysPe56vCTHNsvxUExqxB+-oOtXOMXBPsMFsAg@mail.gmail.com>
+ <20250107152234.uodqvpi3hgb4vxaj@illithid>
+ <CANCZdfqvbO=Rv1p+p7Sujo4oYUd2GZcZsKBGTDxt6bvSKLC4=Q@mail.gmail.com>
+Message-ID: <7wjzb6bi6q.fsf@junk.nocrew.org>
+
+Warner Losh wrote:
+> Yes. V1 and V2 ran on the 11/20 without an MMU, while V3 and later was
+> the port to the 11/45 with an MMU.
+
+Aren't you skipping over the KS11?
+
+From sjenkin at canb.auug.org.au  Wed Jan  8 05:05:50 2025
+From: sjenkin at canb.auug.org.au (sjenkin at canb.auug.org.au)
+Date: Wed, 8 Jan 2025 06:05:50 +1100
+Subject: [TUHS] Bell-Era UNIX Audio/DSP Interfaces?
+In-Reply-To: <CAKH6PiWrc1uCgysPe56vCTHNsvxUExqxB+-oOtXOMXBPsMFsAg@mail.gmail.com>
+References: <CAKH6PiWrc1uCgysPe56vCTHNsvxUExqxB+-oOtXOMXBPsMFsAg@mail.gmail.com>
+Message-ID: <E3595479-29DC-4E03-B864-62296787165B@canb.auug.org.au>
+
+A reminder of 2 stories of CS Research’s long running interest in Music and Audio: (much) “better than MP3”
+
+	 - Rob Pike on Plan 9’s CD-ROM (not) being filled with compressed music, including new works from Lou Reed & Debby Harry
+
+	- In a comment, Ken’s 400MB disk full of compressed music & his talking about his work at conferences.
+
+
+<https://www.tuhs.org/mailman3/hyperkitty/list/tuhs at tuhs.org/message/H2XN5ONL3XAAUFVERXNYKS7QOZAOGBFA/>
+
+	"And that, my friends, is why MP-3 took off instead of the far better follow-on system we were on the cusp of getting out the door.”
+
+
+
+> On 8 Jan 2025, at 01:42, Douglas McIlroy <douglas.mcilroy at dartmouth.edu> wrote:
+> 
+> In the early days of Unix there were intimate ties between CS Research and Visual and Acoustic Research. V&A were Bell Labs' pioneer minicomputer users because they needed interactive access to graphics and audio, which would have been prohibitively expensive on the Labs' pre-timesharing mainframes. Also they generally had EE backgrounds, so were comfortable  working hands-on with hardware, whereas CS had been largely spun off from the math department.
+> 
+> Ed David, who led Bell Labs into Multics, without which Unix might not have happened, had transferred from V&A to CS. So had Vic Vyssotsky and Elliot Pinson (Dennis's department head and coauthor with me of the introduction to the 1978 BSTJ Unix issue). John Kelly, a brilliant transferee who died all too young pre-Unix, had collaborated with Vic on BLODI, the first dataflow language, which took digital signal processing off breadboards and into computers. One central member of the Unix lab, Lee McMahon, never left V&A.
+> 
+> The PDP-7 of Unix v0 was a hand-me-down from Pinson's time in V&A. And the PDP-11 of v1 was supported by a year-end fund surplus from there. 
+> 
+> People came from V&A to CS because their interests had drifted from signal processing to computing per se. With hindsight, one can see that CS recruiting--even when it drew on engineering or physics talent--concentrated on similarly motivated people. There was dabbling in acoustics, such as my "speak" text-to-speech program. And there were workers dedicated to a few specialties, such as Henry Baird in optical character recognition. But unlike text processing, say, these fields never reached a critical mass of support that might have stimulated a wider array of I/O drivers or full toolkits to use them.
+> 
+> Meanwhile, in V&A Research linguists adopted Unix, but most others continued to roll their own one-off platforms. It's interesting to speculate whether the lack of audio interfaces in Unix was a cause or a result of this do-it-yourself impulse.
+> 
+> Doug
+
+
+--
+Steve Jenkin, IT Systems and Design 
+0412 786 915 (+61 412 786 915)
+PO Box 38, Kippax ACT 2615, AUSTRALIA
+
+mailto:sjenkin at canb.auug.org.au http://members.tip.net.au/~sjenkin
+
+
+From rik at rikfarrow.com  Wed Jan  8 11:40:14 2025
+From: rik at rikfarrow.com (Rik Farrow)
+Date: Tue, 7 Jan 2025 18:40:14 -0700
+Subject: [TUHS] A Retrospective on the Source Code Control System
+In-Reply-To: <CAOkr1zXc8t9qSnPG0VaiVnTOh7Esi4VeJMk4Eiv7Jc+B5f=DJw@mail.gmail.com>
+References: <CAOkr1zXc8t9qSnPG0VaiVnTOh7Esi4VeJMk4Eiv7Jc+B5f=DJw@mail.gmail.com>
+Message-ID: <CACY3YMH9Rz6qAbkJYFv3Ojw1sPzEjGOMig3Szvd3A1SAg_2R8A@mail.gmail.com>
+
+Very nicely written history, as well as explanation of how systems
+differed. I appreciated reading this, but especially enjoyed one of the
+closing paragraphs on the future:
+
+How am I supposed to know? AI is already doing some coding. Maybe in ten or
+twenty years it will do all of it. Will AI need version control? If it
+does, will it be the latest version of Git, or maybe something invented by
+AI?
+
+Thanks Marc
+Rik
+
+
+On Mon, Jan 6, 2025 at 6:16 PM Marc Rochkind <mrochkind at gmail.com> wrote:
+
+> I mentioned a few weeks ago that I was writing this invited paper for an
+> upcoming 50-year anniversary of the first issue of IEEE Transactions on
+> Software Engineering.
+>
+> The paper has now been accepted for publication and here's a preprint
+> version of it:
+>
+> https://www.mrochkind.com/mrochkind/docs/SCCSretro2.pdf
+>
+> Marc
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250107/4c0dfb3d/attachment.htm>
+
+From mrochkind at gmail.com  Wed Jan  8 13:01:34 2025
+From: mrochkind at gmail.com (Marc Rochkind)
+Date: Tue, 7 Jan 2025 20:01:34 -0700
+Subject: [TUHS] A Retrospective on the Source Code Control System
+In-Reply-To: <CACY3YMH9Rz6qAbkJYFv3Ojw1sPzEjGOMig3Szvd3A1SAg_2R8A@mail.gmail.com>
+References: <CAOkr1zXc8t9qSnPG0VaiVnTOh7Esi4VeJMk4Eiv7Jc+B5f=DJw@mail.gmail.com>
+ <CACY3YMH9Rz6qAbkJYFv3Ojw1sPzEjGOMig3Szvd3A1SAg_2R8A@mail.gmail.com>
+Message-ID: <CAOkr1zW7WiEh6f=CKprMiyf6gd342rG3+Wbu8p7kn-w=_kGtdw@mail.gmail.com>
+
+Glad you liked that paragraph, Rik. I had that section head in my outline
+and when I got there I had no idea what to type. Got away with it! ;-)
+
+Marc
+
+On Tue, Jan 7, 2025, 6:40 PM Rik Farrow <rik at rikfarrow.com> wrote:
+
+> Very nicely written history, as well as explanation of how systems
+> differed. I appreciated reading this, but especially enjoyed one of the
+> closing paragraphs on the future:
+>
+> How am I supposed to know? AI is already doing some coding. Maybe in ten
+> or twenty years it will do all of it. Will AI need version control? If it
+> does, will it be the latest version of Git, or maybe something invented by
+> AI?
+>
+> Thanks Marc
+> Rik
+>
+>
+> On Mon, Jan 6, 2025 at 6:16 PM Marc Rochkind <mrochkind at gmail.com> wrote:
+>
+>> I mentioned a few weeks ago that I was writing this invited paper for an
+>> upcoming 50-year anniversary of the first issue of IEEE Transactions on
+>> Software Engineering.
+>>
+>> The paper has now been accepted for publication and here's a preprint
+>> version of it:
+>>
+>> https://www.mrochkind.com/mrochkind/docs/SCCSretro2.pdf
+>>
+>> Marc
+>>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250107/63610bf7/attachment.htm>
+
+From douglas.mcilroy at dartmouth.edu  Thu Jan  9 03:15:58 2025
+From: douglas.mcilroy at dartmouth.edu (Douglas McIlroy)
+Date: Wed, 8 Jan 2025 12:15:58 -0500
+Subject: [TUHS] "/bin/sh: the biggest Unix security loophole"
+Message-ID: <CAKH6PiXw5BBHP5rHrHgs4R-6=GGGeExU0=t=8hGDHfmwWWzecA@mail.gmail.com>
+
+I have sent a scan of Jim Reeds's 1984 technical memorandum on Bourne-shell
+security risks to Warren Toomey for posting in the TUHS archives.
+
+Doug
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250108/ad165e85/attachment.htm>
+
+From tuhs at tuhs.org  Thu Jan  9 06:58:29 2025
+From: tuhs at tuhs.org (Warren Toomey via TUHS)
+Date: Thu, 9 Jan 2025 06:58:29 +1000
+Subject: [TUHS] "/bin/sh: the biggest Unix security loophole"
+In-Reply-To: <CAKH6PiXw5BBHP5rHrHgs4R-6=GGGeExU0=t=8hGDHfmwWWzecA@mail.gmail.com>
+References: <CAKH6PiXw5BBHP5rHrHgs4R-6=GGGeExU0=t=8hGDHfmwWWzecA@mail.gmail.com>
+Message-ID: <9f184736-5140-4100-8757-c04282a62d4c@tuhs.org>
+
+On 9/1/25 03:15, Douglas McIlroy wrote:
+> I have sent a scan of Jim Reeds's 1984 technical memorandum on 
+> Bourne-shell security risks to Warren Toomey for posting in the TUHS 
+> archives.
+>
+> Doug
+
+It's now available at 
+https://www.tuhs.org/Archive/Documentation/TechReports/Bell_Labs/ReedsShellHoles.pdf
+
+Thanks Doug!
+
+Cheers,
+
+       Warren
+
+
+From mrochkind at gmail.com  Thu Jan  9 07:57:39 2025
+From: mrochkind at gmail.com (Marc Rochkind)
+Date: Wed, 8 Jan 2025 14:57:39 -0700
+Subject: [TUHS] "/bin/sh: the biggest Unix security loophole"
+In-Reply-To: <9f184736-5140-4100-8757-c04282a62d4c@tuhs.org>
+References: <CAKH6PiXw5BBHP5rHrHgs4R-6=GGGeExU0=t=8hGDHfmwWWzecA@mail.gmail.com>
+ <9f184736-5140-4100-8757-c04282a62d4c@tuhs.org>
+Message-ID: <CAOkr1zVsRMzAhaZKWhC1bfj7RejErBF-OVQVdKDTb=ZyszYA9w@mail.gmail.com>
+
+Very interesting and readable paper! No way systems inferior to UNIX could
+get into such glorious levels of trouble. ;-)
+
+Marc
+
+On Wed, Jan 8, 2025 at 1:58 PM Warren Toomey via TUHS <tuhs at tuhs.org> wrote:
+
+> On 9/1/25 03:15, Douglas McIlroy wrote:
+> > I have sent a scan of Jim Reeds's 1984 technical memorandum on
+> > Bourne-shell security risks to Warren Toomey for posting in the TUHS
+> > archives.
+> >
+> > Doug
+>
+> It's now available at
+>
+> https://www.tuhs.org/Archive/Documentation/TechReports/Bell_Labs/ReedsShellHoles.pdf
+>
+> Thanks Doug!
+>
+> Cheers,
+>
+>        Warren
+>
+>
+
+-- 
+Subscribe to my Photo-of-the-Week emails at my website mrochkind.com.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250108/0eb2afad/attachment.htm>
+
+From steffen at sdaoden.eu  Sat Jan 11 08:05:18 2025
+From: steffen at sdaoden.eu (Steffen Nurpmeso)
+Date: Fri, 10 Jan 2025 23:05:18 +0100
+Subject: [TUHS] Bell-Era UNIX Audio/DSP Interfaces?
+In-Reply-To: <20250106215143.b3Q14AL1@steffen%sdaoden.eu>
+References: <BWYwXjScYdFHM1NV0KEtgvazEfJM1PX7WaZ8lygZ45Bw2pEQG6JQr5OCtX-KMwEwr_k2zLDGXac7wymRCtifnU9VKnlsrJCrKFqGZSgM6-0=@protonmail.com>
+ <20250106215143.b3Q14AL1@steffen%sdaoden.eu>
+Message-ID: <20250110220518.r8yTvN4z@steffen%sdaoden.eu>
+
+P.S.:
+
+Steffen Nurpmeso wrote in
+ <20250106215143.b3Q14AL1 at steffen%sdaoden.eu>:
+ |segaloco via TUHS wrote in
+ | <BWYwXjScYdFHM1NV0KEtgvazEfJM1PX7WaZ8lygZ45Bw2pEQG6JQr5OCtX-KMwEwr_k2zLD\
+ | GXac7wymRCtifnU9VKnlsrJCrKFqGZSgM6-0=@protonmail.com>:
+ ||The sound situation in the UNIX world to me has always felt particularly
+ ||fragmentary, with OSS offering some glimmer of hope but faltering under \
+ ||the long
+ ||shadow of ALSA, with a hodge podge of PCM and other low level interfaces
+ ||littered about other offerings.
+ |
+ |Oh, but *how* great it was when FreeBSD came on over with those
+ |"virtual sound devices", in 4.7 or 4.9 i think it was.  Ie instead
+ |of one blocking device, one could open dev.1 and dev.2 and it was
+ |multiplexed in the kernel.  It did some format conversion in the
+ |kernel alongside this.
+ |
+ |It was *fantastic*![.]
+
+For the younger and overall clarification.
+Around Y2K many programs -- audio players, but also early desktop
+environment "betas" of GNOME and KDE unless my memory fools me
+completely (i used such by then, at least at times, when not under
+FreeBSD cons25 or Linux then framebuffer!) -- had fixed paths
+built-in, for example /dev/dsp or /dev/pcm or /dev/audio or
+whatever it actually was (for real).  There may have been multiple
+dev files, actually, ie, /dev/dsp1/2/3 etc, but the path was
+built-in, and it would not multiplex: if you opened /dev/dsp1 you
+had /dev/dsp1, but /dev/dsp and that thing was in use, and could
+not be used for any other purpose, at all.
+
+With the FreeBSD change program 1 could open "/dev/dsp", but
+2 could open it, too, because it internally multiplexed to the
+virtual .1 .2 .3 etc.  This was a tremendous improvement!
+
+--steffen
+|
+|Der Kragenbaer,                The moon bear,
+|der holt sich munter           he cheerfully and one by one
+|einen nach dem anderen runter  wa.ks himself off
+|(By Robert Gernhardt)
+|
+|In Fall and Winter, feel "The Dropbear Bard"s pint(er).
+|
+|The banded bear
+|without a care,
+|Banged on himself for e'er and e'er
+|
+|Farewell, dear collar bear
+
+From tuhs at tuhs.org  Mon Jan 13 15:11:21 2025
+From: tuhs at tuhs.org (Warren Toomey via TUHS)
+Date: Mon, 13 Jan 2025 15:11:21 +1000
+Subject: [TUHS] A Unix Code Walkthrough by Ken Thompson
+In-Reply-To: <Z3BwP1SPmoAjTsxw@minnie.tuhs.org>
+References: <Z3BwP1SPmoAjTsxw@minnie.tuhs.org>
+Message-ID: <Z4SgeX7mO2rEH3JO@minnie.tuhs.org>
+
+On Sun, Dec 29, 2024 at 07:40:15AM +1000, Warren Toomey via TUHS wrote:
+> Hi all, I've just received a set of MP3 recordings from Bob Kridle. He says:
+> 
+>     These are recordings of Ken Thompson doing a read through of one of
+>     an early UNIX kernel code listing with a group of grad students at
+>     UC Berkeley while he was a visiting prof. there.
+> 
+> The date is roughly 1975. I've put the recordings here along with his
+> e-mails about the recordings:
+> 
+> https://www.tuhs.org/Archive/Recordings/1975_Unix_Code_Walkthru/
+
+Eric Allman has kindly supplied a scan of the source code that ken
+provided for the walkthrough. I've added it to the above location.
+It's interesting in that there are comments at the start of each
+function - the existing 5th Edition code that we have does not
+have these comments.
+
+Cheers & thanks Eric!
+	Warren
+
+From jsg at jsg.id.au  Mon Jan 13 16:23:11 2025
+From: jsg at jsg.id.au (Jonathan Gray)
+Date: Mon, 13 Jan 2025 17:23:11 +1100
+Subject: [TUHS] A Unix Code Walkthrough by Ken Thompson
+In-Reply-To: <Z4SgeX7mO2rEH3JO@minnie.tuhs.org>
+References: <Z3BwP1SPmoAjTsxw@minnie.tuhs.org>
+ <Z4SgeX7mO2rEH3JO@minnie.tuhs.org>
+Message-ID: <Z4SxT7AzlmDoVWY2@largo.jsg.id.au>
+
+On Mon, Jan 13, 2025 at 03:11:21PM +1000, Warren Toomey via TUHS wrote:
+> On Sun, Dec 29, 2024 at 07:40:15AM +1000, Warren Toomey via TUHS wrote:
+> > Hi all, I've just received a set of MP3 recordings from Bob Kridle. He says:
+> > 
+> >     These are recordings of Ken Thompson doing a read through of one of
+> >     an early UNIX kernel code listing with a group of grad students at
+> >     UC Berkeley while he was a visiting prof. there.
+> > 
+> > The date is roughly 1975. I've put the recordings here along with his
+> > e-mails about the recordings:
+> > 
+> > https://www.tuhs.org/Archive/Recordings/1975_Unix_Code_Walkthru/
+> 
+> Eric Allman has kindly supplied a scan of the source code that ken
+> provided for the walkthrough. I've added it to the above location.
+> It's interesting in that there are comments at the start of each
+> function - the existing 5th Edition code that we have does not
+> have these comments.
+
+With alloc.c the comments are there in v6 and the copyright line
+removal matches the changes between v5 and v6.
+
+The code appears to be somewhere between v6 and the "50 changes" tape
+described by Mike O'Brien in:
+Applications/Spencer_Tapes/unsw3.tar.gz
+usr/sys/v6unix/changenotes
+
+Some of the pages are dated 1976, and sysent[] on p 87 has post v6
+system calls: access(), alarm(), pause().
+
+Thanks to all involved for making this available.
+
+From yuyi15968 at gmail.com  Tue Jan 14 17:52:56 2025
+From: yuyi15968 at gmail.com (Jackson Helie G)
+Date: Tue, 14 Jan 2025 15:52:56 +0800
+Subject: [TUHS] How can I see what is in the tape image?
+Message-ID: <CAFmyUGH+FmQwPCa9jiXgWLQiDBk_oENmZsRsZON1wrv5rMVaCg@mail.gmail.com>
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250114/ec76e12c/attachment.htm>
+
+From kevin.bowling at kev009.com  Wed Jan 15 17:40:37 2025
+From: kevin.bowling at kev009.com (Kevin Bowling)
+Date: Wed, 15 Jan 2025 00:40:37 -0700
+Subject: [TUHS] Bell-Era UNIX Audio/DSP Interfaces?
+In-Reply-To: <BWYwXjScYdFHM1NV0KEtgvazEfJM1PX7WaZ8lygZ45Bw2pEQG6JQr5OCtX-KMwEwr_k2zLDGXac7wymRCtifnU9VKnlsrJCrKFqGZSgM6-0=@protonmail.com>
+References: <BWYwXjScYdFHM1NV0KEtgvazEfJM1PX7WaZ8lygZ45Bw2pEQG6JQr5OCtX-KMwEwr_k2zLDGXac7wymRCtifnU9VKnlsrJCrKFqGZSgM6-0=@protonmail.com>
+Message-ID: <CAK7dMtB0B1=FG8JUU5w4oF0hjcYyCRGvf1M2OhnMfWRNOvirXg@mail.gmail.com>
+
+On Mon, Jan 6, 2025 at 2:21 PM segaloco via TUHS <tuhs at tuhs.org> wrote:
+>
+> The sound situation in the UNIX world to me has always felt particularly
+> fragmentary, with OSS offering some glimmer of hope but faltering under the long
+> shadow of ALSA, with a hodge podge of PCM and other low level interfaces
+> littered about other offerings.
+>
+> Given AT&T's involvement with the development of just about everything
+> "sound over wires" for decades by the time UNIX comes along, one would suspect
+> AT&T would be quite invested in standardizing interfaces for computers
+> interacting with audio signals on copper wire.  Indeed much of the ESS R&D was
+> taking in analog telephone signals, digitizing them, and then acting on those
+> digitized results before converting back to analog to send to the other end.
+>
+> Where this has me curious is if there were any efforts in Bell Labs, prior to
+> other industry players having their hands on the steering wheel, to establish an
+> abstract UNIX interface pattern for interacting with streams of converted audio
+> signal.  Of course modern formats didn't exist, but the general idea of PCM was
+> well established, concepts like sampling rates, bit depths, etc. could be used
+> in calculations to interpret and manipulate digitized audio streams.
+>
+> Any recollections?  Was the landscape of signal processing solutions just so
+> particular that trying to create a centralized interface didn't make sense at
+> the time?  Or was it a simple matter of priorities, with things like language
+> development and system design taking center stage, leaving a dearth of resources
+> to direct towards these sorts of matters?  Was there ever a chance of seeing,
+> say, the 5ESS handling of PCM, extended out to non-switching applications, or
+> was that stuff firmly siloed over in the switching groups, having no influence
+> on signal processing outside?
+
+You might be synthesizing a bit of serendipity that wasn't there in
+the moment in both directions: what switches were and where multimedia
+wasn't yet.  The 5ESS is primarily concerned with time/space/time
+switching, that those slots are PCM audio, signalling, or data is not
+so important beyond getting it to the right place on time.  To
+potentially highlight the distinction, you need a seperate machine
+(potentially many) called an announcement system, to produce what
+you'd assume to be intrinsic and familiar audio necessary for end user
+telephony on a 5E.  So it is not so great at much related to computer
+audio unless you consider line interface units really expensive
+ADC/DAC.  And that is the domain of microcontrollers far away from
+UNIX.  It might live on completely separate machines like channel
+banks or SLC systems.  So the BORSCHT part of getting analog audio in
+and out predates all this and maybe PCM _is_ the great achievement for
+computer audio, because regardless of how the audio is produced or
+encoded it probably lives as PCM at your DAC.
+
+I will speculate that the AT&T folks didn't yet have pressing need for
+UNIX to have rich multimedia capabilities so they just weren't in the
+position to define lasting APIs - you can find historical research
+systems of the IBM mainframe and DEC variety where people were
+figuring out things like music and speech synthesis at Bell and
+elsewhere.  But for Big Telecom, think more like TI's Speak&Spell...
+microcontroller, PCM ROM, DAC..  That's the way electronic phone
+systems were designed when it came time to produce audio, as
+distributed systems of microcontrollers or DSPs and fixed function
+ASICs, with as little involvement from anything resembling a full OS
+as possible.  It wasn't until the 1990s that Computer Telephony (CT)
+really took off, with vendors like Dialogic, or later on software like
+Asterisk.  That was maybe concurrent to the Multimedia PC of the early
+1990s where the desire went beyond games synthesis or commanding a
+CD/LaserDisc's PCM to storing, processing, and playback of media files
+-- now you need audio APIs -- and AT&T is no longer in the driver's
+seat.  OSS is pretty good, and was in there by the time Univel took
+the helm of UNIX where they thought so too so it might be as close to
+official as one can get.  Audio is one of those areas where Linux
+earns the facepalm.
+
+Cheers,
+
+> - Matt G.
+
+From tuhs at tuhs.org  Thu Jan 16 00:51:15 2025
+From: tuhs at tuhs.org (Chet Ramey via TUHS)
+Date: Wed, 15 Jan 2025 09:51:15 -0500
+Subject: [TUHS] "/bin/sh: the biggest Unix security loophole"
+In-Reply-To: <9f184736-5140-4100-8757-c04282a62d4c@tuhs.org>
+References: <CAKH6PiXw5BBHP5rHrHgs4R-6=GGGeExU0=t=8hGDHfmwWWzecA@mail.gmail.com>
+ <9f184736-5140-4100-8757-c04282a62d4c@tuhs.org>
+Message-ID: <355921c8-8682-47e9-aa65-937b564a0063@case.edu>
+
+On 1/8/25 3:58 PM, Warren Toomey via TUHS wrote:
+> On 9/1/25 03:15, Douglas McIlroy wrote:
+>> I have sent a scan of Jim Reeds's 1984 technical memorandum on Bourne- 
+>> shell security risks to Warren Toomey for posting in the TUHS archives.
+>>
+>> Doug
+> 
+> It's now available at https://www.tuhs.org/Archive/Documentation/ 
+> TechReports/Bell_Labs/ReedsShellHoles.pdf
+
+It's a great paper. I think the most interesting aspect is that the set
+of loopholes Reeds concentrates on for the majority of the paper (Class 2)
+aren't holes in the shell, per se. Except for the already-mentioned
+behaviors of inheriting IFS from the environment and using it to split
+all words, all of the weaknesses Reeds described are sloppy, but common,
+programming practices in setuid programs. His conclusions are still
+relevant.
+
+Chet
+
+-- 
+``The lyf so short, the craft so long to lerne.'' - Chaucer
+		 ``Ars longa, vita brevis'' - Hippocrates
+Chet Ramey, UTech, CWRU    chet at case.edu    http://tiswww.cwru.edu/~chet/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: OpenPGP_signature.asc
+Type: application/pgp-signature
+Size: 203 bytes
+Desc: OpenPGP digital signature
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250115/9e04d7be/attachment.sig>
+
+From arnold at skeeve.com  Thu Jan 16 01:31:36 2025
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Wed, 15 Jan 2025 08:31:36 -0700
+Subject: [TUHS] Robert Morris's UUCP
+Message-ID: <202501151531.50FFVav6251589@freefriends.org>
+
+The Reeds paper mentions that Robert Morris rewrote UUCP.
+Did that ever see the light of day anywhere? V9? V10?
+
+Just wondering.
+
+Arnold
+
+From tuhs at tuhs.org  Thu Jan 16 01:51:57 2025
+From: tuhs at tuhs.org (Chet Ramey via TUHS)
+Date: Wed, 15 Jan 2025 10:51:57 -0500
+Subject: [TUHS] Robert Morris's UUCP
+In-Reply-To: <202501151531.50FFVav6251589@freefriends.org>
+References: <202501151531.50FFVav6251589@freefriends.org>
+Message-ID: <a11d3217-c465-4d3e-87bf-5069eb0460d2@case.edu>
+
+On 1/15/25 10:31 AM, arnold at skeeve.com wrote:
+> The Reeds paper mentions that Robert Morris rewrote UUCP.
+
+He described the work in CSTR 111, which is unfortunately not in the
+TUHS archive.
+
+> Did that ever see the light of day anywhere? V9? V10?
+
+I don't believe so.
+
+-- 
+``The lyf so short, the craft so long to lerne.'' - Chaucer
+		 ``Ars longa, vita brevis'' - Hippocrates
+Chet Ramey, UTech, CWRU    chet at case.edu    http://tiswww.cwru.edu/~chet/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: OpenPGP_signature.asc
+Type: application/pgp-signature
+Size: 203 bytes
+Desc: OpenPGP digital signature
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250115/d1599591/attachment-0001.sig>
+
+From norman at oclsc.org  Thu Jan 16 02:24:06 2025
+From: norman at oclsc.org (Norman Wilson)
+Date: Wed, 15 Jan 2025 11:24:06 -0500 (EST)
+Subject: [TUHS] Robert Morris's UUCP
+Message-ID: <CA99565CAE5E2498912D06D38825DBA0.for-standards-violators@oclsc.org>
+
+Robert's uucp was in use in the Research world when I arrived
+in late summer of 1984.  It had an interesting and sensible
+structure; in particular uucico was split into two programs,
+ci and co.
+
+One of the first things I was asked to do when I got there was
+to get Honey Danber working as a replacement.  I don't remember
+why that was preferred; possibly just because Robert was a
+summer student, not a full-fledged member of the lab, and we
+didn't want something as important to us as uucp to rely on
+orphaned code.
+
+Honey Danber was in place by the time we made the V8 tape,
+toward the end of 1984.
+
+Norman Wilson
+Toronto ON
+
+From ggm at algebras.org  Thu Jan 16 16:42:31 2025
+From: ggm at algebras.org (George Michaelson)
+Date: Thu, 16 Jan 2025 16:42:31 +1000
+Subject: [TUHS] Robert Morris's UUCP
+In-Reply-To: <CA99565CAE5E2498912D06D38825DBA0.for-standards-violators@oclsc.org>
+References: <CA99565CAE5E2498912D06D38825DBA0.for-standards-violators@oclsc.org>
+Message-ID: <CAKr6gn36vUzkBq5n5opLtTX0ZZEup-Gkre1tXLaw_VaFPe0-=Q@mail.gmail.com>
+
+I often repeat a throwaway sentence that UUCP was Lesk, building a bug fix
+distribution mechanism.
+
+Am I completely wrong? I am sure Mike said this to me mid 80s.
+
+Not that subsequent codeword didn't happen.
+
+G
+
+On Thu, 16 Jan 2025, 2:24 am Norman Wilson, <norman at oclsc.org> wrote:
+
+> Robert's uucp was in use in the Research world when I arrived
+> in late summer of 1984.  It had an interesting and sensible
+> structure; in particular uucico was split into two programs,
+> ci and co.
+>
+> One of the first things I was asked to do when I got there was
+> to get Honey Danber working as a replacement.  I don't remember
+> why that was preferred; possibly just because Robert was a
+> summer student, not a full-fledged member of the lab, and we
+> didn't want something as important to us as uucp to rely on
+> orphaned code.
+>
+> Honey Danber was in place by the time we made the V8 tape,
+> toward the end of 1984.
+>
+> Norman Wilson
+> Toronto ON
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250116/68b5bbd5/attachment.htm>
+
+From arnold at skeeve.com  Thu Jan 16 17:52:04 2025
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Thu, 16 Jan 2025 00:52:04 -0700
+Subject: [TUHS] Robert Morris's UUCP
+In-Reply-To: <a11d3217-c465-4d3e-87bf-5069eb0460d2@case.edu>
+References: <202501151531.50FFVav6251589@freefriends.org>
+ <a11d3217-c465-4d3e-87bf-5069eb0460d2@case.edu>
+Message-ID: <202501160752.50G7q4bb308148@freefriends.org>
+
+Chet Ramey <chet.ramey at case.edu> wrote:
+
+> On 1/15/25 10:31 AM, arnold at skeeve.com wrote:
+> > The Reeds paper mentions that Robert Morris rewrote UUCP.
+>
+> He described the work in CSTR 111, which is unfortunately not in the
+> TUHS archive.
+
+Thanks Chet.  Does anyone have this? Doug?
+
+Arnold
+
+From douglas.mcilroy at dartmouth.edu  Fri Jan 17 02:04:56 2025
+From: douglas.mcilroy at dartmouth.edu (Douglas McIlroy)
+Date: Thu, 16 Jan 2025 11:04:56 -0500
+Subject: [TUHS] Robert Morris's UUCP
+Message-ID: <CAKH6PiX0MdMLF9KjQDUSbQbnq_opdzdnkMatU9NE3vD4itBKXQ@mail.gmail.com>
+
+> I often repeat a throwaway sentence that UUCP was Lesk,
+> building a bug fix distribution mechanism.
+
+> Am I completely wrong? I am sure Mike said this to me mid 80s.
+
+That was an important motivating factor, but Mike also had an
+unerring anticipatory sense of public "need".  Thus his programs
+spread like wildfire despite their bugs. UUCP itself is the premier
+example. Its popularity impelled its inclusion in v7 despite its
+woeful disregard for security.
+
+> Does anyone have [Robert Morris's UUCP CSTR]? Doug?
+
+Not I.
+
+Doug
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250116/ede4da76/attachment.htm>
+
+From arnold at skeeve.com  Fri Jan 17 02:07:13 2025
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Thu, 16 Jan 2025 09:07:13 -0700
+Subject: [TUHS] Robert Morris's UUCP
+In-Reply-To: <CAKH6PiX0MdMLF9KjQDUSbQbnq_opdzdnkMatU9NE3vD4itBKXQ@mail.gmail.com>
+References: <CAKH6PiX0MdMLF9KjQDUSbQbnq_opdzdnkMatU9NE3vD4itBKXQ@mail.gmail.com>
+Message-ID: <202501161607.50GG7DMW344260@freefriends.org>
+
+Douglas McIlroy <douglas.mcilroy at dartmouth.edu> wrote:
+
+> > I often repeat a throwaway sentence that UUCP was Lesk,
+> > building a bug fix distribution mechanism.
+>
+> > Am I completely wrong? I am sure Mike said this to me mid 80s.
+>
+> That was an important motivating factor, but Mike also had an
+> unerring anticipatory sense of public "need".  Thus his programs
+> spread like wildfire despite their bugs. UUCP itself is the premier
+> example. Its popularity impelled its inclusion in v7 despite its
+> woeful disregard for security.
+>
+> > Does anyone have [Robert Morris's UUCP CSTR]? Doug?
+>
+> Not I.
+
+I have just sent him an email directly asking if he
+has a copy.  If anything comes of it I'll send it on.
+
+Thanks,
+
+Arnold
+
+From tuhs at tuhs.org  Fri Jan 17 02:39:28 2025
+From: tuhs at tuhs.org (Chet Ramey via TUHS)
+Date: Thu, 16 Jan 2025 11:39:28 -0500
+Subject: [TUHS] Robert Morris's UUCP
+In-Reply-To: <202501160752.50G7q4bb308148@freefriends.org>
+References: <202501151531.50FFVav6251589@freefriends.org>
+ <a11d3217-c465-4d3e-87bf-5069eb0460d2@case.edu>
+ <202501160752.50G7q4bb308148@freefriends.org>
+Message-ID: <360a5803-8720-414f-81c8-69a427fc5fe0@case.edu>
+
+On 1/16/25 2:52 AM, arnold at skeeve.com wrote:
+> Chet Ramey <chet.ramey at case.edu> wrote:
+> 
+>> On 1/15/25 10:31 AM, arnold at skeeve.com wrote:
+>>> The Reeds paper mentions that Robert Morris rewrote UUCP.
+>>
+>> He described the work in CSTR 111, which is unfortunately not in the
+>> TUHS archive.
+> 
+> Thanks Chet.  Does anyone have this? Doug?
+
+I looked through my paper collection and I have it. I'll try and scan it
+(my scanner's not that great).
+
+Chet
+
+
+-- 
+``The lyf so short, the craft so long to lerne.'' - Chaucer
+		 ``Ars longa, vita brevis'' - Hippocrates
+Chet Ramey, UTech, CWRU    chet at case.edu    http://tiswww.cwru.edu/~chet/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: OpenPGP_signature.asc
+Type: application/pgp-signature
+Size: 203 bytes
+Desc: OpenPGP digital signature
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250116/1335a29d/attachment.sig>
+
+From tuhs at tuhs.org  Fri Jan 17 02:47:09 2025
+From: tuhs at tuhs.org (Chet Ramey via TUHS)
+Date: Thu, 16 Jan 2025 11:47:09 -0500
+Subject: [TUHS] Robert Morris's UUCP
+In-Reply-To: <360a5803-8720-414f-81c8-69a427fc5fe0@case.edu>
+References: <202501151531.50FFVav6251589@freefriends.org>
+ <a11d3217-c465-4d3e-87bf-5069eb0460d2@case.edu>
+ <202501160752.50G7q4bb308148@freefriends.org>
+ <360a5803-8720-414f-81c8-69a427fc5fe0@case.edu>
+Message-ID: <caae9b79-48e0-4e44-9b30-8a5dda72ecd3@case.edu>
+
+On 1/16/25 11:39 AM, Chet Ramey wrote:
+> On 1/16/25 2:52 AM, arnold at skeeve.com wrote:
+>> Chet Ramey <chet.ramey at case.edu> wrote:
+>>
+>>> On 1/15/25 10:31 AM, arnold at skeeve.com wrote:
+>>>> The Reeds paper mentions that Robert Morris rewrote UUCP.
+>>>
+>>> He described the work in CSTR 111, which is unfortunately not in the
+>>> TUHS archive.
+>>
+>> Thanks Chet.  Does anyone have this? Doug?
+> 
+> I looked through my paper collection and I have it. I'll try and scan it
+> (my scanner's not that great).
+
+OK, I scanned it and sent it to Warren for the archive. The quality's not
+that great, so let's see if rtm can provide a higher-quality PDF.
+
+Chet
+
+-- 
+``The lyf so short, the craft so long to lerne.'' - Chaucer
+		 ``Ars longa, vita brevis'' - Hippocrates
+Chet Ramey, UTech, CWRU    chet at case.edu    http://tiswww.cwru.edu/~chet/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: OpenPGP_signature.asc
+Type: application/pgp-signature
+Size: 203 bytes
+Desc: OpenPGP digital signature
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250116/f56d09de/attachment.sig>
+
+From crossd at gmail.com  Fri Jan 17 02:50:00 2025
+From: crossd at gmail.com (Dan Cross)
+Date: Thu, 16 Jan 2025 11:50:00 -0500
+Subject: [TUHS] Robert Morris's UUCP
+In-Reply-To: <360a5803-8720-414f-81c8-69a427fc5fe0@case.edu>
+References: <202501151531.50FFVav6251589@freefriends.org>
+ <a11d3217-c465-4d3e-87bf-5069eb0460d2@case.edu>
+ <202501160752.50G7q4bb308148@freefriends.org>
+ <360a5803-8720-414f-81c8-69a427fc5fe0@case.edu>
+Message-ID: <CAEoi9W6e02f_QeDLwCje+rDYBo9BgJjw1qDUqXp3h=abpUX8Pg@mail.gmail.com>
+
+On Thu, Jan 16, 2025 at 11:39 AM Chet Ramey via TUHS <tuhs at tuhs.org> wrote:
+> On 1/16/25 2:52 AM, arnold at skeeve.com wrote:
+> > Chet Ramey <chet.ramey at case.edu> wrote:
+> >> On 1/15/25 10:31 AM, arnold at skeeve.com wrote:
+> >>> The Reeds paper mentions that Robert Morris rewrote UUCP.
+> >>
+> >> He described the work in CSTR 111, which is unfortunately not in the
+> >> TUHS archive.
+> >
+> > Thanks Chet.  Does anyone have this? Doug?
+>
+> I looked through my paper collection and I have it. I'll try and scan it
+> (my scanner's not that great).
+
+I wonder if rtm has an electronic copy. Has anyone written to him to ask?
+
+        - Dan C.
+
+From tuhs at tuhs.org  Fri Jan 17 02:54:47 2025
+From: tuhs at tuhs.org (Chet Ramey via TUHS)
+Date: Thu, 16 Jan 2025 11:54:47 -0500
+Subject: [TUHS] Robert Morris's UUCP
+In-Reply-To: <CAEoi9W6e02f_QeDLwCje+rDYBo9BgJjw1qDUqXp3h=abpUX8Pg@mail.gmail.com>
+References: <202501151531.50FFVav6251589@freefriends.org>
+ <a11d3217-c465-4d3e-87bf-5069eb0460d2@case.edu>
+ <202501160752.50G7q4bb308148@freefriends.org>
+ <360a5803-8720-414f-81c8-69a427fc5fe0@case.edu>
+ <CAEoi9W6e02f_QeDLwCje+rDYBo9BgJjw1qDUqXp3h=abpUX8Pg@mail.gmail.com>
+Message-ID: <59bf0b3a-0299-4c28-a484-baa3b740ee10@case.edu>
+
+On 1/16/25 11:50 AM, Dan Cross wrote:
+
+> I wonder if rtm has an electronic copy. Has anyone written to him to ask?
+
+Yes, Arnold contacted him directly.
+
+-- 
+``The lyf so short, the craft so long to lerne.'' - Chaucer
+		 ``Ars longa, vita brevis'' - Hippocrates
+Chet Ramey, UTech, CWRU    chet at case.edu    http://tiswww.cwru.edu/~chet/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: OpenPGP_signature.asc
+Type: application/pgp-signature
+Size: 203 bytes
+Desc: OpenPGP digital signature
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250116/5168aaf3/attachment.sig>
+
+From arnold at skeeve.com  Fri Jan 17 05:15:49 2025
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Thu, 16 Jan 2025 12:15:49 -0700
+Subject: [TUHS] Robert Morris's UUCP
+In-Reply-To: <59bf0b3a-0299-4c28-a484-baa3b740ee10@case.edu>
+References: <202501151531.50FFVav6251589@freefriends.org>
+ <a11d3217-c465-4d3e-87bf-5069eb0460d2@case.edu>
+ <202501160752.50G7q4bb308148@freefriends.org>
+ <360a5803-8720-414f-81c8-69a427fc5fe0@case.edu>
+ <CAEoi9W6e02f_QeDLwCje+rDYBo9BgJjw1qDUqXp3h=abpUX8Pg@mail.gmail.com>
+ <59bf0b3a-0299-4c28-a484-baa3b740ee10@case.edu>
+Message-ID: <202501161915.50GJFnf8359531@freefriends.org>
+
+Chet Ramey <chet.ramey at case.edu> wrote:
+
+> On 1/16/25 11:50 AM, Dan Cross wrote:
+>
+> > I wonder if rtm has an electronic copy. Has anyone written to him to ask?
+>
+> Yes, Arnold contacted him directly.
+>
+> -- 
+> ``The lyf so short, the craft so long to lerne.'' - Chaucer
+> 		 ``Ars longa, vita brevis'' - Hippocrates
+> Chet Ramey, UTech, CWRU    chet at case.edu    http://tiswww.cwru.edu/~chet/
+
+And he doesn't have a copy. Sigh.
+
+Chet, can you find a better scanner? In any case , thanks!
+
+Arnold
+
+From marc.donner at gmail.com  Fri Jan 17 05:29:23 2025
+From: marc.donner at gmail.com (Marc Donner)
+Date: Thu, 16 Jan 2025 14:29:23 -0500
+Subject: [TUHS] Robert Morris's UUCP
+In-Reply-To: <CAKH6PiX0MdMLF9KjQDUSbQbnq_opdzdnkMatU9NE3vD4itBKXQ@mail.gmail.com>
+References: <CAKH6PiX0MdMLF9KjQDUSbQbnq_opdzdnkMatU9NE3vD4itBKXQ@mail.gmail.com>
+Message-ID: <CALQ0xCCVxxC3p7xoiG6zyKfjH6dMmj43B9_bi7jcpfFpqGYaVQ@mail.gmail.com>
+
+Michael has explained his authorship of UUCP as a stop gap.  The networking
+team was building the real solution and it was due in three weeks.  So he
+wrote UUCP to fill in until the official solution arrived.
+
+=====
+nygeek.net
+mindthegapdialogs.com/home <https://www.mindthegapdialogs.com/home>
+
+
+On Thu, Jan 16, 2025 at 11:05 AM Douglas McIlroy <
+douglas.mcilroy at dartmouth.edu> wrote:
+
+> > I often repeat a throwaway sentence that UUCP was Lesk,
+> > building a bug fix distribution mechanism.
+>
+> > Am I completely wrong? I am sure Mike said this to me mid 80s.
+>
+> That was an important motivating factor, but Mike also had an
+> unerring anticipatory sense of public "need".  Thus his programs
+> spread like wildfire despite their bugs. UUCP itself is the premier
+> example. Its popularity impelled its inclusion in v7 despite its
+> woeful disregard for security.
+>
+> > Does anyone have [Robert Morris's UUCP CSTR]? Doug?
+>
+> Not I.
+>
+> Doug
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250116/3fa1bf4a/attachment.htm>
+
+From tuhs at tuhs.org  Fri Jan 17 05:48:23 2025
+From: tuhs at tuhs.org (Warren Toomey via TUHS)
+Date: Fri, 17 Jan 2025 05:48:23 +1000
+Subject: [TUHS] Robert Morris's UUCP
+In-Reply-To: <caae9b79-48e0-4e44-9b30-8a5dda72ecd3@case.edu>
+References: <202501151531.50FFVav6251589@freefriends.org>
+ <a11d3217-c465-4d3e-87bf-5069eb0460d2@case.edu>
+ <202501160752.50G7q4bb308148@freefriends.org>
+ <360a5803-8720-414f-81c8-69a427fc5fe0@case.edu>
+ <caae9b79-48e0-4e44-9b30-8a5dda72ecd3@case.edu>
+Message-ID: <Z4lihy6UJpwX+47i@minnie.tuhs.org>
+
+On Thu, Jan 16, 2025 at 11:47:09AM -0500, Chet Ramey via TUHS wrote:
+> OK, I scanned [CSTR 111] and sent it to Warren for the archive. The
+> quality's not that great, so let's see if rtm can provide a higher-quality
+> PDF.
+> 
+> Chet
+
+It's now available at
+https://www.tuhs.org/Archive/Documentation/TechReports/Bell_Labs/CSTRs/111.pdf
+
+Many thanks Chet!!
+	Warren
+
+From als at thangorodrim.ch  Fri Jan 17 06:53:29 2025
+From: als at thangorodrim.ch (Alexander Schreiber)
+Date: Thu, 16 Jan 2025 21:53:29 +0100
+Subject: [TUHS] Robert Morris's UUCP
+In-Reply-To: <CALQ0xCCVxxC3p7xoiG6zyKfjH6dMmj43B9_bi7jcpfFpqGYaVQ@mail.gmail.com>
+References: <CAKH6PiX0MdMLF9KjQDUSbQbnq_opdzdnkMatU9NE3vD4itBKXQ@mail.gmail.com>
+ <CALQ0xCCVxxC3p7xoiG6zyKfjH6dMmj43B9_bi7jcpfFpqGYaVQ@mail.gmail.com>
+Message-ID: <Z4lxyUBrx8skRr5T@mordor.angband.thangorodrim.de>
+
+On Thu, Jan 16, 2025 at 02:29:23PM -0500, Marc Donner wrote:
+> Michael has explained his authorship of UUCP as a stop gap.  The networking
+> team was building the real solution and it was due in three weeks.  So he
+> wrote UUCP to fill in until the official solution arrived.
+
+And it's still around many, many years later, as is typical for "this is
+just a temporary solution" - I'm still getting my mail via UUCP these
+days (although it's UUCP-over-VPN-over-IP).
+
+Kind regards,
+           Alex.
+-- 
+"Opportunity is missed by most people because it is dressed in overalls and
+ looks like work."                                      -- Thomas A. Edison
+
+From aaronscohen at gmail.com  Fri Jan 17 11:35:14 2025
+From: aaronscohen at gmail.com (Aaron)
+Date: Thu, 16 Jan 2025 20:35:14 -0500
+Subject: [TUHS] Robert Morris's UUCP
+In-Reply-To: <CAKH6PiX0MdMLF9KjQDUSbQbnq_opdzdnkMatU9NE3vD4itBKXQ@mail.gmail.com>
+References: <CAKH6PiX0MdMLF9KjQDUSbQbnq_opdzdnkMatU9NE3vD4itBKXQ@mail.gmail.com>
+Message-ID: <B42710B2-B251-44D2-8B32-22528CEF50D6@gmail.com>
+
+Mike was tired of the constant calls to redistribute one of his highly popular software features or fixes, so he wrote uucp to ease the distribution of.his and others’ on the sixth floor. I then added a self-serve layer that I used to upgrade and test all the pass-through packages USG made no changes to that were not 
+
+Aaron 
+
+
+> On Jan 16, 2025, at 11:15 AM, Douglas McIlroy <douglas.mcilroy at dartmouth.edu> wrote:
+> 
+> I.
+
+From dds at aueb.gr  Sat Jan 18 03:23:51 2025
+From: dds at aueb.gr (Diomidis Spinellis)
+Date: Fri, 17 Jan 2025 19:23:51 +0200
+Subject: [TUHS] Perkin-Elmer Sort/Merge II vs Unix sort(1)
+Message-ID: <28a16508-9ee5-41f1-af02-2f8cd7371de8@aueb.gr>
+
+I chanced upon a brochure describing the Perkin-Elmer Series 3200 / 
+(previously Interdata, later Concurrent Computer Corporation) Sort/Merge 
+II utility [1].  It is instructive to compare its design against that of 
+the contemporary Unix sort(1) program [2].
+
+- Sort/Merge II appears to be marketed as a separate product (P/N 
+S90-408), whereas sort(1) was/is an integral part of the Unix used 
+throughout the system.
+
+- Sort/Merge II provides interactive and batch command input modes; 
+sort(1) relies on the shell to support both usages.
+
+- Sort/Merge II appears to be able to also sort binary files; sort(1) 
+can only handle text.
+
+- Sort/Merge II can recover from run-time errors by interactively 
+prompting for user corrections and additional files.  In Unix this is 
+delegated to shell scripts.
+
+- Sort/Merge II has built-in support for tape handling and blocking; 
+sort(1) relies on pipes from/to dd(1) for this.
+
+- Sort/Merge II supports user-coded decision subroutines written in 
+FORTRAN, COBOL, or CAL.  Sort(1) doesn't have such support to this day. 
+One could construct a synthetic key with awk(1) if needed.
+
+- Sort/Merge II can automatically "allocate" its temporary file.  For 
+sort(1) file allocation is handled by the Unix kernel.
+
+To me this list is a real-life demonstration of the differences between 
+the, prevalent at the time, thoughtless agglomeration of features into a 
+monolith approach against Unix's careful separation of concerns and 
+modularization via small tools.  The same contrast appears in a more 
+contrived setting in J. Bentley's CACM Programming Pearl's column where 
+Doug McIlroy critiques a unique word counting literate program written 
+by Don Knuth [3].  (I slightly suspect that the initial program 
+specification was a trap set up for Knuth.)
+
+I also think that the design of Perkin-Elmer's Sort/Merge II shows the 
+influence of salespeople forcing developers to tack-on whatever features 
+were required by important customers.  Maybe the clean design of Unix 
+owes a lot to AT&T's operation under the 1956 consent decree that 
+prevented it from entering the computer market.  This may have shielded 
+the system's design from unhealthy market pressures during its critical 
+gestation years.
+
+
+[1] 
+https://bitsavers.computerhistory.org/pdf/interdata/32bit/brochures/Sort_Merge_II.pdf
+[2] https://s3.amazonaws.com/plan9-bell-labs/7thEdMan/v7vol1.pdf#page=166
+[3] https://doi.org/10.1145/5948.315654
+
+Diomidis - https://www.spinellis.gr
+
+From douglas.mcilroy at dartmouth.edu  Sat Jan 18 04:12:23 2025
+From: douglas.mcilroy at dartmouth.edu (Douglas McIlroy)
+Date: Fri, 17 Jan 2025 13:12:23 -0500
+Subject: [TUHS] Perkin-Elmer Sort/Merge II vs Unix sort(1)
+Message-ID: <CAKH6PiWqZJfoQD32Yin1dGn6BN6JLr7fbrvkcggaOw6jNWK55g@mail.gmail.com>
+
+> To me this list is a real-life demonstration of the differences between
+> the, prevalent at the time, thoughtless agglomeration of features into a
+> monolith approach against Unix's careful separation of concerns and
+> modularization via small tools.  The same contrast appears in a more
+> contrived setting in J. Bentley's CACM Programming Pearl's column where
+> Doug McIlroy critiques a unique word counting literate program written
+> by Don Knuth [3].  (I slightly suspect that the initial program
+> specification was a trap set up for Knuth.)
+
+It wasn't a setup. Although Jon's introduction seems to imply that he had
+invited both Don and me to participate, I actually was moved to write the
+critique when I proofread the 2-author column, as I did for many of Jon's
+Programming Pearls. That led to the 3-author arrangement. Knuth and
+I are still friends; he even reprinted the critique. It is also memorably
+depicted at https://comic.browserling.com/tag/douglas-mcilroy.
+
+Doug
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250117/7f8fccbb/attachment-0001.htm>
+
+From tuhs at tuhs.org  Sat Jan 18 05:10:15 2025
+From: tuhs at tuhs.org (Bakul Shah via TUHS)
+Date: Fri, 17 Jan 2025 11:10:15 -0800
+Subject: [TUHS] Perkin-Elmer Sort/Merge II vs Unix sort(1)
+In-Reply-To: <28a16508-9ee5-41f1-af02-2f8cd7371de8@aueb.gr>
+References: <28a16508-9ee5-41f1-af02-2f8cd7371de8@aueb.gr>
+Message-ID: <67F7FAEB-551F-47AA-9E09-2D8948E4CCCF@iitbombay.org>
+
+On Jan 17, 2025, at 9:23 AM, Diomidis Spinellis <dds at aueb.gr> wrote:
+> 
+> I also think that the design of Perkin-Elmer's Sort/Merge II shows the influence of salespeople forcing developers to tack-on whatever features were required by important customers.  Maybe the clean design of Unix owes a lot to AT&T's operation under the 1956 consent decree that prevented it from entering the computer market.  This may have shielded the system's design from unhealthy market pressures during its critical gestation years.
+
+IIRC sort/merge was/is a pretty major thing on IBM mainframes, with
+products from multiple companies. May be Perkin-Elmer were trying
+to compete with mainframe sort/merge products? Also, I suspect that
+for sorting terabytes of data Unix sort likely won't work as fast as
+mainframe sorts....
+
+From mrochkind at gmail.com  Sat Jan 18 05:35:13 2025
+From: mrochkind at gmail.com (Marc Rochkind)
+Date: Fri, 17 Jan 2025 12:35:13 -0700
+Subject: [TUHS] Perkin-Elmer Sort/Merge II vs Unix sort(1)
+In-Reply-To: <67F7FAEB-551F-47AA-9E09-2D8948E4CCCF@iitbombay.org>
+References: <28a16508-9ee5-41f1-af02-2f8cd7371de8@aueb.gr>
+ <67F7FAEB-551F-47AA-9E09-2D8948E4CCCF@iitbombay.org>
+Message-ID: <CAOkr1zXMAoBJL0qXAD42Qz5WECkbgW7UWUpF=wy9cGCWt38qEQ@mail.gmail.com>
+
+Why did you say "thoughtless agglomeration of features?"
+
+Do you know anything about the design of the P-E S/M, or is just a biased
+guess? Have you ever tried a large external sort with UNIX commands?
+
+Marc
+
+On Fri, Jan 17, 2025, 12:10 PM Bakul Shah via TUHS <tuhs at tuhs.org> wrote:
+
+> On Jan 17, 2025, at 9:23 AM, Diomidis Spinellis <dds at aueb.gr> wrote:
+> >
+> > I also think that the design of Perkin-Elmer's Sort/Merge II shows the
+> influence of salespeople forcing developers to tack-on whatever features
+> were required by important customers.  Maybe the clean design of Unix owes
+> a lot to AT&T's operation under the 1956 consent decree that prevented it
+> from entering the computer market.  This may have shielded the system's
+> design from unhealthy market pressures during its critical gestation years.
+>
+> IIRC sort/merge was/is a pretty major thing on IBM mainframes, with
+> products from multiple companies. May be Perkin-Elmer were trying
+> to compete with mainframe sort/merge products? Also, I suspect that
+> for sorting terabytes of data Unix sort likely won't work as fast as
+> mainframe sorts....
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250117/75c6b8c4/attachment.htm>
+
+From johnl at taugh.com  Sat Jan 18 06:07:02 2025
+From: johnl at taugh.com (John Levine)
+Date: 17 Jan 2025 15:07:02 -0500
+Subject: [TUHS] Perkin-Elmer Sort/Merge II vs Unix sort(1)
+In-Reply-To: <28a16508-9ee5-41f1-af02-2f8cd7371de8@aueb.gr>
+References: <28a16508-9ee5-41f1-af02-2f8cd7371de8@aueb.gr>
+Message-ID: <20250117200702.A4D6AB7D6F0E@ary.qy>
+
+It appears that Diomidis Spinellis <dds at aueb.gr> said:
+>I chanced upon a brochure describing the Perkin-Elmer Series 3200 / 
+>(previously Interdata, later Concurrent Computer Corporation) Sort/Merge 
+>II utility [1].  It is instructive to compare its design against that of 
+>the contemporary Unix sort(1) program [2].
+
+That's not a resaonable comparison. In the 1960s and 1970s computers spent more
+time doing sort/merge than anything else, perhaps than everything else. Computer
+manufacturers tried really hard to make sorting fast, with clever hacks like
+compiling the comparison rules into machine code so they don't have to be
+reinterpreted for each record, scheduling their own I/O to keep devices busy,
+and reading intermediate tapes backward so they didn't have to rewind between
+passes. 
+
+They also handle really big files, tape files that span more than one tape reel
+or sometimes disk files that span more than one removable pack.. In that era a
+tape held about 150MB and a 3330 disk pack was about 100MB. If you had big
+files, you had to keep them on tape and that meant a lot of sorting and merging
+to do updates. Even on disk, databases were nothing like they are now and what
+would now be in a SQL database was more likely in sorted files that were
+rewritten periodically with changes merged in.
+
+The P-E sort is a mainframe sort.  Compare it to this IBM DOS VS sort and you'll
+see many of the same features, I am sure not by coincidence.
+
+https://bitsavers.computerhistory.org/pdf/ibm/370/DOS_VS/SC33-4044-2_DOS_VS_Sort_Merge_Version_2_Programmers_Guide_Nov79.pdf
+
+The unix sort program is fine for what it does which is sorting toy sized files on
+small disks.  There's nothing wrong with that, I still use it all the time, but
+other than the name it doesn't have much in common with mainframe sort/merge.
+
+From g.branden.robinson at gmail.com  Sat Jan 18 14:29:08 2025
+From: g.branden.robinson at gmail.com (G. Branden Robinson)
+Date: Fri, 17 Jan 2025 22:29:08 -0600
+Subject: [TUHS] Perkin-Elmer Sort/Merge II vs Unix sort(1)
+In-Reply-To: <CAKH6PiWqZJfoQD32Yin1dGn6BN6JLr7fbrvkcggaOw6jNWK55g@mail.gmail.com>
+References: <CAKH6PiWqZJfoQD32Yin1dGn6BN6JLr7fbrvkcggaOw6jNWK55g@mail.gmail.com>
+Message-ID: <20250118042908.tydtdu2qpqvrxnsl@illithid>
+
+At 2025-01-17T13:12:23-0500, Douglas McIlroy wrote:
+> It wasn't a setup. Although Jon's introduction seems to imply that he
+> had invited both Don and me to participate, I actually was moved to
+> write the critique when I proofread the 2-author column, as I did for
+> many of Jon's Programming Pearls. That led to the 3-author
+> arrangement. Knuth and I are still friends; he even reprinted the
+> critique. It is also memorably depicted at
+> https://comic.browserling.com/tag/douglas-mcilroy.
+
+Can an episode of Epic Rap Battles of History be far behind?
+
+Regards,
+Branden
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 833 bytes
+Desc: not available
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250117/1a9fca0f/attachment.sig>
+
+From dave at horsfall.org  Sat Jan 18 14:46:00 2025
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sat, 18 Jan 2025 15:46:00 +1100 (AEDT)
+Subject: [TUHS] Perkin-Elmer Sort/Merge II vs Unix sort(1)
+In-Reply-To: <20250117200702.A4D6AB7D6F0E@ary.qy>
+References: <28a16508-9ee5-41f1-af02-2f8cd7371de8@aueb.gr>
+ <20250117200702.A4D6AB7D6F0E@ary.qy>
+Message-ID: <89f25e13-4b94-8dcf-a3fe-f3b5856933be@horsfall.org>
+
+On Sat, 17 Jan 2025, John Levine wrote:
+
+> The unix sort program is fine for what it does which is sorting toy 
+> sized files on small disks.  There's nothing wrong with that, I still 
+> use it all the time, but other than the name it doesn't have much in 
+> common with mainframe sort/merge.
+
+Hands up all those who remember SORMG...
+
+-- Dave
+
+From dds at aueb.gr  Sun Jan 19 00:51:15 2025
+From: dds at aueb.gr (Diomidis Spinellis)
+Date: Sat, 18 Jan 2025 16:51:15 +0200
+Subject: [TUHS] Perkin-Elmer Sort/Merge II vs Unix sort(1)
+In-Reply-To: <CAOkr1zXMAoBJL0qXAD42Qz5WECkbgW7UWUpF=wy9cGCWt38qEQ@mail.gmail.com>
+References: <28a16508-9ee5-41f1-af02-2f8cd7371de8@aueb.gr>
+ <67F7FAEB-551F-47AA-9E09-2D8948E4CCCF@iitbombay.org>
+ <CAOkr1zXMAoBJL0qXAD42Qz5WECkbgW7UWUpF=wy9cGCWt38qEQ@mail.gmail.com>
+Message-ID: <c210583f-4417-4b1e-a0ed-4c9ab1fcaac0@aueb.gr>
+
+I gave specific examples of facilities offered by the Perkin-Elmer 
+Sort/Merge, (file allocation, blocking, interactive and batch modes) 
+that on Unix systems are handled in a way that allows all programs to 
+benefit from them.  The Unix way reduces duplication and makes the 
+system more versatile by offering the facilities to all programs.
+
+I based my comparison on the documented facilities of the two programs. 
+I also have some first hand experience with Perkin-Elmer's OS/32.  In 
+the 1990s I was involved in servicing and transferring some 
+record-keeping applications from a Perkin-Elmer running OS/32 and 
+RELIANCE to a Unix system running Ingres.  I found I was a lot more 
+productive in Unix's shell than in Perkin-Elmer's MTM.  (Admittedly, 
+this could also be a matter of experience.)
+
+In 2018 I used the Unix sort and join commands to speed up a MariaDB 
+relational join of a five billion row table with a 847 million row table 
+(108 GB in total) from 380 hours to 12 hours [1], so I'm very happy with 
+how Unix sort can handle moderately large data sets.  The GNU version 
+will even recursively merge intermediate files when it runs out of file 
+descriptors.  Even the Seventh Edition sort would overflow to temporary 
+files and merge them [2].
+
+I'm sure the mainframe sort programs did some pretty amazing things and 
+could run circles around the puny 830 line Unix Seventh Edition sort 
+program.  The 215 page IBM DOS VS sort documentation that John Levine 
+posted here is particularly impressive.  But I can't stop thinking that, 
+in common with the mainframes these programs were running on, they 
+represent a mindset that has been surpassed by superior ideas.
+
+[1] https://www.spinellis.gr/blog/20180805/
+[2] 
+https://github.com/dspinellis/unix-history-repo/blob/Research-V7/usr/src/cmd/sort.c#L350
+
+Diomidis
+
+On 17-Jan-25 21:35, Marc Rochkind wrote:
+> Why did you say "thoughtless agglomeration of features?"
+> 
+> Do you know anything about the design of the P-E S/M, or is just a 
+> biased guess? Have you ever tried a large external sort with UNIX commands?
+> 
+> Marc
+
+From lm at mcvoy.com  Sun Jan 19 01:16:56 2025
+From: lm at mcvoy.com (Larry McVoy)
+Date: Sat, 18 Jan 2025 07:16:56 -0800
+Subject: [TUHS] Perkin-Elmer Sort/Merge II vs Unix sort(1)
+In-Reply-To: <c210583f-4417-4b1e-a0ed-4c9ab1fcaac0@aueb.gr>
+References: <28a16508-9ee5-41f1-af02-2f8cd7371de8@aueb.gr>
+ <67F7FAEB-551F-47AA-9E09-2D8948E4CCCF@iitbombay.org>
+ <CAOkr1zXMAoBJL0qXAD42Qz5WECkbgW7UWUpF=wy9cGCWt38qEQ@mail.gmail.com>
+ <c210583f-4417-4b1e-a0ed-4c9ab1fcaac0@aueb.gr>
+Message-ID: <20250118151656.GQ1701@mcvoy.com>
+
+On Sat, Jan 18, 2025 at 04:51:15PM +0200, Diomidis Spinellis wrote:
+> I'm sure the mainframe sort programs did some pretty amazing things and
+> could run circles around the puny 830 line Unix Seventh Edition sort
+> program.  The 215 page IBM DOS VS sort documentation that John Levine posted
+> here is particularly impressive.  But I can't stop thinking that, in common
+> with the mainframes these programs were running on, they represent a mindset
+> that has been surpassed by superior ideas.
+
+I disagree.  Go back and read the reply where someone was talking about
+sorting datasets that spanned multiple tapes, each of which was much
+larger than local disk.  sort(1) can't begin to think about handling
+something like that.
+
+I have a lot of respect for how Unix does things, if the problem fits
+then the Unix answer is more simple, more flexible, it's better.  If
+the problem doesn't fit, the Unix answer is awful.
+
+cmd < data | cmd2 | cmd3
+
+is a LOT of data copying.  A custom answer that did all of that in
+one address space is a lot more efficient but also a lot more special
+purpose.  Unix wins on flexibility and simplicity, special purpose
+wins on performance.
+
+From paul.winalski at gmail.com  Sun Jan 19 01:40:50 2025
+From: paul.winalski at gmail.com (Paul Winalski)
+Date: Sat, 18 Jan 2025 10:40:50 -0500
+Subject: [TUHS] Perkin-Elmer Sort/Merge II vs Unix sort(1)
+In-Reply-To: <20250118151656.GQ1701@mcvoy.com>
+References: <28a16508-9ee5-41f1-af02-2f8cd7371de8@aueb.gr>
+ <67F7FAEB-551F-47AA-9E09-2D8948E4CCCF@iitbombay.org>
+ <CAOkr1zXMAoBJL0qXAD42Qz5WECkbgW7UWUpF=wy9cGCWt38qEQ@mail.gmail.com>
+ <c210583f-4417-4b1e-a0ed-4c9ab1fcaac0@aueb.gr>
+ <20250118151656.GQ1701@mcvoy.com>
+Message-ID: <CABH=_VQczwRqf2y97d6aoJb1KZYaTeT-X0P7+fJRqxvRrHXY1g@mail.gmail.com>
+
+On Sat, Jan 18, 2025 at 10:17 AM Larry McVoy <lm at mcvoy.com> wrote:
+
+> On Sat, Jan 18, 2025 at 04:51:15PM +0200, Diomidis Spinellis wrote:
+> > But I can't stop thinking that, in common
+> > with the mainframes these programs were running on, they represent a
+> mindset
+> > that has been surpassed by superior ideas.
+>
+> I disagree.  Go back and read the reply where someone was talking about
+> sorting datasets that spanned multiple tapes, each of which was much
+> larger than local disk.  sort(1) can't begin to think about handling
+> something like that.
+>
+> I have a lot of respect for how Unix does things, if the problem fits
+> then the Unix answer is more simple, more flexible, it's better.  If
+> the problem doesn't fit, the Unix answer is awful.
+>
+> cmd < data | cmd2 | cmd3
+>
+> is a LOT of data copying.  A custom answer that did all of that in
+> one address space is a lot more efficient but also a lot more special
+> purpose.  Unix wins on flexibility and simplicity, special purpose
+> wins on performance.
+>
+
+Another consideration:  the smaller System/360 mainframes ran DOS (Disk
+Operating System) or TOS (Tape Operating System, for shops that didn't have
+disks).  These were both single-process operating systems.  There is no way
+that the Unix method of chaining programs together could have been done.
+
+OS MFT (Multiprogramming with a Fixed number of Tasks) and MVT
+(Multiprogramming with a Variable number of Tasks) were multiprocess
+systems, but they lacked any interprocess communication system (such as
+Unix pipes).
+
+True databases in those days were rare, expensive, slow, and of limited
+capacity.  The usual way to, say, produce a list of customers who owed
+money, sorted by how much they owed would be:
+
+[1] scan the data set for customers who owed money and write that out to
+tape(s)
+
+[2] use sort/merge to sort the data on tape(s) in the desired order
+
+[3] run a program to print the sorted data in the desired format
+
+It is important in step [2] to keep the tapes moving.  Start/stop
+operations waste a ton of time.  Most of the complexity of the mainframe
+sort/merge programs was in I/O management to keep the devices busy to the
+maximum extent.  The gold standard for sort/merge in the IBM world was a
+third-party program called SyncSort.  It cost a fortune but was well worth
+it for the big shops.
+
+So the short, bottom line answer is that the Unix way wasn't even possible
+on the smaller mainframes and was too inefficient for the large ones.
+
+-Paul W.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250118/16356ef3/attachment.htm>
+
+From tuhs at tuhs.org  Sun Jan 19 02:00:28 2025
+From: tuhs at tuhs.org (Bakul Shah via TUHS)
+Date: Sat, 18 Jan 2025 08:00:28 -0800
+Subject: [TUHS] Perkin-Elmer Sort/Merge II vs Unix sort(1)
+In-Reply-To: <20250118151656.GQ1701@mcvoy.com>
+References: <28a16508-9ee5-41f1-af02-2f8cd7371de8@aueb.gr>
+ <67F7FAEB-551F-47AA-9E09-2D8948E4CCCF@iitbombay.org>
+ <CAOkr1zXMAoBJL0qXAD42Qz5WECkbgW7UWUpF=wy9cGCWt38qEQ@mail.gmail.com>
+ <c210583f-4417-4b1e-a0ed-4c9ab1fcaac0@aueb.gr>
+ <20250118151656.GQ1701@mcvoy.com>
+Message-ID: <2FC28EC8-6146-4D0F-BAB3-86F2A86332BB@iitbombay.org>
+
+On Jan 18, 2025, at 7:16 AM, Larry McVoy <lm at mcvoy.com> wrote:
+> 
+> On Sat, Jan 18, 2025 at 04:51:15PM +0200, Diomidis Spinellis wrote:
+>> I'm sure the mainframe sort programs did some pretty amazing things and
+>> could run circles around the puny 830 line Unix Seventh Edition sort
+>> program.  The 215 page IBM DOS VS sort documentation that John Levine posted
+>> here is particularly impressive.  But I can't stop thinking that, in common
+>> with the mainframes these programs were running on, they represent a mindset
+>> that has been surpassed by superior ideas.
+> 
+> I disagree.  Go back and read the reply where someone was talking about
+> sorting datasets that spanned multiple tapes, each of which was much
+> larger than local disk.  sort(1) can't begin to think about handling
+> something like that.
+> 
+> I have a lot of respect for how Unix does things, if the problem fits
+> then the Unix answer is more simple, more flexible, it's better.  If
+> the problem doesn't fit, the Unix answer is awful.
+> 
+> cmd < data | cmd2 | cmd3
+> 
+> is a LOT of data copying.  A custom answer that did all of that in
+> one address space is a lot more efficient but also a lot more special
+> purpose.  Unix wins on flexibility and simplicity, special purpose
+> wins on performance.
+
+Mainframes had usage based pricing, not unlike what you pay for renting
+resources in the cloud, so performance really mattered. Also note that
+users use whatever computing resources they have available to get their
+job done, ideally at the lowest cost. Elegance of any OS architecture
+is secondary, if that.
+
+
+From pugs78 at gmail.com  Sun Jan 19 02:25:08 2025
+From: pugs78 at gmail.com (Tom Lyon)
+Date: Sat, 18 Jan 2025 08:25:08 -0800
+Subject: [TUHS] Perkin-Elmer Sort/Merge II vs Unix sort(1)
+In-Reply-To: <2FC28EC8-6146-4D0F-BAB3-86F2A86332BB@iitbombay.org>
+References: <28a16508-9ee5-41f1-af02-2f8cd7371de8@aueb.gr>
+ <67F7FAEB-551F-47AA-9E09-2D8948E4CCCF@iitbombay.org>
+ <CAOkr1zXMAoBJL0qXAD42Qz5WECkbgW7UWUpF=wy9cGCWt38qEQ@mail.gmail.com>
+ <c210583f-4417-4b1e-a0ed-4c9ab1fcaac0@aueb.gr>
+ <20250118151656.GQ1701@mcvoy.com>
+ <2FC28EC8-6146-4D0F-BAB3-86F2A86332BB@iitbombay.org>
+Message-ID: <CANxB0bTWZzN4XJ9mtJ=6+=OzNNRuQ0229WkH0o=V0bs3ifkQig@mail.gmail.com>
+
+Related to the sort discussion, there's an oral history of Duane Whitlow,
+founder of SyncSort, which was a big deal in IBM shops in the 70s. (and
+perhaps later; I lost track)
+https://archive.computerhistory.org/resources/access/text/2013/05/102702251-05-01-acc.pdf
+
+On Sat, Jan 18, 2025 at 8:00 AM Bakul Shah via TUHS <tuhs at tuhs.org> wrote:
+
+> On Jan 18, 2025, at 7:16 AM, Larry McVoy <lm at mcvoy.com> wrote:
+> >
+> > On Sat, Jan 18, 2025 at 04:51:15PM +0200, Diomidis Spinellis wrote:
+> >> I'm sure the mainframe sort programs did some pretty amazing things and
+> >> could run circles around the puny 830 line Unix Seventh Edition sort
+> >> program.  The 215 page IBM DOS VS sort documentation that John Levine
+> posted
+> >> here is particularly impressive.  But I can't stop thinking that, in
+> common
+> >> with the mainframes these programs were running on, they represent a
+> mindset
+> >> that has been surpassed by superior ideas.
+> >
+> > I disagree.  Go back and read the reply where someone was talking about
+> > sorting datasets that spanned multiple tapes, each of which was much
+> > larger than local disk.  sort(1) can't begin to think about handling
+> > something like that.
+> >
+> > I have a lot of respect for how Unix does things, if the problem fits
+> > then the Unix answer is more simple, more flexible, it's better.  If
+> > the problem doesn't fit, the Unix answer is awful.
+> >
+> > cmd < data | cmd2 | cmd3
+> >
+> > is a LOT of data copying.  A custom answer that did all of that in
+> > one address space is a lot more efficient but also a lot more special
+> > purpose.  Unix wins on flexibility and simplicity, special purpose
+> > wins on performance.
+>
+> Mainframes had usage based pricing, not unlike what you pay for renting
+> resources in the cloud, so performance really mattered. Also note that
+> users use whatever computing resources they have available to get their
+> job done, ideally at the lowest cost. Elegance of any OS architecture
+> is secondary, if that.
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250118/9c8d64cb/attachment.htm>
+
+From mrochkind at gmail.com  Sun Jan 19 02:54:03 2025
+From: mrochkind at gmail.com (Marc Rochkind)
+Date: Sat, 18 Jan 2025 09:54:03 -0700
+Subject: [TUHS] Perkin-Elmer Sort/Merge II vs Unix sort(1)
+In-Reply-To: <CABH=_VQczwRqf2y97d6aoJb1KZYaTeT-X0P7+fJRqxvRrHXY1g@mail.gmail.com>
+References: <28a16508-9ee5-41f1-af02-2f8cd7371de8@aueb.gr>
+ <67F7FAEB-551F-47AA-9E09-2D8948E4CCCF@iitbombay.org>
+ <CAOkr1zXMAoBJL0qXAD42Qz5WECkbgW7UWUpF=wy9cGCWt38qEQ@mail.gmail.com>
+ <c210583f-4417-4b1e-a0ed-4c9ab1fcaac0@aueb.gr>
+ <20250118151656.GQ1701@mcvoy.com>
+ <CABH=_VQczwRqf2y97d6aoJb1KZYaTeT-X0P7+fJRqxvRrHXY1g@mail.gmail.com>
+Message-ID: <CAOkr1zXXUxqefvLtgFUXpajL6ZtRsUnp2CrRCHhg33=v0D9p=w@mail.gmail.com>
+
+Another problem with arrangements of small UNIX commands in pipelines is
+that the actual arrangement in use suffers from reliability and usability
+problems:
+
+1. No way to test the whole, since in general each application has a unique
+structure with a potentially different choice of components, (A shell
+program executes whatever commands are on the system, not those it might
+have been tested with.)
+2. No comprehensive error reporting (at best, reporting from individual
+commands), and
+3. No way to provide support.
+
+On a much smaller scale, imagine a component stereo setup that is
+delivering bad sound. You have a turntable, an arm, a cartridge, a pre-amp,
+an amp, speakers, and cables and wires, typically from seven or more
+different manufacturers. Not one of them would be able to help you with
+support. The dealer would, if you bought the whole lot from them. Or you
+could pay a consultant. This is one reason why in the 1960s so-called
+console stereos were popular. Generally, console stereos delivered inferior
+sound.
+
+This isn't a criticism of sorting with UNIX commands, it's a broader
+criticism of the UNIX software tools approach for serious application
+development.
+
+Of course, one could build a single system out of components, and package
+it all together as a tested and supported product. That's exactly what
+object-oriented programming does, and very successfully.
+
+Marc
+
+On Sat, Jan 18, 2025 at 8:50 AM Paul Winalski <paul.winalski at gmail.com>
+wrote:
+
+> On Sat, Jan 18, 2025 at 10:17 AM Larry McVoy <lm at mcvoy.com> wrote:
+>
+>> On Sat, Jan 18, 2025 at 04:51:15PM +0200, Diomidis Spinellis wrote:
+>> > But I can't stop thinking that, in common
+>> > with the mainframes these programs were running on, they represent a
+>> mindset
+>> > that has been surpassed by superior ideas.
+>>
+>> I disagree.  Go back and read the reply where someone was talking about
+>> sorting datasets that spanned multiple tapes, each of which was much
+>> larger than local disk.  sort(1) can't begin to think about handling
+>> something like that.
+>>
+>> I have a lot of respect for how Unix does things, if the problem fits
+>> then the Unix answer is more simple, more flexible, it's better.  If
+>> the problem doesn't fit, the Unix answer is awful.
+>>
+>> cmd < data | cmd2 | cmd3
+>>
+>> is a LOT of data copying.  A custom answer that did all of that in
+>> one address space is a lot more efficient but also a lot more special
+>> purpose.  Unix wins on flexibility and simplicity, special purpose
+>> wins on performance.
+>>
+>
+> Another consideration:  the smaller System/360 mainframes ran DOS (Disk
+> Operating System) or TOS (Tape Operating System, for shops that didn't have
+> disks).  These were both single-process operating systems.  There is no way
+> that the Unix method of chaining programs together could have been done.
+>
+> OS MFT (Multiprogramming with a Fixed number of Tasks) and MVT
+> (Multiprogramming with a Variable number of Tasks) were multiprocess
+> systems, but they lacked any interprocess communication system (such as
+> Unix pipes).
+>
+> True databases in those days were rare, expensive, slow, and of limited
+> capacity.  The usual way to, say, produce a list of customers who owed
+> money, sorted by how much they owed would be:
+>
+> [1] scan the data set for customers who owed money and write that out to
+> tape(s)
+>
+> [2] use sort/merge to sort the data on tape(s) in the desired order
+>
+> [3] run a program to print the sorted data in the desired format
+>
+> It is important in step [2] to keep the tapes moving.  Start/stop
+> operations waste a ton of time.  Most of the complexity of the mainframe
+> sort/merge programs was in I/O management to keep the devices busy to the
+> maximum extent.  The gold standard for sort/merge in the IBM world was a
+> third-party program called SyncSort.  It cost a fortune but was well worth
+> it for the big shops.
+>
+> So the short, bottom line answer is that the Unix way wasn't even possible
+> on the smaller mainframes and was too inefficient for the large ones.
+>
+> -Paul W.
+>
+>
+>
+
+-- 
+Subscribe to my Photo-of-the-Week emails at my website mrochkind.com.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250118/8a916bc3/attachment.htm>
+
+From rminnich at gmail.com  Sun Jan 19 03:07:16 2025
+From: rminnich at gmail.com (ron minnich)
+Date: Sat, 18 Jan 2025 09:07:16 -0800
+Subject: [TUHS] Perkin-Elmer Sort/Merge II vs Unix sort(1)
+In-Reply-To: <CANxB0bTWZzN4XJ9mtJ=6+=OzNNRuQ0229WkH0o=V0bs3ifkQig@mail.gmail.com>
+References: <28a16508-9ee5-41f1-af02-2f8cd7371de8@aueb.gr>
+ <67F7FAEB-551F-47AA-9E09-2D8948E4CCCF@iitbombay.org>
+ <CAOkr1zXMAoBJL0qXAD42Qz5WECkbgW7UWUpF=wy9cGCWt38qEQ@mail.gmail.com>
+ <c210583f-4417-4b1e-a0ed-4c9ab1fcaac0@aueb.gr>
+ <20250118151656.GQ1701@mcvoy.com>
+ <2FC28EC8-6146-4D0F-BAB3-86F2A86332BB@iitbombay.org>
+ <CANxB0bTWZzN4XJ9mtJ=6+=OzNNRuQ0229WkH0o=V0bs3ifkQig@mail.gmail.com>
+Message-ID: <CAP6exY+dieYR6c4ofpTb__ZKajjzucqNt5qFb8d_dQrfg9bj4Q@mail.gmail.com>
+
+I checked and syncsort is still  out there, doing their thing. Fifty years
+of sorting! Sort of amazing.
+
+On Sat, Jan 18, 2025 at 8:40 AM Tom Lyon <pugs78 at gmail.com> wrote:
+
+> Related to the sort discussion, there's an oral history of Duane Whitlow,
+> founder of SyncSort, which was a big deal in IBM shops in the 70s. (and
+> perhaps later; I lost track)
+>
+> https://archive.computerhistory.org/resources/access/text/2013/05/102702251-05-01-acc.pdf
+>
+> On Sat, Jan 18, 2025 at 8:00 AM Bakul Shah via TUHS <tuhs at tuhs.org> wrote:
+>
+>> On Jan 18, 2025, at 7:16 AM, Larry McVoy <lm at mcvoy.com> wrote:
+>> >
+>> > On Sat, Jan 18, 2025 at 04:51:15PM +0200, Diomidis Spinellis wrote:
+>> >> I'm sure the mainframe sort programs did some pretty amazing things and
+>> >> could run circles around the puny 830 line Unix Seventh Edition sort
+>> >> program.  The 215 page IBM DOS VS sort documentation that John Levine
+>> posted
+>> >> here is particularly impressive.  But I can't stop thinking that, in
+>> common
+>> >> with the mainframes these programs were running on, they represent a
+>> mindset
+>> >> that has been surpassed by superior ideas.
+>> >
+>> > I disagree.  Go back and read the reply where someone was talking about
+>> > sorting datasets that spanned multiple tapes, each of which was much
+>> > larger than local disk.  sort(1) can't begin to think about handling
+>> > something like that.
+>> >
+>> > I have a lot of respect for how Unix does things, if the problem fits
+>> > then the Unix answer is more simple, more flexible, it's better.  If
+>> > the problem doesn't fit, the Unix answer is awful.
+>> >
+>> > cmd < data | cmd2 | cmd3
+>> >
+>> > is a LOT of data copying.  A custom answer that did all of that in
+>> > one address space is a lot more efficient but also a lot more special
+>> > purpose.  Unix wins on flexibility and simplicity, special purpose
+>> > wins on performance.
+>>
+>> Mainframes had usage based pricing, not unlike what you pay for renting
+>> resources in the cloud, so performance really mattered. Also note that
+>> users use whatever computing resources they have available to get their
+>> job done, ideally at the lowest cost. Elegance of any OS architecture
+>> is secondary, if that.
+>>
+>>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250118/9255708a/attachment.htm>
+
+From mrochkind at gmail.com  Sun Jan 19 05:39:44 2025
+From: mrochkind at gmail.com (Marc Rochkind)
+Date: Sat, 18 Jan 2025 12:39:44 -0700
+Subject: [TUHS] Perkin-Elmer Sort/Merge II vs Unix sort(1)
+In-Reply-To: <CAP6exY+dieYR6c4ofpTb__ZKajjzucqNt5qFb8d_dQrfg9bj4Q@mail.gmail.com>
+References: <28a16508-9ee5-41f1-af02-2f8cd7371de8@aueb.gr>
+ <67F7FAEB-551F-47AA-9E09-2D8948E4CCCF@iitbombay.org>
+ <CAOkr1zXMAoBJL0qXAD42Qz5WECkbgW7UWUpF=wy9cGCWt38qEQ@mail.gmail.com>
+ <c210583f-4417-4b1e-a0ed-4c9ab1fcaac0@aueb.gr>
+ <20250118151656.GQ1701@mcvoy.com>
+ <2FC28EC8-6146-4D0F-BAB3-86F2A86332BB@iitbombay.org>
+ <CANxB0bTWZzN4XJ9mtJ=6+=OzNNRuQ0229WkH0o=V0bs3ifkQig@mail.gmail.com>
+ <CAP6exY+dieYR6c4ofpTb__ZKajjzucqNt5qFb8d_dQrfg9bj4Q@mail.gmail.com>
+Message-ID: <CAOkr1zW6taxuEMrhCkM+ZCoMJ0ucZTFa_6PZnenY=AR7AqT3xg@mail.gmail.com>
+
+On Sat, Jan 18, 2025 at 12:30 PM ron minnich <rminnich at gmail.com> wrote:
+
+> I checked and syncsort is still  out there, doing their thing. Fifty years
+> of sorting! Sort of amazing.
+>
+
+You mean the product has been on the market that long, or that a sort is
+still running? ;-)
+
+Marc
+
+-- 
+Subscribe to my Photo-of-the-Week emails at my website mrochkind.com.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250118/34478de7/attachment.htm>
+
+From sjenkin at canb.auug.org.au  Sun Jan 19 13:45:34 2025
+From: sjenkin at canb.auug.org.au (sjenkin at canb.auug.org.au)
+Date: Sun, 19 Jan 2025 14:45:34 +1100
+Subject: [TUHS] Perkin-Elmer Sort/Merge II vs Unix sort(1)
+In-Reply-To: <CABH=_VQczwRqf2y97d6aoJb1KZYaTeT-X0P7+fJRqxvRrHXY1g@mail.gmail.com>
+References: <28a16508-9ee5-41f1-af02-2f8cd7371de8@aueb.gr>
+ <67F7FAEB-551F-47AA-9E09-2D8948E4CCCF@iitbombay.org>
+ <CAOkr1zXMAoBJL0qXAD42Qz5WECkbgW7UWUpF=wy9cGCWt38qEQ@mail.gmail.com>
+ <c210583f-4417-4b1e-a0ed-4c9ab1fcaac0@aueb.gr>
+ <20250118151656.GQ1701@mcvoy.com>
+ <CABH=_VQczwRqf2y97d6aoJb1KZYaTeT-X0P7+fJRqxvRrHXY1g@mail.gmail.com>
+Message-ID: <21CF3443-571C-4569-8FDC-7B24FC32E506@canb.auug.org.au>
+
+I’d like to challenge the "Big Iron” hypothesis having worked with IBM/370 systems early on, DOS-VS, VM/CMS and some OS/MVS.
+The system design and standard tools forced considerable complexity & waste in CPU time & storage compared to Unix I'd used at UNSW.
+
+Probably the harshest criticism is the lack of O/S & tool development forced by IBM’s “backwards compatibility” model - at least while I had to battle it.
+
+ [ Ken Robinson at UNSW had used OS/360 since ~1965. in 1975 he warned me about a pernicious batch job error message, ]
+ [  “No space” - except it didn’t say on _which_ ‘DD’ (data definition == file). The O/S _knew_ exactly what was wrong, but didn’t say.]
+ [ I hit this problem at work ~1985, costing me a week or two of time, plus considerable ‘chargeback’ expenses for wasted CPU & disk usage ]
+ [ the problem was a trivial one if I’d had Unix piplelines available]
+
+Just because mainframes are still used for the majority of business critical online “transaction” systems, doesn’t mean they are great, even good, solutions.
+It only means the "cost of exit” is more than the owners wish to pay, it’s cheaper to keep old designs running than to change.
+
+To achieve the perceived ‘high performance’ of mainframes required considerable SysProg, programmer/analyst & Operations work/ time.
+Simple things such as the optimum ‘block size’ for a particular disk drive caused months of work for our operations team when we changed drives.
+(2314 removable to 3350 sealed HDA’s)
+
+Andrew Hume’s “Project Gecko” is worth reading for those who don’t know it.
+I’m sure if Andrew & team had been tried to build a similar system a decade before, they’d have figured a way to stream data between tape drives,
+the initial use-case for ’syncsort’ discussed.
+
+Andrew used the standard Unix tools, a small amount of C, flat files and intelligent ’streaming processing’ from one disk to another, then back,
+to push a SUN system to its limits, and handsomely beat Oracle.
+
+We’ve already had the Knuth / McIlroy ‘literate programming’ vs ’shell one-liner’ example in this thread.
+
+It comes down to the same thing:
+
+	Unix’s philosophy is good design and “Tools to Build Tools”,
+	allowing everyone to Stand On the Shoulders of Giants, 
+	not _have_ to endlessly reinvent the wheel for themselves, 
+	which the mainframe world forces on everyone.
+
+============
+
+Gecko: tracking a very large billing system
+	Andrew Hume, Scott Daniels, Angus MacLellan
+	2000
+	<https://www.usenix.org/legacy/event/usenix2000/general/full_papers/hume/hume.pdf>
+
+============
+
+> On 19 Jan 2025, at 02:40, Paul Winalski <paul.winalski at gmail.com> wrote:
+> 
+> Another consideration:  the smaller System/360 mainframes ran DOS (Disk Operating System) or TOS (Tape Operating System, for shops that didn't have disks).  These were both single-process operating systems.  There is no way that the Unix method of chaining programs together could have been done.
+> 
+> OS MFT (Multiprogramming with a Fixed number of Tasks) and MVT (Multiprogramming with a Variable number of Tasks) were multiprocess systems, but they lacked any interprocess communication system (such as Unix pipes).
+> 
+> True databases in those days were rare, expensive, slow, and of limited capacity.  The usual way to, say, produce a list of customers who owed money, sorted by how much they owed would be:
+> 
+> [1] scan the data set for customers who owed money and write that out to tape(s)
+> 
+> [2] use sort/merge to sort the data on tape(s) in the desired order
+> 
+> [3] run a program to print the sorted data in the desired format
+> 
+> It is important in step [2] to keep the tapes moving.  Start/stop operations waste a ton of time.  Most of the complexity of the mainframe sort/merge programs was in I/O management to keep the devices busy to the maximum extent.  The gold standard for sort/merge in the IBM world was a third-party program called SyncSort.  It cost a fortune but was well worth it for the big shops.
+> 
+> So the short, bottom line answer is that the Unix way wasn't even possible on the smaller mainframes and was too inefficient for the large ones.
+> 
+> -Paul W.
+
+============
+
+Gecko: tracking a very large billing system
+	Andrew Hume, Scott Daniels, Angus MacLellan
+	1999/2000
+	<https://www.usenix.org/legacy/event/usenix2000/general/full_papers/hume/hume.pdf>
+
+	This paper describes Gecko, a system for tracking the state of every call in a very large billing system,
+	 which uses sorted flat files to implement a database of about 60G records occupying 2.6TB.
+
+	After a team at Research, including two interns from Consumer Billing, built a successful prototype in 1996, 
+	the decision was made to build a production version. 
+	A team of six people (within Consumer Billing) started in March 1997 and the system went live in December 1997.
+
+	The design we implemented to solve the database problem does not use conventional database technology; 
+	as described in [Hum99], we experimented with an Oracle-based implementation, but it was unsatisfactory.
+
+	Instead, we used sorted flat files and relied on the speed and I/O capacity of modern high-end Unix systems, such as large SGI and Sun systems.
+
+	The system supporting the datastore is a Sun E10000, with 32 processors and 6GB of memory, running Solaris 2.6. 
+	The datastore disk storage is provided by 16 A3000 (formerly RSM2000) RAID cabinets, 
+		which provides about 3.6TB of RAID-5 disk storage. 
+	For backup purposes, we have a StorageTek 9310 Powderhorn tape silo with 8 Redwood tape drives.
+
+	The datastore is organised as 93 filesystems, each with 52 directories; each directory contains a partition of the datastore…
+
+	We can characterise Gecko’s performance by two measures. 
+		The first is how long it takes to achieve the report and cycle end gates. 
+		The second is how fast we can scan the datastore performing an ad hoc search/extract.
+
+	Over the last 12 cycles, the report gate ranged between 6.1 and 9.9 wall clock hours, with an average time of 7.6 hours. 
+
+	The cycle end gate is reached after the updated datastore has been backed up and any other housekeeping chores have been completed. 
+	Over the last 12 cycles, the cycle end gate ranged between 11.1 and 15.1 wall clock hours, 
+		with an average time of 11.5 hours. 
+	Both these averages comfortably beat the original requirements.
+
+	The implementation of Gecko relies heavily on a modest number of tools in the implementation of its processing and the management of that processing. 
+	Nearly all of these have application beyond Gecko and so we describe them here.
+
+	Most of the code is written in C and ksh; the remainder is in awk.
+
+	The Gecko scripts make extensive use of grep, and in particular, fgrep for searching for many fixed strings in a file. 
+	Solaris’s fgrep has an unacceptably low limit on the number of strings (we routinely search for 5-6000 strings, and sometimes 20000 or so). 
+
+	The XPG4 version has much higher limits, but runs unacceptably slowly with large lists. 
+
+	We finally switched to gre, developed by Andrew Hume in 1986. 
+	For our larger lists, it runs about 200 times faster, cutting run times from 45 minutes down to 15 seconds or so.
+
+============
+
+--
+Steve Jenkin, IT Systems and Design 
+0412 786 915 (+61 412 786 915)
+PO Box 38, Kippax ACT 2615, AUSTRALIA
+
+mailto:sjenkin at canb.auug.org.au http://members.tip.net.au/~sjenkin
+
+
+From douglas.mcilroy at dartmouth.edu  Wed Jan 22 07:53:51 2025
+From: douglas.mcilroy at dartmouth.edu (Douglas McIlroy)
+Date: Tue, 21 Jan 2025 16:53:51 -0500
+Subject: [TUHS] Perkin-Elmer Sort/Merge II vs Unix sort(1)
+Message-ID: <CAKH6PiWYYkJL-fc9jJnys91eCS2P+BcqASwmmbK3kHwQycpcDw@mail.gmail.com>
+
+All-in-one vs pipelined sorts brought to mind NSA's undeservedly obscure
+dataflow language, POGOL, https://doi.org/10.1145/512927.512948 (POPL
+1973). In POGOL one wrote programs as collections of routines that
+communicated via named files, which the compiler did its best to optimize
+away. Often this amounted to loop jamming or to the distributive law for
+map over function composition. POGOL could, however, handle general
+dataflow programming including feedback loops.
+
+One can imagine a program for pulling the POGOL trick on a shell pipeline.
+That could accomplish--at negligible cost--the conversion of a cheap demo
+into a genuine candidate for intensive production use.
+
+This consideration spurs another thought. Despite Unix's claim to build
+tools to make tools, only a relativelly narrow scope of higher-order tools
+that take programs as dara ever arose. After the bootstrapping B, there
+were a number of compilers,  most notably C, plus  f77, bc, ratfor, and
+struct. A slight variant on the idea of compiling was the suite of troff
+preprocessors.
+
+The shell also manipulates programs by composing them into larger programs.
+
+Aside from such examples, only one other category of higher-order Unix
+program comes to mind: Peter Weinberger's lcomp for instrumenting C
+programs with instruction counts.
+
+An offshoot of Unix were Gerard Holzmann's tools for extracting
+model-checker models from C programs. These saw use at Indian Hill and most
+notably at JPL, but never appeared among mainstream Unix offerings. Similar
+tools exist in-house at Microsoft and elsewhere. But generally speaking we
+have vey few kinds of programs that manipulate programs.
+
+What are the prospects for computer science advancing to a stage where
+higher-level programs become commonplace? What might be in one's standard
+vocabulary of functions that operate on programs?
+
+Doug
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20250121/8e6e701b/attachment.htm>
+
+From arnold at skeeve.com  Fri Jan 24 03:19:38 2025
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Thu, 23 Jan 2025 19:19:38 +0200
+Subject: [TUHS] What looks like a nice article on Unix spell
+Message-ID: <E1tb0ri-0010HY-K3@gleep.local>
+
+https://blog.codingconfessions.com/p/how-unix-spell-ran-in-64kb-ram
+
+I haven't finished reading it yet.
+
+Arnold
+

@@ -1,0 +1,1856 @@
+From doug at cs.dartmouth.edu  Mon Feb  1 03:01:02 2016
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Sun, 31 Jan 2016 12:01:02 -0500
+Subject: [TUHS] Short history of 'grep'
+Message-ID: <201601311701.u0VH12It027916@coolidge.cs.Dartmouth.EDU>
+
+> I'm still trying to get my around about how a program such as "egrep"
+> which handles complex patterns can be faster than one that doesn't
+
+> Is there a simple explanation, involving small words?
+
+First, the big-word explanation. Grep is implemented as a nondeterministic
+finite automaton, egrep as a deterministic finite automaton. Theory folk 
+abbreviate these terms to "NFA" and "DFA", but these are probably not
+what you had in mind as "small words".
+
+The way grep works is to keep a record of possible partial parsings
+as it scans the subject text; it doesn't know which (if any) will
+ultimately be the right one, hence "nondeterministic". For example, 
+suppose grep seeks pattern '^a.*bbbc' in text 'a.*bbbbbbc'. When
+it has read past 3 b's, the possible partial parses are 'a.*', 'a.*b',
+'a.*bb' and 'a.*bbb'. If it then reads another b, it splits the
+first partial parse into 'a.*' and 'a.*b', updates the next two
+to 'a.*bb' and 'a.*bbb', and kills off the fourth. If instead it
+reads a c, recognition is successful; if anything else, all partials 
+are killed and recognition fails.
+
+Egrep, by preprocessing the expression, produces separate code for
+each of several possible states: "no b's", "1 b", 2 b's" and "3 bs".
+When it's in state "1 b", for example, it switches on the next 
+character into "2 b's" or fails, depending on whether the 
+character is b or not--very fast. Grep, on the other hand, has to  
+update all the live parses.
+
+So if egrep is so fast, why do we have grep? One reason is that
+grep only needs to keep a list of possible progress points
+in the expression. This list can't be longer than the expression.
+In egrep, though, each state is a subset of progress points.
+The number of possible subsets is exponential in the length
+of the expression, so the recognition machine that egrep constructs
+before attempting the parse can explode--perhaps overflowing
+memory, or perhaps taking so long in construction that grep
+can finish its slow parse before egrep even begins its fast parse.
+
+To revert to the words of theory folks, grep takes time O(m*n) and
+space O(m) worst case, while egrep takes time and space O(2^m+n).
+(2^m is an overestimate, but you get the idea.)
+
+That's the short story. In real life egrep overcomes the exponential
+by lazily constructing the machine--not generating a state until it
+is encountered in the parse, so no more than n states get constructed.
+It's a complex program, though, for the already fancy preprocessing 
+must be interleaved with the parsing.
+
+Egrep is a tour de force of classical computer science, and pays
+off big on scanning big files. Still, there's a lot to say for 
+the simple elegance of grep (and the theoretical simplicity
+of nondeterministic automata). On small jobs it can often win.
+And it is guaranteed to work in O(m) memory, while egrep may need
+O(n). 
+
+-------------------------------------------------
+
+Ken Thompson invented the grep algorithm and published it in CACM.
+A pointy-headed reviewer for Computing Reviews scoffed: why would
+anybody want to use the method when a DFA could do the recognition
+in time O(n)? Of course the reviewer overlooked the potentially
+exponential costs of constructing a DFA.
+
+Some years later Al Aho wrote the more complicated egrep in the 
+expectation that bad exponential cases wouldn't happen in everyday life. 
+But one did. This job took 30 seconds' preprocessing to prepare
+for a fraction of a second's parsing. Chagrined, Al conceived
+the lazy-evaluation trick to overcome the exponential and
+achieved O(n) run time, albeit with a big linear constant.
+
+In regard to the "short history of grep", I have always thought
+my request that Ken liberate regular expressions from ed caused
+him to write grep. I asked him one afternoon, but I can't remember
+whether I asked in person or by email. Anyway, next morning I
+got an email message directing me to grep. If Ken took it
+from his hip pocket, I was unaware. I'll have to ask him.
+
+Doug
+
+
+From mah at mhorton.net  Mon Feb  1 03:11:05 2016
+From: mah at mhorton.net (Mary Ann Horton)
+Date: Sun, 31 Jan 2016 09:11:05 -0800
+Subject: [TUHS] Short history of 'grep'
+In-Reply-To: <alpine.LRH.2.20.1601301802360.8927@waffle.shalott.net>
+References: <20160130030012.GB9762@minnie.tuhs.org>
+ <56AD0AB7.40701@mhorton.net>
+ <alpine.BSF.2.11.1601310639150.14724@aneurin.horsfall.org>
+ <56AD1B28.4010908@mhorton.net>
+ <alpine.BSF.2.11.1601310740170.14724@aneurin.horsfall.org>
+ <CAOkr1zUprhZws1WoD+4fuepMZkzNLO9HjNfLp1fGrDnjx4JKtA@mail.gmail.com>
+ <alpine.BSF.2.11.1601311227470.14724@aneurin.horsfall.org>
+ <alpine.LRH.2.20.1601301802360.8927@waffle.shalott.net>
+Message-ID: <56AE4029.7010701@mhorton.net>
+
+It's not a typo.
+
+When I tell this story to nontechical folks, I prefix it with the brief 
+note that fgrep ought to be fastest, because it's simple, and egrep 
+ought to be slowest, because it's complex, but in reality fgrep is 
+slowest and egrep is fastest.  Otherwise the story makes no sense.
+
+     Mary Ann
+
+On 01/30/2016 06:06 PM, jason-tuhs at shalott.net wrote:
+>
+>> I'm still trying to get my around about how a program such as "egrep" 
+>> which handles complex patterns can be faster than one that doesn't... 
+>> It seems to defeat all logic :-)
+>>
+>> Is there a simple explanation, involving small words?  I've never 
+>> really looked at the theory.
+>
+> My assumption when I read it was that it was a typo/braino, that the 
+> intent was "fgrep" rather than "egrep".
+>
+>
+>  -Jason
+>
+
+
+
+From cowan at mercury.ccil.org  Mon Feb  1 03:38:46 2016
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sun, 31 Jan 2016 12:38:46 -0500
+Subject: [TUHS] Short history of 'grep'
+In-Reply-To: <56AE4029.7010701@mhorton.net>
+References: <20160130030012.GB9762@minnie.tuhs.org>
+ <56AD0AB7.40701@mhorton.net>
+ <alpine.BSF.2.11.1601310639150.14724@aneurin.horsfall.org>
+ <56AD1B28.4010908@mhorton.net>
+ <alpine.BSF.2.11.1601310740170.14724@aneurin.horsfall.org>
+ <CAOkr1zUprhZws1WoD+4fuepMZkzNLO9HjNfLp1fGrDnjx4JKtA@mail.gmail.com>
+ <alpine.BSF.2.11.1601311227470.14724@aneurin.horsfall.org>
+ <alpine.LRH.2.20.1601301802360.8927@waffle.shalott.net>
+ <56AE4029.7010701@mhorton.net>
+Message-ID: <20160131173846.GB7792@mercury.ccil.org>
+
+Mary Ann Horton scripsit:
+
+> When I tell this story to nontechical folks, I prefix it with the
+> brief note that fgrep ought to be fastest, because it's simple, and
+> egrep ought to be slowest, because it's complex, but in reality
+> fgrep is slowest and egrep is fastest.  
+
+Is it really?  The one time I used fgrep in production, I was checking
+a a few hundred documents at a time to see which ones contained any of a
+few thousand keywords.  "fgrep -l -f keywords" seemed to do the job quite
+quickly: would it really have been faster to assemble the keywords into
+a single egrep regex and use egrep?  (This was on Solaris, so using more
+or less classic fgrep, not GNU grep.) For a while I referred to myself as
+"just another desperate fgrep hacker".
+
+I use "ex" as my normal text editor (including for this email); I drop
+into vi mode occasionally, mostly to bounce on the % key when writing
+Lisp.  Because there is no support for | in ex regexes, I rely on the
+low entropy of English text (about 2.7 bits per letter) and search
+for e.g. "open|shut" by searching for "[os][ph][eu][nt]".  I may
+get a few false positives, but they will easily be removed by vgrep.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+After fixing the Y2K bug in an application:
+        WELCOME TO <censored>
+        DATE: MONDAK, JANUARK 1, 1900
+
+
+From dot at dotat.at  Mon Feb  1 20:38:53 2016
+From: dot at dotat.at (Tony Finch)
+Date: Mon, 1 Feb 2016 10:38:53 +0000
+Subject: [TUHS] Short history of 'grep'
+In-Reply-To: <20160131023700.GB7917@mercury.ccil.org>
+References: <20160130030012.GB9762@minnie.tuhs.org>
+ <56AD0AB7.40701@mhorton.net>
+ <alpine.BSF.2.11.1601310639150.14724@aneurin.horsfall.org>
+ <56AD1B28.4010908@mhorton.net>
+ <alpine.BSF.2.11.1601310740170.14724@aneurin.horsfall.org>
+ <CAOkr1zUprhZws1WoD+4fuepMZkzNLO9HjNfLp1fGrDnjx4JKtA@mail.gmail.com>
+ <alpine.BSF.2.11.1601311227470.14724@aneurin.horsfall.org>
+ <20160131023700.GB7917@mercury.ccil.org>
+Message-ID: <alpine.LSU.2.00.1602011030020.21662@hermes-2.csi.cam.ac.uk>
+
+John Cowan <cowan at mercury.ccil.org> wrote:
+> Dave Horsfall scripsit:
+>
+> > I'm still trying to get my around about how a program such as "egrep"
+> > which handles complex patterns can be faster than one that doesn't...  It
+> > seems to defeat all logic :-)
+>
+[...]
+> Classic grep uses backtracking, which makes it much slower on problematic
+> expressions like "a*b" where there is no b in the input.  On the other
+> hand, creating a deterministic automaton has higher setup costs.
+
+Right. The relevant section in the article that started this thread says:
+
+: Al Aho decided to put theory into practice, and implemented full regular
+: expressions (including alternation and grouping which were missing from
+: grep)and wrote egrep over a weekend. Fgrep, specialised for the case of
+: multiple (alternate) literal strings, was written in the same weekend.
+: Egrep was about twice as fast as grep for simplecharacter searches but was
+: slower for complex search patterns (due to the high cost of build-ing the
+: state machine that recognised the patterns).
+
+The "putting theory into practice" refers to compiling the regex to a DFA,
+rather than interpreting an NFA.
+
+Russ Cox has a good summary of differing regex implementation techniques
+at https://swtch.com/~rsc/regexp/regexp1.html
+
+This makes me wonder how well-known was the technique of compiling to a
+DFA, and whether it was widely implemented before awk, egrep, and lex.
+
+Tony.
+-- 
+f.anthony.n.finch  <dot at dotat.at>  http://dotat.at/
+Fair Isle, Faeroes: Southeast 6 to gale 8, veering southwest gale 8 to storm
+10, becoming cyclonic later. Very rough, becoming high or very high. Rain or
+squally showers. Moderate or poor.
+
+
+From dot at dotat.at  Mon Feb  1 20:48:04 2016
+From: dot at dotat.at (Tony Finch)
+Date: Mon, 1 Feb 2016 10:48:04 +0000
+Subject: [TUHS] Short history of 'grep'
+In-Reply-To: <56AE4029.7010701@mhorton.net>
+References: <20160130030012.GB9762@minnie.tuhs.org>
+ <56AD0AB7.40701@mhorton.net>
+ <alpine.BSF.2.11.1601310639150.14724@aneurin.horsfall.org>
+ <56AD1B28.4010908@mhorton.net>
+ <alpine.BSF.2.11.1601310740170.14724@aneurin.horsfall.org>
+ <CAOkr1zUprhZws1WoD+4fuepMZkzNLO9HjNfLp1fGrDnjx4JKtA@mail.gmail.com>
+ <alpine.BSF.2.11.1601311227470.14724@aneurin.horsfall.org>
+ <alpine.LRH.2.20.1601301802360.8927@waffle.shalott.net>
+ <56AE4029.7010701@mhorton.net>
+Message-ID: <alpine.LSU.2.00.1602011044300.21662@hermes-2.csi.cam.ac.uk>
+
+Mary Ann Horton <mah at mhorton.net> wrote:
+
+> It's not a typo.
+>
+> When I tell this story to nontechical folks, I prefix it with the brief note
+> that fgrep ought to be fastest, because it's simple, and egrep ought to be
+> slowest, because it's complex, but in reality fgrep is slowest and egrep is
+> fastest.  Otherwise the story makes no sense.
+
+Does fgrep win if you are matching lots of fixed strings?
+
+https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
+
+Tony.
+-- 
+f.anthony.n.finch  <dot at dotat.at>  http://dotat.at/
+Trafalgar: North or northwest 4 or 5. Moderate or rough. Fair. Good.
+
+
+From wkt at tuhs.org  Mon Feb  1 21:40:02 2016
+From: wkt at tuhs.org (Warren Toomey)
+Date: Mon, 1 Feb 2016 21:40:02 +1000
+Subject: [TUHS] Unix-related Usenet Postings
+Message-ID: <20160201114002.GA19268@minnie.tuhs.org>
+
+All, I've spent some time working on the UTZoo Usenet Archive postings
+from https://archive.org/download/utzoo-wiseman-usenet-archive
+
+I've reformatted each group's postings into mbox format so I could run
+them through the mailman archive tool. The results are here:
+http://www.tuhs.org/Usenet/ You can now browse by group/year/month/thread.
+
+I'll drop an index.html file in there tomorrow with a description of
+each newsgroup. There are still some blemishes to fix up, as the archiver
+failed to recognise the headers on some articles and they end up "posted"
+in February 2016.
+
+Other newgroups archives are here: https://archive.org/search.php?query=usenet. I might pull out some other Unix relates groups (aus.sources etc.) and
+add them. Are there any other Usenet archives around?
+
+Cheers, Warren
+
+P.S If anybody is still trying to recover the old 2.11BSD patches, you may
+find some of them lurking in http://www.tuhs.org/Usenet/comp.bugs.2bsd/
+
+
+From arnold at skeeve.com  Mon Feb  1 22:18:48 2016
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Mon, 01 Feb 2016 05:18:48 -0700
+Subject: [TUHS] Usenet source archives
+Message-ID: <201602011218.u11CImi6017815@freefriends.org>
+
+At www.skeeve.com/Usenet.tar.bz2 is a copy of UUNET's archives of the
+various USENET source newsgroups. I created this file on September 2 2004.
+I made it for myself, since it was clear that uu.net would disappear
+sometime soon...
+
+It's 139 Meg - Warren maybe you can put it into the archives and everyone
+else can get it from there?  I think the person who hosts www.skeeve.com
+has some monthly limits on data transfer and I don't want him blown
+out of the water.
+
+Thanks,
+
+Arnold
+
+
+From wkt at tuhs.org  Mon Feb  1 22:26:35 2016
+From: wkt at tuhs.org (Warren Toomey)
+Date: Mon, 01 Feb 2016 22:26:35 +1000
+Subject: [TUHS] Usenet source archives
+In-Reply-To: <201602011218.u11CImi6017815@freefriends.org>
+References: <201602011218.u11CImi6017815@freefriends.org>
+Message-ID: <D28873EC-2144-4947-B391-0AACC442255A@tuhs.org>
+
+Shall do, in the morning!
+Cheers, Warren
+
+On 1 February 2016 10:18:48 pm AEST, arnold at skeeve.com wrote:
+>At www.skeeve.com/Usenet.tar.bz2 is a copy of UUNET's archives of the
+>various USENET source newsgroups. I created this file on September 2
+>2004.
+>I made it for myself, since it was clear that uu.net would disappear
+>sometime soon...
+>
+>It's 139 Meg - Warren maybe you can put it into the archives and
+>everyone
+>else can get it from there?  I think the person who hosts
+>www.skeeve.com
+>has some monthly limits on data transfer and I don't want him blown
+>out of the water.
+>
+>Thanks,
+>
+>Arnold
+
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160201/59229f91/attachment.html>
+
+From scj at yaccman.com  Tue Feb  2 05:26:10 2016
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Mon, 1 Feb 2016 11:26:10 -0800
+Subject: [TUHS] Short history of 'grep'
+In-Reply-To: <alpine.LSU.2.00.1602011030020.21662@hermes-2.csi.cam.ac.uk>
+References: <20160130030012.GB9762@minnie.tuhs.org>
+ <56AD0AB7.40701@mhorton.net>
+ <alpine.BSF.2.11.1601310639150.14724@aneurin.horsfall.org>
+ <56AD1B28.4010908@mhorton.net>
+ <alpine.BSF.2.11.1601310740170.14724@aneurin.horsfall.org>
+ <CAOkr1zUprhZws1WoD+4fuepMZkzNLO9HjNfLp1fGrDnjx4JKtA@mail.gmail.com>
+ <alpine.BSF.2.11.1601311227470.14724@aneurin.horsfall.org>
+ <20160131023700.GB7917@mercury.ccil.org>
+ <alpine.LSU.2.00.1602011030020.21662@hermes-2.csi.cam.ac.uk>
+Message-ID: <4dda350d543908e59a54dc0ea356dc6c.squirrel@webmail.yaccman.com>
+
+
+: Al Aho decided to put theory into practice, and implemented full regular
+: expressions (including alternation and grouping which were missing from
+: grep)and wrote egrep over a weekend. Fgrep, specialised for the case of
+: multiple (alternate) literal strings, was written in the same weekend.
+: Egrep was about twice as fast as grep for simple character searches but
+: was slower for complex search patterns (due to the high cost of building
+: the state machine that recognised the patterns).
+
+I remember talking to Al about his programming experiences not long after
+he wrote egrep.  His focus was theory, and he wrote far more books and
+papers than programs.  He said something like: "I never realized that you
+had to write so many different algorithms to get something to work.  I
+thought I just needed to write one!"
+
+Also, as a practical example of exponential blowup doing an fgrep-like
+problem, use lex to recognize a bunch of reserved words ("if","for","else",
+"while","int",... and such) and follow it with lnu* to recognize
+identifier names (where lnu recognizes letters, numbers, and underscore). 
+I gave up on lex for PCC when the lexer got bigger than all the rest of
+the compiler...
+
+Steve
+
+
+
+From wkt at tuhs.org  Tue Feb  2 06:12:49 2016
+From: wkt at tuhs.org (Warren Toomey)
+Date: Tue, 2 Feb 2016 06:12:49 +1000
+Subject: [TUHS] Usenet source archives
+In-Reply-To: <201602011218.u11CImi6017815@freefriends.org>
+References: <201602011218.u11CImi6017815@freefriends.org>
+Message-ID: <20160201201249.GA13180@minnie.tuhs.org>
+
+On Mon, Feb 01, 2016 at 05:18:48AM -0700, arnold at skeeve.com wrote:
+> At www.skeeve.com/Usenet.tar.bz2 is a copy of UUNET's archives of the
+> various USENET source newsgroups. I created this file on September 2 2004.
+This is temporarily at http://www.tuhs.org/Usenet/Usenet.tar.bz2
+if anybody else would like to grab it.
+
+Cheers, Warren
+
+
+From doug at cs.dartmouth.edu  Tue Feb  2 06:57:04 2016
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Mon, 01 Feb 2016 15:57:04 -0500
+Subject: [TUHS] Short history of 'grep'
+Message-ID: <201602012057.u11Kv4ED006736@coolidge.cs.Dartmouth.EDU>
+
+Ken kindly tells me that both stories are right, though clearly
+my impression that my query prompted Ken to write grep is wrong:
+
+        i dont see any differences between our stories.
+        you asked and i dug around and found it.
+
+Would we have greps today, had that little incident not occurred?
+
+Doug
+
+
+From norman at oclsc.org  Wed Feb  3 09:57:52 2016
+From: norman at oclsc.org (Norman Wilson)
+Date: Tue, 02 Feb 2016 18:57:52 -0500
+Subject: [TUHS] Working e-mail for Henry Spencer?
+Message-ID: <1454457476.6916.for-standards-violators@oclsc.org>
+
+> There is a Henry Spencer <henry at spsystems.net>, who about a year ago or 
+> so posted to the IETF TLS list and posted to comp.compilers a decade 
+> ago.
+
+I believe that's The Henry Spencer, all right.  SP Systems is what
+called (perhaps still does) himself when consulting.
+
+I've already dug up and sent Warren another contact address for Henry,
+gleaned from a mutual friend.
+
+Norman Wilson*
+Toronto ON
+
+(Not to be confused with Norman D. Wilson, civil engineer,
+after whom Wilson Avenue in Toronto is named)
+
+
+From dave at horsfall.org  Thu Feb  4 03:38:23 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Thu, 4 Feb 2016 04:38:23 +1100 (EST)
+Subject: [TUHS] Happy birthday, Ken Thompson!
+Message-ID: <alpine.BSF.2.11.1602040433430.31985@aneurin.horsfall.org>
+
+One half of Unix, and what more can I say?
+
+Well, I'll bet not many people know that he shares a birthday with Alice 
+Cooper...
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From grog at lemis.com  Thu Feb  4 08:19:30 2016
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Thu, 4 Feb 2016 09:19:30 +1100
+Subject: [TUHS] Working e-mail for Henry Spencer?
+In-Reply-To: <1454457476.6916.for-standards-violators@oclsc.org>
+References: <1454457476.6916.for-standards-violators@oclsc.org>
+Message-ID: <20160203221930.GD89818@eureka.lemis.com>
+
+On Tuesday,  2 February 2016 at 18:57:52 -0500, Norman Wilson wrote:
+>
+> Norman Wilson*
+> Toronto ON
+>
+> (Not to be confused with Norman D. Wilson, civil engineer,
+> after whom Wilson Avenue in Toronto is named)
+
+And despite your recent declaration of love of all things Australian,
+also not the late great VFL player Norm Wilson.  He made it to
+Wikipedia, while you didn't.  That must say something about Wikipedia.
+
+Greg
+--
+Sent from my desktop computer.
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft MUA reports
+problems, please read http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 181 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160204/1d8d1a0f/attachment.sig>
+
+From dave at horsfall.org  Mon Feb  8 13:51:13 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Mon, 8 Feb 2016 14:51:13 +1100 (EST)
+Subject: [TUHS] RIP John von Neumann
+Message-ID: <alpine.BSF.2.11.1602081447370.31985@aneurin.horsfall.org>
+
+John von Neumann halted in 1957; without him, we probably would not have 
+had computers as we know them (CPU-buss-memory etc).
+
+-- 
+Dave Horsfall
+Unit 13, 79 Glennie St
+North Gosford NSW 2250
+
+0490 095 371
+
+
+From ron at ronnatalie.com  Tue Feb  9 03:55:23 2016
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Mon, 8 Feb 2016 12:55:23 -0500
+Subject: [TUHS] For all you troff hackers...
+Message-ID: <0A055D2F-3D2E-4B4C-BFFB-A27A49D64707@ronnatalie.com>
+
+A non-text attachment was scrubbed...
+Name: PastedGraphic-1.tiff
+Type: image/tiff
+Size: 70546 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160208/0a51fb99/attachment.tiff>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 2284 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160208/0a51fb99/attachment.bin>
+
+From random832 at fastmail.com  Tue Feb  9 05:02:01 2016
+From: random832 at fastmail.com (Random832)
+Date: Mon, 08 Feb 2016 14:02:01 -0500
+Subject: [TUHS] For all you troff hackers...
+In-Reply-To: <0A055D2F-3D2E-4B4C-BFFB-A27A49D64707@ronnatalie.com>
+References: <0A055D2F-3D2E-4B4C-BFFB-A27A49D64707@ronnatalie.com>
+Message-ID: <1454958121.2591079.515391802.154E480B@webmail.messagingengine.com>
+
+On Mon, Feb 8, 2016, at 12:55, Ronald Natalie wrote:
+> Email had 2 attachments:
+> + PastedGraphic-1.tiff
+>   94k (image/tiff)
+> + smime.p7s
+>   3k (application/pkcs7-signature)
+
+Doesn't really seem troff-related (where's \e?) - seems more like a
+shell/regex thing, particularly given the hovertext.
+
+
+From dave at horsfall.org  Mon Feb 15 16:17:57 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Mon, 15 Feb 2016 17:17:57 +1100 (EST)
+Subject: [TUHS] On this day... (Wirth, Feynman) (fwd)
+Message-ID: <alpine.BSF.2.11.1602151715140.89267@aneurin.horsfall.org>
+
+Of some possible intertest to the denizens here...
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+---------- Forwarded message ----------
+Date: Mon, 15 Feb 2016 07:11:44 +1100 (EST)
+From: Dave Horsfall <dave at horsfall.org>
+To: Applix List
+Subject: APPLIX-L On this day... (Wirth, Feynman)
+
+We gained Niklaus Wirth, otherwise known as Mr ALGOL (and thereby freeing 
+us from the chains of FORTRAN), back in 1934; you can either call him by 
+name, or call him by value (non-programmers are not expected to understand 
+this computer joke).
+
+Upon the other paw, we lost Richard Feynman, back in 1988; he was the 
+bloke who sorted out those NASA management liars, over that little O-ring 
+incident...  Well, that's what happens when the suits ignore the 
+engineers.
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From meillo at marmaro.de  Wed Feb 17 23:55:55 2016
+From: meillo at marmaro.de (markus schnalke)
+Date: Wed, 17 Feb 2016 14:55:55 +0100
+Subject: [TUHS] For all you troff hackers...
+In-Reply-To: <0A055D2F-3D2E-4B4C-BFFB-A27A49D64707@ronnatalie.com>
+References: <0A055D2F-3D2E-4B4C-BFFB-A27A49D64707@ronnatalie.com>
+Message-ID: <1aW2aB-0cH-00@marmaro.de>
+
+Hoi,
+
+thanks for pointing to that! I would have missed it but now I had a
+good laugh. :-)
+
+> part 1     image/tiff                 68K
+
+Just for the record, it's that one: https://xkcd.com/1638/
+
+
+Grepped* my troff sources and found no more than four backslashes
+in a row, but at least I got 16 in one line:
+
+	.ds _O '\f(SCChapter \\\\n(H1\ \ \\\\*(_C\fP''\\\\n(PN'  \" right
+
+Seems I haven't gone deep enough into troff to need more than
+four backslashes to manage my way back up into daylight. :-)
+
+
+The Heirloom doctools' mm macros impress a lot more. They have
+16 subsequent (!) backslashes:
+
+$ fgrep  '\\\\\\\\\\\\\\\\' /usr/local/lib/doctools/tmac/*   
+/usr/local/lib/doctools/tmac/mmn:\!\\!.if \\$2=\\\\\\\\\\\\\\\\$1 .)T 1 1 "\\*(}0" "\\$4" \\\\\\\\nP \\*(}3
+/usr/local/lib/doctools/tmac/mmt:\!\\!.if \\$2=\\\\\\\\\\\\\\\\$1 .)T 1 1 "\\*(}0" "\\$4" \\\\\\\\nP \\*(}3
+
+
+You see, this XKCD cartoon is definitely about troff!
+
+
+meillo
+
+
+*) Nice thread about grep, btw.
+
+
+From wkt at tuhs.org  Fri Feb 19 10:25:29 2016
+From: wkt at tuhs.org (Warren Toomey)
+Date: Fri, 19 Feb 2016 10:25:29 +1000
+Subject: [TUHS] Some PDP-7 source code
+Message-ID: <20160219002529.GA4719@minnie.tuhs.org>
+
+Hi all, Norman Wilson has kindly scanned in some PDP-7 Unix
+source code that he has kept hidden away. I've just added
+it into the Unix Archive at:
+
+http://www.tuhs.org/Archive/PDP-11/Distributions/research/McIlroy_v0/
+
+I've updated the Readme with the details. The files are 0*.pdf.
+I'm not sure if there's enough there to bring up a kernel and
+some applications. I'll leave that to someone who knows PDP-7
+assembly programming :-)
+
+Many thanks Norman!
+
+Cheers, Warren
+
+
+From will.senn at gmail.com  Sun Feb 21 19:45:30 2016
+From: will.senn at gmail.com (Will Senn)
+Date: Sun, 21 Feb 2016 03:45:30 -0600
+Subject: [TUHS] Unix v6 File System information
+Message-ID: <56C9873A.1020208@gmail.com>
+
+All,
+
+Is there a good source of information about the Unix v6 filesystem 
+outside of the source code itself? Also, is there a source for the 
+history of the early Unix filesystems from v6 onward?
+
+Thanks,
+
+Will
+
+
+From dave at horsfall.org  Sun Feb 21 20:01:24 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sun, 21 Feb 2016 21:01:24 +1100 (EST)
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <56C9873A.1020208@gmail.com>
+References: <56C9873A.1020208@gmail.com>
+Message-ID: <alpine.BSF.2.11.1602212054110.79948@aneurin.horsfall.org>
+
+On Sun, 21 Feb 2016, Will Senn wrote:
+
+> Is there a good source of information about the Unix v6 filesystem 
+> outside of the source code itself? Also, is there a source for the 
+> history of the early Unix filesystems from v6 onward?
+
+Well, I could tell you exactly how the V6 FS worked, but it would take me 
+over an hour to type it all in, so hopefully someone will come forward.
+
+Dir entry: 14 chars (non-null term), plus 16 bit index into inode.
+
+Inode table: a bit weird, involving single/double/triple block addresses 
+into the disk itself.
+
+And then we have the superblock (yep, only one, in those days).
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From arnold at skeeve.com  Sun Feb 21 20:27:16 2016
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Sun, 21 Feb 2016 03:27:16 -0700
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <56C9873A.1020208@gmail.com>
+References: <56C9873A.1020208@gmail.com>
+Message-ID: <201602211027.u1LARGY1005662@freefriends.org>
+
+Will Senn <will.senn at gmail.com> wrote:
+
+> All,
+>
+> Is there a good source of information about the Unix v6 filesystem 
+> outside of the source code itself? Also, is there a source for the 
+> history of the early Unix filesystems from v6 onward?
+>
+> Thanks,
+>
+> Will
+
+The Lyons book would be where I'd go to look.  
+
+Arnold
+
+
+From jnc at mercury.lcs.mit.edu  Sun Feb 21 21:44:12 2016
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Sun, 21 Feb 2016 06:44:12 -0500 (EST)
+Subject: [TUHS] Unix v6 File System information
+Message-ID: <20160221114412.62D8B18C0F6@mercury.lcs.mit.edu>
+
+    > From: Will Senn
+
+    > Is there a good source of information about the Unix v6 filesystem 
+
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=V6/usr/man/man5/fs.5
+
+    > Also, is there a source for the history of the early Unix filesystems
+    > from v6 onward?
+
+I don't know of one (although there is that article on the 4.2 filesystem),
+but would love to hear of one.
+
+I gather that V7 is basically V6 except the block numbers are 32 bits, not 16.
+
+	Noel
+
+
+From dave at horsfall.org  Sun Feb 21 22:29:56 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sun, 21 Feb 2016 23:29:56 +1100 (EST)
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <201602211027.u1LARGY1005662@freefriends.org>
+References: <56C9873A.1020208@gmail.com>
+ <201602211027.u1LARGY1005662@freefriends.org>
+Message-ID: <alpine.BSF.2.11.1602212328140.79948@aneurin.horsfall.org>
+
+On Sun, 21 Feb 2016, arnold at skeeve.com wrote:
+
+> The Lyons book would be where I'd go to look.  
+
+Lions, if you don't mind (I knew him personally).
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From dave at horsfall.org  Sun Feb 21 23:34:46 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Mon, 22 Feb 2016 00:34:46 +1100 (EST)
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <20160221114412.62D8B18C0F6@mercury.lcs.mit.edu>
+References: <20160221114412.62D8B18C0F6@mercury.lcs.mit.edu>
+Message-ID: <alpine.BSF.2.11.1602220021100.79948@aneurin.horsfall.org>
+
+On Sun, 21 Feb 2016, Noel Chiappa wrote:
+
+> http://minnie.tuhs.org/cgi-bin/utree.pl?file=V6/usr/man/man5/fs.5
+
+Yeah, but I was unsure whether the OP wanted a technical description, or 
+one in plain English :-)  I'm still prepared to do the latter, once I can 
+find a spare hour.
+
+Somewhere, deep within Minnie's bowels, there might be a paper that I 
+wrote upon implementing a "bad block" system (specifically directed at the 
+RK-05, but generally applicable to any device); it involved the hitherto- 
+unused inode "0", to which were chained the bad blocks (added by hand).
+
+The trick was that normal FS utilities would ignore it...
+
+Someone at the time (Kevin Hill?) pointed out that inode "-1" could also 
+be used, but I wasn't prepared to go that far :-)
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From arnold at skeeve.com  Sun Feb 21 23:54:21 2016
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Sun, 21 Feb 2016 06:54:21 -0700
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <alpine.BSF.2.11.1602212328140.79948@aneurin.horsfall.org>
+References: <56C9873A.1020208@gmail.com>
+ <201602211027.u1LARGY1005662@freefriends.org>
+ <alpine.BSF.2.11.1602212328140.79948@aneurin.horsfall.org>
+Message-ID: <201602211354.u1LDsL98001381@freefriends.org>
+
+
+> On Sun, 21 Feb 2016, arnold at skeeve.com wrote:
+>
+> > The Lyons book would be where I'd go to look.  
+
+Dave Horsfall <dave at horsfall.org> wrote:
+> Lions, if you don't mind (I knew him personally).
+
+My bad. I beg your pardon. :-)
+
+When Peter Salus et al arranged to publish it I bought a copy and
+read it, and enjoyed it thoroughly.
+
+I also have one of the proverbial "n-th generation photocopies" made
+circa 1984 (+/- a year), but I did not read it at the time.
+
+Arnold
+
+
+From clemc at ccc.com  Mon Feb 22 00:40:54 2016
+From: clemc at ccc.com (Clement T. Cole)
+Date: Sun, 21 Feb 2016 09:40:54 -0500
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <201602211354.u1LDsL98001381@freefriends.org>
+References: <56C9873A.1020208@gmail.com>
+ <201602211027.u1LARGY1005662@freefriends.org>
+ <alpine.BSF.2.11.1602212328140.79948@aneurin.horsfall.org>
+ <201602211354.u1LDsL98001381@freefriends.org>
+Message-ID: <F684FBAD-132D-4EC5-A511-95A3CE16F93D@ccc.com>
+
+Also check out the MIT fall OS course notes.  They ported v6 to the x86 and have course notes with some good detail.  I'm not near my real computer so I don't have the URL handy where I am. If you send me an email off list I'll be happy to pass it on. It's in one of my quora replies so you can google there and find it also
+
+Clem
+
+Sent from my iPad
+
+> On Feb 21, 2016, at 8:54 AM, arnold at skeeve.com wrote:
+> 
+> 
+>>> On Sun, 21 Feb 2016, arnold at skeeve.com wrote:
+>>> 
+>>> The Lyons book would be where I'd go to look.  
+> 
+> Dave Horsfall <dave at horsfall.org> wrote:
+>> Lions, if you don't mind (I knew him personally).
+> 
+> My bad. I beg your pardon. :-)
+> 
+> When Peter Salus et al arranged to publish it I bought a copy and
+> read it, and enjoyed it thoroughly.
+> 
+> I also have one of the proverbial "n-th generation photocopies" made
+> circa 1984 (+/- a year), but I did not read it at the time.
+> 
+> Arnold
+
+
+From will.senn at gmail.com  Mon Feb 22 01:21:30 2016
+From: will.senn at gmail.com (Will Senn)
+Date: Sun, 21 Feb 2016 09:21:30 -0600
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <alpine.BSF.2.11.1602220021100.79948@aneurin.horsfall.org>
+References: <20160221114412.62D8B18C0F6@mercury.lcs.mit.edu>
+ <alpine.BSF.2.11.1602220021100.79948@aneurin.horsfall.org>
+Message-ID: <3EEAC13B-2B79-46F4-A45F-89EA56651E74@gmail.com>
+
+A technical description would be appreciated although the manpage looks like a good start as does Lions. I hadn't gotten to chapter 20 yet, should have known he would cover the topic.
+
+Sent from my iPhone
+
+> On Feb 21, 2016, at 7:34 AM, Dave Horsfall <dave at horsfall.org> wrote:
+> 
+>> On Sun, 21 Feb 2016, Noel Chiappa wrote:
+>> 
+>> http://minnie.tuhs.org/cgi-bin/utree.pl?file=V6/usr/man/man5/fs.5
+> 
+> Yeah, but I was unsure whether the OP wanted a technical description, or 
+> one in plain English :-)  I'm still prepared to do the latter, once I can 
+> find a spare hour.
+> 
+> Somewhere, deep within Minnie's bowels, there might be a paper that I 
+> wrote upon implementing a "bad block" system (specifically directed at the 
+> RK-05, but generally applicable to any device); it involved the hitherto- 
+> unused inode "0", to which were chained the bad blocks (added by hand).
+> 
+> The trick was that normal FS utilities would ignore it...
+> 
+> Someone at the time (Kevin Hill?) pointed out that inode "-1" could also 
+> be used, but I wasn't prepared to go that far :-)
+> 
+> -- 
+> Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From will.senn at gmail.com  Mon Feb 22 01:36:12 2016
+From: will.senn at gmail.com (Will Senn)
+Date: Sun, 21 Feb 2016 09:36:12 -0600
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <20160221114412.62D8B18C0F6@mercury.lcs.mit.edu>
+References: <20160221114412.62D8B18C0F6@mercury.lcs.mit.edu>
+Message-ID: <516F84C1-13F6-4CD2-83DF-AF5D760D054B@gmail.com>
+
+
+
+Sent from my iPhone
+
+On Feb 21, 2016, at 5:44 AM, Noel Chiappa <jnc at mercury.lcs.mit.edu> wrote:
+
+>> From: Will Senn
+> 
+>> Is there a good source of information about the Unix v6 filesystem
+> 
+> http://minnie.tuhs.org/cgi-bin/utree.pl?file=V6/usr/man/man5/fs.5
+> 
+>> Also, is there a source for the history of the early Unix filesystems
+>> from v6 onward?
+> 
+> I don't know of one (although there is that article on the 4.2 filesystem),
+> but would love to hear of one.
+> 
+> I gather that V7 is basically V6 except the block numbers are 32 bits, not 16.
+> 
+>    Noel
+
+
+Thanks for the link. Let me ask a follow up question. Supposing I created a byte faithful representation of a V6 filesystem on my mac, would I then be able to load the file in simh as an RK05 and mount and access its files and directories from a V6 instance? If I need to post in the SimH list, let me know.
+
+Will
+
+From random832 at fastmail.com  Mon Feb 22 03:31:09 2016
+From: random832 at fastmail.com (Random832)
+Date: Sun, 21 Feb 2016 12:31:09 -0500
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <20160221114412.62D8B18C0F6@mercury.lcs.mit.edu>
+References: <20160221114412.62D8B18C0F6@mercury.lcs.mit.edu>
+Message-ID: <1456075869.2436059.527486690.34EDDE08@webmail.messagingengine.com>
+
+On Sun, Feb 21, 2016, at 06:44, Noel Chiappa wrote:
+> I gather that V7 is basically V6 except the block numbers are 32 bits,
+> not 16.
+
+They're 24 bits, aren't they?
+
+
+From ron at ronnatalie.com  Mon Feb 22 03:36:44 2016
+From: ron at ronnatalie.com (ron at ronnatalie.com)
+Date: Sun, 21 Feb 2016 12:36:44 -0500 (EST)
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <20160221114412.62D8B18C0F6@mercury.lcs.mit.edu>
+References: <20160221114412.62D8B18C0F6@mercury.lcs.mit.edu>
+Message-ID: <35220.74.96.165.246.1456076204.squirrel@webmail.tuffmail.net>
+
+The V6 block numbers were 24 bits.    The differences with V7 were the
+larger block addresses, a slightly different way in which the block
+addresses were encoded in the inode (no more large bit), and the expansion
+of uid and gid to 16 bits from 8.
+
+
+
+
+From jnc at mercury.lcs.mit.edu  Mon Feb 22 03:50:08 2016
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Sun, 21 Feb 2016 12:50:08 -0500 (EST)
+Subject: [TUHS] Unix v6 File System information
+Message-ID: <20160221175008.13FB518C0ED@mercury.lcs.mit.edu>
+
+    > From: Random832 
+
+    > They're 24 bits, aren't they?
+
+Not according to the source:
+
+	typedef	long		daddr_t;
+
+	daddr_t	s_fsize;   	/* size in blocks of entire volume */
+	short  	s_nfree;   	/* number of addresses in s_free */
+	daddr_t	s_free[NICFREE];/* free block list */
+
+(from param.h and filsys.h respectively).
+
+    > From: Ron Natalie
+
+    > The V6 block numbers were 24 bits.
+
+Maybe you're thinking of the byte number within the file? The file length
+was stored in an word plus a byte in the inode in V6:
+
+	char	i_size0;
+	char	*i_size1;  
+
+but the block number in the device was a word:
+
+	int	s_fsize;	/* size in blocks of entire volume */
+	int	s_nfree;	/* number of in core free blocks (0-100) */
+	int	s_free[100];	/* in core free blocks */
+
+"Use the source, Luke!"
+
+	Noel
+
+
+From jnc at mercury.lcs.mit.edu  Mon Feb 22 04:27:49 2016
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Sun, 21 Feb 2016 13:27:49 -0500 (EST)
+Subject: [TUHS] Unix v6 File System information
+Message-ID: <20160221182749.8937718C0ED@mercury.lcs.mit.edu>
+
+    > From: Will Senn
+
+    > Thanks for the link.
+
+Sure. It's worth reading the entire V6 manual if you're going to be doing a
+lot with it - lots of goodies hidden in places like that. Also the two BSTJ
+Unix issues. (I think they are available online, now.)
+
+    > Supposing I created a byte faithful representation of a V6 filesystem
+    > on my mac, would I then be able to load the file in simh as an RK05 and
+    > mount and access its files and directories from a V6 instance? 
+
+That's really a SIMH question, and I don't use SIMH; I use Ersatz11. That is
+certainly how Ersatz11 works; I just FTP'd the RK05 distro images over, set
+them up as the files that 'implemented' various RK05 drives, and (modulo a
+few teething Ersatz11 configuration issues) away it went.
+
+	Noel
+
+
+From random832 at fastmail.com  Mon Feb 22 04:36:19 2016
+From: random832 at fastmail.com (Random832)
+Date: Sun, 21 Feb 2016 13:36:19 -0500
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <20160221175008.13FB518C0ED@mercury.lcs.mit.edu>
+References: <20160221175008.13FB518C0ED@mercury.lcs.mit.edu>
+Message-ID: <1456079779.724937.527519010.4FC5154D@webmail.messagingengine.com>
+
+On Sun, Feb 21, 2016, at 12:50, Noel Chiappa wrote:
+>     > From: Random832 
+> 
+>     > They're 24 bits, aren't they?
+> 
+> Not according to the source:
+> 
+> 	typedef	long		daddr_t;
+> 
+> 	daddr_t	s_fsize;   	/* size in blocks of entire volume */
+> 	short  	s_nfree;   	/* number of addresses in s_free */
+> 	daddr_t	s_free[NICFREE];/* free block list */
+> 
+> (from param.h and filsys.h respectively).
+
+That's the superblock. Look in ino.h.
+
+/*
+ * the 40 address bytes:
+ *       39 used; 13 addresses
+ *       of 3 bytes each.
+ */
+
+Which means you can't actually have a filesystem of more than 2^24-1
+blocks.
+
+
+From clemc at ccc.com  Mon Feb 22 04:59:38 2016
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 21 Feb 2016 13:59:38 -0500
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <20160221182749.8937718C0ED@mercury.lcs.mit.edu>
+References: <20160221182749.8937718C0ED@mercury.lcs.mit.edu>
+Message-ID: <CAC20D2O8s_8XnCbAvxRXVJCxdgtFCW7vyzgKs_gNvf36+2PuRQ@mail.gmail.com>
+
+​Will Senn asked
+
+> Supposing I created a byte faithful representation of a V6 filesystem
+
+ > on my mac, would I then be able to load the file in simh as an RK05 and
+>  > mount and access its files and directories from a V6 instance?
+>
+
+​Not 100% sure how to parse this... but that is exactly how simh (and
+Ersatz11)​
+
+​ work.
+You have a UNIX file on your mac and at the simh interactive command
+system, you "attach" it as the data for the simulated RK05.
+​But it's a manual process to do the attachment AND more importantly,
+since Mac OSx just sees it as bits, as a minimum you need to write tools to
+push/pull V6 "files" from the image.  This is the same as the "DOS Tools"
+trick you see in a lot of UNIX systems that know how to "grok" DOS/FAT file
+system images.   You would need to do the same thing.  If you poke around
+the Warren's TUHS archives, you might find some of this already there.
+
+​What many of us do it attach a file as a virtual disk but instead of using
+a UNIX file system format, use it is a tape image.   Then use tar/cpio or
+whatever if you already a tool on both sides that can interpret the bits.
+Hence, the v6tar discussion of a few weeks ago.   The UNIX ar(1) format is
+sometimes used also, since it was common.   cpio -c also works, but that
+was not on the research systems.​   My old room mate, Tom Quarles, wrote a
+really good ANSI tape reader/writer for BSD UNIX.  That should back port to
+v6 with a little work, particularly if you the "typesetter C" compiler for
+V6 which supported enough of the V7 C.   The advantage of the ANSI tape
+format is that its common with the DEC systems as well as UNIX.
+
+
+That said, you can be smarter and more automatic.   As Noel says Ersatz11
+supports a virtual shared disk (the same way VMware and Parallels) do.
+Writing such a device for simh would be cool and in fact useful for many
+different emulators.  Warning there are a lot of dragons hidden with such a
+shared FS.   At is definitely doable, but is going to take some work.
+
+The other thing you could do that might be a little less work, but would be
+Mac specific, is Mac OSX has the FUSE file system emulation that stuff that
+Google released.  If hacked up support for the old Unix FS, you could mount
+the V6 "disk" image as Mac OSx disk and see the bits with normal tools.
+I've thought about doing this but I have never had the time.  If I ever
+became a serious user of the simh, I would probably want something more
+like this.
+
+Clem
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160221/883e0385/attachment.html>
+
+From arnold at skeeve.com  Mon Feb 22 05:31:26 2016
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Sun, 21 Feb 2016 12:31:26 -0700
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <CAC20D2O8s_8XnCbAvxRXVJCxdgtFCW7vyzgKs_gNvf36+2PuRQ@mail.gmail.com>
+References: <20160221182749.8937718C0ED@mercury.lcs.mit.edu>
+ <CAC20D2O8s_8XnCbAvxRXVJCxdgtFCW7vyzgKs_gNvf36+2PuRQ@mail.gmail.com>
+Message-ID: <201602211931.u1LJVQnQ021425@freefriends.org>
+
+Already been done: see http://osxbook.com/software/ancientfs/
+
+Arnold
+
+Clem Cole <clemc at ccc.com> wrote:
+
+> ​Will Senn asked
+>
+> > Supposing I created a byte faithful representation of a V6 filesystem
+>
+>  > on my mac, would I then be able to load the file in simh as an RK05 and
+> >  > mount and access its files and directories from a V6 instance?
+> >
+>
+> ​Not 100% sure how to parse this... but that is exactly how simh (and
+> Ersatz11)​
+>
+> ​ work.
+> You have a UNIX file on your mac and at the simh interactive command
+> system, you "attach" it as the data for the simulated RK05.
+> ​But it's a manual process to do the attachment AND more importantly,
+> since Mac OSx just sees it as bits, as a minimum you need to write tools to
+> push/pull V6 "files" from the image.  This is the same as the "DOS Tools"
+> trick you see in a lot of UNIX systems that know how to "grok" DOS/FAT file
+> system images.   You would need to do the same thing.  If you poke around
+> the Warren's TUHS archives, you might find some of this already there.
+>
+> ​What many of us do it attach a file as a virtual disk but instead of using
+> a UNIX file system format, use it is a tape image.   Then use tar/cpio or
+> whatever if you already a tool on both sides that can interpret the bits.
+> Hence, the v6tar discussion of a few weeks ago.   The UNIX ar(1) format is
+> sometimes used also, since it was common.   cpio -c also works, but that
+> was not on the research systems.​   My old room mate, Tom Quarles, wrote a
+> really good ANSI tape reader/writer for BSD UNIX.  That should back port to
+> v6 with a little work, particularly if you the "typesetter C" compiler for
+> V6 which supported enough of the V7 C.   The advantage of the ANSI tape
+> format is that its common with the DEC systems as well as UNIX.
+>
+>
+> That said, you can be smarter and more automatic.   As Noel says Ersatz11
+> supports a virtual shared disk (the same way VMware and Parallels) do.
+> Writing such a device for simh would be cool and in fact useful for many
+> different emulators.  Warning there are a lot of dragons hidden with such a
+> shared FS.   At is definitely doable, but is going to take some work.
+>
+> The other thing you could do that might be a little less work, but would be
+> Mac specific, is Mac OSX has the FUSE file system emulation that stuff that
+> Google released.  If hacked up support for the old Unix FS, you could mount
+> the V6 "disk" image as Mac OSx disk and see the bits with normal tools.
+> I've thought about doing this but I have never had the time.  If I ever
+> became a serious user of the simh, I would probably want something more
+> like this.
+>
+> Clem
+
+
+From wkt at tuhs.org  Mon Feb 22 06:24:54 2016
+From: wkt at tuhs.org (Warren Toomey)
+Date: Mon, 22 Feb 2016 06:24:54 +1000
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <516F84C1-13F6-4CD2-83DF-AF5D760D054B@gmail.com>
+References: <20160221114412.62D8B18C0F6@mercury.lcs.mit.edu>
+ <516F84C1-13F6-4CD2-83DF-AF5D760D054B@gmail.com>
+Message-ID: <20160221202454.GA9634@minnie.tuhs.org>
+
+On Sun, Feb 21, 2016 at 09:36:12AM -0600, Will Senn wrote:
+> Thanks for the link. Let me ask a follow up question. Supposing I
+> created a byte faithful representation of a V6 filesystem on my mac,
+> would I then be able to load the file in simh as an RK05 and mount and
+> access its files and directories from a V6 instance? If I need to post
+> in the SimH list, let me know.
+> Will
+
+Yes. When we brought up the 1972 Unix kernel, I wrote a C tool to make and
+populate the filesystem as a disk image, which we could then attach to SimH.
+See mkfs.c in https://github.com/DoctorWkt/unix-jun72/tree/master/tools
+
+Cheers, Warren
+
+
+From will.senn at gmail.com  Mon Feb 22 06:45:13 2016
+From: will.senn at gmail.com (Will Senn)
+Date: Sun, 21 Feb 2016 14:45:13 -0600
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <201602211931.u1LJVQnQ021425@freefriends.org>
+References: <20160221182749.8937718C0ED@mercury.lcs.mit.edu>
+ <CAC20D2O8s_8XnCbAvxRXVJCxdgtFCW7vyzgKs_gNvf36+2PuRQ@mail.gmail.com>
+ <201602211931.u1LJVQnQ021425@freefriends.org>
+Message-ID: <56CA21D9.3030002@gmail.com>
+
+I've tried to use ancientfs, but couldn't get it to work. Other fuse 
+FSes, yes, ancientfs, no.
+
+On 2/21/16 1:31 PM, arnold at skeeve.com wrote:
+> Already been done: see http://osxbook.com/software/ancientfs/
+>
+> Arnold
+>
+> Clem Cole <clemc at ccc.com> wrote:
+>
+>> ​Will Senn asked
+>>
+>>> Supposing I created a byte faithful representation of a V6 filesystem
+>>   > on my mac, would I then be able to load the file in simh as an RK05 and
+>>>   > mount and access its files and directories from a V6 instance?
+>>>
+>> ​Not 100% sure how to parse this... but that is exactly how simh (and
+>> Ersatz11)​
+>>
+>> ​ work.
+>> You have a UNIX file on your mac and at the simh interactive command
+>> system, you "attach" it as the data for the simulated RK05.
+>> ​But it's a manual process to do the attachment AND more importantly,
+>> since Mac OSx just sees it as bits, as a minimum you need to write tools to
+>> push/pull V6 "files" from the image.  This is the same as the "DOS Tools"
+>> trick you see in a lot of UNIX systems that know how to "grok" DOS/FAT file
+>> system images.   You would need to do the same thing.  If you poke around
+>> the Warren's TUHS archives, you might find some of this already there.
+>>
+>> ​What many of us do it attach a file as a virtual disk but instead of using
+>> a UNIX file system format, use it is a tape image.   Then use tar/cpio or
+>> whatever if you already a tool on both sides that can interpret the bits.
+>> Hence, the v6tar discussion of a few weeks ago.   The UNIX ar(1) format is
+>> sometimes used also, since it was common.   cpio -c also works, but that
+>> was not on the research systems.​   My old room mate, Tom Quarles, wrote a
+>> really good ANSI tape reader/writer for BSD UNIX.  That should back port to
+>> v6 with a little work, particularly if you the "typesetter C" compiler for
+>> V6 which supported enough of the V7 C.   The advantage of the ANSI tape
+>> format is that its common with the DEC systems as well as UNIX.
+>>
+>>
+>> That said, you can be smarter and more automatic.   As Noel says Ersatz11
+>> supports a virtual shared disk (the same way VMware and Parallels) do.
+>> Writing such a device for simh would be cool and in fact useful for many
+>> different emulators.  Warning there are a lot of dragons hidden with such a
+>> shared FS.   At is definitely doable, but is going to take some work.
+>>
+>> The other thing you could do that might be a little less work, but would be
+>> Mac specific, is Mac OSX has the FUSE file system emulation that stuff that
+>> Google released.  If hacked up support for the old Unix FS, you could mount
+>> the V6 "disk" image as Mac OSx disk and see the bits with normal tools.
+>> I've thought about doing this but I have never had the time.  If I ever
+>> became a serious user of the simh, I would probably want something more
+>> like this.
+>>
+>> Clem
+
+
+
+From will.senn at gmail.com  Mon Feb 22 07:05:39 2016
+From: will.senn at gmail.com (Will Senn)
+Date: Sun, 21 Feb 2016 15:05:39 -0600
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <CAC20D2O8s_8XnCbAvxRXVJCxdgtFCW7vyzgKs_gNvf36+2PuRQ@mail.gmail.com>
+References: <20160221182749.8937718C0ED@mercury.lcs.mit.edu>
+ <CAC20D2O8s_8XnCbAvxRXVJCxdgtFCW7vyzgKs_gNvf36+2PuRQ@mail.gmail.com>
+Message-ID: <56CA26A3.20206@gmail.com>
+
+
+
+On 2/21/16 12:59 PM, Clem Cole wrote:
+>
+> ​ Will Senn asked
+>
+>     > Supposing I created a byte faithful representation of a V6 filesystem 
+>
+>      > on my mac, would I then be able to load the file in simh as an
+>     RK05 and
+>      > mount and access its files and directories from a V6 instance?
+>
+>
+> ​ Not 100% sure how to parse this... but that is exactly how simh (and 
+> Ersatz11)​
+> ​ work.
+> You have a UNIX file on your mac and at the simh interactive command 
+> system, you "attach" it as the data for the simulated RK05.
+> ​ But it's a manual process to do the attachment AND more importantly,
+> since Mac OSx just sees it as bits, as a minimum you need to write 
+> tools to push/pull V6 "files" from the image. This is the same as the 
+> "DOS Tools" trick you see in a lot of UNIX systems that know how to 
+> "grok" DOS/FAT file system images.   You would need to do the same 
+> thing. If you poke around the Warren's TUHS archives, you might find 
+> some of this already there.
+>
+> ​What many of us do it attach a file as a virtual disk but instead of 
+> using a UNIX file system format, use it is a tape image.   Then use 
+> tar/cpio or whatever if you already a tool on both sides that can 
+> interpret the bits.   Hence, the v6tar discussion of a few weeks ago. 
+>   The UNIX ar(1) format is sometimes used also, since it was common.   
+> cpio -c also works, but that was not on the research systems.​   My 
+> old room mate, Tom Quarles, wrote a really good ANSI tape 
+> reader/writer for BSD UNIX.  That should back port to v6 with a little 
+> work, particularly if you the "typesetter C" compiler for V6 which 
+> supported enough of the V7 C.   The advantage of the ANSI tape format 
+> is that its common with the DEC systems as well as UNIX.
+>
+>
+> That said, you can be smarter and more automatic.   As Noel says 
+> Ersatz11 supports a virtual shared disk (the same way VMware and 
+> Parallels) do.   Writing such a device for simh would be cool and in 
+> fact useful for many different emulators.  Warning there are a lot of 
+> dragons hidden with such a shared FS.   At is definitely doable, but 
+> is going to take some work.
+>
+> The other thing you could do that might be a little less work, but 
+> would be Mac specific, is Mac OSX has the FUSE file system emulation 
+> that stuff that Google released.  If hacked up support for the old 
+> Unix FS, you could mount the V6 "disk" image as Mac OSx disk and see 
+> the bits with normal tools.   I've thought about doing this but I have 
+> never had the time.  If I ever became a serious user of the simh, I 
+> would probably want something more like this.
+>
+> Clem
+>
+
+Thanks Clem. I know that in theory, this should be super 
+straightforward, but it seems that theory and reality are uncomfortable 
+with each other around me and this question. I've tried maybe 7 dozen 
+different approaches to getting 1bsd.tar.gz files to be accessible to v6 
+with more than a handful of files at a time. The vast majority of these 
+methods were flawed in their conception, but some "should have worked" 
+by all accounts, and yet, no joy (pun intended). I can use the paper 
+tape punch method or others to copy one file at a time, but that's 
+tedious. All of the other methods folks have suggested, I've tried, but 
+frustratingly, it just doesn't seem possible to perform the "back in the 
+day" install of 1bsd on v6:
+
+Berkeley UNIX Software Tape
+     Jan 16, 1978    TP 800BPI
+
+     To extract contents do:
+       tp xm ./setup; sh setup; tp xm
+
+     See accompanying document
+Second label on the tape:
+
+     The contents of this tape are
+     distributed to UNIX licensees
+     only, subject to the software
+     agreement you have with Western
+     Electric and an agreement with
+     the University of California.
+
+
+For example, it seems like using tar2mt on the gunzipped tarball and 
+attaching to tm0 should work, but when running tp xm on it, it fails 
+(something about directory checksum). I know the tarball is good, not so 
+sure about the mt image (tried it with default blocksize and 512 as well).
+
+In the absence of positive confirmation of someone else's successful 
+experience installing 1bsd, I backburner this problem every so often and 
+carry on with my other investigations. When someone suggests something 
+new, or I think of some new angle, I fire up the sim and try installing 
+again. Hence, my occasional queries that seem to be retreads.
+
+Now that I have more experience with the SimH simulator, PDP-11 
+architecture/programming, and success at moving files around DEC OS'es, 
+I feel oh so close to a breakthrough on this one sticky problem :). 
+Hence my latest interest in the file system. I figure if I can 
+understand the format I may be able to check the conversion of the 
+tarball to a v6 consumable filesystem and determine why it's not working.
+
+Why, oh why, didn't someone save a tape image, rather than a tarball, 
+given that tar on v6 was so hokey?!
+
+Thanks,
+
+Will
+
+
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160221/c63c3802/attachment.html>
+
+From clemc at ccc.com  Mon Feb 22 07:06:34 2016
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 21 Feb 2016 16:06:34 -0500
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <56CA21D9.3030002@gmail.com>
+References: <20160221182749.8937718C0ED@mercury.lcs.mit.edu>
+ <CAC20D2O8s_8XnCbAvxRXVJCxdgtFCW7vyzgKs_gNvf36+2PuRQ@mail.gmail.com>
+ <201602211931.u1LJVQnQ021425@freefriends.org> <56CA21D9.3030002@gmail.com>
+Message-ID: <CAC20D2NQ3F+z8OBpzmMpMPHiC1v42x3Ry+2obpqRDs1mDPCX2w@mail.gmail.com>
+
+It has not been updated since about 10.5 so I'm not surprised.
+
+On Sun, Feb 21, 2016 at 3:45 PM, Will Senn <will.senn at gmail.com> wrote:
+
+> I've tried to use ancientfs, but couldn't get it to work. Other fuse FSes,
+> yes, ancientfs, no.
+>
+>
+> On 2/21/16 1:31 PM, arnold at skeeve.com wrote:
+>
+>> Already been done: see http://osxbook.com/software/ancientfs/
+>>
+>> Arnold
+>>
+>> Clem Cole <clemc at ccc.com> wrote:
+>>
+>> ​Will Senn asked
+>>>
+>>> Supposing I created a byte faithful representation of a V6 filesystem
+>>>>
+>>>   > on my mac, would I then be able to load the file in simh as an RK05
+>>> and
+>>>
+>>>>   > mount and access its files and directories from a V6 instance?
+>>>>
+>>>> ​Not 100% sure how to parse this... but that is exactly how simh (and
+>>> Ersatz11)​
+>>>
+>>> ​ work.
+>>> You have a UNIX file on your mac and at the simh interactive command
+>>> system, you "attach" it as the data for the simulated RK05.
+>>> ​But it's a manual process to do the attachment AND more importantly,
+>>> since Mac OSx just sees it as bits, as a minimum you need to write tools
+>>> to
+>>> push/pull V6 "files" from the image.  This is the same as the "DOS Tools"
+>>> trick you see in a lot of UNIX systems that know how to "grok" DOS/FAT
+>>> file
+>>> system images.   You would need to do the same thing.  If you poke around
+>>> the Warren's TUHS archives, you might find some of this already there.
+>>>
+>>> ​What many of us do it attach a file as a virtual disk but instead of
+>>> using
+>>> a UNIX file system format, use it is a tape image.   Then use tar/cpio or
+>>> whatever if you already a tool on both sides that can interpret the bits.
+>>> Hence, the v6tar discussion of a few weeks ago.   The UNIX ar(1) format
+>>> is
+>>> sometimes used also, since it was common.   cpio -c also works, but that
+>>> was not on the research systems.​   My old room mate, Tom Quarles, wrote
+>>> a
+>>> really good ANSI tape reader/writer for BSD UNIX.  That should back port
+>>> to
+>>> v6 with a little work, particularly if you the "typesetter C" compiler
+>>> for
+>>> V6 which supported enough of the V7 C.   The advantage of the ANSI tape
+>>> format is that its common with the DEC systems as well as UNIX.
+>>>
+>>>
+>>> That said, you can be smarter and more automatic.   As Noel says Ersatz11
+>>> supports a virtual shared disk (the same way VMware and Parallels) do.
+>>> Writing such a device for simh would be cool and in fact useful for many
+>>> different emulators.  Warning there are a lot of dragons hidden with
+>>> such a
+>>> shared FS.   At is definitely doable, but is going to take some work.
+>>>
+>>> The other thing you could do that might be a little less work, but would
+>>> be
+>>> Mac specific, is Mac OSX has the FUSE file system emulation that stuff
+>>> that
+>>> Google released.  If hacked up support for the old Unix FS, you could
+>>> mount
+>>> the V6 "disk" image as Mac OSx disk and see the bits with normal tools.
+>>> I've thought about doing this but I have never had the time.  If I ever
+>>> became a serious user of the simh, I would probably want something more
+>>> like this.
+>>>
+>>> Clem
+>>>
+>>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160221/50b1e6f5/attachment.html>
+
+From clemc at ccc.com  Mon Feb 22 07:21:42 2016
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 21 Feb 2016 16:21:42 -0500
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <56CA26A3.20206@gmail.com>
+References: <20160221182749.8937718C0ED@mercury.lcs.mit.edu>
+ <CAC20D2O8s_8XnCbAvxRXVJCxdgtFCW7vyzgKs_gNvf36+2PuRQ@mail.gmail.com>
+ <56CA26A3.20206@gmail.com>
+Message-ID: <CAC20D2PqLyjyGPbwTRM8GJCW86yRufm8vOwPvSKG=j8Pd43Wcg@mail.gmail.com>
+
+On Sun, Feb 21, 2016 at 4:05 PM, Will Senn <will.senn at gmail.com> wrote:
+
+> Why, oh why, didn't someone save a tape image, rather than a tarball,
+> given that tar on v6 was so hokey?!
+
+
+​hmm - no idea.  I don't remember having had such problems to be honest.
+Maybe we can find the a tp image.   I'm sure they reason they used a tar
+image was, that tp was  more problematic​.
+
+That said, I still think the tar image should work.   Maybe the solution is
+try to compiler stp with a modern C compiler.  It will take some work to
+move it I suspect because the code would be 100% assuming PDP-11 in every
+way, and is binary.  Plus things like stat.h are a bit different than in
+the old days.   Let's take this off-line and let see what's possible.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160221/d86d9107/attachment.html>
+
+From jnc at mercury.lcs.mit.edu  Mon Feb 22 07:51:09 2016
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Sun, 21 Feb 2016 16:51:09 -0500 (EST)
+Subject: [TUHS] Unix v6 File System information
+Message-ID: <20160221215109.527F018C0F6@mercury.lcs.mit.edu>
+
+    > From: Random832
+
+    > That's the superblock. Look in ino.h.
+
+Oh, right you are. Thanks for catching my mistake! (I don't have anything
+like the same familiarity with V7 as I do with V6; never did any system
+hacking on the former.)
+
+Now that you mention it, I do seem to remember this kludge; IIRC, a later
+Unix paper described the V7 inode layout. I never looked at the actual code,
+though. Now that I do, it looks like iexpand() (in iget.c) is not exactly
+portable! On a machine with a different byte order for the bytes within a
+long, that ain't gonna work...
+
+	Noel
+
+
+From cowan at mercury.ccil.org  Mon Feb 22 03:21:01 2016
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sun, 21 Feb 2016 12:21:01 -0500
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <alpine.BSF.2.11.1602220021100.79948@aneurin.horsfall.org>
+References: <20160221114412.62D8B18C0F6@mercury.lcs.mit.edu>
+ <alpine.BSF.2.11.1602220021100.79948@aneurin.horsfall.org>
+Message-ID: <20160221172101.GH2332@mercury.ccil.org>
+
+Dave Horsfall scripsit:
+
+> Somewhere, deep within Minnie's bowels, there might be a paper that I 
+> wrote upon implementing a "bad block" system (specifically directed at the 
+> RK-05, but generally applicable to any device); it involved the hitherto- 
+> unused inode "0", to which were chained the bad blocks (added by hand).
+
+The RSX-11 file system, later known as ODS-1, was similar in this respect:
+the root directory contained entries for the bad-block file (BADBLK.SYS),
+the inode-file-equivalent (INDEXF.SYS) and even itself (000000.DIR).
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+                I am a member of a civilization. --David Brin
+
+
+From dave at horsfall.org  Mon Feb 22 11:58:35 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Mon, 22 Feb 2016 12:58:35 +1100 (EST)
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <20160221172101.GH2332@mercury.ccil.org>
+References: <20160221114412.62D8B18C0F6@mercury.lcs.mit.edu>
+ <alpine.BSF.2.11.1602220021100.79948@aneurin.horsfall.org>
+ <20160221172101.GH2332@mercury.ccil.org>
+Message-ID: <alpine.BSF.2.11.1602221223300.79948@aneurin.horsfall.org>
+
+On Sun, 21 Feb 2016, John Cowan wrote:
+
+> The RSX-11 file system, later known as ODS-1, was similar in this 
+> respect: the root directory contained entries for the bad-block file 
+> (BADBLK.SYS), the inode-file-equivalent (INDEXF.SYS) and even itself 
+> (000000.DIR).
+
+Ah, but my idea (never implemented, because disk drives got beyond ye olde 
+RK-05) was that it never appeared as a directory entry.
+
+Thus, Shell utilities would never see those blocks, and "dump" would never 
+see them either, because it "knew" that inodes started at 1...  The only 
+way you would see them was via a raw disk copy.
+
+But, as I said, times moved on from the RK-05 (and the RP-04, and other 
+air-exposed packs), thus my idea was dead.
+
+Mind you, these "IBM PC" thingie drives are pretty awful at times :-)
+
+And as for SSDs, don't ask, because they won't tell you about bad blocks; 
+they are merely quietly remapped on the side[*].
+
+[*]
+
+I've been doing a fair bit of reading on these things.  Did you know that, 
+for example, up to half the available silicon is dedicated towards the bad 
+sectors that always crop up?  And the thing won't even tell you when it 
+remaps a bad sector[#]?  It's because, amongst other things, that what you 
+and I think of as a "block" is actually a huge chunk, so one bad bit in a 
+cell could cause up to something like 64KB to be remapped.
+
+In other words, if you knew how SSDs worked, you wouldn't stake your balls 
+on them; they're just a large USB stick (and we know how cheaply they're 
+made).
+
+[#]
+
+Because the proprietary on-board controller is saying "Everything's OK, 
+boss!" whilst madly emptying a swampful of alligators.
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From norman at oclsc.org  Mon Feb 22 11:54:26 2016
+From: norman at oclsc.org (Norman Wilson)
+Date: Sun, 21 Feb 2016 20:54:26 -0500 (EST)
+Subject: [TUHS] Unix v6 File System information
+Message-ID: <20160222015426.DDFE944229@lignose.oclsc.org>
+
+Sometime back before the turn of the century, I remember
+writing up a summary of the evolution of the UNIX file
+system, starting with the earliest system I could find
+information for (possibly the PDP-7 system) and running
+through the printed manuals as things changed, up to
+the Seventh Edition.
+
+I think I've found it; I'll look it over and try to put
+it somewhere on the web in the next day or two.
+
+Norman Wilson
+Toronto ON
+
+
+From wkt at tuhs.org  Mon Feb 22 12:20:57 2016
+From: wkt at tuhs.org (Warren Toomey)
+Date: Mon, 22 Feb 2016 12:20:57 +1000
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <56CA26A3.20206@gmail.com>
+References: <20160221182749.8937718C0ED@mercury.lcs.mit.edu>
+ <CAC20D2O8s_8XnCbAvxRXVJCxdgtFCW7vyzgKs_gNvf36+2PuRQ@mail.gmail.com>
+ <56CA26A3.20206@gmail.com>
+Message-ID: <20160222022057.GA3850@minnie.tuhs.org>
+
+On Sun, Feb 21, 2016 at 03:05:39PM -0600, Will Senn wrote:
+>    Why, oh why, didn't someone save a tape image, rather than a tarball,
+>    given that tar on v6 was so hokey?!
+>    Thanks,
+>    Will
+
+In http://www.tuhs.org/Archive/PDP-11/Tools/Tapes/
+there are tools that I and other wrote to create
+tape images: tp etc.
+
+So you could do:
+
+	tar vxf 1bsd.tar
+	tp tool to build a tp image
+	mktap to build a SimH tap image
+	attach to SimH
+	PROFIT!!
+
+So sorry, I couldn't stop myself.
+
+Cheers, Warren
+
+
+From lyndon at orthanc.ca  Mon Feb 22 12:32:44 2016
+From: lyndon at orthanc.ca (Lyndon Nerenberg)
+Date: Sun, 21 Feb 2016 18:32:44 -0800
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <alpine.BSF.2.11.1602221223300.79948@aneurin.horsfall.org>
+References: <20160221114412.62D8B18C0F6@mercury.lcs.mit.edu>
+ <alpine.BSF.2.11.1602220021100.79948@aneurin.horsfall.org>
+ <20160221172101.GH2332@mercury.ccil.org>
+ <alpine.BSF.2.11.1602221223300.79948@aneurin.horsfall.org>
+Message-ID: <B64E64BD-5B55-4AE3-8377-20E2152A5FFC@orthanc.ca>
+
+
+> On Feb 21, 2016, at 5:58 PM, Dave Horsfall <dave at horsfall.org> wrote:
+> 
+> Because the proprietary on-board controller is saying "Everything's OK, 
+> boss!" whilst madly emptying a swampful of alligators.
+
+This is no different from any "SMART" rusty drive.
+
+
+From lm at mcvoy.com  Mon Feb 22 13:02:22 2016
+From: lm at mcvoy.com (Larry McVoy)
+Date: Sun, 21 Feb 2016 19:02:22 -0800
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <20160222015426.DDFE944229@lignose.oclsc.org>
+References: <20160222015426.DDFE944229@lignose.oclsc.org>
+Message-ID: <20160222030222.GA26923@mcvoy.com>
+
+I did some work on the Unix file system:
+
+http://www.sunhelp.org/history/pdf/unix_filesys_extent_like_perf.pdf
+
+I spent a lot of time in bmap and it's amazing how much of the original
+design still was there after BSD and Sun.  I diffed the code, bmap was
+pretty much bmap after all those years.
+
+On Sun, Feb 21, 2016 at 08:54:26PM -0500, Norman Wilson wrote:
+> Sometime back before the turn of the century, I remember
+> writing up a summary of the evolution of the UNIX file
+> system, starting with the earliest system I could find
+> information for (possibly the PDP-7 system) and running
+> through the printed manuals as things changed, up to
+> the Seventh Edition.
+> 
+> I think I've found it; I'll look it over and try to put
+> it somewhere on the web in the next day or two.
+> 
+> Norman Wilson
+> Toronto ON
+
+-- 
+---
+Larry McVoy            	     lm at mcvoy.com             http://www.mcvoy.com/lm 
+
+
+From wkt at tuhs.org  Mon Feb 22 17:27:53 2016
+From: wkt at tuhs.org (Warren Toomey)
+Date: Mon, 22 Feb 2016 17:27:53 +1000
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <2D41A491-40CD-41DB-B3BA-0ACBD831E2C7@gmail.com>
+References: <20160221182749.8937718C0ED@mercury.lcs.mit.edu>
+ <CAC20D2O8s_8XnCbAvxRXVJCxdgtFCW7vyzgKs_gNvf36+2PuRQ@mail.gmail.com>
+ <56CA26A3.20206@gmail.com> <20160222022057.GA3850@minnie.tuhs.org>
+ <2D41A491-40CD-41DB-B3BA-0ACBD831E2C7@gmail.com>
+Message-ID: <20160222072753.GA22194@minnie.tuhs.org>
+
+On Sun, Feb 21, 2016 at 09:21:14PM -0600, Will Senn wrote:
+> Thanks for the link. The tools look useful. But, they appear to be extract from tape rather than create tape utils? I am away from a computer but will try them out later to make sure.
+
+
+No, my bad. I thought they would make tapes, but I read the Readme files
+and it doesn't look so. You could modify the mkfs.c tool that I wrote at
+https://github.com/DoctorWkt/unix-jun72/blob/master/tools/mkfs.c
+to write V6 filesystems. It shouldn't be too hard.
+
+Cheers, Warren
+
+
+From dot at dotat.at  Mon Feb 22 22:30:41 2016
+From: dot at dotat.at (Tony Finch)
+Date: Mon, 22 Feb 2016 12:30:41 +0000
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <B64E64BD-5B55-4AE3-8377-20E2152A5FFC@orthanc.ca>
+References: <20160221114412.62D8B18C0F6@mercury.lcs.mit.edu>
+ <alpine.BSF.2.11.1602220021100.79948@aneurin.horsfall.org>
+ <20160221172101.GH2332@mercury.ccil.org>
+ <alpine.BSF.2.11.1602221223300.79948@aneurin.horsfall.org>
+ <B64E64BD-5B55-4AE3-8377-20E2152A5FFC@orthanc.ca>
+Message-ID: <alpine.LSU.2.00.1602221226300.11434@hermes-2.csi.cam.ac.uk>
+
+Lyndon Nerenberg <lyndon at orthanc.ca> wrote:
+> > On Feb 21, 2016, at 5:58 PM, Dave Horsfall <dave at horsfall.org> wrote:
+> >
+> > Because the proprietary on-board controller is saying "Everything's OK,
+> > boss!" whilst madly emptying a swampful of alligators.
+>
+> This is no different from any "SMART" rusty drive.
+
+The SMART diagnostics data ought to tell you about reallocated sectors,
+and apparently this is actually useful in practice.
+
+https://www.backblaze.com/blog/hard-drive-smart-stats/
+
+Tony.
+-- 
+f.anthony.n.finch  <dot at dotat.at>  http://dotat.at/
+Trafalgar: Easterly or northeasterly 4 or 5, becoming variable 3 or 4 at
+times. Moderate or rough, but smooth or slight in shelter in far southeast.
+Occasional rain. Moderate or good, occasionally poor.
+
+
+From ron at ronnatalie.com  Mon Feb 22 23:10:00 2016
+From: ron at ronnatalie.com (ron at ronnatalie.com)
+Date: Mon, 22 Feb 2016 08:10:00 -0500 (EST)
+Subject: [TUHS] Unix v6 File System information
+In-Reply-To: <20160221175008.13FB518C0ED@mercury.lcs.mit.edu>
+References: <20160221175008.13FB518C0ED@mercury.lcs.mit.edu>
+Message-ID: <50048.74.96.165.246.1456146600.squirrel@webmail.tuffmail.net>
+
+>     > From: Random832
+>
+>     > They're 24 bits, aren't they?
+>
+Yes, you're right.   V6 file length 24 bits, V6 block index 16
+V7 added 8 bits to both.
+
+
+
+
+From wkt at tuhs.org  Fri Feb 26 05:56:23 2016
+From: wkt at tuhs.org (Warren Toomey)
+Date: Fri, 26 Feb 2016 05:56:23 +1000
+Subject: [TUHS] Transcribing and simulating PDP-7 Unix
+In-Reply-To: <CAAFR5pZXe2Oy8Pv_K_SPNnZrU2+jtBtDwx+gGx=RcRDfRk9Umw@mail.gmail.com>
+References: <CAAFR5pZXe2Oy8Pv_K_SPNnZrU2+jtBtDwx+gGx=RcRDfRk9Umw@mail.gmail.com>
+Message-ID: <20160225195623.GA5857@minnie.tuhs.org>
+
+On Thu, Feb 25, 2016 at 01:43:03PM -0500, Robert Swierczek wrote:
+>    Do you know if anybody has taken up the challenge of transcribing and
+>    simulating the PDP-7 Unix source code you have uncovered in your
+>    post http://minnie.tuhs.org/pipermail/tuhs/2016-February/006622.html
+>    If not, I would love to get started on it as a project.
+
+Hi Robert, yes there is a project underway to type it all in and bring it
+up on SimH and hopefully on a real PDP-7. I've set up a mailing list for
+the project, so let me know if you would like to join: I'll add you.
+
+The repository is at https://github.com/DoctorWkt/pdp7-unix. I've started
+on the S1 section (in scans/), and I've also started work on an assembler
+and a user-mode simulator (in tools/)
+
+Norman Wilson is going to try and get us some higher quality scans which
+will help a great deal in deciphering some of the hard to read characters.
+
+Cheers, Warren
+
+
+From doug at cs.dartmouth.edu  Fri Feb 26 14:21:06 2016
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Thu, 25 Feb 2016 23:21:06 -0500
+Subject: [TUHS] Transcribing and simulating PDP-7 Unix
+Message-ID: <201602260421.u1Q4L6P6026620@tahoe.cs.Dartmouth.EDU>
+
+> Norman Wilson is going to try and get us some higher quality scans which
+will help a great deal in deciphering some of the hard to read characters.
+
+A second scan, high or low quality, is a tremendous help. Diffing them
+is a really good way to spot trouble.
+
+Doug
+
+

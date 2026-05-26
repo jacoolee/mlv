@@ -1,0 +1,2529 @@
+From jnc at mercury.lcs.mit.edu  Thu Oct  1 03:58:17 2020
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Wed, 30 Sep 2020 13:58:17 -0400 (EDT)
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+Message-ID: <20200930175817.4575B18C0B2@mercury.lcs.mit.edu>
+
+    > From: Paul Riley
+
+    > Can you clarify something for me regarding memory? I understand the
+    > bottom area of memory in a Unix system is for the Kernel and it's stuff,
+    > and that the top 8kB is set aside for device I/O
+
+Well, technically, the top 8KB of _address space_, not of memory - it's mostly
+used for device registers, etc. Here:
+
+  http://gunkies.org/wiki/Unix_V6_kernel_memory_layout
+
+is a bit more detail on how the memory is laid out.
+
+    > The LSI-11 board has 4kW of RAM on it, and I have already a 16KW
+    > board. If I want to further expand the RAM, and say I buy another 16kW
+    > board, that makes an arithmetic sum of 32kW for the boards, making 36kW
+    > total. Can the 4kW of on-board RAM be disabled, and only the 32kW on
+    > the boards be used?
+
+Yeah, if you look at LSI-11 documentation, there are jumpers that allow
+configuration of the on-board memory. Depending on the etch revision; for my F
+revision, jumper W11 (at the top, towards the handle edge, in the middle of
+that edge; just below the W1/W2 jumper pair) should be out to disable the
+on-board memory.
+
+Or you could configure the two 32KB boards to be at 020000 and 0120000; there
+will be 72KB of memory total on the QBUS, but the LSI-11 CPU (no memory
+management) will only be able to 'see' the bottom 56KB.
+
+
+    > Is it ok for the installed RA mto overlap the 8kW at the high memory
+    > area?
+
+Yeah, what the CPU sees as the I/O page (at 0160000-0177776 in its address
+space) is actually at 0760000-0777776 on the QBUS (on a Q18 QBUS); the CPU
+automagically translates the 0160000-0177776 addresses up. On a PDP-11
+with memory management, the MMU has to be set up to do that. E.g. in V6,
+in:
+
+  https://minnie.tuhs.org//cgi-bin/utree.pl?file=V6/usr/sys/conf/m40.s
+
+there is the following code:
+
+  / initialize io segment
+
+  mov $IO,(r0)+
+  mov $77406,(r1)+		/ rw 4k
+
+to set the I/O page in kernel address space to point to the I/O page on the
+bus.
+
+	Noel
+
+From jnc at mercury.lcs.mit.edu  Thu Oct  1 04:51:20 2020
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Wed, 30 Sep 2020 14:51:20 -0400 (EDT)
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+Message-ID: <20200930185120.8E91A18C0B2@mercury.lcs.mit.edu>
+
+    > It is definite, though, that Q22 memory won't work with an LSI-11/2
+    > (M7270) ...  I'll try an LSI-11 (M7264) tomorrow, make sure it's the
+    > same; it and the LSI-11/2 are similar enough that it should, but it'd be
+    > good to confirm it.
+
+Yes, it too won't work with Q22 memory (tried it, no go - ODT won't even start).
+
+
+    > Then back to trying to work out why Mini-Unix is so fragile for me.
+
+I tried some changes in the simulator set-up, to see if that would fix my
+issue; no luck.
+
+It's quite problematic: if I boot Mini-Unix on a clean copy of the RK pack, cd
+to /usr/sys/dev, cp kl.c to nkl.c, and 'cc -c nlk.c', Mini-Unix reliably
+restarts (trashing the disk in the process). (If I omit the 'cp', I can 'cc -c
+kl.c' 3 times, and Mini-Unix restarts on the third.) Something's seriously
+wrong.
+
+I think before I try debugging it directly, I'll try one of the other
+Mini-Unix repositories; the one I've been using (from Bob Eager's site) may
+have some bit-rot.
+
+
+    > From: Paul Riley <paul at rileyriot.com>
+
+    > I'm checking with Peter Schranz about whether or not his RLV12/RL02
+    > boards can run on the '03.
+
+Dave Bridgham and I discussed whether the QSIC would work with an -11/03, and
+that analysis should apply equally to the RLV12. Our conclusion was that it
+should; here's our reasoning:
+
+The device registers on the board should work fine on either Q18 or
+Q22. That's because when going to the I/O page, the CPU asserts a special bus
+line, BBS7 (that says 'this cycle is to the I/O page'). The device doesn't
+look at the higher address lines when that's on, just BDAL00-12; so if the
+LSI-11 is messing with some of BDAL181-21, it shouldn't matter.
+
+For DMA cycles from the device to memory, since the CPU requires Q18 memory
+to work, the device too should be able to read/write to Q18 memory. At least,
+that's our theory.
+
+
+I guess all this PDP-11 hardware detail isn't really on-topic for this list; I
+should move it to Classic Computers, or something. Sorry all; it's
+intermingled with early Unix stuff, and it was easier to keep it all in one
+place.
+
+	Noel
+
+From dds at aueb.gr  Thu Oct  1 07:04:27 2020
+From: dds at aueb.gr (Diomidis Spinellis)
+Date: Thu, 1 Oct 2020 00:04:27 +0300
+Subject: [TUHS] Bell Labs January 1968 Organizational Directory
+Message-ID: <b939094e-8220-0073-f394-bb3634d0fbe4@aueb.gr>
+
+David C. Brock posted on Twitter links to the Bell Labs January 1968 
+Organizational Directory scans.  The Research, Communications Sciences 
+Division is available at 
+https://drive.google.com/file/d/171jywFyIDyyWUMX4jYl3Czblqe5VGX2q/view
+
+In it the Computing Science Research Center appears on tab 13, page 15 
+(PDF page 6).  Most of the names are very familiar to members of this 
+list; some are even posting here.
+
+Diomidis - https://www.spinellis.gr
+
+From robpike at gmail.com  Thu Oct  1 07:19:22 2020
+From: robpike at gmail.com (Rob Pike)
+Date: Thu, 1 Oct 2020 07:19:22 +1000
+Subject: [TUHS] Bell Labs January 1968 Organizational Directory
+In-Reply-To: <b939094e-8220-0073-f394-bb3634d0fbe4@aueb.gr>
+References: <b939094e-8220-0073-f394-bb3634d0fbe4@aueb.gr>
+Message-ID: <CAKzdPgy2ixcRv3eukb5J0NKeLshdOqLiv3iNakpL6duAJJM6Og@mail.gmail.com>
+
+Sam Morgan was our boss, but by the time I joined it was 127 not 137.
+Perhaps Doug McIlroy can explain the reassignment.
+
+When I was a grad student (physics), pretty much every prof had a Bell
+Labs Research directory on the shelf, for when you needed answers.
+Half of them had probably done post-docs there.
+
+-rob
+
+On Thu, Oct 1, 2020 at 7:13 AM Diomidis Spinellis <dds at aueb.gr> wrote:
+>
+> David C. Brock posted on Twitter links to the Bell Labs January 1968
+> Organizational Directory scans.  The Research, Communications Sciences
+> Division is available at
+> https://drive.google.com/file/d/171jywFyIDyyWUMX4jYl3Czblqe5VGX2q/view
+>
+> In it the Computing Science Research Center appears on tab 13, page 15
+> (PDF page 6).  Most of the names are very familiar to members of this
+> list; some are even posting here.
+>
+> Diomidis - https://www.spinellis.gr
+
+From jnc at mercury.lcs.mit.edu  Thu Oct  1 09:16:33 2020
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Wed, 30 Sep 2020 19:16:33 -0400 (EDT)
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+Message-ID: <20200930231633.B780418C0BE@mercury.lcs.mit.edu>
+
+    > I think before I try debugging it directly, I'll try one of the other
+    > Mini-Unix repositories; the one I've been using (from Bob Eager's site)
+    > may have some bit-rot.
+
+Well, foo, the one from TUHS has the same symptom: random re-starts. Looks
+like I'm going to have to actually debug this.
+
+I guess the first step is to work out how the re-start is happening; I suspect
+it's not a trap (I'll check, but I think Mini-Unix catches them all). My best
+guess is a jump to 0 (somehow); if so, that should be easy to catch. Then the
+next thing is to try and work out where/how/why that is happening.
+
+Following a suggestion of Warner Losh, I think there's a good idea on how to
+make progress, which is to mount the Mini-unix pack under V6 (running on a
+simulator); that's rock-solid - and the V6 tool-chain can be used to build
+Mini-Unix binaries.
+
+And here I thought it was going to be easy to convert Mini-unix to run on
+an -11/03. Well, it still might - if I can get Mini-Unix to run reliably!
+
+   Noel
+
+
+From jnc at mercury.lcs.mit.edu  Thu Oct  1 22:51:18 2020
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Thu,  1 Oct 2020 08:51:18 -0400 (EDT)
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+Message-ID: <20201001125118.DDBBC18C0EB@mercury.lcs.mit.edu>
+
+    > From: Paul Riley
+
+    > So mounting Mini-Unix on a running V6 system I guess allows you to run
+    > Mini-Unix user mode binaries stuff
+
+Ah, no. They are all link-loaded to run at TOPSYS (060000), so won't run on
+V6 native. 
+
+    > Or do you plan to recompile on a stable system?
+
+Well, I need to find out what the problem is, first.
+
+
+Still, notable progress: using my 'mount the Mini-Unix RK pack on a V6 system'
+hack (which woked fine; the native V6 'icheck' and 'dcheck' work on that
+pack), I was able to sucessfully compile a few tweaked system modules (to get
+my usual line-editing chars, and turn off that irritating lower-case mode),
+and then build an OS load which could sucessfully boot. So good progress
+there. A couple of things I learned:
+
+- MiniUnix tools use the 'new' archive format, so the V6 vanilla 'ar' doen't
+grok MiniUnix archives (e.g. lib1/lib2). I have a 'nar', which I found on the
+'Shoppa disks', which can deal with them. (We don't have source for it, but
+I'll bet the MIT PWB1 system has that; I'll get to that eventuallly. There's also
+an 'ar.c' on the MiniUnix disk; between the two, we'll be able to reconstitute
+source for 'nar'.)
+
+- Also, the vanilla V6 linker, 'ld', _also_ doesn't understand new archives;
+so the shell file to build a new system, 'shld':
+
+  ld -a -x low.o conf.o lib1 lib2
+
+blows out because it doesn't grok the libraries. Also, the '-a' flag, which
+says 'link starting at 0, not TOPSYS', doesn't exist in the V6 'ld'.
+
+I got around all that by unpacking lib1 (using 'nar', above) - it only contains
+two files - and then listing the files to link directly:
+
+  ld -x low.o conf.o syso emulo dev/kl.o dev/devstart.o dev/rk.o
+
+The vanilla V6 linker of course produces an output linked at 0 without
+the -a flag.
+
+
+At some point, I'll produce a 'MiniUnix ld' on vanilla V6, so I can build
+MiniUnix versions of applications there; the first will be the shell, so I
+don't have to keep typing 'chdir' instead of 'cd'! :-)
+
+Then on to trying to find out why MiniUnix crashes whenever I try and do
+anything significant.
+
+       Noel
+
+From paul at rileyriot.com  Fri Oct  2 10:23:43 2020
+From: paul at rileyriot.com (Paul Riley)
+Date: Fri, 2 Oct 2020 08:23:43 +0800
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+In-Reply-To: <20201001125118.DDBBC18C0EB@mercury.lcs.mit.edu>
+References: <20201001125118.DDBBC18C0EB@mercury.lcs.mit.edu>
+Message-ID: <CAD05_j0QxT1xn7w-9DT7u5WTOWmeib+HQviVg0mTueNKy+RBvw@mail.gmail.com>
+
+Seems like you're firmly in the footsteps of the creators now... :-)
+
+*Paul Riley*
+
+Mo: +86 186 8227 8332
+Email: paul at rileyriot.com
+
+
+
+On Thu, 1 Oct 2020 at 20:52, Noel Chiappa <jnc at mercury.lcs.mit.edu> wrote:
+
+>     > From: Paul Riley
+>
+>     > So mounting Mini-Unix on a running V6 system I guess allows you to
+> run
+>     > Mini-Unix user mode binaries stuff
+>
+> Ah, no. They are all link-loaded to run at TOPSYS (060000), so won't run on
+> V6 native.
+>
+>     > Or do you plan to recompile on a stable system?
+>
+> Well, I need to find out what the problem is, first.
+>
+>
+> Still, notable progress: using my 'mount the Mini-Unix RK pack on a V6
+> system'
+> hack (which woked fine; the native V6 'icheck' and 'dcheck' work on that
+> pack), I was able to sucessfully compile a few tweaked system modules (to
+> get
+> my usual line-editing chars, and turn off that irritating lower-case mode),
+> and then build an OS load which could sucessfully boot. So good progress
+> there. A couple of things I learned:
+>
+> - MiniUnix tools use the 'new' archive format, so the V6 vanilla 'ar'
+> doen't
+> grok MiniUnix archives (e.g. lib1/lib2). I have a 'nar', which I found on
+> the
+> 'Shoppa disks', which can deal with them. (We don't have source for it, but
+> I'll bet the MIT PWB1 system has that; I'll get to that eventuallly.
+> There's also
+> an 'ar.c' on the MiniUnix disk; between the two, we'll be able to
+> reconstitute
+> source for 'nar'.)
+>
+> - Also, the vanilla V6 linker, 'ld', _also_ doesn't understand new
+> archives;
+> so the shell file to build a new system, 'shld':
+>
+>   ld -a -x low.o conf.o lib1 lib2
+>
+> blows out because it doesn't grok the libraries. Also, the '-a' flag, which
+> says 'link starting at 0, not TOPSYS', doesn't exist in the V6 'ld'.
+>
+> I got around all that by unpacking lib1 (using 'nar', above) - it only
+> contains
+> two files - and then listing the files to link directly:
+>
+>   ld -x low.o conf.o syso emulo dev/kl.o dev/devstart.o dev/rk.o
+>
+> The vanilla V6 linker of course produces an output linked at 0 without
+> the -a flag.
+>
+>
+> At some point, I'll produce a 'MiniUnix ld' on vanilla V6, so I can build
+> MiniUnix versions of applications there; the first will be the shell, so I
+> don't have to keep typing 'chdir' instead of 'cd'! :-)
+>
+> Then on to trying to find out why MiniUnix crashes whenever I try and do
+> anything significant.
+>
+>        Noel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20201002/66f5354c/attachment.htm>
+
+From jnc at mercury.lcs.mit.edu  Fri Oct  2 10:39:00 2020
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Thu,  1 Oct 2020 20:39:00 -0400 (EDT)
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+Message-ID: <20201002003900.AB3DB18C101@mercury.lcs.mit.edu>
+
+    > At some point, I'll produce a 'MiniUnix ld' on vanilla V6, so I can
+    > build MiniUnix versions of applications there; the first will be the
+    > shell, so I don't have to keep typing 'chdir' instead of 'cd'! :-)
+
+OK, that was pretty smooth. I now have (on the main V6 system) a linker in
+V6 binary form that outputs MX binary files, so I can do things like:
+
+  mld sh.o /mnt/lib/lib[ca].a
+
+to produce a new shell (which worked fine). (I think to build 'mld' all I
+had to do was 'cc ld.c', in usr/sys/source on the MX disk.)
+
+This whole 'futz with MX by mounting the MX disk under V6' thing works really
+well.
+
+
+    > Then on to trying to find out why MiniUnix crashes whenever I try and do
+    > anything significant.
+
+I decided I wasn't up to tackling that, so instead I did all the edits to
+produce an LSI-11 version of MX. Doesn't boot, though; tries to do a panic, I
+think. I'm too burned out to keep going, I will continue tomorrow morning (US
+East Coast time).
+
+Once I get it running, before I make it available for download, I need to go
+back and put conditional assembly flags in mch.s so there's only one source
+file for both kinds of system; I had originally planned on doing that, but I
+was in such a 'code attack' mode I forgot all about it.
+
+    Noel
+
+
+From sebras at gmail.com  Mon Oct  5 19:23:57 2020
+From: sebras at gmail.com (Sebastian Rasmussen)
+Date: Mon, 5 Oct 2020 11:23:57 +0200
+Subject: [TUHS] Status of Space Travel
+In-Reply-To: <CAAgDR1Pxg8WnfDetTTcfmp7_LCrJt0ftNvGtnzrbf5y3wOXxeg@mail.gmail.com>
+References: <CANCZdfq4F86PgGynZWGAhi7yPZ_7o8KQvEe6PXn2QSpumL6FRA@mail.gmail.com>
+ <CAAgDR1M8ct_8ySMTnr-+7KvKGiE0OoKZG9L6pgHqhO+_kL9BnA@mail.gmail.com>
+ <CAAgDR1Pxg8WnfDetTTcfmp7_LCrJt0ftNvGtnzrbf5y3wOXxeg@mail.gmail.com>
+Message-ID: <CAAgDR1NadvmmdA3NGXAzOagueruMCd95No5wSThMPpx1SxJndQ@mail.gmail.com>
+
+Hi Warner!
+
+> > It currently starts and draws a screen for a brief second in the
+emulator before
+> > crashing back to the prompt, so something is amiss.
+
+Yesterday I was able to fix the crash. Is this the first time
+Space Travel has been playable since 1969 or the 70s?
+
+Lars Brinkhoff implemented the GRAPHIC-2 emulation for
+SimH. By using the F1-F8 buttons on the emulated GRAPHIC-2
+I can rotate and zoom the solar system map, but I don't yet
+know how to play! :)
+
+I don't have a youtube channel, but I did a screen recording:
+http://sebras.se/space-travel-2.mp4
+
+In case that doesn't work, here is a single screenshot:
+http://sebras.se/space-travel-2.png
+
+I have sent the changes needed to make Space Travel run as a pull
+request to the pdp7-unix project, hoping for them to be merged.
+https://github.com/DoctorWkt/pdp7-unix/pull/224
+https://github.com/DoctorWkt/pdp7-unix/pull/225
+
+   / Sebastian
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20201005/f847bdcd/attachment.htm>
+
+From arnold at skeeve.com  Tue Oct  6 01:23:54 2020
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Mon, 05 Oct 2020 09:23:54 -0600
+Subject: [TUHS] off-topic: Nominating Chet Ramey for USENIX flame award
+Message-ID: <202010051523.095FNs8V023246@freefriends.org>
+
+Hi All.
+
+I know this is off topic, but this list is full of the people who
+can help me with this.
+
+I'd like to nomimate Chet Ramey for the USENIX lifetime achievement
+award (yes, he's aware).  I need 2-4 letters of support for this;
+anyone who agrees that he deserves it should send me such a letter,
+please (PDF, I guess) and I'll send in the whole package.  See the
+details below.
+
+The deadline is October 19; please send a letter sooner rather
+than later.
+
+Let's start by sending me "yes, I'll write a letter" and then if
+there are lots, I'll pick four.
+
+PLEASE reply directly to me; no need to inundate TUHS with mail
+on this.
+
+Thanks,
+
+Arnold
+
+> Date: Wed, 30 Sep 2020 16:00:19 -0700 (PDT)
+> From: Casey Henderson <casey.henderson at usenix.org>
+> To: Arnold Robbins <arnold at skeeve.com>
+> Subject: Call for Nominations for the USENIX Lifetime Achievement Award
+>
+> Dear Arnold:
+>
+> USENIX offers several awards that recognize public service and technical
+> excellence in the fields, including the USENIX Lifetime Achievement Award
+> ("The Flame"): https://www.usenix.org/about/flame
+> 
+> The Flame recognizes and celebrates singular contributions to the USENIX
+> community of both intellectual achievement and service that are not
+> recognized in any other forum. Please consider nominating a deserving
+> colleague!
+>
+> We invite you to submit nominations for USENIX's awards at any
+> time. However, to help us offer the award this year, we strongly encourage
+> nominations for The Flame by October 19.
+>
+> A nomination should include:
+> *Name and contact information of the person making the nomination
+> *Name(s) and contact information of the nominee(s)
+> *A citation, approximately 100 words long
+> *A statement, at most one page long, on why the candidate(s) should receive the award
+> *Between two and four supporting letters, no longer than one page each
+>
+> Please submit your nominations to the Awards Committee via awards at usenix.org.
+>
+> Best Wishes,
+> Casey Henderson
+> Executive Director
+> USENIX Association
+
+From coppero1237 at gmail.com  Tue Oct  6 19:53:25 2020
+From: coppero1237 at gmail.com (Tyler Adams)
+Date: Tue, 6 Oct 2020 12:53:25 +0300
+Subject: [TUHS] Origins of globbing
+Message-ID: <CAEuQd1ArwELtQH=+KAoQ4CAjTjFg2Dvu5ca1p8mttsPZwO3XFw@mail.gmail.com>
+
+How did globbing come about in unix?
+
+Related, as regexes were already well known because of qed/ed, why wasn't a
+subset of regular expressions used instead?
+
+ Tyler
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20201006/8378627b/attachment.htm>
+
+From jnc at mercury.lcs.mit.edu  Wed Oct  7 00:46:48 2020
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Tue,  6 Oct 2020 10:46:48 -0400 (EDT)
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+Message-ID: <20201006144648.773F918C0C4@mercury.lcs.mit.edu>
+
+    >> Then on to trying to find out why MiniUnix crashes whenever I try and do
+    >> anything significant.
+
+    > I decided I wasn't up to tackling that, so instead I did all the edits
+    > to produce an LSI-11 version of MX. ... I need to go
+    > back and put conditional assembly flags in mch.s so there's only one
+    > source file for both kinds of system. Doesn't boot, though.
+
+So this has turned into a big swamp.
+
+I went back and did the conditionals, and I can turn off the -11/03 flag and
+produce the identical binary to the original mch.o file. -11/05 systems built
+with that still won't boot, though!
+
+So I had made some minor changes elsewhere in the system; e.g. a few files
+(bio.c, clock.c, slp.c, and tty.c) refer the the PS explicitly (a no-no in the
+-11/03) so I changed them all to call getps() and putps(), and added /05
+versions of those to mch.s; so I backed them out, and re-built the system
+using the original binaries of those; _still_ won't boot.
+
+I then tried the original 'rkmx', and that _does_ boot; so there's no
+mysterious damage to the file system. But now I'm deeply puzzled, since the
+new system (which won't boot) should be basically identical (OK, not
+bit-for-bit identical, but close).
+
+
+So then I started trying to see why the new /05 system won't boot; the exec()
+call in process 1 that starts /etc/init seems to be failing. Digging into
+that, the call to namei() (in sys1$exec()) seems to be failing? Huh? The
+file-system is OK (see above)?
+
+So I'm trying to work out how that is happening. Which is non-trivial;
+namei() is pretty convoluted. I can deal with the fact that there are two
+nested loops using goto's (not the best form, but I can grok it), but then I
+run into things like this:
+
+     for(cp = &u.u_dbuf[0]; cp < &u.u_dbuf[DIRSIZ]; cp++)
+	 if(*cp != cp[u.u_dent.u_name - u.u_dbuf])
+
+Check out that second line! (And Heinz didn't touch it; this copy is from the
+V6 source.) I'm not sure I 100% grok it, but I think I get roughly what it's
+doing: 'cp' seems to be a (moving) pointer into the filename being matched,
+and the term inside the []'s seems to be an offset from there into the copy of
+the current directory entry in the 'u' structure. (Which is a constant, it
+doesn't need to be recomputed each time around the loop, though.) It seems to
+check most of the (wrong) directory entries OK, but then inexplicably (to me)
+fails.
+
+
+At this point I'm getting a bad feeling that there could be a sim issue; that
+could also explain the problem I'm seeing with the crashes, when trying to run
+'cc' under the as-distributed -11/05 version.`
+
+I'm not a SIMH user, though (I'm an Ersatz-11 person); is there anyone who is,
+who'd like to play with MiniUnix with me?
+
+	Noel
+
+From cowan at ccil.org  Wed Oct  7 01:17:58 2020
+From: cowan at ccil.org (John Cowan)
+Date: Tue, 6 Oct 2020 11:17:58 -0400
+Subject: [TUHS] Origins of globbing
+In-Reply-To: <CAEuQd1ArwELtQH=+KAoQ4CAjTjFg2Dvu5ca1p8mttsPZwO3XFw@mail.gmail.com>
+References: <CAEuQd1ArwELtQH=+KAoQ4CAjTjFg2Dvu5ca1p8mttsPZwO3XFw@mail.gmail.com>
+Message-ID: <CAD2gp_QmPMYiWrRN+RvaF+4VyXfTZLn-oWZ_gg3Rs3LAVswzWA@mail.gmail.com>
+
+On Tue, Oct 6, 2020 at 5:54 AM Tyler Adams <coppero1237 at gmail.com> wrote:
+
+How did globbing come about in unix?
+>
+
+It's been present at least since the PDP-11 migration. The Thompson shell,
+used in the 1st through 6th Editions, used a separate program called
+/etc/glob to do the dirty work, presumably in order to keep /bin/sh as
+small as possible. Unfortunately, glob never got its own man page, so its
+protocol for communicating with the shell is lost, unless someone remembers
+it and writes it down (hint, hint).
+
+Related, as regexes were already well known because of qed/ed, why wasn't a
+> subset of regular expressions used instead?
+>
+
+The use of * and ?  along with file extensions preceded by dot (as in ".c"
+and ".o") are, or so it seems to me, an inheritance from the DEC operating
+systems, starting with Monitor (later called TOPS-10) in 1964 and going
+right through OpenVMS.  In the file systems used by those OSes, the
+"filename" (typically up to 6 characters) and the "extension" (typically up
+to 3 characters) were stored separately both on disk and in memory, and the
+separating dot was parsed by user programs before invoking the appropriate
+kernel routine.  (That is why it is still true in WIndows that "foo" and
+"foo." refer to the same file.)
+
+Because dot was not in any way magic to the Unix file system, and because
+file names were limited to 14 characters, extensions were kept short.
+However, the path that leads from DEC OSes to CP/M to MS-DOS to Windows has
+kept the 3-letter extension alive, and we now see plenty of it in
+Unix-style OSes.  Thus using dot to mean "any character" would seriously
+collide with this well-established usage as the extension separator.
+
+Globbing was uninterpreted by the shell-equivalent in the DEC OSes, and was
+understood only by a few programs, those responsible for listing
+directories and copying, renaming, and deleting files.  Universal globbing
+in the shell was AFAIK original with Unix, though Prime Computer's PRIMOS
+also had it and may have been earlier by a year or two.  "It steam-engines
+when it comes steam-engine time."  Both were direct descendants of Multics;
+I have not been able to find out anything about
+
+TIL that GNU find(1) supplements the standard -name option (which globs
+against the filename) with -regex (which matches the regex against the
+whole path).
+
+
+
+John Cowan          http://vrici.lojban.org/~cowan        cowan at ccil.org
+The Imperials are decadent, 300 pound free-range chickens (except they have
+teeth, arms instead of wings, and dinosaurlike tails).  --Elyse Grasso
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20201006/042de9d1/attachment.htm>
+
+From jnc at mercury.lcs.mit.edu  Wed Oct  7 01:44:20 2020
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Tue,  6 Oct 2020 11:44:20 -0400 (EDT)
+Subject: [TUHS] Origins of globbing
+Message-ID: <20201006154420.2C93C18C099@mercury.lcs.mit.edu>
+
+    > From: John Cowan
+
+    > Unfortunately, glob never got its own man page
+
+Errr:
+
+  https://www.tuhs.org/cgi-bin/utree.pl?file=V6/usr/man/man8/glob.8
+
+Not the most comprehensive document, but that plus the source would be
+complete.
+
+	Noel
+
+
+From jay-tuhs9915 at toaster.com  Wed Oct  7 02:22:25 2020
+From: jay-tuhs9915 at toaster.com (jay-tuhs9915 at toaster.com)
+Date: Tue, 6 Oct 2020 09:22:25 -0700
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+In-Reply-To: <20201006144648.773F918C0C4@mercury.lcs.mit.edu>
+References: <20201006144648.773F918C0C4@mercury.lcs.mit.edu>
+Message-ID: <5d6b9566-06de-1288-1cb9-a22d68f5c1e2@toaster.com>
+
+On 10/6/2020 7:46 AM, Noel Chiappa wrote:
+
+ > I'm not a SIMH user, though (I'm an Ersatz-11 person); is there 
+anyone who is, who'd like to play with MiniUnix with me?
+
+I've been meaning to jump into this, since I own both an 11/05 and an 
+11/03, which I'd very much like to run Unix on.  I've also used simh for 
+various things (including bringing up 2.9BSD on my 11/23), but I can 
+hardly call myself an expert.
+
+Are there any notes you can share on how to get to the point you're at?
+
+ >    for(cp = &u.u_dbuf[0]; cp < &u.u_dbuf[DIRSIZ]; cp++)
+ >        if(*cp != cp[u.u_dent.u_name - u.u_dbuf])
+
+Found this in the v6 sources 
+(http://www.retro11.de/ouxr/u6ed/usr/sys/ken/nami.c.html).  The code is 
+doing a string comparison between the name in the current directory 
+entry (u_dent) and the current pathname component (in u_dbuf).   The 
+expression in brackets is the relative distance between the two name 
+fields within the u struct.  If the if expression evaluates to true, 
+then the names do *not* match, and the code loops back to eloop to check 
+the next entry.
+
+Since namei() searches for a particular named entry in a directory, its 
+reasonable to assume that this particular comparison would fail a number 
+of times before finding the correct entry.
+
+ > It seems to check most of the (wrong) directory entries OK, but then 
+inexplicably (to me) fails.
+
+In what way does it fail?  Is it simply that namei() doesn't find the 
+file its looking for?
+
+--Jay
+
+
+From jnc at mercury.lcs.mit.edu  Wed Oct  7 05:04:24 2020
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Tue,  6 Oct 2020 15:04:24 -0400 (EDT)
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+Message-ID: <20201006190424.B1E7718C0B7@mercury.lcs.mit.edu>
+
+    > From: jay-tuhs9915
+
+    > Are there any notes you can share on how to get to the point you're at?
+
+Well, there are three areas where the /03 version needs work, over the /05:
+
+- No LTC clock register
+- No switch register
+- PS access only via MFPS/MTPS instructions
+
+For the first two, the needed changes are identical to the ones detailed here:
+
+  http://gunkies.org/wiki/Running_UNIX_V6_on_an_-11/23
+
+These have all been tested on the /23. Rather than anyone make the exact same
+changes independently, I can put up the modified versions of the MiniUnix
+files for them (low.s, main.c and param.h).
+
+For the third, I have an mch.s with a conditional assembly flag that _should_
+do it all; like I said, there are also really minor edits to bio.c, clock.c,
+slp.c, and tty.c. Again, I can upload the mch.s which is already done.
+
+I haven't been able to _confirm_ that these work, but it should be mostly good;
+the changes are pretty straight-foward.
+
+
+    > The code is doing a string comparison between the name in the current
+    > directory entry (u_dent) and the current pathname component (in
+    > u_dbuf). The expression in brackets is the relative distance between the
+    > two name fields within the u struct.
+
+Yeah, I'd worked that out (the immediately preceding comment in the code -
+"String compare the directory entry and the current component" - indicates
+what it's doing, and as my "the term inside the []'s seems to be an offset
+.. into the copy of the current directory entry" indicates, I'd worked out how
+it did that. I was still puzzled by some othet aspects of the code, I just
+included that to give a flavour of the code.
+
+    > In what way does it fail? Is it simply that namei() doesn't find the
+    > file its looking for?
+
+Right. It's looking for 'etc' in the root directory (only one block), and
+it looks at the following entries:
+
+  9 146 '05mx'
+  8 130 'usr'
+  7 114 'tmp'
+  6 98 'mnt'
+  5 82 'lib'
+
+(I put a printf() in the loop; I've added prf.c to the load so I can do
+that. The numbers are the index, u.u_count - although it's already been
+descremented at that point, so it will be '0' when doing the last entry - and
+location of that entry in the directory, given next to it. For some reason, I
+can't get the entry to print from u.u_dent.u_name, so I'm printing it straight
+from the block buffer, bp->b_addr[]. I can print the _inode number_,
+u.u_dent.u_ino as a string, but not the dir entry. Wierd.)
+
+Anyway, after printing the entry for 5, it goes to 'done', with u_error
+containing '2'. I can't see how it could do that.
+
+I'm using printf() because I'm too lazy to figure out how to build a kernel
+with a debugger like DDT included. (We never did that when we were working
+on V6 at MIT BITD; ISR we mostly just used printf() back then, too.)
+
+   Noel
+
+
+From jnc at mercury.lcs.mit.edu  Wed Oct  7 05:34:49 2020
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Tue,  6 Oct 2020 15:34:49 -0400 (EDT)
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+Message-ID: <20201006193449.CC32918C0B7@mercury.lcs.mit.edu>
+
+    > it looks at the following entries:
+    > Anyway, after printing the entry for 5, it goes to 'done'
+
+Uh, I just realized that the _first_ entry, #'9', is actually #0 _in the
+directory_; u_count counts _down_, whereas the code looks through dir entries
+going _up_.
+
+Still don't understand why I can't print the dir entries out of the u area,
+though.
+
+Noel
+
+
+From jnc at mercury.lcs.mit.edu  Wed Oct  7 06:34:18 2020
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Tue,  6 Oct 2020 16:34:18 -0400 (EDT)
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+Message-ID: <20201006203418.8E9D618C0B2@mercury.lcs.mit.edu>
+
+    > I just realized that the _first_ entry, #'9', is actually #0 _in the
+    > directory_; u_count counts _down_, whereas the code looks through dir
+    > entries going _up_.
+
+Fixed that (kept my own index of which entry it was working on, and
+caculated the name location in the buffer, and got:
+
+  chk 0 15 2 '..'
+  chk 1 14 18 '.'
+  chk 2 13 34 'bin'
+  chk 3 12 50 'dev'
+  chk 4 11 66 'etc'
+
+etc... and it blew right past the 'etc' entry, to the end of the
+directory. WTF?
+
+    > Still don't understand why I can't print the dir entries out of the u
+    > area, though.
+
+Now that my brain has turned on, I'll bet that's not _my_ bug, I'll bet it's
+_the_ bug! If the directory entry in u.u_dent.u_name is all 0's, _of course_
+the match is going to fail.
+
+
+Just for grins, I set the CPU type in Ersatz-11 to "40 EIS NOMMU" and... it
+booted up fine! I suspect there must be an issue with the -11/05 emulation in
+Ersatz-11, since MiniUnix worked fine on _real_ -11/05's.
+
+Now to see if 'cc' works on an '-11/40' - then back to the /03.
+
+    Noel
+
+From jnc at mercury.lcs.mit.edu  Wed Oct  7 09:08:12 2020
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Tue,  6 Oct 2020 19:08:12 -0400 (EDT)
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+Message-ID: <20201006230812.4173718C0A8@mercury.lcs.mit.edu>
+
+    > I suspect there must be an issue with the -11/05 emulation in Ersatz-11
+
+There is. The C compiler on MiniUnix emits SOB instructions. The -11/05 doesn't
+implement SOB; however, the instruction emulator in MiniUnix (emul.s) is
+prepared to emulate it. (So MiniUnix should work fine on real -11/05's.)
+
+However, when set to an -11/05, Ersatz-11 treats SOBs as NOPs; they fall
+through without any effect. Without a trap, they can't be emulated either.
+
+This caused the problem with namei() failing (namei() calls bcopy(), which has
+a SOB in it), and probably caused the problem I was seeing with the C
+compiler, but I'm too burned out to check right now. Tomorrow.
+
+    Noel
+
+From ggm at algebras.org  Wed Oct  7 09:11:26 2020
+From: ggm at algebras.org (George Michaelson)
+Date: Wed, 7 Oct 2020 09:11:26 +1000
+Subject: [TUHS] Origins of globbing
+In-Reply-To: <20201006154420.2C93C18C099@mercury.lcs.mit.edu>
+References: <20201006154420.2C93C18C099@mercury.lcs.mit.edu>
+Message-ID: <CAKr6gn3ZqZ6a6BbFVdwt2UawrHubw8U5MLXJgm9_=_6n2oNbUg@mail.gmail.com>
+
+Regular expressions as a field of study goes back a long way.  SNOBOL
+was 62-67 and Bell labs.
+
+globbing was the application of specific syntax markers to concepts,
+which were well understood from all kinds of applied CS fields.
+parsing, lexical analysis, linguistics, grammer, you can probably draw
+a wobbly line from ? and * all the way back to chimpsky grammer
+glasses s/gl/cl/g
+
+
+On Wed, Oct 7, 2020 at 1:44 AM Noel Chiappa <jnc at mercury.lcs.mit.edu> wrote:
+>
+>     > From: John Cowan
+>
+>     > Unfortunately, glob never got its own man page
+>
+> Errr:
+>
+>   https://www.tuhs.org/cgi-bin/utree.pl?file=V6/usr/man/man8/glob.8
+>
+> Not the most comprehensive document, but that plus the source would be
+> complete.
+>
+>         Noel
+>
+
+From jon at fourwinds.com  Wed Oct  7 09:21:34 2020
+From: jon at fourwinds.com (Jon Steinhart)
+Date: Tue, 06 Oct 2020 16:21:34 -0700
+Subject: [TUHS] Origins of globbing
+In-Reply-To: <CAKr6gn3ZqZ6a6BbFVdwt2UawrHubw8U5MLXJgm9_=_6n2oNbUg@mail.gmail.com>
+References: <20201006154420.2C93C18C099@mercury.lcs.mit.edu>
+ <CAKr6gn3ZqZ6a6BbFVdwt2UawrHubw8U5MLXJgm9_=_6n2oNbUg@mail.gmail.com>
+Message-ID: <202010062321.096NLYWY1543901@darkstar.fourwinds.com>
+
+George Michaelson writes:
+> Regular expressions as a field of study goes back a long way.  SNOBOL
+> was 62-67 and Bell labs.
+>
+> globbing was the application of specific syntax markers to concepts,
+> which were well understood from all kinds of applied CS fields.
+> parsing, lexical analysis, linguistics, grammer, you can probably draw
+> a wobbly line from ? and * all the way back to chimpsky grammer
+> glasses s/gl/cl/g
+
+Actually, this goes back to Kleen in 1956, followed by Thompson in 1968.
+
+Jon
+
+From imp at bsdimp.com  Wed Oct  7 10:23:31 2020
+From: imp at bsdimp.com (Warner Losh)
+Date: Tue, 6 Oct 2020 18:23:31 -0600
+Subject: [TUHS] Origins of globbing
+In-Reply-To: <202010062321.096NLYWY1543901@darkstar.fourwinds.com>
+References: <20201006154420.2C93C18C099@mercury.lcs.mit.edu>
+ <CAKr6gn3ZqZ6a6BbFVdwt2UawrHubw8U5MLXJgm9_=_6n2oNbUg@mail.gmail.com>
+ <202010062321.096NLYWY1543901@darkstar.fourwinds.com>
+Message-ID: <CANCZdfoztCZO7oZkkwfCB7pgS2xGmGehc1JYZQru=XnejhaAuA@mail.gmail.com>
+
+On Tue, Oct 6, 2020, 6:19 PM Jon Steinhart <jon at fourwinds.com> wrote:
+
+> George Michaelson writes:
+> > Regular expressions as a field of study goes back a long way.  SNOBOL
+> > was 62-67 and Bell labs.
+> >
+> > globbing was the application of specific syntax markers to concepts,
+> > which were well understood from all kinds of applied CS fields.
+> > parsing, lexical analysis, linguistics, grammer, you can probably draw
+> > a wobbly line from ? and * all the way back to chimpsky grammer
+> > glasses s/gl/cl/g
+>
+> Actually, this goes back to Kleen in 1956, followed by Thompson in 1968.
+>
+
+Kleen closures are a thing I learned about in school :)
+
+
+Jon
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20201006/b6230ec3/attachment.htm>
+
+From ggm at algebras.org  Wed Oct  7 10:32:01 2020
+From: ggm at algebras.org (George Michaelson)
+Date: Wed, 7 Oct 2020 10:32:01 +1000
+Subject: [TUHS] Origins of globbing
+In-Reply-To: <CANCZdfoztCZO7oZkkwfCB7pgS2xGmGehc1JYZQru=XnejhaAuA@mail.gmail.com>
+References: <20201006154420.2C93C18C099@mercury.lcs.mit.edu>
+ <CAKr6gn3ZqZ6a6BbFVdwt2UawrHubw8U5MLXJgm9_=_6n2oNbUg@mail.gmail.com>
+ <202010062321.096NLYWY1543901@darkstar.fourwinds.com>
+ <CANCZdfoztCZO7oZkkwfCB7pgS2xGmGehc1JYZQru=XnejhaAuA@mail.gmail.com>
+Message-ID: <CAKr6gn16K09iGDtxheSSA3Qer-6bxp1nTqZVDEjpTvK_JdA8HA@mail.gmail.com>
+
+yea well I wasn't born until 1961 and anything before then is in black
+and white, grainly film, and probably has a cowboy gun in it.
+
+historical fiction is my thing. spelling isn't. you mean Kleene?
+
+On Wed, Oct 7, 2020 at 10:23 AM Warner Losh <imp at bsdimp.com> wrote:
+>
+>
+>
+> On Tue, Oct 6, 2020, 6:19 PM Jon Steinhart <jon at fourwinds.com> wrote:
+>>
+>> George Michaelson writes:
+>> > Regular expressions as a field of study goes back a long way.  SNOBOL
+>> > was 62-67 and Bell labs.
+>> >
+>> > globbing was the application of specific syntax markers to concepts,
+>> > which were well understood from all kinds of applied CS fields.
+>> > parsing, lexical analysis, linguistics, grammer, you can probably draw
+>> > a wobbly line from ? and * all the way back to chimpsky grammer
+>> > glasses s/gl/cl/g
+>>
+>> Actually, this goes back to Kleen in 1956, followed by Thompson in 1968.
+>
+>
+> Kleen closures are a thing I learned about in school :)
+>
+>
+>> Jon
+
+From jon at fourwinds.com  Wed Oct  7 10:33:15 2020
+From: jon at fourwinds.com (Jon Steinhart)
+Date: Tue, 06 Oct 2020 17:33:15 -0700
+Subject: [TUHS] Origins of globbing
+In-Reply-To: <CAKr6gn16K09iGDtxheSSA3Qer-6bxp1nTqZVDEjpTvK_JdA8HA@mail.gmail.com>
+References: <20201006154420.2C93C18C099@mercury.lcs.mit.edu>
+ <CAKr6gn3ZqZ6a6BbFVdwt2UawrHubw8U5MLXJgm9_=_6n2oNbUg@mail.gmail.com>
+ <202010062321.096NLYWY1543901@darkstar.fourwinds.com>
+ <CANCZdfoztCZO7oZkkwfCB7pgS2xGmGehc1JYZQru=XnejhaAuA@mail.gmail.com>
+ <CAKr6gn16K09iGDtxheSSA3Qer-6bxp1nTqZVDEjpTvK_JdA8HA@mail.gmail.com>
+Message-ID: <202010070033.0970XFuB1550017@darkstar.fourwinds.com>
+
+George Michaelson writes:
+> yea well I wasn't born until 1961 and anything before then is in black
+> and white, grainly film, and probably has a cowboy gun in it.
+>
+> historical fiction is my thing. spelling isn't. you mean Kleene?
+
+Ah yeah, a typo.  Sorry.
+
+From random832 at fastmail.com  Wed Oct  7 12:25:37 2020
+From: random832 at fastmail.com (Random832)
+Date: Tue, 06 Oct 2020 22:25:37 -0400
+Subject: [TUHS] Origins of globbing
+In-Reply-To: <CAD2gp_QmPMYiWrRN+RvaF+4VyXfTZLn-oWZ_gg3Rs3LAVswzWA@mail.gmail.com>
+References: <CAEuQd1ArwELtQH=+KAoQ4CAjTjFg2Dvu5ca1p8mttsPZwO3XFw@mail.gmail.com>
+ <CAD2gp_QmPMYiWrRN+RvaF+4VyXfTZLn-oWZ_gg3Rs3LAVswzWA@mail.gmail.com>
+Message-ID: <b25b12b8-8093-4e4a-aceb-b9a13853a0fa@www.fastmail.com>
+
+On Tue, Oct 6, 2020, at 11:17, John Cowan wrote:
+> Globbing was uninterpreted by the shell-equivalent in the DEC OSes, and 
+> was understood only by a few programs, those responsible for listing 
+> directories and copying, renaming, and deleting files.  Universal 
+> globbing in the shell was AFAIK original with Unix
+
+it's worth mentioning that "universal" globbing comes with restrictions that operating systems where programs interpret globs don't have: you can't reliably pass a glob as an option argument, or as an argument which refers to files that do not exist in the filesystem, without quoting it, which requires additional quoting when you want a literal * or ? character. Quoting is also required even when the argument position is not semantically a set of filenames at all.
+
+Also, since you mentioned renaming, MS-DOS/Windows, at least, has a primitive 'rename one glob to another' [it has rules that technically give meaning to any destination glob, but it's most sensible when you want to change the filename extension of a set of files] function that's not possible either on Unix [though utilities do exist to perform various transformations on the name of a set of files to be renamed]
+
+Although, sometimes the results can be surprising - the MS-DOS/Windows "copy" command, for example, *concatenates* a globbed set of files [achievable with a list of filenames by separating them with plus signs] rather than copying them separately into a destination directory.
+
+From ggm at algebras.org  Wed Oct  7 12:58:06 2020
+From: ggm at algebras.org (George Michaelson)
+Date: Wed, 7 Oct 2020 12:58:06 +1000
+Subject: [TUHS] Origins of globbing
+In-Reply-To: <b25b12b8-8093-4e4a-aceb-b9a13853a0fa@www.fastmail.com>
+References: <CAEuQd1ArwELtQH=+KAoQ4CAjTjFg2Dvu5ca1p8mttsPZwO3XFw@mail.gmail.com>
+ <CAD2gp_QmPMYiWrRN+RvaF+4VyXfTZLn-oWZ_gg3Rs3LAVswzWA@mail.gmail.com>
+ <b25b12b8-8093-4e4a-aceb-b9a13853a0fa@www.fastmail.com>
+Message-ID: <CAKr6gn37u-SpuEd0Qzo1uLvmnkRO2hjc+=V+HoOF6oF+u6tsFA@mail.gmail.com>
+
+Possibly wrongly, I judge glob by things like how simple it is, to use
+it doing "rename *.foo to *.bar" or "find filenames with spaces in
+them, and rename to be - separated"
+
+The problem typically is shell expansion. Those damn quoted quotes.
+
+I think set noglob; <do things>; set glob is often under-appreciated.
+
+From cowan at ccil.org  Wed Oct  7 13:14:57 2020
+From: cowan at ccil.org (John Cowan)
+Date: Tue, 6 Oct 2020 23:14:57 -0400
+Subject: [TUHS] Origins of globbing
+In-Reply-To: <CAKr6gn3ZqZ6a6BbFVdwt2UawrHubw8U5MLXJgm9_=_6n2oNbUg@mail.gmail.com>
+References: <20201006154420.2C93C18C099@mercury.lcs.mit.edu>
+ <CAKr6gn3ZqZ6a6BbFVdwt2UawrHubw8U5MLXJgm9_=_6n2oNbUg@mail.gmail.com>
+Message-ID: <CAD2gp_S1Cxu2F94T4g4qRUCjUJ+sHRV7cySZd7YnODngxD5cpQ@mail.gmail.com>
+
+Noel: Thanks for the heads-up on glob.  It didn't occur to me to look in
+manual section 8.
+
+On Tue, Oct 6, 2020 at 7:11 PM George Michaelson <ggm at algebras.org> wrote:
+
+globbing was the application of specific syntax markers to concepts,
+>
+
+Certainly.  But I think the specific meanings of "*" to mean "any number of
+any characters" and "?" to mean "any character" do not go back further than
+1964.
+
+Multics had support for * and ?, but I don't know when that was added or if
+it was there from the beginning.  Multics filenames, unlike DEC ones, allow
+multiple dots, which are treated specially by these characters: neither ?
+nor * can match a dot, but ** can.  So perhaps they got into Unix from
+Multics after all.  Stratus VOS is another direct descendant of Multics,
+but I don't know if it has globs.
+
+Windows avoids quotation by blocking any of < > " : | ? * from appearing in
+pathnames (/ and \ mean the same thing to the kernel, but not to the shell
+or to the GUI file picker).  In addition, non-disk device names cannot
+appear as part of a filename either before or after the dot: nul.c and
+c.nul, for example, are illegal because nul: is a device name, and you can
+use \dev\nul to reference the null device even though \dev does not exist.
+
+I think set noglob; <do things>; set glob is often under-appreciated.
+
+
+I found the absence of set nullglob (which causes *.foo to expand to
+nothing if it matches no files) on Solaris 8 very irritating.  It's still
+not part of Posix sh, though bash has it.  I wrote some wrappers around cp
+and mv that looked for * and ? in the arguments (indicating no files) and
+removed those arguments; if no arguments were left after that, they exited
+with 0.  Thus "safecp *.bak ../backup" would silently succeed if there were
+no .bak files.
+
+
+
+John Cowan          http://vrici.lojban.org/~cowan        cowan at ccil.org
+I come from under the hill, and under the hills and over the hills my paths
+led. And through the air. I am he that walks unseen.  I am the clue-finder,
+the web-cutter, the stinging fly. I was chosen for the lucky number.
+ --Bilbo
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20201006/687745ed/attachment.htm>
+
+From jay-tuhs9915 at toaster.com  Wed Oct  7 15:24:41 2020
+From: jay-tuhs9915 at toaster.com (Jay Logue)
+Date: Tue, 6 Oct 2020 22:24:41 -0700
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+In-Reply-To: <20201006230812.4173718C0A8@mercury.lcs.mit.edu>
+References: <20201006230812.4173718C0A8@mercury.lcs.mit.edu>
+Message-ID: <20201007052443.4EA599CF59@minnie.tuhs.org>
+
+On 10/6/2020 4:08 PM, Noel Chiappa wrote:
+
+ > However, when set to an -11/05, Ersatz-11 treats SOBs as NOPs; they 
+fall through without any effect. Without a trap, they can't be emulated 
+either.
+
+Well that was an unfortunate bit of luck--a bug in the emulator!
+
+All this appears to be working fine under simh.  I was able to do full 
+install of Mini-Unix and rebuild the kernel from source while running an 
+emulated 11/05.
+
+--Jay
+
+From scj at yaccman.com  Wed Oct  7 15:43:31 2020
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Tue, 06 Oct 2020 22:43:31 -0700
+Subject: [TUHS] reviving a bit of WWB
+In-Reply-To: <7F7B78DB-A3B5-4137-9301-E356A5C7EB88@coraid.com>
+References: <202009190151.08J1pYnb066792@tahoe.cs.dartmouth.edu>
+ <202009201842.08KIgn2f022401@freefriends.org>
+ <04211470-AD63-452A-A0BB-6A7A6FD85AAE@gmail.com>
+ <alpine.DEB.2.21.2009201609410.10514@sd-119843.dedibox.fr>
+ <202009202026.08KKQ2x6137303@tahoe.cs.dartmouth.edu>
+ <alpine.DEB.2.21.2009201654300.10605@sd-119843.dedibox.fr>
+ <7F7B78DB-A3B5-4137-9301-E356A5C7EB88@coraid.com>
+Message-ID: <45073554951079046be7f0058933b050@yaccman.com>
+
+This discussion of null pointers reminds me of one of the hardest things 
+we came upon porting what became V7 to the Interdata 4/32.  Earlier UNIX 
+systems had returned -1 as an error indicator from some system calls 
+that returned a pointer.  We made a strong effort to find these, but 
+they were everywhere and we didn't get them all (another motivation for 
+Lint...).
+
+We were finding crashes on the Interdata with the machine halted and 
+none of the error registers (including the location of the fault) making 
+any sense.  After a couple of frustrating weeks, we found the problem.  
+The Interdata was a microcoded machine.  If it tried to access -1 as an 
+address, it immediately got an "unaligned access" fault and dove into 
+the microcode.  Before it has saved its status registers, the memory 
+system chimed in with another fault -- memory access out of bounds.  The 
+combination trashed everything.
+
+When we met with Interdata to explore whether they wanted to sell Unix 
+on their hardware, fixing this was one of our non-negotiable demands.  
+They said no.  We walked.
+
+Several years later, of course, Unix did show up there, but they missed 
+a great opportunity.
+
+---
+
+
+On 2020-09-20 14:33, Brantley Coile wrote:
+> The fact that a pointer of zero generates a hardware trap is not
+> defined in the language, whereas a 0 is is defined to be a null
+> pointer.
+> 
+> I've worked on systems where a 0 pointer could be dereferenced without
+> a trap. I wouldn't recommend it. System designers do things like make
+> the first page of memory invalid so we will get a null pointer trap.
+> On Plan 9 the beginning of the text segment starts at 0x1020.
+> 
+> But that's not part of the C language. The fact that 0 is a null 
+> pointer is.
+> 
+> Brantley
+> 
+>> On Sep 20, 2020, at 4:58 PM, Steve Nickolas <usotsuki at buric.co> wrote:
+>> 
+>> On Sun, 20 Sep 2020, Doug McIlroy wrote:
+>> 
+>>>> (Of course, that assumes NULL is 0, but I don't think I've run into 
+>>>> any
+>>>> architecture so braindead as to not have NULL=0.)
+>>> 
+>>> It has nothing to do with machine architecture. The C standard
+>>> says 0 coerces to the null pointer. NULL, defined in <stddef.h>,
+>>> is part of the library, not the language. I always use 0,
+>>> because NULL is a frill.
+>>> 
+>>> Doug
+>> 
+>> I was under the impression that there was explicitly no requirement 
+>> that a null pointer be 0, and that there was at least one weird system 
+>> where that wasn't true - that it just so happened that null points to 
+>> 0 on certain CPUs and that 0=NULL *happens* to work on most CPUs but 
+>> wasn't guaranteed. (In fact, I read that my habit of using 0 for NULL 
+>> relied on a faulty assumption!)
+>> 
+>> I mean, I've never actually used a CPU/OS/compiler where it wasn't 
+>> true, but...
+>> 
+>> -uso.
+
+From scj at yaccman.com  Wed Oct  7 15:47:11 2020
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Tue, 06 Oct 2020 22:47:11 -0700
+Subject: [TUHS] reviving a bit of WWB
+In-Reply-To: <202009201842.08KIgn2f022401@freefriends.org>
+References: <202009190151.08J1pYnb066792@tahoe.cs.dartmouth.edu>
+ <202009201842.08KIgn2f022401@freefriends.org>
+Message-ID: <de95a1e6119270436b5973d3d1cd6155@yaccman.com>
+
+About once a month I wish I had /usr/dict/words on my machine...
+
+---
+
+
+On 2020-09-20 11:42, arnold at skeeve.com wrote:
+> Doug McIlroy <doug at cs.dartmouth.edu> wrote:
+> 
+>> I would like to revive Lorinda Cherry's "parts".
+>> Implicit in "revival" is dispelling the hundreds
+>> of warnings from  gcc -Wpedantic -Wall -Wextra.
+>> Has anybody done this already?
+>> 
+>> Doug
+> 
+> I haven't tried this. I do suggest starting with 'gcc -m32' so that
+> you're not fighting 64 bit issues at the same time as everything else.
+> 
+> HTH,
+> 
+> Arnold
+
+From arnold at skeeve.com  Wed Oct  7 19:20:31 2020
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Wed, 07 Oct 2020 03:20:31 -0600
+Subject: [TUHS] reviving a bit of WWB
+In-Reply-To: <de95a1e6119270436b5973d3d1cd6155@yaccman.com>
+References: <202009190151.08J1pYnb066792@tahoe.cs.dartmouth.edu>
+ <202009201842.08KIgn2f022401@freefriends.org>
+ <de95a1e6119270436b5973d3d1cd6155@yaccman.com>
+Message-ID: <202010070920.0979KVYa022535@freefriends.org>
+
+Hello Steve,
+
+scj at yaccman.com wrote:
+
+> About once a month I wish I had /usr/dict/words on my machine...
+
+On my Ubuntu Linux system:
+
+$ ls -l /usr/share/dict
+total 2372
+-rw-r--r-- 1 root root 971578 Oct 20  2017 american-english
+-rw-r--r-- 1 root root 967402 Oct 20  2017 british-english
+-rw-r--r-- 1 root root 477238 Aug  4  2017 cracklib-small
+-rw-r--r-- 1 root root    199 Oct 10  2016 README.select-wordlist
+lrwxrwxrwx 1 root root     30 Mar 31  2020 words -> /etc/dictionaries-common/words
+lrwxrwxrwx 1 root root     16 Mar 31  2020 words.pre-dictionaries-common -> american-english
+$ ls -l /etc/dictionaries-common/words 
+lrwxrwxrwx 1 root root 32 Mar 31  2020 /etc/dictionaries-common/words -> /usr/share/dict/american-english
+
+And my port of Doug's spell(1) from V10 (see my github):
+
+$ ls src/v10spell/
+american     brspell.v10  list	    mkfile   README.md	spellsh.in	  stop
+amspell.v10  ChangeLog	  local     pcode.c  spell.1	spell-wrapper.sh  tools
+british      code.h	  makefile  README   spell.pdf	sprog.c
+
+HTH,
+
+Arnold
+
+From arnold at skeeve.com  Wed Oct  7 19:22:30 2020
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Wed, 07 Oct 2020 03:22:30 -0600
+Subject: [TUHS] Origins of globbing
+In-Reply-To: <CAKr6gn37u-SpuEd0Qzo1uLvmnkRO2hjc+=V+HoOF6oF+u6tsFA@mail.gmail.com>
+References: <CAEuQd1ArwELtQH=+KAoQ4CAjTjFg2Dvu5ca1p8mttsPZwO3XFw@mail.gmail.com>
+ <CAD2gp_QmPMYiWrRN+RvaF+4VyXfTZLn-oWZ_gg3Rs3LAVswzWA@mail.gmail.com>
+ <b25b12b8-8093-4e4a-aceb-b9a13853a0fa@www.fastmail.com>
+ <CAKr6gn37u-SpuEd0Qzo1uLvmnkRO2hjc+=V+HoOF6oF+u6tsFA@mail.gmail.com>
+Message-ID: <202010070922.0979MUD2022625@freefriends.org>
+
+George Michaelson <ggm at algebras.org> wrote:
+
+> Possibly wrongly, I judge glob by things like how simple it is, to use
+> it doing "rename *.foo to *.bar" or "find filenames with spaces in
+> them, and rename to be - separated"
+>
+> The problem typically is shell expansion. Those damn quoted quotes.
+>
+> I think set noglob; <do things>; set glob is often under-appreciated.
+
+I often use a 
+
+	find ... | sed 's/whatever/mv & other/' | sh -x
+
+for fancy things like that. If I'm doing the same operation a lot,
+I wrap it in a script.
+
+HTH,
+
+Arnold
+
+From michael at kjorling.se  Wed Oct  7 19:45:17 2020
+From: michael at kjorling.se (Michael =?utf-8?B?S2rDtnJsaW5n?=)
+Date: Wed, 7 Oct 2020 09:45:17 +0000
+Subject: [TUHS] Origins of globbing
+In-Reply-To: <202010070922.0979MUD2022625@freefriends.org>
+References: <CAEuQd1ArwELtQH=+KAoQ4CAjTjFg2Dvu5ca1p8mttsPZwO3XFw@mail.gmail.com>
+ <CAD2gp_QmPMYiWrRN+RvaF+4VyXfTZLn-oWZ_gg3Rs3LAVswzWA@mail.gmail.com>
+ <b25b12b8-8093-4e4a-aceb-b9a13853a0fa@www.fastmail.com>
+ <CAKr6gn37u-SpuEd0Qzo1uLvmnkRO2hjc+=V+HoOF6oF+u6tsFA@mail.gmail.com>
+ <202010070922.0979MUD2022625@freefriends.org>
+Message-ID: <e71b3082-ad52-4f9c-92e8-7f5eaa68bda1@localhost>
+
+On 7 Oct 2020 03:22 -0600, from arnold at skeeve.com:
+>> Possibly wrongly, I judge glob by things like how simple it is, to use
+>> it doing "rename *.foo to *.bar" or "find filenames with spaces in
+>> them, and rename to be - separated"
+> 
+> I often use a 
+> 
+> 	find ... | sed 's/whatever/mv & other/' | sh -x
+> 
+> for fancy things like that. If I'm doing the same operation a lot,
+> I wrap it in a script.
+
+I like rename from https://metacpan.org/release/File-Rename for that
+purpose. It takes a regular expressions (actually, Perl expression, so
+could in principle be any valid Perl code) plus a set of file names,
+and renames each file according to the regexp. Plus you don't need to
+worry about things like quoting within the command as with the above,
+and it even has -0 for when reading those extra-exotic file names from
+stdin. (For one thing, I hope none of your files has a space or a
+semicolon in its name with your style of rename as-is. :))
+
+In Debian, that's https://packages.debian.org/stable/rename; I suspect
+other systems with reasonably large package repositories also offer it
+prepackaged.
+
+About the only downside is its dependence on Perl (after all, that's
+rather heavyweight), but then again a lot of other things also depend
+on Perl so it's kind of hard to have even a minimal modern system that
+doesn't have Perl installed...
+
+Having to escape every '.' would probably be even more annoying than
+modern GNU ls's default non-"-N" behavior; and worse in the sense that
+_most_ of the time, it would probably work without escaping it, but
+when it doesn't work, it would break in various spectacular fashions.
+
+-- 
+Michael Kjörling • https://michael.kjorling.se • michael at kjorling.se
+ “Remember when, on the Internet, nobody cared that you were a dog?”
+
+
+From dave at horsfall.org  Thu Oct  8 10:18:38 2020
+From: dave at horsfall.org (Dave Horsfall)
+Date: Thu, 8 Oct 2020 11:18:38 +1100 (EST)
+Subject: [TUHS] Origins of globbing
+In-Reply-To: <CAKr6gn37u-SpuEd0Qzo1uLvmnkRO2hjc+=V+HoOF6oF+u6tsFA@mail.gmail.com>
+References: <CAEuQd1ArwELtQH=+KAoQ4CAjTjFg2Dvu5ca1p8mttsPZwO3XFw@mail.gmail.com>
+ <CAD2gp_QmPMYiWrRN+RvaF+4VyXfTZLn-oWZ_gg3Rs3LAVswzWA@mail.gmail.com>
+ <b25b12b8-8093-4e4a-aceb-b9a13853a0fa@www.fastmail.com>
+ <CAKr6gn37u-SpuEd0Qzo1uLvmnkRO2hjc+=V+HoOF6oF+u6tsFA@mail.gmail.com>
+Message-ID: <alpine.BSF.2.21.9999.2010081114220.91515@aneurin.horsfall.org>
+
+On Wed, 7 Oct 2020, George Michaelson wrote:
+
+> Possibly wrongly, I judge glob by things like how simple it is, to use
+> it doing "rename *.foo to *.bar" or "find filenames with spaces in
+> them, and rename to be - separated"
+
+John "Iron bar" Mackin (may he rest in peace) wrote a shell script "mved" 
+that implemented PIP-like globs along the lines of "mved =.foo =.bar".  I 
+still have it somewhere, but it probably needs some work on it now; it was 
+really handy for things like "mved =.c =c.old".
+
+-- Dave
+
+From dave at horsfall.org  Thu Oct  8 10:27:26 2020
+From: dave at horsfall.org (Dave Horsfall)
+Date: Thu, 8 Oct 2020 11:27:26 +1100 (EST)
+Subject: [TUHS] reviving a bit of WWB
+In-Reply-To: <de95a1e6119270436b5973d3d1cd6155@yaccman.com>
+References: <202009190151.08J1pYnb066792@tahoe.cs.dartmouth.edu>
+ <202009201842.08KIgn2f022401@freefriends.org>
+ <de95a1e6119270436b5973d3d1cd6155@yaccman.com>
+Message-ID: <alpine.BSF.2.21.9999.2010081122580.91515@aneurin.horsfall.org>
+
+On Tue, 6 Oct 2020, scj at yaccman.com wrote:
+
+> About once a month I wish I had /usr/dict/words on my machine...
+
+You don't?
+
+Daves-MacBook-Pro:~ dave$ wc -l lib/*words
+   644785 lib/allwords
+    45402 lib/linuxwords
+   235886 lib/words (a symlink to the system dictionary)
+   926073 total
+
+("allwords" is just a combined FreeBSD/Linux words, with dups removed).
+
+Very useful for solving word puzzles in newspapers...
+
+-- Dave
+
+From lm at mcvoy.com  Thu Oct  8 10:33:11 2020
+From: lm at mcvoy.com (Larry McVoy)
+Date: Wed, 7 Oct 2020 17:33:11 -0700
+Subject: [TUHS] Origins of globbing
+In-Reply-To: <alpine.BSF.2.21.9999.2010081114220.91515@aneurin.horsfall.org>
+References: <CAEuQd1ArwELtQH=+KAoQ4CAjTjFg2Dvu5ca1p8mttsPZwO3XFw@mail.gmail.com>
+ <CAD2gp_QmPMYiWrRN+RvaF+4VyXfTZLn-oWZ_gg3Rs3LAVswzWA@mail.gmail.com>
+ <b25b12b8-8093-4e4a-aceb-b9a13853a0fa@www.fastmail.com>
+ <CAKr6gn37u-SpuEd0Qzo1uLvmnkRO2hjc+=V+HoOF6oF+u6tsFA@mail.gmail.com>
+ <alpine.BSF.2.21.9999.2010081114220.91515@aneurin.horsfall.org>
+Message-ID: <20201008003311.GD3214@mcvoy.com>
+
+On Thu, Oct 08, 2020 at 11:18:38AM +1100, Dave Horsfall wrote:
+> On Wed, 7 Oct 2020, George Michaelson wrote:
+> 
+> >Possibly wrongly, I judge glob by things like how simple it is, to use
+> >it doing "rename *.foo to *.bar" or "find filenames with spaces in
+> >them, and rename to be - separated"
+> 
+> John "Iron bar" Mackin (may he rest in peace) wrote a shell script "mved"
+> that implemented PIP-like globs along the lines of "mved =.foo =.bar".  I
+> still have it somewhere, but it probably needs some work on it now; it was
+> really handy for things like "mved =.c =c.old".
+
+I wrote the same thing and strangely enough, I also used = as a * replacement.
+>From 1987 folks:
+
+http://mcvoy.com/lm/move.shar
+
+From dave at horsfall.org  Thu Oct  8 12:35:31 2020
+From: dave at horsfall.org (Dave Horsfall)
+Date: Thu, 8 Oct 2020 13:35:31 +1100 (EST)
+Subject: [TUHS] Origins of globbing
+In-Reply-To: <alpine.BSF.2.21.9999.2010081114220.91515@aneurin.horsfall.org>
+References: <CAEuQd1ArwELtQH=+KAoQ4CAjTjFg2Dvu5ca1p8mttsPZwO3XFw@mail.gmail.com>
+ <CAD2gp_QmPMYiWrRN+RvaF+4VyXfTZLn-oWZ_gg3Rs3LAVswzWA@mail.gmail.com>
+ <b25b12b8-8093-4e4a-aceb-b9a13853a0fa@www.fastmail.com>
+ <CAKr6gn37u-SpuEd0Qzo1uLvmnkRO2hjc+=V+HoOF6oF+u6tsFA@mail.gmail.com>
+ <alpine.BSF.2.21.9999.2010081114220.91515@aneurin.horsfall.org>
+Message-ID: <alpine.BSF.2.21.9999.2010081328230.91515@aneurin.horsfall.org>
+
+On Thu, 8 Oct 2020, Dave Horsfall wrote:
+
+> John "Iron bar" Mackin (may he rest in peace) wrote a shell script 
+> "mved" that implemented PIP-like globs along the lines of "mved =.foo 
+> =.bar".  I still have it somewhere, but it probably needs some work on 
+> it now; it was really handy for things like "mved =.c =c.old".
+
+Oops - my mistake.  This from the source:
+
+     # Brian Coogan 06 Jan 87
+     # Hewlett-Packard Australian Software Operation
+
+Posted to aus.sources with no restrictions on its use, so I'm guessing 
+that it's PD.
+
+-- Dave
+
+From cowan at ccil.org  Thu Oct  8 13:08:00 2020
+From: cowan at ccil.org (John Cowan)
+Date: Wed, 7 Oct 2020 23:08:00 -0400
+Subject: [TUHS] reviving a bit of WWB
+In-Reply-To: <alpine.BSF.2.21.9999.2010081122580.91515@aneurin.horsfall.org>
+References: <202009190151.08J1pYnb066792@tahoe.cs.dartmouth.edu>
+ <202009201842.08KIgn2f022401@freefriends.org>
+ <de95a1e6119270436b5973d3d1cd6155@yaccman.com>
+ <alpine.BSF.2.21.9999.2010081122580.91515@aneurin.horsfall.org>
+Message-ID: <CAD2gp_TLo7fJB1VxYoWjJ-4r_o4aXCyaAGZn-gXnJeeAhpiQ6g@mail.gmail.com>
+
+ SCOWL <http://wordlist.aspell.net> is, unlike almost all open-source
+wordlists, a *very* thoroughly screened source of spelling words.  It has
+many sub-lists that allow you to construct en-US, en-GB, en-GB-oed (British
+spelling with -ize), en-CA, and en-AU spelling lists of various sizes, or
+any combinations of them.  You can create them in traditional
+one-word-per-line format, Aspell format, or Hunspell format.
+
+List sizes vary from size 10 at 4500 words (e.g. avoid, dedicated,
+everything, goes, killed, quicker, should, simultaneously, virtue, weird)
+to size 95 at 230,000 (e.g. adlumidine, alinasal, hartake,
+miscegenationists, sigillaria, staphyledema, unruth).  Larger list sizes
+have rarer words, some of which are more likely to be misspellings: "suer",
+one who sues, is usually a typo for "user", so it only appears in size 70
+and up.  In addition, you can mix in special lists: hacker words (like
+"grepped"), taboo words, Roman numerals, etc.
+
+There's a web page and a Perl script to do the mixing, but you can do it by
+hand too.
+
+
+
+
+John Cowan          http://vrici.lojban.org/~cowan        cowan at ccil.org
+When I'm stuck in something boring where reading would be impossible or
+rude, I often set up math problems for myself and solve them as a way
+to pass the time.      --John Jenkins
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20201007/8d384cda/attachment.htm>
+
+From cowan at ccil.org  Thu Oct  8 13:45:42 2020
+From: cowan at ccil.org (John Cowan)
+Date: Wed, 7 Oct 2020 23:45:42 -0400
+Subject: [TUHS] Origins of globbing
+In-Reply-To: <e71b3082-ad52-4f9c-92e8-7f5eaa68bda1@localhost>
+References: <CAEuQd1ArwELtQH=+KAoQ4CAjTjFg2Dvu5ca1p8mttsPZwO3XFw@mail.gmail.com>
+ <CAD2gp_QmPMYiWrRN+RvaF+4VyXfTZLn-oWZ_gg3Rs3LAVswzWA@mail.gmail.com>
+ <b25b12b8-8093-4e4a-aceb-b9a13853a0fa@www.fastmail.com>
+ <CAKr6gn37u-SpuEd0Qzo1uLvmnkRO2hjc+=V+HoOF6oF+u6tsFA@mail.gmail.com>
+ <202010070922.0979MUD2022625@freefriends.org>
+ <e71b3082-ad52-4f9c-92e8-7f5eaa68bda1@localhost>
+Message-ID: <CAD2gp_R8Mg5Nfh1-cGUWFhTNf=HcQ9hM+_XW6+g3m-A-24DYDQ@mail.gmail.com>
+
+On Wed, Oct 7, 2020 at 5:51 AM Michael Kjörling <michael at kjorling.se> wrote:
+
+In Debian, that's https://packages.debian.org/stable/rename; I suspect
+> other systems with reasonably large package repositories also offer it
+> prepackaged.
+>
+
+Not always, though.  Some distros package GNU rename <
+https://man7.org/linux/man-pages/man1/rename.1.html> instead, which can
+only convert a fixed string to another fixed string.
+
+
+
+John Cowan          http://vrici.lojban.org/~cowan        cowan at ccil.org
+Original line from The Warrior's Apprentice by Lois McMaster Bujold:
+"Only on Barrayar would pulling a loaded needler start a stampede toward
+one."
+English-to-Russian-to-English mangling thereof: "Only on Barrayar you risk
+to
+lose support instead of finding it when you threat with the charged weapon."
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20201007/251571dc/attachment.htm>
+
+From jnc at mercury.lcs.mit.edu  Fri Oct  9 02:06:18 2020
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Thu,  8 Oct 2020 12:06:18 -0400 (EDT)
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+Message-ID: <20201008160618.98D6718C09C@mercury.lcs.mit.edu>
+
+    > Now to see if 'cc' works on an '-11/40'
+
+Yeah, the C compiler works fine on a /40; so the SOB bug (or perhaps some
+_other_ one I haven't found yet) must have affected it too.
+
+The thing that's odd about that bug is that SOB works _sometimes_ on an /05;
+the 'rkmx' on the distro tape will boot (which if the SOB _never_ worked, it
+wouldn't). So there must be a data dependency somehow.  John Wilson says the
+SOB is very optimized, so maybe there's a bug.
+
+
+    > then back to the /03.
+
+Well, I tried /03 version, and it doesn't work; /etc/init continually
+restarts.
+
+The thing is that _every_ file except mch.s is identical between the '05'
+version (which runs fine on the /40; above), and the /03 version.  So the bug
+must be in mch.s - unless there's somehow an /03 dependency somewhere else I
+missed. I looked through init.c, didn't see anything.
+
+Here:
+
+  http://ana-3.lcs.mit.edu/~jnc/tech/unix/Mini/mch.s
+
+is the mch.s source, if anyone wants to look through it and see if they see
+anything. It's conditionalized for the /03; there's a very simple header file
+(here:
+
+  http://ana-3.lcs.mit.edu/~jnc/tech/unix/Mini/03mch.s
+
+for the 03 version) to set the flags (so one doesn't have to edit the main file
+to change the flag settings).
+
+I had a careful look at mch.s, before I started, checking all the added
+conditionalized code; found one that could have been an issue (I was using a
+temporary register, r0, that had needed data in it), but the rest all looked
+OK. I have some ideas on how to proceed on working out what's going on, but
+I'm done for today, gotta do other stuff.
+
+    Noel
+
+From jnc at mercury.lcs.mit.edu  Fri Oct  9 09:49:57 2020
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Thu,  8 Oct 2020 19:49:57 -0400 (EDT)
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+Message-ID: <20201008234957.16CED18C09E@mercury.lcs.mit.edu>
+
+    > From: Paul Riley
+
+    > Always darkest before the dawn.
+
+Well, we'll see.
+
+
+I found _that_ one; process 1 managed to exec() init, do a fork(), and then
+the child process exec()'d the shell - then that apparently died, and the code
+in init falls through into:
+
+	termall();
+	execl(init, minus, 0);
+
+when the single-user shell exits, so then init restarted; rinse, repeat.
+
+So a _lot_ of the code in mch.s seemed to be working correctly; system calls
+(2 exec()'s, and a fork()) worked, processing switching worked, device
+interrupts (for the disk and console tty) seemed to be working.. Not sure
+what's left!
+
+So I looked at mch.s again, to see what else _was_ there, and I noticed a
+place where I used R0 as a temp - with the MFPS/MTPS thing to get to the PS,
+instructions like:
+
+      BIS	#340, PS
+
+need to change to:
+
+     MFPS	R0
+     BIS	#340, R0
+     MTPS	R0
+
+and R0 was being used to hold an arg (in pword:), and was being bashed.
+
+
+So I fixed it, and now the shell starts OK, but attempting to do any command
+(e.g. "echo foo"), things hang (the shell doesn't fork). If I type the
+interrupt character, the shell exits, and init restarts.
+
+Oh well, hopefully this one won't be too painful to work out. The system's
+mostly working, which I think will really help.
+
+     Noel
+
+From random832 at fastmail.com  Sat Oct 10 04:21:17 2020
+From: random832 at fastmail.com (Random832)
+Date: Fri, 09 Oct 2020 14:21:17 -0400
+Subject: [TUHS] Origins of globbing
+In-Reply-To: <CAD2gp_R8Mg5Nfh1-cGUWFhTNf=HcQ9hM+_XW6+g3m-A-24DYDQ@mail.gmail.com>
+References: <CAEuQd1ArwELtQH=+KAoQ4CAjTjFg2Dvu5ca1p8mttsPZwO3XFw@mail.gmail.com>
+ <CAD2gp_QmPMYiWrRN+RvaF+4VyXfTZLn-oWZ_gg3Rs3LAVswzWA@mail.gmail.com>
+ <b25b12b8-8093-4e4a-aceb-b9a13853a0fa@www.fastmail.com>
+ <CAKr6gn37u-SpuEd0Qzo1uLvmnkRO2hjc+=V+HoOF6oF+u6tsFA@mail.gmail.com>
+ <202010070922.0979MUD2022625@freefriends.org>
+ <e71b3082-ad52-4f9c-92e8-7f5eaa68bda1@localhost>
+ <CAD2gp_R8Mg5Nfh1-cGUWFhTNf=HcQ9hM+_XW6+g3m-A-24DYDQ@mail.gmail.com>
+Message-ID: <e6479718-e97a-41af-8f8a-f317d59a1ae8@www.fastmail.com>
+
+On Wed, Oct 7, 2020, at 23:45, John Cowan wrote:
+> Not always, though.  Some distros package GNU rename 
+> <https://man7.org/linux/man-pages/man1/rename.1.html> instead, which 
+> can only convert a fixed string to another fixed string.
+
+This rename utility is actually part of util-linux [a mixed bag of utilities that were developed early on by linux kernel developers to fill in the gaps of what GNU didn't provide], not GNU.
+
+[I believe the other rename command is actually part of perl, and you can execute arbitrary perl code, not just a regex substitution]
+
+From jnc at mercury.lcs.mit.edu  Sun Oct 11 09:29:48 2020
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Sat, 10 Oct 2020 19:29:48 -0400 (EDT)
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+Message-ID: <20201010232948.5F33818C0A6@mercury.lcs.mit.edu>
+
+    > I noticed a place where I used R0 as a temp ... and was being bashed.
+    > So I fixed it, and now the shell starts OK, but attempting to do any
+    > command (e.g. "echo foo"), things hang
+
+Well, I had 'fixed' it; it turned out my 'fix' had a bug. :-( (The code I had
+to change for the /03 there was pushing the old PS, and that and the temp I
+had to push got intermangled.)
+
+Anyway, with that fixed, the /03 Mini-Unix works now. The old user command
+binaries seem to work OK on the /03; not that I've tried the all, but the ones
+I have tried (including the C compiler) all worked. They all should all work
+(there's nothing in user code that's model-dependent). I have tweaked the
+shell (to allow 'cd') and init (to get rid of the annoying long rights
+message), but that's all.
+
+The latest, greatest mch.s is uploaded:
+
+  http://ana-3.lcs.mit.edu/~jnc/tech/unix/Mini/mch.s
+
+Although a couple of files (bio.c, clock.c, slp.c, and tty.c) had minor
+changes (to remove direct rerferences to the PS; they now call getps() and
+putps() for that), and main.c has minor changes to work when there's no KW11
+or switch register, really the only file with significant changes for the /03
+is mch.s. It's the only one where the object code is model-dependent; all the
+other changed ones use the same object code for all CPU models.
+
+I'll put up a Web page with details, links to sources, etc, 'soon'.
+
+
+A couple of other things.
+
+Mini-Unix has removed 'raw' devices (not sure why, probably seemed un-needed),
+so other disk drivers (e.g. the RL11 driver) aren't straight drop-ins. Minimal
+tweaks needed, though; just remove the read and write routines, I think.
+
+If there was a real use for 'raw' devices, they could probably be added back,
+but physio() would have to be modified (simplified). Not sure if anything else
+special would be needed; the process can't be swapped while raw I/O is
+ongoing, and so on Mini-Unix no other process could run. Probably OK, but
+needs to be checked.
+
+I recommend that everyone trying to run Mini-Unix on a hardware /03 invest in
+a KEF11 chip. (There are a few on eBait.) That way, you can leave the EIS
+emulator out of the build, which will save some space, and allow more room for
+device drivers. I added kernel printf() into the build, to help with
+debugging, but it can be removed to save space.
+
+You can change the system to use more room for the kernel (see the Mini-Unix
+docs), but that involves re-linking _every single user command_, including the
+shell and init. Not recommended.
+
+      Noel
+
+From jay-tuhs9915 at toaster.com  Sun Oct 11 12:30:52 2020
+From: jay-tuhs9915 at toaster.com (Jay Logue)
+Date: Sat, 10 Oct 2020 19:30:52 -0700
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+In-Reply-To: <20201010232948.5F33818C0A6@mercury.lcs.mit.edu>
+References: <20201010232948.5F33818C0A6@mercury.lcs.mit.edu>
+Message-ID: <20201011023055.C6B7B93D28@minnie.tuhs.org>
+
+On 10/10/2020 4:29 PM, Noel Chiappa wrote:
+
+Great work, Noel!
+
+ > The latest, greatest mch.s is uploaded:
+
+Are your other changes available anywhere?  Also, I was wondering if it 
+might be useful to have a github repo with these changes.  I'd be happy 
+to help set this up.
+
+--Jay
+
+
+From paul at rileyriot.com  Mon Oct 12 09:24:51 2020
+From: paul at rileyriot.com (Paul Riley)
+Date: Mon, 12 Oct 2020 07:24:51 +0800
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+In-Reply-To: <20201010232948.5F33818C0A6@mercury.lcs.mit.edu>
+References: <20201010232948.5F33818C0A6@mercury.lcs.mit.edu>
+Message-ID: <CAD05_j2dX-8ObXkr+VRFWpcNpnZmNUqACPvzcG-TZTiZY=xm+Q@mail.gmail.com>
+
+Noel,
+
+
+
+
+*Mini-Unix has removed 'raw' devices (not sure why, probably seemed
+un-needed),so other disk drivers (e.g. the RL11 driver) aren't straight
+drop-ins. Minimaltweaks needed, though; just remove the read and write
+routines, I think.*
+
+Your great work to port Mini-Unix will create some demand for device
+drivers on the /03 systems, so may be worthwhile to implement RAW device.
+
+Paul
+
+
+*Paul Riley*
+
+Mo: +86 186 8227 8332
+Email: paul at rileyriot.com
+
+
+
+On Sun, 11 Oct 2020 at 07:31, Noel Chiappa <jnc at mercury.lcs.mit.edu> wrote:
+
+>     > I noticed a place where I used R0 as a temp ... and was being bashed.
+>     > So I fixed it, and now the shell starts OK, but attempting to do any
+>     > command (e.g. "echo foo"), things hang
+>
+> Well, I had 'fixed' it; it turned out my 'fix' had a bug. :-( (The code I
+> had
+> to change for the /03 there was pushing the old PS, and that and the temp I
+> had to push got intermangled.)
+>
+> Anyway, with that fixed, the /03 Mini-Unix works now. The old user command
+> binaries seem to work OK on the /03; not that I've tried the all, but the
+> ones
+> I have tried (including the C compiler) all worked. They all should all
+> work
+> (there's nothing in user code that's model-dependent). I have tweaked the
+> shell (to allow 'cd') and init (to get rid of the annoying long rights
+> message), but that's all.
+>
+> The latest, greatest mch.s is uploaded:
+>
+>   http://ana-3.lcs.mit.edu/~jnc/tech/unix/Mini/mch.s
+>
+> Although a couple of files (bio.c, clock.c, slp.c, and tty.c) had minor
+> changes (to remove direct rerferences to the PS; they now call getps() and
+> putps() for that), and main.c has minor changes to work when there's no
+> KW11
+> or switch register, really the only file with significant changes for the
+> /03
+> is mch.s. It's the only one where the object code is model-dependent; all
+> the
+> other changed ones use the same object code for all CPU models.
+>
+> I'll put up a Web page with details, links to sources, etc, 'soon'.
+>
+>
+> A couple of other things.
+>
+> Mini-Unix has removed 'raw' devices (not sure why, probably seemed
+> un-needed),
+> so other disk drivers (e.g. the RL11 driver) aren't straight drop-ins.
+> Minimal
+> tweaks needed, though; just remove the read and write routines, I think.
+>
+> If there was a real use for 'raw' devices, they could probably be added
+> back,
+> but physio() would have to be modified (simplified). Not sure if anything
+> else
+> special would be needed; the process can't be swapped while raw I/O is
+> ongoing, and so on Mini-Unix no other process could run. Probably OK, but
+> needs to be checked.
+>
+> I recommend that everyone trying to run Mini-Unix on a hardware /03 invest
+> in
+> a KEF11 chip. (There are a few on eBait.) That way, you can leave the EIS
+> emulator out of the build, which will save some space, and allow more room
+> for
+> device drivers. I added kernel printf() into the build, to help with
+> debugging, but it can be removed to save space.
+>
+> You can change the system to use more room for the kernel (see the
+> Mini-Unix
+> docs), but that involves re-linking _every single user command_, including
+> the
+> shell and init. Not recommended.
+>
+>       Noel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20201012/6f7f1d55/attachment.htm>
+
+From dave at horsfall.org  Mon Oct 12 10:53:51 2020
+From: dave at horsfall.org (Dave Horsfall)
+Date: Mon, 12 Oct 2020 11:53:51 +1100 (EST)
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+In-Reply-To: <CAD05_j2dX-8ObXkr+VRFWpcNpnZmNUqACPvzcG-TZTiZY=xm+Q@mail.gmail.com>
+References: <20201010232948.5F33818C0A6@mercury.lcs.mit.edu>
+ <CAD05_j2dX-8ObXkr+VRFWpcNpnZmNUqACPvzcG-TZTiZY=xm+Q@mail.gmail.com>
+Message-ID: <alpine.BSF.2.21.9999.2010121148370.91515@aneurin.horsfall.org>
+
+On Mon, 12 Oct 2020, Paul Riley wrote:
+
+> Mini-Unix has removed 'raw' devices (not sure why, probably seemed 
+> un-needed),
+
+If it's relevant FreeBSD hasn't had raw devices for ages (not needed?); I 
+don't know about Penguin/OS because my Debian box is off the air right 
+now (and my Ubuntu box's video is beyond repair).
+
+-- Dave
+
+From imp at bsdimp.com  Mon Oct 12 11:56:26 2020
+From: imp at bsdimp.com (Warner Losh)
+Date: Sun, 11 Oct 2020 19:56:26 -0600
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+In-Reply-To: <alpine.BSF.2.21.9999.2010121148370.91515@aneurin.horsfall.org>
+References: <20201010232948.5F33818C0A6@mercury.lcs.mit.edu>
+ <CAD05_j2dX-8ObXkr+VRFWpcNpnZmNUqACPvzcG-TZTiZY=xm+Q@mail.gmail.com>
+ <alpine.BSF.2.21.9999.2010121148370.91515@aneurin.horsfall.org>
+Message-ID: <CANCZdfpBcb6EXKgvgU-ZHETK4kdXajrynu52eYWtn+ZFsc3hGQ@mail.gmail.com>
+
+On Sun, Oct 11, 2020, 6:55 PM Dave Horsfall <dave at horsfall.org> wrote:
+
+> On Mon, 12 Oct 2020, Paul Riley wrote:
+>
+> > Mini-Unix has removed 'raw' devices (not sure why, probably seemed
+> > un-needed),
+>
+> If it's relevant FreeBSD hasn't had raw devices for ages (not needed?);
+
+
+No longer needed. Phk removed the need for different types of devices for
+disks as part of the geom work. It required, though, that unaligned I/O on
+the block device worked...
+
+I
+> don't know about Penguin/OS because my Debian box is off the air right
+> now (and my Ubuntu box's video is beyond repair).
+>
+
+Last I checked, linux still had both.
+
+Warner
+
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20201011/b006f09e/attachment.htm>
+
+From andreww591 at gmail.com  Mon Oct 12 12:09:29 2020
+From: andreww591 at gmail.com (Andrew Warkentin)
+Date: Sun, 11 Oct 2020 20:09:29 -0600
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+In-Reply-To: <CANCZdfpBcb6EXKgvgU-ZHETK4kdXajrynu52eYWtn+ZFsc3hGQ@mail.gmail.com>
+References: <20201010232948.5F33818C0A6@mercury.lcs.mit.edu>
+ <CAD05_j2dX-8ObXkr+VRFWpcNpnZmNUqACPvzcG-TZTiZY=xm+Q@mail.gmail.com>
+ <alpine.BSF.2.21.9999.2010121148370.91515@aneurin.horsfall.org>
+ <CANCZdfpBcb6EXKgvgU-ZHETK4kdXajrynu52eYWtn+ZFsc3hGQ@mail.gmail.com>
+Message-ID: <CAD-qYGoLoTr+HmnnaXjCOnmKvLETtKSitQo0RzHbpck3zs0xCw@mail.gmail.com>
+
+On 10/11/20, Warner Losh <imp at bsdimp.com> wrote:
+>
+> Last I checked, linux still had both.
+>
+I don't think I've ever seen a Linux distribution with separate raw
+block device files.
+
+From krewat at kilonet.net  Tue Oct 13 02:57:07 2020
+From: krewat at kilonet.net (Arthur Krewat)
+Date: Mon, 12 Oct 2020 12:57:07 -0400
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+In-Reply-To: <CANCZdfpBcb6EXKgvgU-ZHETK4kdXajrynu52eYWtn+ZFsc3hGQ@mail.gmail.com>
+References: <20201010232948.5F33818C0A6@mercury.lcs.mit.edu>
+ <CAD05_j2dX-8ObXkr+VRFWpcNpnZmNUqACPvzcG-TZTiZY=xm+Q@mail.gmail.com>
+ <alpine.BSF.2.21.9999.2010121148370.91515@aneurin.horsfall.org>
+ <CANCZdfpBcb6EXKgvgU-ZHETK4kdXajrynu52eYWtn+ZFsc3hGQ@mail.gmail.com>
+Message-ID: <faab01ad-bbe9-6b50-3592-e526224863bf@kilonet.net>
+
+On 10/11/2020 9:56 PM, Warner Losh wrote:
+> unaligned I/O on the block device
+Sorry, I have to laugh... isn't that an oxymoron? ;)
+
+But then, I'm more of a BLKI/BLKO kinda guy (TOPS-10).
+
+ak
+
+
+From bakul at iitbombay.org  Tue Oct 13 03:46:33 2020
+From: bakul at iitbombay.org (Bakul Shah)
+Date: Mon, 12 Oct 2020 10:46:33 -0700
+Subject: [TUHS] FreeBSD disk devices (Re: Choice of Unix for 11/03 and
+ 11/23+ Systems
+In-Reply-To: <faab01ad-bbe9-6b50-3592-e526224863bf@kilonet.net>
+References: <20201010232948.5F33818C0A6@mercury.lcs.mit.edu>
+ <CAD05_j2dX-8ObXkr+VRFWpcNpnZmNUqACPvzcG-TZTiZY=xm+Q@mail.gmail.com>
+ <alpine.BSF.2.21.9999.2010121148370.91515@aneurin.horsfall.org>
+ <CANCZdfpBcb6EXKgvgU-ZHETK4kdXajrynu52eYWtn+ZFsc3hGQ@mail.gmail.com>
+ <faab01ad-bbe9-6b50-3592-e526224863bf@kilonet.net>
+Message-ID: <35E93126-1C37-471B-82E6-FEA71A062307@iitbombay.org>
+
+On Oct 12, 2020, at 9:57 AM, Arthur Krewat <krewat at kilonet.net> wrote:
+> 
+> On 10/11/2020 9:56 PM, Warner Losh wrote:
+>> unaligned I/O on the block device
+> Sorry, I have to laugh... isn't that an oxymoron? ;)
+
+Actually there are no *block* devices in FreeBSD.
+And while raw device files such as /dev/r<blkdev>
+no longer exist, it is the block devices (with
+their buffering etc.) that are gone. Only raw devices
+exist now.
+
+And FreeBSD raw disk device drivers don't allow
+unaligned I/O access. Nor should they paper over
+what is not allowed by the underlying device. Try
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+unsigned char buf[1024];
+
+int main(int c, char**v) {
+        char* a = c > 1? v[1] : "1";
+        off_t off = (off_t)strtoull(a, 0, 0);
+        ssize_t r = pread(0, buf, sizeof buf, off);
+        if (r < 0) { perror("read"); return 1; }
+        for (int i = 0; i < 4; i++) printf(" %02x", buf[i]);
+        printf("\n");
+        return 0;
+}
+
+
+From imp at bsdimp.com  Tue Oct 13 03:54:46 2020
+From: imp at bsdimp.com (Warner Losh)
+Date: Mon, 12 Oct 2020 11:54:46 -0600
+Subject: [TUHS] FreeBSD disk devices (Re: Choice of Unix for 11/03 and
+ 11/23+ Systems
+In-Reply-To: <35E93126-1C37-471B-82E6-FEA71A062307@iitbombay.org>
+References: <20201010232948.5F33818C0A6@mercury.lcs.mit.edu>
+ <CAD05_j2dX-8ObXkr+VRFWpcNpnZmNUqACPvzcG-TZTiZY=xm+Q@mail.gmail.com>
+ <alpine.BSF.2.21.9999.2010121148370.91515@aneurin.horsfall.org>
+ <CANCZdfpBcb6EXKgvgU-ZHETK4kdXajrynu52eYWtn+ZFsc3hGQ@mail.gmail.com>
+ <faab01ad-bbe9-6b50-3592-e526224863bf@kilonet.net>
+ <35E93126-1C37-471B-82E6-FEA71A062307@iitbombay.org>
+Message-ID: <CANCZdfpQ5wFW+G3YaA_ocJV83LqJfaLHxMZ=5F6dKRJTxUrkvQ@mail.gmail.com>
+
+On Mon, Oct 12, 2020 at 11:47 AM Bakul Shah <bakul at iitbombay.org> wrote:
+
+> On Oct 12, 2020, at 9:57 AM, Arthur Krewat <krewat at kilonet.net> wrote:
+> >
+> > On 10/11/2020 9:56 PM, Warner Losh wrote:
+> >> unaligned I/O on the block device
+> > Sorry, I have to laugh... isn't that an oxymoron? ;)
+>
+> Actually there are no *block* devices in FreeBSD.
+> And while raw device files such as /dev/r<blkdev>
+> no longer exist, it is the block devices (with
+> their buffering etc.) that are gone. Only raw devices
+> exist now.
+>
+
+There's still the buffer cache that does do buffering on the devices... but
+it's a different kind of buffering than traditional kernels.  but you're
+right, only the cdevs are plumbed down, not the bdevs.
+
+
+> And FreeBSD raw disk device drivers don't allow
+> unaligned I/O access. Nor should they paper over
+> what is not allowed by the underlying device. Try
+>
+> #include <stdio.h>
+> #include <stdlib.h>
+> #include <unistd.h>
+>
+> unsigned char buf[1024];
+>
+> int main(int c, char**v) {
+>         char* a = c > 1? v[1] : "1";
+>         off_t off = (off_t)strtoull(a, 0, 0);
+>         ssize_t r = pread(0, buf, sizeof buf, off);
+>         if (r < 0) { perror("read"); return 1; }
+>         for (int i = 0; i < 4; i++) printf(" %02x", buf[i]);
+>         printf("\n");
+>         return 0;
+> }
+>
+
+I meant something different about 'unaligned' access. I mean that the
+buffers you read the data into needn't be page aligned. That causes a fair
+amount of hair in the lower layers where I spend much of my time...
+
+You are correct you have to read them on an LBA boundary.
+
+Warner
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20201012/7f58d919/attachment.htm>
+
+From jnc at mercury.lcs.mit.edu  Tue Oct 13 05:27:52 2020
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon, 12 Oct 2020 15:27:52 -0400 (EDT)
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+Message-ID: <20201012192752.BE8E618C0D9@mercury.lcs.mit.edu>
+
+    > From: Jay Logue
+
+    > Are your other changes available anywhere?
+
+Yeah, they're all up-loaded, and linked to from my 'Running MINI-UNIX on the
+LSI-11' page:
+
+  http://ana-3.lcs.mit.edu/~jnc/tech/unix/Mini/Mini.html
+
+It's mostly done, but I'll probably continue to tweak it a bir.
+
+If anyone notices any errors, or has questions that aren't answered there, etc
+please let me know.
+
+
+    > Also, I was wondering if it might be useful to have a github repo with
+    > these changes. I'd be happy to help set this up.
+
+Feel free to go for it, if people think it would be useful. (I'm not sure
+there is a 'basic' MINI-UNIX repo to start on.)
+
+      Noel
+
+From jnc at mercury.lcs.mit.edu  Tue Oct 13 08:43:26 2020
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon, 12 Oct 2020 18:43:26 -0400 (EDT)
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+Message-ID: <20201012224326.51A1618C0E7@mercury.lcs.mit.edu>
+
+    > From: Paul Riley
+
+    > port Mini-Unix will create some demand for device drivers on the /03
+    > systems, so may be worthwhile to implement RAW device.
+
+I'm not sure I understand this ("worthwhile to implement RAW device"); let me
+explain what the removal of 'raw' I/O devices from MINI-UNIX really means, and
+then ask what it is that you are after.
+
+
+Early Unix (no idea about later ones) supports two classes of devices; 'block'
+devices, which can be used to hold file-systems, and 'character' devices,
+which cannot. (I seem to recall a paper, perhaps from the Unix BSTJ issue,
+which talks about them in some detail.)
+
+The former are those where the underlying physical device has restricted
+semantics; they are block-addressable mass storage devices. All access to them
+is via the system's block buffer pool, so reads/writes by the user of
+arbitrary size and location are possible. 'Character' devices are everything
+else.
+
+'Raw' devices are an interface to the devices of 'block' devices which does
+not go through the system's buffer pool; I/O operations to them perform DMA
+directly to the user process' memory. They are 'character' devices, in the
+Unix device taxonomy. The only semantics available are those supported by the
+hardware - e.g. seeks only to block boundaries.
+
+So when I say that MINI-UNIX doesn't have 'raw' devices, it just means that
+e.g. the RK disk controller device _only_ talks to the Unix block buffer
+system; if a user program wants to look at the disk contents, it has to go
+via that system.
+
+
+So, with that in hand, what exactly is the need you forsee for raw devices
+in MINI-UNIX?
+
+Also, I've started to work on getting the V6 RL driver to work in MINI-UNIX;
+it should have been easy (just delete the charater device interface), but
+for some reason it didn't work when I tried it. I'll look at it in more
+detail 'soon'.
+
+       Noel
+
+From andrew at humeweb.com  Sat Oct 17 10:13:19 2020
+From: andrew at humeweb.com (Andrew Hume)
+Date: Fri, 16 Oct 2020 17:13:19 -0700
+Subject: [TUHS] Stanley lieber
+Message-ID: <D13E06E3-678A-486D-84DB-462BEBFA69AE@humeweb.com>
+
+can stanley lieber contact me please (regarding an 8th edition manual)?
+i can’t contact you via sl at stanleylieber.com (because of an SPF error),
+so perhaps via another email address.
+
+thanks
+
+
+From dave at horsfall.org  Sat Oct 17 13:21:04 2020
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sat, 17 Oct 2020 14:21:04 +1100 (EST)
+Subject: [TUHS] Stanley lieber
+In-Reply-To: <D13E06E3-678A-486D-84DB-462BEBFA69AE@humeweb.com>
+References: <D13E06E3-678A-486D-84DB-462BEBFA69AE@humeweb.com>
+Message-ID: <alpine.BSF.2.21.9999.2010171416500.91515@aneurin.horsfall.org>
+
+On Fri, 16 Oct 2020, Andrew Hume wrote:
+
+> can stanley lieber contact me please (regarding an 8th edition manual)? 
+> i can’t contact you via sl at stanleylieber.com (because of an SPF error), 
+> so perhaps via another email address.
+
+SPF is utterly broken as an anti-spam measure.
+
+-- Dave, the artist formerly known as "Zick"
+
+From rodrigosloop at gmail.com  Sat Oct 17 14:58:33 2020
+From: rodrigosloop at gmail.com (=?UTF-8?Q?Rodrigo_G=2E_L=C3=B3pez?=)
+Date: Sat, 17 Oct 2020 06:58:33 +0200
+Subject: [TUHS] Stanley lieber
+In-Reply-To: <D13E06E3-678A-486D-84DB-462BEBFA69AE@humeweb.com>
+References: <D13E06E3-678A-486D-84DB-462BEBFA69AE@humeweb.com>
+Message-ID: <CA+cCjXqtKwfLw4eJkc06EtjGNO8wNvY_VXsaW36aqcGmina8AA@mail.gmail.com>
+
+you can ask him on the 9front ml regarding this email issue, then he might
+give you an alternative channel to talk privately.
+
+On Sat, Oct 17, 2020, 3:02 AM Andrew Hume <andrew at humeweb.com> wrote:
+
+> can stanley lieber contact me please (regarding an 8th edition manual)?
+> i can’t contact you via sl at stanleylieber.com (because of an SPF error),
+> so perhaps via another email address.
+>
+> thanks
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20201017/1cad993a/attachment.htm>
+
+From mphuff at gmail.com  Mon Oct 19 06:42:16 2020
+From: mphuff at gmail.com (Michael Huff)
+Date: Sun, 18 Oct 2020 12:42:16 -0800
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+In-Reply-To: <alpine.BSF.2.21.9999.2010121148370.91515@aneurin.horsfall.org>
+References: <20201010232948.5F33818C0A6@mercury.lcs.mit.edu>
+ <CAD05_j2dX-8ObXkr+VRFWpcNpnZmNUqACPvzcG-TZTiZY=xm+Q@mail.gmail.com>
+ <alpine.BSF.2.21.9999.2010121148370.91515@aneurin.horsfall.org>
+Message-ID: <d2565eaf-2890-0910-3d38-eb46e5ae8ab6@gmail.com>
+
+
+On 10/11/2020 4:53 PM, Dave Horsfall wrote:
+> On Mon, 12 Oct 2020, Paul Riley wrote:
+>
+>> Mini-Unix has removed 'raw' devices (not sure why, probably seemed 
+>> un-needed),
+>
+> If it's relevant FreeBSD hasn't had raw devices for ages (not 
+> needed?); I don't know about Penguin/OS because my Debian box is off 
+> the air right now (and my Ubuntu box's video is beyond repair).
+>
+> -- Dave
+
+I suspect it's really irrelevant, but NetBSD (as of version 9) still 
+uses raw devices; at least for fsck (I have no idea about anywhere else).
+
+I haven't tried; but it wouldn't surprise me to find that OpenBSD uses 
+raw devices too.
+
+
+
+
+From dave at horsfall.org  Mon Oct 19 07:23:56 2020
+From: dave at horsfall.org (Dave Horsfall)
+Date: Mon, 19 Oct 2020 08:23:56 +1100 (EST)
+Subject: [TUHS] [ Slightly OT ] Vaxen, my children,
+ just don't belong some places
+Message-ID: <alpine.BSF.2.21.9999.2010190819590.34519@aneurin.horsfall.org>
+
+[ Warning: you need to be an OF to understand the references ]
+
+Time to re-post this...  And trust me, an IBM 3090 was really big iron in 
+those days.
+
+I don't recall the author, but I found it on the 'net.
+
+-----
+
+VAXen, my children, just don't belong some places.  In my business, I am 
+frequently called by small sites and startups having VAX problems.  So when a 
+friend of mine in an Extremely Large Financial Institution (ELFI) called me one 
+day to ask for help, I was intrigued because this outfit is a really major VAX 
+user - they have several large herds of VAXen - and plenty of sharp VAXherds to 
+take care of them.
+
+So I went to see what sort of an ELFI mess they had gotten into.  It seems they 
+had shoved a small 750 with two RA60s running a single application, PC style, 
+into a data center with two IBM 3090s and just about all the rest of the disk 
+drives in the world.  The computer room was so big it had three street 
+addresses.  The operators had only IBM experience and, to quote my friend, they 
+were having "a little trouble adjusting to the VAX", were a bit hostile towards 
+it and probably needed some help with system management.  Hmmm, hostility... 
+Sigh.
+
+Well, I thought it was pretty ridiculous for an outfit with all that VAX muscle 
+elsewhere to isolate a dinky old 750 in their Big Blue Country, and said so 
+bluntly.  But my friend patiently explained that although small, it was an 
+"extremely sensitive and confidential application."  It seems that the 750 had 
+originally been properly clustered with the rest of a herd and in the care of 
+one of their best VAXherds.  But the trouble started when the Chief User went 
+to visit his computer and its VAXherd.
+
+He came away visibly disturbed and immediately complained to the ELFI's 
+Director of Data Processing that, "There are some very strange people in there 
+with the computers."  Now since this user person was the Comptroller of this 
+Extremely Large Financial Institution, the 750 had been promptly hustled over 
+to the IBM data center which the Comptroller said, "was a more suitable place." 
+The people there wore shirts and ties and didn't wear head bands or cowboy 
+hats.
+
+So my friend introduced me to the Comptroller, who turned out to be five feet 
+tall, 85 and a former gnome of Zurich.  He had a young apprentice gnome who was 
+about 65.  The two gnomes interviewed me in whispers for about an hour before 
+they decided my modes of dress and speech were suitable for managing their 
+system and I got the assignment.
+
+There was some confusion, understandably, when I explained that I would 
+immediately establish a procedure for nightly backups.  The senior gnome seemed 
+to think I was going to put the computer in reverse, but the apprentice's son 
+had an IBM PC and he quickly whispered that "backup" meant making a copy of a 
+program borrowed from a friend and why was I doing that?  Sigh.
+
+I was shortly introduced to the manager of the IBM data center, who greeted me 
+with joy and anything but hostility.  And the operators really weren't hostile 
+- it just seemed that way.  It's like the driver of a Mack 18 wheeler, with a 
+condo behind the cab, who was doing 75 when he ran over a moped doing its best 
+to get away at 45.  He explained sadly, "I really warn't mad at mopeds but to 
+keep from runnin' over that'n, I'da had to slow down or change lanes!"
+
+Now the only operation they had figured out how to do on the 750 was reboot it. 
+This was their universal cure for any and all problems. After all it works on a 
+PC, why not a VAX?  Was there a difference? Sigh.
+
+But I smiled and said, "No sweat, I'll train you.  The first command you learn 
+is HELP" and proceeded to type it in on the console terminal.  So the data 
+center manager, the shift supervisor and the eight day-operators watched the 
+LA100 buzz out the usual introductory text.  When it finished they turned to me 
+with expectant faces and I said in an avuncular manner, "This is your most 
+important command!"
+
+The shift supervisor stepped forward and studied the text for about a minute. 
+He then turned with a very puzzled expression on his face and asked, "What do 
+you use it for?"  Sigh.
+
+Well, I tried everything.  I trained and I put the doc set on shelves by the 
+750 and I wrote a special 40 page doc set and then a four page doc set.  I 
+designed all kinds of command files to make complex operations into simple 
+foreign commands and I taped a list of these simplified commands to the top of 
+the VAX.  The most successful move was adding my home phone number.
+
+The cheat sheets taped on the top of the CPU cabinet needed continual 
+maintenance, however.  It seems the VAX was in the quietest part of the data 
+center, over behind the scratch tape racks.  The operators ate lunch on the CPU 
+cabinet and the sheets quickly became coated with pizza drippings, etc.
+
+But still the most used solution to hangups was a reboot and I gradually got 
+things organized so that during the day when the gnomes were using the system, 
+the operators didn't have to touch it.  This smoothed things out a lot.
+
+Meanwhile, the data center was getting new TV security cameras, a halon gas 
+fire extinguisher system and an immortal power source.  The data center manager 
+apologized because the VAX had not been foreseen in the plan and so could not 
+be connected to immortal power.  The VAX and I felt a little rejected but I 
+made sure that booting on power recovery was working right. At least it would 
+get going again quickly when power came back.
+
+Anyway, as a consolation prize, the data center manager said he would have one 
+of the security cameras adjusted to cover the VAX.  I thought to myself, 
+"Great, now we can have 24 hour video tapes of the operators eating Chinese 
+takeout on the CPU."  I resolved to get a piece of plastic to cover the cheat 
+sheets.
+
+One day, the apprentice gnome called to whisper that the senior was going to 
+give an extremely important demonstration.  Now I must explain that what the 
+750 was really doing was holding our National Debt.  The Reagan administration 
+had decided to privatize it and had quietly put it out for bid.  My Extreme 
+Large Financial Institution had won the bid for it and was, as ELFIs are wont 
+to do, making an absolute bundle on the float.
+
+On Monday the Comptroller was going to demonstrate to the board of directors 
+how he could move a trillion dollars from Switzerland to the Bahamas.  The 
+apprentice whispered, "Would you please look in on our computer?  I'm sure 
+everything will be fine, sir, but we will feel better if you are present.  I'm 
+sure you understand?"  I did.
+
+Monday morning, I got there about five hours before the scheduled demo to check 
+things over.  Everything was cool.  I was chatting with the shift supervisor 
+and about to go upstairs to the Comptroller's office.  Suddenly there was a 
+power failure.
+
+The emergency lighting came on and the immortal power system took over the load 
+of the IBM 3090s.  They continued smoothly, but of course the VAX, still on 
+city power, died.  Everyone smiled and the dead 750 was no big deal because it 
+was 7 AM and gnomes don't work before 10 AM.  I began worrying about whether I 
+could beg some immortal power from the data center manager in case this was a 
+long outage.
+
+Immortal power in this system comes from storage batteries for the first five 
+minutes of an outage.  Promptly at one minute into the outage we hear the gas 
+turbine powered generator in the sub-basement under us automatically start up 
+getting ready to take the load on the fifth minute. We all beam at each other.
+
+At two minutes into the outage we hear the whine of the backup gas turbine 
+generator starting.  The 3090s and all those disk drives are doing just fine. 
+Business as usual.  The VAX is dead as a door nail but what the hell.
+
+At precisely five minutes into the outage, just as the gas turbine is taking 
+the load, city power comes back on and the immortal power source commits 
+suicide.  Actually it was a double murder and suicide because it took both 
+3090s with it.
+
+So now the whole data center was dead, sort of.  The fire alarm system had its 
+own battery backup and was still alive.  The lead acid storage batteries of the 
+immortal power system had been discharging at a furious rate keeping all those 
+big blue boxes running and there was a significant amount of sulfuric acid 
+vapor.  Nothing actually caught fire but the smoke detectors were convinced it 
+had.
+
+The fire alarm klaxon went off and the siren warning of imminent halon gas 
+release was screaming.  We started to panic but the data center manager shouted 
+over the din, "Don't worry, the halon system failed its acceptance test last 
+week.  It's disabled and nothing will happen."
+
+He was half right, the primary halon system indeed failed to discharge. But the 
+secondary halon system observed that the primary had conked and instantly did 
+its duty, which was to deal with Dire Disasters.  It had twice the capacity and 
+six times the discharge rate.
+
+Now the ear splitting gas discharge under the raised floor was so massive and 
+fast, it blew about half of the floor tiles up out of their framework. It came 
+up through the floor into a communications rack and blew the cover panels off, 
+decking an operator.  Looking out across that vast computer room, we could see 
+the air shimmering as the halon mixed with it.
+
+We stampeded for exits to the dying whine of 175 IBM disks.  As I was escaping 
+I glanced back at the VAX, on city power, and noticed the usual flickering of 
+the unit select light on its system disk indicating it was happily rebooting.
+
+Twelve firemen with air tanks and axes invaded.  There were frantic phone calls 
+to the local IBM Field Service office because both the live and backup 3090s 
+were down.  About twenty minutes later, seventeen IBM CEs arrived with dozens 
+of boxes and, so help me, a barrel.  It seems they knew what to expect when an 
+immortal power source commits murder.
+
+In the midst of absolute pandemonium, I crept off to the gnome office and 
+logged on.  After extensive checking it was clear that everything was just fine 
+with the VAX and I began to calm down.  I called the data center manager's 
+office to tell him the good news.  His secretary answered with, "He isn't 
+expected to be available for some time.  May I take a message?" I left a 
+slightly smug note to the effect that, unlike some other computers, the VAX was 
+intact and functioning normally.
+
+Several hours later, the gnome was whispering his way into a demonstration of 
+how to flick a trillion dollars from country 2 to country 5.  He was just 
+coming to the tricky part, where the money had been withdrawn from Switzerland 
+but not yet deposited in the Bahamas.  He was proceeding very slowly and the 
+directors were spellbound.  I decided I had better check up on the data center.
+
+\Most of the floor tiles were back in place.  IBM had resurrected one of 
+the 
+3090s and was running tests.  What looked like a bucket brigade was working on 
+the other one.  The communication rack was still naked and a fireman was 
+standing guard over the immortal power corpse.  Life was returning to normal, 
+but the Big Blue Country crew was still pretty shaky.
+
+Smiling proudly, I headed back toward the triumphant VAX behind the tape racks 
+where one of the operators was eating a plump jelly bun on the 750 CPU.  He saw 
+me coming, turned pale and screamed to the shift supervisor, "Oh my God, we 
+forgot about the VAX!"  Then, before I could open my mouth, he rebooted it.  It 
+was Monday, 19-Oct-1987.  VAXen, my children, just don't belong some places.
+
+-- Dave
+
+From norman at oclsc.org  Mon Oct 19 07:36:32 2020
+From: norman at oclsc.org (Norman Wilson)
+Date: Sun, 18 Oct 2020 17:36:32 -0400 (EDT)
+Subject: [TUHS] Fwd: Choice of Unix for 11/03 and 11/23+ Systems
+Message-ID: <20201018213632.27A364422E@lignose.oclsc.org>
+
+Just for completeness: I have one OpenBSD 6.7 system at
+home and look after several more at work, and yes, OpenBSD
+still has raw disk devices.
+
+Norman Wilson
+Toronto ON
+
+From dot at dotat.at  Mon Oct 19 08:22:26 2020
+From: dot at dotat.at (Tony Finch)
+Date: Sun, 18 Oct 2020 23:22:26 +0100
+Subject: [TUHS] [ Slightly OT ] Vaxen, my children,
+ just don't belong some places
+In-Reply-To: <alpine.BSF.2.21.9999.2010190819590.34519@aneurin.horsfall.org>
+References: <alpine.BSF.2.21.9999.2010190819590.34519@aneurin.horsfall.org>
+Message-ID: <alpine.DEB.2.20.2010182319450.8465@grey.csi.cam.ac.uk>
+
+Dave Horsfall <dave at horsfall.org> wrote:
+>
+> I don't recall the author, but I found it on the 'net.
+
+http://crash.com/fun/texts/vaxen-dont.html says:
+
+"The author of this piece is Jack Harvey, harvey(at)eisner.decus.org, and
+it was originally published under the title "The Immortal Murderer" on
+January 18th, 1989 on DECUServe, the DECUS member bulletin board."
+
+And within two months it was already being copied around without
+proper attribution - http://www.textfiles.com/100/vaxen.jok
+
+Tony.
+-- 
+f.anthony.n.finch  <dot at dotat.at>  http://dotat.at/
+Trafalgar: Southerly or southeasterly, 5 to 7, decreasing 3 or 4 until later
+in southeast. Moderate, occasionally rough. Rain or thundery showers in west.
+Good, occasionally poor.
+
+From jnc at mercury.lcs.mit.edu  Thu Oct 29 02:03:29 2020
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Wed, 28 Oct 2020 12:03:29 -0400 (EDT)
+Subject: [TUHS] LSI-11 MINI-UNIX improvements
+Message-ID: <20201028160329.7959318C0A8@mercury.lcs.mit.edu>
+
+I've made a number of 'improvements' to the LSI-11 version of MINI-UNIX.
+
+(I'm starting to be fairly impressed with MINI-UNIX; for people who have a
+hardware PDP-11 with no memory management, it's a very capable system; most
+of V6, and very good source compatability.)
+
+
+First, with help from feedback from Paul Riley, I've improved the "Running
+MINI-UNIX on the LSI-11" page:
+
+  http://ana-3.lcs.mit.edu/~jnc/tech/unix/Mini/Mini.html
+
+It should be pretty usable at this point, but more feedback on further
+improvements gratefully accepted! (Hint, hint :-)
+
+
+In code changes, I have a new version of mch.s:
+
+  http://ana-3.lcs.mit.edu/~jnc/tech/unix/Mini/mch.s
+
+The main improvements are a tiny prs() and prn(), to allow systems to leave
+out prf.c to save space, but still be able to print messages (rather than
+simply dying silently, as is MINI-UNIX's wont). The prs() also saves and
+restores the console'e CSR, and prints with console interrupts off (to prevent
+spurious interrupts).
+
+An idea from Milo Velimirovic (use the top of the stack!) resulted in minor
+improvements in two places where there wasn't a register free to use
+MFPS/MTPS.
+
+
+Also,I have a working RL driver for MINI-UNIX now (I was able to attach a V6
+filesystem to RL0 and then could do "icheck /dev/rl0" and it worked); I'll be
+up-loading that, and adding directions for using it, 'soon'. (It pretty much
+just worked; pulled out the XMem bits, and the raw I/O calls, and it worked
+right off.)
+
+To make an RL the root filesystem, I need to tweak a few more things; the
+parameters ROOTDEV, etc - crucially, including SWPLO and NSWAP - are currently
+set in param.h, so you'd have to recompile the OS to switch disk types. I'm
+going to put them back as externals in conf.c, the way they are in V6; that
+way you'll only need an 'rlconf.c' to switch roots. (I'm not sure why they
+were moved; it only saves one word each to make them #define's.)
+
+     Noel
+
+From lm at mcvoy.com  Sat Oct 31 12:37:41 2020
+From: lm at mcvoy.com (Larry McVoy)
+Date: Fri, 30 Oct 2020 19:37:41 -0700
+Subject: [TUHS] Eric
+Message-ID: <20201031023741.GO25151@mcvoy.com>
+
+Does anyone have an email for Eric Schmidt?  My vibe is he is super 
+private so contact me off list if you need to know why I am looking.
+
+I overlapped with him at Sun and talked to him a few times but I doubt
+he remembers me.
+
+--lm
+

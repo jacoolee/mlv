@@ -1,0 +1,1129 @@
+From W.F.J.Mueller at gsi.de  Thu Jan  4 04:18:12 2007
+From: W.F.J.Mueller at gsi.de (Walter F.J. Mueller)
+Date: Wed, 03 Jan 2007 19:18:12 +0100
+Subject: [pups] 2.11BSD Patch 445; FPSIM fixed;
+	211bsd runs on systems without FPP
+Message-ID: <459BF364.8010602@gsi.de>
+
+A note to all 2.11bsd users:
+
+Some time ago I looked into running 2.11bsd on systems without
+floating point unit. The release notes state that this is untested
+and unsupported, and indeed it didn't work.
+
+Robin Birch some time ago fixed part of the issues, see patch 434,
+but still the kernel paniced when the very first program was started.
+I managed to localize and fix the problem in sys/pdp/mch_fpsim.s.
+
+Steven Schultz right away issued 2.11BSD patch #445. All patches
+up to and including 445 are provided by Steven under
+
+   ftp://sg-1.ims.ideas.gd-ais.com/pub/2.11BSD
+
+A patch level 445 system will now boot on simh for example on a
+
+   set cpu 11/70 nofpp 4m
+
+configuration and work just fine, albeit a little slower.
+
+It should thus also work on a real 11/70 without FPP. I heard
+of some 11/70 with non-working FPP's, so this maybe good news
+for the owners.
+
+
+			With best regards,
+
+				Walter Mueller
+
+-- 
+Dr. Walter F.J. Müller    Mail:  W.F.J.Mueller at gsi.de
+GSI,  Abteilung KP3       Phone: +49-6159-71-2766
+D-64291 Darmstadt         FAX:   +49-6159-71-3762
+URL: http://www-linux.gsi.de/~mueller/
+
+
+From rjtucke at gmail.com  Wed Jan 24 14:11:27 2007
+From: rjtucke at gmail.com (Ross Tucker)
+Date: Tue, 23 Jan 2007 21:11:27 -0700
+Subject: [pups] Advice on which PDP-11 processor handbook to buy
+Message-ID: <2f30dc950701232011h1ac14dafgb81ab07c06b167d7@mail.gmail.com>
+
+Hello all-
+I'm a n00b on this list, so please forgive me my sins as I forgive
+those who.... uh, never mind. Anyway, I am looking to get a "PDP-11
+Processor Handbook" from Amazon or eBay (so I can understand the Lions
+book) and there are so many different editions and versions... Lions
+writes about the 11/40, but supposedly, that's not too different from
+the /45 or /70. My simh boot images for v6 are for the /45 (though
+supposedly I'm supposed to be able to modify them to run on the
+others, right?).
+
+What I'm asking is your advice on which Handbook to buy. Here is a
+synopsis on the editions and prices from amazon:
+/04/34A/44/60/70  (1979) $10
+/04/34/45/55/60  (1978) $40
+/70 (1975) $16
+/04, 24, 34A, 70 (Jun 1981) $16
+/04/05/10/35/40/45 (1975) $45
+
+What do you think?
+
+Thanks for your time,
+Ross
+
+
+From ggs at shiresoft.com  Wed Jan 24 15:17:48 2007
+From: ggs at shiresoft.com (Guy Sotomayor)
+Date: Tue, 23 Jan 2007 21:17:48 -0800
+Subject: [pups] Advice on which PDP-11 processor handbook to buy
+In-Reply-To: <2f30dc950701232011h1ac14dafgb81ab07c06b167d7@mail.gmail.com>
+References: <2f30dc950701232011h1ac14dafgb81ab07c06b167d7@mail.gmail.com>
+Message-ID: <45B6EBFC.4040300@shiresoft.com>
+
+
+
+Ross Tucker wrote:
+> Hello all-
+> I'm a n00b on this list, so please forgive me my sins as I forgive
+> those who.... uh, never mind. Anyway, I am looking to get a "PDP-11
+> Processor Handbook" from Amazon or eBay (so I can understand the Lions
+> book) and there are so many different editions and versions... Lions
+> writes about the 11/40, but supposedly, that's not too different from
+> the /45 or /70. My simh boot images for v6 are for the /45 (though
+> supposedly I'm supposed to be able to modify them to run on the
+> others, right?).
+>   
+There are a number of differences between the /40 & /45 and /70:
+
+    * 45 & 70 are split I & D machines
+    * /40 has it own floating point that is incompatible with any others
+    * 11/34 is basically an 11/40 (but can have the compatible floating
+      point)
+    * 70 has a Unibus map that allows it to have > 128KW (256KB).
+    * 45 & 70 have user/supervisor/kernel mode while others just have
+      user/kernel mode
+    * there are a few other differences that escape me at the moment
+
+> What I'm asking is your advice on which Handbook to buy. Here is a
+> synopsis on the editions and prices from amazon:
+> /04/34A/44/60/70  (1979) $10
+> /04/34/45/55/60  (1978) $40
+> /70 (1975) $16
+> /04, 24, 34A, 70 (Jun 1981) $16
+> /04/05/10/35/40/45 (1975) $45
+>
+>   
+If you're trying to understand Lyons, then I'd probably go with the last 
+book as the /40 & /45 were the ones most likely to be running v6 
+originally (although I did run it on a /34 back in the day).
+
+-- 
+
+TTFN - Guy
+
+
+
+
+From iking at killthewabbit.org  Wed Jan 24 15:25:52 2007
+From: iking at killthewabbit.org (Ian King)
+Date: Tue, 23 Jan 2007 21:25:52 -0800
+Subject: [pups] Advice on which PDP-11 processor handbook to buy
+In-Reply-To: <2f30dc950701232011h1ac14dafgb81ab07c06b167d7@mail.gmail.com>
+Message-ID: <032601c73f78$1d553fa0$2a0010ac@killthewabbit.org>
+
+Wow, they're saying $40 for the 1978 book?  I don't think I'll lend out my
+copy....
+
+FYI, I run v6 on a PDP-11/34a with RK05 drives.  The kernel that boots up
+from the install media tries to be pretty generic, and yes, you can make
+changes to it to optimize it for various platforms.  
+
+So the real question is: what do you want to do?  If you just want to run a
+PDP-11 in emulation, any of these books will do fine for you.  The basic
+PDP-11 instruction set is pretty constant across the series (with some
+niggling exceptions, but nothing you're likely to deal with in an emulator).
+There were extended instruction sets for some models, but again with an
+emulator you can play to your heart's content.  There were some differences
+in memory management, which may or may not be important depending on what
+you want to run; again, v6 runs fine on an 11/34 without separate I/D
+spaces, while v7 and 2.11BSD require it (as I recall).  But once again, simh
+will let you rock on with any of these OS's.  
+
+For understanding Lions (i.e. understanding the underlying hardware better),
+any of these will do.  IMHO, YMMV, MOUSE.  And welcome to the community!
+Cheers -- Ian 
+
+-----Original Message-----
+From: pups-bounces at minnie.tuhs.org [mailto:pups-bounces at minnie.tuhs.org] On
+Behalf Of Ross Tucker
+Sent: Tuesday, January 23, 2007 8:11 PM
+To: pups at minnie.tuhs.org
+Subject: [pups] Advice on which PDP-11 processor handbook to buy
+
+Hello all-
+I'm a n00b on this list, so please forgive me my sins as I forgive those
+who.... uh, never mind. Anyway, I am looking to get a "PDP-11 Processor
+Handbook" from Amazon or eBay (so I can understand the Lions
+book) and there are so many different editions and versions... Lions writes
+about the 11/40, but supposedly, that's not too different from the /45 or
+/70. My simh boot images for v6 are for the /45 (though supposedly I'm
+supposed to be able to modify them to run on the others, right?).
+
+What I'm asking is your advice on which Handbook to buy. Here is a synopsis
+on the editions and prices from amazon:
+/04/34A/44/60/70  (1979) $10
+/04/34/45/55/60  (1978) $40
+/70 (1975) $16
+/04, 24, 34A, 70 (Jun 1981) $16
+/04/05/10/35/40/45 (1975) $45
+
+What do you think?
+
+Thanks for your time,
+Ross
+_______________________________________________
+PUPS mailing list
+PUPS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From mcquiggi at sfu.ca  Wed Jan 24 16:42:08 2007
+From: mcquiggi at sfu.ca (Kevin McQuiggin)
+Date: Tue, 23 Jan 2007 22:42:08 -0800
+Subject: [pups] Advice on which PDP-11 processor handbook to buy
+Message-ID: <200701240642.l0O6g84p009069@rm-rstar.sfu.ca>
+
+An embedded and charset-unspecified text was scrubbed...
+Name: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20070123/3b62d590/attachment.ksh>
+
+From mac at Wireless.Com  Wed Jan 24 17:57:41 2007
+From: mac at Wireless.Com (Mike Cheponis)
+Date: Tue, 23 Jan 2007 23:57:41 -0800 (PST)
+Subject: [pups] Advice on which PDP-11 processor handbook to buy
+In-Reply-To: <200701240642.l0O6g84p009069@rm-rstar.sfu.ca>
+References: <200701240642.l0O6g84p009069@rm-rstar.sfu.ca>
+Message-ID: <Pine.NEB.4.64.0701232347320.718@S.culver.net>
+
+It's really nice to have an original paper copy, especially the 1975 one recommended.
+
+I'd suggest eBay as a source for it, though, if you can wait a bit until one shows up.
+
+-Mike
+
+On Tue, 23 Jan 2007, Kevin McQuiggin wrote:
+
+> Date: Tue, 23 Jan 2007 22:42:08 -0800
+> From: Kevin McQuiggin <mcquiggi at sfu.ca>
+> To: iking at killthewabbit.org
+> Cc: pups at minnie.tuhs.org
+> Subject: Re: [pups] Advice on which PDP-11 processor handbook to buy
+> 
+> Why not just download one from one of the many online archives?  Most of
+> them are in PDF format.
+>
+> On Tue, 23 Jan 2007 21:25:52 -0800 iking at killthewabbit.org wrote:
+>> Wow, they're saying $40 for the 1978 book?  I don't think I'll lend out my
+>> copy....
+>>
+>> FYI, I run v6 on a PDP-11/34a with RK05 drives.  The kernel that boots up
+>> from the install media tries to be pretty generic, and yes, you can make
+>> changes to it to optimize it for various platforms.
+>>
+>> So the real question is: what do you want to do?  If you just want to run
+> a
+>> PDP-11 in emulation, any of these books will do fine for you.  The basic
+>> PDP-11 instruction set is pretty constant across the series (with some
+>> niggling exceptions, but nothing you're likely to deal with in an
+>> emulator).
+>> There were extended instruction sets for some models, but again with an
+>> emulator you can play to your heart's content.  There were some
+> differences
+>> in memory management, which may or may not be important depending on what
+>> you want to run; again, v6 runs fine on an 11/34 without separate I/D
+>> spaces, while v7 and 2.11BSD require it (as I recall).  But once
+>> again, simh
+>> will let you rock on with any of these OS's.
+>>
+>> For understanding Lions (i.e. understanding the underlying hardware
+>> better),
+>> any of these will do.  IMHO, YMMV, MOUSE.  And welcome to the community!
+>> Cheers -- Ian
+>>
+>> -----Original Message-----
+>> From: pups-bounces at minnie.tuhs.org [mailto:pups-bounces at minnie.tuhs.org]
+> On
+>> Behalf Of Ross Tucker
+>> Sent: Tuesday, January 23, 2007 8:11 PM
+>> To: pups at minnie.tuhs.org
+>> Subject: [pups] Advice on which PDP-11 processor handbook to buy
+>>
+>> Hello all-
+>> I'm a n00b on this list, so please forgive me my sins as I forgive those
+>> who.... uh, never mind. Anyway, I am looking to get a "PDP-11 Processor
+>> Handbook" from Amazon or eBay (so I can understand the Lions
+>> book) and there are so many different editions and versions... Lions
+> writes
+>> about the 11/40, but supposedly, that's not too different from the /45 or
+>> /70. My simh boot images for v6 are for the /45 (though supposedly I'm
+>> supposed to be able to modify them to run on the others, right?).
+>>
+>> What I'm asking is your advice on which Handbook to buy. Here is a
+> synopsis
+>> on the editions and prices from amazon:
+>> /04/34A/44/60/70  (1979) $10
+>> /04/34/45/55/60  (1978) $40
+>> /70 (1975) $16
+>> /04, 24, 34A, 70 (Jun 1981) $16
+>> /04/05/10/35/40/45 (1975) $45
+>>
+>> What do you think?
+>>
+>> Thanks for your time,
+>> Ross
+>> _______________________________________________
+>> PUPS mailing list
+>> PUPS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/pups
+>>
+>> _______________________________________________
+>> PUPS mailing list
+>> PUPS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/pups
+>>
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/pups
+>
+
+
+
+From bqt at softjar.se  Wed Jan 24 18:58:08 2007
+From: bqt at softjar.se (Johnny Billquist)
+Date: Wed, 24 Jan 2007 09:58:08 +0100
+Subject: [pups] Advice on which PDP-11 processor handbook to buy
+In-Reply-To: <2f30dc950701232011h1ac14dafgb81ab07c06b167d7@mail.gmail.com>
+References: <2f30dc950701232011h1ac14dafgb81ab07c06b167d7@mail.gmail.com>
+Message-ID: <45B71FA0.9020403@softjar.se>
+
+If you want to understand the PDP-11 assembly language, any of them will do.
+
+If you want to understand the MMU and some esoteric stuff, it might be a 
+good idea to get one of the books that actually cover the exact 
+processor you're interested in.
+
+The basic instruction set is the same on all of the processors. There 
+are some very minor differences, but those are not even properly 
+documented in most of these books, and relate to how condition codes are 
+affected for some odd cases that you normally don't care about.
+
+The major groupings you can do with the PDP-11 systems are otherwise if 
+they have split I/D space, supervisor mode, unibus map and 22-bit 
+addressing, floating point (none/FIS/FPP) and EIS.
+Rougly, you can say:
+
+11/34: EIS. Optional FPP.
+11/40: None of that. Optional EIS and FIS.
+11/44: All of it. Optional FPP.
+11/45: split I/D, supervisor, EIS. Optional FPP.
+11/60: EIS. Optional FPP.
+11/70: All of it. Optional FPP.
+
+	Johnny
+
+Ross Tucker skrev:
+> Hello all-
+> I'm a n00b on this list, so please forgive me my sins as I forgive
+> those who.... uh, never mind. Anyway, I am looking to get a "PDP-11
+> Processor Handbook" from Amazon or eBay (so I can understand the Lions
+> book) and there are so many different editions and versions... Lions
+> writes about the 11/40, but supposedly, that's not too different from
+> the /45 or /70. My simh boot images for v6 are for the /45 (though
+> supposedly I'm supposed to be able to modify them to run on the
+> others, right?).
+> 
+> What I'm asking is your advice on which Handbook to buy. Here is a
+> synopsis on the editions and prices from amazon:
+> /04/34A/44/60/70  (1979) $10
+> /04/34/45/55/60  (1978) $40
+> /70 (1975) $16
+> /04, 24, 34A, 70 (Jun 1981) $16
+> /04/05/10/35/40/45 (1975) $45
+> 
+> What do you think?
+> 
+> Thanks for your time,
+> Ross
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/pups
+
+
+From bill at cs.uofs.edu  Wed Jan 24 21:37:19 2007
+From: bill at cs.uofs.edu (Bill Gunshannon)
+Date: Wed, 24 Jan 2007 06:37:19 -0500 (EST)
+Subject: [pups] Advice on which PDP-11 processor handbook to buy
+In-Reply-To: <45B71FA0.9020403@softjar.se>
+References: <2f30dc950701232011h1ac14dafgb81ab07c06b167d7@mail.gmail.com>
+	<45B71FA0.9020403@softjar.se>
+Message-ID: <4961.136.218.171.21.1169638639.squirrel@www.cs.uofs.edu>
+
+
+> The major groupings you can do with the PDP-11 systems are otherwise if
+> they have split I/D space, supervisor mode, unibus map and 22-bit
+> addressing, floating point (none/FIS/FPP) and EIS.
+> Rougly, you can say:
+>
+> 11/34: EIS. Optional FPP.
+> 11/40: None of that. Optional EIS and FIS.
+> 11/44: All of it. Optional FPP.
+> 11/45: split I/D, supervisor, EIS. Optional FPP.
+> 11/60: EIS. Optional FPP.
+> 11/70: All of it. Optional FPP
+
+And let's not forget the CIS Option.  :-)
+
+bill
+
+-- 
+Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three wolves
+bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+University of Scranton   |
+Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+
+
+
+
+From bqt at softjar.se  Wed Jan 24 22:07:44 2007
+From: bqt at softjar.se (Johnny Billquist)
+Date: Wed, 24 Jan 2007 13:07:44 +0100
+Subject: [pups] Advice on which PDP-11 processor handbook to buy
+In-Reply-To: <4961.136.218.171.21.1169638639.squirrel@www.cs.uofs.edu>
+References: <2f30dc950701232011h1ac14dafgb81ab07c06b167d7@mail.gmail.com>	<45B71FA0.9020403@softjar.se>
+	<4961.136.218.171.21.1169638639.squirrel@www.cs.uofs.edu>
+Message-ID: <45B74C10.9060506@softjar.se>
+
+Bill Gunshannon wrote:
+>>The major groupings you can do with the PDP-11 systems are otherwise if
+>>they have split I/D space, supervisor mode, unibus map and 22-bit
+>>addressing, floating point (none/FIS/FPP) and EIS.
+>>Rougly, you can say:
+>>
+>>11/34: EIS. Optional FPP.
+>>11/40: None of that. Optional EIS and FIS.
+>>11/44: All of it. Optional FPP.
+>>11/45: split I/D, supervisor, EIS. Optional FPP.
+>>11/60: EIS. Optional FPP.
+>>11/70: All of it. Optional FPP
+> 
+> And let's not forget the CIS Option.  :-)
+
+Right. And I forgot to mention the 11/24 as well. (I'm ignoring the 
+Q-bus machines, and really old/small unibus machines as well.)
+
+So we also have CIS. And to adjust the list above:
+11/24: EIS, unibus map and 22-bit addressing. Optional FPP and CIS.
+11/44: Optional CIS.
+
+	Johnny
+
+
+From toby at smartgames.ca  Wed Jan 24 21:57:42 2007
+From: toby at smartgames.ca (Toby Thain)
+Date: Wed, 24 Jan 2007 09:57:42 -0200
+Subject: [pups] Advice on which PDP-11 processor handbook to buy
+In-Reply-To: <200701240642.l0O6g84p009069@rm-rstar.sfu.ca>
+References: <200701240642.l0O6g84p009069@rm-rstar.sfu.ca>
+Message-ID: <B83BDC30-4470-4391-9F1D-01ED44978ADF@smartgames.ca>
+
+
+On 24-Jan-07, at 4:42 AM, Kevin McQuiggin wrote:
+
+> Why not just download one from one of the many online archives?   
+> Most of
+> them are in PDF format.
+
+
+Actually I've never seen a handbook online, and I've scoured DEC  
+archives - just not for a year or so. Has this changed?
+
+--T
+
+
+
+From andreas.hein at berlan.de  Thu Jan 25 02:07:39 2007
+From: andreas.hein at berlan.de (Andreas Hein)
+Date: Wed, 24 Jan 2007 17:07:39 +0100 (CET)
+Subject: [pups] Advice on which PDP-11 processor handbook to buy
+In-Reply-To: <B83BDC30-4470-4391-9F1D-01ED44978ADF@smartgames.ca>
+Message-ID: <10634015.41169654859125.JavaMail.root@idefix.local>
+
+Most of the infos, i need for my own PDP11-FPGA project, i found on:
+
+http://www.bitsavers.org/pdf/dec/pdp11
+
+see the sub-folder "handbooks" there you will find a Processor-Handbook as well.
+
+--AH
+-------------------------
+Original-Nachricht:
+Von: Toby Thain <toby at smartgames.ca>
+An: Kevin McQuiggin <mcquiggi at sfu.ca>
+Cc: pups at minnie.tuhs.org
+Datum: Mittwoch, 24 Januar 2007 13:29
+Betreff: Re: [pups] Advice on which PDP-11 processor handbook to buy
+
+On 24-Jan-07, at 4:42 AM, Kevin McQuiggin wrote:
+
+> Why not just download one from one of the many online archives?   
+> Most of
+> them are in PDF format.
+
+
+Actually I've never seen a handbook online, and I've scoured DEC  
+archives - just not for a year or so. Has this changed?
+
+--T
+
+_______________________________________________
+PUPS mailing list
+PUPS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/pups
+
+
+From W.F.J.Mueller at gsi.de  Thu Jan 25 04:52:31 2007
+From: W.F.J.Mueller at gsi.de (Walter F.J. Mueller)
+Date: Wed, 24 Jan 2007 19:52:31 +0100
+Subject: [pups] Advice on which PDP-11 processor handbook to buy
+Message-ID: <45B7AAEF.7000603@gsi.de>
+
+Hi Ross,
+
+you'll find on the Bitsavers Site (http://www.bitsavers.org)
+lots of documents, some handbooks under
+
+   http://www.bitsavers.org/pdf/dec/pdp11/handbooks/
+
+and the "PDP-11 Processor Handbook - PDP11/04/34a/44/60/70" under
+
+   http://www.bitsavers.org/pdf/dec/pdp11/handbooks/PDP11_Handbook1979.pdf
+
+Under http://www.bitsavers.org/pdf/dec/pdp11 is quite a bit on various
+pdp-11 models, for example the "KB11-C Processor Manual (PDP-11/70)"
+
+   http://www.bitsavers.org/pdf/dec/pdp11/1170/EK-KB11C-TM-001_1170procMan.pdf
+
+in case you'd like to go into details :).
+
+			With best regards,	Walter
+
+-- 
+Dr. Walter F.J. Müller    Mail:  W.F.J.Mueller at gsi.de
+GSI,  Abteilung KP3       Phone: +49-6159-71-2766
+D-64291 Darmstadt         FAX:   +49-6159-71-3762
+URL: http://www-linux.gsi.de/~mueller/
+
+
+From toby at smartgames.ca  Thu Jan 25 05:13:27 2007
+From: toby at smartgames.ca (Toby Thain)
+Date: Wed, 24 Jan 2007 17:13:27 -0200
+Subject: [pups] Advice on which PDP-11 processor handbook to buy
+In-Reply-To: <45B7AAEF.7000603@gsi.de>
+References: <45B7AAEF.7000603@gsi.de>
+Message-ID: <06CD93CE-4338-4CFD-B643-39FF9B06C508@smartgames.ca>
+
+
+On 24-Jan-07, at 4:52 PM, Walter F.J. Mueller wrote:
+
+> Hi Ross,
+>
+> you'll find on the Bitsavers Site (http://www.bitsavers.org)
+> lots of documents, some handbooks under
+>
+>    http://www.bitsavers.org/pdf/dec/pdp11/handbooks/
+>
+> and the "PDP-11 Processor Handbook - PDP11/04/34a/44/60/70" under
+>
+>    http://www.bitsavers.org/pdf/dec/pdp11/handbooks/ 
+> PDP11_Handbook1979.pdf
+
+Yes, I remember seeing that one years ago. But only that one. I guess  
+the difficulty of scanning small perfect bound books (without  
+guillotining the spine off) doesn't help productivity :-)
+
+--T
+
+>
+> Under http://www.bitsavers.org/pdf/dec/pdp11 is quite a bit on various
+> pdp-11 models, for example the "KB11-C Processor Manual (PDP-11/70)"
+>
+>    http://www.bitsavers.org/pdf/dec/pdp11/1170/EK-KB11C- 
+> TM-001_1170procMan.pdf
+>
+> in case you'd like to go into details :).
+>
+> 			With best regards,	Walter
+>
+> -- 
+> Dr. Walter F.J. Müller    Mail:  W.F.J.Mueller at gsi.de
+> GSI,  Abteilung KP3       Phone: +49-6159-71-2766
+> D-64291 Darmstadt         FAX:   +49-6159-71-3762
+> URL: http://www-linux.gsi.de/~mueller/
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From krhamidou at yahoo.com  Wed Jan  3 20:51:00 2007
+From: krhamidou at yahoo.com (Karim Hamidou)
+Date: Wed, 3 Jan 2007 02:51:00 -0800 (PST)
+Subject: [TUHS] running unix v7 on a pdp emulator
+Message-ID: <20070103105100.390.qmail@web35302.mail.mud.yahoo.com>
+
+Happy new year. 
+
+My name is karim hamidou and i'm french (you've surely
+noticed that my prose isn't bright) and i'd like to
+run unix v7 on the pdp emulator sim-2.3.
+
+Do you know how to run it ?
+
+I hope that my question isn't quite inappropriate.
+
+
+Thanks for your help.
+
+Regards. 
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
+
+
+From Hellwig.Geisse at mni.fh-giessen.de  Wed Jan  3 21:37:24 2007
+From: Hellwig.Geisse at mni.fh-giessen.de (Hellwig Geisse)
+Date: Wed, 03 Jan 2007 12:37:24 +0100
+Subject: [TUHS] running unix v7 on a pdp emulator
+In-Reply-To: <20070103105100.390.qmail@web35302.mail.mud.yahoo.com>
+References: <20070103105100.390.qmail@web35302.mail.mud.yahoo.com>
+Message-ID: <1167824244.4940.100.camel@papa>
+
+Hi Karim,
+
+On Wed, 2007-01-03 at 02:51 -0800, Karim Hamidou wrote:
+> i'd like to run unix v7 on the pdp emulator sim-2.3.
+
+perhaps you would like to take a look into my package
+(original UNIX tape files, tape file converter, simh
+simulator, simulator script files, instructions how to
+get things running, and a file extractor) located here:
+
+http://homepages.fh-giessen.de/~hg53/pdp11-unix/
+
+Good luck!
+Hellwig
+
+
+
+From 0intro at gmail.com  Wed Jan  3 21:23:49 2007
+From: 0intro at gmail.com (David)
+Date: Wed, 3 Jan 2007 12:23:49 +0100
+Subject: [TUHS] running unix v7 on a pdp emulator
+In-Reply-To: <20070103105100.390.qmail@web35302.mail.mud.yahoo.com>
+References: <20070103105100.390.qmail@web35302.mail.mud.yahoo.com>
+Message-ID: <DAC55B9A-0356-44DC-870D-63DCB27D39DD@gmail.com>
+
+> My name is karim hamidou and i'm french (you've surely
+> noticed that my prose isn't bright) and i'd like to
+> run unix v7 on the pdp emulator sim-2.3.
+>
+> Do you know how to run it ?
+>
+
+Hello,
+
+Bob Supnik made a new open-source multi-platform emulator
+called SIMH. The website is: http://simh.trailing-edge.com
+
+There is "software kits" for many platforms supported
+by SIMH. Unix 7 for PDP-11 is included. They are available
+here: http://simh.trailing-edge.com/software.html
+
+The accompanying documentation is available here:
+http://simh.trailing-edge.com/pdf/simh_swre.pdf
+
+It is very easy to set-up systems with these kits and this
+documentation.
+
+You will be able to run Unix 7 with SIMH soon.
+
+I hope to have helped you.
+
+I am french too :-)
+
+-- 
+David
+
+
+From gunnarr at acm.org  Sun Jan  7 09:22:11 2007
+From: gunnarr at acm.org (Gunnar Ritter)
+Date: Sun, 07 Jan 2007 00:22:11 +0100
+Subject: [TUHS] RAND editor e19
+Message-ID: <45a02f23.DpvriVG9cjfLRrXZ%gunnarr@acm.org>
+
+Hi,
+
+does anyone still have the source code for the RAND editor
+e19 <http://www.rand.org/pubs/notes/N2239-1/>? One can read
+on the net that it was once available as public domain from
+ftp.rand.org, but this machine seems not available anymore.
+
+There is an archive rand.tar.Z in the 2.10 (BSD) directory of
+CSRG CD 1, but this contains the older version e14. I think
+it would be good to also have the final version e19 in the
+Unix archive.
+
+Thanks
+
+	Gunnar
+
+
+From txomsy at yahoo.es  Wed Jan 10 01:29:06 2007
+From: txomsy at yahoo.es (Jose R. Valverde)
+Date: Tue, 9 Jan 2007 16:29:06 +0100
+Subject: [TUHS] RAND editor e19
+In-Reply-To: <45a02f23.DpvriVG9cjfLRrXZ%gunnarr@acm.org>
+References: <45a02f23.DpvriVG9cjfLRrXZ%gunnarr@acm.org>
+Message-ID: <20070109162906.195be4ff@veda.cnb.uam.es>
+
+Your request set me on a chase of my own. I found a dated message by Bob 
+Drzyzgula praising e and giving in turn the web address of the current
+maintainer.
+
+As it turns out this page at CERN was no longer accessible, so I contacted
+Bob asking if he still kept any copy. Meanwhile I tried as well to contact
+the current maintainer, Fabien Perriollat and he in turn managed to get
+his account at CERN unblocked.
+
+To cut a long story short: RAND E is alive and well, being maintained by
+Fabien Perriollat at CERN. The address is
+
+	http://perrioll.home.cern.ch/perrioll/Rand_Editor/
+
+and there you will find both the sources and executables for AIX, Linux,
+Lynx OS, Solaris and Windows95.
+
+Best regards,
+
+				j
+
+On Sun, 07 Jan 2007 00:22:11 +0100
+Gunnar Ritter <gunnarr at acm.org> wrote:
+> Hi,
+> 
+> does anyone still have the source code for the RAND editor
+> e19 <http://www.rand.org/pubs/notes/N2239-1/>? One can read
+> on the net that it was once available as public domain from
+> ftp.rand.org, but this machine seems not available anymore.
+> 
+> There is an archive rand.tar.Z in the 2.10 (BSD) directory of
+> CSRG CD 1, but this contains the older version e14. I think
+> it would be good to also have the final version e19 in the
+> Unix archive.
+> 
+> Thanks
+> 
+> 	Gunnar
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+
+		
+______________________________________________ 
+LLama Gratis a cualquier PC del Mundo. 
+Llamadas a fijos y móviles desde 1 céntimo por minuto. 
+http://es.voice.yahoo.com
+
+
+From gunnarr at acm.org  Wed Jan 10 02:17:21 2007
+From: gunnarr at acm.org (Gunnar Ritter)
+Date: Tue, 09 Jan 2007 17:17:21 +0100
+Subject: [TUHS] RAND editor e19
+In-Reply-To: <20070109162906.195be4ff@veda.cnb.uam.es>
+References: <45a02f23.DpvriVG9cjfLRrXZ%gunnarr@acm.org>
+	<20070109162906.195be4ff@veda.cnb.uam.es>
+Message-ID: <45a3c011.qagyrj2BC0HVVdt8%gunnarr@acm.org>
+
+"Jose R. Valverde" <txomsy at yahoo.es> wrote:
+
+> To cut a long story short: RAND E is alive and well, being maintained by
+> Fabien Perriollat at CERN.
+
+Thanks. Here is a basic patch to make it work on CentOS 4
+(and probably other Linux distributions too).
+
+	Gunnar
+
+diff -Naur Rand-E19.58.orig/e19/e.c Rand-E19.58/e19/e.c
+--- Rand-E19.58.orig/e19/e.c	Wed Mar 20 16:21:21 2002
++++ Rand-E19.58/e19/e.c	Tue Jan  9 17:00:04 2007
+@@ -27,6 +27,7 @@
+ #include "e.inf.h"
+ #include <sys/stat.h>
+ #include <string.h>
++#include <errno.h>
+ #ifdef SYSIII
+ #include <fcntl.h>
+ #endif /* SYSIII */
+@@ -553,6 +554,11 @@
+ 
+ /* XXXXXXXXXXXXXXXXXXXXXXX */
+ static void keyedit ();
++static void clean_all ();
++static void exit_now ();
++static void check_message_file ();
++static int get_kbfile_dname (char *, char *, int, char **);
++static int display_bigbuf ();
+ 
+ static void strip_path (char * path)
+ {
+@@ -747,8 +753,6 @@
+     }
+ 
+     if (helpflg) {
+-	static void clean_all ();
+-	static void exit_now ();
+ 	showhelp ();
+ 	helpflg = NO;
+ 	clean_all (NO); /* do not delete change and key stroke files */
+@@ -2126,7 +2130,6 @@
+     char *pref_name, *stname;
+     Flag use_flg;
+     void getConsoleSize (int *width, int *height);
+-    static int display_bigbuf ();
+     int i, nbli, ctrlc, nb, idx;
+     char bigbuf [8192]; /* must be large enough for the message */
+     char strg [256];
+@@ -2332,7 +2335,6 @@
+     }
+ 
+     if ( helpflg ) {
+-	static int get_kbfile_dname (char *, char *, int, char **);
+ 	S_looktbl *slpt;
+ 
+ 	sprintf (bigbuf + strlen (bigbuf), " Build in terminals & keyboards :");
+@@ -2378,7 +2380,6 @@
+     if ( check_access (xdir_dir, R_OK, &tmpstrg) )
+ 	sprintf (bigbuf + strlen (bigbuf), "    WARNING : %s\n", tmpstrg);
+     else {
+-	static void check_message_file ();
+ 	check_message_file (recovermsg, bigbuf);
+ 	/* check_message_file (xdir_kr   , bigbuf);  -- no more in use */
+ 	check_message_file (xdir_help , bigbuf);
+diff -Naur Rand-E19.58.orig/e19/e.cm.c Rand-E19.58/e19/e.cm.c
+--- Rand-E19.58.orig/e19/e.cm.c	Mon Mar  4 14:54:15 2002
++++ Rand-E19.58/e19/e.cm.c	Tue Jan  9 17:00:12 2007
+@@ -17,6 +17,7 @@
+ #include <dirent.h>
+ #include <string.h>
+ #include <sys/stat.h>
++#include <errno.h>
+ #include "e.h"
+ #include "e.e.h"
+ #include "e.m.h"
+@@ -486,11 +487,13 @@
+ 
+ #define CLASS_CMDS_NB (sizeof (class_cmds) / sizeof (class_cmds[0]))
+ 
++static Cmdret call_help (char *);
++static void save_preferences ();
++static int comp_alpha_looktb (S_looktbl *obj1, S_looktbl *obj2);
+ 
+ void init_all_lookup_tables ()
+ /* does not return in case of error */
+ {
+-    static int comp_alpha_looktb (S_looktbl *obj1, S_looktbl *obj2);
+     static Flag done = NO;
+     int i, nb, cc;
+     struct _lookup_table *ltbl;
+@@ -931,7 +934,6 @@
+ {
+     extern void reset_ctrlc ();
+     extern char * help_cmd_str ();
+-    static Cmdret call_help (char *);
+     int i, cc;
+     struct _class_cmd * class_cmd_pt;
+     char txt[256];
+@@ -2380,7 +2382,6 @@
+     extern Flag set_reset_utf8 (Flag);
+     extern Flag set_reset_graph (Flag);
+     extern char * get_debug_name ();
+-    static void save_preferences ();
+     extern int open_dbgfile (Flag append_flg);
+     extern int get_debug_default_level ();
+ 
+diff -Naur Rand-E19.58.orig/e19/e.h.c Rand-E19.58/e19/e.h.c
+--- Rand-E19.58.orig/e19/e.h.c	Tue Jan 22 23:05:08 2002
++++ Rand-E19.58/e19/e.h.c	Tue Jan  9 16:54:10 2007
+@@ -33,6 +33,13 @@
+ /* registered resize screen routine for full screen info display */
+ static void (*resize_service) () = NULL;    /* specifique resize routine */
+ static void (*resize_param) (int *, int *) = NULL;  /* get current term size */
++static int browse_keyfhelp (char *, char *);
++static int print_alias_table (S_lookstruct *);
++static int browse_cmdhelp  (char *, char *);
++static int waitkb (short);
++static int help_description ();
++static Cmdret show_ambiguous ();
++extern void all_ctrl_key_by_func (char *msg, int msg_sz, int fcmd);
+ 
+ /* browse_keyboard : display the description of the pushed key assigned function */
+ /* ----------------------------------------------------------------------------- */
+@@ -45,7 +52,6 @@
+ {
+     extern char * itsyms_by_val (short val);
+     extern void ignore_quote ();
+-    static int help_description ();
+     char blank [128];
+     char *str;
+     int qq, ctrlc, sz, nbli;
+@@ -414,7 +420,6 @@
+ static Cmdret keyfunc_ibmpc (helparg)
+ char *helparg;
+ {
+-    extern void all_ctrl_key_by_func (char *msg, int msg_sz, int fcmd);
+     extern Flag verbose_helpflg;
+     extern S_looktbl itsyms[];
+     int idx, sz;
+@@ -655,8 +660,6 @@
+ {
+     extern char *nxtop;
+     extern S_looktbl cmdtable[];
+-    static int browse_cmdhelp  (char *, char *);
+-    static int browse_keyfhelp (char *, char *);
+     extern int get_ctrlc_fkey ();
+ 
+ static char stmsg [] = "\n\
+@@ -684,7 +687,6 @@
+     extern char verstr[];
+     extern S_looktbl itsyms[];
+     extern void set_ambiguous_param (S_looktbl *table, char *str, Flag abv);
+-    static Cmdret show_ambiguous ();
+     Cmdret help_ambiguous (Flag *ctrlc_flg_pt, Flag ambig_flg);
+ 
+     if (   (helparg == NULL) || (*helparg == '\0')
+@@ -1184,8 +1186,6 @@
+ 
+ static int browse_sortedtbl (S_lookstruct *tblstruct, char * mystr, char *waitmsg)
+ {
+-    static int waitkb (short);
+-
+     char *all_aliases;
+     int nb, i, di, idx, cmd_val, cc;
+     char *str, *cmd_str;
+@@ -1572,7 +1572,6 @@
+ 
+ void print_sort_table (S_lookstruct *tblstruct)
+ {
+-    static int print_alias_table (S_lookstruct *);
+     char *cmt1, *cmt2;
+     int width, height;
+     int i, sz;
+diff -Naur Rand-E19.58.orig/e19/e.iit.c Rand-E19.58/e19/e.iit.c
+--- Rand-E19.58.orig/e19/e.iit.c	Tue Jan 22 09:45:26 2002
++++ Rand-E19.58/e19/e.iit.c	Tue Jan  9 17:00:21 2007
+@@ -9,6 +9,7 @@
+ #endif
+ 
+ 
++#include <errno.h>
+ #include <string.h>
+ #include "e.h"
+ #ifdef  KBFILE
+@@ -205,6 +206,7 @@
+ static struct itable  it_leave_ctrlc_ref;
+ static int ctrlc_is_ret;
+ static char ccreturn_val [2] = { CCRETURN, 0 };
++static Flag itparse ();
+ 
+ #if 0
+ int build_sorted_itsyms ()
+@@ -418,7 +420,6 @@
+ int level;
+ {
+     extern void customize_xlate ();
+-    static Flag itparse ();
+ 
+     char line[TMPSTRLEN], string[TMPSTRLEN], value[TMPSTRLEN];
+     FILE *f;
+diff -Naur Rand-E19.58.orig/e19/e.keyboard_map.c Rand-E19.58/e19/e.keyboard_map.c
+--- Rand-E19.58.orig/e19/e.keyboard_map.c	Thu Feb 28 00:32:02 2002
++++ Rand-E19.58/e19/e.keyboard_map.c	Tue Jan  9 17:00:48 2007
+@@ -38,6 +38,7 @@
+ /* ---------------------------------------------------------------------- */
+ 
+ #include <stdlib.h>
++#include <errno.h>
+ 
+ #ifdef TEST_PROGRAM
+ #define CCUNAS1 0202 /* defined in e.h */
+@@ -534,6 +535,10 @@
+ /*
+ static short *mykb_esc_idx = nor_esc_idx;
+ */
++static void print_keys (char *escp, Flag *nl_pt);
++static Flag build_escape_seq (char ch, char *escp, int idx);
++static void switch_mode (struct KTdesc *, int, Flag);
++static char * kcode2string (int, unsigned int, Flag, Flag, int *, char **, char **);
+ 
+ #if 0
+ /* for fast search */
+@@ -1261,6 +1266,7 @@
+ 	    if ( ! keypad_appl_mode ) return (NULL);
+ 	    break;
+ 	default :
++	    ;
+ 	}
+     strg = get_kt_strg (ktcode, NULL);
+     return (strg);
+@@ -1753,8 +1759,6 @@
+ 
+ static void set_cursor_mode ()
+ {
+-    static void switch_mode (struct KTdesc *, int, Flag);
+-
+     switch ( kbmap_type ) {
+ 	case user_mapfile :
+ 	    return;
+@@ -3421,8 +3425,6 @@
+ static char * string2key_label (char *strg, int *key, int *idx,
+ 				int *shift, char **modstrg)
+ {
+-    static char * kcode2string (int, unsigned int, Flag, Flag, int *, char **, char **);
+-
+     int i, j;
+     int ktf;
+     char *ktstrg;
+@@ -3594,9 +3596,6 @@
+ 
+ static void checkkeyb (Flag echo)
+ {
+-    static void print_keys (char *escp, Flag *nl_pt);
+-    static Flag build_escape_seq (char ch, char *escp, int idx);
+-
+     static char msg[] = "type \"Ctrl C\" exit, \"Ctrl A\" switch App mode, \"Ctrl B\" switch cusor mode\n";
+     static char int_msg[] = " Interrupted control sequence\n";
+     Flag app_mode, alt_cursor_mode;
+diff -Naur Rand-E19.58.orig/e19/e.pa.c Rand-E19.58/e19/e.pa.c
+--- Rand-E19.58.orig/e19/e.pa.c	Thu Feb 21 23:09:09 2002
++++ Rand-E19.58/e19/e.pa.c	Tue Jan  9 16:56:23 2007
+@@ -56,6 +56,7 @@
+ 
+ static S_lookstruct tblstr [lookuptbl_comment_sz];
+ 
++static int longest_cmd (char *, S_looktbl *, int);
+ 
+ #ifdef COMMENT
+ Small
+@@ -422,7 +423,6 @@
+ 
+     if ( max_flg ) {
+ 	/* found the longest keyword string */
+-	static int longest_cmd (char *, S_looktbl *, int);
+ 	idx1 = longest_cmd (kwd, table, table[idx].val);
+ 	if ( idx1 >= 0 ) idx = idx1;
+     }
+diff -Naur Rand-E19.58.orig/e19/e.u.c Rand-E19.58/e19/e.u.c
+--- Rand-E19.58.orig/e19/e.u.c	Sun Feb 17 23:05:16 2002
++++ Rand-E19.58/e19/e.u.c	Tue Jan  9 16:51:03 2007
+@@ -23,6 +23,7 @@
+ extern Cmdret remove_file (Fn fn);
+ 
+ static Fn getnxfn ();
++static char *ReadSymLink (char *);
+ 
+ /* variables used to list the edited file */
+ static int term_width, term_height; /* current display size */
+@@ -473,7 +474,6 @@
+      */
+     Block {
+ 	char *cp;
+-	static char *ReadSymLink (char *);
+ 
+ 	cp = ReadSymLink (file);
+ 	if (cp == NULL) {
+diff -Naur Rand-E19.58.orig/e19/term/linux_pc.c Rand-E19.58/e19/term/linux_pc.c
+--- Rand-E19.58.orig/e19/term/linux_pc.c	Thu Feb 28 00:32:02 2002
++++ Rand-E19.58/e19/term/linux_pc.c	Tue Jan  9 17:00:48 2007
+@@ -38,6 +38,7 @@
+ /* ---------------------------------------------------------------------- */
+ 
+ #include <stdlib.h>
++#include <errno.h>
+ 
+ #ifdef TEST_PROGRAM
+ #define CCUNAS1 0202 /* defined in e.h */
+@@ -534,6 +535,10 @@
+ /*
+ static short *mykb_esc_idx = nor_esc_idx;
+ */
++static void print_keys (char *escp, Flag *nl_pt);
++static Flag build_escape_seq (char ch, char *escp, int idx);
++static void switch_mode (struct KTdesc *, int, Flag);
++static char * kcode2string (int, unsigned int, Flag, Flag, int *, char **, char **);
+ 
+ #if 0
+ /* for fast search */
+@@ -1261,6 +1266,7 @@
+ 	    if ( ! keypad_appl_mode ) return (NULL);
+ 	    break;
+ 	default :
++	    ;
+ 	}
+     strg = get_kt_strg (ktcode, NULL);
+     return (strg);
+@@ -1753,8 +1759,6 @@
+ 
+ static void set_cursor_mode ()
+ {
+-    static void switch_mode (struct KTdesc *, int, Flag);
+-
+     switch ( kbmap_type ) {
+ 	case user_mapfile :
+ 	    return;
+@@ -3421,8 +3425,6 @@
+ static char * string2key_label (char *strg, int *key, int *idx,
+ 				int *shift, char **modstrg)
+ {
+-    static char * kcode2string (int, unsigned int, Flag, Flag, int *, char **, char **);
+-
+     int i, j;
+     int ktf;
+     char *ktstrg;
+@@ -3594,9 +3596,6 @@
+ 
+ static void checkkeyb (Flag echo)
+ {
+-    static void print_keys (char *escp, Flag *nl_pt);
+-    static Flag build_escape_seq (char ch, char *escp, int idx);
+-
+     static char msg[] = "type \"Ctrl C\" exit, \"Ctrl A\" switch App mode, \"Ctrl B\" switch cusor mode\n";
+     static char int_msg[] = " Interrupted control sequence\n";
+     Flag app_mode, alt_cursor_mode;
+
+

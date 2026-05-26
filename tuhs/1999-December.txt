@@ -1,0 +1,863 @@
+From mjcrehan at earthlink.net  Wed Dec  1 01:59:21 1999
+From: mjcrehan at earthlink.net (Martin Crehan)
+Date: Tue, 30 Nov 1999 07:59:21 -0800 (PST)
+Subject: Salon.com article on John Lions book
+Message-ID: <199911301559.HAA18132@gull.prod.itd.earthlink.net>
+
+The site Salon.com has an article:
+http://www.Salon1999.com/tech/feature/1999/11/30/lions/index.html
+on John Lions' book about Sixth Edition Unix, written by from a non-computer
+geek's viewpoint.
+
+Martin Crehan
+
+
+
+From DSEAGRAV at toad.xkl.com  Thu Dec  9 07:09:16 1999
+From: DSEAGRAV at toad.xkl.com (Daniel A. Seagraves)
+Date: Wed, 8 Dec 1999 13:09:16 -0800
+Subject: 2.11BSD boot looping
+In-Reply-To: <199911292207.OAA02606@moe.2bsd.com>
+Message-ID: <13505889943.17.DSEAGRAV@toad.xkl.com>
+
+[I need to change the bootstrap]
+
+Okay, someone needs to explain what I should change then, I don't have
+any docs about MSCP.
+
+[I don't know how to use my mailer]
+
+Yes, I sent this twice. ^_^
+-------
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id PAA18420
+	for pups-liszt; Thu, 9 Dec 1999 15:20:56 +1100 (EST)
+
+From sms at moe.2bsd.com  Thu Dec  9 14:11:55 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Wed, 8 Dec 1999 20:11:55 -0800 (PST)
+Subject: 2.11BSD boot looping
+Message-ID: <199912090411.UAA06521@moe.2bsd.com>
+
+> From: "Daniel A. Seagraves" <DSEAGRAV at toad.xkl.com>
+> [I need to change the bootstrap]
+> 
+> Okay, someone needs to explain what I should change then, I don't have
+> any docs about MSCP.
+> 
+> [I don't know how to use my mailer]
+> 
+> Yes, I sent this twice. ^_^
+
+	I received 3 copies :)
+
+	No docs for/about MSCP are required to install the bootblock.  That
+	would only be needed if you wanted to write a bootblock and/or
+	driver.
+
+	The documentation you do want to read is the 'disklabel(8)' manpage
+	and in particular the "-B" option.
+
+			disklabel -B ra0
+
+	should do what you want.  You can also do it with a 'dd':
+
+	You will need to be at a single user prompt since writes to raw
+	disks for which the cooked counterpart is mounted are prohibited
+	if the secure level of the system is greater than 0:
+
+			dd if=/mdec/rauboot of=/dev/rra0a
+
+	If, as I seem to recall, you can't boot the disk (image/whatever)
+	because the wrong bootblock is present you will have to use the
+	'boot' program from a "bootable tape".   This may entail using
+	a "toggle in" tape boot (described in the 2.11 setup/installation
+	documentation in fairly good detail).   At the boot prompt (':')
+	after booting from tape:
+
+			: ra(0,0)unix
+			   .... kernel should load, print out the usual
+			   .... messages about memory size, etc
+			# disklabel -B ra0  (or 'dd ...')
+
+	In essence you're going thru the last part of system installation,
+	you don't need to 'mkfs', 'restor', etc because the data is already
+	present on the disk.  Just skip all that and use the tape 'boot'
+	program to load the kernel and then write the proper bootblock to
+	disk.
+
+	Steven
+
+
+From DSEAGRAV at toad.xkl.com  Fri Dec 10 07:18:27 1999
+From: DSEAGRAV at toad.xkl.com (Daniel A. Seagraves)
+Date: Thu, 9 Dec 1999 13:18:27 -0800
+Subject: 2.11BSD boot looping
+Message-ID: <13506153760.17.DSEAGRAV@toad.xkl.com>
+
+
+[Snip instructions for installing a bootstrap]
+
+No, I got the installation of the bootstrap just fine.  I was told that
+the bootstrap for MSCP disks uses a bug in the UDA50 that some 3rd party
+controllers don't exhibit.  (In my case, I have a Viking UDT SCSI controller)
+
+I was saying I needed to know where/how to change the bootstrap (modify the
+bootstrap, not use a different one) so that it will work.
+
+I got a pointer at some 3BSD stuff on Minnie, but that code used a boot ROM on
+the VAX 750 to get it's job done.
+
+I don't have any MSCP books so I don't know where or how to change the
+bootstrap to make it work on my machine.
+
+-------
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA22820
+	for pups-liszt; Fri, 10 Dec 1999 11:51:06 +1100 (EST)
+
+From sms at moe.2bsd.com  Fri Dec 10 10:50:12 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Thu, 9 Dec 1999 16:50:12 -0800 (PST)
+Subject: 2.11BSD boot looping
+Message-ID: <199912100050.QAA18487@moe.2bsd.com>
+
+> From: "Daniel A. Seagraves" <DSEAGRAV at toad.xkl.com>
+> I was saying I needed to know where/how to change the bootstrap (modify the
+> bootstrap, not use a different one) so that it will work.
+
+	Hmmm, ok - that wasn't clear.   It read as if the documentation was
+	needed to install a new/different bootblock.
+
+> I got a pointer at some 3BSD stuff on Minnie, but that code used a boot ROM on
+> the VAX 750 to get it's job done.
+
+	Yep - same in 4BSD too, I remember thinking at one time "ah, I'll
+	just use the 4BSD bootcode as a guide" only to find out it was
+	calling into the ROMs.
+
+> I don't have any MSCP books so I don't know where or how to change the
+> bootstrap to make it work on my machine.
+
+	IF the bug is what has been suspected so far then presenting a 
+	vector to the controller during the 4 step init process is what
+	needs to be done.  
+
+	Looking at the standalone MSCP driver (/sys/pdpstand/ra.c) which has
+	the logic to specify a vector even though interrupts are not use the 
+	logic is:
+
+	if (rainit[ctlr] == 0) {
+again:		raaddr->raip = 0;
+		if 	(ra_step(raaddr, RA_STEP1, 1))
+			goto again;
+		raaddr->rasa = RA_ERR | (0154/4);
+		if	(ra_step(raaddr, RA_STEP2, 2))
+			goto again;
+		iomapadr(&racom->ra_ca.ca_ringbase, &bae, &lo16);
+		raaddr->rasa = lo16;
+		if	(ra_step(raaddr, RA_STEP3, 3))
+			goto again;
+		raaddr->rasa = bae;
+		if	(ra_step(raaddr, RA_STEP4, 4))
+			goto again;
+		raaddr->rasa = RA_GO;
+		if (racmd(M_OP_STCON, io) < 0) {
+			printf("%s STCON err\n", devname(io));
+			return(-1);
+		}
+		rainit[ctlr] = 1;
+	}
+
+	Thus it is only done on 'first open'.
+
+	It is in step 1 that the vector divided by 4 needs to be "OR"'d into
+	the work presented to the controller.
+
+	The ra boot block code (/sys/mdec/rauboot.s) has a loop:
+
+/
+/ RA initialize controller
+/
+	mov	$RASTEP1,r0
+	mov	raip,r1
+	clr	(r1)+			/ go through controller init seq.
+	mov	$icons,r2
+1:
+	bit	r0,(r1)
+	beq	1b
+---->>>>
+	mov	(r2)+,(r1)
+	asl	r0
+	bpl	1b
+	mov	$ra+RARSPREF,*$ra+RARSPL / set controller characteristics
+	mov	$ra+RACMDREF,*$ra+RACMDL
+	mov	$RASTCON,r0
+	jsr	pc,racmd
+	mov	unit,*$ra+RAUNIT	/ bring boot unit online
+	mov	$RAONLIN,r0
+	jsr	pc,racmd
+		...
+
+
+
+
+	I suspect that the loop at ---->>> needs to be modified to do something
+	special for step 1.
+
+	Steve
+
+
+From wkt at cs.adfa.edu.au  Sun Dec 12 21:10:32 1999
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Sun, 12 Dec 1999 22:10:32 +1100 (EST)
+Subject: Temporary Mail List Suspension
+Message-ID: <199912121110.WAA40763@henry.cs.adfa.edu.au>
+
+[ apologies to those who receive this e-mail multiple times ]
+
+This e-mail is being sent to you via a mailing list run on the machine
+minnie.cs.adfa.edu.au. I've been informed that our entire network is
+going to be shut down from Friday 24 December until Monday 3 January 2000.
+
+In other words, all services on Minnie (web, ftp, CGI scripts, this mailing
+list) will be temporarily unavailable during this period. Minnie, as always,
+will be sitting here under my desk, waiting for someone to talk to her. So
+as soon as the routers come back up, Minnie will reappear.
+
+I'll take this opportunity to wish everybody a happy festive season; take it
+safe on the roads, don't go anywhere near the CBD of Sydney on New Year's Eve,
+and we'll catch you again in 2000, assuming your Microsloth Windoze box isn't
+infected with gazillions of viruses :-)
+
+Cheers all,
+
+	Warren Toomey	wkt at cs.adfa.edu.au
+
+
+From arno at usn.nl  Mon Dec 13 19:18:14 1999
+From: arno at usn.nl (Arno Griffioen)
+Date: Mon, 13 Dec 1999 10:18:14 +0100 (CET)
+Subject: Installing UNIX on an 11/94
+Message-ID: <199912130918.KAA01758@lost.usn.nl>
+
+OK.. Biggie here is that this machine doesn't have a tape drive, just
+2 RA92 drives. It used to have a TU81, but it seems to have been junked
+along the way.
+
+No ethernet card either.. (anybody know where to get a DEUNA cheap??)
+
+What are my options to get 2.11BSD running on this beast? 
+
+I have a uVAX 3600 running NetBSD, so I could possibly dump a raw
+filesystem image onto one of the RA92's and perhaps boot the 11/94
+off of it. Is this feasible? I haven't looked into it yet..
+
+I was thinking of using one of those TU58 emulators on the PC, but I 
+didn't find any mention of booting an 11/94 of these tape drives
+or installing UNIX from it..
+
+I don't have any other UNIBUS cards, so I can't plug my TK70 into
+the 11/94..
+
+Any thoughts on the subject are welcome..
+
+							Bye, Arno.
+
+-- 
+PSINetworks Europe           Fax: +31-23-5699841 | One disk to rule them all,
+Siriusdreef 34               Tel: +31-23-5699840 | One disk to bind them,
+2132WT Hoofddorp+--------------------------------+ One disk to hold the files
+The Netherlands |   *  Musical Interlude  *      | And in the darkness grind 'em
+----------------+--------------------------------+------------------------------
+
+ We say Retribution, We say Vengeance is bliss, We say Revolution,
+ With a Cast-Iron fist!                  (Megadeth, 'The Disintegrators')
+
+--------------------------------------------------------------------------------
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id GAA46129
+	for pups-liszt; Tue, 14 Dec 1999 06:36:50 +1100 (EST)
+
+From sms at moe.2bsd.com  Tue Dec 14 05:35:35 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Mon, 13 Dec 1999 11:35:35 -0800 (PST)
+Subject: Installing UNIX on an 11/94
+Message-ID: <199912131935.LAA18041@moe.2bsd.com>
+
+Hi -
+
+> From: Arno Griffioen <arno at usn.nl>
+> 
+> OK.. Biggie here is that this machine doesn't have a tape drive, just
+> 2 RA92 drives. It used to have a TU81, but it seems to have been junked
+
+
+	Congratulations on getting a /94 with RA92 drives!   Condolences
+	on the tape drive being junked.
+
+> No ethernet card either.. (anybody know where to get a DEUNA cheap??)
+
+	In the US there are many places which sell used DEC equipment but
+	I do not know of any in the Netherlands.  If at all possible get
+	a DELUA insetad  - less power hungry and fewer bugs.
+
+> What are my options to get 2.11BSD running on this beast? 
+> 
+> I have a uVAX 3600 running NetBSD, so I could possibly dump a raw
+> filesystem image onto one of the RA92's and perhaps boot the 11/94
+> off of it. Is this feasible? I haven't looked into it yet..
+
+	Yes, it should be possible.  You will need to run one of the emulators
+	(either Bob Supnik's or Willi Begemot's "P11").  The tricky part
+	will be in the geometry/size of the disk image.  The emulators
+	do not know about MSCP drives so you will have to go thru the bootstrap
+	process using an SMD ('xp' driver) drive and pretend you have a 
+	RP06 or 7.  Then at the last minute install the MSCP bootblock.  
+	DD that image to an  RA92 and hoo that up to the /94.
+	
+
+	The problem you will most likely encounter is that the size will not
+	be exactly right for the last partition.  Experimenting with the
+	standalone 'disklabel' program and adjusting the sizes/geometry may
+	be needed.  If the size is changed then 'fsck -s' to force a 
+	rebuild of the freelist will be needed.
+
+	Experimentation - I think it'd take a few tries to get it right ;)
+
+> I was thinking of using one of those TU58 emulators on the PC, but I 
+> didn't find any mention of booting an 11/94 of these tape drives
+> or installing UNIX from it..
+
+	No support for the TU58 in the kernel or boot program.   At 256kb
+	it's barely large enough to hold the standalone programs much less
+	a dump of the root filesystem or anything like that.
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+
+From SHOPPA at trailing-edge.com  Tue Dec 14 05:59:34 1999
+From: SHOPPA at trailing-edge.com (Tim Shoppa)
+Date: Mon, 13 Dec 1999 14:59:34 -0500
+Subject: Installing UNIX on an 11/94
+Message-ID: <991213145934.21e008e3@trailing-edge.com>
+
+>> I was thinking of using one of those TU58 emulators on the PC, but I 
+>> didn't find any mention of booting an 11/94 of these tape drives
+>> or installing UNIX from it..
+
+>	No support for the TU58 in the kernel or boot program.   At 256kb
+>	it's barely large enough to hold the standalone programs much less
+>	a dump of the root filesystem or anything like that.
+
+Even if there was support, it'd be just plain cruel, even with emulated
+TU58's.  Reminds me of "The Wagner Ring Cycle on Convenient 45's".
+
+-- 
+ Tim Shoppa                        Email: shoppa at trailing-edge.com
+ Trailing Edge Technology          WWW:   http://www.trailing-edge.com/
+ 7328 Bradley Blvd		   Voice: 301-767-5917
+ Bethesda, MD, USA 20817           Fax:   301-767-5927
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA46635
+	for pups-liszt; Tue, 14 Dec 1999 08:06:49 +1100 (EST)
+
+From sms at moe.2bsd.com  Tue Dec 14 06:56:53 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Mon, 13 Dec 1999 12:56:53 -0800 (PST)
+Subject: Installing UNIX on an 11/94
+Message-ID: <199912132056.MAA18516@moe.2bsd.com>
+
+> From: Tim Shoppa <SHOPPA at trailing-edge.com>
+> 
+> Even if there was support, it'd be just plain cruel, even with emulated
+> TU58's.  Reminds me of "The Wagner Ring Cycle on Convenient 45's".
+
+	That wasn't too bad.  You should try Das Rheingold on 78's :)
+
+	Steve
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id SAA49123
+	for pups-liszt; Tue, 14 Dec 1999 18:28:33 +1100 (EST)
+
+From arno at usn.nl  Tue Dec 14 17:28:16 1999
+From: arno at usn.nl (Arno Griffioen)
+Date: Tue, 14 Dec 1999 08:28:16 +0100 (CET)
+Subject: Installing UNIX on an 11/94
+In-Reply-To: <199912131935.LAA18041@moe.2bsd.com> from "Steven M. Schultz" at "Dec 13, 1999 11:35:35 am"
+Message-ID: <199912140728.IAA07390@lost.usn.nl>
+
+> > OK.. Biggie here is that this machine doesn't have a tape drive, just
+> > 2 RA92 drives. It used to have a TU81, but it seems to have been junked
+> 
+> 
+> 	Congratulations on getting a /94 with RA92 drives!   Condolences
+> 	on the tape drive being junked.
+
+The '94 is way cool! I'm amazed at the extensive menu-based boot ROM in 
+this thing. At least the RA92's are quite a bit more 'civilized' than the
+RA82 on my uVAX which is more like a howling banshee..
+
+Pity I have little UNIBUS stuff.. Most of my other DEC hardware is QBUS based,
+otherwise I wouldn't have had the problem.. I have an UC07 SCSI controller
+I could use for a while (but it's QBUS) to hook up a tape drive.
+
+The machine itself seems to work fine (and seems to be pretty much 'lodaded').
+Runs RSX-11 now (at least a partial setup as I wasn't able to get all drives)
+
+> > No ethernet card either.. (anybody know where to get a DEUNA cheap??)
+> 
+> 	In the US there are many places which sell used DEC equipment but
+> 	I do not know of any in the Netherlands.  If at all possible get
+> 	a DELUA insetad  - less power hungry and fewer bugs.
+
+Any network connection will be OK.. I hope BSD has PPP support? That
+should give at least some rudimentary network connectivity (even if it's
+just 9600)
+
+> 	RP06 or 7.  Then at the last minute install the MSCP bootblock.  
+> 	DD that image to an  RA92 and hoo that up to the /94.
+
+Worth a shot..
+
+> 	The problem you will most likely encounter is that the size will not
+> 	be exactly right for the last partition.  Experimenting with the
+> 	standalone 'disklabel' program and adjusting the sizes/geometry may
+> 	be needed.  If the size is changed then 'fsck -s' to force a 
+> 	rebuild of the freelist will be needed.
+
+Or I could use 1 RA92 (with the problem you describe) and use it to 
+run the install on the second drive? (partitioning that properly)
+
+> 	No support for the TU58 in the kernel or boot program.   At 256kb
+> 	it's barely large enough to hold the standalone programs much less
+> 	a dump of the root filesystem or anything like that.
+
+OK. Got that.
+
+Guess my first search will be for either an UNIBUS SCSI controller or 
+a TK50/TK70 controller as I still have some drives for those..
+
+I have little or no 9-track reel tape stuff :-)
+
+Thanx for the help!
+
+							Bye, Arno.
+
+-- 
+PSINetworks Europe           Fax: +31-23-5699841 | One disk to rule them all,
+Siriusdreef 34               Tel: +31-23-5699840 | One disk to bind them,
+2132WT Hoofddorp+--------------------------------+ One disk to hold the files
+The Netherlands |   *  Musical Interlude  *      | And in the darkness grind 'em
+----------------+--------------------------------+------------------------------
+
+ We say Retribution, We say Vengeance is bliss, We say Revolution,
+ With a Cast-Iron fist!                  (Megadeth, 'The Disintegrators')
+
+--------------------------------------------------------------------------------
+
+
+From sms at moe.2bsd.com  Wed Dec 15 07:19:27 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Tue, 14 Dec 1999 13:19:27 -0800 (PST)
+Subject: Installing UNIX on an 11/94
+Message-ID: <199912142119.NAA06698@moe.2bsd.com>
+
+Hi -
+
+> From arno at usn.nl Mon Dec 13 23:28:32 1999
+> The '94 is way cool! I'm amazed at the extensive menu-based boot ROM in 
+
+	Yep - I have seen that on the 11/93 at my place.  Nice.  Having the
+	"toyclock" to get the date/time from is real good too.
+
+> this thing. At least the RA92's are quite a bit more 'civilized' than the
+> RA82 on my uVAX which is more like a howling banshee..
+
+	Use less power and are more reliable (also larger capacity I believe)
+
+> otherwise I wouldn't have had the problem.. I have an UC07 SCSI controller
+> I could use for a while (but it's QBUS) to hook up a tape drive.
+
+	As I was reminded a short time ago - don't put a Qbus board into a
+	Unibus machine (or the other way around) :-)
+
+> Any network connection will be OK.. I hope BSD has PPP support? That
+> should give at least some rudimentary network connectivity (even if it's
+> just 9600)
+
+	SL/IP yes but 2.11 predates PPP and I am not sure there is room in
+	the kernel/networking for PPP (which is a much more complex protocol).
+
+	I've run SL/IP just fine - and if you have the (fairly) recent updates
+	to enable hardware flowcontrol you can run considerably faster than
+	9600 and not worry about dropped characters or truncated packets.
+
+> Or I could use 1 RA92 (with the problem you describe) and use it to 
+> run the install on the second drive? (partitioning that properly)
+
+	Ah, yes indeed!  As long as the kernel's idea of the drive size
+	is less than what the actual disk image is then you should not have
+	any problems - i.e. if you put an RA60 sized image on an RA92 it 
+	should work (at least well enough to configure the 2nd drive correctly).
+	Obviously the other way around would not work ;)
+
+> Guess my first search will be for either an UNIBUS SCSI controller or 
+> a TK50/TK70 controller as I still have some drives for those..
+
+	A TK70 controller will run a TK50 drive very nicely _and_ offer
+	the benefit of the buffer cache (which speeds things up greatly).  I
+	do not know if there was a Unibus TK50 adaptor though.
+
+	An inexpensive TS05 would be a real nice thing to have about now ;)
+
+	Steve
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA53230
+	for pups-liszt; Wed, 15 Dec 1999 08:56:14 +1100 (EST)
+
+From SHOPPA at trailing-edge.com  Wed Dec 15 07:55:41 1999
+From: SHOPPA at trailing-edge.com (Tim Shoppa)
+Date: Tue, 14 Dec 1999 16:55:41 -0500
+Subject: Installing UNIX on an 11/94
+Message-ID: <991214165541.246000ac@trailing-edge.com>
+
+>> From arno at usn.nl Mon Dec 13 23:28:32 1999
+>> The '94 is way cool! I'm amazed at the extensive menu-based boot ROM in 
+
+>	Yep - I have seen that on the 11/93 at my place.  Nice.  Having the
+>	"toyclock" to get the date/time from is real good too.
+
+As long as you've updated to the Y2K-compliant KDJ11-E firmware, that is.
+
+The "old" firmware will do fine up until the end of 28-Feb-2000, when it
+will promptly wrap back around to 1990.  You can use 2.11BSD 'toyset'
+(or the RSX-11 or RT-11 equivalent) to set the TOY clock after that date,
+but at power on it'll reset back to 1990.
+
+See the discussions in vmsnet.pdp-11 earlier this year for the ordering
+code and cost (I think it's around $25.00) for the new 11/93 and 11/94
+firmware.
+
+-- 
+ Tim Shoppa                        Email: shoppa at trailing-edge.com
+ Trailing Edge Technology          WWW:   http://www.trailing-edge.com/
+ 7328 Bradley Blvd		   Voice: 301-767-5917
+ Bethesda, MD, USA 20817           Fax:   301-767-5927
+
+
+
+From arno at usn.nl  Thu Dec 16 19:42:34 1999
+From: arno at usn.nl (Arno Griffioen)
+Date: Thu, 16 Dec 1999 10:42:34 +0100 (CET)
+Subject: Installing UNIX on an 11/94
+In-Reply-To: <991214165541.246000ac@trailing-edge.com> from Tim Shoppa at "Dec 14, 1999  4:55:41 pm"
+Message-ID: <199912160942.KAA15079@lost.usn.nl>
+
+> The "old" firmware will do fine up until the end of 28-Feb-2000, when it
+> will promptly wrap back around to 1990.  You can use 2.11BSD 'toyset'
+> (or the RSX-11 or RT-11 equivalent) to set the TOY clock after that date,
+> but at power on it'll reset back to 1990.
+
+No prob.. If I get a SLIP link up and running I'll just suck down the right
+date from an NTP server on my net which is synchronized to a radio clock.
+
+Heck, I could just hook up a clock receiver to the machine directly! 
+
+I hardly ever bother to set hardware clocks in my machines anymore. The
+batteries in my VAX for the clock and stuff ran out quite a while ago, but 
+no problem either..
+
+> See the discussions in vmsnet.pdp-11 earlier this year for the ordering
+> code and cost (I think it's around $25.00) for the new 11/93 and 11/94
+> firmware.
+
+Any idea about version numbers I could check? This machine was used until 
+pretty recently in a production environment and maintained pretty 
+well on the hardware/firmware level. I don't think it was decomissioned
+because of Y2K, but because they were told that they could provide a 'better' 
+service with a Micro$oft solution. 
+
+Last thing I heard is that the new solution is sorta falling apart all over
+the place.. Not surprising to me, but they're not getting this machine back! :-)
+
+							Bye, Arno.
+
+-- 
+PSINetworks Europe           Fax: +31-23-5699841 | One disk to rule them all,
+Siriusdreef 34               Tel: +31-23-5699840 | One disk to bind them,
+2132WT Hoofddorp+--------------------------------+ One disk to hold the files
+The Netherlands |   *  Musical Interlude  *      | And in the darkness grind 'em
+----------------+--------------------------------+------------------------------
+
+ We say Retribution, We say Vengeance is bliss, We say Revolution,
+ With a Cast-Iron fist!                  (Megadeth, 'The Disintegrators')
+
+--------------------------------------------------------------------------------
+
+
+From bqt at Update.UU.SE  Sat Dec 18 02:10:25 1999
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Fri, 17 Dec 1999 17:10:25 +0100 (MET)
+Subject: Installing UNIX on an 11/94
+In-Reply-To: <199912131935.LAA18041@moe.2bsd.com>
+Message-ID: <Pine.VUL.3.93.991217170736.14918B-100000@Zeke.Update.UU.SE>
+
+On Mon, 13 Dec 1999, Steven M. Schultz wrote:
+
+> > From: Arno Griffioen <arno at usn.nl>
+> > 
+> > OK.. Biggie here is that this machine doesn't have a tape drive, just
+> > 2 RA92 drives. It used to have a TU81, but it seems to have been junked
+> 
+> 
+> 	Congratulations on getting a /94 with RA92 drives!   Condolences
+> 	on the tape drive being junked.
+
+Agree. I'd like to get my hands on a /94 myself... :-)
+
+> > No ethernet card either.. (anybody know where to get a DEUNA cheap??)
+> 
+> 	In the US there are many places which sell used DEC equipment but
+> 	I do not know of any in the Netherlands.  If at all possible get
+> 	a DELUA insetad  - less power hungry and fewer bugs.
+
+Less powerhungry, yes. It also takes less space on the Unibus, and is
+faster. But I wasn't aware that the DEUNA had any more bugs than the
+DELUA. Please enlight me. (I only use DELUAs myself, but I have one or two
+DEUNAs lying around).
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id DAA70763
+	for pups-liszt; Sat, 18 Dec 1999 03:31:16 +1100 (EST)
+
+From bqt at Update.UU.SE  Sat Dec 18 02:30:33 1999
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Fri, 17 Dec 1999 17:30:33 +0100 (MET)
+Subject: Installing UNIX on an 11/94
+In-Reply-To: <199912142119.NAA06698@moe.2bsd.com>
+Message-ID: <Pine.VUL.3.93.991217172822.14918E-100000@Zeke.Update.UU.SE>
+
+On Tue, 14 Dec 1999, Steven M. Schultz wrote:
+
+> Hi -
+> 
+> > From arno at usn.nl Mon Dec 13 23:28:32 1999
+> > this thing. At least the RA92's are quite a bit more 'civilized' than the
+> > RA82 on my uVAX which is more like a howling banshee..
+> 
+> 	Use less power and are more reliable (also larger capacity I believe)
+
+RA82: 622 MB
+RA92: 1.2GB
+
+All with reservations about my memory going bad... :-)
+
+> > Guess my first search will be for either an UNIBUS SCSI controller or 
+> > a TK50/TK70 controller as I still have some drives for those..
+> 
+> 	A TK70 controller will run a TK50 drive very nicely _and_ offer
+> 	the benefit of the buffer cache (which speeds things up greatly).  I
+> 	do not know if there was a Unibus TK50 adaptor though.
+
+TUK50 was (is) the name of that controller. I've actually played with a
+VAX-11/750 with a TK50 once upon a time many moons ago.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id FAA73336
+	for pups-liszt; Sat, 18 Dec 1999 05:38:00 +1100 (EST)
+
+From sms at moe.2bsd.com  Sat Dec 18 04:26:03 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Fri, 17 Dec 1999 10:26:03 -0800 (PST)
+Subject: Installing UNIX on an 11/94
+Message-ID: <199912171826.KAA04099@moe.2bsd.com>
+
+Hi -
+
+> From: Johnny Billquist <bqt at Update.UU.SE>
+> RA82: 622 MB
+> RA92: 1.2GB
+
+	That sounds a little small.  AH, let me go check /etc/disktab on 
+	the PDP-11
+
+	The RA90 was ~1.2GB:
+
+		:pc#2376153:oc#0:bc#1024:fc#1024:
+
+	and the RA92 was closer to 1.4GB:
+
+		:pc#2940951:oc#0:bc#1024:fc#1024:
+
+> > 	A TK70 controller will run a TK50 drive very nicely _and_ offer
+> 
+> TUK50 was (is) the name of that controller. I've actually played with a
+> VAX-11/750 with a TK50 once upon a time many moons ago.
+
+	Was there a TUK70 - or was the TK70 for the Qbus systems only?
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id FAA73337
+	for pups-liszt; Sat, 18 Dec 1999 05:38:01 +1100 (EST)
+
+From sms at moe.2bsd.com  Sat Dec 18 04:22:39 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Fri, 17 Dec 1999 10:22:39 -0800 (PST)
+Subject: Installing UNIX on an 11/94
+Message-ID: <199912171822.KAA04095@moe.2bsd.com>
+
+Hi -
+
+> From: Johnny Billquist <bqt at Update.UU.SE>
+> Agree. I'd like to get my hands on a /94 myself... :-)
+
+	An 11/93 would be nice too, Qbus systems use less power and make less
+	noise from what I have seen.
+
+> Less powerhungry, yes. It also takes less space on the Unibus, and is
+> faster. But I wasn't aware that the DEUNA had any more bugs than the
+> DELUA. Please enlight me. (I only use DELUAs myself, but I have one or two
+> DEUNAs lying around).
+
+	I know the DEQNA had firmware problems that could cause the board to
+	lock up under load - perhaps I was confusing the DEQNA and DEUNA.
+	The later Qbus board (DELQA) was much nicer in the same way that the
+	DELUA is better than the DEUNA.
+
+	Steven Schultz
+	sms at moe.2bsd.com
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id GAA73620
+	for pups-liszt; Sat, 18 Dec 1999 06:10:57 +1100 (EST)
+
+From bqt at Update.UU.SE  Sat Dec 18 05:10:31 1999
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Fri, 17 Dec 1999 20:10:31 +0100 (MET)
+Subject: Installing UNIX on an 11/94
+In-Reply-To: <199912171822.KAA04095@moe.2bsd.com>
+Message-ID: <Pine.VUL.3.93.991217200602.16096F-100000@Zeke.Update.UU.SE>
+
+On Fri, 17 Dec 1999, Steven M. Schultz wrote:
+
+> Hi -
+> 
+> > From: Johnny Billquist <bqt at Update.UU.SE>
+> > Agree. I'd like to get my hands on a /94 myself... :-)
+> 
+> 	An 11/93 would be nice too, Qbus systems use less power and make less
+> 	noise from what I have seen.
+
+Well, I'm in love with Unibus systems... I have an 11/84 at home, and of
+course, there is always Magica, which is an 11/70... :-)
+(And then we have Knase, which is our 11/70 with 2.11BSD. Unfortunately,
+both systems are powered off right now because of cooling problems. :-(
+
+> > Less powerhungry, yes. It also takes less space on the Unibus, and is
+> > faster. But I wasn't aware that the DEUNA had any more bugs than the
+> > DELUA. Please enlight me. (I only use DELUAs myself, but I have one or two
+> > DEUNAs lying around).
+> 
+> 	I know the DEQNA had firmware problems that could cause the board to
+> 	lock up under load - perhaps I was confusing the DEQNA and DEUNA.
+> 	The later Qbus board (DELQA) was much nicer in the same way that the
+> 	DELUA is better than the DEUNA.
+
+I don't think the DEUNA has that bug which riddles the DEQNA.
+Also, the DEUNA/DELUA loads some microcode when I start using them, this
+is running RSX. That microcode is located on the RSX system. Beats me what
+it is for, or anything.
+Worse (parhaps) is that the device driver for the DEUNA/DELUA don't work
+with any Q-bus models, which means I don't have a driver for Q-bus
+machines...
+
+Anybody know anything more about this? I really don't care to dig around
+the sources here, and also, I don't have the sources to all components.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id GAA73644
+	for pups-liszt; Sat, 18 Dec 1999 06:13:06 +1100 (EST)
+
+From bqt at Update.UU.SE  Sat Dec 18 05:12:45 1999
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Fri, 17 Dec 1999 20:12:45 +0100 (MET)
+Subject: Installing UNIX on an 11/94
+In-Reply-To: <199912171826.KAA04099@moe.2bsd.com>
+Message-ID: <Pine.VUL.3.93.991217201053.16096G-100000@Zeke.Update.UU.SE>
+
+On Fri, 17 Dec 1999, Steven M. Schultz wrote:
+
+> Hi -
+> 
+> > From: Johnny Billquist <bqt at Update.UU.SE>
+> > RA82: 622 MB
+> > RA92: 1.2GB
+> 
+> 	That sounds a little small.  AH, let me go check /etc/disktab on 
+> 	the PDP-11
+> 
+> 	The RA90 was ~1.2GB:
+> 
+> 		:pc#2376153:oc#0:bc#1024:fc#1024:
+> 
+> 	and the RA92 was closer to 1.4GB:
+> 
+> 		:pc#2940951:oc#0:bc#1024:fc#1024:
+
+You got me. :-)
+
+> > > 	A TK70 controller will run a TK50 drive very nicely _and_ offer
+> > 
+> > TUK50 was (is) the name of that controller. I've actually played with a
+> > VAX-11/750 with a TK50 once upon a time many moons ago.
+> 
+> 	Was there a TUK70 - or was the TK70 for the Qbus systems only?
+
+Yes, Q-bus only. When the TK70 came out, I guess DEC had decided to stop
+development of Unibus peripherials.
+I very much doubt they sold that many TUK50, or RUX50 controllers.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+

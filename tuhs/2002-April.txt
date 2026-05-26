@@ -1,0 +1,707 @@
+From chd_1 at nktelco.net  Mon Apr  1 13:09:25 2002
+From: chd_1 at nktelco.net (Chuck Dickman)
+Date: Sun, 31 Mar 2002 22:09:25 -0500
+Subject: [pups] 2.11BSD and KFQSA
+Message-ID: <3CA7CF65.C71C1D41@nktelco.net>
+
+HI!
+After a week or so of trying, I finally got 2.11BSD to recognize a KFQSA
+in a PDP-11/73. The problem seems to be that 2.11BSD sets an MSCP packet
+length of 64 bytes, but the KFQSA must have this field set to 60 bytes.
+There is some confusion about if the header is part of the packet or
+not. For the KFQSA, it is not included in the length. After that, life
+is good........
+
+Unfortunately I trashed my 2.11BSD installation in the process. :-( I
+did a backup I think.....
+
+Anyway, KFQSA modules are not that expensive and RF drives are pretty
+cheap, so it is another solution to the lack of disk drives for QBus
+PDPs. As long as you have a VAX for configuration. A 390MB RF71 is a
+useful size for 2.11BSD.
+
+After I get things put back together, I will send off a patch to sms for
+the next release.... :-)
+
+-chuck
+
+
+From jcampbell at ins-msi.com  Mon Apr  1 22:43:07 2002
+From: jcampbell at ins-msi.com (Jeff Campbell)
+Date: Mon, 01 Apr 2002 07:43:07 -0500
+Subject: [pups] 2.11BSD and KFQSA
+References: <3CA7CF65.C71C1D41@nktelco.net>
+Message-ID: <3CA855DB.C0C778C6@ins-msi.com>
+
+Chuck Dickman wrote:
+> 
+> HI!
+> After a week or so of trying, I finally got 2.11BSD to recognize a KFQSA
+> in a PDP-11/73. The problem seems to be that 2.11BSD sets an MSCP packet
+> length of 64 bytes, but the KFQSA must have this field set to 60 bytes.
+
+The correct command packet length is 48 decimal or 060 octal bytes.
+End message packets also are this size unless error logging has been
+turned on during controller initialization. Then response packets should
+be 384 bytes long.
+
+> There is some confusion about if the header is part of the packet or
+> not. For the KFQSA, it is not included in the length. After that, life
+> is good........
+> 
+> Unfortunately I trashed my 2.11BSD installation in the process. :-( I
+> did a backup I think.....
+> 
+> Anyway, KFQSA modules are not that expensive and RF drives are pretty
+> cheap, so it is another solution to the lack of disk drives for QBus
+> PDPs. As long as you have a VAX for configuration. A 390MB RF71 is a
+> useful size for 2.11BSD.
+> 
+> After I get things put back together, I will send off a patch to sms for
+> the next release.... :-)
+> 
+> -chuck
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+Jeff Campbell
+n8wxs at arrl.net
+
+
+From frank at wortner.com  Wed Apr  3 05:40:16 2002
+From: frank at wortner.com (Frank Wortner)
+Date: Tue, 02 Apr 2002 14:40:16 -0500
+Subject: [pups] PDP/11 Emulator for MacOS 9?
+Message-ID: <B8CF734F.4814%frank@wortner.com>
+
+Since I'm no longer employed,  I don't have access to any Unix or Windows
+boxes to run a PDP/11 emulator.  I do have my home computer: a G4 Mac
+running MacOS 9.1.  Are there any precompiled PDP/11 emulator binaries out
+there?  I've found a nice PDP/8 emulator,  but so far the PDP/11 has eluded
+me.  I'd like to be able to boot up PDP/11 Unix when the nostalgia urge hits
+me.
+
+Oh, BTW,  if you know of any jobs in the New York City (NY, NY USA) area for
+a 20-year veteran system administrator,  I'd love to hear from you!
+-- 
+Frank
+
+"They haven't got Brains,  any of them,  only grey fluff that's blown into
+their heads by mistake,  and they don't Think."
+* Eeyore,  "The House at Pooh Corner"
+
+
+
+
+From asmodai at unixware.org.uk  Wed Apr  3 08:38:36 2002
+From: asmodai at unixware.org.uk (asmodai at unixware.org.uk)
+Date: Tue, 2 Apr 2002 22:38:36 +0000
+Subject: [pups] Interesting PDP/Xenix History
+Message-ID: <OFA055BEB6.79B92071-ON80256B8F.007C1139-80256B8F.0076E01D@unixware.org.uk>
+
+I wrote to SCO/Caldera a while back about this one...   Here's a quote 
+from the mail I got in reply:
+
+"XENIX will never be released under any license, as it is too full of 
+Microsoft copyrights, and "sanitizing" the source to remove such code 
+would render the product useless, and would be a MASSIVE undertaking."
+
+Looks like we wont get Xenix in source format unless Microsoft want us to 
+have it.
+
+Regards,
+Paul.
+"The major difference between a thing that might go wrong and a thing that 
+cannot possibly go wrong is that when a thing that cannot possibly go 
+wrong goes wrong it usually turns out to be impossible to get at or 
+repair" - Hitchhikers Guide to the Galaxy
+
+
+
+
+
+Robert Tillyard <rob at vetsystems.com>
+Sent by: pups-admin at minnie.tuhs.org
+03/25/2002 10:38
+
+ 
+        To:     pups at minnie.tuhs.org
+        cc: 
+        Subject:        Re: [pups] Interesting PDP/Xenix History
+
+
+Frank Wortner wrote:
+> 
+> on 3/23/02 11:26 PM, Warren Toomey at wkt at minnie.tuhs.org wrote:
+> 
+> > In article by Martin Crehan:
+> >>  From a thread on Slashdot about Microsoft's Ancient History w/Unix
+> >> http://slashdot.org/articles/02/03/23/1422243.shtml?tid=130
+> >>
+> >>   First Unix/Xenix (Score:1)
+> >> by presearch on Saturday March 23, @01:58PM (#3213453)
+> >> (User #214913 Info)
+> >
+> > I've left a comment in the thread asking if they would
+> > donate a copy of the tape's contents to our Archive.
+> 
+> I also remember running PDP/11 Xenix.  The article is basically correct,
+> although Microsoft (or HCR) did add a working paging system that enabled
+> simulation of split I&D on small PDP/11s like the 11/23, 11/34, and 
+11/40.
+> I also remember that my copy of the installation document had been 
+printed
+> by Microsoft's PDP/10 (referred to as the "Microsoft Heating Plant" :-) 
+in
+> the printout).   I wish I still had the tape and that printout.  Sigh 
+...
+> 
+> --
+> Frank
+
+Would SCO->Caldera have copies of this? SCO did the Intel port of Xenix
+so they would probably have started with the PDP source. Would tapes be
+copyright to Microsoft?
+
+I doubt that they would release the source for the Intel version as it
+is still in use today although I don't think that SCO/Caldera will sell
+it anymore.
+
+Rob.
+_______________________________________________
+PUPS mailing list
+PUPS at minnie.tuhs.org
+http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20020402/ef0272d6/attachment.html>
+
+From frank at wortner.com  Wed Apr  3 13:31:40 2002
+From: frank at wortner.com (Frank Wortner)
+Date: Tue, 02 Apr 2002 22:31:40 -0500
+Subject: [pups] Interesting PDP/Xenix History
+In-Reply-To: <OFA055BEB6.79B92071-ON80256B8F.007C1139-80256B8F.0076E01D@unixware.org.uk>
+Message-ID: <B8CFE1CC.4831%frank@wortner.com>
+
+on 4/2/02 5:38 PM, asmodai at unixware.org.uk at asmodai at unixware.org.uk wrote:
+
+
+> I wrote to SCO/Caldera a while back about this one...   Here's a quote from
+> the mail I got in reply:
+> 
+"XENIX will never be released under any license, as it is too full of
+Microsoft copyrights...²
+
+Well,  there¹s always the possibility that Microsoft could see fit to make a
+³hobby² PDP/11 XENIX license available.  Why not?
+-- 
+Frank
+
+"Don't Blame Me."
+* Eeyore,  "Winnie the Pooh"
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20020402/3f385d5c/attachment.html>
+
+From asmodai at unixware.org.uk  Wed Apr  3 19:49:33 2002
+From: asmodai at unixware.org.uk (asmodai at unixware.org.uk)
+Date: Wed, 3 Apr 2002 09:49:33 +0000
+Subject: [pups] Interesting PDP/Xenix History
+Message-ID: <OFCA0C43CA.6A8DE3D6-ON80256B90.0035EC35-80256B90.00307626@unixware.org.uk>
+
+Frank Wortner <frank at wortner.com>
+Sent by: pups-admin at minnie.tuhs.org
+04/03/2002 04:31
+
+ 
+        To:     <asmodai at unixware.org.uk>, <pups at minnie.tuhs.org>
+        cc: 
+        Subject:        Re: [pups] Interesting PDP/Xenix History
+
+
+on 4/2/02 5:38 PM, asmodai at unixware.org.uk at asmodai at unixware.org.uk 
+wrote:
+
+
+I wrote to SCO/Caldera a while back about this one...   Here's a quote 
+from the mail I got in reply: 
+
+"XENIX will never be released under any license, as it is too full of 
+Microsoft copyrights...?
+
+Well,  there?s always the possibility that Microsoft could see fit to make 
+a ?hobby? PDP/11 XENIX license available.  Why not?
+
+-- 
+Frank
+
+"Don't Blame Me."
+* Eeyore,  "Winnie the Pooh"
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20020403/630b9506/attachment.html>
+
+From asmodai at unixware.org.uk  Wed Apr  3 19:52:52 2002
+From: asmodai at unixware.org.uk (asmodai at unixware.org.uk)
+Date: Wed, 3 Apr 2002 09:52:52 +0000
+Subject: [pups] Interesting PDP/Xenix History
+Message-ID: <OF13840EFC.5ACB3D21-ON80256B90.00360F84-80256B90.0030C3CE@unixware.org.uk>
+
+Bleh, sorry for the blank post... notes went schitzo....
+
+
+If MS can release WinCE source, then they would probably do the same for 
+XENIX.... both PDP/11 and the x86 version perhaps...
+Its not like we want the source... just a tape image would do me :)
+Perhaps there is someone in MS who knows of XENIX's existance and can 
+help....  I'll have a word with a friend of mine who works there :)
+Regards,
+Paul.
+
+
+
+
+Frank Wortner <frank at wortner.com>
+Sent by: pups-admin at minnie.tuhs.org
+04/03/2002 04:31
+
+ 
+        To:     <asmodai at unixware.org.uk>, <pups at minnie.tuhs.org>
+        cc: 
+        Subject:        Re: [pups] Interesting PDP/Xenix History
+
+
+on 4/2/02 5:38 PM, asmodai at unixware.org.uk at asmodai at unixware.org.uk 
+wrote:
+
+
+I wrote to SCO/Caldera a while back about this one...   Here's a quote 
+from the mail I got in reply: 
+
+"XENIX will never be released under any license, as it is too full of 
+Microsoft copyrights...?
+
+Well,  there?s always the possibility that Microsoft could see fit to make 
+a ?hobby? PDP/11 XENIX license available.  Why not?
+-- 
+Frank
+
+"Don't Blame Me."
+* Eeyore,  "Winnie the Pooh"
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20020403/700a9940/attachment.html>
+
+From Fred.van.Kempen at microwalt.nl  Wed Apr  3 19:14:32 2002
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Wed, 3 Apr 2002 11:14:32 +0200 
+Subject: [pups] Interesting PDP/Xenix History
+Message-ID: <6F63E31101C6D41196490008C7B2BFC304B5BC@mwnt4.microwalt.nl>
+
+Paul,
+
+> Bleh, sorry for the blank post... notes went schitzo.... 
+*smile*
+
+> If MS can release WinCE source, then they would probably do
+> the same for XENIX.... both PDP/11 and the x86 version perhaps... 
+> Its not like we want the source... just a tape image would do me :) 
+> Perhaps there is someone in MS who knows of XENIX's existance and
+> can help....  I'll have a word with a friend of mine who works
+> there :) 
+Yeah, I agree.  I personally think MS would release Xenix, as it no
+longer has any commercial value whatsoever to them.  The hardest part
+might be finding people within who know about it, and who can point
+us in the right (legalese) direction.  Once MS signs off on it, the
+people at SC(O)aldera won't have a problem with releasing the tapes.
+
+Cheers,
+	Fred
+
+
+            InterNetworking en Network Security Consultant
+   MicroWalt Corporation (Netherlands), Korte Heul 95, 1403 ND BUSSUM
+  Phone +31 (35) 6980059 FAX +31 (35) 6980215  http://WWW.MicroWalt.NL/
+
+Dit  bericht  en  eventuele bijlagen is  uitsluitend  bestemd  voor  de
+geadresseerde.  Openbaarmaking,   vermenigvuldiging,  verspreiding  aan
+derden  is  niet  toegestaan.   Er   wordt   geen  verantwoordelijkheid 
+genomen  voor de juiste en  volledige  overbrenging van  de inhoud  van
+dit bericht, noch voor de tijdige ontvangst ervan.
+
+
+From Fred.van.Kempen at microwalt.nl  Wed Apr  3 19:19:40 2002
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Wed, 3 Apr 2002 11:19:40 +0200 
+Subject: [pups] SUCCESS: Ultrix-32/VAX V4.5 on TK50 tape
+Message-ID: <6F63E31101C6D41196490008C7B2BFC304B5BD@mwnt4.microwalt.nl>
+
+Hi all,
+
+This is a general announcement :)
+
+I have been working on getting to know the format used by the Ultrix-32
+"setld" tapes for system (boot) tapes, and I am happy to announce that I
+can now create bootable TK50 tapes from any valid Ultrix-32 CD-ROM dist
+kit.
+
+Once I get my stuff here sorted out (I am in the midst of redoing all my
+computer stuff...) I will post the HOWTO (in PDF format, no less !) and
+associated files on my web server.
+
+I was able to successfully install Ultrix-32/VAX V4.5 on a MicroVAX 3300
+with TK50 tape and no errors.
+
+Next project is to get the V4.4 or V4.5 source to add CPU support for the
+4000 series, and, eventually, add DSSI support for the SHAC chipset.
+
+Anyone have pointers to source kits newer than V4.2 ?
+
+Cheers,
+	Fred
+-- 
+    InterNetworking, Network Security and Communications Consultants 
+     MicroWalt Corporation (Netherlands), Postbus 8, 1400 AA BUSSUM 
+  Phone +31 (35) 6980059 FAX +31 (35) 6980215  http://WWW.MicroWalt.NL/ 
+
+Dit  bericht  en  eventuele bijlagen is  uitsluitend  bestemd  voor  de 
+geadresseerde.  Openbaarmaking,   vermenigvuldiging,  verspreiding  aan 
+derden  is  niet  toegestaan.   Er   wordt   geen  verantwoordelijkheid 
+genomen  voor de juiste en  volledige  overbrenging van  de inhoud  van 
+dit bericht, noch voor de tijdige ontvangst ervan. 
+
+
+From quapla at xs4all.nl  Wed Apr  3 19:45:05 2002
+From: quapla at xs4all.nl (quapla at xs4all.nl)
+Date: Wed, 3 Apr 2002 11:45:05 +0200 (CEST)
+Subject: [pups] Interesting PDP/Xenix History
+In-Reply-To: <6F63E31101C6D41196490008C7B2BFC304B5BC@mwnt4.microwalt.nl>
+References: <6F63E31101C6D41196490008C7B2BFC304B5BC@mwnt4.microwalt.nl>
+Message-ID: <17237.192.18.243.4.1017827105.squirrel@webmail.xs4all.nl>
+
+Ummmm, they can't. Windows XP most likely uses pieces of Xenix to get
+it stable. And you know that they will not release sources of the 
+windoze O.S-es :=)
+
+Ed
+
+
+> Paul,
+> 
+>> Bleh, sorry for the blank post... notes went schitzo.... 
+> *smile*
+> 
+>> If MS can release WinCE source, then they would probably do
+>> the same for XENIX.... both PDP/11 and the x86 version perhaps...  Its
+>> not like we want the source... just a tape image would do me :) 
+>> Perhaps there is someone in MS who knows of XENIX's existance and can
+>> help....  I'll have a word with a friend of mine who works
+>> there :) 
+> Yeah, I agree.  I personally think MS would release Xenix, as it no
+> longer has any commercial value whatsoever to them.  The hardest part
+> might be finding people within who know about it, and who can point us
+> in the right (legalese) direction.  Once MS signs off on it, the people
+> at SC(O)aldera won't have a problem with releasing the tapes.
+> 
+> Cheers,
+> 	Fred
+> 
+> 
+>            InterNetworking en Network Security Consultant
+>   MicroWalt Corporation (Netherlands), Korte Heul 95, 1403 ND BUSSUM
+>  Phone +31 (35) 6980059 FAX +31 (35) 6980215  http://WWW.MicroWalt.NL/
+> 
+> Dit  bericht  en  eventuele bijlagen is  uitsluitend  bestemd  voor  de
+> geadresseerde.  Openbaarmaking,   vermenigvuldiging,  verspreiding  aan
+> derden  is  niet  toegestaan.   Er   wordt   geen  verantwoordelijkheid
+>  genomen  voor de juiste en  volledige  overbrenging van  de inhoud 
+> van dit bericht, noch voor de tijdige ontvangst ervan.
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+
+From jkunz at unixag-kl.fh-kl.de  Wed Apr  3 23:42:41 2002
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Wed, 3 Apr 2002 15:42:41 +0200
+Subject: [pups] SUCCESS: Ultrix-32/VAX V4.5 on TK50 tape
+In-Reply-To: <6F63E31101C6D41196490008C7B2BFC304B5BD@mwnt4.microwalt.nl>; from Fred.van.Kempen@microwalt.nl on Wed, Apr 03, 2002 at 11:19:40AM +0200
+References: <6F63E31101C6D41196490008C7B2BFC304B5BD@mwnt4.microwalt.nl>
+Message-ID: <20020403154241.A23484@unixag-kl.fh-kl.de>
+
+On Wed, Apr 03, 2002 at 11:19:40AM +0200, Fred N. van Kempen wrote:
+
+> Next project is to get the V4.4 or V4.5 source to add CPU support for the
+> 4000 series, 
+If I can find a scanner with ADF I can throw in a KA680 TM...
+
+> and, eventually, add DSSI support for the SHAC chipset.
+
+From MichaelDavidson at pacbell.net  Thu Apr  4 02:25:11 2002
+From: MichaelDavidson at pacbell.net (Michael Davidson)
+Date: Wed, 03 Apr 2002 08:25:11 -0800
+Subject: [pups] Interesting PDP/Xenix History
+References: <6F63E31101C6D41196490008C7B2BFC304B5BC@mwnt4.microwalt.nl>
+Message-ID: <3CAB2CE7.7040403@pacbell.net>
+
+Fred N. van Kempen wrote:
+
+>Paul,
+>
+>>If MS can release WinCE source, then they would probably do
+>>the same for XENIX.... both PDP/11 and the x86 version perhaps... 
+>>Its not like we want the source... just a tape image would do me :) 
+>>Perhaps there is someone in MS who knows of XENIX's existance and
+>>can help....  I'll have a word with a friend of mine who works
+>>there :) 
+>>
+>Yeah, I agree.  I personally think MS would release Xenix, as it no
+>longer has any commercial value whatsoever to them.  The hardest part
+>might be finding people within who know about it, and who can point
+>us in the right (legalese) direction.  Once MS signs off on it, the
+>people at SC(O)aldera won't have a problem with releasing the tapes.
+>
+Microsoft probably wouldn't have any problem releasing the PDP-11 version
+of XENIX - it is, after all, really just a minor V7 variant with very 
+little Microsoft
+code in it.
+
+The two problems you will have are:
+
+- finding anyone at Microsoft who knows what PDP-11 XENIX is,  and 
+understands that
+  it has no commercial value.
+
+- finding either a binary or source distribution of it
+
+
+XENIX for the x86 family hasn't quite reached the status of "no 
+commercial value" yet.
+Caldera still ships XENIX compatibility with the OpenServer operating 
+system,
+customers still use it, and we still pay Microsoft royalties on every 
+copy of OpenServer
+that we ship for that very reason.
+
+
+
+From lars at fwn.rug.nl  Thu Apr  4 08:12:23 2002
+From: lars at fwn.rug.nl (Lars Buitinck)
+Date: Thu, 04 Apr 2002 00:12:23 +0200 (CEST)
+Subject: [pups] UNIX/RT
+In-Reply-To: <17237.192.18.243.4.1017827105.squirrel@webmail.xs4all.nl>
+References: <6F63E31101C6D41196490008C7B2BFC304B5BC@mwnt4.microwalt.nl> <17237.192.18.243.4.1017827105.squirrel@webmail.xs4all.nl>
+Message-ID: <1017871943.3cab7e470d367@w3.fwn.rug.nl>
+
+I think I've found the influence of UNIX/RT on the world at large, and
+the Open Sores^V^V^V^Vource community in particular.
+from OpenBSD 3.0 /etc/magic:
+
+0       leshort         0401            PDP-11 UNIX/RT ldp
+
+(can anyone tell me what ldp means?)
+
+
+ps.
+
+Thus spake quapla at xs4all.nl:
+> Ummmm, they can't. Windows XP most likely uses pieces of Xenix to get
+> it stable. And you know that they will not release sources of the 
+> windoze O.S-es :=)
+
+stable?
+are we talking about the same OS?
+
+--
+If I travelled to the end of the rainbow
+As Dame Fortune did intend
+Murphy would be there to tell me
+The pot is at the other end
+
+Lars
+
+
+From talmage at madison.onespeeddave.com  Fri Apr 12 04:56:04 2002
+From: talmage at madison.onespeeddave.com (David W. Talmage)
+Date: Thu, 11 Apr 2002 14:56:04 -0400
+Subject: [pups] P11 emulator on the net
+Message-ID: <200204111856.g3BIu4v22826@madison.onespeeddave.com>
+
+If you want to play with Harti's p11
+running 2.11BSD, you can telnet to
+madison.onespeeddave.com on any of
+ports 10001 through 10006.
+
+I'll give you an account if you 
+want one.  Just tell me what
+userid and initial password you
+want.  Also tell me what you'll do
+with your account.
+
+This flavor of the emulator is
+running without a tape drive and 
+a network interface card.
+
+FWIF, madison is a 96MB P2-333 running NetBSD.
+
+
+From asbesto at freaknet.org  Wed Apr 17 19:08:04 2002
+From: asbesto at freaknet.org (Asbesto Molesto)
+Date: Wed, 17 Apr 2002 09:08:04 +0000 (UTC)
+Subject: [pups] PDP/11 Emulator for MacOS 9?
+In-Reply-To: <B8CF734F.4814%frank@wortner.com>
+Message-ID: <Pine.LNX.4.20.0204170906390.11089-100000@medialab.freaknet.org>
+
+On Tue, 2 Apr 2002, Frank Wortner wrote:
+
+> Since I'm no longer employed,  I don't have access to any Unix or Windows
+> boxes to run a PDP/11 emulator.  I do have my home computer: a G4 Mac
+> running MacOS 9.1.  Are there any precompiled PDP/11 emulator binaries out
+> there?  I've found a nice PDP/8 emulator,  but so far the PDP/11 has eluded
+
+if you have an internet connection, you can telnet medialab.dyndns.org
+and try our pdp11 emulator ... i don't know if it's
+working now. we installed it about 1-2 years ago :)
+
+p.s. anybody can telnet us and play with our system - hacking is
+welcome ! :)
+
+asbesto/freaknet medialab
+
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Fri Apr 19 03:42:24 2002
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Thu, 18 Apr 2002 19:42:24 +0200 (MEST)
+Subject: [pups] DZ11 and UNIX V6
+Message-ID: <200204181753.g3IHr4201344@bsd.korb>
+
+Hi
+
+I tried the latest simulator from Bob Supnik, Simh V2.9-6.
+It simulates DZ11 multiline controllers. Are they supported in UNIX V6.
+
+If not, which of the supported ones are closest to DZ11, so I would write
+a driver for them.
+
+TIA
+
+Wolfgang
+
+
+
+From johnh at psych.usyd.edu.au  Fri Apr 19 12:46:52 2002
+From: johnh at psych.usyd.edu.au (John Holden)
+Date: Fri, 19 Apr 2002 12:46:52 +1000 (EST)
+Subject: [pups] DZ11 and UNIX V6
+Message-ID: <200204190246.MAA01324@psychwarp.psych.usyd.edu.au>
+
+> I guess the closest would be the DH-11
+
+The DZ and DH are totally different beasts. The DZ had a 256 word input silo
+and interrupt per output character, while the DH was DMA.
+
+There is certainly support for DZ's in V7. It shouldn't be too hard to back port
+it to V6
+
+
+From wkt at minnie.tuhs.org  Fri Apr 19 16:08:27 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Fri, 19 Apr 2002 16:08:27 +1000 (EST)
+Subject: [pups] DZ11 and UNIX V6
+In-Reply-To: <Pine.LNX.4.44.0204191110330.21564-100000@erai.esi.com.au> from
+ Dave Horsfall at "Apr 19, 2002 11:12:46 am"
+Message-ID: <200204190608.g3J68St26120@minnie.tuhs.org>
+
+In article by Dave Horsfall	
+> On Thu, 18 Apr 2002, Wolfgang Helbig wrote	
+> 
+> > I tried the latest simulator from Bob Supnik, Simh V2.9-6.
+> > It simulates DZ11 multiline controllers. Are they supported in UNIX V6.
+> 
+> Not natively, no.  Back at Uni of NSW, we did several drivers, getting
+> better each time, but I think the sources are lost to antiquity (unless
+> someone happens to have those old tapes).
+
+Would AUSAM have any DZ11 drivers? There are several AUSAM tapes in
+the Unix Archive, and AUSAM was a deriative of V6.
+
+How about	
+
+PDP-11/Distributions/unsw/1/record0.gz	dz.c	12999	1978 01 24
+PDP-11/Distributions/unsw/4/record0.gz	dz.c	13416	1979 08 01
+PDP-11/Distributions/unsw/6/record0.gz	dz.c	6532	1979 10 30
+PDP-11/Distributions/unsw/81/record0.gz	dz.c	4761	1979 12 20
+PDP-11/Distributions/unsw/83/record0.gz	dz.c	4761	1979 08 22
+PDP-11/Distributions/unsw/92/92.gz	dz.c	7457	1981 09 16
+
+Cheers all,
+	Warren
+
+
+From cyrille.lefevre at laposte.net  Mon Apr 29 09:36:27 2002
+From: cyrille.lefevre at laposte.net (Cyrille Lefevre)
+Date: Mon, 29 Apr 2002 01:36:27 +0200 (CEST)
+Subject: [TUHS] rsync down?
+Message-ID: <200204282336.g3SNaSXA032419@gits.gits.dyndns.org>
+
+Hi,
+
+rsync doesn't seem to work anymore for some time, now, any idea ?
+
+$ rsync -avz --password-file=.passwd au2496 at minnie.tuhs.org::UA_Root .
+
+rsync: connection unexpectedly closed (0 bytes read so far)
+rsync error: error in rsync protocol data stream (code 12) at io.c(151)
+
+same results w/ rsync -avz minnie.tuhs.org::UA_Root .
+
+Cyrille.
+-- 
+Cyrille Lefevre                 mailto:cyrille.lefevre at laposte.net
+
+
+From wkt at minnie.tuhs.org  Mon Apr 29 12:31:10 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Mon, 29 Apr 2002 12:31:10 +1000 (EST)
+Subject: [TUHS] rsync down?
+In-Reply-To: <200204282336.g3SNaSXA032419@gits.gits.dyndns.org> from Cyrille
+ Lefevre at "Apr 29, 2002 01:36:27 am"
+Message-ID: <200204290231.g3T2VBc52296@minnie.tuhs.org>
+
+In article by Cyrille Lefevre:
+> Hi,
+> 
+> rsync doesn't seem to work anymore for some time, now, any idea ?
+> 
+> $ rsync -avz --password-file=.passwd au2496 at minnie.tuhs.org::UA_Root .
+> 
+> rsync: connection unexpectedly closed (0 bytes read so far)
+> rsync error: error in rsync protocol data stream (code 12) at io.c(151)
+> 
+> same results w/ rsync -avz minnie.tuhs.org::UA_Root .
+> 
+> Cyrille.
+
+Rsync got cut off when I was slashdotted a while
+ago. I should be able to open it up again. When
+I'm back at work tomorrow I will rectify things
+and e-mail the list.
+
+Cheers,
+	Warren
+
+

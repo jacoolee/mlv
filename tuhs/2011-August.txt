@@ -1,0 +1,729 @@
+From reed at reedmedia.net  Tue Aug  2 09:56:28 2011
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Mon, 1 Aug 2011 18:56:28 -0500 (CDT)
+Subject: [TUHS] early INGRES licenses?
+Message-ID: <alpine.NEB.2.01.1108011822110.19973@t1.m.reedmedia.net>
+
+What type of licensing agreements (maybe informal) were used for the 
+early INGRES tape distributions? I am trying to see if they were an 
+example for BSD or how compared with early BSD.
+
+The BSD-style licenses were not introduced until 1987 and later 
+(starting in but not completed in 4.3BSD-Tahoe). But various earlier BSD 
+(distribution) components did have open source licenses long before that 
+-- such as Eric Allman's trek (circa 1977) in 1BSD and MIT's X 
+components (1985) shipped with 4.3BSD.
+
+The COPYRIGHT for INGRES 6.3/-1 (February 1, 1981) source shipped with 
+2.79BSD (Febuary 1981) indicated it was not open source: "... may not be 
+reproduced or disclosed without the prior written permission of the 
+owner."
+
+My BSD history book in progress has at least 15+ pages of examples and 
+commentary and interview quotes about the history of proprietary and 
+open source licensing in early BSDs. I also plan to research the 
+history of licensing for W and early X.
+
+
+From aek at bitsavers.org  Wed Aug  3 07:54:15 2011
+From: aek at bitsavers.org (Al Kossow)
+Date: Tue, 02 Aug 2011 14:54:15 -0700
+Subject: [TUHS] early INGRES licenses?
+In-Reply-To: <alpine.NEB.2.01.1108011822110.19973@t1.m.reedmedia.net>
+References: <alpine.NEB.2.01.1108011822110.19973@t1.m.reedmedia.net>
+Message-ID: <4E387207.2070908@bitsavers.org>
+
+On 8/1/11 4:56 PM, Jeremy C. Reed wrote:
+> I also plan to research the
+> history of licensing for W and early X.
+>
+
+Was W bundled with the Stanford V Kernel distribution?
+
+Does someone have a W distribution? I asked Jim Gettys
+about this last year, and he didn't have a copy.
+
+
+
+From aek at bitsavers.org  Wed Aug  3 08:03:39 2011
+From: aek at bitsavers.org (Al Kossow)
+Date: Tue, 02 Aug 2011 15:03:39 -0700
+Subject: [TUHS] early INGRES licenses?
+In-Reply-To: <4E387207.2070908@bitsavers.org>
+References: <alpine.NEB.2.01.1108011822110.19973@t1.m.reedmedia.net>
+	<4E387207.2070908@bitsavers.org>
+Message-ID: <4E38743B.3020909@bitsavers.org>
+
+On 8/2/11 2:54 PM, Al Kossow wrote:
+> On 8/1/11 4:56 PM, Jeremy C. Reed wrote:
+>> I also plan to research the
+>> history of licensing for W and early X.
+>>
+>
+> Was W bundled with the Stanford V Kernel distribution?
+>
+> Does someone have a W distribution? I asked Jim Gettys
+> about this last year, and he didn't have a copy.
+>
+
+This also just got me thinking about the microprocessor PCC ports, and where
+they came from. There was an "MIT compiler tape" which appears to be the source
+for the compilers used by Stanford and Unisoft for the 68000. I think this came
+out of LCS (Ward's TRIX group?).
+
+And I'll make my every couple of years plea for a copy of the Stanford/LLNL SCALD
+system. If you look at the really early Gnusletter, Stallman was going to use the
+code from Pastel (Extended Pascal from the SCALD/S1 Project) as the basis for GCC.
+That was dropped pretty quickly because it was "too hairy". There were copies of
+this floating around CMU, MIT and Stanford in the 80's (LLNL gave it away) but I've
+not been able to find anyone that still has a copy.
+
+
+
+From drsalists at gmail.com  Thu Aug  4 12:53:44 2011
+From: drsalists at gmail.com (Dan Stromberg)
+Date: Wed, 3 Aug 2011 19:53:44 -0700
+Subject: [TUHS] /usr/bin on V7?
+Message-ID: <CAGGBd_o=zbtbaJ6x+3ksRVik8EG+hnfjAr9P-4=rBYmqooVHVg@mail.gmail.com>
+
+When I boot V7 in SIMH (pdp11), I get a root shell and a root filesystem,
+but...  I see that /usr/bin is on root's default PATH, but I have no
+/usr/bin directory.  Is there some way I could get a /usr/bin with
+additional executables, to get the full flavor of V7?
+
+By way of introduction, I first started with *ix on an AT&T 3Bmumble, and
+started really getting into it with SunOS 4.1.1.  I've recently become
+interested in trying a large number of different *ix's - I guess it was the
+ease with which VirtualBox allowed many of those, and then seeing Nordier's
+V7 port to x86 got me curious about trying some really old versions - he
+mentioned that there was a pdp11 emulator available...
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110803/48fa37d1/attachment.html>
+
+From lm at bitmover.com  Thu Aug  4 13:35:15 2011
+From: lm at bitmover.com (Larry McVoy)
+Date: Wed, 3 Aug 2011 20:35:15 -0700
+Subject: [TUHS] /usr/bin on V7?
+In-Reply-To: <CAGGBd_o=zbtbaJ6x+3ksRVik8EG+hnfjAr9P-4=rBYmqooVHVg@mail.gmail.com>
+References: <CAGGBd_o=zbtbaJ6x+3ksRVik8EG+hnfjAr9P-4=rBYmqooVHVg@mail.gmail.com>
+Message-ID: <20110804033515.GD21340@bitmover.com>
+
+> By way of introduction, I first started with *ix on an AT&T 3Bmumble, and
+> started really getting into it with SunOS 4.1.1.  
+
+SunOS 4.1.1, ah, sweet memories.  I and a bunch of my friends worked on
+that one.  Guy Harris, even though he had left for Auspex, would come back
+to building 5 at Sun around 5:30, bang on the door, John Pope or I or one
+of the other kernel guys who worked into the night, would let him in and
+give him a place to work, and for the next few hours you'd hear "Jesus,
+they still haven't fixed this?" and some fix would get pushed in.
+
+That was how much we loved SunOS.  Solaris?  Not so much.  We put in tons
+of effort to make SunOS good and it was a very pleasant version of Unix.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From drsalists at gmail.com  Thu Aug  4 14:51:58 2011
+From: drsalists at gmail.com (Dan Stromberg)
+Date: Wed, 3 Aug 2011 21:51:58 -0700
+Subject: [TUHS] /usr/bin on V7?
+In-Reply-To: <1312428286.54715.YahooMailClassic@web82402.mail.mud.yahoo.com>
+References: <CAGGBd_o=zbtbaJ6x+3ksRVik8EG+hnfjAr9P-4=rBYmqooVHVg@mail.gmail.com>
+	<1312428286.54715.YahooMailClassic@web82402.mail.mud.yahoo.com>
+Message-ID: <CAGGBd_q0T_7n5n2p_XoFBBHkfu3prXnL6jS6ymp_v0jY+vmjYg@mail.gmail.com>
+
+On Wed, Aug 3, 2011 at 8:24 PM, Michael Davidson <m_d at pacbell.net> wrote:
+
+> You probably don't have /usr/bin because you haven't mounted /usr yet.
+>
+
+That's a good hypothesis, especially given the info I presented, but I do
+have -some- things under /usr, and if I manually rerun sh -x /etc/rc in
+multiuser, I get an error about /usr already being mounted.
+
+
+> On V7 as best I can remember. /usr was always a mounted filesystem.
+>
+> So, somewhere in your V7 image there should be a disk image for /usr that
+> can be hooked up to an appropriate device under SIMH and then mounted.
+
+
+
+> Actually, it might already be there if your disk image is the entire device
+> and not just the root filesystem - if you can figure out what your root
+> device is then I would expect /usr to be on the same major device number but
+> with aminor device # of 2 (root being 0 and swap being 1).
+>
+
+I'm thinking /usr is /dev/rp3, because my /etc/rc looks like:
+
+# cat /etc/rc
+PATH=/bin:/usr/bin
+echo "Restricted rights: Use, duplication, or disclosure
+is subject to restrictions stated in your contract with
+Western Electric Company, Inc." >/dev/console
+rm /etc/mtab
+cat /dev/null >/etc/utmp
+/etc/mount /dev/rp3 /usr
+rm -f /usr/spool/lpd/lock
+: /etc/accton /usr/adm/acct
+rm -f /usr/tmp/*
+rm -f /tmp/*
+/etc/update
+date >/dev/console
+/etc/cron
+
+
+
+> Actually if you just take the system multi-user it might even do it for
+> you.
+
+
+This does seem to at least try to mount /usr for me - hitting ctrl-d at the
+initial singleuser #, that is.
+
+Interestingly though, it seems that the number of directories in /usr is the
+same on first boot into single user, as after /etc/rc has run as part of
+entering multiuser, so perhaps my root filesystem has things in /usr that
+would normally be obscured by a /usr mount.  Also, /etc/mtab seems untouched
+(in fact, it's nonexistent) after entering multiuser, and the output of
+/etc/mount continues to be nothing.
+
+touch /t does create a file named t in the root directory, so it's not
+something about the root filesystem being readonly.
+
+I'm puzzled.  And yet, I'm enjoying it. :)
+
+Any suggestions?
+
+
+> --- On *Wed, 8/3/11, Dan Stromberg <drsalists at gmail.com>* wrote:
+>
+>
+> From: Dan Stromberg <drsalists at gmail.com>
+> Subject: [TUHS] /usr/bin on V7?
+> To: tuhs at minnie.tuhs.org
+> Date: Wednesday, August 3, 2011, 7:53 PM
+>
+>
+>
+> When I boot V7 in SIMH (pdp11), I get a root shell and a root filesystem,
+> but...  I see that /usr/bin is on root's default PATH, but I have no
+> /usr/bin directory.  Is there some way I could get a /usr/bin with
+> additional executables, to get the full flavor of V7?
+>
+> By way of introduction, I first started with *ix on an AT&T 3Bmumble, and
+> started really getting into it with SunOS 4.1.1.  I've recently become
+> interested in trying a large number of different *ix's - I guess it was the
+> ease with which VirtualBox allowed many of those, and then seeing Nordier's
+> V7 port to x86 got me curious about trying some really old versions - he
+> mentioned that there was a pdp11 emulator available...
+>
+>
+>
+> -----Inline Attachment Follows-----
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org <http://mc/compose?to=TUHS at minnie.tuhs.org>
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110803/fb70dffe/attachment.html>
+
+From tim.newsham at gmail.com  Thu Aug  4 18:29:09 2011
+From: tim.newsham at gmail.com (Tim Newsham)
+Date: Wed, 3 Aug 2011 22:29:09 -1000
+Subject: [TUHS] /usr/bin on V7?
+In-Reply-To: <CAGGBd_o=zbtbaJ6x+3ksRVik8EG+hnfjAr9P-4=rBYmqooVHVg@mail.gmail.com>
+References: <CAGGBd_o=zbtbaJ6x+3ksRVik8EG+hnfjAr9P-4=rBYmqooVHVg@mail.gmail.com>
+Message-ID: <CAGSRWbgHaa68_Yd9fCkGCLfKrjQ6xo7Kk1N8Vfsw5Stvpuz0kQ@mail.gmail.com>
+
+try the dist here http://homepages.thm.de/~hg53/pdp11-unix/
+
+On Wed, Aug 3, 2011 at 4:53 PM, Dan Stromberg <drsalists at gmail.com> wrote:
+>
+> When I boot V7 in SIMH (pdp11), I get a root shell and a root filesystem,
+> but...  I see that /usr/bin is on root's default PATH, but I have no
+> /usr/bin directory.  Is there some way I could get a /usr/bin with
+> additional executables, to get the full flavor of V7?
+>
+> By way of introduction, I first started with *ix on an AT&T 3Bmumble, and
+> started really getting into it with SunOS 4.1.1.  I've recently become
+> interested in trying a large number of different *ix's - I guess it was the
+> ease with which VirtualBox allowed many of those, and then seeing Nordier's
+> V7 port to x86 got me curious about trying some really old versions - he
+> mentioned that there was a pdp11 emulator available...
+>
+>
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+
+
+
+-- 
+Tim Newsham | www.thenewsh.com/~newsham | thenewsh.blogspot.com
+
+
+From a.phillip.garcia at gmail.com  Fri Aug  5 23:26:17 2011
+From: a.phillip.garcia at gmail.com (A. P. Garcia)
+Date: Fri, 5 Aug 2011 08:26:17 -0500
+Subject: [TUHS] TUHS Digest, Vol 84, Issue 3
+In-Reply-To: <mailman.1.1312509602.9235.tuhs@minnie.tuhs.org>
+References: <mailman.1.1312509602.9235.tuhs@minnie.tuhs.org>
+Message-ID: <CAFCBnZujdgTR1v+EL7NwfgqMh+ZZ-VHPTYPt=49umapHLZHgjA@mail.gmail.com>
+
+> Date: Wed, 3 Aug 2011 20:35:15 -0700
+> From: Larry McVoy <lm at bitmover.com>
+> To: Dan Stromberg <drsalists at gmail.com>
+> Cc: tuhs at minnie.tuhs.org
+> Subject: Re: [TUHS] /usr/bin on V7?
+>
+>> By way of introduction, I first started with *ix on an AT&T 3Bmumble, and
+>> started really getting into it with SunOS 4.1.1.
+>
+> SunOS 4.1.1, ah, sweet memories.  I and a bunch of my friends worked on
+> that one.  Guy Harris, even though he had left for Auspex, would come back
+> to building 5 at Sun around 5:30, bang on the door, John Pope or I or one
+> of the other kernel guys who worked into the night, would let him in and
+> give him a place to work, and for the next few hours you'd hear "Jesus,
+> they still haven't fixed this?" and some fix would get pushed in.
+>
+> That was how much we loved SunOS.  Solaris?  Not so much.  We put in tons
+> of effort to make SunOS good and it was a very pleasant version of Unix.
+
+:-)
+if you haven't yet, check out tme sometime:
+http://people.csail.mit.edu/fredette/tme/
+
+
+From salewski at att.net  Mon Aug  8 06:26:48 2011
+From: salewski at att.net (Alan D. Salewski)
+Date: Sun, 07 Aug 2011 16:26:48 -0400
+Subject: [TUHS] Ideas for a Unix paper I'm writing
+In-Reply-To: <32496006.7412.1309232177333.JavaMail.root@zimbraanteil>
+References: <20110628001140.GA23711@minnie.tuhs.org>
+	<32496006.7412.1309232177333.JavaMail.root@zimbraanteil>
+Message-ID: <20110807202648.GF5480@att.net>
+
+On Mon, Jun 27, 2011 at 11:36:17PM -0400, Jim Capp spake thus:
+> Warren,
+*snip*
+
+
+> I'm sure you've read these at one time or another, but here are a few of my favorites. Some of them might help you chase down the quotes you are looking for:
+> 
+> Excerpt from UNIX Time-Sharing System: UNIX Implementation, By K. Thompson, The Bell System Technical Journal, Vol. 57, No. 6, July-August 1978, pp. 1931:
+> 
+> "The kernel is the only UNIX code that cannot be substituted by a user to his own liking.  For this reason, the kernel should make as few real decisions as possible.  This does not mean to allow the user a million options to do the same thing.  Rather, it means to allow only one way to do one thing, but have that way be the least-common divisor of all the options that might have been provided."
+*snip*
+
+
+> Excerpt from The UNIX Programming Environment, By Brian W. Kernighan & Rob Pike, Prentice-Hall 1984, pp. viii:
+> 
+> "Even though the UNIX system introduces a number of innovative programs and techniques, no single program or idea makes it work well.  Instead, what makes it effective is an approach to programming, a philosophy of using the computer.  Although that philosophy can't be written down in a single sentence, at its heart is the idea that the power of a system comes more from the relationships among programs than from the programs themselves.  Many UNIX programs do quite trivial tasks in isolation, but, combined with other programs, become general and useful tools."
+*snip*
+> Cheers,
+> 
+> Jim
+
+
+I think those quotes segue nicely to highlighting the importance of the
+underlying philosophy that is the foundation for the examples of
+technological insight, pragmatic design, and engineering excellence
+catalogued thus far. Greg Lehey already provided the link to the
+Wikipedia "Unix philosophy" page; I think a quote from one of the items
+referenced there really gets to the heart of things:
+
+>From _The UNIX Philosopy_, by Mike Gancarz, Digital Press 1995, pp.  xvii:
+
+    "The creators of the UNIX operating system started with a radical
+    concept: They assumed that the users of their software would be
+    computer literate from the start. The entire UNIX philosophy
+    revolves around the idea that the user knows what he is doing."
+
+
+All tool design branches in one direction or the other on this point;
+Unix gets it right.
+
+-Al
+
+
+
+From mascheck at in-ulm.de  Sat Aug 13 23:24:29 2011
+From: mascheck at in-ulm.de (Sven Mascheck)
+Date: Sat, 13 Aug 2011 15:24:29 +0200
+Subject: [TUHS] /usr/bin on V7?
+In-Reply-To: <CAGGBd_o=zbtbaJ6x+3ksRVik8EG+hnfjAr9P-4=rBYmqooVHVg@mail.gmail.com>
+References: <CAGGBd_o=zbtbaJ6x+3ksRVik8EG+hnfjAr9P-4=rBYmqooVHVg@mail.gmail.com>
+Message-ID: <20110813132429.GF27179@lisa.in-ulm.de>
+
+On Wed, Aug 03, 2011 at 07:53:44PM -0700, Dan Stromberg wrote:
+
+> When I boot V7 in SIMH (pdp11), I get a root shell and a root filesystem,
+> but...  I see that /usr/bin is on root's default PATH, but I have no
+> /usr/bin directory.  Is there some way I could get a /usr/bin with
+> additional executables, to get the full flavor of V7?
+
+It's not unusual to have no /usr/bin at first,
+see "Setting Up Unix" in the 7th ed man, vol2b:
+
+"The system as distributed has all of the binaries in /bin.  Most of
+ them should be moved to /usr/bin, leaving only the ones required for
+ system maintenance (such as icheck, dcheck, cc, ed, restor, etc.)
+ and the most heavily used in /bin.  This will speed things up a bit
+ if you have only one disk, and also free up space on the root file
+ system for temporary files."
+
+
+From mascheck at in-ulm.de  Sun Aug 14 23:12:18 2011
+From: mascheck at in-ulm.de (Sven Mascheck)
+Date: Sun, 14 Aug 2011 15:12:18 +0200
+Subject: [TUHS] /usr/bin on V7?
+In-Reply-To: <20110813132429.GF27179@lisa.in-ulm.de>
+References: <CAGGBd_o=zbtbaJ6x+3ksRVik8EG+hnfjAr9P-4=rBYmqooVHVg@mail.gmail.com>
+	<20110813132429.GF27179@lisa.in-ulm.de>
+Message-ID: <20110814131218.GG27179@lisa.in-ulm.de>
+
+Sven Mascheck wrote:
+
+> see "Setting Up Unix" in the 7th ed man, vol2b:
+> 
+> "The system as distributed has all of the binaries in /bin.  Most of
+>  them should be moved to /usr/bin, leaving only the ones required for
+>  system maintenance (such as icheck, dcheck, cc, ed, restor, etc.)
+>  and the most heavily used in /bin.  This will speed things up a bit
+>  if you have only one disk, and also free up space on the root file
+>  system for temporary files."
+
+
+- Some are certainly required in /bin because /usr/bin
+  might be on a separate disk.  So this certainly includes
+  all important diagnostic and repair tools.
+  (And keep in mind that pwd, echo and test were not built
+   into the 7th ed Bourne shell, yet.)
+
+But which binaries "could" be moved to /usr/bin then?
+
+Out of curiosity I had a look for other (strict) criteria
+apart from that you certainly always want to have the
+diagnostic+repair tools available in case of problems.
+
+- Some commands are strictly required in /bin because of
+  hardcoded exec() paths:  getty(8) execs to /bin/login,
+  mv(1) requires /bin/cp,
+	
+  while other commands interestingly try to exec in both
+  directories, rm(1) (-r) does so with "rmdir", tar(1) with
+  "mkdir", bc(1) with "dc", and refer(1) with "sort".
+
+  find(1) requires "pwd", but uses popen().
+
+- the absolute minimum in /bin to boot is actually
+	sh
+
+  (because mount is in /etc),
+  For going multiuser you also need the hardcoded
+	login
+
+  And for getting all diagnostic messages (e.g. /etc/rc)
+  when going multiuser - with a separate /usr disk -
+  you need
+	echo, cat, rm, date
+
+- If you don't want to mess around with temporary copies of
+  binaries, you need especially for mv :)
+	cp
+
+- Searching the commands code for hardcoded paths also yields
+	newgrp, as, cc, ld, pwd, 
+ 
+
+BTW, the System III distribution had these in /bin, AFAIK,
+
+  acctcom   chmod  diff     find  ln      nm      rm     strip  touch
+  adb       chown  dirname  grep  ls      nohup   rmail  stty   true
+  ar        cmp    du       kas   mail    od      rmdir  STTY   tty
+  as        cp     echo     kasb  make    passwd  rsh    su     uname
+  basename  cpio   ed       kill  mesg    pdp11   sed    sum    vax
+  bs        crypt  env      kun   mkdir   pr      sh     sync   wc
+  cat       date   expr     kunb  mv      ps      size   tail   who
+  cc        dd     false    ld    newgrp  pwd     sleep  tee    write
+  chgrp     df     file     line  nice    red     sort   time
+
+
+I agree they knew better than me anyway.
+So I guess just the above,
+minus the SysIII-only commands,
+plus the 7thEd-only commands
+might be just right for /bin, and that's
+
+  ar   chgrp  date    echo   icheck  mkdir   ps      sh     tail
+  as   chmod  dc      ed     kill    mv      pwd     size   test
+  at   chown  dcheck  false  ld      ncheck  restor  sleep  touch
+  bc   clri   dd      file   ln      newgrp  rm      sort   true
+  cat  cmp    df      find   login   od      rmdir   stty   tty
+  cc   cp     du      grep   ls      passwd  sed     su
+
+
+
+From drsalists at gmail.com  Mon Aug 15 03:19:46 2011
+From: drsalists at gmail.com (Dan Stromberg)
+Date: Sun, 14 Aug 2011 10:19:46 -0700
+Subject: [TUHS] /usr/bin on V7?
+In-Reply-To: <20110813132429.GF27179@lisa.in-ulm.de>
+References: <CAGGBd_o=zbtbaJ6x+3ksRVik8EG+hnfjAr9P-4=rBYmqooVHVg@mail.gmail.com>
+	<20110813132429.GF27179@lisa.in-ulm.de>
+Message-ID: <CAGGBd_qQ_H4+Aza+Y8Q-zQLjSdmC6fEWh0fvzVLck0=XCUjgjw@mail.gmail.com>
+
+On Sat, Aug 13, 2011 at 6:24 AM, Sven Mascheck <mascheck at in-ulm.de> wrote:
+
+> On Wed, Aug 03, 2011 at 07:53:44PM -0700, Dan Stromberg wrote:
+>
+> > When I boot V7 in SIMH (pdp11), I get a root shell and a root filesystem,
+> > but...  I see that /usr/bin is on root's default PATH, but I have no
+> > /usr/bin directory.  Is there some way I could get a /usr/bin with
+> > additional executables, to get the full flavor of V7?
+>
+> It's not unusual to have no /usr/bin at first,
+> see "Setting Up Unix" in the 7th ed man, vol2b:
+>
+
+Shouldn't there be a tar command somewhere on the system, as installed?
+http://en.wikipedia.org/wiki/Tar_%28file_format%29 indicates that V7 had a
+tar format.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110814/a82a9087/attachment.html>
+
+From mascheck at in-ulm.de  Mon Aug 15 04:41:03 2011
+From: mascheck at in-ulm.de (Sven Mascheck)
+Date: Sun, 14 Aug 2011 20:41:03 +0200
+Subject: [TUHS] /usr/bin on V7?
+In-Reply-To: <CAGGBd_qQ_H4+Aza+Y8Q-zQLjSdmC6fEWh0fvzVLck0=XCUjgjw@mail.gmail.com>
+References: <CAGGBd_o=zbtbaJ6x+3ksRVik8EG+hnfjAr9P-4=rBYmqooVHVg@mail.gmail.com>
+	<20110813132429.GF27179@lisa.in-ulm.de>
+	<CAGGBd_qQ_H4+Aza+Y8Q-zQLjSdmC6fEWh0fvzVLck0=XCUjgjw@mail.gmail.com>
+Message-ID: <20110814184103.GH27179@lisa.in-ulm.de>
+
+On Sun, Aug 14, 2011 at 10:19:46AM -0700, Dan Stromberg wrote:
+
+> Shouldn't there be a tar command somewhere on the system, as installed?
+
+  # ls -l /bin/tar
+  -rwxrwxr-x 1 root    17724 May 16 15:19 /bin/tar
+
+Perhaps you might want to get a better image (you have been
+recommended one already) or reinstall.
+
+> http://en.wikipedia.org/wiki/Tar_%28file_format%29 indicates that V7
+> had a tar format.
+
+Why guessing?
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=V7/usr/src/cmd/tar
+
+
+From wkt at tuhs.org  Fri Aug 26 09:24:29 2011
+From: wkt at tuhs.org (Warren Toomey)
+Date: Fri, 26 Aug 2011 09:24:29 +1000
+Subject: [TUHS] Photos of PDP-11s running Unix
+Message-ID: <20110825232429.GA13720@minnie.tuhs.org>
+
+Hi all,
+	As part of my IEEE Spectrum article on 40 years since 1st Edition
+Unix, I've been asked for some suitable imagery/photos. Has anybody brought
+1st Edition up on a real PDP-11/20, and if so, could they take some photos
+of the system?
+
+I think they would even be happy with photos of PDP-11s running V6 or V7.
+
+Anything that you can supply would be great - there is not a lot of
+photos from the early days of Unix.
+
+Thanks in advance,
+	Warren
+
+
+From neozeed at gmail.com  Tue Aug 30 07:16:37 2011
+From: neozeed at gmail.com (Jason Stevens)
+Date: Mon, 29 Aug 2011 17:16:37 -0400
+Subject: [TUHS] 4.0 BSD confusion....
+Message-ID: <CA+rfG9YLGmYw9vWWvoL=Tdfb5A1Sanz9wajzprL_SL7Sj-rLhQ@mail.gmail.com>
+
+I was looking at Tom Yam's 4.0 BSD 'starunix' restoration project, and I had
+a question about the version number that is reported vs the dates... I'm
+using wikipedia as a source (I know I know..)
+
+Anyways Tom's 4.0 boots up like this:
+
+: hp(0,0)vmunix
+87844+15464+130300 start 0x530
+VM/UNIX (Berkeley Version 4.1) 11/10/80
+
+But the wiki page lists 4.1 being from June of 1981, and 4.0 being from
+November of 1980..  Did 4.0 BSD ship reporting itself as 4.1?  I guess there
+is the possibility that the kernel may include patches to bring it up to
+4.1?
+
+Does anyone have tape dumps of 4.0 & 4.1 ...?
+
+I did find some iso image that has various levels of BSD but they are not in
+tape dumps but rather extracted to the filesystem.. the 4.0 & 4.1 from there
+seem identical  Or at a minimum they use the same kernel that reports itself
+as 4.1 ...
+
+Anyways I'm just wondering....
+
+Jason Stevens
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110829/388d110b/attachment.html>
+
+From neozeed at gmail.com  Tue Aug 30 07:19:29 2011
+From: neozeed at gmail.com (Jason Stevens)
+Date: Mon, 29 Aug 2011 17:19:29 -0400
+Subject: [TUHS] 4.1c BSD
+Message-ID: <CA+rfG9ZHSUwR3Rfb48JnNftykAeXUJ8s8-5mMjgzCENQCiMO2w@mail.gmail.com>
+
+Also from that cd image there was enough of 4.1c to make a working system by
+untarring it from within 4.2 BSD ...
+
+VAX780 simulator V3.8-1
+Listening on port 23 (socket 156)
+loading ra(0,0)boot
+Boot
+: ra(0,0)vmunix
+215688+63964+69764 start 0xf98
+4.1c BSD UNIX #2: Tue Aug 28 09:39:12 PDT 1984
+real mem  = 8384512
+avail mem = 7036928
+using 148 buffers containing 838656 bytes of memory
+mcr0 at tr1
+mcr1 at tr2
+uba0 at tr3
+hk0 at uba0 csr 177440 vec 210, ipl 15
+rk0 at hk0 slave 0
+rk1 at hk0 slave 1
+uda0 at uba0 csr 172150 vec 774, ipl 15
+ra0 at uda0 slave 0
+ra1 at uda0 slave 1
+zs0 at uba0 csr 172520 vec 224, ipl 15
+ts0 at zs0 slave 0
+dz0 at uba0 csr 160100 vec 300, ipl 15
+mba0 at tr8
+root on ra0
+WARNING: should run interleaved swap with >= 2Mb
+Automatic reboot in progress...
+Tue Aug 28 09:54:53 PDT 1984
+/dev/rra0a: 836 files, 6010 used, 1419 free (35 frags, 173 blocks)
+/dev/rra0h: 6598 files, 41780 used, 320080 free (160 frags, 79980 blocks)
+Tue Aug 28 09:54:58 PDT 1984
+local daemons: telnetd ftpd tftpd syslog sendmail.
+preserving editor files
+clearing /tmp
+standard daemons: update cron accounting berknet mail printer.
+starting network: rshd rexecd rlogind rwhod routed.
+Tue Aug 28 09:55:00 PDT 1984
+
+ucbmonet login: root
+Last login: Tue Aug 28 09:44:44 on tty00
+4.1c BSD UNIX #2: Tue Aug 28 09:39:12 PDT 1984
+Master source now lives here; freeze your 4.1c stuff now.
+monet#
+
+
+For those who are curious....
+http://vpsland.superglobalmegacorp.com/install/simh/4.1c%20BSD.7z
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110829/833cfc89/attachment.html>
+
+From grog at lemis.com  Tue Aug 30 11:04:40 2011
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Tue, 30 Aug 2011 11:04:40 +1000
+Subject: [TUHS] 4.0 BSD confusion....
+In-Reply-To: <CA+rfG9YLGmYw9vWWvoL=Tdfb5A1Sanz9wajzprL_SL7Sj-rLhQ@mail.gmail.com>
+References: <CA+rfG9YLGmYw9vWWvoL=Tdfb5A1Sanz9wajzprL_SL7Sj-rLhQ@mail.gmail.com>
+Message-ID: <20110830010440.GI2818@dereel.lemis.com>
+
+On Monday, 29 August 2011 at 17:16:37 -0400, Jason Stevens wrote:
+> I was looking at Tom Yam's 4.0 BSD 'starunix' restoration project, and I had
+> a question about the version number that is reported vs the dates... I'm
+> using wikipedia as a source (I know I know..)
+>
+> Anyways Tom's 4.0 boots up like this:
+>
+> : hp(0,0)vmunix
+> 87844+15464+130300 start 0x530
+> VM/UNIX (Berkeley Version 4.1) 11/10/80
+>
+> But the wiki page lists 4.1 being from June of 1981, and 4.0 being from
+> November of 1980..  Did 4.0 BSD ship reporting itself as 4.1?  I guess there
+> is the possibility that the kernel may include patches to bring it up to
+> 4.1?
+
+Interesting.  I've taken a look at the sources from the CD set and
+found that the text there (in /usr/src/sys/sys/machdep.c) is the same
+as above.  Looking further, the entire directory has the same files in
+4.0 and 4.1, with the same modification dates.  So it looks as the 4.0
+sources accidentally got replaced by the 4.1 sources.
+
+> Does anyone have tape dumps of 4.0 & 4.1 ...?
+
+mckusick might.  I'm copying him.
+
+Greg
+--
+Sent from my desktop computer
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft MUA reports
+problems, please read http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 196 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20110830/ffab1f72/attachment.sig>
+
+From lyndon at orthanc.ca  Wed Aug 31 04:37:44 2011
+From: lyndon at orthanc.ca (Lyndon Nerenberg)
+Date: Tue, 30 Aug 2011 11:37:44 -0700
+Subject: [TUHS] 4.0 BSD confusion....
+In-Reply-To: <20110830010440.GI2818@dereel.lemis.com>
+References: <CA+rfG9YLGmYw9vWWvoL=Tdfb5A1Sanz9wajzprL_SL7Sj-rLhQ@mail.gmail.com>
+	<20110830010440.GI2818@dereel.lemis.com>
+Message-ID: <8F0F32CC-B42B-4B26-B38B-11B9DFC01A62@orthanc.ca>
+
+
+>> : hp(0,0)vmunix
+>> 87844+15464+130300 start 0x530
+>> VM/UNIX (Berkeley Version 4.1) 11/10/80
+>> 
+>> But the wiki page lists 4.1 being from June of 1981, and 4.0 being from
+>> November of 1980..  Did 4.0 BSD ship reporting itself as 4.1?  I guess there
+>> is the possibility that the kernel may include patches to bring it up to
+>> 4.1?
+> 
+
+I did a bit of digging in the SCCS files on disk 4 of the CD-ROM set.  That '4.1' version string was hardwired into vax/vax/machdep.c on November 10, 1980, as delta 4.1.  The logs for Locore.c show a commit on November 9, also with delta 4.1, with the comment 'version 4.1 for distrib'.
+
+From the start if the SCCS history (April 9, 1980 ) through May 17, machdep.c identified the system as version 3.1. Delta 3.6 (May 18) changed the version string to be the SCCS delta of machdep.c, thus the version number jumped from 3.1 to 3.6.  The version appears to have tracked the machdep.c delta until Nov 10 when it was hardwired to '4.1'. (I say appears because I didn't take the time to examine all 27 deltas between 3.6 and 4.1.)
+
+After a cursory search I can't find any SCCS log references to a 4.0 release.
+
+The cover letter for the 4.1 distribution was dated July 8, 1981.
+
+--lyndon
+

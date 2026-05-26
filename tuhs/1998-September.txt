@@ -1,0 +1,881 @@
+From rdkeys at seedlab1.cropsci.ncsu.edu  Wed Sep  2 00:42:20 1998
+From: rdkeys at seedlab1.cropsci.ncsu.edu (User Rdkeys Robert D. Keys)
+Date: Tue, 1 Sep 1998 10:42:20 -0400 (EDT)
+Subject: Looking for rationale of fs naming conventions
+Message-ID: <199809011442.KAA15214@seedlab1.cropsci.ncsu.edu>
+
+I am curious as to the rationale and reasoning behind:
+
+1) fs naming conventions
+
+2) fs space allocation conventions
+
+3) fs to partition mapping conventions
+
+4) partition conventions
+
+historically in unix (particularly the BSD's).
+
+Why the differences between 4.3 and 4.4 as relates to var?
+
+Why the differences between 4.3 and 4.4 as relates to the contrib sections?
+
+Why the convention of hd0a/b/c/d/e/f/g/h for the various fs?  I understand
+the reasoning of a/b/c, but after that the rhyme and reason goes wild,
+with everyone seemingly doing their own thing.  What was the logic of it,
+originally?
+
+Why the sizes of the various fs?
+
+I am trying to understand historically the hows and whys things developed
+as they did.  The SMM's don't really cover it very well.
+
+Thanks
+
+Bob Keys
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.8/8.8.8) id DAA24452
+	for pups-liszt; Wed, 2 Sep 1998 03:20:52 +1000 (EST)
+
+From eric at fudge.uchicago.edu  Wed Sep  2 03:19:07 1998
+From: eric at fudge.uchicago.edu (Eric Fischer)
+Date: Tue, 1 Sep 1998 12:19:07 -0500 (CDT)
+Subject: Looking for rationale of fs naming conventions
+In-Reply-To: <199809011442.KAA15214@seedlab1.cropsci.ncsu.edu>
+References: <199809011442.KAA15214@seedlab1.cropsci.ncsu.edu>
+Message-ID: <199809011719.MAA15499@fudge.uchicago.edu>
+
+> From: "User Rdkeys Robert D. Keys" <rdkeys at seedlab1.cropsci.ncsu.edu>
+
+I don't think I really have all the background necessary to answer 
+these questions, but I'll give it a shot anyway:
+
+> Why the differences between 4.3 and 4.4 as relates to var?
+
+I believe /var originated in SunOS at a time when Sun was heavily
+promoting network-mounted file systems.  In order to allow /usr to be
+mounted read-only across the network from a shared server, it was
+necessary to move all the files that would need to be modified by a
+running system from their traditional locations in /usr onto a file
+system that would be writable (and probably not shared with other
+systems).  The rearrangement was then widely copied by other systems,
+including 4.4BSD.
+
+> Why the convention of hd0a/b/c/d/e/f/g/h for the various fs?  I understand
+> the reasoning of a/b/c, but after that the rhyme and reason goes wild,
+> with everyone seemingly doing their own thing.  What was the logic of it,
+> originally?
+
+It looks like this one really originated with the Seventh Edition,
+where "hp" disks were permanently partitioned as follows:
+
+    partition  start   length
+       0       0       23        -> a
+       1       23      21        -> b
+       2       0       0         -> c
+       3       0       0         -> d
+       4       44      386       -> e
+       5       430     385       -> f
+       6       44      367       -> g
+       7       44      771       -> h
+
+(the start and length are in cylinders of 418 blocks apiece)
+
+A generic installation, according to the manual, would put root on
+partition 0, swap on partition 1, and /usr on partition 4 or 7.
+Partitions 2 or 3 could be used to access an entire disk.
+
+Clearly if partition 4 was used for /usr then partition 5 could be used
+for something else, while if 7 was used it would take up the entire
+rest of the disk.  I'm not sure what the motivation was for the size of
+partition 6, even though partition g now seems to be the standard one
+for /usr, but presumably the space between cylinders 411 and 430 could
+be put to use somehow.
+
+The Sixth Edition also had fixed-size partitions, but of different
+sizes than the Seventh Edition used:
+
+    partition  start   length
+       0       0       9614      -> a
+       1       18392   65535     -> b
+       2       48018   65535     -> c
+       3       149644  20900     -> d
+       4       0       40600     -> e
+       5       41800   40600     -> f
+       6       83600   40600     -> g
+       7       125400  40600     -> h
+
+(these numbers are in blocks, not cylinders).  The manual explains
+the motivation for partitioning:
+
+   This is done since the size of a full RP drive is 170,544 blocks
+   and internally the system is only capable of addressing 65,536
+   blocks.  Also since the disk is so large, this allows it to be
+   broken up into more managable pieces.
+
+I don't understand why these particular sizes were chosen, though,
+because they don't seem to add up in any sensible way without wasting
+space or overlapping.
+
+> Why the sizes of the various fs?
+
+The original reason for root to be small and /usr to be large was, I
+believe, so that the most commonly-used files could be kept on a small,
+fast, and expensive, head-per-track disk, while the less-frequently used
+files would be on the larger, slower, but cheaper conventional disk,
+and the division was maintained even when systems put both file systems
+on the same disk.  As for the exact sizes chosen, I don't know.
+
+eric
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.8/8.8.8) id EAA24641
+	for pups-liszt; Wed, 2 Sep 1998 04:21:24 +1000 (EST)
+
+From rdkeys at seedlab1.cropsci.ncsu.edu  Wed Sep  2 04:16:04 1998
+From: rdkeys at seedlab1.cropsci.ncsu.edu (User Rdkeys Robert D. Keys)
+Date: Tue, 1 Sep 1998 14:16:04 -0400 (EDT)
+Subject: Looking for rationale of fs naming conventions
+In-Reply-To: <199809011719.MAA15499@fudge.uchicago.edu> from Eric Fischer at "Sep 1, 98 12:19:07 pm"
+Message-ID: <199809011816.OAA15796@seedlab1.cropsci.ncsu.edu>
+
+Thanks Eric....  that sort of discussion makes my day, and feeds my
+woefully short history folder, nicely!  Does anything in print cover
+this sort of thing in one place?
+
+So much to learn....
+
+Bob Keys
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.8/8.8.8) id FAA24730
+	for pups-liszt; Wed, 2 Sep 1998 05:02:01 +1000 (EST)
+
+From rdkeys at seedlab1.cropsci.ncsu.edu  Wed Sep  2 04:56:49 1998
+From: rdkeys at seedlab1.cropsci.ncsu.edu (User Rdkeys Robert D. Keys)
+Date: Tue, 1 Sep 1998 14:56:49 -0400 (EDT)
+Subject: Looking for rationale of fs naming conventions (more????)
+In-Reply-To: <199809011719.MAA15499@fudge.uchicago.edu> from Eric Fischer at "Sep 1, 98 12:19:07 pm"
+Message-ID: <199809011856.OAA15872@seedlab1.cropsci.ncsu.edu>
+
+> > From: "User Rdkeys Robert D. Keys" <rdkeys at seedlab1.cropsci.ncsu.edu>
+> > Why the differences between 4.3 and 4.4 as relates to var?
+> 
+> I believe /var originated in SunOS at a time when Sun was heavily
+> promoting network-mounted file systems.  In order to allow /usr to be
+> mounted read-only across the network from a shared server, it was
+> necessary to move all the files that would need to be modified by a
+> running system from their traditional locations in /usr onto a file
+> system that would be writable (and probably not shared with other
+> systems).  The rearrangement was then widely copied by other systems,
+> including 4.4BSD.
+
+OK.  Now it is beginning to make sense.
+
+IF one is putting together a small system, where things like remote mounting
+or large numbers of users are NOT going to be present, are there any sorts
+of particular reasons to even have a /var fs?  For example, on my FBSD
+boxes (yeah, I know new stuff and not Ancient Unixes, but I have to run
+it at the office --- at home is another story), I find that I use var
+mostly for temp stuff, spooling prints and mail, and little else.
+The ftp user is off on another fs with regular users, where space is
+not critical (since my ftp archives can vary widely, across time) and
+I don't want to take up a lot of space with a mostly empty var.
+That leads to the question of whether or not it is workable to put
+var as a tree within the root fs?  And, then, what did the earlier
+systems like 32V or V7 use as the mail or print spooling areas?
+I don't have much info on the earlier systems, except for bits and
+pieces that I have run across.  Sadly, our library here at MOO U,
+has little from earlier days.  Is any of this around on-line?
+
+> > Why the convention of hd0a/b/c/d/e/f/g/h for the various fs?  I understand
+> > the reasoning of a/b/c, but after that the rhyme and reason goes wild,
+> > with everyone seemingly doing their own thing.  What was the logic of it,
+> > originally?
+> 
+> It looks like this one really originated with the Seventh Edition,
+> where "hp" disks were permanently partitioned as follows:
+> 
+>     partition  start   length
+>        0       0       23        -> a
+>        1       23      21        -> b
+>        2       0       0         -> c
+>        3       0       0         -> d
+>        4       44      386       -> e
+>        5       430     385       -> f
+>        6       44      367       -> g
+>        7       44      771       -> h
+> 
+> (the start and length are in cylinders of 418 blocks apiece)
+
+Does this imply that the permanent partitions were pdp-hardware related,
+or due to limitations in fs addressing schemes due to processor or
+code design limits?
+ 
+> A generic installation, according to the manual, would put root on
+> partition 0, swap on partition 1, and /usr on partition 4 or 7.
+> Partitions 2 or 3 could be used to access an entire disk.
+
+Is the 2 and 3 partition ever used, or was that just something
+that came along for the ride with the hardware, and not used by 
+unix?
+
+> Clearly if partition 4 was used for /usr then partition 5 could be used
+> for something else, while if 7 was used it would take up the entire
+> rest of the disk.  I'm not sure what the motivation was for the size of
+> partition 6, even though partition g now seems to be the standard one
+> for /usr, but presumably the space between cylinders 411 and 430 could
+> be put to use somehow.
+> 
+> The Sixth Edition also had fixed-size partitions, but of different
+> sizes than the Seventh Edition used:
+> 
+>     partition  start   length
+>        0       0       9614      -> a
+>        1       18392   65535     -> b
+>        2       48018   65535     -> c
+>        3       149644  20900     -> d
+>        4       0       40600     -> e
+>        5       41800   40600     -> f
+>        6       83600   40600     -> g
+>        7       125400  40600     -> h
+> 
+> (these numbers are in blocks, not cylinders).  The manual explains
+> the motivation for partitioning:
+> 
+>    This is done since the size of a full RP drive is 170,544 blocks
+>    and internally the system is only capable of addressing 65,536
+>    blocks.  Also since the disk is so large, this allows it to be
+>    broken up into more managable pieces.
+
+OK, now it is beginning to make some sense.  It would seem to be due
+to addressing limits in the machine (drive? processor? code?).
+
+It is interesting that here it seems that partitions 1 and 2 were
+co-addressed, or overlapping, while 4/5/6/7 were sequentially laid
+out across the disk, perhaps.  It would seem that 4/5/6/7 were just
+simple divisions of the disk into 4 pieces.  Was something like this
+done to accommodate whether the drive was used a a boot drive or
+a secondary drive?
+
+> I don't understand why these particular sizes were chosen, though,
+> because they don't seem to add up in any sensible way without wasting
+> space or overlapping.
+> 
+> > Why the sizes of the various fs?
+> 
+> The original reason for root to be small and /usr to be large was, I
+> believe, so that the most commonly-used files could be kept on a small,
+> fast, and expensive, head-per-track disk, while the less-frequently used
+> files would be on the larger, slower, but cheaper conventional disk,
+> and the division was maintained even when systems put both file systems
+> on the same disk.  As for the exact sizes chosen, I don't know.
+
+Interesting.  What sizes, relatively, were such drives from that era
+of the high-speed type, and by what manufacture?
+
+> eric
+
+Again... Thanks!
+
+Bob Keys
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.8/8.8.8) id FAA24871
+	for pups-liszt; Wed, 2 Sep 1998 05:46:21 +1000 (EST)
+
+From eric at fudge.uchicago.edu  Wed Sep  2 05:45:53 1998
+From: eric at fudge.uchicago.edu (Eric Fischer)
+Date: Tue, 1 Sep 1998 14:45:53 -0500 (CDT)
+Subject: Looking for rationale of fs naming conventions (more????)
+In-Reply-To: <199809011856.OAA15872@seedlab1.cropsci.ncsu.edu>
+References: <199809011856.OAA15872@seedlab1.cropsci.ncsu.edu>
+Message-ID: <199809011945.OAA16702@fudge.uchicago.edu>
+
+> From: "User Rdkeys Robert D. Keys" <rdkeys at seedlab1.cropsci.ncsu.edu>
+
+[snip]
+
+> IF one is putting together a small system, where things like remote mounting
+> or large numbers of users are NOT going to be present, are there any sorts
+> of particular reasons to even have a /var fs?
+
+There's no urgent need for it if you don't mind having it as part of
+root or /usr.  On some systems it's nice to have /var on a separate
+partition so that large mail spools or log files that fill up the /var
+partition won't also break root or /usr, but this works both ways,
+because if you had allowed it to be part of a larger partition it might
+not have filled up in the first place.
+
+> That leads to the question of whether or not it is workable to put
+> var as a tree within the root fs?
+
+Lots of systems set it up as just a regular directory within the
+root directory.  Others (like SGIs) make it really be /usr/var
+and put a symlink from /var to there.
+
+> And, then, what did the earlier systems like 32V or V7 use as the
+> mail or print spooling areas?
+
+V7 mail keeps files in /usr/spool/mail; earlier systems did not have an
+equivalent directory and delivered mail files directly to users' home
+directories.  UUCP in v7 spooled files to /usr/spool/uucp.  The v6
+manual (in the manpage for opr) refers to printer spool directories
+/lib/dpr, /lib/lpr, and /lib/npr; the lpd manpage also lists /usr/lpd.
+
+> I don't have much info on the earlier systems, except for bits and
+> pieces that I have run across.  Sadly, our library here at MOO U,
+> has little from earlier days.  Is any of this around on-line?
+
+The v1 manual (as TIFF-format scans and OCRed PostScript), as well as
+much other historical material, is available from Dennis Ritchie's web
+page,
+
+    http://plan9.bell-labs.com/who/dmr/
+
+The v7 manual is also at the same site but in 
+
+    http://plan9.bell-labs.com/7thEdMan/
+
+The v6 manual can be extracted from the binary v6 distribution that you
+can run on a PDP-11 emulator, though troff changed a bit between v6 and
+v7 so you have to work a bit to get it to format with a modern ditroff.
+
+> Does this imply that the permanent partitions were pdp-hardware related,
+> or due to limitations in fs addressing schemes due to processor or
+> code design limits?
+
+I think they were specifically there for convenience.  The smaller
+disks that were also supported did not all have partitions.
+
+> Is the 2 and 3 partition ever used, or was that just something
+> that came along for the ride with the hardware, and not used by 
+> unix?
+
+I imagine it would be used if you devoted an entire disk to a single
+file system, or as a way of copying the entire contents of the disk
+regardless of the partitioning to another device for backup.
+
+> OK, now it is beginning to make some sense.  It would seem to be due
+> to addressing limits in the machine (drive? processor? code?).
+
+The v6 C compiler does not have long integers and the PDP-11 is a 16-bit
+machine, so that's why everything was limited to 65536 blocks.  If you
+want *real* weirdness, check out the v1 manual, in which the seek call
+had not yet been made to deal with anything over 65536 *bytes*, so seeking
+on disks worked very strangely.
+
+> Interesting.  What sizes, relatively, were such drives from that era
+> of the high-speed type, and by what manufacture?
+
+If I'm reading the First Edition manual right, the fixed-head disk was
+the DEC RF11, with 1024 256-byte blocks -- yes, 256K bytes for the
+entire hard disk.  Dennis Ritchie's paper "The Evolution of the Unix
+Time-sharing System" refers to a 512K disk, though, so I don't know
+which to believe.
+
+eric
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.8/8.8.8) id GAA24981
+	for pups-liszt; Wed, 2 Sep 1998 06:29:54 +1000 (EST)
+
+From pat at transarc.com  Wed Sep  2 06:28:24 1998
+From: pat at transarc.com (Pat Barron)
+Date: Tue, 1 Sep 1998 16:28:24 -0400 (EDT)
+Subject: Looking for rationale of fs naming conventions (more????)
+In-Reply-To: <199809011856.OAA15872@seedlab1.cropsci.ncsu.edu>
+Message-ID: <Pine.GSO.3.96.980901155532.16237I-100000@smithfield.transarc.com>
+
+On Tue, 1 Sep 1998, User Rdkeys Robert D. Keys wrote:
+> IF one is putting together a small system, where things like remote mounting
+> or large numbers of users are NOT going to be present, are there any sorts
+> of particular reasons to even have a /var fs?
+
+Sure, as long as you make the root filesystem large enough, you can just
+have /var be part of the root filesystem (or do like small SunOS/Slowaris
+systems do, and have /var be a symbolic link to /usr/var - reasonably
+safe, since SunOS and Slowaris both tend to assume that /usr is always
+mounted).
+
+> [...] And, then, what did the earlier
+> systems like 32V or V7 use as the mail or print spooling areas?
+
+Mail is dropped into /usr/spool/mail, or /usr/mail, depending on what
+system you're talking about.  Don't remember where printing went (I
+actually don't remember if V7 even had a print-spooling system; I did a
+lot of printing by doing "pr filename > /dev/lp"....
+
+> Does this imply that the permanent partitions were pdp-hardware related,
+> or due to limitations in fs addressing schemes due to processor or
+> code design limits?
+
+The partition sizes were compiled into the driver, not stored in a disk
+label such as with more modern Unixes (and that was actually the case
+until fairly recently - I don't think that disk labels made it into the
+Berkeley code until at least the 4.3BSD-Tahoe release).  If you wanted to
+change a partition boundary, you had to edit some constants in the driver
+and recompile your kernel (or do what I used to do a lot - use "adb -w"
+to change the driver tables on-the-fly, and then try to remember to make
+the same changes to the source code so you didn't get a surprise next time
+you rebuilt the kernel.....).
+
+> >    This is done since the size of a full RP drive is 170,544 blocks
+> >    and internally the system is only capable of addressing 65,536
+> >    blocks.  Also since the disk is so large, this allows it to be
+> >    broken up into more managable pieces.
+> 
+> OK, now it is beginning to make some sense.  It would seem to be due
+> to addressing limits in the machine (drive? processor? code?).
+
+This was a filesystem limitation; the filesystem code could not handle
+more than 64K blocks in a filesystem, probably because it was using 16 bit
+unsigned integers internally.
+
+--Pat.
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.8/8.8.8) id GAA02145
+	for pups-liszt; Thu, 3 Sep 1998 06:45:08 +1000 (EST)
+
+From tih at Hamartun.Priv.NO  Thu Sep  3 06:14:56 1998
+From: tih at Hamartun.Priv.NO (Tom Ivar Helbekkmo)
+Date: 02 Sep 1998 22:14:56 +0200
+Subject: Looking for rationale of fs naming conventions (more????)
+In-Reply-To: Eric Fischer's message of "Tue, 1 Sep 1998 14:45:53 -0500 (CDT)"
+References: <199809011856.OAA15872@seedlab1.cropsci.ncsu.edu> <199809011945.OAA16702@fudge.uchicago.edu>
+Message-ID: <8690k2z2yn.fsf@barsoom.Hamartun.Priv.NO>
+
+Eric Fischer <eric at fudge.uchicago.edu> writes:
+
+> There's no urgent need for it if you don't mind having it as part of
+> root or /usr.  On some systems it's nice to have /var on a separate
+> partition so that large mail spools or log files that fill up the
+> /var partition won't also break root or /usr, [...]
+
+Another good reason to keep /var (and, for that matter, /tmp) off the
+root partition is to keep that file system mostly quiescent.  You
+really don't want more writing activity than is absolutely necessary
+on the file system you have to have intact to even get to single user
+to run 'fsck', 'restore' and friends.
+
+On some systems, having the root file system mounted read-only during
+normal operation would be a nice security improvement.
+
+-tih
+-- 
+Popularity is the hallmark of mediocrity.  --Niles Crane, "Frasier"
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.8/8.8.8) id GAA05528
+	for pups-liszt; Fri, 4 Sep 1998 06:46:06 +1000 (EST)
+
+From bqt at Update.UU.SE  Fri Sep  4 06:45:37 1998
+From: bqt at Update.UU.SE (Johnny Billquist)
+Date: Thu, 3 Sep 1998 22:45:37 +0200 (MET DST)
+Subject: Looking for rationale of fs naming conventions (more????)
+In-Reply-To: <199809011945.OAA16702@fudge.uchicago.edu>
+Message-ID: <Pine.VUL.3.93.980903224315.28685A-100000@Zeke.Update.UU.SE>
+
+On Tue, 1 Sep 1998, Eric Fischer wrote:
+
+> > Interesting.  What sizes, relatively, were such drives from that era
+> > of the high-speed type, and by what manufacture?
+> 
+> If I'm reading the First Edition manual right, the fixed-head disk was
+> the DEC RF11, with 1024 256-byte blocks -- yes, 256K bytes for the
+> entire hard disk.  Dennis Ritchie's paper "The Evolution of the Unix
+> Time-sharing System" refers to a 512K disk, though, so I don't know
+> which to believe.
+
+Are you sure that was 256-byte blocks? DEC usually talked about words when
+it came to the pdp-11, and one word is 2 bytes, meaning the block is 512
+bytes. Almost all DEC disks have 512 byte blocks on the pdp-11. Anybody
+know any exceptions? (Is the RF-11? That disk is before my time...)
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.8/8.8.8) id HAA05772
+	for pups-liszt; Fri, 4 Sep 1998 07:50:42 +1000 (EST)
+
+From eric at fudge.uchicago.edu  Fri Sep  4 07:50:11 1998
+From: eric at fudge.uchicago.edu (Eric Fischer)
+Date: Thu, 3 Sep 1998 16:50:11 -0500 (CDT)
+Subject: Looking for rationale of fs naming conventions (more????)
+In-Reply-To: <Pine.VUL.3.93.980903224315.28685A-100000@Zeke.Update.UU.SE>
+References: <Pine.VUL.3.93.980903224315.28685A-100000@Zeke.Update.UU.SE>
+Message-ID: <199809032150.QAA09714@fudge.uchicago.edu>
+
+> From: Johnny Billquist <bqt at Update.UU.SE>
+
+> Are you sure that was 256-byte blocks? DEC usually talked about words when
+> it came to the pdp-11, and one word is 2 bytes, meaning the block is 512
+> bytes. Almost all DEC disks have 512 byte blocks on the pdp-11. Anybody
+> know any exceptions? (Is the RF-11? That disk is before my time...)
+
+Oh!  You're right -- I looked at the line in the manual that says
+
+   The disk contains 1024 256-word blocks, numbered 0 to 1023 ...
+
+and misread 256-word as 256-byte because it was such a strange concept
+that Unix would ever be doing word-oriented I/O.  That makes a lot
+more sense.
+
+eric
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.8/8.8.8) id LAA06405
+	for pups-liszt; Fri, 4 Sep 1998 11:01:49 +1000 (EST)
+
+From mckusick at mckusick.com  Fri Sep  4 10:25:15 1998
+From: mckusick at mckusick.com (Kirk McKusick)
+Date: Thu, 03 Sep 1998 17:25:15 -0700
+Subject: Looking for rationale of fs naming conventions 
+In-Reply-To: Your message of "Tue, 01 Sep 1998 14:16:04 EDT."
+             <199809011816.OAA15796@seedlab1.cropsci.ncsu.edu> 
+Message-ID: <199809040025.RAA11780@flamingo.McKusick.COM>
+
+	From: "User Rdkeys Robert D. Keys" <rdkeys at seedlab1.cropsci.ncsu.edu>
+	Subject: Re: Looking for rationale of fs naming conventions
+	In-Reply-To: <199809011719.MAA15499 at fudge.uchicago.edu>
+		from Eric Fischer at "Sep 1, 98 12:19:07 pm"
+	To: eric at fudge.uchicago.edu (Eric Fischer)
+	Date: Tue, 1 Sep 1998 14:16:04 -0400 (EDT)
+	Cc: rdkeys at seedlab1.cropsci.ncsu.edu (User RDKEYS Robert D. Keys),
+		pups at minnie.cs.adfa.oz.au
+
+	Thanks Eric....  that sort of discussion makes my day, and feeds my
+	woefully short history folder, nicely!  Does anything in print cover
+	this sort of thing in one place?
+
+	So much to learn....
+
+	Bob Keys
+
+The `diskpart' utility was used in 4.4BSD to organize disk partitions.
+Its manual page tries to rationalize the use of partitions. I enclose
+it below in case you do not have access to it.
+
+	Kirk McKusick
+
+=-=-=-=-=-=-=-=-=-=-=
+
+DISKPART(8)               BSD System Manager's Manual              DISKPART(8)
+
+NAME
+     diskpart - calculate default disk partition sizes
+
+SYNOPSIS
+     diskpart [-p] [-d] [-s size] disk-type
+
+DESCRIPTION
+     Diskpart is used to calculate the disk partition sizes based on the de-
+     fault rules used at Berkeley.
+
+     Available options and operands:
+
+     -p          Tables suitable for inclusion in a device driver are pro-
+                 duced.
+
+     -d          An entry suitable for inclusion in the disk description file
+                 /etc/disktab is generated; for example, disktab(5).
+
+     -s size     The size of the disk may be limited to size with the -s op-
+                 tion.
+
+     On disks that use bad144(8) type of bad-sector forwarding, space is nor-
+     mally left in the last partition on the disk for a bad sector forwarding
+     table, although this space is not reflected in the tables produced.  The
+     space reserved is one track for the replicated copies of the table and
+     sufficient tracks to hold a pool of 126 sectors to which bad sectors are
+     mapped.  For more information, see bad144(8).  The -s option is intended
+     for other controllers which reserve some space at the end of the disk for
+     bad-sector replacements or other control areas, even if not a multiple of
+     cylinders.
+
+     The disk partition sizes are based on the total amount of space on the
+     disk as given in the table below (all values are supplied in units of
+     sectors).  The `c' partition is, by convention, used to access the entire
+     physical disk.  The device driver tables include the space reserved for
+     the bad sector forwarding table in the `c' partition; those used in the
+     disktab and default formats exclude reserved tracks.  In normal opera-
+     tion, either the `g' partition is used, or the `d', `e', and `f' parti-
+     tions are used.  The `g' and `f' partitions are variable-sized, occupying
+     whatever space remains after allocation of the fixed sized partitions.
+     If the disk is smaller than 20 Megabytes, then diskpart aborts with the
+     message ``disk too small, calculate by hand''.
+
+     Partition   20-60 MB   61-205 MB   206-355 MB   356+ MB
+     a           15884      15884       15884        15884
+     b           10032      33440       33440        66880
+     d           15884      15884       15884        15884
+     e           unused     55936       55936        307200
+     h           unused     unused      291346       291346
+
+     If an unknown disk type is specified, diskpart will prompt for the re-
+     quired disk geometry information.
+
+SEE ALSO
+     disktab(5),  bad144(8)
+
+BUGS
+     Most default partition sizes are based on historical artifacts (like the
+     RP06), and may result in unsatisfactory layouts.
+
+     When using the -d flag, alternate disk names are not included in the out-
+     put.
+
+HISTORY
+     The diskpart command appeared in 4.2BSD.
+
+4th Berkeley Distribution        June 6, 1993                                2
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.8/8.8.8) id LAA06477
+	for pups-liszt; Fri, 4 Sep 1998 11:18:48 +1000 (EST)
+
+From wkt at henry.cs.adfa.oz.au  Fri Sep  4 11:19:01 1998
+From: wkt at henry.cs.adfa.oz.au (Warren Toomey)
+Date: Fri, 4 Sep 1998 11:19:01 +1000 (EST)
+Subject: Looking for rationale of fs naming conventions
+Message-ID: <199809040119.LAA04168@henry.cs.adfa.oz.au>
+
+> 	Thanks Eric....  that sort of discussion makes my day, and feeds my
+> 	woefully short history folder, nicely!  Does anything in print cover
+> 	this sort of thing in one place?
+>
+> 	Bob Keys
+
+As with much of early Unix, you have to Use the Source, Luke. Small disks
+like the RK05s and RL02 were not typically partitioned, except to put a
+swap space at one end. However, bigger disks like the RP04s were. In V6
+and V7, this was done by the device driver, and the device minor number
+represented the particular partition, e.g from v6 hp.c
+
+struct {
+        char    *nblocks;
+        int     cyloff;
+} hp_sizes[] {
+        9614,   0,              /* cyl 0 thru 23 */
+                                /* cyl 24 thru 43 available */
+        -1,     44,             /* cyl 44 thru 200 */
+        -1,     201,            /* cyl 201 thru 357 */
+        20900,  358,            /* cyl 358 thru 407 */
+                                /* cyl 408 thru 410 blank */
+        40600,  0,
+        40600,  100,
+        40600,  200,
+        40600,  300,
+};
+
+. . .
+
+hpstrategy(abp)
+struct buf *abp;
+{
+        register struct buf *bp;
+        register char *p1, *p2;
+
+        bp = abp;
+        p1 = &hp_sizes[bp->b_dev.d_minor&07];
+
+Here, each of the 8 minor device numbers selected a different set of
+cylinders on the disk, and note also that some of the sets overlapped.
+The V6 manual on hp(4) says:
+
+	Since  the  disk is so large, this allows it to be broken
+	up into more manageable pieces. The origin and size of the
+	pseudo-disks on each drive are as follows:
+     			disk start     length
+     			0    0 	       9614
+     			1    18392     65535
+     			2    48018     65535
+     			3    149644    20900
+     			4    0 	       40600
+     			5    41800     40600
+     			6    83600     40600
+     			7    125400    40600 
+	It is unwise for all of these files to be present in one
+	installation, since there  is  overlap  in  addresses and
+	protection becomes a sticky matter.
+
+Early versions of BSD followed this compile-time partition selection.
+I'm note sure when disklabels appeared, perhaps in 4.2BSD. Kirk or
+Steven might be able to tell us.
+
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.8/8.8.8) id EAA19059
+	for pups-liszt; Tue, 8 Sep 1998 04:16:01 +1000 (EST)
+
+From rdkeys at seedlab1.cropsci.ncsu.edu  Tue Sep  8 04:10:42 1998
+From: rdkeys at seedlab1.cropsci.ncsu.edu (User Rdkeys Robert D. Keys)
+Date: Mon, 7 Sep 1998 14:10:42 -0400 (EDT)
+Subject: Looking for rationale of fs naming conventions
+In-Reply-To: <199809040025.RAA11780@flamingo.McKusick.COM> from Kirk McKusick at "Sep 3, 98 05:25:15 pm"
+Message-ID: <199809071810.OAA29122@seedlab1.cropsci.ncsu.edu>
+
+> The `diskpart' utility was used in 4.4BSD to organize disk partitions.
+> Its manual page tries to rationalize the use of partitions. I enclose
+> it below in case you do not have access to it.
+> 
+> 	Kirk McKusick
+
+Thanks!
+
+A couple of more questions, so I get the entire picture.....since you
+were there.... as the old TV show went.....
+
+>      In normal opera-
+>      tion, either the `g' partition is used, or the `d', `e', and `f' parti-
+>      tions are used.  The `g' and `f' partitions are variable-sized, occupying
+>      whatever space remains after allocation of the fixed sized partitions.
+
+What are d,e, and f partititions typically used for or originally designed
+for, as opposed to g?  I see some of the historical carryovers in how they
+were arrived at, but I sense there was probably some reasoning or design
+advantages one way over another, back in time, or else there would not
+have been the distinctions.
+
+>      Partition   20-60 MB   61-205 MB   206-355 MB   356+ MB
+>      a           15884      15884       15884        15884
+>      b           10032      33440       33440        66880
+>      d           15884      15884       15884        15884
+
+d is a small partition, so what would it have been designed to be used for?
+It seems the same as root in size, so would it have been, for example, a
+spare root copy?
+
+>      e           unused     55936       55936        307200
+
+e is variable in size, and the only use I have seen of it is for the /var fs,
+so, what was e designed for, or typically used as?
+
+>      h           unused     unused      291346       291346
+
+Likewise for h.
+
+In my limited exposure, I have seen in 4.3BSD that g was typically used for
+the /usr partition as the rest of the disk.  On 4.4BSD, /var was hung on e
+and g was the usr partition for the rest of the disk, on one setup, and on
+another things were really confused and var was hung on h, with all different
+kinds of other fs hung out here and there across the disks.  The rationale
+for it was, at best, confusing to the newbie.
+
+Is it particularly important to worry about how it is laid out, or in the
+Berkeley tradition, are there particular advantages or economies to laying
+it out with d/e/f/ as opposed to just g?  I see the fs loading table in
+the 4.4 install guide, but was wondering if there was more to it than that.
+
+> BUGS
+>      Most default partition sizes are based on historical artifacts (like the
+>      RP06), and may result in unsatisfactory layouts.
+
+This is what I am seeing, it would appear.
+
+Maybe the advantages of earlier layouts vs disks are becoming lost with the
+modern megadisks, in many instances.  Also, I tend to see things from the
+point of view of a single user workstation as opposed to a big multiuser
+server of some kind.  Thus, my frame of refernce is a little skewed.
+
+Thanks
+
+Bob Keys
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.8/8.8.8) id LAA24382
+	for pups-liszt; Wed, 9 Sep 1998 11:27:21 +1000 (EST)
+
+From mckusick at mckusick.com  Wed Sep  9 07:16:11 1998
+From: mckusick at mckusick.com (Kirk McKusick)
+Date: Tue, 08 Sep 1998 14:16:11 -0700
+Subject: Looking for rationale of fs naming conventions 
+In-Reply-To: Your message of "Mon, 07 Sep 1998 14:10:42 EDT."
+             <199809071810.OAA29122@seedlab1.cropsci.ncsu.edu> 
+Message-ID: <199809082116.OAA19252@flamingo.McKusick.COM>
+
+Most commonly, d was used for /tmp (before the days of 
+memory-based filesystems). The e partition was used for
+/var, and f was used for /usr. The e partition was the
+same size as the root filesystem so that it could be used
+as a backup root filesystem.
+
+	Kirk McKusick
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.8/8.8.8) id JAA03259
+	for pups-liszt; Fri, 11 Sep 1998 09:54:53 +1000 (EST)
+
+From wkt at henry.cs.adfa.oz.au  Fri Sep 11 09:54:51 1998
+From: wkt at henry.cs.adfa.oz.au (Warren Toomey)
+Date: Fri, 11 Sep 1998 09:54:51 +1000 (EST)
+Subject: CSRG CDs now available
+Message-ID: <199809102354.JAA02038@henry.cs.adfa.oz.au>
+
+All,
+	Kirk McKusick is back from his 3-week trip and is now shipping
+the 4CD set of BSD releases from the Computer Systems Research group.
+It covers all BSD versions from 1BSD to 4.4BSD and 4.4BSD-Lite2 (but not
+2.11BSD, unfortunately). As well, the last disk holds the final sources
+plus the SCCS files.
+
+Details at http://www.mckusick.com/csrg/
+
+Cheers,
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.8/8.8.8) id VAA12474
+	for pups-liszt; Sat, 19 Sep 1998 21:23:59 +1000 (EST)
+
+From wkt at henry.cs.adfa.oz.au  Sat Sep 19 21:12:17 1998
+From: wkt at henry.cs.adfa.oz.au (Warren Toomey)
+Date: Sat, 19 Sep 1998 21:12:17 +1000 (EST)
+Subject: Help Save 4BSD Boot Tapes!
+Message-ID: <199809191112.VAA01633@henry.cs.adfa.oz.au>
+
+Many kudos to Kirk McKusick for making the entire BSD releases from the
+Computer Systems Research Group available on CD. However, many people are
+going to buy the CD set so they can install 4.3BSD on their personal Vax.
+
+Unfortunately, the 4CD set from Kirk does not contain any tape images
+(bootable or otherwise) which would allow any of the 4BSDs to be installed.
+Therefore, I'm asking anybody who might have old 4BSD tapes lying in a
+corner, or knows someone who might have old 4BSD tapes (or has heard a
+rumor about old 4BSD tapes etc.) to e-mail me with the details.
+
+If we can unearth any old 4BSD tapes, then I am sure there will be
+volunteers around who will be very happy to read the tapes, and I will
+make space for them alongside the other files and tape images in the
+PUPS archive.
+
+While I'm here, I might as well say that I'm still looking for any old
+PDP-11 versions of UNIX, or any applications written for early versions
+of UNIX, or anything machine-readable which is generally related to
+early versions of UNIX. Debbie Scherrer has just donated the Software Tools,
+and both Dennis Ritchie and Norman Wilson are slowly scanning in their
+paper copies of man pages for UNIX Editions 1 to 5.
+
+Many thanks in advance for your help in preserving the history of Unix.
+
+	Warren
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.oz.au (8.8.8/8.8.8) id EAA04014
+	for pups-liszt; Sat, 3 Oct 1998 04:14:38 +1000 (EST)
+

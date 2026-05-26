@@ -1,0 +1,2027 @@
+From schily at schily.net  Wed Jun  1 00:35:57 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Tue, 31 May 2016 16:35:57 +0200
+Subject: [TUHS] etymology of read -u
+In-Reply-To: <201605310727.u4V7Rhmp030422@coolidge.cs.Dartmouth.EDU>
+References: <201605310727.u4V7Rhmp030422@coolidge.cs.Dartmouth.EDU>
+Message-ID: <574da14d.bG9ld/bdPDR6Rj/K%schily@schily.net>
+
+Doug McIlroy <doug at cs.dartmouth.edu> wrote:
+
+> What's the mnmonic significance, if any, of the u in
+> the bash builtin read -u for reading from a specified
+> file descriptor? Evidently both f and d had already been
+> taken in analogy to usage in some other commands.
+
+It seems to be a copy from ksh.
+
+Ksh implements a private "print" builtin that also uses -u fd.
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+From crossd at gmail.com  Wed Jun  1 01:57:01 2016
+From: crossd at gmail.com (Dan Cross)
+Date: Tue, 31 May 2016 11:57:01 -0400
+Subject: [TUHS] etymology of read -u
+In-Reply-To: <CAPz8ZkZjLr1Uj-3VLKK1n5xZq=eeHh+HBeTNHbDVxVTKH+CvCw@mail.gmail.com>
+References: <201605310727.u4V7Rhmp030422@coolidge.cs.Dartmouth.EDU>
+ <CAEoi9W4YTdJ2bJyAKVQqpd48bTLv7GANrtAK271oXnibuo8v6A@mail.gmail.com>
+ <CAPz8ZkZjLr1Uj-3VLKK1n5xZq=eeHh+HBeTNHbDVxVTKH+CvCw@mail.gmail.com>
+Message-ID: <CAEoi9W4qnhaqgqCf2JKMvbVu-mSGxa12np0KM=AUwZi=Yy1c6Q@mail.gmail.com>
+
+I asked Jeff Korn (David Korn's son), who in turn asked David Korn who
+confirmed that 'read -u' comes from ksh and that 'u' stands for 'unit'.
+
+        - Dan C.
+Yes, indeed. He says:
+
+*I added -u when I added co processes in the mid '80s.  The u stands for
+unit.  It was command to talk about file descriptor unit at that time.*
+
+On Tue, May 31, 2016 at 6:06 AM, Dan Cross <crossd at gmail.com> wrote:
+
+> Hey, did your dad do `read -u`?
+>
+> ---------- Forwarded message ----------
+> From: Doug McIlroy <doug at cs.dartmouth.edu>
+> Date: Tue, May 31, 2016 at 3:27 AM
+> Subject: [TUHS] etymology of read -u
+> To: tuhs at minnie.tuhs.org
+>
+>
+> What's the mnmonic significance, if any, of the u in
+> the bash builtin read -u for reading from a specified
+> file descriptor? Evidently both f and d had already been
+> taken in analogy to usage in some other commands.
+>
+> The best I can think of is u as in "tape unit", which
+> was common usage back in the days of READ INPUT TAPE 5.
+> That would make it the work of an old timer, maybe Dave Korn?
+>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160531/b0843289/attachment.html>
+
+From schily at schily.net  Wed Jun  1 02:49:30 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Tue, 31 May 2016 18:49:30 +0200
+Subject: [TUHS] etymology of read -u
+In-Reply-To: <CAEoi9W4qnhaqgqCf2JKMvbVu-mSGxa12np0KM=AUwZi=Yy1c6Q@mail.gmail.com>
+References: <201605310727.u4V7Rhmp030422@coolidge.cs.Dartmouth.EDU>
+ <CAEoi9W4YTdJ2bJyAKVQqpd48bTLv7GANrtAK271oXnibuo8v6A@mail.gmail.com>
+ <CAPz8ZkZjLr1Uj-3VLKK1n5xZq=eeHh+HBeTNHbDVxVTKH+CvCw@mail.gmail.com>
+ <CAEoi9W4qnhaqgqCf2JKMvbVu-mSGxa12np0KM=AUwZi=Yy1c6Q@mail.gmail.com>
+Message-ID: <574dc09a.5Xp2ll0KLxFb5uvh%schily@schily.net>
+
+Dan Cross <crossd at gmail.com> wrote:
+
+> I asked Jeff Korn (David Korn's son), who in turn asked David Korn who
+> confirmed that 'read -u' comes from ksh and that 'u' stands for 'unit'.
+
+Thank you for your reply....
+
+Is this "the method" ;-) to get a reply from David since he works at Google?
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+From doug at cs.dartmouth.edu  Wed Jun  1 14:14:47 2016
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Wed, 01 Jun 2016 00:14:47 -0400
+Subject: [TUHS] etymology of read -u
+Message-ID: <201606010414.u514ElsY010280@coolidge.cs.Dartmouth.EDU>
+
+> I asked Jeff Korn 
+There's nothing like primary sources. Thanks, Dan.
+
+doug
+
+
+From doug at cs.dartmouth.edu  Wed Jun  1 14:17:53 2016
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Wed, 01 Jun 2016 00:17:53 -0400
+Subject: [TUHS] etymology of read -u
+Message-ID: <201606010417.u514Hr6c010290@coolidge.cs.Dartmouth.EDU>
+
+> I asked Jeff Korn
+There's nothing like primary sources. Thanks, Dan.
+
+Doug
+
+
+From arnold at skeeve.com  Sun Jun 26 20:14:01 2016
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Sun, 26 Jun 2016 13:14:01 +0300
+Subject: [TUHS] Origin year of BSD csh?
+Message-ID: <201606261014.u5QAE1qX015184@skeeve.com>
+
+Hi.
+
+Can anyone give a definitive date for when Bill Joy's csh first got out
+of Berkeley?  I suspect it's in the 1976 - 1977 time frame, but I don't
+know for sure.
+
+Thanks!
+
+Arnold
+
+
+From mah at mhorton.net  Mon Jun 27 02:30:39 2016
+From: mah at mhorton.net (Mary Ann Horton)
+Date: Sun, 26 Jun 2016 09:30:39 -0700
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <201606261014.u5QAE1qX015184@skeeve.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+Message-ID: <5770032F.8030306@mhorton.net>
+
+1BSD did not contain csh, and was officially released March 9 1978. It 
+contained something called "a shell" which appears to be a predecessor 
+to csh, but was still compiled as sh.  The README on 1BSD from Bill Joy 
+states:
+
+    Wed Oct 19, 1977
+
+    This directory contains the source for a shell.
+    It requires floating point to do the time command which is built-in
+    so you will have to cc it -f on machines without floating point.
+    It also requires a version 7 C compiler.
+
+    Accurate documentation is in the file "sh.6" to be nroffed with
+    /usr/man/man0/naa and a new "version 7" nroff.
+
+    This shell requires the "htmp" data base also used by the editor "ex".
+    If you do not set it up so that the "sethome" command is done by "login"
+    then you should use the old "osethome" routine in ../s6 rather than
+    "sethome"
+    and reenable the execl of this sethome in the file "sh.c" (with the
+    correct
+    pathname).
+
+2BSD did include csh and was first officially released May 1979. I'm 
+sure there were informal advance copies of csh sent out sooner. I recall 
+csh already being on the UCB systems when I arrived in September of 1978.
+
+I brought csh with me to Bell Labs in the summer of 1979.  The folks at 
+Bell Labs recoiled in horror: they had just gone through a painful 
+conversion from the Mashey shell to the Bourne shell, and would never 
+consider another conversion.  csh was (mostly) upward compatible with 
+the Mashey shell, unlike the Bourne shell.  (This was in the Bell Labs 
+Computer Center, where I was a summer employee, not Research or the PWB 
+group, which I'm sure felt the same way.)
+
+     Mary Ann
+
+On 06/26/2016 03:14 AM, Aharon Robbins wrote:
+> Hi.
+>
+> Can anyone give a definitive date for when Bill Joy's csh first got out
+> of Berkeley?  I suspect it's in the 1976 - 1977 time frame, but I don't
+> know for sure.
+>
+> Thanks!
+>
+> Arnold
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160626/fbcbca4e/attachment.html>
+
+From lm at mcvoy.com  Mon Jun 27 04:14:50 2016
+From: lm at mcvoy.com (Larry McVoy)
+Date: Sun, 26 Jun 2016 11:14:50 -0700
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <5770032F.8030306@mhorton.net>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net>
+Message-ID: <20160626181450.GK26734@mcvoy.com>
+
+On Sun, Jun 26, 2016 at 09:30:39AM -0700, Mary Ann Horton wrote:
+> I brought csh with me to Bell Labs in the summer of 1979.  The folks at Bell
+> Labs recoiled in horror: they had just gone through a painful conversion
+> from the Mashey shell to the Bourne shell
+
+I used csh for a while before ksh became available.  It was an improvement
+over the Bourne shell, IMO, but once ksh came out I went back to Bourne
+shell syntax.  And now bash is pretty nice.
+
+--lm
+
+
+From ron at ronnatalie.com  Mon Jun 27 04:32:23 2016
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Sun, 26 Jun 2016 13:32:23 -0500
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <20160626181450.GK26734@mcvoy.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+Message-ID: <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+
+I detested the CSH syntax.   In order to beat back the CSH proponents at BRL, I added JOB control to the SV  (and later SVR2) Bourne Shell.   Then they beat on me for not having command like editing in (a la TCSH), so I added that.   This shell went out as /bin/sh in the Doug Gwyn SV-on-BSD release so every once and a while over the years I trip across a “Ron shell” usually people who were running Mach-derived things that ran my shell as /bin/sh. 
+
+
+> On Jun 26, 2016, at 1:14 PM, Larry McVoy <lm at mcvoy.com> wrote:
+> 
+> On Sun, Jun 26, 2016 at 09:30:39AM -0700, Mary Ann Horton wrote:
+>> I brought csh with me to Bell Labs in the summer of 1979.  The folks at Bell
+>> Labs recoiled in horror: they had just gone through a painful conversion
+>> from the Mashey shell to the Bourne shell
+> 
+> I used csh for a while before ksh became available.  It was an improvement
+> over the Bourne shell, IMO, but once ksh came out I went back to Bourne
+> shell syntax.  And now bash is pretty nice.
+> 
+> --lm
+
+
+
+From clemc at ccc.com  Mon Jun 27 05:41:19 2016
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 26 Jun 2016 15:41:19 -0400
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <20160626181450.GK26734@mcvoy.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+Message-ID: <CAC20D2N1gHSsQYNCmUixdK4D5hhbfMuyD7wnYPmvD-3dTgtV7Q@mail.gmail.com>
+
+Interesting... Horton's timing sounds right because  I'm pretty sure we had
+some sort of Berkeley shell @ before CMU had 2BSD on the v6++ systems in
+1978 - (I have to ask him, Klone must have been the one that brought it
+over to Mellon Institute ). I state that because I remember trying to play
+with it as well as another hacked shell V6 (I think from Harvard) around
+that time.  I was fascinated by the idea of being able to change the
+default command system, which no other OS I was using I could do same
+(TOPS*, VMS, TSS, Exec/8).   But I remember I didn't like some of choices
+of the Berkeley shell's syntax and tended to avoid it/could not figure it
+out.    Within a year or so V7 showed up there after with Bourne shell and
+I was happy with that.
+
+A few years later, I did switch to typing to the csh when I got to UCB, but
+that was not until after the MIT job control stuff had been spliced into
+the BSD kernel (Horton & Kleckner were probably the ones that convinced me
+to learn it).  With job control I became a fan, but never warmed up to the
+programming syntax.   I picked up the mantra that I still consider wise --
+"type to Joy and program to Bourne."   This is comfortable for the ROMS in
+the muscles of my fingers, but my scripts are portable.
+
+Clem
+
+PS To this day (like about a month ago), if I need to hack on my .login
+script when I move sites (I have some site specific stuff in .login and
+.profiles), I have to grab the cshell man page so I don't screw up the
+syntax.
+
+On Sun, Jun 26, 2016 at 2:14 PM, Larry McVoy <lm at mcvoy.com> wrote:
+
+> On Sun, Jun 26, 2016 at 09:30:39AM -0700, Mary Ann Horton wrote:
+> > I brought csh with me to Bell Labs in the summer of 1979.  The folks at
+> Bell
+> > Labs recoiled in horror: they had just gone through a painful conversion
+> > from the Mashey shell to the Bourne shell
+>
+> I used csh for a while before ksh became available.  It was an improvement
+> over the Bourne shell, IMO, but once ksh came out I went back to Bourne
+> shell syntax.  And now bash is pretty nice.
+>
+> --lm
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160626/9273e2dc/attachment.html>
+
+From cowan at mercury.ccil.org  Mon Jun 27 06:43:26 2016
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sun, 26 Jun 2016 16:43:26 -0400
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+Message-ID: <20160626204325.GA27595@mercury.ccil.org>
+
+Ronald Natalie scripsit:
+
+> I detested the CSH syntax.
+
+Tom Christiansen's 1994 flame "csh Programming Considered Harmful"
+can be found at <http://www.perl.com/doc/FMTEYEWTK/versus/csh.whynot>.
+Current csh releases have undoubtedly fixed many of the complaints,
+but as TC notes, many cannot be fixed.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+                I am a member of a civilization. --David Brin
+
+
+From usotsuki at buric.co  Mon Jun 27 06:58:05 2016
+From: usotsuki at buric.co (Steve Nickolas)
+Date: Sun, 26 Jun 2016 16:58:05 -0400 (EDT)
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <20160626181450.GK26734@mcvoy.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+Message-ID: <alpine.BSF.2.02.1606261654030.76251@frieza.hoshinet.org>
+
+On Sun, 26 Jun 2016, Larry McVoy wrote:
+
+> On Sun, Jun 26, 2016 at 09:30:39AM -0700, Mary Ann Horton wrote:
+>> I brought csh with me to Bell Labs in the summer of 1979.  The folks at Bell
+>> Labs recoiled in horror: they had just gone through a painful conversion
+>> from the Mashey shell to the Bourne shell
+>
+> I used csh for a while before ksh became available.  It was an improvement
+> over the Bourne shell, IMO, but once ksh came out I went back to Bourne
+> shell syntax.  And now bash is pretty nice.
+>
+> --lm
+
+For some daft reason my first foray onto the Unix command line was tcsh, 
+and later I switched to bash, which is still my primary choice - though I 
+don't mind using any other Korn-type shell, long as I got my "emacs 
+editing" mode (although the real ksh's tab completion is clunkier than 
+bash's).
+
+Using a Bourne shell that doesn't have a line editor is a pain in the 
+keester, but if I must, I can deal.
+
+I have no idea how to use csh, and if I'm set up with csh as my default 
+shell the first thing I'll do is try to switch it to bash or ksh!
+
+-uso.
+
+
+From lm at mcvoy.com  Mon Jun 27 10:59:49 2016
+From: lm at mcvoy.com (Larry McVoy)
+Date: Sun, 26 Jun 2016 17:59:49 -0700
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <20160626204325.GA27595@mercury.ccil.org>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160626204325.GA27595@mercury.ccil.org>
+Message-ID: <20160627005949.GP26734@mcvoy.com>
+
+On Sun, Jun 26, 2016 at 04:43:26PM -0400, John Cowan wrote:
+> Ronald Natalie scripsit:
+> 
+> > I detested the CSH syntax.
+> 
+> Tom Christiansen's 1994 flame "csh Programming Considered Harmful"
+> can be found at <http://www.perl.com/doc/FMTEYEWTK/versus/csh.whynot>.
+> Current csh releases have undoubtedly fixed many of the complaints,
+> but as TC notes, many cannot be fixed.
+
+Tom and I went to undergrad together, we were both in the UW-Madison CS
+department.  Sad to say, I've lost touch with him and googling is not
+finding him (other than wikipedia).  Anyone know what he is doing these
+days?
+
+--lm
+
+
+From cowan at mercury.ccil.org  Mon Jun 27 11:11:51 2016
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sun, 26 Jun 2016 21:11:51 -0400
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <20160627005949.GP26734@mcvoy.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160626204325.GA27595@mercury.ccil.org>
+ <20160627005949.GP26734@mcvoy.com>
+Message-ID: <20160627011151.GA30732@mercury.ccil.org>
+
+Larry McVoy scripsit:
+
+> Tom and I went to undergrad together, we were both in the UW-Madison CS
+> department.  Sad to say, I've lost touch with him and googling is not
+> finding him (other than wikipedia).  Anyone know what he is doing these
+> days?
+
+Googling with the date filter set to "last year" gives us a lot of other
+Tom Christiansens, but also http://stackoverflow.com/users/471272/tchrist,
+updated last August.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Objective consideration of contemporary phenomena compel the conclusion
+that optimum or inadequate performance in the trend of competitive
+activities exhibits no tendency to be commensurate with innate capacity,
+but that a considerable element of the unpredictable must invariably be
+taken into account. --Ecclesiastes 9:11, Orwell/Brown version
+
+
+From schily at schily.net  Mon Jun 27 20:03:29 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Mon, 27 Jun 2016 12:03:29 +0200
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <201606261014.u5QAE1qX015184@skeeve.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+Message-ID: <5770f9f1.o/MzyLOmHMtfmIkf%schily@schily.net>
+
+Aharon Robbins <arnold at skeeve.com> wrote:
+
+> Can anyone give a definitive date for when Bill Joy's csh first got out
+> of Berkeley?  I suspect it's in the 1976 - 1977 time frame, but I don't
+> know for sure.
+
+In 1977 (published November 23), there was "ashell" with this "READ_ME":
+
+/*--------------------------------------------------------------------------*/
+Wed Oct 19, 1977
+
+This directory contains the source for a shell.
+It requires floating point to do the time command which is built-in
+so you will have to cc it -f on machines without floating point.
+It also requires a version 7 C compiler.
+
+Accurate documentation is in the file "sh.6" to be nroffed with
+/usr/man/man0/naa and a new "version 7" nroff.
+
+This shell requires the "htmp" data base also used by the editor "ex".
+If you do not set it up so that the "sethome" command is done by "login"
+then you should use the old "osethome" routine in ../s6 rather than "sethome"
+and reenable the execl of this sethome in the file "sh.c" (with the correct
+pathname).
+
+                                Bill Joy
+                                CS Division
+                                Department of EE and CS
+                                UC Berkeley
+                                Berkeley, California  94704
+
+                                (415) 524-4510          [HOME]
+                                (415) 642-4948          [SCHOOL]
+/*--------------------------------------------------------------------------*/
+
+Given that ashell/sh.c contains:
+
+/*
+ * Shell
+ *
+ * Modified by Bill Joy
+ * UC Berkeley 1976/1977
+ *
+
+it was most likely based on the Thompson shell.
+
+Here is the start of the man page:
+
+/*--------------------------------------------------------------------------*/
+SH(VI)                       9/15/77                       SH(VI)
+
+
+
+NAME
+     sh - a shell (command interpreter)
+
+SYNOPSIS
+     sh [ -V ] [ -v ] [ -t ] [ -c ] [ -i ] [ name [ arg ...  ] ]
+
+DESCRIPTION
+     Sh is a command interpreter.   It  arranges  and  interprets
+     command  lines  and  the contents of command files.  It is a
+     modification of the standard shell sh (I), and  almost  com-
+     pletely upward compatible therewith.  The intent, in working
+     on a new shell, is to provide an environment which  is  more
+     easily tailored to the wishes of each individual user.  Most
+     new features of this shell, especially  the  alias  feature,
+     are  toward  this  end.   Later  versions  of this shell may
+     include improvements to the command language  of  the  shell
+     and allow more easy repetition of commands.  The intent here
+     is to make the command language more resemble  a  high-level
+     language  - C being the natural choice for UNIX, and to pro-
+     vide some  means  of  repeating  modified  commands  without
+     retyping,  perhaps  akin to the INTERLISP redo feature.  The
+     eventual goal is a C-shell,  csh  (or  ``seashell''  if  you
+     prefer.)
+/*--------------------------------------------------------------------------*/
+
+BTW: csh was an improvement for most shells from that time, but it lacks a
+decent history editor.
+
+In 1982, I wrote my first experimental history editor that supports cursor keys 
+but called the commands via system() and in 1984, I integrated this concept 
+into a shell called "bsh" that we had at H. Berthold AG on an OS called 
+"VBERTOS" that was based on "UNOS" - the first UNIX clone.
+
+A csh port for UNOS was available around 1982, but with the availability of 
+a shell with integrated history editor, other shells seemed to be of no 
+real interest. So around September 1984, people at H.Berthold AG stopped using
+csh even though bsh had similar problems in the shell command language as
+seen with csh.
+
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+From schily at schily.net  Mon Jun 27 20:31:04 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Mon, 27 Jun 2016 12:31:04 +0200
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <CAC20D2N1gHSsQYNCmUixdK4D5hhbfMuyD7wnYPmvD-3dTgtV7Q@mail.gmail.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <CAC20D2N1gHSsQYNCmUixdK4D5hhbfMuyD7wnYPmvD-3dTgtV7Q@mail.gmail.com>
+Message-ID: <57710068.Y5JOWn5FNyxO2PxU%schily@schily.net>
+
+Clem Cole <clemc at ccc.com> wrote:
+
+> A few years later, I did switch to typing to the csh when I got to UCB, but
+> that was not until after the MIT job control stuff had been spliced into
+> the BSD kernel (Horton & Kleckner were probably the ones that convinced me
+> to learn it).  With job control I became a fan, but never warmed up to the
+> programming syntax.   I picked up the mantra that I still consider wise --
+> "type to Joy and program to Bourne."   This is comfortable for the ROMS in
+> the muscles of my fingers, but my scripts are portable.
+
+Job control of course was an important improvement. I took the idea and 
+implemented in my bsh in 1985.
+
+Now looking back, it is interesting, that there are just four shells that 
+implement support for vfork():
+
+-	csh - the first
+
+-	bsh since 1985
+
+-	ksh vfork() probably since 1984, jobcontrol apparently since 1982.
+
+-	bosh (my recent Bourne Shell) since 2014
+
+But on a decent OS, vfork() helps a lot to speed up the shell.
+
+On Solaris, fork() is copy-on-write based but still 3x slower than vfork().
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+From mascheck at in-ulm.de  Mon Jun 27 21:27:32 2016
+From: mascheck at in-ulm.de (Sven Mascheck)
+Date: Mon, 27 Jun 2016 13:27:32 +0200
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+Message-ID: <20160627112732.GA8110@autechre4>
+
+On Sun, Jun 26, 2016 at 01:32:23PM -0500, Ronald Natalie wrote:
+> I added JOB control to the SV  (and later SVR2) Bourne Shell.
+> Then they beat on me for not having command like editing in (a la TCSH),
+> so I added that.
+
+How interesting, I will try to bother you (perhaps directly) about
+in-depth informations :-)
+
+
+I've always been intrigued by the fact that traditional Bourne shell and
+Almquist shell haven't implemented history or command line editing.
+
+I found two interesting references about this:
+
+- Ash announcement, "A reimplementation of the System V shell":
+
+  "I conclude by listing a few features that I have omitted intentionally.
+
+   3.  History.  It seems to me that the csh history mechanism is
+       mostly a response to the deficiencies of UNIX terminal I/O.
+       Those of you running 4.2 BSD should try out atty (which I am
+       posting to the net at the same time as ash) and see if you
+       still want history."
+
+- From an article from D. Korn, "ksh - An Extensible High Level Language":
+
+  "Originally the idea of adding command line editing to ksh was
+   rejected in the hope that line editing would move into the terminal
+   driver. However, when it became clear that this was not likely to
+   happen soon, both line editing modes were integrated into ksh and
+   made optional so that they could be disabled on systems that provided
+   editing as part of the terminal interface."
+
+I believe it's a real pity that it hasn't been implemented in terminal
+drivers in general.
+
+Or do I overlook possible disadvantages?  What could be downsides,
+apart from possibly inconsistent behaviour across systems?
+
+Sven
+
+
+From usotsuki at buric.co  Mon Jun 27 22:47:17 2016
+From: usotsuki at buric.co (Steve Nickolas)
+Date: Mon, 27 Jun 2016 08:47:17 -0400 (EDT)
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <20160627112732.GA8110@autechre4>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160627112732.GA8110@autechre4>
+Message-ID: <alpine.BSF.2.02.1606270845510.37188@frieza.hoshinet.org>
+
+On Mon, 27 Jun 2016, Sven Mascheck wrote:
+
+> On Sun, Jun 26, 2016 at 01:32:23PM -0500, Ronald Natalie wrote:
+>> I added JOB control to the SV  (and later SVR2) Bourne Shell.
+>> Then they beat on me for not having command like editing in (a la TCSH),
+>> so I added that.
+>
+> How interesting, I will try to bother you (perhaps directly) about
+> in-depth informations :-)
+>
+>
+> I've always been intrigued by the fact that traditional Bourne shell and
+> Almquist shell haven't implemented history or command line editing.
+
+There are a couple variants of the Almquist shell (an old one called 
+"cash", and one I think FreeBSD uses) which have readline-like history.
+
+-uso.
+
+
+From ron at ronnatalie.com  Mon Jun 27 23:01:45 2016
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Mon, 27 Jun 2016 08:01:45 -0500
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <57710068.Y5JOWn5FNyxO2PxU%schily@schily.net>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <CAC20D2N1gHSsQYNCmUixdK4D5hhbfMuyD7wnYPmvD-3dTgtV7Q@mail.gmail.com>
+ <57710068.Y5JOWn5FNyxO2PxU%schily@schily.net>
+Message-ID: <DC2A30BA-C596-4FB8-991F-6E42F310A75E@ronnatalie.com>
+
+vfork() is of use on non-paged (and poorly implemented paging) systems.    If you implemented the copy-on-write fork() behavior, you’d not need the vfork KLUDGE.
+
+
+
+From steffen at sdaoden.eu  Mon Jun 27 23:15:21 2016
+From: steffen at sdaoden.eu (Steffen Nurpmeso)
+Date: Mon, 27 Jun 2016 15:15:21 +0200
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <DC2A30BA-C596-4FB8-991F-6E42F310A75E@ronnatalie.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <CAC20D2N1gHSsQYNCmUixdK4D5hhbfMuyD7wnYPmvD-3dTgtV7Q@mail.gmail.com>
+ <57710068.Y5JOWn5FNyxO2PxU%schily@schily.net>
+ <DC2A30BA-C596-4FB8-991F-6E42F310A75E@ronnatalie.com>
+Message-ID: <20160627131521.wRtxVeSyi%steffen@sdaoden.eu>
+
+Ronald Natalie <ron at ronnatalie.com> wrote:
+ |vfork() is of use on non-paged (and poorly implemented paging) system\
+ |s.    If you implemented the copy-on-write fork() behavior, you’d not\
+ | need the vfork KLUDGE.
+
+I think there is currently going on some (i haven't really a glue)
+virtually mapped stack in Linux (thread around [1]), and it seems
+vfork() there doesn't even copy the page table.  So that seems to
+be a measurable difference.
+
+  [1] http://www.openwall.com/lists/kernel-hardening/2016/06/21/10
+
+--steffen
+
+
+From wkt at tuhs.org  Mon Jun 27 23:39:01 2016
+From: wkt at tuhs.org (Warren Toomey)
+Date: Mon, 27 Jun 2016 15:39:01 +0200
+Subject: [TUHS] Bizarre job control, was csh
+In-Reply-To: <57710068.Y5JOWn5FNyxO2PxU%schily@schily.net>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <CAC20D2N1gHSsQYNCmUixdK4D5hhbfMuyD7wnYPmvD-3dTgtV7Q@mail.gmail.com>
+ <57710068.Y5JOWn5FNyxO2PxU%schily@schily.net>
+Message-ID: <2D2E5333-6FCF-43DA-82D9-25B0E86CB325@tuhs.org>
+
+I wrote a shell quite a while ago, based on a friend's shell and also the shell in Marc Rochkind's book. It was portable across a lot of systems but small enough to fit on Minix.
+I used ptrace() to implement job control on Minix. See ftp://minnie.tuhs.org/pub/Wish/wish_internals.pdf
+
+Cheers, Warren
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160627/8468cc94/attachment.html>
+
+From david at kdbarto.org  Tue Jun 28 00:10:37 2016
+From: david at kdbarto.org (David)
+Date: Mon, 27 Jun 2016 07:10:37 -0700
+Subject: [TUHS] Origin of the BSD csh?
+In-Reply-To: <mailman.13.1466989190.30583.tuhs@minnie.tuhs.org>
+References: <mailman.13.1466989190.30583.tuhs@minnie.tuhs.org>
+Message-ID: <1A3D998B-F15B-47BA-AAD6-5E3510DE3123@kdbarto.org>
+
+
+> On Jun 26, 2016, at 5:59 PM, tuhs-request at minnie.tuhs.org wrote:
+> 
+> I detested the CSH syntax.   In order to beat back the CSH proponents at BRL, I added JOB control to the SV  (and later SVR2) Bourne Shell.   Then they beat on me for not having command like editing in (a la TCSH), so I added that.   This shell went out as /bin/sh in the Doug Gwyn SV-on-BSD release so every once and a while over the years I trip across a “Ron shell” usually people who were running Mach-derived things that ran my shell as /bin/sh. 
+
+When porting BSD to new hardware at Celerity (later Floating Point, now part of Sun, oops Oracle) I got ahold of the code that Doug was working on and made the jsh (Job control sh) my shell of choice. Now that Bash does all of those things and almost everything emacs can do, Bash is my shell.
+
+As far as customizing, I’ve got a .cshrc that does nothing more than redirect to a launch of bash if available and /bin/sh if nothing else. And my scripts for logging in are so long a convoluted due to many years of various hardware and software idiosyncratic changes (DG/UX anyone, anyone?) that I’m sure most of it is now useless. And I don’t change it for fear of breaking something.
+
+	David
+
+
+
+From schily at schily.net  Tue Jun 28 00:58:09 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Mon, 27 Jun 2016 16:58:09 +0200
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <20160627112732.GA8110@autechre4>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160627112732.GA8110@autechre4>
+Message-ID: <57713f01.okpK5vDdvYLxIaXs%schily@schily.net>
+
+Sven Mascheck <mascheck at in-ulm.de> wrote:
+
+>   "Originally the idea of adding command line editing to ksh was
+>    rejected in the hope that line editing would move into the terminal
+>    driver. However, when it became clear that this was not likely to
+>    happen soon, both line editing modes were integrated into ksh and
+>    made optional so that they could be disabled on systems that provided
+>    editing as part of the terminal interface."
+>
+> I believe it's a real pity that it hasn't been implemented in terminal
+> drivers in general.
+>
+> Or do I overlook possible disadvantages?  What could be downsides,
+> apart from possibly inconsistent behaviour across systems?
+
+It was in the terminal driver from VMS ;-)
+
+In Summer 1984, I noticed that this feature worked in a similar way as my test 
+implementation from 1982 and then worked on an integrated implementation for 
+"bsh" at H. Berthold AG. The person that helped me in 1984 was Peter Teuchert.
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+From usotsuki at buric.co  Tue Jun 28 01:00:16 2016
+From: usotsuki at buric.co (Steve Nickolas)
+Date: Mon, 27 Jun 2016 11:00:16 -0400 (EDT)
+Subject: [TUHS] Bizarre job control, was csh
+In-Reply-To: <2D2E5333-6FCF-43DA-82D9-25B0E86CB325@tuhs.org>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <CAC20D2N1gHSsQYNCmUixdK4D5hhbfMuyD7wnYPmvD-3dTgtV7Q@mail.gmail.com>
+ <57710068.Y5JOWn5FNyxO2PxU%schily@schily.net>
+ <2D2E5333-6FCF-43DA-82D9-25B0E86CB325@tuhs.org>
+Message-ID: <alpine.BSF.2.02.1606271059180.44833@frieza.hoshinet.org>
+
+On Mon, 27 Jun 2016, Warren Toomey wrote:
+
+> I wrote a shell quite a while ago, based on a friend's shell and also the shell in Marc Rochkind's book. It was portable across a lot of systems but small enough to fit on Minix.
+> I used ptrace() to implement job control on Minix. See ftp://minnie.tuhs.org/pub/Wish/wish_internals.pdf
+>
+> Cheers, Warren
+>
+
+I tried a couple times to figure out how to implement a Bourne shell, and 
+just couldn't figure it out.  But then, I was never much of a programmer.
+
+-uso.
+
+
+From schily at schily.net  Tue Jun 28 01:13:43 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Mon, 27 Jun 2016 17:13:43 +0200
+Subject: [TUHS] Bizarre job control, was csh
+In-Reply-To: <alpine.BSF.2.02.1606271059180.44833@frieza.hoshinet.org>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <CAC20D2N1gHSsQYNCmUixdK4D5hhbfMuyD7wnYPmvD-3dTgtV7Q@mail.gmail.com>
+ <57710068.Y5JOWn5FNyxO2PxU%schily@schily.net>
+ <2D2E5333-6FCF-43DA-82D9-25B0E86CB325@tuhs.org>
+ <alpine.BSF.2.02.1606271059180.44833@frieza.hoshinet.org>
+Message-ID: <577142a7.64xQskFrCzJbQBN3%schily@schily.net>
+
+Steve Nickolas <usotsuki at buric.co> wrote:
+
+> I tried a couple times to figure out how to implement a Bourne shell, and 
+> just couldn't figure it out.  But then, I was never much of a programmer.
+
+It is hard and you cannot do it from just reading the POSIX standard.
+
+This is because the POSIX standard tries to write descriptions in an abstract 
+notation that missleads people that did never see a working implementation 
+before.
+
+After a few years of maintaining the Bourne Shell, I would know how to do it but 
+I am not interested to do it from scratch.
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+From schily at schily.net  Tue Jun 28 01:17:40 2016
+From: schily at schily.net (Joerg Schilling)
+Date: Mon, 27 Jun 2016 17:17:40 +0200
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <DC2A30BA-C596-4FB8-991F-6E42F310A75E@ronnatalie.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <CAC20D2N1gHSsQYNCmUixdK4D5hhbfMuyD7wnYPmvD-3dTgtV7Q@mail.gmail.com>
+ <57710068.Y5JOWn5FNyxO2PxU%schily@schily.net>
+ <DC2A30BA-C596-4FB8-991F-6E42F310A75E@ronnatalie.com>
+Message-ID: <57714394.vv8pvCYFh+xj37yi%schily@schily.net>
+
+Ronald Natalie <ron at ronnatalie.com> wrote:
+
+> vfork() is of use on non-paged (and poorly implemented paging) systems.    If you implemented the copy-on-write fork() behavior, you???d not need the vfork KLUDGE.
+
+This is what the Linux people believe. As a result, they have a vfork() 
+implementation that collects all pitfalls from fork() and vfork() ;-)
+
+The basic difference is:
+
+-	With a copy-on-write fork, you copy an address space description and
+	need to set up a set of new MMU PTEs.
+
+-	With vfork, you borrow the address space descrition and the MMU PTEs 
+	from the parent.
+
+Jörg
+
+-- 
+ EMail:joerg at schily.net                  (home) Jörg Schilling D-13353 Berlin
+       joerg.schilling at fokus.fraunhofer.de (work) Blog: http://schily.blogspot.com/
+ URL:  http://cdrecord.org/private/ http://sourceforge.net/projects/schilytools/files/'
+
+
+From usotsuki at buric.co  Tue Jun 28 01:23:43 2016
+From: usotsuki at buric.co (Steve Nickolas)
+Date: Mon, 27 Jun 2016 11:23:43 -0400 (EDT)
+Subject: [TUHS] Bizarre job control, was csh
+In-Reply-To: <577142a7.64xQskFrCzJbQBN3%schily@schily.net>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <CAC20D2N1gHSsQYNCmUixdK4D5hhbfMuyD7wnYPmvD-3dTgtV7Q@mail.gmail.com>
+ <57710068.Y5JOWn5FNyxO2PxU%schily@schily.net>
+ <2D2E5333-6FCF-43DA-82D9-25B0E86CB325@tuhs.org>
+ <alpine.BSF.2.02.1606271059180.44833@frieza.hoshinet.org>
+ <577142a7.64xQskFrCzJbQBN3%schily@schily.net>
+Message-ID: <alpine.BSF.2.02.1606271121490.46310@frieza.hoshinet.org>
+
+On Mon, 27 Jun 2016, Joerg Schilling wrote:
+
+> Steve Nickolas <usotsuki at buric.co> wrote:
+>
+>> I tried a couple times to figure out how to implement a Bourne shell, and
+>> just couldn't figure it out.  But then, I was never much of a programmer.
+>
+> It is hard and you cannot do it from just reading the POSIX standard.
+>
+> This is because the POSIX standard tries to write descriptions in an abstract
+> notation that missleads people that did never see a working implementation
+> before.
+>
+> After a few years of maintaining the Bourne Shell, I would know how to do it but
+> I am not interested to do it from scratch.
+>
+> Jörg
+>
+>
+
+Eh.  I had a specific reason for doing it that most people would find 
+idiotic - I was using OSes (DOS - mainly on a Tandy 1000, which in no way 
+could ever hope to handle DJGPP - and Win32) that weren't remotely POSIX 
+and I wanted to make them feel more Unixy without outright *emulating 
+Unix*.
+
+-uso.
+
+From ron at ronnatalie.com  Tue Jun 28 01:29:51 2016
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Mon, 27 Jun 2016 10:29:51 -0500
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <57713f01.okpK5vDdvYLxIaXs%schily@schily.net>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160627112732.GA8110@autechre4>
+ <57713f01.okpK5vDdvYLxIaXs%schily@schily.net>
+Message-ID: <FEBC1BCF-16AB-47A9-95BB-9BA48EF8830F@ronnatalie.com>
+
+
+> 
+> It was in the terminal driver from VMS ;-)
+
+The T in TCSH was TENEX, which indeed had such editing as part of the COMND (command) JSYS (essentially an OS call).    This propagated forward into TOPS-20.    It isn’t really the terminal driver, but more of a command line processor call.
+
+
+
+From cowan at mercury.ccil.org  Tue Jun 28 02:22:38 2016
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Mon, 27 Jun 2016 12:22:38 -0400
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <20160627112732.GA8110@autechre4>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160627112732.GA8110@autechre4>
+Message-ID: <20160627162237.GB3353@mercury.ccil.org>
+
+Sven Mascheck scripsit:
+
+>    3.  History.  It seems to me that the csh history mechanism is
+>        mostly a response to the deficiencies of UNIX terminal I/O.
+>        Those of you running 4.2 BSD should try out atty (which I am
+>        posting to the net at the same time as ash) and see if you
+>        still want history."
+
+I personally could not live without !!, ^foo^bar, !foo, etc.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Verbogeny is one of the pleasurettes of a creatific thinkerizer.
+        --Peter da Silva
+
+
+From usotsuki at buric.co  Tue Jun 28 02:35:44 2016
+From: usotsuki at buric.co (Steve Nickolas)
+Date: Mon, 27 Jun 2016 12:35:44 -0400 (EDT)
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <20160627162237.GB3353@mercury.ccil.org>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160627112732.GA8110@autechre4> <20160627162237.GB3353@mercury.ccil.org>
+Message-ID: <alpine.BSF.2.02.1606271234470.50568@frieza.hoshinet.org>
+
+On Mon, 27 Jun 2016, John Cowan wrote:
+
+> Sven Mascheck scripsit:
+>
+>>    3.  History.  It seems to me that the csh history mechanism is
+>>        mostly a response to the deficiencies of UNIX terminal I/O.
+>>        Those of you running 4.2 BSD should try out atty (which I am
+>>        posting to the net at the same time as ash) and see if you
+>>        still want history."
+>
+> I personally could not live without !!, ^foo^bar, !foo, etc.
+
+Same.
+
+That's a big reason why I still use bash even though ksh is faster and 
+lighter and otherwise works just as well.
+
+-uso.
+
+
+From dave at horsfall.org  Tue Jun 28 06:00:03 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Tue, 28 Jun 2016 06:00:03 +1000 (EST)
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <20160627112732.GA8110@autechre4>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160627112732.GA8110@autechre4>
+Message-ID: <alpine.BSF.2.11.1606280555430.1057@aneurin.horsfall.org>
+
+On Mon, 27 Jun 2016, Sven Mascheck wrote:
+
+> I've always been intrigued by the fact that traditional Bourne shell and 
+> Almquist shell haven't implemented history or command line editing.
+
+I hated CSH, and only used it when forced to; I used a utility called 
+"screen" for my job-switching needs, and was really happy when KSH came 
+along (then ZSH).
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From ron at ronnatalie.com  Tue Jun 28 06:33:34 2016
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Mon, 27 Jun 2016 15:33:34 -0500
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <20160627112732.GA8110@autechre4>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160627112732.GA8110@autechre4>
+Message-ID: <E4DCAA3E-77BA-43C3-806E-19657EF23E36@ronnatalie.com>
+
+
+> On Jun 27, 2016, at 6:27 AM, Sven Mascheck <mascheck at in-ulm.de> wrote:
+> 
+> On Sun, Jun 26, 2016 at 01:32:23PM -0500, Ronald Natalie wrote:
+>> I added JOB control to the SV  (and later SVR2) Bourne Shell.
+>> Then they beat on me for not having command like editing in (a la TCSH),
+>> so I added that.
+> 
+> How interesting, I will try to bother you (perhaps directly) about
+> in-depth informations :-)
+> 
+
+Sure, it was a long time ago, but I’ll tell you what I remember.   The one thing I do remember is that the SV /bin/sh was
+written in these horrendous macros that sort of made it look like algol or something.   When the SVR2 shell came out,
+someone (not Bourne obviously) had undone all those in favor of the native C++ if/else/while blocking.
+
+
+> 
+> I've always been intrigued by the fact that traditional Bourne shell and
+> Almquist shell haven't implemented history or command line editing.
+
+Command line editing might have been implemented in the driver as enhanced editing in “cooked” mode, but the history
+is a bit more context specific.
+
+
+
+From clemc at ccc.com  Tue Jun 28 06:44:26 2016
+From: clemc at ccc.com (Clem Cole)
+Date: Mon, 27 Jun 2016 16:44:26 -0400
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <E4DCAA3E-77BA-43C3-806E-19657EF23E36@ronnatalie.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160627112732.GA8110@autechre4>
+ <E4DCAA3E-77BA-43C3-806E-19657EF23E36@ronnatalie.com>
+Message-ID: <CAC20D2NfnZ-hgHZgH7ceQfjR8rPufPzmt5d5o-kSQnDV_8vRiA@mail.gmail.com>
+
+On Mon, Jun 27, 2016 at 4:33 PM, Ronald Natalie <ron at ronnatalie.com> wrote:
+
+> written in these horrendous macros that sort of made it look like algol or
+> something.
+
+
+​Famously called "Bournegol" -- Steve was a member of the Algol68
+definition group IIRC.​
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160627/a2b31909/attachment.html>
+
+From dave at horsfall.org  Tue Jun 28 06:59:51 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Tue, 28 Jun 2016 06:59:51 +1000 (EST)
+Subject: [TUHS] wish_internals.pdf is 404-compatible...
+Message-ID: <alpine.BSF.2.11.1606280659050.1057@aneurin.horsfall.org>
+
+The requested URL /pub/Wish/wish_internals.pdf was not found on this 
+server.
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From dave at horsfall.org  Tue Jun 28 07:01:16 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Tue, 28 Jun 2016 07:01:16 +1000 (EST)
+Subject: [TUHS] wish_internals.pdf is 404-compatible...
+In-Reply-To: <alpine.BSF.2.11.1606280659050.1057@aneurin.horsfall.org>
+References: <alpine.BSF.2.11.1606280659050.1057@aneurin.horsfall.org>
+Message-ID: <alpine.BSF.2.11.1606280700270.1057@aneurin.horsfall.org>
+
+Ignore me, as did Firefox ignore ftp:// ... :-(
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From usotsuki at buric.co  Tue Jun 28 07:02:58 2016
+From: usotsuki at buric.co (Steve Nickolas)
+Date: Mon, 27 Jun 2016 17:02:58 -0400 (EDT)
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <E4DCAA3E-77BA-43C3-806E-19657EF23E36@ronnatalie.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160627112732.GA8110@autechre4>
+ <E4DCAA3E-77BA-43C3-806E-19657EF23E36@ronnatalie.com>
+Message-ID: <alpine.BSF.2.02.1606271700300.65884@frieza.hoshinet.org>
+
+On Mon, 27 Jun 2016, Ronald Natalie wrote:
+
+>
+>> On Jun 27, 2016, at 6:27 AM, Sven Mascheck <mascheck at in-ulm.de> wrote:
+>>
+>> On Sun, Jun 26, 2016 at 01:32:23PM -0500, Ronald Natalie wrote:
+>>> I added JOB control to the SV  (and later SVR2) Bourne Shell.
+>>> Then they beat on me for not having command like editing in (a la TCSH),
+>>> so I added that.
+>>
+>> How interesting, I will try to bother you (perhaps directly) about
+>> in-depth informations :-)
+>>
+>
+> Sure, it was a long time ago, but I’ll tell you what I remember.  The 
+> one thing I do remember is that the SV /bin/sh was written in these 
+> horrendous macros that sort of made it look like algol or something.
+
+That was inherited from the original V7 Bourne shell.  And "horrendous" 
+doesn't even begin to describe that disaster of coding.
+
+> When the SVR2 shell came out, someone (not Bourne obviously) had undone 
+> all those in favor of the native C++ if/else/while blocking.
+>>
+>> I've always been intrigued by the fact that traditional Bourne shell and
+>> Almquist shell haven't implemented history or command line editing.
+>
+> Command line editing might have been implemented in the driver as 
+> enhanced editing in “cooked” mode, but the history is a bit more context 
+> specific.
+
+I kind-of like the MS-DOS 5 approach of having a separate tool that the 
+shell can optionally link to that provides those capabilities.
+
+*ducks and runs*
+
+-uso.
+
+From ron at ronnatalie.com  Tue Jun 28 07:15:24 2016
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Mon, 27 Jun 2016 16:15:24 -0500
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <alpine.BSF.2.02.1606271700300.65884@frieza.hoshinet.org>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160627112732.GA8110@autechre4>
+ <E4DCAA3E-77BA-43C3-806E-19657EF23E36@ronnatalie.com>
+ <alpine.BSF.2.02.1606271700300.65884@frieza.hoshinet.org>
+Message-ID: <F6CE2BB4-9614-47B2-9EA6-C05072FE779A@ronnatalie.com>
+
+
+> 
+> I kind-of like the MS-DOS 5 approach of having a separate tool that the shell can optionally link to that provides those capabilities.
+> 
+> *ducks and runs*
+
+Not unique to MSDOS.   As pointed out the COMND JSYS in Tenex/TOPS-20 provided such a feature. 
+
+From cowan at mercury.ccil.org  Tue Jun 28 07:20:29 2016
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Mon, 27 Jun 2016 17:20:29 -0400
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <E4DCAA3E-77BA-43C3-806E-19657EF23E36@ronnatalie.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160627112732.GA8110@autechre4>
+ <E4DCAA3E-77BA-43C3-806E-19657EF23E36@ronnatalie.com>
+Message-ID: <20160627212028.GH3353@mercury.ccil.org>
+
+Ronald Natalie scripsit:
+
+> Sure, it was a long time ago, but I’ll tell you what I remember.
+> The one thing I do remember is that the SV /bin/sh was written in
+> these horrendous macros that sort of made it look like algol or
+> something.
+
+I've always wondered what would have happened if Algol 68 (brought back
+from England by Bourne) had out-competed C at Bell Labs, and had become
+the dominant programming language of Unix.  Probably the commercial
+world would have standardized on Pascal, something that almost happened
+(the x86 chip is optimized for Pascal in several ways).
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+"But I am the real Strider, fortunately," he said, looking down at them
+with his face softened by a sudden smile.  "I am Aragorn son of Arathorn,
+and if by life or death I can save you, I will."
+
+
+From ron at ronnatalie.com  Tue Jun 28 07:28:14 2016
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Mon, 27 Jun 2016 16:28:14 -0500
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <20160627212028.GH3353@mercury.ccil.org>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160627112732.GA8110@autechre4>
+ <E4DCAA3E-77BA-43C3-806E-19657EF23E36@ronnatalie.com>
+ <20160627212028.GH3353@mercury.ccil.org>
+Message-ID: <E69B1487-94B8-49C6-BA11-0F9FEEABE623@ronnatalie.com>
+
+Hard to believe the 8086 chip was “optimized” for anything.  The instruction set was designed for programming terminals.
+The iapx32 was designed to run higher level languages (Ada) but despite how “nicely” it implemented this, it couldn’t counter the fact that it was molasses slow doing anything.   It was easier to build craftier compilers than trying to burn the smarts into silicon.
+
+> On Jun 27, 2016, at 4:20 PM, John Cowan <cowan at mercury.ccil.org> wrote:
+> 
+> Ronald Natalie scripsit:
+> 
+>> Sure, it was a long time ago, but I’ll tell you what I remember.
+>> The one thing I do remember is that the SV /bin/sh was written in
+>> these horrendous macros that sort of made it look like algol or
+>> something.
+> 
+> I've always wondered what would have happened if Algol 68 (brought back
+> from England by Bourne) had out-competed C at Bell Labs, and had become
+> the dominant programming language of Unix.  Probably the commercial
+> world would have standardized on Pascal, something that almost happened
+> (the x86 chip is optimized for Pascal in several ways).
+> 
+> -- 
+> John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+> "But I am the real Strider, fortunately," he said, looking down at them
+> with his face softened by a sudden smile.  "I am Aragorn son of Arathorn,
+> and if by life or death I can save you, I will."
+
+
+
+From random832 at fastmail.com  Tue Jun 28 07:29:44 2016
+From: random832 at fastmail.com (Random832)
+Date: Mon, 27 Jun 2016 17:29:44 -0400
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <E4DCAA3E-77BA-43C3-806E-19657EF23E36@ronnatalie.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160627112732.GA8110@autechre4>
+ <E4DCAA3E-77BA-43C3-806E-19657EF23E36@ronnatalie.com>
+Message-ID: <1467062984.2318014.650144377.4FD72D52@webmail.messagingengine.com>
+
+On Mon, Jun 27, 2016, at 16:33, Ronald Natalie wrote:
+> Command line editing might have been implemented in the driver as
+> enhanced editing in “cooked” mode, but the history
+> is a bit more context specific.
+
+MS Windows does a kind of halfway decent job of this by having a
+separate history per program, which I don't think requires any
+information the terminal driver doesn't have access to (the process that
+is trying to read from the terminal, and the binary running in that
+process)
+
+
+From cowan at mercury.ccil.org  Tue Jun 28 07:45:24 2016
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Mon, 27 Jun 2016 17:45:24 -0400
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <E69B1487-94B8-49C6-BA11-0F9FEEABE623@ronnatalie.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160627112732.GA8110@autechre4>
+ <E4DCAA3E-77BA-43C3-806E-19657EF23E36@ronnatalie.com>
+ <20160627212028.GH3353@mercury.ccil.org>
+ <E69B1487-94B8-49C6-BA11-0F9FEEABE623@ronnatalie.com>
+Message-ID: <20160627214524.GJ3353@mercury.ccil.org>
+
+Ronald Natalie scripsit:
+
+> Hard to believe the 8086 chip was “optimized” for anything.
+> The instruction set was designed for programming terminals.
+
+Well, yes.  But the four separate address spaces work fine for Pascal,
+where it is always statically known whether a pointer is to code,
+global data, the stack (internal only), or the heap.  For C they were
+nothing but a nuisance:  C can handle separate I & D space, but that's all.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+What asininity could I have uttered that they applaud me thus?
+        --Phocion, Greek orator
+
+
+From peter at rulingia.com  Tue Jun 28 16:49:35 2016
+From: peter at rulingia.com (Peter Jeremy)
+Date: Tue, 28 Jun 2016 16:49:35 +1000
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <E69B1487-94B8-49C6-BA11-0F9FEEABE623@ronnatalie.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160627112732.GA8110@autechre4>
+ <E4DCAA3E-77BA-43C3-806E-19657EF23E36@ronnatalie.com>
+ <20160627212028.GH3353@mercury.ccil.org>
+ <E69B1487-94B8-49C6-BA11-0F9FEEABE623@ronnatalie.com>
+Message-ID: <20160628064935.GF83438@server.rulingia.com>
+
+On 2016-Jun-27 16:28:14 -0500, Ronald Natalie <ron at ronnatalie.com> wrote:
+>Hard to believe the 8086 chip was “optimized” for anything.  The instruction set was designed for programming terminals.
+
+I think "designed" is being generous.  The closest to "designed" would have been for a calculation but then the 4004 grew warts and the warts grew warts.
+
+>The iapx32 was designed to run higher level languages (Ada)
+
+That was the iapx432.  No relationship to the x86.
+
+And, whilst we're dealing with what-if's, what if the M68K had taken off,
+rather than the 8086.  IBM had a M68K box in the same timeframe as the PC.
+
+-- 
+Peter Jeremy
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 949 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160628/1aa071da/attachment.sig>
+
+From arnold at skeeve.com  Tue Jun 28 17:51:44 2016
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Tue, 28 Jun 2016 01:51:44 -0600
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <20160628064935.GF83438@server.rulingia.com>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160627112732.GA8110@autechre4>
+ <E4DCAA3E-77BA-43C3-806E-19657EF23E36@ronnatalie.com>
+ <20160627212028.GH3353@mercury.ccil.org>
+ <E69B1487-94B8-49C6-BA11-0F9FEEABE623@ronnatalie.com>
+ <20160628064935.GF83438@server.rulingia.com>
+Message-ID: <201606280751.u5S7piO2014270@freefriends.org>
+
+Thanks everyone for the answers, esp. to Mary Ann for the definitive dates.
+
+My story is similar to most everyone else's. I was exposed to csh on
+4.1 BSD but was so horrified by the syntax that I preferred to do without
+job control and use the Bourne shell.
+
+Later on when I was at Georgia Tech we got the BRL dist and I used Ron's
+job control shell. I wrote a csh-style history mechanism for it and backported
+that and the job control to the V7 sh and posted diffs to USENET so that people
+without a SV license could benefit.
+
+>From there I went to ksh for many years, and thence to Bash. I abandoned
+the csh-history-for-sh stuff as soon as I got ksh with vi editing mode
+and have never looked back.  Circa 1990 I banged on the bash/readline code
+to make its vi mode more like ksh's.
+
+How well I remember Bournegol and how happy I was when I saw that SVR2 had
+gotten rid of it.
+
+With respect to history in the terminal, the Bell Labs guys did that by
+making the terminal smarter, with the Blit.  I had one but the load it
+put on our poor vax 11/780 was awesome.
+
+Arnold
+
+
+From dot at dotat.at  Wed Jun 29 00:47:07 2016
+From: dot at dotat.at (Tony Finch)
+Date: Tue, 28 Jun 2016 15:47:07 +0100
+Subject: [TUHS] Origin year of BSD csh?
+In-Reply-To: <20160627112732.GA8110@autechre4>
+References: <201606261014.u5QAE1qX015184@skeeve.com>
+ <5770032F.8030306@mhorton.net> <20160626181450.GK26734@mcvoy.com>
+ <18119E4C-CE7E-44BD-B2D2-D7B32850238F@ronnatalie.com>
+ <20160627112732.GA8110@autechre4>
+Message-ID: <alpine.DEB.2.11.1606281543040.7397@grey.csi.cam.ac.uk>
+
+Sven Mascheck <mascheck at in-ulm.de> wrote:
+>
+> I've always been intrigued by the fact that traditional Bourne shell and
+> Almquist shell haven't implemented history or command line editing.
+
+The Almquist shell had history support added for (I think) 4.4BSD
+https://svnweb.freebsd.org/csrg/bin/sh/histedit.c?view=log
+
+It's a required feature for POSIX sh, though I don't know how far back
+that requirement goes...
+
+Tony.
+-- 
+f.anthony.n.finch  <dot at dotat.at>  http://dotat.at/  -  I xn--zr8h punycode
+Fair Isle, Faeroes, Southeast Iceland: Southwesterly backing easterly or
+southeasterly, 4 or 5 increasing 6 at times. Moderate, occasionally rough for
+a time. Rain or showers. Good, occasionally poor.
+
+
+From scj at yaccman.com  Thu Jun 30 01:17:01 2016
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Wed, 29 Jun 2016 08:17:01 -0700
+Subject: [TUHS] Algol68 vs. C at Bell Labs
+Message-ID: <0f57f9d8248db61cba34372814d2f45e.squirrel@webmail.yaccman.com>
+
+Steve Bourne tried hard to interest us in A68, and I personally liked some
+features of it (especially the automatic type morphing of arguments into
+the expected types).  But the documentation was a huge barrier--all the
+familiar ideas were given completely new (and unintuitive) names, making
+it very difficult to get into.
+
+I may be biased in my view, but I think one fatal mistake that A68 made
+was that it had no scheme for porting the language to the plethora of
+computers and systems around at that time.  (The Bliss language from CMU
+had a similar problem, requiring a bigger computer to compile for the
+PDP-11).  Pascal had P-code, and gave C a real run, especially as a
+teaching language.  C had PCC.
+
+Nowadays, newer languages like Python just piggyback on C or C++...
+
+
+
+From dave at horsfall.org  Thu Jun 30 15:06:41 2016
+From: dave at horsfall.org (Dave Horsfall)
+Date: Thu, 30 Jun 2016 15:06:41 +1000 (EST)
+Subject: [TUHS] Algol68 vs. C at Bell Labs
+In-Reply-To: <0f57f9d8248db61cba34372814d2f45e.squirrel@webmail.yaccman.com>
+References: <0f57f9d8248db61cba34372814d2f45e.squirrel@webmail.yaccman.com>
+Message-ID: <alpine.BSF.2.11.1606301504200.75492@aneurin.horsfall.org>
+
+On Wed, 29 Jun 2016, scj at yaccman.com wrote:
+
+> Pascal had P-code, and gave C a real run, especially as a teaching 
+> language.
+
+Something I picked up at Uni was that Pascal was never designed for 
+production use; instead; you debugged your algorithm in it, then ported it 
+to your language of choice.
+
+-- 
+Dave Horsfall DTM (VK2KFU)  "Those who don't understand security will suffer."
+
+
+From cowan at mercury.ccil.org  Thu Jun 30 15:08:31 2016
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Thu, 30 Jun 2016 01:08:31 -0400
+Subject: [TUHS] Algol68 vs. C at Bell Labs
+In-Reply-To: <0f57f9d8248db61cba34372814d2f45e.squirrel@webmail.yaccman.com>
+References: <0f57f9d8248db61cba34372814d2f45e.squirrel@webmail.yaccman.com>
+Message-ID: <20160630050831.GA15695@mercury.ccil.org>
+
+scj at yaccman.com scripsit:
+
+> Steve Bourne tried hard to interest us in A68, and I personally liked some
+> features of it (especially the automatic type morphing of arguments into
+> the expected types).  But the documentation was a huge barrier--all the
+> familiar ideas were given completely new (and unintuitive) names, making
+> it very difficult to get into.
+
+I heartily agree.  That and the van Wijngaarden grammar were serious
+roadblocks to understanding, though such grammars are themselves very
+elegant, especially in the form used by the Revised Report.
+
+> I may be biased in my view, but I think one fatal mistake that A68 made
+> was that it had no scheme for porting the language to the plethora of
+> computers and systems around at that time.  (The Bliss language from CMU
+> had a similar problem, requiring a bigger computer to compile for the
+> PDP-11).  Pascal had P-code, and gave C a real run, especially as a
+> teaching language.  C had PCC.
+
+Indeed.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+That you can cover for the plentiful and often gaping errors, misconstruals
+and disinformation in your posts through sheer volume -- that is another
+misconception.  --Mike to Peter
+
+
+From wkt at tuhs.org  Thu Jun 30 16:56:09 2016
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 30 Jun 2016 16:56:09 +1000
+Subject: [TUHS] A Talk on Early Unix
+Message-ID: <20160630065609.GA20869@minnie.tuhs.org>
+
+All, I was invited to give a talk at a symposium in Paris
+on the early years of Unix. Slides and recording at:
+http://minnie.tuhs.org/Z3/Hapop3/
+
+Feel free to point out the inaccuracies :-)
+For example, I thought Unix was used at some point
+as the OS for some of the ESS switches in AT&T, but
+now I think I was mistaken.
+
+That's a temp URL, it will move somewhere else
+eventually.
+
+Cheers, Warren
+
+
+From arnold at skeeve.com  Thu Jun 30 17:10:48 2016
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Thu, 30 Jun 2016 01:10:48 -0600
+Subject: [TUHS] A Talk on Early Unix
+In-Reply-To: <20160630065609.GA20869@minnie.tuhs.org>
+References: <20160630065609.GA20869@minnie.tuhs.org>
+Message-ID: <201606300710.u5U7AnW5019439@freefriends.org>
+
+> For example, I thought Unix was used at some point as the OS for some
+> of the ESS switches in AT&T, but now I think I was mistaken.
+
+I think that your initial statement is correct. At Georgia Tech AT&T gave
+us some 3B20s - vax size and larger, running System V, and I remember some
+discussion that they were used inside AT&T as switches.
+
+This, of course, is second hand information; perhaps some of the Bell Labs
+alumni can verify for real.
+
+Arnold
+
+
+From andreww591 at gmail.com  Thu Jun 30 20:30:15 2016
+From: andreww591 at gmail.com (Andrew Warkentin)
+Date: Thu, 30 Jun 2016 04:30:15 -0600
+Subject: [TUHS] A Talk on Early Unix
+In-Reply-To: <201606300710.u5U7AnW5019439@freefriends.org>
+References: <20160630065609.GA20869@minnie.tuhs.org>
+ <201606300710.u5U7AnW5019439@freefriends.org>
+Message-ID: <CAD-qYGpJdbtqCFBYBexTiaqFGGCXK6rauiOMsqLB+LdGFqaOLQ@mail.gmail.com>
+
+On 6/30/16, arnold at skeeve.com <arnold at skeeve.com> wrote:
+>> For example, I thought Unix was used at some point as the OS for some
+>> of the ESS switches in AT&T, but now I think I was mistaken.
+>
+> I think that your initial statement is correct. At Georgia Tech AT&T gave
+> us some 3B20s - vax size and larger, running System V, and I remember some
+> discussion that they were used inside AT&T as switches.
+>
+> This, of course, is second hand information; perhaps some of the Bell Labs
+> alumni can verify for real.
+>
+> Arnold
+>
+
+
+AFAIK the later ESS switches include a 3B machine but it only handles
+some administrative functions, with most of the the actual call
+processing being performed in dedicated hardware.
+
+
+From andreww591 at gmail.com  Thu Jun 30 20:39:22 2016
+From: andreww591 at gmail.com (Andrew Warkentin)
+Date: Thu, 30 Jun 2016 04:39:22 -0600
+Subject: [TUHS] A Talk on Early Unix
+In-Reply-To: <CAD-qYGpJdbtqCFBYBexTiaqFGGCXK6rauiOMsqLB+LdGFqaOLQ@mail.gmail.com>
+References: <20160630065609.GA20869@minnie.tuhs.org>
+ <201606300710.u5U7AnW5019439@freefriends.org>
+ <CAD-qYGpJdbtqCFBYBexTiaqFGGCXK6rauiOMsqLB+LdGFqaOLQ@mail.gmail.com>
+Message-ID: <CAD-qYGo5RBsOf-kik16UX43b3Z72nfNSe2Q85rwG44nL7dFUnw@mail.gmail.com>
+
+On 6/30/16, Andrew Warkentin <andreww591 at gmail.com> wrote:
+> On 6/30/16, arnold at skeeve.com <arnold at skeeve.com> wrote:
+>>> For example, I thought Unix was used at some point as the OS for some
+>>> of the ESS switches in AT&T, but now I think I was mistaken.
+>>
+>> I think that your initial statement is correct. At Georgia Tech AT&T gave
+>> us some 3B20s - vax size and larger, running System V, and I remember
+>> some
+>> discussion that they were used inside AT&T as switches.
+>>
+>> This, of course, is second hand information; perhaps some of the Bell
+>> Labs
+>> alumni can verify for real.
+>>
+>> Arnold
+>>
+>
+>
+> AFAIK the later ESS switches include a 3B machine but it only handles
+> some administrative functions, with most of the the actual call
+> processing being performed in dedicated hardware.
+>
+
+I really should stop using Gmail's web interface and find an MUA that
+has a "reply to list" feature and defaults to replying to the list for
+messages from the list (it would presumably need explicit filters to
+detect messages from some lists because not all lists use the
+List-Post header). It's annoying when I try to reply to the list and
+instead end up replying to only the poster (I know about the problems
+with Reply-To munging; I'm not sure why it isn't more common for MUAs
+to have a "reply to list" feature to better deal with lists that don't
+munge Reply-To).
+
+
+From usotsuki at buric.co  Thu Jun 30 21:03:17 2016
+From: usotsuki at buric.co (Steve Nickolas)
+Date: Thu, 30 Jun 2016 07:03:17 -0400 (EDT)
+Subject: [TUHS] A Talk on Early Unix
+In-Reply-To: <CAD-qYGo5RBsOf-kik16UX43b3Z72nfNSe2Q85rwG44nL7dFUnw@mail.gmail.com>
+References: <20160630065609.GA20869@minnie.tuhs.org>
+ <201606300710.u5U7AnW5019439@freefriends.org>
+ <CAD-qYGpJdbtqCFBYBexTiaqFGGCXK6rauiOMsqLB+LdGFqaOLQ@mail.gmail.com>
+ <CAD-qYGo5RBsOf-kik16UX43b3Z72nfNSe2Q85rwG44nL7dFUnw@mail.gmail.com>
+Message-ID: <alpine.BSF.2.02.1606300701080.84389@frieza.hoshinet.org>
+
+On Thu, 30 Jun 2016, Andrew Warkentin wrote:
+
+> I really should stop using Gmail's web interface and find an MUA that
+> has a "reply to list" feature and defaults to replying to the list for
+> messages from the list (it would presumably need explicit filters to
+> detect messages from some lists because not all lists use the
+> List-Post header). It's annoying when I try to reply to the list and
+> instead end up replying to only the poster (I know about the problems
+> with Reply-To munging; I'm not sure why it isn't more common for MUAs
+> to have a "reply to list" feature to better deal with lists that don't
+> munge Reply-To).
+
+I have to go through a bunch of finagling to reply to some lists, 
+including this one, via Alpine.  At least if I select "reply all", I can 
+just cut-and-paste the addresses.  I think it's configurable in the list 
+manager daemon.
+
+I do seem to remember it being a bigger pain with Google mailing lists.
+
+-uso.
+
+
+From arnold at skeeve.com  Thu Jun 30 21:18:37 2016
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Thu, 30 Jun 2016 05:18:37 -0600
+Subject: [TUHS] Algol68 vs. C at Bell Labs
+In-Reply-To: <0f57f9d8248db61cba34372814d2f45e.squirrel@webmail.yaccman.com>
+References: <0f57f9d8248db61cba34372814d2f45e.squirrel@webmail.yaccman.com>
+Message-ID: <201606301118.u5UBIbVY025481@freefriends.org>
+
+scj at yaccman.com wrote:
+
+> Nowadays, newer languages like Python just piggyback on C or C++...
+
+Yes and know; GCC has a number of front-ends, in various stage of
+production worthiness. Besides C and C++ the Ada front end is full
+production quality.  I think Fortran and Java are at lower levels; there
+are also D, Go, and Pascal front ends.
+
+There is a trend back towards compiled languages. Of note: D, Go, and Rust.
+
+For whatever it's worth. :-)
+
+Arnold
+
+
+From arnold at skeeve.com  Thu Jun 30 21:45:34 2016
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Thu, 30 Jun 2016 05:45:34 -0600
+Subject: [TUHS] Algol68 vs. C at Bell Labs
+In-Reply-To: <201606301118.u5UBIbVY025481@freefriends.org>
+References: <0f57f9d8248db61cba34372814d2f45e.squirrel@webmail.yaccman.com>
+ <201606301118.u5UBIbVY025481@freefriends.org>
+Message-ID: <201606301145.u5UBjYTo029364@freefriends.org>
+
+arnold at skeeve.com wrote:
+
+> Yes and know; GCC has a number of front-ends, in various stage of
+
+Not enough sleep. Obviously "yes and no". Sorry.
+
+
+From wkt at tuhs.org  Thu Jun 30 22:17:30 2016
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 30 Jun 2016 22:17:30 +1000
+Subject: [TUHS] List reply-to
+In-Reply-To: <CAD-qYGo5RBsOf-kik16UX43b3Z72nfNSe2Q85rwG44nL7dFUnw@mail.gmail.com>
+References: <20160630065609.GA20869@minnie.tuhs.org>
+ <201606300710.u5U7AnW5019439@freefriends.org>
+ <CAD-qYGpJdbtqCFBYBexTiaqFGGCXK6rauiOMsqLB+LdGFqaOLQ@mail.gmail.com>
+ <CAD-qYGo5RBsOf-kik16UX43b3Z72nfNSe2Q85rwG44nL7dFUnw@mail.gmail.com>
+Message-ID: <20160630121730.GA15576@minnie.tuhs.org>
+
+On Thu, Jun 30, 2016 at 04:39:22AM -0600, Andrew Warkentin wrote:
+> I really should stop using Gmail's web interface and find an MUA that
+> has a "reply to list" feature and defaults to replying to the list for
+> messages from the list.
+
+I'm running a fairly default Mailman setup for TUHS. The reply-to option
+is set to be the original poster. I can change it to the list address if
+most people are happy for it to be that way.
+
+Mind you, I'm sure either choice won't be suitable for all subscribers.
+
+Cheers, Warren
+
+
+From doug at cs.dartmouth.edu  Thu Jun 30 22:41:42 2016
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Thu, 30 Jun 2016 08:41:42 -0400
+Subject: [TUHS] A Talk on Early Unix
+Message-ID: <201606301241.u5UCfgXc014753@coolidge.cs.Dartmouth.EDU>
+
+> AFAIK the later ESS switches include a 3B machine but it only handles
+> some administrative functions, with most of the the actual call
+> processing being performed in dedicated hardware.
+
+That is correct. The 3B2 was an administrative appendage.
+
+Though Unix itself didn't get into switches, Unix people did
+have a significant influence on the OS architecture for
+ESS 5. Bob Morris, having observed some of the tribulations of
+that project, suggested that CS Research build a demonstration
+switch. Lee McMahon, Ken Thompson, and Joe Condon spearheaded
+the effort and enlisted Gerard  Holzmann's help in verification
+(ironically, the only application of Gerhard's methods to
+software made in his own department). They called the system,
+which was very different from Unix, TPC--The Phone Company. It
+actually controlled many of our phones for some years. The
+cleanliness of McMahon's architecture, which ran on a PDP-11,
+caught the attention of Indian Hill and spurred a major
+reworking of the ESS design.
+
+Doug
+
+
+From ron at ronnatalie.com  Thu Jun 30 22:53:16 2016
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Thu, 30 Jun 2016 08:53:16 -0400
+Subject: [TUHS] A Talk on Early Unix
+In-Reply-To: <201606301241.u5UCfgXc014753@coolidge.cs.Dartmouth.EDU>
+References: <201606301241.u5UCfgXc014753@coolidge.cs.Dartmouth.EDU>
+Message-ID: <728E6849-FAE3-43C2-9950-16BA591CE9B4@ronnatalie.com>
+
+Ah yes, the 3B’s.   Running the state university computer department (in NJ) we got a lot of 3B’s (3B2, 3B5, 3B20).
+The 3B20 was definitely a piece of telephone equipment.   They way you powered it down was to turn a knob to off and then hold a button down for three seconds until it went twang and turned off.    Anybody remember the original bell 303 modems?  That’s how you’d put them into loopback.   Used to have to do this from time to time on our old ARPANET modems at the request of the NOC.
+
+The 3B5 was an interesting machine.   We found out how rugged it was when a drain pipe broke over the top of it (the Rutgers main computer center was underground under a court yard between the twin towers of the Hill Center).   The thing survived a deluge of water being dumped into it.
+
+
+
+From crossd at gmail.com  Thu Jun 30 23:02:07 2016
+From: crossd at gmail.com (Dan Cross)
+Date: Thu, 30 Jun 2016 09:02:07 -0400
+Subject: [TUHS] A Talk on Early Unix
+In-Reply-To: <201606301241.u5UCfgXc014753@coolidge.cs.Dartmouth.EDU>
+References: <201606301241.u5UCfgXc014753@coolidge.cs.Dartmouth.EDU>
+Message-ID: <CAEoi9W4Zz2agRofJd3=cA7V-GHhr+RsW4Fp81kU_JhfDmkKHqQ@mail.gmail.com>
+
+On Thu, Jun 30, 2016 at 8:41 AM, Doug McIlroy <doug at cs.dartmouth.edu> wrote:
+
+> [snip]
+>
+> Though Unix itself didn't get into switches, Unix people did
+> have a significant influence on the OS architecture for
+> ESS 5. Bob Morris, having observed some of the tribulations of
+> that project, suggested that CS Research build a demonstration
+> switch. Lee McMahon, Ken Thompson, and Joe Condon spearheaded
+> the effort and enlisted Gerard  Holzmann's help in verification
+> (ironically, the only application of Gerhard's methods to
+> software made in his own department). They called the system,
+> which was very different from Unix, TPC--The Phone Company. It
+> actually controlled many of our phones for some years. The
+> cleanliness of McMahon's architecture, which ran on a PDP-11,
+> caught the attention of Indian Hill and spurred a major
+> reworking of the ESS design.
+>
+
+I'm curious if the name "TPC" was an allusion to the apocryphal telephone
+company of the same name in the 1967 movie, "The President's Analyst"?
+
+        - Dan C.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160630/5d6cdd88/attachment.html>
+
+From david at kdbarto.org  Thu Jun 30 23:15:55 2016
+From: david at kdbarto.org (David)
+Date: Thu, 30 Jun 2016 06:15:55 -0700
+Subject: [TUHS] Algol68 vs. C at Bell Labs
+In-Reply-To: <mailman.19.1467287486.30583.tuhs@minnie.tuhs.org>
+References: <mailman.19.1467287486.30583.tuhs@minnie.tuhs.org>
+Message-ID: <3DC28CB2-811B-4D6F-9D07-7F9A86B07202@kdbarto.org>
+
+
+> From: Dave Horsfall <dave at horsfall.org>
+> 
+> On Wed, 29 Jun 2016, scj at yaccman.com wrote:
+> 
+>> Pascal had P-code, and gave C a real run, especially as a teaching 
+>> language.
+> 
+> Something I picked up at Uni was that Pascal was never designed for 
+> production use; instead; you debugged your algorithm in it, then ported it 
+> to your language of choice.
+
+I was an active member of the UCSD Pascal project from 77 to 80, and then was with SofTech MicroSystems for a couple years after that.
+
+An unwritten legacy of the Project was that, according to Professor Ken Bowles, IBM wanted to use UCSD Pascal as the OS for their new x86 based personal computer. The license was never worked out as the University of California got overly involved in it. As a result IBM went with their second choice, some small Redmond based company no one had ever heard of. So it was intended and, at least IBM thought, it was good enough for production use.
+
+I also knew of UCSD Pascal programs written to do things such as dentist office billing and scheduling and other major ‘real world’ tasks. So it wasn’t just an academic project.
+
+I still have UCSD Pascal capable of running in a simulator, though I’ve not run it in a while. And I have all the source for the OS and interpreter for the Version I.5 and II.0 systems. Being a code pig just means that I need a lot of disk space.
+
+	David
+
+From clemc at ccc.com  Thu Jun 30 23:22:39 2016
+From: clemc at ccc.com (Clem Cole)
+Date: Thu, 30 Jun 2016 09:22:39 -0400
+Subject: [TUHS] Algol68 vs. C at Bell Labs
+In-Reply-To: <0f57f9d8248db61cba34372814d2f45e.squirrel@webmail.yaccman.com>
+References: <0f57f9d8248db61cba34372814d2f45e.squirrel@webmail.yaccman.com>
+Message-ID: <CAC20D2OT2k6TqvdBiCzM8PoJ6Bs4YZKZ1BPPT_czJT0koGMk_g@mail.gmail.com>
+
+Steve - good stuff.   comments below.
+
+On Wed, Jun 29, 2016 at 11:17 AM, <scj at yaccman.com> wrote:
+
+> But the documentation was a huge barrier
+
+​Amen​ - I remember trying to read the report and getting utterly befuddled.
+
+
+
+> --all the
+> ​ ​
+> familiar ideas were given completely new (and unintuitive) names, making
+> ​ ​
+> it very difficult to get into.
+>
+​And as importantly, it was not clear to many of us what we were getting
+for all that stuff.   Was it sugar or really going to help?​    C, BLISS,
+PL/360, BCPL et al, took a much more minimalist view.   Algol68 seems like
+it was the "one ring to rule them all" but how could you be sure?
+
+
+
+>
+> I may be biased in my view, but I think one fatal mistake that A68 made
+> was that it had no scheme for porting the language to the plethora of
+> computers and systems around at that time.
+
+​I would put this this a little differently.   To me it was not so much
+that there was or was not a scheme to move the language, but it was not
+economical to try.​   Between your and Dennis's compilers, which were both
+"reachable" by many of us, when we needed a language and compiler for these
+new microprocessors that were becoming prevalent at the same time, we had
+the sources for your compilers and it was "just a matter of a new back
+end."
+
+
+
+> (The Bliss language from CMU
+> ​ ​
+> had a similar problem, requiring a bigger computer to compile for the
+> ​ ​
+> PDP-11).
+
+​While true, I'm not so sure that was the real problem with BLISS.  I
+really think it was that CMU sold the language to DEC and compiler sources
+were not available to people.   I've always said if DEC had given away the
+BLISS compiler and made the sources available in the same manner as C (or
+Pascal for that matter), folks like me would have been tempted to use it
+write a backend for the 68K (Z8000, 8086 much less the 8-bit micros).​
+
+I also think the size issue could have been (and would have been) fixed if
+it was worth it.   But it was not.  The requirement of needing a PDP-10 (or
+later Vax) to run was due to the small address space of the PDP-11 and the
+amazing things that the BLISS optimizer did.   But you are correct - that
+was never done, so it certainly added why BLISS never went very far.
+
+My own experience was simple. At Tektronix, in the late 1970's I was given
+a chip that would become the 68K (it was yet to be numbered by Motorola at
+that point) and I wanted a HLL for the system we started to make with it
+(what would later be called Magnolia).  As a V6 (and later V7) licensee, I
+had the sources to the Ritchie compiler.  I knew both BLISS and C (as well
+as Algol/Pascal/FTN/PL-1 et,), and I admit in those days still had a
+fondness for the former as a CMU grad and Bill Wulf student.   But I did
+not have any of the CMU tools (PQCC et al) much less the DEC ones (and you
+are correct, I ould get access to the PDP-10, but I had a couple of UNIX
+boxes available).  So, I had your tools and they worked well.   Thus,
+I wrote a back end for my project for that chip.  It was that simple.   It
+was pure economics.
+
+
+
+
+> Pascal had P-code, and gave C a real run, especially as a
+> teaching language.
+
+​Right, Pascal had a number of generally available compilers, with P-Code
+being the most used.​  It was as economical as C to work.   And a lot of
+people used it.  While I liked it as a teaching language, it was useless as
+a production language unless you hacked on it and extended it.  And as
+importantly for me, it could not be used as a "systems" language as it.  In
+fact, at that time Tektronix has at least 6 different but incompatible
+flavors of "Tek Pascal." It was language of choice in the product teams
+(BTW, our friends and rivals had over 20 flavors of HP BASIC in those days
+too).
+
+I picked C because I could and I knew my PDP-11 code would pretty much just
+work on this new device.   Admittedly "proof by lack of imagination" reined
+here, but I really could not image trying to use Pascal to write an OS.
+ I knew I could with BLISS or C.
+
+
+
+
+> Nowadays, newer languages like Python just piggyback on C or C++...
+
+​Hmm... I would say piggyback on the C ecosystem - i.e. GCC (or now LLVM).​
+
+​Clem​
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160630/f8c8ad8f/attachment.html>
+
+From ches at cheswick.com  Thu Jun 30 23:18:47 2016
+From: ches at cheswick.com (William Cheswick)
+Date: Thu, 30 Jun 2016 09:18:47 -0400
+Subject: [TUHS] Algol68 vs. C at Bell Labs
+In-Reply-To: <3DC28CB2-811B-4D6F-9D07-7F9A86B07202@kdbarto.org>
+References: <mailman.19.1467287486.30583.tuhs@minnie.tuhs.org>
+ <3DC28CB2-811B-4D6F-9D07-7F9A86B07202@kdbarto.org>
+Message-ID: <220DE9AD-2B26-42D5-B72D-EEA32731DB81@cheswick.com>
+
+What a different world it would be if IBM had selected the M68000 and UCSD Pascal.  Both seemed
+to me to better better choices at the time.
+
+> On 30Jun 2016, at 9:15 AM, David <david at kdbarto.org> wrote:
+> 
+> 
+>> From: Dave Horsfall <dave at horsfall.org>
+>> 
+>> On Wed, 29 Jun 2016, scj at yaccman.com wrote:
+>> 
+>>> Pascal had P-code, and gave C a real run, especially as a teaching 
+>>> language.
+>> 
+>> Something I picked up at Uni was that Pascal was never designed for 
+>> production use; instead; you debugged your algorithm in it, then ported it 
+>> to your language of choice.
+> 
+> I was an active member of the UCSD Pascal project from 77 to 80, and then was with SofTech MicroSystems for a couple years after that.
+> 
+> An unwritten legacy of the Project was that, according to Professor Ken Bowles, IBM wanted to use UCSD Pascal as the OS for their new x86 based personal computer. The license was never worked out as the University of California got overly involved in it. As a result IBM went with their second choice, some small Redmond based company no one had ever heard of. So it was intended and, at least IBM thought, it was good enough for production use.
+> 
+> I also knew of UCSD Pascal programs written to do things such as dentist office billing and scheduling and other major ‘real world’ tasks. So it wasn’t just an academic project.
+> 
+> I still have UCSD Pascal capable of running in a simulator, though I’ve not run it in a while. And I have all the source for the OS and interpreter for the Version I.5 and II.0 systems. Being a code pig just means that I need a lot of disk space.
+> 
+> 	David
+
+
+
+From clemc at ccc.com  Thu Jun 30 23:39:59 2016
+From: clemc at ccc.com (Clem Cole)
+Date: Thu, 30 Jun 2016 09:39:59 -0400
+Subject: [TUHS] Algol68 vs. C at Bell Labs
+In-Reply-To: <220DE9AD-2B26-42D5-B72D-EEA32731DB81@cheswick.com>
+References: <mailman.19.1467287486.30583.tuhs@minnie.tuhs.org>
+ <3DC28CB2-811B-4D6F-9D07-7F9A86B07202@kdbarto.org>
+ <220DE9AD-2B26-42D5-B72D-EEA32731DB81@cheswick.com>
+Message-ID: <CAC20D2MLU6unGQ1LOoqNCL+86M9O7TiNbLaN6u8kpHp8u9uYjQ@mail.gmail.com>
+
+On Thu, Jun 30, 2016 at 9:18 AM, William Cheswick <ches at cheswick.com> wrote:
+
+> What a different world it would be if IBM had selected the M68000
+
+
+​Blame that on Moto, not IBM.  IBM wanted the 68K.   But Moto kept pushing
+the 6809 on them.    IBM and Tek were two of the sites that had the
+experimental chip that I was referring.  My friend Les Crudele related the
+story of IBM visiting Austin (Les and Nick Tredenick were the primary 68K
+guys).  It seems IBM wanted to use the new chip and Moto marketing kept
+telling them it was an experiment and was not a product.  The cool new
+product from Moto was the 6809 and they should use that.   IBM knew they
+wanted a 16bit processor which it was not, so they looked elsewhere.
+
+Then again, I might have my current job if Moto marketing not been so short
+sighted.
+
+Clem
+
+PS  BTW:  Les has equally great stories about working with Apple BTW.  My
+favorite is that he says, Moto tried to get Apple to put a MMU into the
+original Mac, but Job's would not hear of it.  Not needed for a PC and all
+that.
+​
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160630/ea3dd579/attachment.html>
+
+From jnc at mercury.lcs.mit.edu  Thu Jun 30 23:44:57 2016
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Thu, 30 Jun 2016 09:44:57 -0400 (EDT)
+Subject: [TUHS] Algol68 vs. C at Bell Labs
+Message-ID: <20160630134457.BE26B18C103@mercury.lcs.mit.edu>
+
+    > From: scj at yaccman.com
+
+    > I think one fatal mistake that A68 made
+
+One of many, apparently, given Hoare's incredible classic "The Emperor's Old
+Clothes":
+
+   http://zoo.cs.yale.edu/classes/cs422/2014/bib/hoare81emperor.pdf
+
+(which should be required reading for every CS student).
+
+       Noel
+
+

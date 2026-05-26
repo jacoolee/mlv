@@ -1,0 +1,166 @@
+From arnold at skeeve.com  Tue Feb  1 19:01:38 2005
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Tue, 1 Feb 2005 11:01:38 +0200
+Subject: [TUHS] licence of ditroff?
+Message-ID: <200502010901.j1191cDT007818@skeeve.com>
+
+> Date: Mon, 31 Jan 2005 17:50:26 +0000 (UTC)
+> From: Thorsten Glaser <tg at 66h.42h.de>
+> Subject: Re: [TUHS] licence of ditroff?
+> To: Aharon Robbins <arnold at skeeve.com>
+> Cc: martinwguy at yahoo.it, miros-discuss at 66h.42h.de, tuhs at minnie.tuhs.org
+>
+> Aharon Robbins dixit:
+>
+> >Instead of starting with 27 year old code, you'd be better
+> >off taking the troff from http://www.swtch.com/plan9port.
+>
+> Thanks, that's a nice idea, but from what I experienced,
+> the portability of recent AT&T/Bell/Lucent/whatever code
+> is worse than the bugs in old code (eg. I could not get
+> ksh93 to compile, something in there just dumped core;
+> but then that's Unix, not Plan 9).
+
+ksh93 is a different animal, from a different group, and problems
+there are not surprising (sadly).
+
+On the flip side, they do take bug reports seriously.
+
+> >This is a port of many Plan 9 utilities to Unix.  The troff there
+> >(a) has an explicit license that will probably do for the BSD people
+>
+> If it's the same licence as for 8c, then no, unfortunately.
+
+I don't know.  It's worth double checking the current license; it
+changed sometime in the past year or two.
+
+The Plan 9 troff is certainly a descendant of the ditroff you
+found, for whatever that's worth.
+
+Arnold
+
+From tg at 66h.42h.de  Tue Feb  1 03:50:26 2005
+From: tg at 66h.42h.de (Thorsten Glaser)
+Date: Mon, 31 Jan 2005 17:50:26 +0000 (UTC)
+Subject: [TUHS] licence of ditroff?
+In-Reply-To: <200501310939.j0V9dbJF027523@skeeve.com>
+References: <200501310939.j0V9dbJF027523@skeeve.com>
+Message-ID: <Pine.BSO.4.61L.0501311748440.8596@odem.66h.42h.de>
+
+Aharon Robbins dixit:
+
+>Instead of starting with 27 year old code, you'd be better
+>off taking the troff from http://www.swtch.com/plan9port.
+
+Thanks, that's a nice idea, but from what I experienced,
+the portability of recent AT&T/Bell/Lucent/whatever code
+is worse than the bugs in old code (eg. I could not get
+ksh93 to compile, something in there just dumped core;
+but then that's Unix, not Plan 9).
+
+>This is a port of many Plan 9 utilities to Unix.  The troff there
+>(a) has an explicit license that will probably do for the BSD people
+
+If it's the same licence as for 8c, then no, unfortunately.
+
+>(b) already knows how to produce PostScript
+
+That's a must for replacing the current oldroff (nroff).
+
+>(c) can handle UTF-8 and 16-bit Unicode
+
+That's pretty neat ;)
+
+
+bye,
+//mirabile
+
+From tg at 66h.42h.de  Tue Feb  1 19:28:40 2005
+From: tg at 66h.42h.de (Thorsten Glaser)
+Date: Tue, 1 Feb 2005 09:28:40 +0000 (UTC)
+Subject: [TUHS] licence of ditroff?
+In-Reply-To: <200502010901.j1191cDT007818@skeeve.com>
+References: <200502010901.j1191cDT007818@skeeve.com>
+Message-ID: <Pine.BSO.4.61L.0502010927510.529@thor.66h.42h.de>
+
+Aharon Robbins dixit:
+
+>I don't know.  It's worth double checking the current license; it
+>changed sometime in the past year or two.
+>
+>The Plan 9 troff is certainly a descendant of the ditroff you
+>found, for whatever that's worth.
+
+Okay, looks like it's really worth digging into this.
+
+But (for the rest of the audience) not until after the
+next stable release, MirOS #8, is out of the doors.
+
+bye,
+//mirabile
+
+From kstailey at yahoo.com  Wed Feb  2 08:16:07 2005
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Tue, 1 Feb 2005 14:16:07 -0800 (PST)
+Subject: [TUHS] A BSD Question
+In-Reply-To: <20050121142112.23409.qmail@web50605.mail.yahoo.com>
+Message-ID: <20050201221607.39621.qmail@web50602.mail.yahoo.com>
+
+
+--- Kenneth Stailey <kstailey at yahoo.com> wrote:
+
+> Who was the great Yang of Cardiff-by-the-Sea?
+
+Clue #1  Evidence can be found on this CD-ROM set:
+
+https://www.mckusick.com/csrg/
+
+
+From kstailey at yahoo.com  Thu Feb  3 00:18:44 2005
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Wed, 2 Feb 2005 06:18:44 -0800 (PST)
+Subject: [TUHS] A BSD Question
+In-Reply-To: <20050201221607.39621.qmail@web50602.mail.yahoo.com>
+Message-ID: <20050202141844.99627.qmail@web50603.mail.yahoo.com>
+
+
+--- Kenneth Stailey <kstailey at yahoo.com> wrote:
+
+> 
+> --- Kenneth Stailey <kstailey at yahoo.com> wrote:
+> 
+> > Who was the great Yang of Cardiff-by-the-Sea?
+> 
+> Clue #1  Evidence can be found on this CD-ROM set:
+> 
+> https://www.mckusick.com/csrg/
+
+hermes# ls -l CSRG-1.iso
+-rw-r--r--  1 root  wheel  668307456 Dec 22  2002 CSRG-1.iso
+hermes# md5 CSRG-1.iso
+MD5 (CSRG-1.iso) = f15fd77929fa27b1e2bb4cd5ffba6a95
+
+hermes# mdconfig -a -t vnode -f CSRG-1.iso
+md11
+hermes# mount -t cd9660 /dev/md11 /cdrom
+hermes# ls -l /cdrom/3bsd/crp/gazorkus
+-rw-r--r--  1 root  10  52 Dec 20  1979 /cdrom/3bsd/crp/gazorkus
+hermes# md5 /cdrom/3bsd/crp/gazorkus
+MD5 (/cdrom/3bsd/crp/gazorkus) = 24556412d958c20d16306dcb37267630
+hermes# cat /cdrom/3bsd/crp/gazorkus
+The great Yang of Cardiff-by-the-Sea strikes again!
+hermes#
+
+
+From kjax_mn at hotmail.com  Thu Feb  3 03:09:23 2005
+From: kjax_mn at hotmail.com (Keith Jackson)
+Date: Wed, 02 Feb 2005 11:09:23 -0600
+Subject: [TUHS] stuff
+Message-ID: <BAY104-F6F6C4C5FD5AB31AF6C5298B7E0@phx.gbl>
+
+Maybe somebody wants this stuff?
+
+http://madsoft.lonestar.org/garage/
+
+
+

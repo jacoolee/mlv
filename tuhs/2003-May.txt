@@ -1,0 +1,3331 @@
+From sms at 2BSD.COM  Thu May  1 01:56:58 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Wed, 30 Apr 2003 08:56:58 -0700 (PDT)
+Subject: [pups] 2.11BSD device config trouble
+Message-ID: <200304301556.h3UFuwb20269@moe.2bsd.com>
+
+Hi -
+
+> From: Jochen Kunz <jkunz at unixag-kl.fh-kl.de>
+> > > cn 1 csr 176540 vector 344 no address found for kl/dl-11
+> > 	Is 'cn 1 ...' line 38 of the /etc/dtab file?
+> Yes: 
+> cn      1 176540 344    5       cnrint  cnxint
+
+	Interesting.   I do not recall any particular problem getting 
+	additional DL devices recognized (the 11/93 had 7 of them).
+
+	Seeing the 'no address found' error is *strange* though - that
+	would indicate that 'autoconfig' could not find 'cnrint' or 'cnxint'
+	in the /unix symbol table.   Look at /sys/autoconfig and you can
+	see where that message is coming from.
+
+	If you do 
+
+		nm /unix | egrep 'cnxint|cnrint' 
+
+	what do you see?
+
+> NKL             4               # KL11, DL11
+> The card has four ports, one of them is the console. (The M8192 CPU card
+> has no SLU / ROM / ...) 
+	
+	Ah, ok.   My 11/73 has a SLU/ROM card and the console is on that.  I
+	also have a DHV installed (alas, the system is powered down now
+	so I can not check for more information).
+
+> But I would prefere to get the DHV11 working. It seams that this device
+> is more suitable for multi user operation. 
+
+	Yes, it's a little better.  Not as nice as a DHQ-11 though (which can
+	run in DHU or DHV modes - with DHU mode having much better silo 
+	handling).
+
+	I forget the exact error you were getting on the DHV but if it was
+	'no interrupt' then it might be that the DHV clone is not behaving
+	exactly like a DEC DHV
+
+	In /sys/autoconfig/dhvauto.c here is how the probing attempts to
+	force an interrupt:
+
+dhvprobe(addr,vector)
+        struct dhvdevice *addr;
+        int vector;
+{
+    if ( grab ( &(addr->dhvcsr) ) & DHV_CS_MCLR )
+        DELAY(35000L);
+    if ( grab ( &(addr->dhvcsr) ) & (DHV_CS_MCLR|DHV_CS_DFAIL) )
+        return ( 0 );
+    stuff ( DHV_CS_RI | DHV_CS_RIE, &(addr->dhvcsr) );
+    DELAY(3500L);
+    stuff ( 0, &(addr->dhvcsr) );
+    return(ACP_IFINTR);
+}
+
+	Either 3500 microseconds (very approximately of course) is too short 
+	of a wait _or_ the method of trying to generate an interrupt is 
+	not correct.    You can try changing 'ACP_IFINTR' to 'ACP_EXISTS'
+	which tells autoconf to not care if the device interrupted or not.
+
+> ** Last Mounted on /
+> ** Root file system
+> ** Phase 1 - Check Blocks and Sizes
+> ** Phase 2 - Check Pathnames
+> ** Phase 3 - Check Connectivity
+> ** Phase 4 - Check Reference Counts
+> ** Phase 5 - Check Free List
+> BLK(S) MISSING
+> SALVAGE? y
+> 
+> ** Phase 6 - Salvage Free List
+> 1364 files, 11625 used, 2430 free
+> 
+> ***** FILE SYSTEM WAS MODIFIED *****
+> 
+> But on the next reboot I get the same when running fsck. Any hints? 
+
+	How are you rebooting?  With the "reboot" command or by using the
+	'halt' button?   You do not want to use the 'reboot' command because
+	that does a "sync" which flushes the disc cache (and superblock) back
+	out to disc - that overwrites the work that 'fsck' did.
+
+	A few 'missing' blocks is not a serious problem though and can be
+	ignored.
+
+	Cheers,
+	Steven Schultz
+
+
+From sms at 2BSD.COM  Thu May  1 02:03:40 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Wed, 30 Apr 2003 09:03:40 -0700 (PDT)
+Subject: [pups] 2.11BSD device config trouble
+Message-ID: <200304301603.h3UG3eE20319@moe.2bsd.com>
+
+Hi!
+
+> From: David Evans <dfevans at bbcr.uwaterloo.ca>
+> > cn      1 176540 344    5       cnrint  cnxint
+>  
+> to the end of this line?  Perhaps the autoconfig parser becomes confused
+> if there aren't any.
+	
+	I don't think that's the problem in this case - the error that is
+	being printed out:
+
+	 cn 1 csr 176540 vector 344 no address found for kl/dl-11
+
+	comes from what appears to be a missing entry (or an entry that
+	autoconfig can't find) in the /unix kernel symbol table.   One way,
+	I think, this can happen is when booting an alternate kernel (/genunix
+	instead of /unix).
+
+	THe only suggestion I have at this point is to turn on debugging
+	in autoconfig.   To do this go into /sys/autoconfig/main.c and
+	add a line that forces 'debug = 1;', then install (after saving the
+	original ;)) autoconfig into /etc and reboot.   Hopefully useful
+	info about what autoconfig is doing will be printed.
+
+>   Mine is at least correctly identified by autoconfig, though I've never
+> attached a terminal to it to see whether the ports actually do anything.
+> The post that's vanished included my dhv line from /etc/dtab but, except
+> for the goofy CSR I used for some reason that I cannot now remember, it
+
+	If I find the time I'll power up the 11/73 and see what it says but
+	I've had a DHV11 on the system for years (it's how I got the RTS/CTS
+	flow control working).
+
+	My suspicion is that the DHV clone isn't behaving 100% like a DEC
+	DHV card.
+
+> > BTW: Never play with the SMD cables when the machine is running. Now I
+> > get: 
+> 
+>   Is the disk write-inhibited?
+
+	Doing a 'reboot' (which performs a sync(2) call) will overwrite
+	what fsck has done - when the message about "reboot" comes out you
+	should use the front panel or ODT to simply halt the cpu and then
+	start the boot process cold.
+
+	Cheers,
+	Steven Schultz
+
+
+From jkunz at unixag-kl.fh-kl.de  Thu May  1 02:23:49 2003
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Wed, 30 Apr 2003 18:23:49 +0200
+Subject: [pups] 2.11BSD device config trouble
+In-Reply-To: <20030430094032.A7330@bcr10.uwaterloo.ca>; from dfevans@bbcr.uwaterloo.ca on Wed, Apr 30, 2003 at 15:40:32 CEST
+References: <200304292248.h3TMmmc08433@moe.2bsd.com> <20030430102422.D196974@MissSophie.unixag-kl.fh-kl.de> <20030430094032.A7330@bcr10.uwaterloo.ca>
+Message-ID: <20030430182349.N196974@MissSophie.unixag-kl.fh-kl.de>
+
+On 2003.04.30 15:40 David Evans wrote:
+
+>   I didn't see my other post go through; 
+I got it only via private mail.
+
+> have you tried adding some comments
+> to the end of this line?  Perhaps the autoconfig parser becomes
+> confused if there aren't any.
+Hmm. 
+[...]
+I added comments at the end of the lines and now it works:
+
+April 30 17:29:29 init: configure system
+
+dhv ? csr 160440 vector 310 didn't interrupt.
+ra 0 csr 172150 vector 154 vectorset attached
+ra 1 csr 160334 vector 764 vectorset attached
+rx ? csr 177170 vector 264 skipped:  No CSR.
+tms 0 csr 174500 vector 260 vectorset attached
+ts 0 csr 172520 vector 224 attached
+cn 1 csr 176540 vector 344 attached
+cn 2 csr 176550 vector 354 attached
+cn 3 csr 176560 vector 364 attached
+
+Hmmm. No manpage for cn/dl/kl? Major / minor device numbers?
+[reading the kernel source]
+Aha. /dev/ttyl1 is what I am looking for. But the interrupt vector seams
+to be wrong. 
+
+But still trouble with the dhv. Maybe wrong interrupt vector too? Maybe
+I compile a kernel with support for a DZQ11... 
+
+> > But I would prefere to get the DHV11 working. It seams that this
+> > device is more suitable for multi user operation. 
+>   Mine is at least correctly identified by autoconfig, though I've
+> never attached a terminal to it to see whether the ports actually do
+> anything.
+Normaly I use the console for booting only and then I telnet to the
+machine. But I wane connect some terminals to the PDP-11 at the VCFe, so
+the visitors can log in play around. 
+
+[fsck trouble]
+>   Is the disk write-inhibited?
+No. It seams that I made the mistake to reboot using reboot(8) insted of
+power cycling the machine when fsck modified the file system. Didn't
+notice that / was mounted r/w. 
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Thu May  1 02:59:36 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Wed, 30 Apr 2003 12:59:36 -0400
+Subject: [pups] 2.11BSD device config trouble
+In-Reply-To: <20030430182349.N196974@MissSophie.unixag-kl.fh-kl.de>; from jkunz@unixag-kl.fh-kl.de on Wed, Apr 30, 2003 at 06:23:49PM +0200
+References: <200304292248.h3TMmmc08433@moe.2bsd.com> <20030430102422.D196974@MissSophie.unixag-kl.fh-kl.de> <20030430094032.A7330@bcr10.uwaterloo.ca> <20030430182349.N196974@MissSophie.unixag-kl.fh-kl.de>
+Message-ID: <20030430125936.A7938@bcr10.uwaterloo.ca>
+
+On Wed, Apr 30, 2003 at 06:23:49PM +0200, Jochen Kunz wrote:
+> On 2003.04.30 15:40 David Evans wrote:
+> 
+> >   I didn't see my other post go through; 
+> I got it only via private mail.
+>  
+ 
+  Ahh, OK--misfire on my part.
+
+> > have you tried adding some comments
+> > to the end of this line?  Perhaps the autoconfig parser becomes
+> > confused if there aren't any.
+> Hmm. 
+> [...]
+> I added comments at the end of the lines and now it works:
+> 
+> April 30 17:29:29 init: configure system
+> 
+> dhv ? csr 160440 vector 310 didn't interrupt.
+
+  OK--that at least fixed the "three handlers" (or whatever) error message.
+I haven't looked in detail at the parsing code for autoconfig so I don't
+know why this is happening.  I may poke at it tonight if I have the energy,
+though of course Steve has the knowledge to do it more easily.  :-)
+
+> But still trouble with the dhv. Maybe wrong interrupt vector too?
+
+  It's possible that your DHV board is simply strapped for something other
+than 310.
+
+> Normaly I use the console for booting only and then I telnet to the
+> machine.
+
+  Likewise.
+
+> But I wane connect some terminals to the PDP-11 at the VCFe, so
+> the visitors can log in play around. 
+> 
+
+  Not a bad plan.
+
+> [fsck trouble]
+> >   Is the disk write-inhibited?
+> No. It seams that I made the mistake to reboot using reboot(8) insted of
+> power cycling the machine when fsck modified the file system. Didn't
+> notice that / was mounted r/w. 
+
+  I typically use "reboot -n" in such circumstances.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From jkunz at unixag-kl.fh-kl.de  Thu May  1 02:58:26 2003
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Wed, 30 Apr 2003 18:58:26 +0200
+Subject: [pups] 2.11BSD device config trouble
+In-Reply-To: <200304301556.h3UFuwb20269@moe.2bsd.com>; from sms@2BSD.COM on Wed, Apr 30, 2003 at 17:56:58 CEST
+References: <200304301556.h3UFuwb20269@moe.2bsd.com>
+Message-ID: <20030430185826.R196974@MissSophie.unixag-kl.fh-kl.de>
+
+On 2003.04.30 17:56 Steven M. Schultz wrote:
+
+> 	Interesting.   I do not recall any particular problem getting 
+> 	additional DL devices recognized (the 11/93 had 7 of them).
+As already mentioned: If I add comments at the end of the lines it
+works:
+cn      1 176540 344    5       cnrint  cnxint  # kl/dl-11 (on mvx11-aa)
+cn      2 176550 354    5       cnrint  cnxint  # kl/dl-11 (on mvx11-aa)
+cn      3 176560 364    5       cnrint  cnxint  # kl/dl-11 (on mvx11-aa)
+cn 1 csr 176540 vector 344 attached
+cn 2 csr 176550 vector 354 attached
+cn 3 csr 176560 vector 364 attached
+Sounds like a funny bug? 
+
+But if I try to use /dev/ttyl1 I get a message about a unknown interrupt
+and the output of /dev/ttyl1 hangs after the first character. 
+
+> 	If you do 
+> 		nm /unix | egrep 'cnxint|cnrint' 
+> 	what do you see?
+# nm /unix | egrep 'cnxint|cnrint' 
+007402 T _cnrint
+007624 T _cnxint
+000050 t cnrint
+000060 t cnxint
+
+> 	Yes, it's a little better.  Not as nice as a DHQ-11 though
+I have a M3106 DZQ11 that I can use instead. 
+
+> I forget the exact error you were getting on the DHV but if it was
+> 'no interrupt' then it might be that the DHV clone is not behaving
+> exactly like a DEC DHV
+The DHV is a DEC M3104:
+dhv ? csr 160440 vector 310 didn't interrupt.
+The DL11 card is a clone made by Sigma. 
+
+> How are you rebooting?  With the "reboot" command or by using the
+> 'halt' button?   
+[...]
+Noticed that already. I am really not used to Unix stuff of that age.
+;-) 
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+
+
+From sms at 2BSD.COM  Thu May  1 04:43:11 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Wed, 30 Apr 2003 11:43:11 -0700 (PDT)
+Subject: [pups] 2.11BSD device config trouble
+Message-ID: <200304301843.h3UIhBa22154@moe.2bsd.com>
+
+Hi -
+
+> From: Jochen Kunz <jkunz at unixag-kl.fh-kl.de>
+> As already mentioned: If I add comments at the end of the lines it
+
+> cn      1 176540 344    5       cnrint  cnxint  # kl/dl-11 (on mvx11-aa)
+> cn      2 176550 354    5       cnrint  cnxint  # kl/dl-11 (on mvx11-aa)
+> cn      3 176560 364    5       cnrint  cnxint  # kl/dl-11 (on mvx11-aa)
+> cn 1 csr 176540 vector 344 attached
+> cn 2 csr 176550 vector 354 attached
+> cn 3 csr 176560 vector 364 attached
+> Sounds like a funny bug? 
+
+	Yes, it does.   A bug in the parsing.   Why it does not affect all
+	the lines is unknown.   Perhaps some trailing whitespace caused the
+	parser to exhibit the bug.
+
+> But if I try to use /dev/ttyl1 I get a message about a unknown interrupt
+> and the output of /dev/ttyl1 hangs after the first character. 
+	
+	What is the exact message?   I did a "strings /unix" and could not
+	not find a string that looked mentioned unknown or interrupt.
+
+	That would seem to indicate that the device is interrupting but not
+	at the expected vector.
+
+	It is possible to use 'adb' to look at the contents of the vectors.
+
+	adb -k /unix /dev/kmem
+	0344/o
+
+	will show the contents of the 0344 vector.  The value there should
+	be equal to 'cnrint' (or cnxint - I forget which comes first).
+
+> I have a M3106 DZQ11 that I can use instead. 
+
+	Definitely worth trying.   
+
+> The DHV is a DEC M3104:
+> dhv ? csr 160440 vector 310 didn't interrupt.
+> The DL11 card is a clone made by Sigma. 
+	
+	Ah, ok.  Thanks for the correction.   I misread the initial mail item.
+
+> > 'halt' button?   
+> [...]
+> Noticed that already. I am really not used to Unix stuff of that age.
+
+	:)  
+
+	I did the the same thing - wondered why I could never get a clean
+	file system.   Then I realized what was going on.
+
+	Cheers,
+	Steven Schultz
+
+
+From cdl at mpl.ucsd.edu  Thu May  1 13:30:47 2003
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Wed, 30 Apr 2003 20:30:47 -0700 (PDT)
+Subject: [pups] 2.11BSD device config trouble
+Message-ID: <200305010330.h413Ul921643@opihi.ucsd.edu>
+
+> From: "Steven M. Schultz" <sms at 2BSD.COM>
+> To: pups at minnie.tuhs.org
+> Subject: Re: [pups] 2.11BSD device config trouble
+> Date: Wed, 30 Apr 2003 11:43:11 -0700 (PDT)
+> 
+> Hi -
+> 
+> > From: Jochen Kunz <jkunz at unixag-kl.fh-kl.de>
+> 
+> > > 'halt' button?   
+> > [...]
+> > Noticed that already. I am really not used to Unix stuff of that age.
+> 
+> 	:)  
+> 
+> 	I did the the same thing - wondered why I could never get a clean
+> 	file system.   Then I realized what was going on.
+
+Isn't this really true of Unix systems of any age, when doing fsck
+on a mounted root file system?
+
+    carl
+
+
+
+From hansolofalcon at worldnet.att.net  Thu May  1 13:35:03 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Wed, 30 Apr 2003 23:35:03 -0400
+Subject: [pups] Restoring volumes
+Message-ID: <000001c30f92$a78292a0$0100a8c0@who5>
+
+Hello again from Gregg C Levine
+Just for the sake of an argument, has anyone actually managed to
+restore a volume from the collection on the ftp server, back to an
+originally sized disk pack? Or for that matter restored a system so
+that it behaves as advertised under E-11?
+
+No, folks that machine I "have on order", has not arrived. Once again
+I am searching for information for a future project. One that might be
+happening sometime this week, or even later this month.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+Sign on the side of a transport belonging to the Rebel Alliance,
+"Force happens".
+
+
+
+
+From hansolofalcon at worldnet.att.net  Thu May  1 13:48:52 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Wed, 30 Apr 2003 23:48:52 -0400
+Subject: [pups] 2.11BSD device config trouble
+In-Reply-To: <200305010330.h413Ul921643@opihi.ucsd.edu>
+Message-ID: <000401c30f94$95541d40$0100a8c0@who5>
+
+Hello from Gregg C Levine
+In a word, "Yes". I have seen it happen on a system running Linux,
+here, and the disk was going. It would eventually destroy its
+partition table, but that is beside the point.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]
+On
+> Behalf Of Carl Lowenstein
+> Sent: Wednesday, April 30, 2003 11:31 PM
+> To: pups at minnie.tuhs.org
+> Subject: Re: [pups] 2.11BSD device config trouble
+> 
+> > From: "Steven M. Schultz" <sms at 2BSD.COM>
+> > To: pups at minnie.tuhs.org
+> > Subject: Re: [pups] 2.11BSD device config trouble
+> > Date: Wed, 30 Apr 2003 11:43:11 -0700 (PDT)
+> >
+> > Hi -
+> >
+> > > From: Jochen Kunz <jkunz at unixag-kl.fh-kl.de>
+> >
+> > > > 'halt' button?
+> > > [...]
+> > > Noticed that already. I am really not used to Unix stuff of that
+age.
+> >
+> > 	:)
+> >
+> > 	I did the the same thing - wondered why I could never get a
+clean
+> > 	file system.   Then I realized what was going on.
+> 
+> Isn't this really true of Unix systems of any age, when doing fsck
+> on a mounted root file system?
+> 
+>     carl
+
+
+
+
+From sms at 2BSD.COM  Thu May  1 14:04:30 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Wed, 30 Apr 2003 21:04:30 -0700 (PDT)
+Subject: [pups] 2.11BSD device config trouble
+Message-ID: <200305010404.h4144UJ18330@moe.2bsd.com>
+
+Hi -
+
+> From: Carl Lowenstein <cdl at mpl.ucsd.edu>
+> > > > 'halt' button?   
+> > > [...]
+> > 
+> > 	I did the the same thing - wondered why I could never get a clean
+> > 	file system.   Then I realized what was going on.
+> 
+> Isn't this really true of Unix systems of any age, when doing fsck
+> on a mounted root file system?
+
+	Not really.  Newer systems mount the root filesystem read-only
+	while running fsck.   After the filesystem is verified as clean
+	then it is upgraded to read-write.
+
+	Older systems such as 2BSD can't run with a read-only root 
+	filesystem that I know of.   At least not easily/happily.   Might be 
+	possible (the ability to upgrade a ro mount to rw is present) but
+	it's never been a priority to look into it ;)
+
+	Cheers,
+	Steven Schultz
+
+
+From jkunz at unixag-kl.fh-kl.de  Thu May  1 19:24:50 2003
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Thu, 1 May 2003 02:24:50 -0700
+Subject: [pups] 2.11BSD device config trouble
+In-Reply-To: <200304301843.h3UIhBa22154@moe.2bsd.com>; from sms@2BSD.COM on Wed, Apr 30, 2003 at 11:43:11 %z
+References: <200304301843.h3UIhBa22154@moe.2bsd.com>
+Message-ID: <20030501092450.GE1481@oblina.unixag-kl.fh-kl.de>
+
+On 2003.04.30 11:43 Steven M. Schultz wrote:
+
+> > Sounds like a funny bug?
+> 	Yes, it does. A bug in the parsing. Why it does not affect
+> all the lines is unknown.   Perhaps some trailing whitespace
+> caused the parser to exhibit the bug.
+Maybe I get some time at the VCFE to investigate this. (Showing 
+visitors "live hacking". ;-) )
+
+> > But if I try to use /dev/ttyl1 I get a message about a unknown
+> interrupt
+> > and the output of /dev/ttyl1 hangs after the first character.
+> 	What is the exact message?
+Sorry don't know. I may be able to reproduce the error later. I got PSU 
+trouble when I wanted to do this yesterday...
+
+> 	That would seem to indicate that the device is interrupting
+> but not at the expected vector.
+If I use a different vector (e.g. 404) it tells me that the vector is 
+wrong when booting. Maybe I can use a VAX with NetBSD for some 
+"probing".... 
+> > I have a M3106 DZQ11 that I can use instead.
+> 	Definitely worth trying.
+But when I was compiling the kernel with the new driver the machine 
+crashed. The PSU simply stoped working. :-((( It worked again when I 
+pulled all non-essential cards and the TK50. Maybe I overloaded the 
+PSU? Maybe I will need a new PSU soon? If everything fails I can use 
+the BA215 for the PDP-11. I have several spare PSUs for that box. But a 
+BA215 is not the "right", "contemporary" enclosure for PDP-11/73. 
+> I did the the same thing - wondered why I could never get a
+> clean	file system.   Then I realized what was going on.
+Nice to hear that I am not the only one who made that mistake. ;-)
+-- 
+
+
+
+tschüß,
+           Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz
+
+
+From wes.parish at paradise.net.nz  Thu May  1 10:50:28 2003
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Thu, 1 May 2003 12:50:28 +1200
+Subject: [pups] About Per Brinch Hansen
+Message-ID: <200305011250.28308.wes.parish@paradise.net.nz>
+
+Anyone thought of asking him if he could contribute his Concurrent Pascal and 
+Solo, etc, to PUPS?
+
+Just a thought.
+
+Welsey Parish
+-- 
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+
+
+From norman at nose.cs.utoronto.ca  Thu May  1 23:49:55 2003
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Thu,  1 May 2003 08:49:55 -0500
+Subject: [pups] 2.11BSD device config trouble
+Message-ID: <YMWNFzDR0MYr.VjBrnZ0N@128.100.27.218>
+
+Carl Lowenstein:
+
+  Isn't this really true of Unix systems of any age, when doing fsck
+  on a mounted root file system?
+
+Some middle-elderly BSD systems--4.1 and possibly 4.0--
+managed the buffer pool in such a way that the super-block
+of a mounted file system was kept in the original buffer,
+with device and block number correctly stored in the struct
+buf header.  Hence if fsck wrote to the block device rather
+than the raw one, the super-block came out right even when
+checking a mounted file system; in particular there was no
+need to reboot.
+
+This convenience was abolished in either 4.2 or 4.3 (I am
+travelling right now and cannot check manuals and 
+sources).  I never quite understood why, though I never
+looked at the source code in the later systems.  The
+scheme found in most current systems, in which the
+root starts out read-only, is a better idea anyway.
+
+Norman Wilson
+Toronto ON (normally)
+
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Thu May  1 22:54:03 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Thu, 1 May 2003 08:54:03 -0400
+Subject: [pups] Restoring volumes
+In-Reply-To: <000001c30f92$a78292a0$0100a8c0@who5>; from hansolofalcon@worldnet.att.net on Wed, Apr 30, 2003 at 11:35:03PM -0400
+References: <000001c30f92$a78292a0$0100a8c0@who5>
+Message-ID: <20030501085403.A9936@bcr10.uwaterloo.ca>
+
+On Wed, Apr 30, 2003 at 11:35:03PM -0400, Gregg C Levine wrote:
+> Just for the sake of an argument, has anyone actually managed to
+> restore a volume from the collection on the ftp server, back to an
+> originally sized disk pack? Or for that matter restored a system so
+> that it behaves as advertised under E-11?
+> 
+
+  I did it on SIMH--I extracted the 2.11BSD system that had precompiled
+networking in it...don't recall who made it.  I don't know whether this
+overlaps sufficiently with what you want to do for me to be useful.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From msokolov at ivan.Harhan.ORG  Fri May  2 05:14:57 2003
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Thu, 1 May 03 12:14:57 PDT
+Subject: [pups] 2.11BSD device config trouble
+Message-ID: <0305011914.AA15038@ivan.Harhan.ORG>
+
+Norman Wilson <norman at nose.cs.utoronto.ca> wrote:
+
+> This convenience was abolished in either 4.2 or 4.3 (I am
+> travelling right now and cannot check manuals and 
+> sources).
+
+I don't remember the details in my head and I'm also typing this on the go, but
+in 4.3BSD fsck does work on the block device and then you reboot with, well,
+reboot, and it works.
+
+MS
+
+
+From hansolofalcon at worldnet.att.net  Fri May  2 08:31:47 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Thu, 1 May 2003 18:31:47 -0400
+Subject: [pups] Restoring volumes
+In-Reply-To: <000401c30fa3$40e59720$f10010ac@dawabbit>
+Message-ID: <000901c31031$74a7c5e0$0100a8c0@who5>
+
+Hello again from Gregg C Levine
+Yes, Ian. That's exactly what I mean. Of course I was thinking of RL02
+images, rather then a RK05 image. Which one did you choose? And can
+you post something explaining the steps? 
+And your response was the simpler form, which is what I wanted.
+David's comment was a bit obtuse, but I got it. By the way? Are you a
+WB fan? As in Warner Bros. Animation. I'm partial to the wisdom of B.
+Bunny.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+ Sign on the side of a transport belonging to the Rebel Alliance,
+ "Force happens".
+
+> -----Original Message-----
+> From: Ian King [mailto:iking at killthewabbit.org]
+> Sent: Thursday, May 01, 2003 1:34 AM
+> To: Gregg C Levine
+> Subject: Re: [pups] Restoring volumes
+> 
+> That's where I got my RK05 image for UNIX v6, which I run on my
+11/34.  Is
+> that what you're asking, or am I being simple?  -- Ian
+> 
+> ----- Original Message -----
+> From: "Gregg C Levine" <hansolofalcon at worldnet.att.net>
+> To: <pups at minnie.tuhs.org>
+> Sent: Wednesday, April 30, 2003 8:35 PM
+> Subject: [pups] Restoring volumes
+> 
+> 
+> Hello again from Gregg C Levine
+> Just for the sake of an argument, has anyone actually managed to
+> restore a volume from the collection on the ftp server, back to an
+> originally sized disk pack? Or for that matter restored a system so
+> that it behaves as advertised under E-11?
+> 
+> No, folks that machine I "have on order", has not arrived. Once
+again
+> I am searching for information for a future project. One that might
+be
+> happening sometime this week, or even later this month.
+> -------------------
+> Gregg C Levine hansolofalcon at worldnet.att.net
+> ------------------------------------------------------------
+> "The Force will be with you...Always." Obi-Wan Kenobi
+> "Use the Force, Luke." Obi-Wan Kenobi
+> (This company dedicates this E-Mail to General Obi-Wan Kenobi )
+> (This company dedicates this E-Mail to Master Yoda )
+
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Fri May  2 09:08:39 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Thu, 1 May 2003 19:08:39 -0400
+Subject: [pups] Restoring volumes
+In-Reply-To: <000901c31031$74a7c5e0$0100a8c0@who5>; from hansolofalcon@worldnet.att.net on Thu, May 01, 2003 at 06:31:47PM -0400
+References: <000401c30fa3$40e59720$f10010ac@dawabbit> <000901c31031$74a7c5e0$0100a8c0@who5>
+Message-ID: <20030501190839.A4640@bcr10.uwaterloo.ca>
+
+On Thu, May 01, 2003 at 06:31:47PM -0400, Gregg C Levine wrote:
+> And your response was the simpler form, which is what I wanted.
+> David's comment was a bit obtuse, but I got it.
+
+  It was obtuse mostly because I couldn't remember exactly what I did nor was
+I really sure what you wanted to do.  That's a dangerous combination!
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From jkunz at unixag-kl.fh-kl.de  Thu May  8 07:16:38 2003
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Wed, 7 May 2003 23:16:38 +0200
+Subject: [pups] Tektronix 8560 with PDP-11/23 CPU running TNIX (UINX)
+Message-ID: <20030507231637.K206647@MissSophie.unixag-kl.fh-kl.de>
+
+Hi.
+
+I got a "Tektronix 8560 Multi-User Software Development Unit" together
+with a Tektronix 8540 in system 68k CPU emulator. The 8560 is based on
+the DEC M8186 PDP-11/23 CPU module but that card is the one and only DEC
+part in the machine. Everything else is from Tektronix. There is a 35 MB
+8" disk and a 8" floppy in the 8560 and it runs some flavor of UNIX
+called TNIX. I am trying to break into it currently, as I have no
+passwords. I can't get it to single user mode and I have no distribution
+media nor no stand alone tools. 
+
+Has someone heared from this machine bevore?
+Has someone distribution media or stand alone tools?
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+
+
+From hansolofalcon at worldnet.att.net  Thu May  8 07:32:32 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Wed, 7 May 2003 17:32:32 -0400
+Subject: [pups] Tektronix 8560 with PDP-11/23 CPU running TNIX (UINX)
+In-Reply-To: <20030507231637.K206647@MissSophie.unixag-kl.fh-kl.de>
+Message-ID: <000101c314e0$2bff7e60$0100a8c0@who5>
+
+Hello from Gregg C Levine
+Only indirectly. That because of the Tek4010 terminals that worked
+with the PDP-11 families. There are speculations regarding the whole
+hardware collection. Tell you what? Post photos, on notes on it, on
+your website, in both English, and your native language, on your
+website, and a link here, on this list to it. Also include your
+progress. That because I'd love to have the chance to see your
+collection.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]
+On
+> Behalf Of Jochen Kunz
+> Sent: Wednesday, May 07, 2003 5:17 PM
+> To: pups at minnie.tuhs.org
+> Subject: [pups] Tektronix 8560 with PDP-11/23 CPU running TNIX
+(UINX)
+> 
+> Hi.
+> 
+> I got a "Tektronix 8560 Multi-User Software Development Unit"
+together
+> with a Tektronix 8540 in system 68k CPU emulator. The 8560 is based
+on
+> the DEC M8186 PDP-11/23 CPU module but that card is the one and only
+DEC
+> part in the machine. Everything else is from Tektronix. There is a
+35 MB
+> 8" disk and a 8" floppy in the 8560 and it runs some flavor of UNIX
+> called TNIX. I am trying to break into it currently, as I have no
+> passwords. I can't get it to single user mode and I have no
+distribution
+> media nor no stand alone tools.
+> 
+> Has someone heared from this machine bevore?
+> Has someone distribution media or stand alone tools?
+> --
+> 
+> 
+> tschüß,
+>        Jochen
+> 
+> Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+> 
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+Sign on Imperial Storm Trooper during the battle of Endor. "Kick me!".
+
+
+
+
+From talmage at madison.onespeeddave.com  Fri May  9 07:03:00 2003
+From: talmage at madison.onespeeddave.com (David W. Talmage)
+Date: Thu, 08 May 2003 17:03:00 -0400
+Subject: [pups] Tektronix 8560 with PDP-11/23 CPU running TNIX (UINX) 
+In-Reply-To: Message from Jochen Kunz <jkunz@unixag-kl.fh-kl.de> 
+   of "Wed, 07 May 2003 23:16:38 +0200." <20030507231637.K206647@MissSophie.unixag-kl.fh-kl.de> 
+Message-ID: <200305082103.h48L3079024077@madison.onespeeddave.com>
+
+>I got a "Tektronix 8560 Multi-User Software Development Unit" together
+>with a Tektronix 8540 in system 68k CPU emulator. The 8560 is based on
+
+I found this by Googling for "tnix single-user":
+
+http://minnie.tuhs.org/pipermail/pups/1998-March/000027.html
+
+
+
+From jkunz at unixag-kl.fh-kl.de  Fri May  9 16:52:09 2003
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Fri, 9 May 2003 08:52:09 +0200
+Subject: [pups] Tektronix 8560 with PDP-11/23 CPU running TNIX (UINX)
+In-Reply-To: <200305082103.h48L3079024077@madison.onespeeddave.com>; from talmage@madison.onespeeddave.com on Thu, May 08, 2003 at 23:03:00 CEST
+References: <jkunz@unixag-kl.fh-kl.de> <200305082103.h48L3079024077@madison.onespeeddave.com>
+Message-ID: <20030509085209.A206647@MissSophie.unixag-kl.fh-kl.de>
+
+On 2003.05.08 23:03 David W. Talmage wrote:
+
+> I found this by Googling for "tnix single-user":
+> http://minnie.tuhs.org/pipermail/pups/1998-March/000027.html
+Meanwhile I found out myself that I have to run syschk and that the
+system asks for single or multi user mode after syschk. I was able to
+remove the root passwd but didn't get much further. The file system
+needs to be repaired and I have no stand alone utilities. But only the
+stand alone syschk is able to repair the file system.
+
+Interresting that the machine in the mail archive above has a /73 CPU. I
+have a spare /73 CPU module so I may be able to upgrade my machine... 
+--  
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+
+
+From wes.parish at paradise.net.nz  Sun May 18 21:29:00 2003
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Sun, 18 May 2003 23:29:00 +1200
+Subject: [pups] Fwd: Re: Concurrent Pascal, Solo OS, et al
+Message-ID: <200305182328.13320.wes.parish@paradise.net.nz>
+
+I asked Per Brinch Hansen recently about Solo and Concurrent Pascal, for use 
+on the PDP 11 simulators, et al, and I received a reply today.
+
+This is it.  I am wondering, does anyone have any clue as to where these 
+copies of the system might be squirrelled away?  How many might've seen it at 
+their Universities?
+
+Wesley Parish
+
+----------  Forwarded Message  ----------
+
+Subject: Re: Concurrent Pascal, Solo OS, et al
+Date: Sun, 18 May 2003 00:17:33 -0400
+From: Per Brinch Hansen <pbh at pothos.syr.edu>
+To: Wesley Parish <wes.parish at paradise.net.nz>
+Cc: Per Brinch Hansen <pbh at pothos.syr.edu>
+
+Date: 18 May 2003
+To: Wesley Parish <wes.parish at paradise.net.nz>
+From: Per Brinch Hansen <pbh at pothos.syr.edu>
+Subject: Re: Concurrent Pascal, Solo OS, et al
+
+On May 4, you wrote:
+
+  What I was wondering is, would it be worth asking you about
+  the possibility of your releasing the Concurrent Pascal, Solo
+  OS and several other such computer tools and programs, to PUPS
+  (the PDP Unix Preservation Society)?
+
+At Caltech we prepared a distribution tape for the PDP 11/45
+with the source text and portable code of the Solo system,
+including the Concurrent and Sequential Pascal compiler. The
+system reports were supplemented by implementation notes.
+
+By the spring of 1976 we had distributed the system to 75
+companies and 100 universities in 21 countries. Later, other
+people moved the system to the Interdata 8/32, NCR 8250,
+Modular 1, LSI 11, IBM 370/145 and many other computers.
+
+Sad to say, I no longer have a copy of the system (and I
+don't know who does).
+
+Per Brinch Hansen
+
+-------------------------------------------------------
+
+-- 
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+
+
+From cube1 at charter.net  Wed May 21 12:36:52 2003
+From: cube1 at charter.net (Jay Jaeger)
+Date: Tue, 20 May 2003 21:36:52 -0500
+Subject: [pups] Fwd: Re: Concurrent Pascal, Solo OS, et al
+In-Reply-To: <200305182328.13320.wes.parish@paradise.net.nz>
+Message-ID: <4.3.2.7.2.20030520213524.03daedf0@cirithi>
+
+I recall some folks at the University of Wisconsin playing with Concurrent 
+Pascal.  I doubt that a copy survived, though.
+
+Jay Jaeger
+
+At 11:29 PM 5/18/2003 +1200, you wrote:
+>I asked Per Brinch Hansen recently about Solo and Concurrent Pascal, for use
+>on the PDP 11 simulators, et al, and I received a reply today.
+>
+>This is it.  I am wondering, does anyone have any clue as to where these
+>copies of the system might be squirrelled away?  How many might've seen it at
+>their Universities?
+>
+>Wesley Parish
+>
+>----------  Forwarded Message  ----------
+>
+>Subject: Re: Concurrent Pascal, Solo OS, et al
+>Date: Sun, 18 May 2003 00:17:33 -0400
+>From: Per Brinch Hansen <pbh at pothos.syr.edu>
+>To: Wesley Parish <wes.parish at paradise.net.nz>
+>Cc: Per Brinch Hansen <pbh at pothos.syr.edu>
+>
+>Date: 18 May 2003
+>To: Wesley Parish <wes.parish at paradise.net.nz>
+>From: Per Brinch Hansen <pbh at pothos.syr.edu>
+>Subject: Re: Concurrent Pascal, Solo OS, et al
+>
+>On May 4, you wrote:
+>
+>   What I was wondering is, would it be worth asking you about
+>   the possibility of your releasing the Concurrent Pascal, Solo
+>   OS and several other such computer tools and programs, to PUPS
+>   (the PDP Unix Preservation Society)?
+>
+>At Caltech we prepared a distribution tape for the PDP 11/45
+>with the source text and portable code of the Solo system,
+>including the Concurrent and Sequential Pascal compiler. The
+>system reports were supplemented by implementation notes.
+>
+>By the spring of 1976 we had distributed the system to 75
+>companies and 100 universities in 21 countries. Later, other
+>people moved the system to the Interdata 8/32, NCR 8250,
+>Modular 1, LSI 11, IBM 370/145 and many other computers.
+>
+>Sad to say, I no longer have a copy of the system (and I
+>don't know who does).
+>
+>Per Brinch Hansen
+>
+>-------------------------------------------------------
+>
+>--
+>Mau e ki, "He aha te mea nui?"
+>You ask, "What is the most important thing?"
+>Maku e ki, "He tangata, he tangata, he tangata."
+>I reply, "It is people, it is people, it is people."
+>
+>_______________________________________________
+>PUPS mailing list
+>PUPS at minnie.tuhs.org
+>http://minnie.tuhs.org/mailman/listinfo/pups
+
+---	
+Jay R. Jaeger					The Computer Collection
+cube1 at charter.net
+
+
+
+
+From aek at spies.com  Thu May 22 06:45:35 2003
+From: aek at spies.com (Al Kossow)
+Date: Wed, 21 May 2003 13:45:35 -0700
+Subject: [pups] Re: Concurrent Pascal, Solo OS, et al
+Message-ID: <200305212045.h4LKjZ0L005615@spies.com>
+
+I was given a disc image of the system for the PDP11
+I'll try to dig it up for you.
+
+
+
+From wkt at minnie.tuhs.org  Tue May 27 10:54:16 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Tue, 27 May 2003 10:54:16 +1000 (EST)
+Subject: [pups] Temporary loss of minnie.tuhs.org
+Message-ID: <200305270054.h4R0sG1P061799@minnie.tuhs.org>
+
+All,
+	At 7am on Saturday 31st May (local time), the machine which runs
+this mailing list will be temporarily shut down as major power and UPS
+alterations are done in the machine room. I am informed that this should
+only take 12 hours, but you know what computers and such are like.
+Therefore, you should expect that this mailing list will be unavailable
+over the weekend of the 31st May / 1st June.
+
+Normal services will be resumed shortly :-)
+
+Cheers,
+	Warren
+
+
+From hansolofalcon at worldnet.att.net  Tue May 27 11:19:54 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Mon, 26 May 2003 21:19:54 -0400
+Subject: [pups] Temporary loss of minnie.tuhs.org
+In-Reply-To: <200305270054.h4R0sG1P061799@minnie.tuhs.org>
+Message-ID: <000001c323ee$151e4600$0100a8c0@who5>
+
+Hello from Gregg C Levine
+**Sneezes into his hand.** Yes, I do. Now, Warren does that include
+the direct FTP service? Or just the box who hosts this mail list? Or
+everything?
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]
+On
+> Behalf Of Warren Toomey
+> Sent: Monday, May 26, 2003 8:54 PM
+> To: pups at tuhs.org
+> Subject: [pups] Temporary loss of minnie.tuhs.org
+> 
+> All,
+> 	At 7am on Saturday 31st May (local time), the machine which
+runs
+> this mailing list will be temporarily shut down as major power and
+UPS
+> alterations are done in the machine room. I am informed that this
+should
+> only take 12 hours, but you know what computers and such are like.
+> Therefore, you should expect that this mailing list will be
+unavailable
+> over the weekend of the 31st May / 1st June.
+> 
+> Normal services will be resumed shortly :-)
+> 
+> Cheers,
+> 	Warren
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+
+From wkt at minnie.tuhs.org  Tue May 27 11:57:47 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Tue, 27 May 2003 11:57:47 +1000
+Subject: [pups] Temporary loss of minnie.tuhs.org
+In-Reply-To: <000001c323ee$151e4600$0100a8c0@who5>
+References: <200305270054.h4R0sG1P061799@minnie.tuhs.org> <000001c323ee$151e4600$0100a8c0@who5>
+Message-ID: <20030527015747.GA62555@minnie.tuhs.org>
+
+>> From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]
+>> 	At 7am on Saturday 31st May (local time), the machine which runs
+>> this mailing list will be temporarily shut down
+
+On Mon, May 26, 2003 at 09:19:54PM -0400, Gregg C Levine wrote:
+> Hello from Gregg C Levine
+> **Sneezes into his hand.** Yes, I do. Now, Warren does that include
+> the direct FTP service? Or just the box who hosts this mail list? Or
+> everything?
+
+That's everything. All things in tuhs.org will be gone for at least 12 hours.
+
+	Warren
+
+
+From wes.parish at paradise.net.nz  Sun May 18 21:29:00 2003
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Sun, 18 May 2003 23:29:00 +1200
+Subject: [TUHS] Fwd: Re: Concurrent Pascal, Solo OS, et al
+Message-ID: <200305182328.13320.wes.parish@paradise.net.nz>
+
+I asked Per Brinch Hansen recently about Solo and Concurrent Pascal, for use 
+on the PDP 11 simulators, et al, and I received a reply today.
+
+This is it.  I am wondering, does anyone have any clue as to where these 
+copies of the system might be squirrelled away?  How many might've seen it at 
+their Universities?
+
+Wesley Parish
+
+----------  Forwarded Message  ----------
+
+Subject: Re: Concurrent Pascal, Solo OS, et al
+Date: Sun, 18 May 2003 00:17:33 -0400
+From: Per Brinch Hansen <pbh at pothos.syr.edu>
+To: Wesley Parish <wes.parish at paradise.net.nz>
+Cc: Per Brinch Hansen <pbh at pothos.syr.edu>
+
+Date: 18 May 2003
+To: Wesley Parish <wes.parish at paradise.net.nz>
+From: Per Brinch Hansen <pbh at pothos.syr.edu>
+Subject: Re: Concurrent Pascal, Solo OS, et al
+
+On May 4, you wrote:
+
+  What I was wondering is, would it be worth asking you about
+  the possibility of your releasing the Concurrent Pascal, Solo
+  OS and several other such computer tools and programs, to PUPS
+  (the PDP Unix Preservation Society)?
+
+At Caltech we prepared a distribution tape for the PDP 11/45
+with the source text and portable code of the Solo system,
+including the Concurrent and Sequential Pascal compiler. The
+system reports were supplemented by implementation notes.
+
+By the spring of 1976 we had distributed the system to 75
+companies and 100 universities in 21 countries. Later, other
+people moved the system to the Interdata 8/32, NCR 8250,
+Modular 1, LSI 11, IBM 370/145 and many other computers.
+
+Sad to say, I no longer have a copy of the system (and I
+don't know who does).
+
+Per Brinch Hansen
+
+-------------------------------------------------------
+
+-- 
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+
+
+From AdmiralAK at yahoo.com  Wed May 14 05:56:34 2003
+From: AdmiralAK at yahoo.com (Apostolos Koutropoulos)
+Date: Tue, 13 May 2003 15:56:34 -0400
+Subject: [TUHS] Looking for obscure unix information
+Message-ID: <BAE6C632.1082%AdmiralAK@yahoo.com>
+
+Hi to all,
+I stumbled on your mailing list and I thought this would be a good place to
+pose my question.  I was looking around for information about several little
+known (to me) unix derived Oses.
+
+AMIX (Amiga Unix)
+RISCiX 
+ArchBSD
+Lynx
+Inferno 
+Helios
+
+
+What I am looking for is basically what versions existed and when they were
+released, and also from where did they originate. For instance I know that
+RISCiX originated from BSD 4.4 but that is all I know.
+
+I also know that inferno grew out of the research for plan 9, but what
+version of plan 9 it evolved from I don¹t know.
+
+
+Anyone know the above info? If not any idea where I can look for further
+info?
+
+
+Thanks :)
+
+
+
+
+From apgarcia at oppie.phys.uwm.edu  Thu May 22 05:53:17 2003
+From: apgarcia at oppie.phys.uwm.edu (Phil Garcia)
+Date: Wed, 21 May 2003 14:53:17 -0500
+Subject: [TUHS] sco v. ibm
+Message-ID: <E19IZeH-0003J5-00@oppie>
+
+Hi,
+
+What do you make of the SCO (Caldera) lawsuit?
+Does it affect the archive in any way?
+
+
+From hansolofalcon at worldnet.att.net  Thu May 22 09:09:50 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Wed, 21 May 2003 19:09:50 -0400
+Subject: [TUHS] sco v. ibm
+In-Reply-To: <E19IZeH-0003J5-00@oppie>
+Message-ID: <000201c31fee$15b707e0$0100a8c0@who5>
+
+Hello again from Gregg C Levine
+Personally? I think SCO should just drop it. For everyone else? Search
+me. Let's wait a few more weeks.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: tuhs-admin at minnie.tuhs.org [mailto:tuhs-admin at minnie.tuhs.org]
+On
+> Behalf Of Phil Garcia
+> Sent: Wednesday, May 21, 2003 3:53 PM
+> To: tuhs at tuhs.org
+> Subject: [TUHS] sco v. ibm
+> 
+> Hi,
+> 
+> What do you make of the SCO (Caldera) lawsuit?
+> Does it affect the archive in any way?
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+
+From wkt at minnie.tuhs.org  Thu May 22 09:19:45 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Thu, 22 May 2003 09:19:45 +1000
+Subject: [TUHS] sco v. ibm
+In-Reply-To: <E19IZeH-0003J5-00@oppie>
+References: <E19IZeH-0003J5-00@oppie>
+Message-ID: <20030521231945.GA14255@minnie.tuhs.org>
+
+On Wed, May 21, 2003 at 02:53:17PM -0500, Phil Garcia wrote:
+> Hi,
+> What do you make of the SCO (Caldera) lawsuit?
+> Does it affect the archive in any way?
+
+Assuming that the Caldera BSD-style license agreement for Ancient UNIX
+is real (http://www.tuhs.org/Archive/Caldera-license.pdf), then it gives
+us the right to freely distribute these systems.
+
+	Warren
+
+
+From iking at windows.microsoft.com  Thu May 22 13:37:38 2003
+From: iking at windows.microsoft.com (Ian King)
+Date: Wed, 21 May 2003 20:37:38 -0700
+Subject: [TUHS] sco v. ibm
+Message-ID: <F7B97826912BC4419D5DDF53B216945301ABA2B4@WIN-MSG-10.wingroup.windeploy.ntdev.microsoft.com>
+
+Reminds me of the old joke about the gnat buzzing around the elephant's nether end, with rape on its mind....  :-)  
+
+________________________________
+
+From: tuhs-admin at minnie.tuhs.org on behalf of Phil Garcia
+Sent: Wed 5/21/2003 12:53 PM
+To: tuhs at tuhs.org
+Subject: [TUHS] sco v. ibm
+
+
+
+Hi,
+
+What do you make of the SCO (Caldera) lawsuit?
+Does it affect the archive in any way?
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+
+
+From grog at lemis.com  Thu May 22 14:37:38 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Thu, 22 May 2003 14:07:38 +0930
+Subject: [TUHS] sco v. ibm
+In-Reply-To: <20030521231945.GA14255@minnie.tuhs.org>
+References: <E19IZeH-0003J5-00@oppie> <20030521231945.GA14255@minnie.tuhs.org>
+Message-ID: <20030522043738.GJ68593@wantadilla.lemis.com>
+
+On Thursday, 22 May 2003 at  9:19:45 +1000, Warren Toomey wrote:
+> On Wed, May 21, 2003 at 02:53:17PM -0500, Phil Garcia wrote:
+>> Hi,
+>> What do you make of the SCO (Caldera) lawsuit?
+>> Does it affect the archive in any way?
+>
+> Assuming that the Caldera BSD-style license agreement for Ancient UNIX
+> is real (http://www.tuhs.org/Archive/Caldera-license.pdf), then it gives
+> us the right to freely distribute these systems.
+
+I'd feel a *lot* happier if we'd finally get confirmation from SCO
+that they both know about this license and agree that it's genuine.  I
+was contacted by a reporter a week or so ago, and I told her about it.
+She contacted Caldera, who pointed to
+http://shop.caldera.com/caldera/ancient.html as the current valid
+license agreement:
+
+> When I mentionned to SCO that they had released free licenses to
+> ancient Unix, they said that that license was for non-commercial
+> use. When I mentionned the letter (January 2002) from Bill Broderick
+> that seemingly grants unemcumbered use of these ancient Unix
+> versions, SCO said that that is not the license agreement and that
+> they would send me the license agreement. Here it is:
+> http://shop.caldera.com/caldera/ancient.html
+
+It appears that there has been such turnover in Caldera/SCO in the
+last 15 months that they don't know what they have done.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030522/08c371f2/attachment.sig>
+
+From arnold at skeeve.com  Thu May 22 19:24:25 2003
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Thu, 22 May 2003 12:24:25 +0300
+Subject: [TUHS] question about V7 ls(1) vs. sys/stat.h and ls.c
+Message-ID: <200305220924.h4M9OPki011867@localhost.localdomain>
+
+Greetings all.
+
+The V7 ls(1) man page says that the -s option, which prints total
+blocks, includes any indirect blocks.
+
+However, the V7 struct stat didn't have the st_blocks member in the
+struct stat, and the code in ls.c uses
+
+	long
+	nblock(size)
+	long size;
+	{
+		return((size+511)>>9);
+	}
+
+So, is this just a case of the man page being mistaken?
+
+When did the struct stat acquire the st_blocks member?
+
+While I'm at it, the V7 ls -a option only adds . and .. to the
+list; apparently all other dot files were printed by default.
+When did ls change such that -a applied to all dot files?
+
+Thanks,
+
+Arnold Robbins
+
+
+From arnold at skeeve.com  Thu May 22 19:32:58 2003
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Thu, 22 May 2003 12:32:58 +0300
+Subject: [TUHS] Open Source Initiative response to SCO vs. IBM
+Message-ID: <200305220932.h4M9WwOO012040@localhost.localdomain>
+
+A friend passed this URL on to me. I have not read it yet.  Principal
+author is Eric Raymond.
+
+	http://www.opensource.org/sco-vs-ibm.html
+
+Arnold
+
+
+From norman at nose.cs.utoronto.ca  Thu May 22 21:54:03 2003
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Thu, 22 May 2003 07:54:03 -0400
+Subject: [TUHS] sco v. ibm
+Message-ID: <200305221154.h4MBsZJ8019026@minnie.tuhs.org>
+
+I haven't come up to speed yet on SCOIBM Wars (pronounce it as you
+like, but perhaps not in polite company), but even so I know enough
+to ask a question: is anyone in possession of a signed, original,
+genuine, non-electronic copy of the Bill Broderick letter of 23 Jan 2002
+that granted a mostly free license (as long as credit given and Caldera's
+name not used in vain) for 32V, V7, and predecessors?
+
+Certainly there are electronic copies around; it existed (perhaps still
+exists) as a PDF file on Caldera's web site.  I have a hardcopy in my
+own files, next to the old SCO Ancient UNIX Source Code agreement for
+which I paid hard cash (as we used to call the US dollar).  But if there
+is an original somewhere, that might carry more weight.
+
+Is Bill Broderick still in an appropriately high position at Caldera
+or SCO?
+
+Norman Wilson
+Toronto ON
+
+
+From grog at lemis.com  Fri May 23 12:37:22 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Fri, 23 May 2003 12:07:22 +0930
+Subject: [TUHS] sco v. ibm
+In-Reply-To: <200305221154.h4MBsZJ8019026@minnie.tuhs.org>
+References: <200305221154.h4MBsZJ8019026@minnie.tuhs.org>
+Message-ID: <20030523023722.GE80220@wantadilla.lemis.com>
+
+On Thursday, 22 May 2003 at  7:54:03 -0400, Norman Wilson wrote:
+> I haven't come up to speed yet on SCOIBM Wars (pronounce it as you
+> like, but perhaps not in polite company), but even so I know enough
+> to ask a question: is anyone in possession of a signed, original,
+> genuine, non-electronic copy of the Bill Broderick letter of 23 Jan 2002
+> that granted a mostly free license (as long as credit given and Caldera's
+> name not used in vain) for 32V, V7, and predecessors?
+
+This is a question I've been asking for some time.  Sadly, nobody has
+answered "yes".  See also the message I sent yesterday: SCO have also
+maid claims which suggest they don't recognize the statement.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030523/80ae69c8/attachment.sig>
+
+From chris at nodewarrior.org  Fri May 23 13:32:09 2003
+From: chris at nodewarrior.org (Chris Palmer)
+Date: Thu, 22 May 2003 20:32:09 -0700
+Subject: [TUHS] question about V7 ls(1) vs. sys/stat.h and ls.c
+In-Reply-To: <200305220924.h4M9OPki011867@localhost.localdomain>
+References: <200305220924.h4M9OPki011867@localhost.localdomain>
+Message-ID: <20030523033209.GE29449@nodewarrior.org>
+
+Aharon Robbins writes:
+
+> 	long
+> 	nblock(size)
+> 	long size;
+> 	{
+> 		return((size+511)>>9);
+> 	}
+
+Unfortunately I can't answer any of your questions; I can only ask a new
+one: What's with that "511" in there?
+
+
+
+From dmr at plan9.bell-labs.com  Fri May 23 14:10:30 2003
+From: dmr at plan9.bell-labs.com (Dennis Ritchie)
+Date: Fri, 23 May 2003 00:10:30 -0400
+Subject: [TUHS] (no subject)
+Message-ID: <e0190f1c49950f6047d23047f9a45a1f@plan9.bell-labs.com>
+
+ > The V7 ls(1) man page says that the -s option, which prints total
+ >blocks, includes any indirect blocks.
+
+ >However, the V7 struct stat didn't have the st_blocks member in the
+ > struct stat, and the code in ls.c uses
+
+ > 	long
+ >	nblock(size)
+ >	long size;
+ >	{
+ >		return((size+511)>>9);
+ >	}
+
+ >So, is this just a case of the man page being mistaken?
+
+Yes, it looks like a manual bug. Retrieving
+the true number of indirect blocks isn't possible
+from the 7th edition stat.  I'm not sure when (or by
+whom) the st_blocks member was added.
+
+ > While I'm at it, the V7 ls -a option only adds . and .. to the
+ > list; apparently all other dot files were printed by default.
+ > When did ls change such that -a applied to all dot files?
+
+UCB or USL did this (I'm sure which first).
+Both tended to use more . files.
+
+	Dennis
+
+
+From grog at lemis.com  Fri May 23 14:17:27 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Fri, 23 May 2003 13:47:27 +0930
+Subject: [TUHS] question about V7 ls(1) vs. sys/stat.h and ls.c
+In-Reply-To: <20030523033209.GE29449@nodewarrior.org>
+References: <200305220924.h4M9OPki011867@localhost.localdomain> <20030523033209.GE29449@nodewarrior.org>
+Message-ID: <20030523041727.GM80220@wantadilla.lemis.com>
+
+On Thursday, 22 May 2003 at 20:32:09 -0700, Chris Palmer wrote:
+> Aharon Robbins writes:
+>
+>> 	long
+>> 	nblock(size)
+>> 	long size;
+>> 	{
+>> 		return((size+511)>>9);
+>> 	}
+>
+> Unfortunately I can't answer any of your questions; I can only ask a new
+> one: What's with that "511" in there?
+
+Sector size - 1, just like the 9 is log(2) (511).  It converts bytes
+to sectors.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030523/acb7628b/attachment.sig>
+
+From msokolov at ivan.Harhan.ORG  Fri May 23 13:44:26 2003
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Thu, 22 May 03 20:44:26 PDT
+Subject: [TUHS] question about V7 ls(1) vs. sys/stat.h and ls.c
+Message-ID: <0305230344.AA13738@ivan.Harhan.ORG>
+
+Chris Palmer <chris at nodewarrior.org> wrote:
+
+> What's with that "511" in there?
+
+To divide by N rounding up you first add N-1, then divide by N.
+
+MS
+
+
+From imp at bsdimp.com  Fri May 23 14:02:51 2003
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Thu, 22 May 2003 22:02:51 -0600 (MDT)
+Subject: [TUHS] question about V7 ls(1) vs. sys/stat.h and ls.c
+In-Reply-To: <20030523033209.GE29449@nodewarrior.org>
+References: <200305220924.h4M9OPki011867@localhost.localdomain>
+	<20030523033209.GE29449@nodewarrior.org>
+Message-ID: <20030522.220251.00484167.imp@bsdimp.com>
+
+In message: <20030523033209.GE29449 at nodewarrior.org>
+            Chris Palmer <chris at nodewarrior.org> writes:
+: Aharon Robbins writes:
+: 
+: > 	long
+: > 	nblock(size)
+: > 	long size;
+: > 	{
+: > 		return((size+511)>>9);
+: > 	}
+: 
+: Unfortunately I can't answer any of your questions; I can only ask a new
+: one: What's with that "511" in there?
+
+It rounds size up to the next larger block, and >> 9 divides by 512.
+So if you size was 512 it would return '1' but if it was 513 it would
+return '2'.
+
+Warner
+
+
+From norman at nose.cs.utoronto.ca  Fri May 23 23:40:43 2003
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Fri, 23 May 2003 09:40:43 -0400
+Subject: [TUHS] The nameless horror of dotfiles [was (no subject)]
+Message-ID: <200305231341.h4NDfNJ8028100@minnie.tuhs.org>
+
+Dennis Ritchie, on ls discarding all names beginning with .:
+
+  UCB or USL did this (I'm sure which first).
+  Both tended to use more . files.
+
+Judging by the manuals, Research did it first.  In every manual from
+1/e to 6/e, the entry for ls(I) has this description for the -a option:
+
+	list all entries; usually those beginning with "." are suppressed
+
+I always thought this was just a quick-and-dirty way to skip the . and ..
+entries; the sort of shortcut that was common in the good old days when
+everything was written in assembly language.
+
+That the USL system kept the old convention probably reflects its PWB
+heritage; both the latter system and that of Berkeley had already invented
+lots of configuration files clumsily hidden by putting . at the beginning--
+more than ls had options at the time--and I guess they felt it was better
+to let sleeping dots lie.
+
+Incidentally, in 1/e ls(I) had a whopping five options: l, t, a, s, and d,
+each with the same meaning as now (except that -s is described simply as
+`give size in blocks for each entry' with nothing about accounting for
+indirect blocks or other overhead).  Who says we haven't made decadence,
+er, progress over the years?
+
+Norman Wilson
+Toronto ON
+
+PS: I've lost track.  Did the original Subject: line of this thread of
+conversation get lost because it began with a dot?
+
+
+From tms2 at mail.ptd.net  Sat May 24 01:00:51 2003
+From: tms2 at mail.ptd.net (T.M. Sommers)
+Date: Fri, 23 May 2003 11:00:51 -0400
+Subject: [TUHS] sco v. ibm
+References: <200305221154.h4MBsZJ8019026@minnie.tuhs.org> <20030523023722.GE80220@wantadilla.lemis.com>
+Message-ID: <3ECE37A3.6CDF0FA9@mail.ptd.net>
+
+Greg 'groggy' Lehey wrote:
+> 
+> On Thursday, 22 May 2003 at  7:54:03 -0400, Norman Wilson wrote:
+> > I haven't come up to speed yet on SCOIBM Wars (pronounce it as you
+> > like, but perhaps not in polite company), but even so I know enough
+> > to ask a question: is anyone in possession of a signed, original,
+> > genuine, non-electronic copy of the Bill Broderick letter of 23 Jan 2002
+> > that granted a mostly free license (as long as credit given and Caldera's
+> > name not used in vain) for 32V, V7, and predecessors?
+> 
+> This is a question I've been asking for some time.  Sadly, nobody has
+> answered "yes".  See also the message I sent yesterday: SCO have also
+> maid claims which suggest they don't recognize the statement.
+
+If he was their agent, then it doesn't matter what they claim to
+recognize now; they are bound by his statement.
+
+
+
+From kstailey at yahoo.com  Sat May 24 13:42:24 2003
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Fri, 23 May 2003 20:42:24 -0700 (PDT)
+Subject: [TUHS] (no subject)
+In-Reply-To: <e0190f1c49950f6047d23047f9a45a1f@plan9.bell-labs.com>
+Message-ID: <20030524034224.21529.qmail@web10008.mail.yahoo.com>
+
+--- Dennis Ritchie <dmr at plan9.bell-labs.com> wrote:
+>  > The V7 ls(1) man page says that the -s option, which prints total
+>  >blocks, includes any indirect blocks.
+> 
+>  >However, the V7 struct stat didn't have the st_blocks member in the
+>  > struct stat, and the code in ls.c uses
+> 
+>  > 	long
+>  >	nblock(size)
+>  >	long size;
+>  >	{
+>  >		return((size+511)>>9);
+>  >	}
+> 
+>  >So, is this just a case of the man page being mistaken?
+> 
+> Yes, it looks like a manual bug. Retrieving
+> the true number of indirect blocks isn't possible
+> from the 7th edition stat.  I'm not sure when (or by
+> whom) the st_blocks member was added.
+> 
+>  > While I'm at it, the V7 ls -a option only adds . and .. to the
+>  > list; apparently all other dot files were printed by default.
+>  > When did ls change such that -a applied to all dot files?
+> 
+> UCB or USL did this (I'm sure which first).
+> Both tended to use more . files.
+> 
+> 	Dennis
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+1BSD ls.c has:
+
+        for(;;) {
+                p = &dentry;
+                for (j=0; j<16; j++)
+                        *p++ = getc(&inf);
+                if (dentry.dinode==0
+                 || aflg==0 && dentry.dname[0]=='.')
+                        continue;
+                if (dentry.dinode == -1)
+                        break;
+                ep = gstat(makename(dir, dentry.dname), 0);
+                if (ep->lnum != -1)
+                        ep->lnum = dentry.dinode;
+                for (j=0; j<14; j++)
+                        ep->lname[j] = dentry.dname[j];
+        }
+
+so it skips all that start with "." unless aflg is set from invoking ls with
+-a.
+
+I got it from the 1BSD tape that is on the CSRG archive CD-ROM set.  I had to
+port ar11 to FreeBSD/i386 to get the sources out of the cont.a files.  If
+anyone wants my port of ar11 I can send it to them.
+
+ls.c starts with this block of comments:
+
+#
+/*
+ * ls - list file or directory
+ *
+ * Modified by Bill Joy UCB May/August 1977
+ *
+ * This version of ls is designed for graphic terminals and to
+ * list directories with lots of files in them compactly.
+ * It supports three variants for listings:
+ *
+ *      1) Columnar output.
+ *      2) Stream output.
+ *      3) Old one per line format.
+ *
+ * Columnar output is the default.
+ * If, however, the standard output is not a teletype, the default
+ * is one-per-line.
+ *
+ * With columnar output, the items are sorted down the columns.
+ * We use columns only for a directory we are interpreting.
+ * Thus, in particular, we do not use columns for
+ *
+ *      ls /usr/bin/p*
+ *
+ * This version of ls also prints non-printing characters as '?' if
+ * the standard output is a teletype.
+ *
+ * Flags relating to these and other new features are:
+ *
+ *      -m      force stream output.
+ *
+ *      -1      force one entry per line, e.g. to a teletype
+ *
+ *      -q      force non-printings to be '?'s, e.g. to a file
+ *
+ *      -c      force columnar output, e.g. into a file
+ *
+ *      -n      like -l, but user/group id's in decimal rather than
+ *              looking in /etc/passwd to save time
+ */
+
+It's interesting they called CRTs "graphic terminals".
+
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo.
+http://search.yahoo.com
+
+
+From dmr at plan9.bell-labs.com  Sat May 24 14:17:52 2003
+From: dmr at plan9.bell-labs.com (Dennis Ritchie)
+Date: Sat, 24 May 2003 00:17:52 -0400
+Subject: [TUHS] The nameless horror of dotfiles [was (no subject)]
+Message-ID: <c799721951ed6dacbac364b8dcd0ef78@plan9.bell-labs.com>
+
+The omniscient Norman seems to have nailed me:
+
+ > Judging by the manuals, Research did it first.  In every manual from
+ > 1/e to 6/e, the entry for ls(I) has this description for the -a option:
+
+ > 	list all entries; usually those beginning with "." are suppressed
+
+I suspect that in v7 (where .thing was indeed listed by default)
+we decided that since .thing was a real file in the
+directory it was better to list it instead of hiding it
+by default.  (Seeing . and .. seemed  seldom interesting,
+however).
+
+I was solely (and much more recently) responsible for the lack
+of subject header in my earlier reply.
+
+	Dennis
+
+
+From norman at nose.cs.utoronto.ca  Sun May 25 04:47:57 2003
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Sat, 24 May 2003 14:47:57 -0400
+Subject: [TUHS] sco v. ibm
+Message-ID: <200305241848.h4OImTJ8039912@minnie.tuhs.org>
+
+T. M. Sommers:
+
+  If [Broderick] was [SCO's or Caldera's] agent, then it doesn't matter what
+  they claim to recognize now; they are bound by his statement.
+
+Assuming it can be proven that the statement was officially made,
+which is why I ask after properly signed hardcopy rather than the
+PDF file we have all seen.
+
+Probably there are documents hidden away in SCO's files--there must
+have been some paper trail leading to Broderick's letter--but that
+is likely to be harder to track down from outside.
+
+I don't doubt Broderick really wrote that letter, nor that he was
+authorized to make the statement.  But the problem before us isn't
+truth, it's proof.
+
+Norman Wilson
+Toronto ON
+
+
+From arnold at skeeve.com  Sun May 25 23:08:02 2003
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Sun, 25 May 2003 16:08:02 +0300
+Subject: [TUHS] V7 ls -s option
+Message-ID: <200305251308.h4PD82YW011475@localhost.localdomain>
+
+> From: Dennis Ritchie <dmr at plan9.bell-labs.com>
+> To: tuhs at minnie.tuhs.org
+> Subject: [TUHS] (no subject)
+> Date: Fri, 23 May 2003 00:10:30 -0400
+>
+>  > The V7 ls(1) man page says that the -s option, which prints total
+>  >blocks, includes any indirect blocks.
+>
+>  >However, the V7 struct stat didn't have the st_blocks member in the
+>  > struct stat, and the code in ls.c uses
+>
+>  > 	long
+>  >	nblock(size)
+>  >	long size;
+>  >	{
+>  >		return((size+511)>>9);
+>  >	}
+>
+>  >So, is this just a case of the man page being mistaken?
+>
+> Yes, it looks like a manual bug. Retrieving
+> the true number of indirect blocks isn't possible
+> from the 7th edition stat.  I'm not sure when (or by
+> whom) the st_blocks member was added.
+
+Thanks for confirming this.  In fact, the V7 calculation is only
+an approximation in another sense; a file with large holes could
+generate too large a result.
+
+System III doesn't have st_nblocks either.
+
+>  > While I'm at it, the V7 ls -a option only adds . and .. to the
+>  > list; apparently all other dot files were printed by default.
+>  > When did ls change such that -a applied to all dot files?
+>
+> UCB or USL did this (I'm sure which first).
+> Both tended to use more . files.
+>
+> 	Dennis
+
+As already pointed out, earlier Research code only checked the
+first character for being '.'; I later looked at the V6 ls.c.
+
+The System III ls.c is essentially the V7 one, but with comments
+added, and -l printing both owner and group, with -g and -o to
+turn off group or owner from -l.  Also, support for FIFOs.
+
+The nblock() calculation is considerably more complicated, and
+would seem to actually get the number of indirect blocks. At
+first glance, it looks though like a file with holes would
+still confuse it.
+
+Nothing like engaging in Software Archeology... :-)
+
+Thanks,
+
+Arnold
+
+
+From grog at lemis.com  Mon May 26 12:56:50 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Mon, 26 May 2003 12:26:50 +0930
+Subject: [TUHS] sco v. ibm
+In-Reply-To: <3ECE37A3.6CDF0FA9@mail.ptd.net>
+References: <200305221154.h4MBsZJ8019026@minnie.tuhs.org> <20030523023722.GE80220@wantadilla.lemis.com> <3ECE37A3.6CDF0FA9@mail.ptd.net>
+Message-ID: <20030526025650.GK15770@wantadilla.lemis.com>
+
+On Friday, 23 May 2003 at 11:00:51 -0400, T.M. Sommers wrote:
+> Greg 'groggy' Lehey wrote:
+>>
+>> On Thursday, 22 May 2003 at  7:54:03 -0400, Norman Wilson wrote:
+>>> I haven't come up to speed yet on SCOIBM Wars (pronounce it as you
+>>> like, but perhaps not in polite company), but even so I know enough
+>>> to ask a question: is anyone in possession of a signed, original,
+>>> genuine, non-electronic copy of the Bill Broderick letter of 23 Jan 2002
+>>> that granted a mostly free license (as long as credit given and Caldera's
+>>> name not used in vain) for 32V, V7, and predecessors?
+>>
+>> This is a question I've been asking for some time.  Sadly, nobody has
+>> answered "yes".  See also the message I sent yesterday: SCO have also
+>> maid claims which suggest they don't recognize the statement.
+>
+> If he was their agent, then it doesn't matter what they claim to
+> recognize now; they are bound by his statement.
+
+Yes, of course.  The issue here is whether we can prove that the
+statement was made.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030526/df678dca/attachment.sig>
+
+From grog at lemis.com  Mon May 26 14:16:34 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Mon, 26 May 2003 13:46:34 +0930
+Subject: [TUHS] V7 ls -s option
+In-Reply-To: <200305251308.h4PD82YW011475@localhost.localdomain>
+References: <200305251308.h4PD82YW011475@localhost.localdomain>
+Message-ID: <20030526041634.GR15770@wantadilla.lemis.com>
+
+On Sunday, 25 May 2003 at 16:08:02 +0300, Aharon Robbins wrote:
+>> From: Dennis Ritchie <dmr at plan9.bell-labs.com>
+>> To: tuhs at minnie.tuhs.org
+>> Subject: [TUHS] (no subject)
+>> Date: Fri, 23 May 2003 00:10:30 -0400
+>>
+>>> The V7 ls(1) man page says that the -s option, which prints total
+>>> blocks, includes any indirect blocks.
+>>
+>>> However, the V7 struct stat didn't have the st_blocks member in the
+>>> struct stat, and the code in ls.c uses
+>>
+>>> 	long
+>>>	nblock(size)
+>>>	long size;
+>>>	{
+>>>		return((size+511)>>9);
+>>>	}
+>>
+>>> So, is this just a case of the man page being mistaken?
+>>
+>> Yes, it looks like a manual bug. Retrieving
+>> the true number of indirect blocks isn't possible
+>> from the 7th edition stat.  I'm not sure when (or by
+>> whom) the st_blocks member was added.
+>
+> Thanks for confirming this.  In fact, the V7 calculation is only
+> an approximation in another sense; a file with large holes could
+> generate too large a result.
+
+A block is a block.  If it's allocated, it's all there (at least in
+the Seventh Edition).  It doesn't make any difference that some of the
+space in the block may not represent valid data.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030526/8b5dcf53/attachment.sig>
+
+From vance at aurema.com  Mon May 26 15:40:38 2003
+From: vance at aurema.com (Christopher Vance)
+Date: Mon, 26 May 2003 15:40:38 +1000
+Subject: [TUHS] sco v. ibm
+In-Reply-To: <20030526025650.GK15770@wantadilla.lemis.com>
+References: <200305221154.h4MBsZJ8019026@minnie.tuhs.org> <20030523023722.GE80220@wantadilla.lemis.com> <3ECE37A3.6CDF0FA9@mail.ptd.net> <20030526025650.GK15770@wantadilla.lemis.com>
+Message-ID: <20030526054038.GE559@aurema.com>
+
+On Mon, May 26, 2003 at 12:26:50PM +0930, Greg 'groggy' Lehey wrote:
+: Yes, of course.  The issue here is whether we can prove that the
+: statement was made.
+
+I guess the issue is what Dion L Johnson II, Paul Hatch, John
+Terpstra, Bill Broderick, "drew at caldera.com", and/or Ransom Love will
+say in a relevant court about the existence and veracity of the
+announcing email.
+
+It's interesting that the Levenez chart, used by SCO to argue that
+Linux "stole stuff", comes from a page linking to a copy of the BSDish
+Caldera license.
+
+-- 
+Christopher Vance
+
+
+From wkt at minnie.tuhs.org  Tue May 27 10:54:18 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Tue, 27 May 2003 10:54:18 +1000 (EST)
+Subject: [TUHS] Temporary loss of minnie.tuhs.org
+Message-ID: <200305270054.h4R0sIQG061814@minnie.tuhs.org>
+
+All,
+	At 7am on Saturday 31st May (local time), the machine which runs
+this mailing list will be temporarily shut down as major power and UPS
+alterations are done in the machine room. I am informed that this should
+only take 12 hours, but you know what computers and such are like.
+Therefore, you should expect that this mailing list will be unavailable
+over the weekend of the 31st May / 1st June.
+
+Normal services will be resumed shortly :-)
+
+Cheers,
+	Warren
+
+
+From kstailey at yahoo.com  Tue May 27 12:45:58 2003
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Mon, 26 May 2003 19:45:58 -0700 (PDT)
+Subject: [TUHS] sco v. ibm
+In-Reply-To: <20030526025650.GK15770@wantadilla.lemis.com>
+Message-ID: <20030527024558.89482.qmail@web10001.mail.yahoo.com>
+
+--- Greg 'groggy' Lehey <grog at lemis.com> wrote:
+> On Friday, 23 May 2003 at 11:00:51 -0400, T.M. Sommers wrote:
+> > Greg 'groggy' Lehey wrote:
+> >>
+> >> On Thursday, 22 May 2003 at  7:54:03 -0400, Norman Wilson wrote:
+> >>> I haven't come up to speed yet on SCOIBM Wars (pronounce it as you
+> >>> like, but perhaps not in polite company), but even so I know enough
+> >>> to ask a question: is anyone in possession of a signed, original,
+> >>> genuine, non-electronic copy of the Bill Broderick letter of 23 Jan 2002
+> >>> that granted a mostly free license (as long as credit given and Caldera's
+> >>> name not used in vain) for 32V, V7, and predecessors?
+> >>
+> >> This is a question I've been asking for some time.  Sadly, nobody has
+> >> answered "yes".  See also the message I sent yesterday: SCO have also
+> >> maid claims which suggest they don't recognize the statement.
+> >
+> > If he was their agent, then it doesn't matter what they claim to
+> > recognize now; they are bound by his statement.
+> 
+> Yes, of course.  The issue here is whether we can prove that the
+> statement was made.
+> 
+> Greg
+
+The fact that they are not threatened by TUHS the way they are by Linux will
+probably make them ignore TUHS but you never know.
+
+
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo.
+http://search.yahoo.com
+
+
+From arnold at skeeve.com  Tue May 27 22:26:24 2003
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Tue, 27 May 2003 15:26:24 +0300
+Subject: [TUHS] V7 ls -s option
+Message-ID: <200305271226.h4RCQOQD005872@localhost.localdomain>
+
+The V7 ls.c code:
+
+> >>> 	long
+> >>>	nblock(size)
+> >>>	long size;
+> >>>	{
+> >>>		return((size+511)>>9);
+> >>>	}
+> >>
+
+I wrote:
+
+> > In fact, the V7 calculation is only
+> > an approximation in another sense; a file with large holes could
+> > generate too large a result.
+
+Greg wrote:
+
+> A block is a block.  If it's allocated, it's all there (at least in
+> the Seventh Edition).  It doesn't make any difference that some of the
+> space in the block may not represent valid data.
+
+You're missing my point.  Consider a C program along these lines:
+
+	int main(void)
+	{
+		int fd = creat("/some/file", 0600);
+
+		lseek(fd, 123456789L, 0);	/* absolute seek */
+		write(fd, "x", 1);
+		close(fd);
+	}
+
+After running this program, the `/some/file' file now looks rather
+large. But it only has one block allocated to it.  However, the V7
+nblock() function computes a number somewhat larger than one.
+
+Thanks,
+
+Arnold
+
+
+From grog at lemis.com  Wed May 28 10:07:02 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Wed, 28 May 2003 09:37:02 +0930
+Subject: [TUHS] V7 ls -s option
+In-Reply-To: <200305271226.h4RCQOQD005872@localhost.localdomain>
+References: <200305271226.h4RCQOQD005872@localhost.localdomain>
+Message-ID: <20030528000702.GF84922@wantadilla.lemis.com>
+
+On Tuesday, 27 May 2003 at 15:26:24 +0300, Aharon Robbins wrote:
+> The V7 ls.c code:
+>
+>>>>> 	long
+>>>>>	nblock(size)
+>>>>>	long size;
+>>>>>	{
+>>>>>		return((size+511)>>9);
+>>>>>	}
+>>>>
+>
+> I wrote:
+>
+>>> In fact, the V7 calculation is only
+>>> an approximation in another sense; a file with large holes could
+>>> generate too large a result.
+>
+> Greg wrote:
+>
+>> A block is a block.  If it's allocated, it's all there (at least in
+>> the Seventh Edition).  It doesn't make any difference that some of the
+>> space in the block may not represent valid data.
+>
+> You're missing my point.  Consider a C program along these lines:
+>
+> 	int main(void)
+> 	{
+> 		int fd = creat("/some/file", 0600);
+>
+> 		lseek(fd, 123456789L, 0);	/* absolute seek */
+> 		write(fd, "x", 1);
+> 		close(fd);
+> 	}
+>
+> After running this program, the `/some/file' file now looks rather
+> large. But it only has one block allocated to it.  However, the V7
+> nblock() function computes a number somewhat larger than one.
+
+Yes, I missed your point.  Sorry.  This is what comes of shooting off
+my mouth before reading the code.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030528/233ac556/attachment.sig>
+
+From mckusick at beastie.mckusick.com  Mon May 26 02:22:39 2003
+From: mckusick at beastie.mckusick.com (Kirk McKusick)
+Date: Sun, 25 May 2003 09:22:39 -0700
+Subject: [TUHS] question about V7 ls(1) vs. sys/stat.h and ls.c
+Message-ID: <200305251622.h4PGMdp0003047@beastie.mckusick.com>
+
+The st_blocks field was first added to the stat structure in 4.2BSD
+(4.1b really) as part of the overhaul to add the new filesystem. I
+added it because the variable filesystem blocksize made it difficult
+to compute the amount of storage dedicated to a file.
+
+	Kirk McKusick
+
+
+From arnold at skeeve.com  Wed May 28 21:14:11 2003
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Wed, 28 May 2003 14:14:11 +0300
+Subject: [TUHS] SCO vs. IBM: Eric Raymond striking a blow for ... something
+Message-ID: <200305281114.h4SBEBta027832@localhost.localdomain>
+
+I just saw this:
+
+	http://www.catb.org/~esr/nosecrets/
+
+This either Very Smart or Very Dumb, I'm not sure which.  I don't know
+that it need be discussed to death on this list, either, but I do figure
+that the list members will at least be interested in it.
+
+Arnold
+
+
+From norman at nose.cs.utoronto.ca  Wed May 28 21:51:38 2003
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Wed, 28 May 2003 07:51:38 -0400
+Subject: [TUHS] SCO vs. IBM: Eric Raymond striking a blow for ... something
+Message-ID: <200305281152.h4SBqDJ8075263@minnie.tuhs.org>
+
+Aharon Robbins:
+
+  I just saw this:
+
+	http://www.catb.org/~esr/nosecrets/
+
+  This either Very Smart or Very Dumb, I'm not sure which.
+
+I will just point out the recursive conflict when he says
+
+  I can't talk about how this information will be applied, nor by
+  who.  You'll have to trust me, or at any rate my record as
+  ambassador to the community ...
+
+I find it hard to take a secret No Secrets campaign seriously.
+If I am to be used as an example of something or to promote some
+cause, I think it's only fair that the campaigner tell me just
+what he's up to first.
+
+That such a campaign exists in the current context also sounds to
+me like an admission that substantial parts of Linux were in fact
+lifted directly from a licensed UNIX.  That that might be so seems
+surprising; that someone would want to prove it was OK even more so.
+
+Norman Wilson
+Toronto ON
+
+
+From kstailey at yahoo.com  Wed May 28 22:07:22 2003
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Wed, 28 May 2003 05:07:22 -0700 (PDT)
+Subject: [TUHS] SCO vs. IBM: Eric Raymond striking a blow for ... something
+In-Reply-To: <200305281114.h4SBEBta027832@localhost.localdomain>
+Message-ID: <20030528120722.72762.qmail@web10003.mail.yahoo.com>
+
+
+--- Aharon Robbins <arnold at skeeve.com> wrote:
+> I just saw this:
+> 
+> 	http://www.catb.org/~esr/nosecrets/
+> 
+> This either Very Smart or Very Dumb, I'm not sure which.  I don't know
+> that it need be discussed to death on this list, either, but I do figure
+> that the list members will at least be interested in it.
+> 
+> Arnold
+
+I think the intent is to to demonstrate that they did not value their trade
+secrets and did not make an effort to (even just a show of an effort) to defend
+them.  By showing that tens of thousands of people had access to the UNIX
+source that was supposed to be a secret and SCO not going after any of them
+(unlike, say, Microsoft's defending Windows source) will weaken their arguments
+that these were valuable trade secrets.
+
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Calendar - Free online calendar with sync to Outlook(TM).
+http://calendar.yahoo.com
+
+
+From kstailey at yahoo.com  Wed May 28 22:11:16 2003
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Wed, 28 May 2003 05:11:16 -0700 (PDT)
+Subject: [TUHS] SCO vs. IBM: Eric Raymond striking a blow for ... something
+In-Reply-To: <200305281152.h4SBqDJ8075263@minnie.tuhs.org>
+Message-ID: <20030528121116.15955.qmail@web10009.mail.yahoo.com>
+
+--- Norman Wilson <norman at nose.cs.utoronto.ca> wrote:
+> Aharon Robbins:
+> 
+>   I just saw this:
+> 
+> 	http://www.catb.org/~esr/nosecrets/
+> 
+>   This either Very Smart or Very Dumb, I'm not sure which.
+> 
+> I will just point out the recursive conflict when he says
+> 
+>   I can't talk about how this information will be applied, nor by
+>   who.  You'll have to trust me, or at any rate my record as
+>   ambassador to the community ...
+> 
+> I find it hard to take a secret No Secrets campaign seriously.
+> If I am to be used as an example of something or to promote some
+> cause, I think it's only fair that the campaigner tell me just
+> what he's up to first.
+
+If ESR told the world what he was going to do with the evidence then the
+opposition would be able to prepare for it.
+
+> That such a campaign exists in the current context also sounds to
+> me like an admission that substantial parts of Linux were in fact
+> lifted directly from a licensed UNIX.
+
+Hmmm.  Either that or he's trying to keep all the bases covered.  What happened
+in reality and what they prove in the courts need not be the same as we have
+seen as time and again Microsoft goes to trial and gets off.
+
+It helps to have a fallback arguement ready.
+
+> That that might be so seems
+> surprising; that someone would want to prove it was OK even more so.
+> 
+> Norman Wilson
+> Toronto ON
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Calendar - Free online calendar with sync to Outlook(TM).
+http://calendar.yahoo.com
+
+
+From arnold at skeeve.com  Wed May 28 23:27:30 2003
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Wed, 28 May 2003 16:27:30 +0300
+Subject: [TUHS] SCO vs. IBM: Eric Raymond striking a blow for ... something
+Message-ID: <200305281327.h4SDRUJi015729@localhost.localdomain>
+
+> I find it hard to take a secret No Secrets campaign seriously.
+
+That says it well.
+
+> That such a campaign exists in the current context also sounds to
+> me like an admission that substantial parts of Linux were in fact
+> lifted directly from a licensed UNIX.  That that might be so seems
+> surprising; that someone would want to prove it was OK even more so.
+
+I think it's more of a "How dare anyone even think licensed code was
+lifted?  We all know better than that. I'm gonna show you that you don't
+even have a leg to stand on."
+
+Whatever.  Anyone with any sense knows that SCO hasn't got much ground
+to stand on.  Sadly, "anyone with any sense" likely doesn't cover
+the judge and the jury.
+
+Sigh.  (Fade to black, as Dionne Warwick sings "Deja Vu" in the
+background...)
+
+Arnold
+
+
+From kstailey at yahoo.com  Thu May 29 04:49:13 2003
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Wed, 28 May 2003 11:49:13 -0700 (PDT)
+Subject: [TUHS] SCO vs. IBM: NOVELL steps up to the plate
+In-Reply-To: <20030528121116.15955.qmail@web10009.mail.yahoo.com>
+Message-ID: <20030528184913.25621.qmail@web10003.mail.yahoo.com>
+
+Press Release
+
+	Novell Challenges SCO Position, Reiterates Support for Linux
+
+PROVO, Utah � May 28, 2003 � Defending its interests in developing services to
+operate on the Linux platform, Novell today issued a dual challenge to The SCO
+Group over its recent statements regarding its UNIX ownership and potential
+intellectual property rights claims over Linux.
+
+First, Novell challenged SCO's assertion that it owns the copyrights and
+patents to UNIX System V, pointing out that the asset purchase agreement
+entered into between Novell and SCO in 1995 did not transfer these rights to
+SCO. Second, Novell sought from SCO facts to back up its assertion that certain
+UNIX System V code has been copied into Linux. Novell communicated these
+concerns to SCO via a letter (text below) from Novell� Chairman and CEO Jack
+Messman in response to SCO making these claims.
+
+more:
+
+http://www.novell.com/news/press/archive/2003/05/pr03033.html
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Calendar - Free online calendar with sync to Outlook(TM).
+http://calendar.yahoo.com
+
+
+From norman at nose.cs.utoronto.ca  Thu May 29 05:25:05 2003
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Wed, 28 May 2003 15:25:05 -0400
+Subject: [TUHS] SCO vs. IBM: NOVELL steps up to the plate
+Message-ID: <200305281925.h4SJPYJ8078685@minnie.tuhs.org>
+
+Interesting.  I suggest everyone interested in this fracas read the
+whole scoop at (to repeat Kenneth Stailey's pointer)
+
+  http://www.novell.com/news/press/archive/2003/05/pr03033.html
+
+Here's a question of interest not to the Linux community but to
+the TUHS one: if, as Novell now claim, the 1995 agreement didn't
+convey the UNIX copyrights to SCO, under what right did SCO issue
+the Ancient UNIX Source Code agreements, whether the restrictive
+version of early 1998 or the do-as-you-like Caldera letter of early
+2002?  Are those agreements really valid?
+
+Norman Wilson
+Toronto ON
+
+
+From ckeck at texoma.net  Thu May 29 09:24:56 2003
+From: ckeck at texoma.net (Cornelius Keck)
+Date: Wed, 28 May 2003 18:24:56 -0500 (CDT)
+Subject: [TUHS] SCO vs. IBM: NOVELL steps up to the plate
+In-Reply-To: <200305281925.h4SJPYJ8078685@minnie.tuhs.org>
+Message-ID: <Pine.BSF.4.05.10305281816160.9998-100000@ppp-151-110-2.texoma.net>
+
+> Here's a question of interest not to the Linux community but to
+> the TUHS one: if, as Novell now claim, the 1995 agreement didn't
+> convey the UNIX copyrights to SCO, under what right did SCO issue
+> the Ancient UNIX Source Code agreements, whether the restrictive
+> version of early 1998 or the do-as-you-like Caldera letter of early
+> 2002?  Are those agreements really valid?
+
+Good point. If memory serves me correctly, the 1998 agreement was
+not free for the asking, but rather required shelling out US$100,
+which means that SCO "sold" something they never owned, which
+constitutes fraud (anybody with some legal background reading
+this: please correct). What's the statue of limitations (sp?)
+for this?
+
+Regards,
+
+Cornelius
+
+-- 
+                             Cornelius Keck
+                            ckeck at texoma.net
+
+
+
+From wkt at minnie.tuhs.org  Thu May 29 10:02:19 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Thu, 29 May 2003 10:02:19 +1000
+Subject: [TUHS] SCO vs. IBM: NOVELL steps up to the plate
+In-Reply-To: <Pine.BSF.4.05.10305281816160.9998-100000@ppp-151-110-2.texoma.net>
+References: <200305281925.h4SJPYJ8078685@minnie.tuhs.org> <Pine.BSF.4.05.10305281816160.9998-100000@ppp-151-110-2.texoma.net>
+Message-ID: <20030529000219.GA82058@minnie.tuhs.org>
+
+On Wed, May 28, 2003 at 06:24:56PM -0500, Cornelius Keck wrote:
+> > Here's a question of interest not to the Linux community but to
+> > the TUHS one: if, as Novell now claim, the 1995 agreement didn't
+> > convey the UNIX copyrights to SCO, under what right did SCO issue
+> > the Ancient UNIX Source Code agreements, whether the restrictive
+> > version of early 1998 or the do-as-you-like Caldera letter of early
+> > 2002?  Are those agreements really valid?
+> 
+> Good point. If memory serves me correctly, the 1998 agreement was
+> not free for the asking, but rather required shelling out US$100,
+> which means that SCO "sold" something they never owned, which
+> constitutes fraud (anybody with some legal background reading
+> this: please correct). What's the statue of limitations (sp?)
+> for this?
+
+Actually, Novell have only asserted that SCO/Caldera did not obtain
+the rights to System V. Now, neither the $100 nor the BSD-style
+SCO/Caldera Ancient UNIX licenses covered System V, so this might
+not be fraud.
+
+It depends on whether or not SCO/Caldera have the rights to Research
+Editions 1 to 7 and System III :-)
+
+This is all getting to be like a very bad TV soap: UNIX Sons and Daughters.
+We've got grandad Research who was a pioneer in the area, son USL, and
+now a lot of bastard grandchildren. And of course there's the newcomer
+in town called Linux.
+
+	Warren
+
+
+From mike at ducky.net  Thu May 29 17:49:56 2003
+From: mike at ducky.net (Mike Haertel)
+Date: Thu, 29 May 2003 00:49:56 -0700 (PDT)
+Subject: [TUHS] SCO vs. IBM: NOVELL steps up to the plate
+In-Reply-To: <200305281925.h4SJPYJ8078685@minnie.tuhs.org>
+Message-ID: <200305290749.h4T7nu22092199@ducky.net>
+
+>Here's a question of interest not to the Linux community but to
+>the TUHS one: if, as Novell now claim, the 1995 agreement didn't
+>convey the UNIX copyrights to SCO, under what right did SCO issue
+>the Ancient UNIX Source Code agreements, whether the restrictive
+>version of early 1998 or the do-as-you-like Caldera letter of early
+>2002?  Are those agreements really valid?
+
+You can have the right to sublicense something without owning
+the copyright.  You can even have the right to sublicense the
+right to sublicense without owning the copyright, and so on.
+It all depends on your contract with the real copyright holder.
+
+This is probably how the contract for Novell's "sale" of Unix
+to (old) SCO was written.
+
+But only the real copyright holder can bring a legal action
+against copyright violators.  And judging from recent press
+releases it would seem that Novell feels it is under no
+contractual obligation to do so on (new) SCO's behalf.
+
+
+From rob at vetsystems.com  Thu May 29 22:16:33 2003
+From: rob at vetsystems.com (Robert Tillyard)
+Date: Thu, 29 May 2003 13:16:33 +0100
+Subject: [TUHS] SCO vs. IBM: NOVELL steps up to the plate
+In-Reply-To: <200305290749.h4T7nu22092199@ducky.net>
+Message-ID: <BAFBB8B1.118%rob@vetsystems.com>
+
+I believe the legal action is over breach on contract with IBM and not on
+copyright issues.
+
+But if it turns out the IBM is guilty of lifting SCO code and putting it
+into Linux I think SCO does have the right to get a bit upset about it,
+after all I wouldn't be to happy if I had to compete with a product that's
+just about free and contains code that I wrote.
+
+Regards, Rob.
+
+On 29/5/03 8:49 am, "Mike Haertel" <mike at ducky.net> wrote:
+
+>> Here's a question of interest not to the Linux community but to
+>> the TUHS one: if, as Novell now claim, the 1995 agreement didn't
+>> convey the UNIX copyrights to SCO, under what right did SCO issue
+>> the Ancient UNIX Source Code agreements, whether the restrictive
+>> version of early 1998 or the do-as-you-like Caldera letter of early
+>> 2002?  Are those agreements really valid?
+> 
+> You can have the right to sublicense something without owning
+> the copyright.  You can even have the right to sublicense the
+> right to sublicense without owning the copyright, and so on.
+> It all depends on your contract with the real copyright holder.
+> 
+> This is probably how the contract for Novell's "sale" of Unix
+> to (old) SCO was written.
+> 
+> But only the real copyright holder can bring a legal action
+> against copyright violators.  And judging from recent press
+> releases it would seem that Novell feels it is under no
+> contractual obligation to do so on (new) SCO's behalf.
+
+
+
+From kstailey at yahoo.com  Thu May 29 23:18:49 2003
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Thu, 29 May 2003 06:18:49 -0700 (PDT)
+Subject: [TUHS] SCO vs. IBM: NOVELL steps up to the plate
+In-Reply-To: <BAFBB8B1.118%rob@vetsystems.com>
+Message-ID: <20030529131849.23434.qmail@web10005.mail.yahoo.com>
+
+--- Robert Tillyard <rob at vetsystems.com> wrote:
+> I believe the legal action is over breach on contract with IBM and not on
+> copyright issues.
+
+SCO has packed so much FUD around this issue.  If Novell did anything to help
+it made SCO clarify their posistion.
+
+http://ir.sco.com/ReleaseDetail.cfm?ReleaseID=110126
+
+Another good thing that came out of this mess is the neat-o table embedded in
+this page:
+
+http://www.opensource.org/sco-vs-ibm.html
+
+That shows AIX (and XENIX/SCO) in relationship to other systems.
+
+Search for "Relationships among the Unix variants at issue"
+
+It does leave out AIX 2 on ROMP.
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Calendar - Free online calendar with sync to Outlook(TM).
+http://calendar.yahoo.com
+
+
+From kstailey at yahoo.com  Fri May 30 02:08:29 2003
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Thu, 29 May 2003 09:08:29 -0700 (PDT)
+Subject: [TUHS] where to find source to pack(1)/unpack(1)
+Message-ID: <20030529160829.55129.qmail@web10003.mail.yahoo.com>
+
+Hi,
+
+I have a cont.a.z I would like to extract.  When I run it through Solaris
+unpack(1) there are no complaints but then I go to unarchive it with either my
+3BSD derived ar11 port or Warren's 2.9BSD newoldar and get:
+
+$ file cont.a
+cont.a: old PDP-11 archive
+$ ar11 tv cont.a
+rwx---r--  2/0   3505 Aug 20 17:07 1976 alog.mat
+rw----r--  2/0    273 Jan  3 05:14 1978 assem
+rwx---r--  2/0   6332 Aug 20 17:07 1976 atan.mat
+r-s--x-w-  9/49170995977 Oct 22 01:48 1974      1
+        1
+        1
+        1
+        1
+ar11: phase error on    1
+        1
+        1
+        1
+        1
+
+Same thing with newoldar.  I'm thinking Solaris unpack was incompatible with
+the pack that was used to make the cont.a.z.  Possibly endian issues.
+
+I go poking around for pack(1) in V7 and PWB and 2.11BSD but can't find
+anything.  Any ideas?
+
+Thanks,
+Ken
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Calendar - Free online calendar with sync to Outlook(TM).
+http://calendar.yahoo.com
+
+
+From imp at bsdimp.com  Thu May 29 22:33:54 2003
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Thu, 29 May 2003 06:33:54 -0600 (MDT)
+Subject: [TUHS] SCO vs. IBM: NOVELL steps up to the plate
+In-Reply-To: <BAFBB8B1.118%rob@vetsystems.com>
+References: <200305290749.h4T7nu22092199@ducky.net>
+	<BAFBB8B1.118%rob@vetsystems.com>
+Message-ID: <20030529.063354.51702197.imp@bsdimp.com>
+
+In message: <BAFBB8B1.118%rob at vetsystems.com>
+            Robert Tillyard <rob at vetsystems.com> writes:
+: I believe the legal action is over breach on contract with IBM and not on
+: copyright issues.
+
+All of SCO's statements to the court have been contractual.  Their
+statements to the press have been inflated to include things that
+aren't actually alledged in the court filings.
+
+: But if it turns out the IBM is guilty of lifting SCO code and putting it
+: into Linux I think SCO does have the right to get a bit upset about it,
+: after all I wouldn't be to happy if I had to compete with a product that's
+: just about free and contains code that I wrote.
+
+That's the rub.  Do they, in point of fact, actually have any code
+they own the Copyright to or the patent rights to?
+
+SCO is blustering more and more as the open source community exposes
+them for the fruads that they have become.
+
+Warner
+
+
+From cyrille.lefevre at laposte.net  Fri May 30 01:44:13 2003
+From: cyrille.lefevre at laposte.net (Cyrille Lefevre)
+Date: Thu, 29 May 2003 17:44:13 +0200
+Subject: [TUHS] Re: non-broken 4.3BSD set?
+In-Reply-To: <200212112326.gBBNQlr04157@minnie.tuhs.org>
+References: <ca.15d9a70c.2b28d371@aol.com>
+	<200212112326.gBBNQlr04157@minnie.tuhs.org>
+Message-ID: <20030529154413.GA52289@gits.dyndns.org>
+
+On Thu, Dec 12, 2002 at 09:26:47AM +1000, Warren Toomey wrote:
+> In article by Robertdkeys at aol.com:
+> > Warren... is there a non-broken 4.3BSD-Tahoe set somewhere?
+> > Bob
+> 
+> As in a bootable 4.3BSD-Tahoe kit? As far as I know, no. The Unix Archive
+> has a broken copy in 4BSD/Distributions/4.3BSD-Tahoe, indicating that
+> both usr.tar and src.tar are broken.
+> 
+> It might/should be possible to merge files from the CRSG CD set from Kirk
+> to recreate these tar files.
+> 
+> Anybody out there have an unbroken Tahoe release?
+
+Hi, take a look at http://mapage.noos.fr/clefevre/4bsd/
+
+you will found the listings of some archives found around the net some years ago.
+don't ask me where, I can't remember. If you are interrested by one or more
+of them, let me know, I'll provide you in a way or another.
+
+FYI, appart the 4.3BSD-Tahoe archive, the following one is also broken :
+
+4BSD/Distributions/4.3BSD-Rev2-Foreign/usr.tar.gz
+
+4BSD/Distributions/4.3BSD-Tahoe/src.tar.gz
+4BSD/Distributions/4.3BSD-Tahoe/usr.tar.gz
+
+Cyrille.
+-- 
+Cyrille Lefevre                 mailto:cyrille.lefevre at laposte.net
+
+
+From grog at lemis.com  Fri May 30 09:50:27 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Fri, 30 May 2003 09:20:27 +0930
+Subject: [TUHS] SCO vs. IBM: NOVELL steps up to the plate
+In-Reply-To: <20030529.063354.51702197.imp@bsdimp.com>
+References: <200305290749.h4T7nu22092199@ducky.net> <BAFBB8B1.118%rob@vetsystems.com> <20030529.063354.51702197.imp@bsdimp.com>
+Message-ID: <20030529235027.GE20321@wantadilla.lemis.com>
+
+On Thursday, 29 May 2003 at  6:33:54 -0600, M. Warner Losh wrote:
+> In message: <BAFBB8B1.118%rob at vetsystems.com>
+>             Robert Tillyard <rob at vetsystems.com> writes:
+
+>> I believe the legal action is over breach on contract with IBM and
+>> not on copyright issues.
+>
+> All of SCO's statements to the court have been contractual.  Their
+> statements to the press have been inflated to include things that
+> aren't actually alledged in the court filings.
+
+What's not very clear here is that there seem to be two issues.  The
+IBM issue is, as you say, a contractual one which about which they
+have been remarkably vague.  The suspension of Linux distribution is a
+different matter.  From http://www.lemis.com/grog/sco.html:
+
+   On Tuesday, 27 May 2003, I spoke to Kieran O'Shaughnessy, managing
+   director of SCO Australia. He told me that SCO had entrusted three
+   independent companies to compare the code of the UnixWare and Linux
+   kernels. All three had come back pointing to significant
+   occurrences of common code ("UnixWare code", as he put it) in both
+   kernels.
+
+   In view of the long and varied history of UNIX, I wondered whether
+   the code in question might have been legally transferred from an
+   older version of UNIX to Linux, so I asked him if he really meant
+   UnixWare and not System V.4. He stated that it was specifically
+   UnixWare 7.
+
+>> But if it turns out the IBM is guilty of lifting SCO code and
+>> putting it into Linux I think SCO does have the right to get a bit
+>> upset about it, after all I wouldn't be to happy if I had to
+>> compete with a product that's just about free and contains code
+>> that I wrote.
+>
+> That's the rub.  Do they, in point of fact, actually have any code
+> they own the Copyright to or the patent rights to?
+
+Of course they have lots of code with their own copyright.  The
+release of JFS was one example.  Probably the majority of AIX was
+developed by IBM, not by AT&T.  It's rather similar to the issue with
+4BSD in the early 90s: with a little bit of work you could probably
+replace the entire AT&T code in AIX and have a system which did not
+require an SCO license.
+
+If you mean "is there IBM copyright code in Linux?", I think the
+answer is again yes, but it's under the GPL or possibly IPL, IBM's
+attempt at a compromise between proprietary licenses and the GPL.  I
+think they've given up on the IPL now.
+
+For what it's worth, I'd be astounded if SCO's claims were found to be
+true.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030530/2af6817f/attachment.sig>
+
+From imp at harmony.village.org  Fri May 30 09:56:39 2003
+From: imp at harmony.village.org (M. Warner Losh)
+Date: Thu, 29 May 2003 17:56:39 -0600 (MDT)
+Subject: [TUHS] SCO vs. IBM: NOVELL steps up to the plate
+In-Reply-To: <20030529235027.GE20321@wantadilla.lemis.com>
+References: <BAFBB8B1.118%rob@vetsystems.com>
+	<20030529.063354.51702197.imp@bsdimp.com>
+	<20030529235027.GE20321@wantadilla.lemis.com>
+Message-ID: <20030529.175639.34763729.imp@bsdimp.com>
+
+In message: <20030529235027.GE20321 at wantadilla.lemis.com>
+            "Greg 'groggy' Lehey" <grog at lemis.com> writes:
+: On Thursday, 29 May 2003 at  6:33:54 -0600, M. Warner Losh wrote:
+: > In message: <BAFBB8B1.118%rob at vetsystems.com>
+: >             Robert Tillyard <rob at vetsystems.com> writes:
+: 
+: >> I believe the legal action is over breach on contract with IBM and
+: >> not on copyright issues.
+: >
+: > All of SCO's statements to the court have been contractual.  Their
+: > statements to the press have been inflated to include things that
+: > aren't actually alledged in the court filings.
+: 
+: What's not very clear here is that there seem to be two issues.  The
+: IBM issue is, as you say, a contractual one which about which they
+: have been remarkably vague.  The suspension of Linux distribution is a
+: different matter.  From http://www.lemis.com/grog/sco.html:
+: 
+:    On Tuesday, 27 May 2003, I spoke to Kieran O'Shaughnessy, managing
+:    director of SCO Australia. He told me that SCO had entrusted three
+:    independent companies to compare the code of the UnixWare and Linux
+:    kernels. All three had come back pointing to significant
+:    occurrences of common code ("UnixWare code", as he put it) in both
+:    kernels.
+: 
+:    In view of the long and varied history of UNIX, I wondered whether
+:    the code in question might have been legally transferred from an
+:    older version of UNIX to Linux, so I asked him if he really meant
+:    UnixWare and not System V.4. He stated that it was specifically
+:    UnixWare 7.
+
+I base my statements on the legal filings that are available at the
+SCO site.  I do not base them on anything that SCO has said to the
+press, since those statements are nearly universally overinflated.
+Since these are statements to the press, or other public statements, I
+trust them as much as I trust public statements by politicians.
+
+: > That's the rub.  Do they, in point of fact, actually have any code
+: > they own the Copyright to or the patent rights to?
+: 
+: Of course they have lots of code with their own copyright.  The
+: release of JFS was one example.  Probably the majority of AIX was
+: developed by IBM, not by AT&T.  It's rather similar to the issue with
+: 4BSD in the early 90s: with a little bit of work you could probably
+: replace the entire AT&T code in AIX and have a system which did not
+: require an SCO license.
+
+I was speaking of SCO, not IBM.  What code does SCO own the copyright
+to?
+
+: For what it's worth, I'd be astounded if SCO's claims were found to be
+: true.
+
+Me too.  There's another article that is saying that there are 10-15
+line snippets scattered all through the kernel.  Give me a break.
+That claim is so absurd as to be not credible on its face.  I can see
+one or two files, maybe stretching my disbelief to its limits, but I
+can't see anything more pervasive than that.
+
+Warner
+
+
+From grog at lemis.com  Fri May 30 10:37:46 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Fri, 30 May 2003 10:07:46 +0930
+Subject: [TUHS] SCO vs. IBM: NOVELL steps up to the plate
+In-Reply-To: <20030529.175639.34763729.imp@bsdimp.com>
+References: <BAFBB8B1.118%rob@vetsystems.com> <20030529.063354.51702197.imp@bsdimp.com> <20030529235027.GE20321@wantadilla.lemis.com> <20030529.175639.34763729.imp@bsdimp.com>
+Message-ID: <20030530003746.GF20321@wantadilla.lemis.com>
+
+On Thursday, 29 May 2003 at 17:56:39 -0600, M. Warner Losh wrote:
+> In message: <20030529235027.GE20321 at wantadilla.lemis.com>
+>             "Greg 'groggy' Lehey" <grog at lemis.com> writes:
+>> On Thursday, 29 May 2003 at  6:33:54 -0600, M. Warner Losh wrote:
+>>> In message: <BAFBB8B1.118%rob at vetsystems.com>
+>>>             Robert Tillyard <rob at vetsystems.com> writes:
+>>
+>>>> I believe the legal action is over breach on contract with IBM and
+>>>> not on copyright issues.
+>>>
+>>> All of SCO's statements to the court have been contractual.  Their
+>>> statements to the press have been inflated to include things that
+>>> aren't actually alledged in the court filings.
+>>
+>> What's not very clear here is that there seem to be two issues.  The
+>> IBM issue is, as you say, a contractual one which about which they
+>> have been remarkably vague.  The suspension of Linux distribution is a
+>> different matter.  From http://www.lemis.com/grog/sco.html:
+>>
+>>    On Tuesday, 27 May 2003, I spoke to Kieran O'Shaughnessy, managing
+>>    director of SCO Australia. He told me that SCO had entrusted three
+>>    independent companies to compare the code of the UnixWare and Linux
+>>    kernels. All three had come back pointing to significant
+>>    occurrences of common code ("UnixWare code", as he put it) in both
+>>    kernels.
+>>
+>>    In view of the long and varied history of UNIX, I wondered whether
+>>    the code in question might have been legally transferred from an
+>>    older version of UNIX to Linux, so I asked him if he really meant
+>>    UnixWare and not System V.4. He stated that it was specifically
+>>    UnixWare 7.
+>
+> I base my statements on the legal filings that are available at the
+> SCO site.  I do not base them on anything that SCO has said to the
+> press, since those statements are nearly universally overinflated.
+> Since these are statements to the press, or other public statements, I
+> trust them as much as I trust public statements by politicians.
+
+The trouble is that there *is* no legal filing on the Linux without
+IBM case.
+
+>>> That's the rub.  Do they, in point of fact, actually have any code
+>>> they own the Copyright to or the patent rights to?
+>>
+>> ...
+>
+> I was speaking of SCO, not IBM.  What code does SCO own the copyright
+> to?
+
+Ah, sorry.  Got to pass on that one.  They probably have the rights to
+XENIX.
+
+>> For what it's worth, I'd be astounded if SCO's claims were found to be
+>> true.
+>
+> Me too.  There's another article that is saying that there are 10-15
+> line snippets scattered all through the kernel.  Give me a break.
+> That claim is so absurd as to be not credible on its face.  I can see
+> one or two files, maybe stretching my disbelief to its limits, but I
+> can't see anything more pervasive than that.
+
+There are plenty of cases where you need to initialize a data
+structure.  Many data structures are public knowledge, and
+initialization is a brainless enough task that the code could have
+been written independently and look almost the same.  Does this line
+ring a bell?
+
+	(*bdevsw[major(bp->b_dev)]->d_strategy) (bp);
+
+How many people have written that independently of each other?
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030530/288820cf/attachment.sig>
+
+From norman at nose.cs.utoronto.ca  Fri May 30 11:00:17 2003
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Thu, 29 May 2003 21:00:17 -0400
+Subject: [TUHS] SCO vs. IBM: NOVELL steps up to the plate
+Message-ID: <200305300100.h4U10pJ8090918@minnie.tuhs.org>
+
+M. Warner Losh:
+
+  There's another article that is saying that there are 10-15
+  line snippets scattered all through the kernel.  Give me a break.
+  That claim is so absurd as to be not credible on its face.  I can see
+  one or two files, maybe stretching my disbelief to its limits, but I
+  can't see anything more pervasive than that.
+
+I agree that it sounds unlikely, and I won't give it much credit
+until SCO makes its evidence generally available.  But it's by no
+means absurd.  Suppose SCO invented some whizzy data structure and
+associated code conventions to afford especially efficient
+interprocessor locks.  That could show up in fragments scattered
+throughout the kernel, and the idea itself could in fact be
+valuable intellectual property and the fragments a demonstration
+that the idea was stolen.
+
+Or suppose the issue at hand was a particular way to implement a
+file system switch.  I was involved in adding such a thing to an
+old-fashioned kernel myself; it touches many little pieces of
+code all over the kernel that happen to do certain things to or
+with in-core i-nodes.  If I was worried that someone had stolen
+such work wholesale, part of what I would look for would indeed
+be scattered fragments.
+
+As I say, there's no useful evidence on view at all, therefore
+there is no useful evidence that what I am describing is what
+the fuss is about.
+
+Norman Wilson
+Toronto ON
+
+
+From wkt at minnie.tuhs.org  Fri May 30 11:01:26 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Fri, 30 May 2003 11:01:26 +1000
+Subject: [TUHS] SCO vs. IBM: NOVELL steps up to the plate
+In-Reply-To: <20030530003746.GF20321@wantadilla.lemis.com>
+References: <BAFBB8B1.118%rob@vetsystems.com> <20030529.063354.51702197.imp@bsdimp.com> <20030529235027.GE20321@wantadilla.lemis.com> <20030529.175639.34763729.imp@bsdimp.com> <20030530003746.GF20321@wantadilla.lemis.com>
+Message-ID: <20030530010126.GA90870@minnie.tuhs.org>
+
+On Fri, May 30, 2003 at 10:07:46AM +0930, Greg 'groggy' Lehey wrote:
+> There are plenty of cases where you need to initialize a data
+> structure.  Many data structures are public knowledge, and
+> initialization is a brainless enough task that the code could have
+> been written independently and look almost the same.  Does this line
+> ring a bell?
+> 
+> 	(*bdevsw[major(bp->b_dev)]->d_strategy) (bp);
+
+And you've got to watch out for these ones, which have been around
+since 1973:
+
+#define EPERM           1               /* Operation not permitted */
+#define ENOENT          2               /* No such file or directory */
+#define ESRCH           3               /* No such process */
+#define EINTR           4               /* Interrupted system call */
+
+So that that extent, there is real UNIX code in Linux 8-)
+
+	Warren
+
+
+From grog at lemis.com  Fri May 30 11:20:30 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Fri, 30 May 2003 10:50:30 +0930
+Subject: [TUHS] SCO vs. IBM: NOVELL steps up to the plate
+In-Reply-To: <20030530010126.GA90870@minnie.tuhs.org>
+References: <BAFBB8B1.118%rob@vetsystems.com> <20030529.063354.51702197.imp@bsdimp.com> <20030529235027.GE20321@wantadilla.lemis.com> <20030529.175639.34763729.imp@bsdimp.com> <20030530003746.GF20321@wantadilla.lemis.com> <20030530010126.GA90870@minnie.tuhs.org>
+Message-ID: <20030530012030.GA39063@wantadilla.lemis.com>
+
+On Friday, 30 May 2003 at 11:01:26 +1000, Warren Toomey wrote:
+> On Fri, May 30, 2003 at 10:07:46AM +0930, Greg 'groggy' Lehey wrote:
+>> There are plenty of cases where you need to initialize a data
+>> structure.  Many data structures are public knowledge, and
+>> initialization is a brainless enough task that the code could have
+>> been written independently and look almost the same.  Does this line
+>> ring a bell?
+>>
+>> 	(*bdevsw[major(bp->b_dev)].d_strategy) (bp);
+>
+> And you've got to watch out for these ones, which have been around
+> since 1973:
+>
+> #define EPERM           1               /* Operation not permitted */
+> #define ENOENT          2               /* No such file or directory */
+> #define ESRCH           3               /* No such process */
+> #define EINTR           4               /* Interrupted system call */
+>
+> So that that extent, there is real UNIX code in Linux 8-)
+
+Heh.  Also in the Third Edition:
+
+/src/UNIX/PDP-11/Third-Edition/dmr/bio.c:       (*bdevsw[dev.d_major].d_strategy)(rbp);
+/src/UNIX/PDP-11/Third-Edition/dmr/bio.c:       (*bdevsw[rbp->b_dev.d_major].d_strategy)(rbp);
+
+Yes, this is the reason why I asked Kieran if it was really UnixWare
+or UNIX System V.  They need to prove where the code originally came
+from before they have any kind of case.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030530/9f90c188/attachment.sig>
+
+From lm at bitmover.com  Fri May 30 12:42:53 2003
+From: lm at bitmover.com (Larry McVoy)
+Date: Thu, 29 May 2003 19:42:53 -0700
+Subject: [TUHS] Re: TUHS digest, Vol 1 #159 - 12 msgs
+In-Reply-To: <200305300130.h4U1UMJ8091290@minnie.tuhs.org>
+References: <200305300130.h4U1UMJ8091290@minnie.tuhs.org>
+Message-ID: <20030530024253.GE21405@work.bitmover.com>
+
+> SCO is blustering more and more as the open source community exposes
+> them for the fruads that they have become.
+
+In the for what it is worth department, I happen to know that this
+stuff is more complex than it seems.  For instance, I am pretty sure
+that ATT should have won their lawsuit over the BSD stuff and if you
+doubt that I'd suggest that you go compare the UFS code against the 32v
+or v7 code.  bmap() is a good place to look.  Any suggestions that that
+was completely rewritten are patently false, at least in my opinion.
+I'm a file system guy, I've done a lot of work in UFS, I'm intimately
+familiar with the code.  In fact, I defended UFS against LFS when Kirk
+wouldn't (LFS is a friggin' joke, any file system hacker knows that the
+allocation policy is 90% of the file system).
+
+I do not have knowledge of the code it is that SCO says infringes.  And I
+think that SCO is about as astute as I am in terms of public relations
+(we both tend to be our own worst enemies and I thought I was without
+peer in that department :-)  But I suspect that there is at least some
+merit to what they are claiming.  I have to believe that nobody is stupid
+enough to have zero data and jump out in public like they are doing.
+That's just way too far over the top.  Anything is possible I guess,
+but doesn't it seem just a little unlikely that a corporation would
+commit that public a suicide?  I'll probably be proved wrong but I'm
+a CEO, running a small company, much smaller than SCO, and there is
+no way I'd stick my neck out that far with no data to back it up.
+I'd like to think I'm smarter than they are but I tend to doubt it,
+they have more experience.
+-- 
+---
+Larry McVoy              lm at bitmover.com          http://www.bitmover.com/lm
+
+
+From wes.parish at paradise.net.nz  Fri May 30 19:01:44 2003
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Fri, 30 May 2003 21:01:44 +1200
+Subject: [TUHS] SCO vs. IBM: NOVELL steps up to the plate
+Message-ID: <200305302101.44047.wes.parish@paradise.net.nz>
+
+On Friday 30 May 2003 11:50 am, Greg 'groggy' Lehey wrote:
+> On Thursday, 29 May 2003 at  6:33:54 -0600, M. Warner Losh wrote:
+> > In message: <BAFBB8B1.118%rob at vetsystems.com>
+> >
+> >             Robert Tillyard <rob at vetsystems.com> writes:
+> >> I believe the legal action is over breach on contract with IBM and
+> >> not on copyright issues.
+> >
+> > All of SCO's statements to the court have been contractual.  Their
+> > statements to the press have been inflated to include things that
+> > aren't actually alledged in the court filings.
+>
+> What's not very clear here is that there seem to be two issues.  The
+> IBM issue is, as you say, a contractual one which about which they
+> have been remarkably vague.  The suspension of Linux distribution is a
+> different matter.  From http://www.lemis.com/grog/sco.html:
+>
+>    On Tuesday, 27 May 2003, I spoke to Kieran O'Shaughnessy, managing
+>    director of SCO Australia. He told me that SCO had entrusted three
+>    independent companies to compare the code of the UnixWare and Linux
+>    kernels. All three had come back pointing to significant
+>    occurrences of common code ("UnixWare code", as he put it) in both
+>    kernels.
+>
+>    In view of the long and varied history of UNIX, I wondered whether
+>    the code in question might have been legally transferred from an
+>    older version of UNIX to Linux, so I asked him if he really meant
+>    UnixWare and not System V.4. He stated that it was specifically
+>    UnixWare 7.
+>
+> >> But if it turns out the IBM is guilty of lifting SCO code and
+> >> putting it into Linux I think SCO does have the right to get a bit
+> >> upset about it, after all I wouldn't be to happy if I had to
+> >> compete with a product that's just about free and contains code
+> >> that I wrote.
+> >
+> > That's the rub.  Do they, in point of fact, actually have any code
+> > they own the Copyright to or the patent rights to?
+>
+> Of course they have lots of code with their own copyright.  The
+> release of JFS was one example.  Probably the majority of AIX was
+> developed by IBM, not by AT&T.  It's rather similar to the issue with
+> 4BSD in the early 90s: with a little bit of work you could probably
+> replace the entire AT&T code in AIX and have a system which did not
+> require an SCO license.
+
+I would say that that is entirely likely.  AIX was developed by IBM for
+IBM-specific machines running in IBM-style environments, and I can imagine
+that SysVRx just _doesn't_ _cut_ _the_ _mustard_.
+
+So, SCO's latching on the IBM for Monterey - RS-6000 was 64-bit, or am I
+getting confused? - probably gave SCO much more than it gave IBM.  So
+ironically, if IBM donated stuff to Monterey under the terms of the agreement
+and later incorporated the same stuff into Linux, it _could_ look as if they
+had taken stuff from SysVRx/Unixware - stuff that SCO had never had the
+opportunity to develop if it hadn't been for Monterey and IBM's pre-existing
+expertise.
+
+Just some thoughts - but if that is so, I can see why IBM's not getting too
+het up about the whole muck-up.
+
+Wesley Parish
+
+> If you mean "is there IBM copyright code in Linux?", I think the
+> answer is again yes, but it's under the GPL or possibly IPL, IBM's
+> attempt at a compromise between proprietary licenses and the GPL.  I
+> think they've given up on the IPL now.
+>
+> For what it's worth, I'd be astounded if SCO's claims were found to be
+> true.
+>
+> Greg
+
+--
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+
+From grog at lemis.com  Fri May 30 13:31:24 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Fri, 30 May 2003 13:01:24 +0930
+Subject: [TUHS] Re: TUHS digest, Vol 1 #159 - 12 msgs
+In-Reply-To: <20030530024253.GE21405@work.bitmover.com>
+References: <200305300130.h4U1UMJ8091290@minnie.tuhs.org>
+	<20030530024253.GE21405@work.bitmover.com>
+Message-ID: <20030530033124.GB39668@wantadilla.lemis.com>
+
+On Thursday, 29 May 2003 at 19:42:53 -0700, Larry McVoy wrote:
+> I do not have knowledge of the code it is that SCO says infringes.
+
+Which puts you in the same boat as the rest of us.
+
+> But I suspect that there is at least some merit to what they are
+> claiming.  I have to believe that nobody is stupid enough to have
+> zero data and jump out in public like they are doing.  That's just
+> way too far over the top.  Anything is possible I guess, but doesn't
+> it seem just a little unlikely that a corporation would commit that
+> public a suicide?
+
+It's certainly unlikely, agreed.  But SCO has done some unlikely
+things recently.  You saw the public threat to sue Linus Torvalds
+personally?
+
+> I'd like to think I'm smarter than they are but I tend to doubt it,
+> they have more experience.
+
+As far as I can see (somebody please correct me if I'm wrong), most of
+the key players at SCO have changed over the last 12 months.  They
+appear to have few engineers left, which is presumably one reason why
+they gave the UnixWare and Linux code to outsiders to compare.  I'm
+not convinced of their understanding of the matters at hand.  For
+example, last year Caldera released "ancient UNIX" under a BSD-style
+license, but now they're claiming it never happened.  Maybe they don't
+know about the company history.  And if the code in dispute is derived
+from ancient UNIX, there'll be egg on their face.  
+
+Of course, a simple comparison doesn't show the origin of the code.
+If it proves to have been lifted from Linux, they'll *really* look
+stupid.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030530/b75f8346/attachment.sig>
+

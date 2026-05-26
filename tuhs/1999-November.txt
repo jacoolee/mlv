@@ -1,0 +1,708 @@
+From wkt at cs.adfa.edu.au  Tue Nov  2 10:27:29 1999
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Tue, 2 Nov 1999 11:27:29 +1100 (EST)
+Subject: Info on PDP-11 (fwd)
+Message-ID: <199911020027.LAA59610@henry.cs.adfa.edu.au>
+
+All,
+	I got this message from Guus Ellenkamp, <Ellenkamp.Guus at kpmg.nl>.
+Can anybody help?
+
+----- Forwarded message from Ellenkamp, Guus -----
+I have a PDP-11/73, but without standard operating system. How to get and
+install an operating system? Preferebly RSX11M or UNIX. I have an ST-60
+tape. I don't know what disks are in it. It has 2 disks. How to see what
+type they are?
+
+Guus
+----- End of forwarded message from Ellenkamp, Guus -----
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id SAA70740
+	for pups-liszt; Tue, 2 Nov 1999 18:54:06 +1100 (EST)
+
+From wilko at yedi.iaf.nl  Tue Nov  2 16:24:29 1999
+From: wilko at yedi.iaf.nl (Wilko Bulte)
+Date: Tue, 2 Nov 1999 07:24:29 +0100 (CET)
+Subject: Info on PDP-11 (fwd)
+In-Reply-To: <199911020027.LAA59610@henry.cs.adfa.edu.au> from Warren Toomey at "Nov 2, 1999 11:27:29 am"
+Message-ID: <199911020624.HAA46208@yedi.iaf.nl>
+
+As Warren Toomey wrote ...
+
+I can. I'm close by, both physically and timezone wise.
+
+Guus: please send me email. I'm quite busy this week with NLUUG buth
+I'll try to help asap.
+
+Wilko
+
+> All,
+> 	I got this message from Guus Ellenkamp, <Ellenkamp.Guus at kpmg.nl>.
+> Can anybody help?
+> 
+> ----- Forwarded message from Ellenkamp, Guus -----
+> I have a PDP-11/73, but without standard operating system. How to get and
+> install an operating system? Preferebly RSX11M or UNIX. I have an ST-60
+> tape. I don't know what disks are in it. It has 2 disks. How to see what
+> type they are?
+> 
+> Guus
+> ----- End of forwarded message from Ellenkamp, Guus -----
+> 
+
+-- 
+|   / o / /  _  	 Arnhem, The Netherlands	- Powered by FreeBSD -
+|/|/ / / /( (_) Bulte 	 WWW  : http://www.tcja.nl 	http://www.freebsd.org
+
+
+From enf at pobox.com  Wed Nov 24 08:45:34 1999
+From: enf at pobox.com (Eric Fischer)
+Date: Tue, 23 Nov 1999 16:45:34 -0600 (CST)
+Subject: source code for PDP-7 dsw command
+Message-ID: <199911232245.QAA32000@216-80-13-83.d.enteract.com>
+
+Sorry for the repetition if you've already seen this.  The
+source code for the PDP-7 Unix dsw command was just reposted
+in alt.sysadmin.recovery.  Here's the article:
+
+
+Newsgroups: alt.sysadmin.recovery
+From: flaps at dgp.toronto.edu (Alan J Rosenthal)
+Subject: Re: Time to train not one, but 15 PFY's. . .
+Date: 23 Nov 99 22:17:39 GMT
+
+SKaranyi+n0 at localhost.ruhr.de (Wolfgang Schelongowski) writes:
+>>NAME               dsw -- delete interactively
+...
+>Radio hams with contact to the `Evil Empire' know that it's the short
+>form of doswidanye or so. IOW "Bye".
+
+Fascinating.  It appears that although it was claimed to stand for "delete
+from switches", and this is what it actually did, it was also a pun on the
+amateur radio abbreviation.
+
+The later program described in the previous article seems to be named after
+the original (and no longer deserves the name "dsw").  And the original "dsw"
+was *not* interactive.
+
+The original "dsw" program uses the console switches to specify the file
+to be deleted, for file names with funny characters in them.  It was
+astonishingly round-about: you would set the number 'n' on the switches,
+then run dsw, and it found the name of file #n in the current directory,
+and then created a core dump which when executed, would delete that file.
+Sheesh.  It's not like there wasn't an unlink() system call; why not just
+unlink it?  Well, I guess the idea is that you would examine the core file
+and make sure it was deleting the right file.  But there are still obvious
+trivial improvements.  And why not take the number in argv[1]?
+
+Of course this was well before it was possible to write something like
+"rm `command`".
+
+It is interesting that the 1971(?) man page mentions that really there should
+be an option to rm, and then goes on to specify "rm -i *" behaviour as
+appropriate for a serious version of this command.  That "BUGS" section sure
+was a good idea.  I still can't believe the sysV people renamed it to "NOTES".
+
+dmr posted the man page of the original dsw program to net.general in 1981,
+and it can thus be found at
+http://communication.ucsd.edu/A-News/NET.general/81.08.12_research.19_net.general.html
+
+(there is an earlier posting about dsw, which is a joke)
+
+dmr also posted the source code to net.unix-wizards in 1984.  This is too
+late for the "oldnews" archive, so I'll include the article here.  I love
+his comment that he considered posting instead to net.sources.
+
+
+Date: 8 Dec 84 09:45:09 GMT
+From: dmr at research.UUCP
+Newsgroups: net.unix-wizards
+Subject: dsw: pdp7 memorabilia
+
+I happened to dredge up an old notebook and found a listing
+of the PDP-7 version of dsw.  Because several people have approached
+me recently about reviving a version of PDP-7 Unix as a sort of
+paleontological exhibit, and because the subject has been discussed
+here, I thought people might be interested in seeing the code.
+I first considered net.sources, but decided not to carry whimsy too far.
+
+		Dennis Ritchie
+
+Notes:
+
+1) The assembler has Knuth-style temporary labels but no literals.
+
+2) The name of the current directory was evidently ".."
+
+3) Formatting is faithfully reproduced.
+
+4) "sys save" makes a core image.
+------
+" dsw
+
+   lac djmp
+   dac .-1
+   oas cla
+   cma
+   tad d1
+   dac t1
+   sys open; dd; 0
+1:
+   lac d2
+   sys read; dir; 8
+   sna
+   sys exit
+   lac dir
+   sna
+   jmp 1b
+   isz t1
+   jmp 1b
+
+wr:
+   lac d1
+   sys write; dir+1; 4
+   lac d1
+   sys write; o12; 1
+   sys save
+do:
+   sys unlink; dir+1
+   sys exit
+
+d1: 1
+d2: 2
+o12: 012
+t1: 0
+djmp: jmp do
+dd: 056056; 040040; 040040; 040040
+dir: .=.+8
+
+
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA06682
+	for pups-liszt; Wed, 24 Nov 1999 11:13:19 +1100 (EST)
+
+From wkt at cs.adfa.edu.au  Wed Nov 24 10:13:11 1999
+From: wkt at cs.adfa.edu.au (Warren Toomey)
+Date: Wed, 24 Nov 1999 11:13:11 +1100 (EST)
+Subject: Also, new PDP-11 emulator
+Message-ID: <199911240013.LAA52032@henry.cs.adfa.edu.au>
+
+Thanks to Eric for passing on that posting from Dennis re PDP-7 dsw.
+
+For those who don't read the newsgroups, there's a new version of the
+Begemot PDP-11 emulator:
+
+------------------
+    From: Hartmut Brandt <brandt at fokus.gmd.de>
+    Newsgroups: alt.sys.pdp11
+    Subject: Version 2.4 of the p11 PDP-11 emulator
+    Date: 19 Nov 1999 15:04:33 GMT
+
+Version 2.4 of p11 - the Begemot PDP-11 emulator - is available on
+ftp.fokus.gmd.de:/pub/cats/usr/harti/p11. This release supports the following
+platforms:
+
+	FreeBSD 4.0
+	Sparc-Solaris 2.[5678]
+	Redhat-Linux
+
+It will possibly work on FreeBSD [23].* and other Linux variants.
+To build it you need libbegemot (avalaible in the same location), gcc and
+gmake. Previous versions also built on BSD/OS and SunOS.
+------------------
+
+Cheers,
+	Warren
+
+
+
+From DSEAGRAV at toad.xkl.com  Sun Nov 28 03:54:53 1999
+From: DSEAGRAV at toad.xkl.com (Daniel A. Seagraves)
+Date: Sat, 27 Nov 1999 09:54:53 -0800
+Subject: 2.11BSD
+Message-ID: <13502970974.14.DSEAGRAV@toad.xkl.com>
+
+I am now dangerously close to getting 2.11BSD on my 11/44. ^_^
+I got a SCSI disk controller (Viking UDT) and TS11 tapes, and 16 ports of
+DZ11s  (Anyone got jumper/DIP switch info on these?), but my problem is
+lack of a boot tape.
+
+Anyway, since I have other machines around which can grok SCSI disks, I tried
+making an RP06 image on Supnik's emulator, installing the rauboot instead of
+hkuboot, but it failed.  The PDP-11 read the bootstrap in OK and the bootstrap
+was running but it was looping (I forgot the address).
+
+Has anyone done this before?  I would use a SCSI tape to boot from but the
+SCSI tape drive I have died.  (Roached literally - one of the little fsckers
+got inside it and got fried.)
+
+-------
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id GAA39579
+	for pups-liszt; Sun, 28 Nov 1999 06:14:13 +1100 (EST)
+
+From SHOPPA at trailing-edge.com  Sun Nov 28 05:13:59 1999
+From: SHOPPA at trailing-edge.com (Tim Shoppa)
+Date: Sat, 27 Nov 1999 14:13:59 -0500
+Subject: 2.11BSD
+Message-ID: <991127141359.20a000ba@trailing-edge.com>
+
+>Anyway, since I have other machines around which can grok SCSI disks, I tried
+>making an RP06 image on Supnik's emulator, installing the rauboot instead of
+>hkuboot, but it failed.
+
+Are you sure it was a RP06 image?  hkuboot is the RK06/07 bootstrap.
+
+How did you move the RP06 (or RK06) image to the physical SCSI drive?  You
+were asking about doing it with RT-11 a few weeks ago, but you *do*
+know that RT-11 won't conventionally access the 65536th (and
+2*65536th, and 3*65536th...) blocks on a MSCP partition, don't you?  (There
+is a way of accessing that last block, but you have to code it with
+a .SPFUN call to the DU driver, and none of the distributed RT-11 utilities
+work on that last block, even with the /DEVICE qualifier.)
+
+Did the version of 2.11BSD you're working from have disklabel support in
+the hk driver?  Disklabel support there was added recently (where "recent"
+= 2 years ago).
+
+>  The PDP-11 read the bootstrap in OK and the bootstrap
+>was running but it was looping (I forgot the address).
+
+Get us the address (HALT the 11/44, either with the front panel toggle
+or control-P from the console) and we'll find out why it's looping.
+
+-- 
+ Tim Shoppa                        Email: shoppa at trailing-edge.com
+ Trailing Edge Technology          WWW:   http://www.trailing-edge.com/
+ 7328 Bradley Blvd		   Voice: 301-767-5917
+ Bethesda, MD, USA 20817           Fax:   301-767-5927
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id GAA39623
+	for pups-liszt; Sun, 28 Nov 1999 06:21:02 +1100 (EST)
+
+From pups at mrynet.com  Sat Nov 27 21:20:43 1999
+From: pups at mrynet.com (PUPS mailing list)
+Date: Sat, 27 Nov 1999 11:20:43 +0000
+Subject: 2.11BSD
+Message-ID: <199911271920.LAA02916@mrynet.com>
+
+> I am now dangerously close to getting 2.11BSD on my 11/44. ^_^
+> I got a SCSI disk controller (Viking UDT) and TS11 tapes, and 16 ports of
+> DZ11s  (Anyone got jumper/DIP switch info on these?), but my problem is
+> lack of a boot tape.
+
+I have the DZ11 (M7814)  user's guide right here. 
+
+1) Priority insert level 5 goes in E41.
+
+2) E72 -- Address.
+   Closed (on) is binary 1.
+
+	A12 A11 A10  A9  A8  A7  A6  A5  A4  A3
+       -----------------------------------------
+       | 10| 9 | 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 |
+   on  |   |   |   |   |   |   |   |   |   |   |
+       |   |   |   |   |   |   |   |   |   |   |
+  off  |   |   |   |   |   |   |   |   |   |   |
+       -----------------------------------------
+
+  Addressing examples:
+	160000 -- A12 thru A3 OFF
+	160010 -- A12 thru A4 OFF, A3 ON
+	177770 -- A12 thru A3 ON
+	(OFF=Logical 0, ON=Logical 1)
+
+3) E81 -- Vector
+   Closed (on) is a binary 0.
+
+       -unused- V3  V4  V5  V6  V7  V8
+       ---------------------------------    
+       | 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 |
+   on  |   |   |   |   |   |   |   |   |
+       |   |   |   |   |   |   |   |   |
+  off  |   |   |   |   |   |   |   |   |
+       ---------------------------------
+
+  Vectoring examples:
+	Vector	V8   V7   V6   V5   V4   V3
+	 300    ON   OFF  OFF  ON   ON   ON
+	 310    ON   OFF  OFF  ON   ON   OFF
+	 770    OFF  OFF  OFF  OFF  OFF  OFF
+	(ON=Logical 0, OFF=Logical 1)
+
+  Let me know if you need any more info.
+
+> Anyway, since I have other machines around which can grok SCSI disks, I tried
+> making an RP06 image on Supnik's emulator, installing the rauboot instead of
+> hkuboot, but it failed.  The PDP-11 read the bootstrap in OK and the bootstrap
+> was running but it was looping (I forgot the address).
+
+Did you successfully build from a boot-tape image on the emulator, or did you copy
+the RP06 image (such as on the PUPS archive) directly to the disk and tranfer
+the physical drive to the PDP?  (And what method/command did you use?)
+
+> Has anyone done this before?  I would use a SCSI tape to boot from but the
+> SCSI tape drive I have died.  (Roached literally - one of the little fsckers
+> got inside it and got fried.)
+
+I do this regularly for my vaxen.   10 to 1 Steven Schultz has been this route
+on the PDP-11's tho (Hi Steven :).
+
+Lemme know if I can help more.
+
+Regards,
+		-skots
+--
+Scott G. Akmentins-Taylor     InterNet: staylor at mrynet.com
+MRY Systems			        staylor at mrynet.lv
+    (Skots Gregorijs Akmentins-Teilors -- just call me "Skots")
+		----- Labak miris neka sarkans -----
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id GAA39662
+	for pups-liszt; Sun, 28 Nov 1999 06:26:23 +1100 (EST)
+
+From simul8 at simul8.demon.co.uk  Sun Nov 28 05:26:19 1999
+From: simul8 at simul8.demon.co.uk (James Lothian)
+Date: Sat, 27 Nov 1999 19:26:19 +0000
+Subject: 2.11BSD
+References: <13502970974.14.DSEAGRAV@toad.xkl.com>
+Message-ID: <3840305B.59044771@simul8.demon.co.uk>
+
+Hmm.. I've got a manual for the Viking UDT, and I'll try to remember to 
+bring it in on Monday. 
+
+I don't know anything about how 2.11BSD boots. However, I had an
+interesting
+time trying to get 4.3BSD on my 750 to boot off this controller. It
+turned out 
+that the Viking's emulation of the UDA50 isn't *quite* accurate, and
+that the 4.3 boot
+code was using one of the edge-of-the-envelope features that the Viking
+didn't quite 
+emulate right. I modified the bootstrap slightly and got it going.
+Whether this 
+has anything to do with your problem, I don't know. (It was worth all
+the effort 
+in the end, to see the monster hulking 750 booting of a little dinky
+plastic zip drive!)
+
+James
+
+"Daniel A. Seagraves" wrote:
+> 
+> I am now dangerously close to getting 2.11BSD on my 11/44. ^_^
+> I got a SCSI disk controller (Viking UDT) and TS11 tapes, and 16 ports of
+> DZ11s  (Anyone got jumper/DIP switch info on these?), but my problem is
+> lack of a boot tape.
+> 
+> Anyway, since I have other machines around which can grok SCSI disks, I tried
+> making an RP06 image on Supnik's emulator, installing the rauboot instead of
+> hkuboot, but it failed.  The PDP-11 read the bootstrap in OK and the bootstrap
+> was running but it was looping (I forgot the address).
+> 
+> Has anyone done this before?  I would use a SCSI tape to boot from but the
+> SCSI tape drive I have died.  (Roached literally - one of the little fsckers
+> got inside it and got fried.)
+> 
+> -------
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id GAA39726
+	for pups-liszt; Sun, 28 Nov 1999 06:29:51 +1100 (EST)
+
+From DSEAGRAV at toad.xkl.com  Sun Nov 28 05:28:56 1999
+From: DSEAGRAV at toad.xkl.com (Daniel A. Seagraves)
+Date: Sat, 27 Nov 1999 11:28:56 -0800
+Subject: 2.11BSD
+Message-ID: <13502988095.14.DSEAGRAV@toad.xkl.com>
+
+[Replied to Tim but not the list - oops!]
+
+Method to transfer drive:  FTPd disk image to MicroVAX running NetBSD,
+used cat.  Saved the RT11 image beforehand.  When BSD died I put RT11 back.
+RT11 works.
+
+Disk image was an RP06 constructed from a boot tape I made.  It used stuff
+from the PUPS archive but wasn't the image from the archive.
+
+I will get the loop address shortly - I have to get an extension cord back to
+power the machine.
+-------
+
+
+From sms at moe.2bsd.com  Sun Nov 28 06:21:40 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Sat, 27 Nov 1999 12:21:40 -0800 (PST)
+Subject: 2.11BSD
+Message-ID: <199911272021.MAA03745@moe.2bsd.com>
+
+Hi -
+
+> From: Tim Shoppa <SHOPPA at trailing-edge.com>
+> Did the version of 2.11BSD you're working from have disklabel support in
+> the hk driver?  Disklabel support there was added recently (where "recent"
+> = 2 years ago).
+
+	And even then the disklabel changes to the HK (rk06/7) driver have
+	not been actually tested - the site that was going to do that had
+	equipment failures and that combined with the lack of interest in
+	or curiosity about PDP-11s resulted the the entire 11 collection being
+	scrapped.
+
+	So, I went and make the changes anyhow and they "should work" since
+	adding disklabel support to a driver is mostly a boilerplate type of
+	activity but there's always the chance that an error crept in.
+
+	Disklabel support for the XP (rp03/4/5/6/7) driver is known to work
+	well.
+
+	Steven Schultz
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA40359
+	for pups-liszt; Sun, 28 Nov 1999 08:03:50 +1100 (EST)
+
+From sms at moe.2bsd.com  Sun Nov 28 07:00:21 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Sat, 27 Nov 1999 13:00:21 -0800 (PST)
+Subject: 2.11BSD
+Message-ID: <199911272100.NAA04124@moe.2bsd.com>
+
+> From: pups at mrynet.com (PUPS mailing list)
+> Scott G. Akmentins-Taylor     InterNet: staylor at mrynet.com
+
+> Did you successfully build from a boot-tape image on the emulator, or did 
+> you copy the RP06 image (such as on the PUPS archive) directly to the disk 
+> and tranfer the physical drive to the PDP?  (And what method/command did 
+> you use?)
+> 
+> > Has anyone done this before?  I would use a SCSI tape to boot from but the
+> > SCSI tape drive I have died.  (Roached literally - one of the little fsckers
+> 
+> I do this regularly for my vaxen.   10 to 1 Steven Schultz has been this route
+> on the PDP-11's tho (Hi Steven :).
+
+	'fraid I haven't been _that_ route before.
+
+	What I would do today, given the presence of a Qbus SCSI adaptor in the
+	system, is either 
+
+	   1) Use a cheesy old 4mm drive (I've a Sony SDT5000 that's too small
+	      and/or slow today for the Intel system - upgrade it to an 8mm
+	      drive), hook that up to the PC and blast the 2.11BSD boot kit
+	      on it (using the instructions, etc provided in the PUPS archive).
+	      Then move the 4mm drive over to the PDP-11 and boot the tape .
+
+	    2) Get a SCSI Zip drive, hook it up to the "PC" and use one of the
+	       emulators to create a ~96mb image of a system containing the
+	       standalone utilities + dump of root fs + tar  files for usr.
+	       Then march the Zip drive over to the PDP-11 and boot.   Instead
+	       of specifying "tape file numbers" to the standalone programs
+	       (as in "tms(0,1)") you would use "ra(1,0)disklabel" and so on.
+
+	A Zip drive is _real nice_ to have on the 11/73 - the Zip is actually
+	quite a bit faster than an RD53/RD54 and the media and drives are
+	cheap for Zips (Internal SCSI zip drives and a 3.5" shoebox run perhaps
+	$150 or so).   
+
+	Steven Schultz
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id IAA40489
+	for pups-liszt; Sun, 28 Nov 1999 08:24:22 +1100 (EST)
+
+From DSEAGRAV at toad.xkl.com  Sun Nov 28 07:23:30 1999
+From: DSEAGRAV at toad.xkl.com (Daniel A. Seagraves)
+Date: Sat, 27 Nov 1999 13:23:30 -0800
+Subject: 2.11BSD
+In-Reply-To: <199911272100.NAA04124@moe.2bsd.com>
+Message-ID: <13503008950.14.DSEAGRAV@toad.xkl.com>
+
+[Given the presence of...]
+
+Like I said, I tried #2 there, and failed.  But it is possible to do?
+That's all I was really after.
+
+Halt address coming in about 1/2 hour or an hour, depends on when they're
+done with the cord.
+
+Oh, and a Qbus SCSI card in this box would likely go FUMP!
+This is an 11/44.
+
+I plan on taking pictures sometime. ^_^
+
+-------
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA40973
+	for pups-liszt; Sun, 28 Nov 1999 10:33:51 +1100 (EST)
+
+From sms at moe.2bsd.com  Sun Nov 28 09:23:37 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Sat, 27 Nov 1999 15:23:37 -0800 (PST)
+Subject: 2.11BSD
+Message-ID: <199911272323.PAA04916@moe.2bsd.com>
+
+> From: "Daniel A. Seagraves" <DSEAGRAV at toad.xkl.com>
+> Like I said, I tried #2 there, and failed.  But it is possible to do?
+> That's all I was really after.
+
+	Oh, it _should_ work - so yes, it's possible if all the underlying
+	pieces are in place.  
+
+	Hmmm, rather than trying to use a pre-existing RP06 disk image 
+	perhaps it would be better to get the tape images (should be
+	in the pups archive) and use 'makesimtape' or whatever to create
+	a bootable tape image for one of the emulators.  Going thru a 
+	"cold install" to create a disk image should work.
+
+	You do have floating point hardware in the 11/44, correct?
+
+> Halt address coming in about 1/2 hour or an hour, depends on when they're
+> done with the cord.
+> 
+> Oh, and a Qbus SCSI card in this box would likely go FUMP!
+> This is an 11/44.
+
+	Doh!   That's what comes from dashing off a mail item  in a rush
+	to go off to lunch ;)
+
+	Steven
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id KAA41022
+	for pups-liszt; Sun, 28 Nov 1999 10:43:56 +1100 (EST)
+
+From DSEAGRAV at toad.xkl.com  Sun Nov 28 09:42:58 1999
+From: DSEAGRAV at toad.xkl.com (Daniel A. Seagraves)
+Date: Sat, 27 Nov 1999 15:42:58 -0800
+Subject: 2.11BSD
+In-Reply-To: <199911272323.PAA04916@moe.2bsd.com>
+Message-ID: <13503034339.14.DSEAGRAV@toad.xkl.com>
+
+[Use an image built from an install tape...]
+
+I did.
+
+[Have floating point?]
+
+Yup.  Floating point and I'm one memory board short of 2 meg of RAM.
+(I'm at 19xx bytes, forgot the exact number.)
+
+-------
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id LAA41262
+	for pups-liszt; Sun, 28 Nov 1999 11:36:39 +1100 (EST)
+
+From DSEAGRAV at toad.xkl.com  Sun Nov 28 10:35:47 1999
+From: DSEAGRAV at toad.xkl.com (Daniel A. Seagraves)
+Date: Sat, 27 Nov 1999 16:35:47 -0800
+Subject: 2.11BSD boot looping
+Message-ID: <13503043955.14.DSEAGRAV@toad.xkl.com>
+
+
+It's looping around at 157702.
+
+157702 contains 001776
+
+-------
+
+
+From simul8 at simul8.demon.co.uk  Tue Nov 30 00:55:49 1999
+From: simul8 at simul8.demon.co.uk (James Lothian)
+Date: Mon, 29 Nov 1999 14:55:49 +0000
+Subject: 2.11BSD boot looping
+References: <13503043955.14.DSEAGRAV@toad.xkl.com>
+Message-ID: <384293F5.959724D5@simul8.demon.co.uk>
+
+For what it's worth, this does sound suspiciously like what the 4.3
+boot code did with the Viking. As far as I can remember, there is a 
+flag in one of the UDA50 registers that is set to 1 one the device
+interrupts. The 4.3 boot code runs the UDA50 with interrupts disabled,
+but polls this flag to find out when the controller has finished a
+command.
+On the UDA50, even if interrupts are disabled, this flag gets set. On
+the viking, it doesn't. I can't remember the exact change I made, but I
+got it from the sources for some later version of 4.3, which I probably
+found on the internet. I'll try firing the beast up tonight, and see if
+I
+can figure out what I did. 
+
+My hacked around version of UW 4.3+NFS that Michael Sokolov uploaded
+to PUPS should also contain this modification. Somebody could try 
+comparing my version to the original UW version -- they're both in the
+archive, as far as I know.
+
+James
+
+"Daniel A. Seagraves" wrote:
+> 
+> It's looping around at 157702.
+> 
+> 157702 contains 001776
+> 
+> -------
+
+
+From sms at moe.2bsd.com  Tue Nov 30 08:07:48 1999
+From: sms at moe.2bsd.com (Steven M. Schultz)
+Date: Mon, 29 Nov 1999 14:07:48 -0800 (PST)
+Subject: 2.11BSD boot looping
+Message-ID: <199911292207.OAA02606@moe.2bsd.com>
+
+Hi -
+
+> From: James Lothian <simul8 at simul8.demon.co.uk>
+> For what it's worth, this does sound suspiciously like what the 4.3
+> boot code did with the Viking. As far as I can remember, there is a 
+> flag in one of the UDA50 registers that is set to 1 one the device
+> interrupts. The 4.3 boot code runs the UDA50 with interrupts disabled,
+
+	Actually it's in the response packet rather than a UDA 'register' but
+	yep - that sounds very familiar.
+
+> but polls this flag to find out when the controller has finished a
+> command.
+> On the UDA50, even if interrupts are disabled, this flag gets set. On
+> the viking, it doesn't. I can't remember the exact change I made, but I
+
+	At least one of the changes was to give the MSCP adaptor a vector 
+	during the 3 or 4 step init process.   Normally 4.3/2.11 didn't bother
+	to give a vector since interrupts were disabled.   It doesn't
+	reall matter what the vector is as long as it's non zero - the
+	value used was 0154 (primary/1st MSCP adaptor).
+
+	Some other 3rd party adaptors (can't recall if it was Dilog or
+	Emulex or ...) had the same problem.
+
+> "Daniel A. Seagraves" wrote:
+> > 
+> > It's looping around at 157702.
+> > 
+> > 157702 contains 001776
+
+	Hmmm, I wonder if that's in the bootblock code or the actual boot
+	program. 
+
+	The standalone MSCP driver in 2.11 has the "give a vector to the
+	adaptor" change  so my guess is that the bootblock is where the
+	looping is happening.  The bootbock (rauboot.s from /sys/mdec)
+	relocates itself to 0160000-01000 or 0157000 so a loop at 0157702
+	would be where the 'racmd:' routine is looping waiting for a
+	command to complete (or the adaptor to come ready the first time).
+
+	I thought the same "give a vector" change had been made to rauboot.s
+	but it would appear that's not the case ;-(
+
+	Steven Schultz
+
+Received: (from major at localhost)
+	by minnie.cs.adfa.edu.au (8.9.3/8.9.3) id CAA59602
+	for pups-liszt; Wed, 1 Dec 1999 02:59:41 +1100 (EST)
+

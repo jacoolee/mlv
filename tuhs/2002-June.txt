@@ -1,0 +1,717 @@
+From langj at bellsouth.net  Tue Jun 18 10:41:36 2002
+From: langj at bellsouth.net (joseph lang)
+Date: Mon, 17 Jun 2002 20:41:36 -0400
+Subject: [pups] bsd2.11 kernel compile
+Message-ID: <3D0E81C0.9046BF5D@bellsouth.net>
+
+I am building a PDP 11 from junked parts and have it 
+mostly working. I'm now installing BSD 2.11 and have run into 
+a problem i could use some help with.
+
+When compiling a new kernel (to include network) I get an error
+
+ld: too big for type 431
+*** exit 2
+
+I assume this error is due to one of the overlays being too 
+large. (this is pointed out in the install docs)
+
+How do I figure out which overlay (or base) is the problem?
+The random module shuffle in the documents only has 10 million 
+combinations and at 30 minutes to compile, well I'm not going
+to live that long. 
+
+Is there a more scientific way to arrange the overlays?
+Am I missing something obvious?
+
+joe lang
+langj at bellsouth.net
+
+
+From chd_1 at nktelco.net  Tue Jun 18 12:40:55 2002
+From: chd_1 at nktelco.net (Chuck Dickman)
+Date: Mon, 17 Jun 2002 22:40:55 -0400
+Subject: [pups] bsd2.11 kernel compile
+References: <3D0E81C0.9046BF5D@bellsouth.net>
+Message-ID: <3D0E9DB7.988203A@nktelco.net>
+
+joseph lang wrote:
+> When compiling a new kernel (to include network) I get an error
+> 
+> ld: too big for type 431
+> *** exit 2
+> 
+> I assume this error is due to one of the overlays being too
+> large. (this is pointed out in the install docs)
+
+During the compile 'size' outputs a list of the sizes of the
+overlays. Look at the output. For mine....
+
+# size unix	! the OS kernel                                           
+text    data    bss     dec     hex
+55296   6492    20738   82526   1425e   total text: 106752
+	overlays: 7744,7360,7872,7296,3072,7680,4864,5568
+# size netnix	! the network code
+text    data    bss     dec     hex
+60864   2362    38448   101674  18d2a
+                       
+ 
+> How do I figure out which overlay (or base) is the problem?
+
+The base must be less than 7 8k pages or 57344(decimal) bytes.
+Each overlay must be less than 8k bytes or 8192(decimal).
+The network code is not overlayed, so you have 8 pages or the
+full 64k. 
+
+> Is there a more scientific way to arrange the overlays?
+
+To make it work, just get the sizes below the limits. The 
+optimal arrangement would be placing the code in such that
+the overlay changes were minimized. So... move your system
+disk drivers into base and change the configuration to
+remove any hardware you don't actually have. 
+
+> Am I missing something obvious?
+
+No, it just requires some tweeking.....
+
+> joe lang
+
+Good luck,
+
+-chuck
+
+
+From sms at 2BSD.COM  Tue Jun 18 13:11:15 2002
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Mon, 17 Jun 2002 20:11:15 -0700 (PDT)
+Subject: [pups] bsd2.11 kernel compile
+Message-ID: <200206180311.g5I3BF925792@moe.2bsd.com>
+
+Hi!
+
+> From: "Chuck Dickman" <chd_1 at nktelco.net>
+
+	I see you beat me to the answer ;)
+
+> During the compile 'size' outputs a list of the sizes of the
+> overlays. Look at the output. For mine....
+> 
+> > How do I figure out which overlay (or base) is the problem?
+> 
+> The base must be less than 7 8k pages or 57344(decimal) bytes.
+> Each overlay must be less than 8k bytes or 8192(decimal).
+> The network code is not overlayed, so you have 8 pages or the
+> full 64k. 
+
+	And you use "size" on the .o files to see how much each object file
+	contributes to an overlay.
+
+	With the exception of a few .o files which *must* be in the base
+	segment (and these are identified in the Makefile) anything can go
+	anywhere it will fit.  The overlay switching is extremely efficient
+	so don't worry about the 'affinity' of modules too much.
+
+	Oh, it should be mentioned that it is not legal to have an empty 
+	(0 length) overlay except at the end - i.e. you can't have overlay 3
+	be 0 bytes if overlay 4 or higher has nonzero size.
+
+> To make it work, just get the sizes below the limits. The 
+> optimal arrangement would be placing the code in such that
+> the overlay changes were minimized. So... move your system
+> disk drivers into base and change the configuration to
+> remove any hardware you don't actually have. 
+	
+	With the exception of perhaps the tty driver for the specific serial
+	devices present on the system it's not worth trying to pack things
+	"optimally".   The overhead of overlays is inhererent in the function
+	prologue and epilogue - the only extra overhead of actually switching
+	overlays is stuffing ~two words or so into the MMU registers.
+
+	DO NOT remove anything from the actual OV lines in the makefile - just
+	make sure you define/configure devices as not being present in the
+	config file (by saying you have 0 of them).  Then the .o files do
+	not take up any space and can be segregated into unused overlays
+	at the end (OV9 or 10 or so).
+
+	Good Luck!
+
+	Steven Schultz
+	sms at 2bsd.com
+
+
+From jkunz at unixag-kl.fh-kl.de  Tue Jun 18 17:55:12 2002
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Tue, 18 Jun 2002 09:55:12 +0200
+Subject: [pups] bsd2.11 kernel compile
+In-Reply-To: <3D0E81C0.9046BF5D@bellsouth.net>; from langj@bellsouth.net on Tue, Jun 18, 2002 at 02:41:36 CEST
+References: <3D0E81C0.9046BF5D@bellsouth.net>
+Message-ID: <20020618095512.I163999@MissSophie.unixag-kl.fh-kl.de>
+
+On 2002.06.18 02:41 joseph lang wrote:
+
+> How do I figure out which overlay (or base) is the problem?
+Add this to your Makefile and you can "make" a list of the individual
+overlay sizes:
+
+sizes: sizes.awk
+	@echo -n "BASE	" ; size ${BASE} | awk -f sizes.awk
+	@echo -n "OV1	" ; size ${OV1} | awk -f sizes.awk
+	@echo -n "OV2	" ; size ${OV2} | awk -f sizes.awk
+	@echo -n "OV3	" ; size ${OV3} | awk -f sizes.awk
+	@echo -n "OV4	" ; size ${OV4} | awk -f sizes.awk
+	@echo -n "OV5	" ; size ${OV5} | awk -f sizes.awk
+	@echo -n "OV6	" ; size ${OV6} | awk -f sizes.awk
+	@echo -n "OV7	" ; size ${OV7} | awk -f sizes.awk
+	@echo -n "OV8	" ; size ${OV8} | awk -f sizes.awk
+	@echo -n "OV9	" ; size ${OV9} | awk -f sizes.awk
+
+sizeb: FRC
+	size ${BASE}
+
+size1: FRC
+	size ${OV1}
+
+size2: FRC
+	size ${OV2}
+
+size3: FRC
+	size ${OV3}
+
+size4: FRC
+	size ${OV4}
+
+size5: FRC
+	size ${OV5}
+
+size6: FRC
+	size ${OV6}
+
+size7: FRC
+	size ${OV7}
+
+size8: FRC
+	size ${OV8}
+
+size9: FRC
+	size ${OV9}
+
+
+sizes.awk: FRC
+	echo 'BEGIN {sum=0' > sizes.awk
+	echo 'sum2=0' >> sizes.awk
+	echo 'sum3=0}' >> sizes.awk
+	echo '/^[0-9]/ {sum=sum+$$1' >> sizes.awk
+	echo 'sum2=sum2+$$1+$$2' >> sizes.awk
+	echo 'sum3=sum3+$$4}' >> sizes.awk
+	echo 'END {print "text: "sum "	text+data: " sum2
+"	dec: " sum3}' >> sizes.awk
+
+-- 
+
+
+
+tschüß,
+         Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+From langj at bellsouth.net  Wed Jun 19 10:42:00 2002
+From: langj at bellsouth.net (joseph lang)
+Date: Tue, 18 Jun 2002 20:42:00 -0400
+Subject: [pups] bsd2.11 kernel compile
+References: <3D0E81C0.9046BF5D@bellsouth.net>
+Message-ID: <3D0FD358.5AE5568F@bellsouth.net>
+
+Thank you for your quick and accurate answers. 
+
+My "junk-box" 11 (jb11.notms.net) is happy and 
+on my local network.
+
+For those of you who may be interested the system is built
+entirely from scrap..
+
+The CPU is from a Decserver 550. It's a j11 (18mhz.) with 
+1.5 meg of ram. and pdp11/53 proms. I bought the RQDX3 on 
+E-bay. The disk drive was from My ever decreasing pile of
+MFM drives (rd32)
+The chassis is home built. (stop laughing it looks pretty 
+good ;-) The power supply is an open frame switcher from a 
+local electronics scrap dealer. I wire-wrapped the power-on
+reset and line time clock generator circuits. The boards 
+are in a H-9270 (Q-18) backplane with additional lines
+wrapped to make it Q-22.
+
+It sounds like a real kludge! Anybody got a spare BA23? ;-) 
+
+I loaded the root filesystem with vtserver. Thanks Warren!
+VTC and vtserver were used to load /usr. I had to strip 
+a lot of stuff from /usr to get it to fit on a single 
+drive. (games doc ingres and man pages)
+
+# df
+Filesystem  1K-blocks     Used    Avail Capacity  Mounted on
+/dev/ra0a        9842     2952     6890    30%    /
+/dev/ra0c       26084    14966    11118    57%    /usr
+
+
+As soon as I build a copy of Chuck Dickman's ATA board
+I'll load up everything. 
+
+joe lang
+
+
+From MAILER-DAEMON16850 at google.com  Sat Jun 22 16:54:36 2002
+From: MAILER-DAEMON16850 at google.com (Farmgirl28237)
+Date: Sat, 22 Jun 2002 10:54:36 +0400
+Subject: [pups] Real ZOO web site, welcome! ID<sxsvCwxkv1ruj>
+Message-ID: <200206220651.g5M6pSD05928@minnie.tuhs.org>
+
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20020622/db42269b/attachment.html>
+
+From MAILER-DAEMON4874 at google.com  Sat Jun 22 16:54:40 2002
+From: MAILER-DAEMON4874 at google.com (Farmgirl10326)
+Date: Sat, 22 Jun 2002 10:54:40 +0400
+Subject: [pups] Real ZOO web site, welcome! ID<sxsvCplqqlh1fv1dgid1r}1dx>
+Message-ID: <200206220651.g5M6pXD05933@minnie.tuhs.org>
+
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20020622/2bffe8d4/attachment.html>
+
+From MAILER-DAEMON25234 at google.com  Sat Jun 22 16:54:40 2002
+From: MAILER-DAEMON25234 at google.com (Farmgirl28914)
+Date: Sat, 22 Jun 2002 10:54:40 +0400
+Subject: [pups] Real ZOO web site, welcome! ID<sxsvCplqqlh1wxkv1ruj>
+Message-ID: <200206220651.g5M6pXD05934@minnie.tuhs.org>
+
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20020622/99e22b24/attachment.html>
+
+From randy.merkel at veritas.com  Tue Jun 25 02:45:17 2002
+From: randy.merkel at veritas.com (Randy Merkel)
+Date: Mon, 24 Jun 2002 09:45:17 -0700
+Subject: [pups] Real ZOO web site, welcome! ID<sxsvCplqqlh1wxkv1ruj>
+Message-ID: <0569ECB03E87D4119CE600508BAE298D016495CD@milo-reference.nsmg.veritas.com>
+
+Golly, I think we have a spammer ;)
+ 
+ 
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20020624/a0d79208/attachment.html>
+
+From wkt at minnie.tuhs.org  Tue Jun 25 17:23:55 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Tue, 25 Jun 2002 17:23:55 +1000 (EST)
+Subject: [pups] Real ZOO web site, welcome! ID<sxsvCplqqlh1wxkv1ruj>
+In-Reply-To: <Pine.LNX.4.44.0206251303050.4622-100000@erai.esi.com.au> from Dave
+ Horsfall at "Jun 25, 2002 01:03:54 pm"
+Message-ID: <200206250723.g5P7NuW40061@minnie.tuhs.org>
+
+In article by Dave Horsfall:
+> On Mon, 24 Jun 2002, Randy Merkel wrote:
+> > Golly, I think we have a spammer ;)
+> Either he/she/it took the trouble to subscribe (few do), or the list
+> is wide open; if the latter, expect more crap.
+
+Open no more, and I have to approve subscriptions too :-)
+
+	Warren
+
+
+From szigi at ik.bme.hu  Tue Jun  4 21:53:50 2002
+From: szigi at ik.bme.hu (Szigeti Szabolcs)
+Date: Tue, 4 Jun 2002 13:53:50 +0200
+Subject: [TUHS] Re: Porting Unix v6 to i386
+Message-ID: <006a01c20bbe$7e5c86c0$26f34298@magosix>
+
+Hi folks!
+
+I've just joined your mailing list, and while looking at the archives, i saw
+this discussion on porting V6 to Intel.
+Well, back in '92, in a university scinence students' competition, I ported
+v6 to intel286 in protected mode. (I got second place, the winner was a 3D
+animation prog, which is more spectacular, than a # prompt :-)
+
+I used Borland C to compile, with some extra mungling the assembly code ( i
+can't remember why).
+
+The hard part was to understand the protected mode, and to write the low
+level stuff. Other things, like filesystem, etc. compiled with hardly any
+modification. (Had to change =+ to =+, introduce long insted of int[2],
+etc.). It has floppy, ide, kbd, parallel, serial and vga drivers.
+
+It got to full multiuser operation, but there are bugs and stupid codings
+certainly. The C compiler, nroff, and some other parts were not ported.
+(Yes, I used Borland C to compile the programs, and a tool to convert it to
+a.out :-)
+
+I don't know if i can now legally give out parts of the original code, if
+anyone wants to experiment with it (some parts are pretty ugly, because i
+intedned to rewrite it, but never did, and the parts of the comments are in
+Hungarian), drop me an email (though i'm now doing my MBA thesis, so might
+not answer immediatey). If there is interest, I can summarize my
+experiences.
+
+I've not looked it since several years, so i might not remember every
+detail, but there are some interesting point, and it was great fun to do.
+
+Regards,
+
+    Szabolcs Szigeti
+
+
+
+
+
+
+
+
+From wkt at minnie.tuhs.org  Wed Jun  5 09:34:50 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 5 Jun 2002 09:34:50 +1000 (EST)
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <006a01c20bbe$7e5c86c0$26f34298@magosix> from Szigeti Szabolcs at
+ "Jun 4, 2002 01:53:50 pm"
+Message-ID: <200206042334.g54NYoN86308@minnie.tuhs.org>
+
+In article by Szigeti Szabolcs:
+> I don't know if i can now legally give out parts of the original code, if
+> anyone wants to experiment with it (some parts are pretty ugly, because i
+> intedned to rewrite it, but never did, and the parts of the comments are in
+> Hungarian), drop me an email (though i'm now doing my MBA thesis, so might
+> not answer immediatey). If there is interest, I can summarize my
+> experiences.
+
+Hi, yes it's now legal to distribute your code, as Caldera's license
+allows for distribution of changes, see
+http://www.tuhs.org/Archive/Caldera-license.pdf
+
+I'm the guy who runs the Unix Archive, so I'd be very happy to take a copy
+of your work and add it to the archive.
+
+Cheers,
+	Warren
+
+
+From johnzulu at yahoo.com  Wed Jun  5 21:54:12 2002
+From: johnzulu at yahoo.com (John Chung)
+Date: Wed, 5 Jun 2002 04:54:12 -0700 (PDT)
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <200206050222.g552MHm88208@minnie.tuhs.org>
+Message-ID: <20020605115412.51082.qmail@web12803.mail.yahoo.com>
+
+ Where can I obtain the program nowadays? It is going
+to be fun playing it using my x86 machine. :)
+
+__________________________________________________
+Do You Yahoo!?
+Yahoo! - Official partner of 2002 FIFA World Cup
+http://fifaworldcup.yahoo.com
+
+
+From iking at microsoft.com  Thu Jun  6 04:49:15 2002
+From: iking at microsoft.com (Ian King)
+Date: Wed, 5 Jun 2002 11:49:15 -0700
+Subject: [TUHS] Re: Porting Unix v6 to i386
+Message-ID: <8D25F244B8274141B5D313CA4823F39C04147F06@red-msg-06.redmond.corp.microsoft.com>
+
+I think this would be a great addition to the archive!  I'm glad I
+didn't throw out that old 286 motherboard yet.  :-)  -- Ian 
+
+-----Original Message-----
+From: Warren Toomey [mailto:wkt at minnie.tuhs.org] 
+Sent: Tuesday, June 04, 2002 4:35 PM
+To: Szigeti Szabolcs
+Cc: tuhs at minnie.tuhs.org
+Subject: Re: [TUHS] Re: Porting Unix v6 to i386
+
+
+In article by Szigeti Szabolcs:
+> I don't know if i can now legally give out parts of the original code,
+
+> if anyone wants to experiment with it (some parts are pretty ugly, 
+> because i intedned to rewrite it, but never did, and the parts of the 
+> comments are in Hungarian), drop me an email (though i'm now doing my 
+> MBA thesis, so might not answer immediatey). If there is interest, I 
+> can summarize my experiences.
+
+Hi, yes it's now legal to distribute your code, as Caldera's license
+allows for distribution of changes, see
+http://www.tuhs.org/Archive/Caldera-license.pdf
+
+I'm the guy who runs the Unix Archive, so I'd be very happy to take a
+copy of your work and add it to the archive.
+
+Cheers,
+	Warren
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From szigi at ik.bme.hu  Thu Jun  6 17:07:35 2002
+From: szigi at ik.bme.hu (Szigeti Szabolcs)
+Date: Thu, 6 Jun 2002 09:07:35 +0200
+Subject: [TUHS] Re: Porting Unix v6 to i386
+References: <8D25F244B8274141B5D313CA4823F39C04147F06@red-msg-06.redmond.corp.microsoft.com>
+Message-ID: <002c01c20d28$d5f1c600$26f34298@magosix>
+
+
+> I think this would be a great addition to the archive!  I'm glad I
+> didn't throw out that old 286 motherboard yet.  :-)  -- Ian
+
+Hi,
+
+I've sent the stuff to Warren, so it should get to the archives. Mind you,
+it needs some hacking to get it running, but it isn't impossible.
+
+
+Cheers,
+
+    Szabolcs
+
+
+
+
+From wkt at minnie.tuhs.org  Thu Jun  6 20:20:16 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Thu, 6 Jun 2002 20:20:16 +1000 (EST)
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <002c01c20d28$d5f1c600$26f34298@magosix> from Szigeti Szabolcs at
+ "Jun 6, 2002 09:07:35 am"
+Message-ID: <200206061020.g56AKH309734@minnie.tuhs.org>
+
+In article by Szigeti Szabolcs:
+> I've sent the stuff to Warren, so it should get to the archives. Mind you,
+> it needs some hacking to get it running, but it isn't impossible.
+> Cheers,
+>     Szabolcs
+
+I'll upload it soon. Meanwhile, instead of a DOS C compiler, people
+should be able Bruce Evans' bcc or C86 as the compiler, which would
+eventually allow the system to compile itself.
+
+	[ Um, maybe once V7 gets ported, as I'd bet these compilers
+	  will require the stdio library. ]
+
+Just a thought.
+
+	Warren
+
+
+From mike at ducky.net  Fri Jun  7 03:02:57 2002
+From: mike at ducky.net (Mike Haertel)
+Date: Thu, 6 Jun 2002 10:02:57 -0700 (PDT)
+Subject: [TUHS] Re: Porting Unix v6 to i386
+Message-ID: <200206061702.g56H2v3b010851@ducky.net>
+
+>I'll upload it soon. Meanwhile, instead of a DOS C compiler, people
+>should be able Bruce Evans' bcc or C86 as the compiler, which would
+>eventually allow the system to compile itself.
+
+The source code to the Watcom compilers has also finally
+been released.
+
+
+From peter.jeremy at alcatel.com.au  Wed Jun 12 08:31:16 2002
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Wed, 12 Jun 2002 08:31:16 +1000
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <200206061702.g56H2v3b010851@ducky.net>; from mike@ducky.net on
+ Thu, Jun 06, 2002 at 10:02:57AM -0700
+References: <200206061702.g56H2v3b010851@ducky.net>
+Message-ID: <20020612083116.J680@gsmx07.alcatel.com.au>
+
+On 2002-Jun-06 10:02:57 -0700, Mike Haertel <mike at ducky.net> wrote:
+>The source code to the Watcom compilers has also finally
+>been released.
+
+Where?  http://www.openwatcom.com/ is still only talking about the
+binary patch kit.  The "current status" indicates (mid-May) "Sybase
+has decided on an Open Source License and is currently awaiting OSI
+approval".
+
+Peter
+
+
+From mike at ducky.net  Wed Jun 12 08:52:26 2002
+From: mike at ducky.net (Mike Haertel)
+Date: Tue, 11 Jun 2002 15:52:26 -0700 (PDT)
+Subject: [TUHS] Re: Porting Unix v6 to i386
+In-Reply-To: <20020612083116.J680@gsmx07.alcatel.com.au>
+Message-ID: <200206112252.g5BMqQsL030737@ducky.net>
+
+>On 2002-Jun-06 10:02:57 -0700, Mike Haertel <mike at ducky.net> wrote:
+>>The source code to the Watcom compilers has also finally
+>>been released.
+>
+>Where?  http://www.openwatcom.com/ is still only talking about the
+>binary patch kit.
+
+Argh.  I already replied to this privately before noticing it had
+been sent to the list.  I sent Peter a longer reply, but the quick
+version is that http://www.openwatcom.org/download_lic.html will
+get you to the source code.
+
+Although their compiler will generate 8086 code, it seems reasonably
+unlikely that the compiler itself can be made to fit on an 8086.
+
+
+From drwho8 at worldnet.att.net  Thu Jun 20 11:20:54 2002
+From: drwho8 at worldnet.att.net (Gregg C Levine)
+Date: Wed, 19 Jun 2002 21:20:54 -0400
+Subject: [TUHS] Simh and networking, and any of the available 2.11BSD collections
+Message-ID: <000901c217f8$bcfb28a0$a8bc580c@who>
+
+Hello from Gregg C Levine
+I've just joined this list, so bear with me. I am developing applications
+that will be using the protcols covered in DECnet to access a running PDP-11
+system. Actually it is running, but its a SimH program posing as a
+PDP-11/23. I have downloaded the boot images, especially the 2.11BSD system
+that is available, and booted it under the SimH simulator. Any suggestions
+as to how I take this one step further? This is running on both Windows, and
+Linux. But the DECnet programs were built on Slackware Linux.
+Gregg C Levine drwho8 at worldnet.att.net
+"How many floors does this TARDIS of yours have, anyway?"
+
+
+
+From drwho8 at worldnet.att.net  Tue Jun 25 22:22:48 2002
+From: drwho8 at worldnet.att.net (Gregg C Levine)
+Date: Tue, 25 Jun 2002 08:22:48 -0400
+Subject: [TUHS] FW: Missing pack from the UnixV6 distros based at the TUH site
+Message-ID: <000d01c21c43$0583b760$6260580c@who>
+
+Hello from Gregg C Levine normally with Jedi Knight Computers
+Forwarded from a posting on news:alt.sys.pdp-11 that I made. Rather then
+repost the entire message in perpetuity I decided to forward the whole
+business to this list. As I am still deciding the best way to make use of
+the whole file tree, without an actual machine living here, I decided to
+download everything to this one, and then wait.
+Gregg C Levine drwho8 at att.net
+"How many floors does this TARDIS of yours have, anyway?"
+"Gregg C Levine" <drwho8 at att.net> wrote in message
+news:<20020625121449.XOEM20423.mtiwmhc21.worldnet.att.net at who>...
+> Hello from Gregg C Levine
+> Has anyone actually found this to happen? The TUH ftp site, has on it, a
+> number of actual distributions for UNIX for the PDP-11. One of them was
+> assembled by Tim Shoppa from a discarded machine. They were
+> subsequently uploaded to that site. However on of the packs is missing.
+> It is this one, "xxdp_with_1123.rl02:    XXDP+ on RL02 pack, bootable."
+> That is from the README file associated with the entire directory.
+> Everything else is there, that one is not. What did happen to it, I
+wonder.
+> Gregg C Levine drwho8 at att.net
+>
+>
+
+
+
+From wkt at minnie.tuhs.org  Wed Jun 26 08:47:08 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 26 Jun 2002 08:47:08 +1000 (EST)
+Subject: [TUHS] FW: Missing pack from the UnixV6 distros based at the TUH
+ site
+In-Reply-To: <000d01c21c43$0583b760$6260580c@who> from Gregg C Levine at "Jun
+ 25, 2002 08:22:48 am"
+Message-ID: <200206252247.g5PMl8t48206@minnie.tuhs.org>
+
+In article by Gregg C Levine:
+> > It is this one, "xxdp_with_1123.rl02:    XXDP+ on RL02 pack, bootable."
+> > That is from the README file associated with the entire directory.
+> > Everything else is there, that one is not. What did happen to it, I
+> wonder.
+> > Gregg C Levine drwho8 at att.net
+
+I believe XXDP is still owned by Mentec, and hasn't been released under
+a suitable license for public distribution. I'd be happy to be proven
+wrong, though!
+
+	Warren
+
+
+From drwho8 at worldnet.att.net  Wed Jun 26 09:21:32 2002
+From: drwho8 at worldnet.att.net (Gregg C Levine)
+Date: Tue, 25 Jun 2002 19:21:32 -0400
+Subject: [TUHS] FW: Missing pack from the UnixV6 distros based at the TUH site
+References: <200206252247.g5PMl8t48206@minnie.tuhs.org>
+Message-ID: <000a01c21c9f$0b7e4e80$2c60580c@who>
+
+Hello from Gregg C Levine normallt with Jedi Knight Computers
+Very good then. When you, or someone else, have the time, can the README
+file be updated? Other wise, I have found the entire site, both WWW, and
+FTP, to be a gold mine of usual data, and information. Especially data.
+Gregg C Levine drwho8 at worldnet.att.net
+"How many floors does this TARDIS of yours have, anyway?"
+----- Original Message -----
+From: "Warren Toomey" <wkt at minnie.tuhs.org>
+To: "Gregg C Levine" <drwho8 at worldnet.att.net>
+Cc: "tuhs@ minnie.tuhs.org" <tuhs at minnie.tuhs.org>
+Sent: Tuesday, June 25, 2002 6:47 PM
+Subject: Re: [TUHS] FW: Missing pack from the UnixV6 distros based at the
+TUH site
+
+
+> In article by Gregg C Levine:
+> > > It is this one, "xxdp_with_1123.rl02:    XXDP+ on RL02 pack,
+bootable."
+> > > That is from the README file associated with the entire directory.
+> > > Everything else is there, that one is not. What did happen to it, I
+> > wonder.
+> > > Gregg C Levine drwho8 at att.net
+>
+> I believe XXDP is still owned by Mentec, and hasn't been released under
+> a suitable license for public distribution. I'd be happy to be proven
+> wrong, though!
+>
+> Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+
+From wkt at minnie.tuhs.org  Wed Jun 26 11:09:02 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 26 Jun 2002 11:09:02 +1000 (EST)
+Subject: [TUHS] FW: Missing pack from the UnixV6 distros based at the TUH
+ site
+In-Reply-To: <000a01c21c9f$0b7e4e80$2c60580c@who> from Gregg C Levine at "Jun
+ 25, 2002 07:21:32 pm"
+Message-ID: <200206260109.g5Q193R49544@minnie.tuhs.org>
+
+In article by Gregg C Levine:
+[xxdp is copyright]
+> Very good then. When you, or someone else, have the time, can the README
+> file be updated? Other wise, I have found the entire site, both WWW, and
+> FTP, to be a gold mine of usual data, and information. Especially data.
+
+Done!
+	Warren
+
+
+From drwho8 at worldnet.att.net  Sun Jun 30 02:27:47 2002
+From: drwho8 at worldnet.att.net (Gregg C Levine)
+Date: Sat, 29 Jun 2002 12:27:47 -0400
+Subject: [TUHS] The Tim Shoppa distribution of V6
+Message-ID: <000501c21f89$ee71a100$28ba580c@who>
+
+Hello again from Gregg C Levine
+On the FTP site, is a a V6 distribution contributed by Tim Shoppa. It is
+created for the PDP-11/23, and there is a good readme.txt file that explains
+the different images, and how they got there. However, has anyone actually
+gotten the distribution to boot, using a version of Simh? A text file of
+commands to be fed to the Simh program would be a great help.
+I have mine, built using the MingW compiler, and this is version 2.9-10.
+Also, if anyone has gotten it to boot on real hardware, that would a be a
+great plus.
+Gregg C Levine drwho8 at worldnet.att.net
+"How many floors does this TARDIS of yours have, anyway?"
+
+
+

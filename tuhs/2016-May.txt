@@ -1,0 +1,295 @@
+From ram at rkrishnan.org  Sun May  1 11:28:56 2016
+From: ram at rkrishnan.org (Ramakrishnan Muthukrishnan)
+Date: Sun, 01 May 2016 06:58:56 +0530
+Subject: [TUHS] Portals in 4.4 BSD
+In-Reply-To: <alpine.DEB.2.11.1604291108210.12603@grey.csi.cam.ac.uk>
+References: <1461920291.2703061.593186393.3DD04F16@webmail.messagingengine.com>
+ <alpine.DEB.2.11.1604291108210.12603@grey.csi.cam.ac.uk>
+Message-ID: <1462066136.2653464.594540825.0AB37B4D@webmail.messagingengine.com>
+
+On Fri, Apr 29, 2016, at 04:45 PM, Tony Finch wrote:
+> Ramakrishnan Muthukrishnan <ram at rkrishnan.org> wrote:
+> >
+> > I read with a lot of interest, an old Usenix paper by the late Richard
+> > Stevens on a system called "Portals": [...]
+> > Wondering if this survived in any existing, so called "modern" Unix.
+> 
+> A descendent of the original code is still present in DragonFlyBSD:
+> 
+> http://gitweb.dragonflybsd.org/dragonfly.git/tree/HEAD:/sys/vfs/portal
+> http://gitweb.dragonflybsd.org/dragonfly.git/tree/HEAD:/sbin/mount_portal
+> 
+> The facility still exists in NetBSD but it has been reimplemented on top
+> of puffs, the Pass-to-Userspace Framework File System development
+> interface.
+> 
+> http://netbsd.gw.com/cgi-bin/man-cgi?mount_portal
+> 
+> It survived in FreeBSD for a long time, but eventually was removed in
+> 2012
+> rather than being made multiprocessor-safe.
+> 
+> https://github.com/freebsd/freebsd/commit/efcca33ac515c354e18135425794400ea32406a8
+> 
+> It also got removed from OpenBSD in 2011.
+> 
+> http://cvsweb.openbsd.org/cgi-bin/cvsweb/src/sbin/mount_portal/Attic/mount_portal.8
+
+Thanks a lot, Tony. Looks like Portal is alive, at least in some of the
+BSD variants. I will try these out.
+
+-- 
+  Ramakrishnan
+
+
+From arnold at skeeve.com  Mon May  2 13:44:10 2016
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Mon, 02 May 2016 06:44:10 +0300
+Subject: [TUHS] interesting but long article on Dave Cutler,
+	of VMS and NT fame
+Message-ID: <201605020344.u423iA4p012452@skeeve.com>
+
+https://news.microsoft.com/features/the-engineers-engineer-computer-industry-luminaries-salute-dave-cutlers-five-decade-long-quest-for-quality/#sm.00000ni2wngtehe9rwkwmhfhom6ny
+
+Some of the statements about him seem exaggerated, but that's not
+surprising.  Anyone who's read "Showstopper!" will have a different
+picture of him than what's painted here.
+
+Arnold
+
+
+From cowan at mercury.ccil.org  Tue May  3 00:25:48 2016
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Mon, 2 May 2016 10:25:48 -0400
+Subject: [TUHS] interesting but long article on Dave Cutler,
+ of VMS and NT fame
+In-Reply-To: <201605020344.u423iA4p012452@skeeve.com>
+References: <201605020344.u423iA4p012452@skeeve.com>
+Message-ID: <20160502142548.GE29513@mercury.ccil.org>
+
+Aharon Robbins scripsit:
+
+> Some of the statements about him seem exaggerated, but that's not
+> surprising.  Anyone who's read "Showstopper!" will have a different
+> picture of him than what's painted here.
+
+After all, it's a Microsoft press release.  The reality distortion field
+is in full operation.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Even a refrigerator can conform to the XML Infoset, as long as it has
+a door sticker saying "No information items inside".  --Eve Maler
+
+
+From wkt at tuhs.org  Tue May  3 17:21:55 2016
+From: wkt at tuhs.org (Warren Toomey)
+Date: Tue, 3 May 2016 17:21:55 +1000
+Subject: [TUHS] PDP-7 Unix Progress
+Message-ID: <20160503072155.GA28307@minnie.tuhs.org>
+
+All, a status update on the PDP-7 Unix restoration project at
+https://github.com/DoctorWkt/pdp7-unix
+
+The system is pretty much complete now. We have as much of the original
+code working as we can. We have rewritten things like the shell and some
+other utilities (ls etc.). The ed editor and the native assembler both
+work. We also have written a user-mode PDP-7 simulator to test things
+and an assembler to make building things faster.
+
+The system boots up under SimH with a filesystem and you can see what things
+were like back in 1970.
+
+One big missing utility is roff. As of today, I've written a compiler that
+inputs a vaguely C-like language and outputs PDP-7 code. Using this, I've
+compiled a minimalist roff which is enough to format man pages. This is
+a separate project here: https://github.com/DoctorWkt/h-compiler
+
+Now we are hoping to get the Living Computer Museum people to bring it up
+on their real PDP-7. Unfortunately, it doesn't have a disk drive. The
+expected solution is to build a disk simulator with an FPGA and SD card.
+There is no time frame for this, but it is in the works.
+
+Thanks go to Phil Budne and Robert Swierczek for all their hard work
+in building and testing things, and also to Norman Wilson for supplying
+scans of the original documents.
+
+Cheers, Warren
+
+
+From wkt at tuhs.org  Wed May  4 12:12:40 2016
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 4 May 2016 12:12:40 +1000
+Subject: [TUHS] PDP-7 Unix Progress
+In-Reply-To: <57291BAF.6020507@aueb.gr>
+References: <20160503072155.GA28307@minnie.tuhs.org> <57291BAF.6020507@aueb.gr>
+Message-ID: <20160504021240.GA29896@minnie.tuhs.org>
+
+On Wed, May 04, 2016 at 12:44:15AM +0300, Diomidis Spinellis wrote:
+> This would have found any code from the PDP-7 Unix that appeared in the
+> First Edition.  (I was hoping that some PDP-7 instruction sequences might be
+> the same in PDP-11.)
+> Unsurprisingly, nothing came out.
+
+No, the instruction set is completely different. The PDP-11 ISA is a paradise
+compared to the spartan PDP-7 ISA.
+
+Cheers, Warren
+
+
+From doug at cs.dartmouth.edu  Wed May  4 12:28:03 2016
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Tue, 03 May 2016 22:28:03 -0400
+Subject: [TUHS] PDP-7 Unix Progress
+Message-ID: <201605040228.u442S37b013394@coolidge.cs.Dartmouth.EDU>
+
+> Now we are hoping to  get the Living Computer Museum people to bring it up
+on their real PDP-7. 
+
+Truly a fantastic prospect! The only Unix the museum has running is
+on a 3B2--a curious byway perhaps, but of little historic interest.
+The PDP-7 version would be a tremendous coup.
+
+doug
+
+
+From grog at lemis.com  Wed May  4 12:42:39 2016
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Wed, 4 May 2016 12:42:39 +1000
+Subject: [TUHS] PDP-7 Unix Progress
+In-Reply-To: <20160504021240.GA29896@minnie.tuhs.org>
+References: <20160503072155.GA28307@minnie.tuhs.org> <57291BAF.6020507@aueb.gr>
+ <20160504021240.GA29896@minnie.tuhs.org>
+Message-ID: <20160504024239.GI15924@eureka.lemis.com>
+
+On Wednesday,  4 May 2016 at 12:12:40 +1000, Warren Toomey wrote:
+> On Wed, May 04, 2016 at 12:44:15AM +0300, Diomidis Spinellis wrote:
+>> This would have found any code from the PDP-7 Unix that appeared in the
+>> First Edition.  (I was hoping that some PDP-7 instruction sequences might be
+>> the same in PDP-11.)
+>> Unsurprisingly, nothing came out.
+>
+> No, the instruction set is completely different. The PDP-11 ISA is a
+> paradise compared to the spartan PDP-7 ISA.
+
+In case you're interested, I've located a reference manual at
+http://bitsavers.trailing-edge.com/pdf/dec/pdp7/F-75P_PDP7prelimUM_Dec64.pdf
+
+The instruction set is very reminiscent of the PDP-8, including the
+"operate" class "microcodding" instructions (starting with 7) and
+autoindexing via indirect access to locations 10 to 17.  Even the
+mnemonics and the assembler syntax are very similar to the -8.
+
+Certainly the PDP-11 is an improvement, but there's something
+nostalgic about the -7 instruction set.
+
+Greg
+--
+Sent from my desktop computer.
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft mail program
+reports problems, please read http://lemis.com/broken-MUA
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 181 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20160504/67b6880f/attachment.sig>
+
+From lm at mcvoy.com  Wed May  4 12:44:46 2016
+From: lm at mcvoy.com (Larry McVoy)
+Date: Tue, 3 May 2016 19:44:46 -0700
+Subject: [TUHS] PDP-7 Unix Progress
+In-Reply-To: <20160504024239.GI15924@eureka.lemis.com>
+References: <20160503072155.GA28307@minnie.tuhs.org> <57291BAF.6020507@aueb.gr>
+ <20160504021240.GA29896@minnie.tuhs.org>
+ <20160504024239.GI15924@eureka.lemis.com>
+Message-ID: <20160504024446.GA23269@mcvoy.com>
+
+> Certainly the PDP-11 is an improvement, but there's something
+> nostalgic about the -7 instruction set.
+
+Umm, as a dude that assembly after the PDP-11 I just yearn for something
+as pleasant as PDP-11.
+
+
+From pechter at gmail.com  Wed May  4 13:59:09 2016
+From: pechter at gmail.com (William Pechter)
+Date: Tue, 3 May 2016 23:59:09 -0400
+Subject: [TUHS] PDP-7 Unix Progress
+In-Reply-To: <201605040228.u442S37b013394@coolidge.cs.Dartmouth.EDU>
+References: <201605040228.u442S37b013394@coolidge.cs.Dartmouth.EDU>
+Message-ID: <5729738D.9000904@gmail.com>
+
+Doug McIlroy wrote:
+>> Now we are hoping to  get the Living Computer Museum people to bring it up
+> on their real PDP-7.
+>
+> Truly a fantastic prospect! The only Unix the museum has running is
+> on a 3B2--a curious byway perhaps, but of little historic interest.
+> The PDP-7 version would be a tremendous coup.
+>
+> doug
+
+Actually, they have a V7 or 2.xBSD on an 11/70 which used to be the 
+Microsoft Corporate Email Server...
+
+My kid was playing Hangman on it when we were there last year.
+
+My idea of a perfect job would be to work in a museum like that as a 
+tour guide...
+
+Bill
+
+-- 
+Digital had it then.  Don't you wish you could buy it now!
+pechter-at-gmail.com  http://xkcd.com/705/
+
+
+
+From doug at cs.dartmouth.edu  Tue May 31 17:27:43 2016
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Tue, 31 May 2016 03:27:43 -0400
+Subject: [TUHS] etymology of read -u
+Message-ID: <201605310727.u4V7Rhmp030422@coolidge.cs.Dartmouth.EDU>
+
+What's the mnmonic significance, if any, of the u in
+the bash builtin read -u for reading from a specified
+file descriptor? Evidently both f and d had already been
+taken in analogy to usage in some other commands.
+
+The best I can think of is u as in "tape unit", which
+was common usage back in the days of READ INPUT TAPE 5.
+That would make it the work of an old timer, maybe Dave Korn?
+
+
+
+From chet.ramey at case.edu  Tue May 31 22:55:34 2016
+From: chet.ramey at case.edu (Chet Ramey)
+Date: Tue, 31 May 2016 08:55:34 -0400
+Subject: [TUHS] etymology of read -u
+In-Reply-To: <201605310727.u4V7Rhmp030422@coolidge.cs.Dartmouth.EDU>
+References: <201605310727.u4V7Rhmp030422@coolidge.cs.Dartmouth.EDU>
+Message-ID: <d1314ee2-e182-2157-7781-2d7eed4b3127@case.edu>
+
+On 5/31/16 3:27 AM, Doug McIlroy wrote:
+> What's the mnmonic significance, if any, of the u in
+> the bash builtin read -u for reading from a specified
+> file descriptor? Evidently both f and d had already been
+> taken in analogy to usage in some other commands.
+> 
+> The best I can think of is u as in "tape unit", which
+> was common usage back in the days of READ INPUT TAPE 5.
+> That would make it the work of an old timer, maybe Dave Korn?
+
+I picked it up from ksh many years ago, and assumed at the time that it
+meant `unit'.
+
+-- 
+``The lyf so short, the craft so long to lerne.'' - Chaucer
+		 ``Ars longa, vita brevis'' - Hippocrates
+Chet Ramey, ITS, CWRU    chet at case.edu    http://cnswww.cns.cwru.edu/~chet/
+
+

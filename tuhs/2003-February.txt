@@ -1,0 +1,4982 @@
+From iking at killthewabbit.org  Fri Feb  7 18:18:37 2003
+From: iking at killthewabbit.org (Ian King)
+Date: Fri, 7 Feb 2003 00:18:37 -0800
+Subject: [pups] Bootable media for 2.11BSD
+Message-ID: <000501c2ce81$84244df0$450010ac@dawabbit>
+
+I think I've done enough homework and legwork to feel like I can ask the
+list a question now.  :-)  I've acquired an 11/73 and want to install
+2.11BSD on it; it includes a TK50 and RX33.  I also have a DECstation
+5000/200 with a TK50, so my first efforts were to dd the files onto a tape.
+Depending on how I hacked around, I either got a "non-bootable media" error
+or "Error 21 - drive error".  The two ways I tried to put the boot files on
+were per the instructions (cat mtboot mtboot boot | dd), and not per the
+instructions (dd mtboot, dd mtboot, dd boot).  Depending on how I hacked
+around, I either got a "non-bootable media" error or "Error 21 - drive
+error" from the boot ROM monitor.
+
+With no way to troubleshoot the TK50 drive, I then tried to put at least a
+boot sector on a 1.2MB floppy, using rawrite on a PC; I copied mtboot +
+mtboot + boot to an intermediate file, then used rawrite to put that on the
+floppy.  I got the same "Error 21".
+
+The machine also has a working RD54 containing Micro/RSX and some
+proprietary software for managing a parking lot.  :-)  I can boot to an RSX
+prompt (although I can't log in, having none of the passwords), so most of
+the machine appears to be working.
+
+While there's a stubborn side that wants to figure out how to build bootable
+media :-) I'd also be happy at this point to get a copy of a bootable TK50;
+I have blank tapes....  Either way, I hope someone can point me in the right
+direction.  Thanks in advance -- Ian
+
+
+
+From robinb at ruffnready.co.uk  Fri Feb  7 21:20:35 2003
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Fri, 7 Feb 2003 11:20:35 +0000
+Subject: [pups] Bootable media for 2.11BSD
+In-Reply-To: <000501c2ce81$84244df0$450010ac@dawabbit>
+References: <000501c2ce81$84244df0$450010ac@dawabbit>
+Message-ID: <kc1iFSADa5Q+EwUh@falstaf.demon.co.uk>
+
+Use the maketape program in the sys/pdpstand directory.  You can build 
+this on most things and use it to create a bootable tape with the 
+standalone system which contains all of the tools to set the system up.
+
+Cheers
+
+Robin
+
+
+In message <000501c2ce81$84244df0$450010ac at dawabbit>, Ian King 
+<iking at killthewabbit.org> writes
+>I think I've done enough homework and legwork to feel like I can ask the
+>list a question now.  :-)  I've acquired an 11/73 and want to install
+>2.11BSD on it; it includes a TK50 and RX33.  I also have a DECstation
+>5000/200 with a TK50, so my first efforts were to dd the files onto a tape.
+>Depending on how I hacked around, I either got a "non-bootable media" error
+>or "Error 21 - drive error".  The two ways I tried to put the boot files on
+>were per the instructions (cat mtboot mtboot boot | dd), and not per the
+>instructions (dd mtboot, dd mtboot, dd boot).  Depending on how I hacked
+>around, I either got a "non-bootable media" error or "Error 21 - drive
+>error" from the boot ROM monitor.
+>
+>With no way to troubleshoot the TK50 drive, I then tried to put at least a
+>boot sector on a 1.2MB floppy, using rawrite on a PC; I copied mtboot +
+>mtboot + boot to an intermediate file, then used rawrite to put that on the
+>floppy.  I got the same "Error 21".
+>
+>The machine also has a working RD54 containing Micro/RSX and some
+>proprietary software for managing a parking lot.  :-)  I can boot to an RSX
+>prompt (although I can't log in, having none of the passwords), so most of
+>the machine appears to be working.
+>
+>While there's a stubborn side that wants to figure out how to build bootable
+>media :-) I'd also be happy at this point to get a copy of a bootable TK50;
+>I have blank tapes....  Either way, I hope someone can point me in the right
+>direction.  Thanks in advance -- Ian
+>
+>_______________________________________________
+>PUPS mailing list
+>PUPS at minnie.tuhs.org
+>http://minnie.tuhs.org/mailman/listinfo/pups
+
+-- 
+Robin Birch
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Fri Feb  7 23:53:56 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Fri, 7 Feb 2003 08:53:56 -0500
+Subject: [pups] Bootable media for 2.11BSD
+In-Reply-To: <000501c2ce81$84244df0$450010ac@dawabbit>; from iking@killthewabbit.org on Fri, Feb 07, 2003 at 12:18:37AM -0800
+References: <000501c2ce81$84244df0$450010ac@dawabbit>
+Message-ID: <20030207085356.A5249@bcr10.uwaterloo.ca>
+
+On Fri, Feb 07, 2003 at 12:18:37AM -0800, Ian King wrote:
+> I think I've done enough homework and legwork to feel like I can ask the
+> list a question now.  :-)  I've acquired an 11/73 and want to install
+> 2.11BSD on it; it includes a TK50 and RX33.
+
+  Sounds like a fun box.
+
+> The two ways I tried to put the boot files on
+> were per the instructions (cat mtboot mtboot boot | dd), and not per the
+> instructions (dd mtboot, dd mtboot, dd boot).
+
+  Since I just went through this a few weeks ago, I'll mention that this won't
+work because you won't ende up with the boot programmes aligned on block
+boundaries.  The "maketape" command supposedly works well, and I made a tape
+with it, but never did get around to trying to actually boot that tape.
+
+> With no way to troubleshoot the TK50 drive, I then tried to put at least a
+> boot sector on a 1.2MB floppy, using rawrite on a PC; I copied mtboot +
+> mtboot + boot to an intermediate file, then used rawrite to put that on the
+> floppy.  I got the same "Error 21".
+> 
+
+  I don't know whether that would do anything useful, since AFAIK the boot
+blocks assume tape.
+
+> While there's a stubborn side that wants to figure out how to build bootable
+> media :-) I'd also be happy at this point to get a copy of a bootable TK50;
+> I have blank tapes....
+
+  Whereabouts are you?  Someone can likely help.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From chd_1 at nktelco.net  Sat Feb  8 00:11:50 2003
+From: chd_1 at nktelco.net (Chuck Dickman)
+Date: Fri, 7 Feb 2003 09:11:50 -0500 (EST)
+Subject: [pups] Bootable media for 2.11BSD
+In-Reply-To: <kc1iFSADa5Q+EwUh@falstaf.demon.co.uk>
+References: <000501c2ce81$84244df0$450010ac@dawabbit>
+        <kc1iFSADa5Q+EwUh@falstaf.demon.co.uk>
+Message-ID: <13943.209.143.24.164.1044627110.squirrel@www.chd.dyndns.org>
+
+> Use the maketape program in the sys/pdpstand directory.  You can build
+> this on most things and use it to create a bootable tape with the
+> standalone system which contains all of the tools to set the system up.
+>
+> Cheers
+>
+> Robin Birch
+
+Except I don't think the standalone system supports TMSCP and I think
+that a TK50 is TMSCP.
+
+-chuck
+
+
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Sat Feb  8 00:32:38 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Fri, 7 Feb 2003 09:32:38 -0500
+Subject: [pups] Bootable media for 2.11BSD
+In-Reply-To: <13943.209.143.24.164.1044627110.squirrel@www.chd.dyndns.org>; from chd_1@nktelco.net on Fri, Feb 07, 2003 at 09:11:50AM -0500
+References: <000501c2ce81$84244df0$450010ac@dawabbit> <kc1iFSADa5Q+EwUh@falstaf.demon.co.uk> <13943.209.143.24.164.1044627110.squirrel@www.chd.dyndns.org>
+Message-ID: <20030207093238.A5356@bcr10.uwaterloo.ca>
+
+On Fri, Feb 07, 2003 at 09:11:50AM -0500, Chuck Dickman wrote:
+> Except I don't think the standalone system supports TMSCP and I think
+> that a TK50 is TMSCP.
+> 
+
+  The TK50 is definately TMSCP.  You sure that the standalone system
+can't handle it (my machine is at home and turned off right now, so I
+can't check anything)?  If so then that's a major PITA and I guess
+some hacking is in order.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From chd_1 at nktelco.net  Sat Feb  8 00:57:45 2003
+From: chd_1 at nktelco.net (Chuck Dickman)
+Date: Fri, 7 Feb 2003 09:57:45 -0500 (EST)
+Subject: [pups] Bootable media for 2.11BSD
+In-Reply-To: <20030207093238.A5356@bcr10.uwaterloo.ca>
+References: <000501c2ce81$84244df0$450010ac@dawabbit>
+        <kc1iFSADa5Q+EwUh@falstaf.demon.co.uk>
+        <13943.209.143.24.164.1044627110.squirrel@www.chd.dyndns.org>
+        <20030207093238.A5356@bcr10.uwaterloo.ca>
+Message-ID: <15367.209.143.24.164.1044629865.squirrel@www.chd.dyndns.org>
+
+> On Fri, Feb 07, 2003 at 09:11:50AM -0500, Chuck Dickman wrote:
+>> Except I don't think the standalone system supports TMSCP and I think
+>> that a TK50 is TMSCP.
+>>
+
+I am wrong. :-( It _is_ supported. :-)
+
+>   The TK50 is definately TMSCP.  You sure that the standalone system
+> can't handle it (my machine is at home and turned off right now, so I
+> can't check anything)?  If so then that's a major PITA and I guess some
+> hacking is in order.
+
+Thats what I get for not looking at the sources. From mtboot.s:
+
+ * Primary tape boot program to load and execute secondary boot.
+
+ * This is a universal tape boot which can handle HT, TM, TS and TMSCP
+ * tapes.  This boot is FULL.  Some of the more extended error
+ * checking had to be left out to get all the drivers to fit.
+
+> David Evans          (NeXTMail/MIME OK)
+
+-chuck
+
+
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Sat Feb  8 01:01:22 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Fri, 7 Feb 2003 10:01:22 -0500
+Subject: [pups] Bootable media for 2.11BSD
+In-Reply-To: <15367.209.143.24.164.1044629865.squirrel@www.chd.dyndns.org>; from chd_1@nktelco.net on Fri, Feb 07, 2003 at 09:57:45AM -0500
+References: <000501c2ce81$84244df0$450010ac@dawabbit> <kc1iFSADa5Q+EwUh@falstaf.demon.co.uk> <13943.209.143.24.164.1044627110.squirrel@www.chd.dyndns.org> <20030207093238.A5356@bcr10.uwaterloo.ca> <15367.209.143.24.164.1044629865.squirrel@www.chd.dyndns.org>
+Message-ID: <20030207100122.A5406@bcr10.uwaterloo.ca>
+
+On Fri, Feb 07, 2003 at 09:57:45AM -0500, Chuck Dickman wrote:
+> > On Fri, Feb 07, 2003 at 09:11:50AM -0500, Chuck Dickman wrote:
+> >> Except I don't think the standalone system supports TMSCP and I think
+> >> that a TK50 is TMSCP.
+> >>
+> 
+> I am wrong. :-( It _is_ supported. :-)
+> 
+
+  Phew!
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From robinb at ruffnready.co.uk  Sat Feb  8 03:00:07 2003
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Fri, 7 Feb 2003 17:00:07 +0000
+Subject: [pups] Bootable media for 2.11BSD
+In-Reply-To: <13943.209.143.24.164.1044627110.squirrel@www.chd.dyndns.org>
+References: <000501c2ce81$84244df0$450010ac@dawabbit>
+ <kc1iFSADa5Q+EwUh@falstaf.demon.co.uk>
+ <13943.209.143.24.164.1044627110.squirrel@www.chd.dyndns.org>
+Message-ID: <rbARUnAXY+Q+Ewk5@falstaf.demon.co.uk>
+
+In message 
+<13943.209.143.24.164.1044627110.squirrel at www.chd.dyndns.org>, Chuck 
+Dickman <chd_1 at nktelco.net> writes
+>> Use the maketape program in the sys/pdpstand directory.  You can build
+>> this on most things and use it to create a bootable tape with the
+>> standalone system which contains all of the tools to set the system up.
+>>
+>> Cheers
+>>
+>> Robin Birch
+>
+>Except I don't think the standalone system supports TMSCP and I think
+>that a TK50 is TMSCP.
+>
+>-chuck
+>
+>
+As you will have been told, it is supported, quite well in fact.  I have 
+run 11/73s and 83s from TK50 and TMSCP exabyte drives for years and they 
+work a treat.
+
+You really need the maketape program.  You can then dd and tar the rest 
+on to the tape but the initial step needs to be done the "official" way. 
+To repeat a question already asked, where are you.  If you really can't 
+get over this then someone nearby can hopefully cut you a tape.
+
+Cheers
+
+Robin
+>
+>_______________________________________________
+>PUPS mailing list
+>PUPS at minnie.tuhs.org
+>http://minnie.tuhs.org/mailman/listinfo/pups
+
+-- 
+Robin Birch
+
+
+
+From iking at killthewabbit.org  Sat Feb  8 03:23:21 2003
+From: iking at killthewabbit.org (Ian King)
+Date: Fri, 7 Feb 2003 09:23:21 -0800
+Subject: [pups] Bootable media for 2.11BSD
+References: <000501c2ce81$84244df0$450010ac@dawabbit> <kc1iFSADa5Q+EwUh@falstaf.demon.co.uk>
+Message-ID: <000401c2cecd$9d4186d0$7f0010ac@pepelepew>
+
+Yup, that's what I get for trying to be clever.  :-)  I built and ran
+maketape, and the 11/73 likes the resulting tape (boots).  So I'm remaking
+the tape with the tar's on it (per the instructions).
+
+I also happened to look at my work email, and saw the recent thread on this
+same subject - doh!
+
+Maybe we should add something to the /2.11BSD distribution README with the
+caveats we've learned?  -- Ian
+
+----- Original Message -----
+From: "Robin Birch" <robinb at ruffnready.co.uk>
+To: "Ian King" <iking at killthewabbit.org>
+Cc: <pups at minnie.tuhs.org>
+Sent: Friday, February 07, 2003 3:20 AM
+Subject: Re: [pups] Bootable media for 2.11BSD
+
+
+> Use the maketape program in the sys/pdpstand directory.  You can build
+> this on most things and use it to create a bootable tape with the
+> standalone system which contains all of the tools to set the system up.
+>
+> Cheers
+>
+> Robin
+>
+>
+> In message <000501c2ce81$84244df0$450010ac at dawabbit>, Ian King
+> <iking at killthewabbit.org> writes
+> >I think I've done enough homework and legwork to feel like I can ask the
+> >list a question now.  :-)  I've acquired an 11/73 and want to install
+> >2.11BSD on it; it includes a TK50 and RX33.  I also have a DECstation
+> >5000/200 with a TK50, so my first efforts were to dd the files onto a
+tape.
+> >Depending on how I hacked around, I either got a "non-bootable media"
+error
+> >or "Error 21 - drive error".  The two ways I tried to put the boot files
+on
+> >were per the instructions (cat mtboot mtboot boot | dd), and not per the
+> >instructions (dd mtboot, dd mtboot, dd boot).  Depending on how I hacked
+> >around, I either got a "non-bootable media" error or "Error 21 - drive
+> >error" from the boot ROM monitor.
+> >
+> >With no way to troubleshoot the TK50 drive, I then tried to put at least
+a
+> >boot sector on a 1.2MB floppy, using rawrite on a PC; I copied mtboot +
+> >mtboot + boot to an intermediate file, then used rawrite to put that on
+the
+> >floppy.  I got the same "Error 21".
+> >
+> >The machine also has a working RD54 containing Micro/RSX and some
+> >proprietary software for managing a parking lot.  :-)  I can boot to an
+RSX
+> >prompt (although I can't log in, having none of the passwords), so most
+of
+> >the machine appears to be working.
+> >
+> >While there's a stubborn side that wants to figure out how to build
+bootable
+> >media :-) I'd also be happy at this point to get a copy of a bootable
+TK50;
+> >I have blank tapes....  Either way, I hope someone can point me in the
+right
+> >direction.  Thanks in advance -- Ian
+> >
+> >_______________________________________________
+> >PUPS mailing list
+> >PUPS at minnie.tuhs.org
+> >http://minnie.tuhs.org/mailman/listinfo/pups
+>
+> --
+> Robin Birch
+>
+
+
+
+From iking at killthewabbit.org  Sun Feb  9 04:48:36 2003
+From: iking at killthewabbit.org (Ian King)
+Date: Sat, 8 Feb 2003 10:48:36 -0800
+Subject: Another happy customer (was Re: [pups] Bootable media for 2.11BSD)
+References: <000501c2ce81$84244df0$450010ac@dawabbit> <kc1iFSADa5Q+EwUh@falstaf.demon.co.uk> <000401c2cecd$9d4186d0$7f0010ac@pepelepew>
+Message-ID: <000401c2cfa2$b05e3210$450010ac@dawabbit>
+
+It's amazing what happens when you follow the directions - thanks for your
+help, folks.  I have 2.11BSD up and running on my 11/73 (booted off the
+disk, even), and it's currently untarring the last big chunk of /usr/src.
+(The docs mention that TK50s are slower than snot - believe it!)  The system
+has two RD54s <woohoo!>, but I'm following the 'default' installation for
+now until I have everything running and have successfully rebuilt the
+kernel; then I'll probably move /usr and /tmp over to the second RD.  I also
+need to dig into the machine a bit more - the bootloader tells me I have an
+11/83, so I'm suspecting the CPU was changed at some point.
+
+For the record, I live in Seattle, and I can now produce bootable TK50s with
+2.11BSD.  :-)
+
+-- Ian
+----- Original Message -----
+From: "Ian King" <iking at killthewabbit.org>
+To: "Robin Birch" <robinb at ruffnready.co.uk>
+Cc: <pups at minnie.tuhs.org>
+Sent: Friday, February 07, 2003 9:23 AM
+Subject: Re: [pups] Bootable media for 2.11BSD
+
+
+> Yup, that's what I get for trying to be clever.  :-)  I built and ran
+> maketape, and the 11/73 likes the resulting tape (boots).  So I'm remaking
+> the tape with the tar's on it (per the instructions).
+>
+> I also happened to look at my work email, and saw the recent thread on
+this
+> same subject - doh!
+>
+> Maybe we should add something to the /2.11BSD distribution README with the
+> caveats we've learned?  -- Ian
+>
+> ----- Original Message -----
+> From: "Robin Birch" <robinb at ruffnready.co.uk>
+> To: "Ian King" <iking at killthewabbit.org>
+> Cc: <pups at minnie.tuhs.org>
+> Sent: Friday, February 07, 2003 3:20 AM
+> Subject: Re: [pups] Bootable media for 2.11BSD
+>
+>
+> > Use the maketape program in the sys/pdpstand directory.  You can build
+> > this on most things and use it to create a bootable tape with the
+> > standalone system which contains all of the tools to set the system up.
+> >
+> > Cheers
+> >
+> > Robin
+> >
+> >
+[snip]
+> >
+> > --
+> > Robin Birch
+> >
+>
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Sun Feb  9 07:47:57 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Sat, 8 Feb 2003 16:47:57 -0500
+Subject: Another happy customer (was Re: [pups] Bootable media for 2.11BSD)
+In-Reply-To: <000401c2cfa2$b05e3210$450010ac@dawabbit>; from iking@killthewabbit.org on Sat, Feb 08, 2003 at 10:48:36AM -0800
+References: <000501c2ce81$84244df0$450010ac@dawabbit> <kc1iFSADa5Q+EwUh@falstaf.demon.co.uk> <000401c2cecd$9d4186d0$7f0010ac@pepelepew> <000401c2cfa2$b05e3210$450010ac@dawabbit>
+Message-ID: <20030208164757.C18303@bcr4.uwaterloo.ca>
+
+On Sat, Feb 08, 2003 at 10:48:36AM -0800, Ian King wrote:
+> It's amazing what happens when you follow the directions - thanks for your
+> help, folks.  I have 2.11BSD up and running on my 11/73 (booted off the
+> disk, even), and it's currently untarring the last big chunk of /usr/src.
+
+  Good job!
+
+> I also
+> need to dig into the machine a bit more - the bootloader tells me I have an
+> 11/83, so I'm suspecting the CPU was changed at some point.
+> 
+
+  A KDJ-11B CPU board (quad height) with Qbus memory is an 11/73, while a
+KDJ-11B CPU with PMI memory is an 11/83.  The boot loaded likely just
+identifies the CPU board type and assumes a /83.  It would only claim a
+/73 if it were running on a KDB-11 (dual height) card.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From robin.birch at royalmail.com  Mon Feb 10 20:06:06 2003
+From: robin.birch at royalmail.com (robin.birch at royalmail.com)
+Date: Mon, 10 Feb 2003 10:06:06 +0000
+Subject: Another happy customer (was Re: [pups] Bootable media for 2
+	.11BSD)
+Message-ID: <00256CC9.00379378.00@postoffice.co.uk>
+
+
+Well done,
+My 83 has 2 RD54s it is a nice configuration.
+
+As to your other query about the boot loader saying that it is an 83 as opposed to
+a 73.  The response that you have had is correct AFAIK. My 83 was a 73 before I
+changed the processor and I had a similar conversation with Steve Schultz.  If it
+is a quad board then the boot loader is doing as well as it can :-)
+
+Have fun
+
+Robin
+
+
+
+
+
+To:         "Robin Birch" <robinb at ruffnready.co.uk>
+cc:         <pups at minnie.tuhs.org>
+Hard Copy To:
+Hard Copy cc:
+
+Date:       08/02/2003 18:48
+                                                                             
+ From:         "Ian King" <iking at killthewabbit.org>@minnie.tuhs.org          
+                                                                             
+ Sent by:      pups-admin at minnie.tuhs.org                                    
+                                                                             
+                                                                             
+ Subject:      Another happy customer (was Re: [pups] Bootable media for     
+               2.11BSD)                                                      
+                                                                             
+
+
+
+It's amazing what happens when you follow the directions - thanks for your
+help, folks.  I have 2.11BSD up and running on my 11/73 (booted off the
+disk, even), and it's currently untarring the last big chunk of /usr/src.
+(The docs mention that TK50s are slower than snot - believe it!)  The system
+has two RD54s <woohoo!>, but I'm following the 'default' installation for
+now until I have everything running and have successfully rebuilt the
+kernel; then I'll probably move /usr and /tmp over to the second RD.  I also
+need to dig into the machine a bit more - the bootloader tells me I have an
+11/83, so I'm suspecting the CPU was changed at some point.
+
+For the record, I live in Seattle, and I can now produce bootable TK50s with
+2.11BSD.  :-)
+
+-- Ian
+----- Original Message -----
+From: "Ian King" <iking at killthewabbit.org>
+To: "Robin Birch" <robinb at ruffnready.co.uk>
+Cc: <pups at minnie.tuhs.org>
+Sent: Friday, February 07, 2003 9:23 AM
+Subject: Re: [pups] Bootable media for 2.11BSD
+
+
+> Yup, that's what I get for trying to be clever.  :-)  I built and ran
+> maketape, and the 11/73 likes the resulting tape (boots).  So I'm remaking
+> the tape with the tar's on it (per the instructions).
+>
+> I also happened to look at my work email, and saw the recent thread on
+this
+> same subject - doh!
+>
+> Maybe we should add something to the /2.11BSD distribution README with the
+> caveats we've learned?  -- Ian
+>
+> ----- Original Message -----
+> From: "Robin Birch" <robinb at ruffnready.co.uk>
+> To: "Ian King" <iking at killthewabbit.org>
+> Cc: <pups at minnie.tuhs.org>
+> Sent: Friday, February 07, 2003 3:20 AM
+> Subject: Re: [pups] Bootable media for 2.11BSD
+>
+>
+> > Use the maketape program in the sys/pdpstand directory.  You can build
+> > this on most things and use it to create a bootable tape with the
+> > standalone system which contains all of the tools to set the system up.
+> >
+> > Cheers
+> >
+> > Robin
+> >
+> >
+[snip]
+> >
+> > --
+> > Robin Birch
+> >
+>
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+_______________________________________________
+PUPS mailing list
+PUPS at minnie.tuhs.org
+http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+
+
+
+
+From iking at killthewabbit.org  Wed Feb 12 05:56:05 2003
+From: iking at killthewabbit.org (Ian King)
+Date: Tue, 11 Feb 2003 11:56:05 -0800
+Subject: [pups] Anyone got a bulkhead connector?
+Message-ID: <000501c2d207$9ca46a20$450010ac@dawabbit>
+
+I've checked commercial vendors and eBay to no avail, so now I'll appeal to
+the community: I would really like to find a bulkhead connector for a DEQNA
+card (the part number is CK-DEQNA-KB).  If anyone has one they're willing to
+part with, please send me email with your terms.
+
+Otherwise, I'll just have to kludge something - but I'd sure like to do it
+right, as my 11/73 is in pretty nice shape.  :-)
+
+TIA -- Ian
+
+
+
+From drwho8 at worldnet.att.net  Tue Feb 18 06:35:07 2003
+From: drwho8 at worldnet.att.net (Gregg C Levine)
+Date: Mon, 17 Feb 2003 15:35:07 -0500
+Subject: [pups] Test
+Message-ID: <3E51477B.901B2336@worldnet.att.net>
+
+Test!
+Sorry for the disturbance. Just a routine test message to confirm that
+the list is awake. I haven't gotten anything since sometime in the past.
+Gregg C Levine drwho8 at worldnet.att.net
+"This signature wants to be playing in the snow!"
+
+
+From greg at censoft.com  Tue Feb 18 06:58:57 2003
+From: greg at censoft.com (Greg Haerr)
+Date: Mon, 17 Feb 2003 12:58:57 -0800
+Subject: [pups] Test
+References: <3E51477B.901B2336@worldnet.att.net>
+Message-ID: <035101c2d6c7$644562a0$220110ac@WasatchNewport>
+
+> Sorry for the disturbance. Just a routine test message to confirm that
+> the list is awake. I haven't gotten anything since sometime in the past.
+
+Are you trying to wake us all up? - yes, I'm here!
+
+Regards,
+
+Greg
+
+
+From drwho8 at worldnet.att.net  Tue Feb 18 07:26:03 2003
+From: drwho8 at worldnet.att.net (Gregg C Levine)
+Date: Mon, 17 Feb 2003 16:26:03 -0500
+Subject: [pups] Test
+References: <3E51477B.901B2336@worldnet.att.net> <035101c2d6c7$644562a0$220110ac@WasatchNewport>
+Message-ID: <3E51536B.F7904A71@worldnet.att.net>
+
+Hello again from Gregg C Levine
+Oh I know everyone is awake. Except those of us who sleep for work <G> I
+just haven't heard a squawk from the list since sometime last year. To
+quote a phrase, "Watch this space!". I'll be posting some questions,
+RSN.
+Gregg C Levine drwho8 at worldnet.att.net 
+"This signature voted for the party from Naboo!"
+Greg Haerr wrote:
+> 
+> > Sorry for the disturbance. Just a routine test message to confirm that
+> > the list is awake. I haven't gotten anything since sometime in the past.
+> 
+> Are you trying to wake us all up? - yes, I'm here!
+> 
+> Regards,
+> 
+> Greg
+
+
+From drwho8 at worldnet.att.net  Tue Feb 18 09:36:28 2003
+From: drwho8 at worldnet.att.net (Gregg C Levine)
+Date: Mon, 17 Feb 2003 18:36:28 -0500
+Subject: Some questions, was Re: [pups] Test
+References: <3E51477B.901B2336@worldnet.att.net> <035101c2d6c7$644562a0$220110ac@WasatchNewport> <3E51536B.F7904A71@worldnet.att.net>
+Message-ID: <001501c2d6dd$6587a4a0$09b9580c@who5>
+
+Hello again from Gregg C Levine
+Here are those questions:
+1) What is the status of networking, with regards to the boot images?
+2) Has anyone actually managed to dump the image that's contained within the
+Soupnik collected UNIX versions to an actual disk?
+3) Has anyone actually managed to build a kernel from that source code?
+Either native, and on a Simh setup will do.
+Gregg C Levine drwho8 at worldnet.att.net
+"Oh my!" The Second Doctor's nearly favorite phrase.
+----- Original Message -----
+From: "Gregg C Levine" <drwho8 at worldnet.att.net>
+To: "Greg Haerr" <greg at wasatchmarine.com>
+Cc: <pups at minnie.tuhs.org>
+Sent: Monday, February 17, 2003 4:26 PM
+Subject: Re: [pups] Test
+
+
+> Hello again from Gregg C Levine
+> Oh I know everyone is awake. Except those of us who sleep for work <G> I
+> just haven't heard a squawk from the list since sometime last year. To
+> quote a phrase, "Watch this space!". I'll be posting some questions,
+> RSN.
+> Gregg C Levine drwho8 at worldnet.att.net
+> "This signature voted for the party from Naboo!"
+> Greg Haerr wrote:
+> >
+> > > Sorry for the disturbance. Just a routine test message to confirm that
+> > > the list is awake. I haven't gotten anything since sometime in the
+past.
+> >
+> > Are you trying to wake us all up? - yes, I'm here!
+> >
+> > Regards,
+> >
+> > Greg
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+>
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Tue Feb 18 09:53:09 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Mon, 17 Feb 2003 18:53:09 -0500
+Subject: Some questions, was Re: [pups] Test
+In-Reply-To: <001501c2d6dd$6587a4a0$09b9580c@who5>; from drwho8@worldnet.att.net on Mon, Feb 17, 2003 at 06:36:28PM -0500
+References: <3E51477B.901B2336@worldnet.att.net> <035101c2d6c7$644562a0$220110ac@WasatchNewport> <3E51536B.F7904A71@worldnet.att.net> <001501c2d6dd$6587a4a0$09b9580c@who5>
+Message-ID: <20030217185309.A28868@bcr10.uwaterloo.ca>
+
+On Mon, Feb 17, 2003 at 06:36:28PM -0500, Gregg C Levine wrote:
+> 1) What is the status of networking, with regards to the boot images?
+
+  The distribution doesn't include any networking IIRC.
+
+> 2) Has anyone actually managed to dump the image that's contained within the
+> Soupnik collected UNIX versions to an actual disk?
+
+  Yep--that's how I got my system bootstrapped.  dd'd the image to a SCSI disk
+and stuck it in my /73.
+
+> 3) Has anyone actually managed to build a kernel from that source code?
+
+  "That" being the stuff in the standard distribution?  Yes.
+
+> "Oh my!" The Second Doctor's nearly favorite phrase.
+
+  What, with "oh dear" and "oh, Jamie!" competing for the status of favourite?
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From hansolofalcon at worldnet.att.net  Tue Feb 18 10:41:12 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Mon, 17 Feb 2003 19:41:12 -0500
+Subject: Some questions, was Re: [pups] Test
+In-Reply-To: <20030217185309.A28868@bcr10.uwaterloo.ca>
+Message-ID: <000001c2d6e6$70a3cb80$21b4580c@who5>
+
+Hello again from Gregg C Levine
+Okay, that covers my questions for your department. Thank you, David.
+ No networking? Why not? Can that be added? And how did you add the
+source code disks?
+
+And as for the comment, David, I just remember them, and write them
+down. He did say those, and probably has them filed the way I
+suggested. Mine second, your selection first, and third.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]
+On
+> Behalf Of David Evans
+> Sent: Monday, February 17, 2003 6:53 PM
+> To: Gregg C Levine
+> Cc: pups at minnie.tuhs.org
+> Subject: Re: Some questions, was Re: [pups] Test
+> 
+> On Mon, Feb 17, 2003 at 06:36:28PM -0500, Gregg C Levine wrote:
+> > 1) What is the status of networking, with regards to the boot
+images?
+> 
+>   The distribution doesn't include any networking IIRC.
+> 
+> > 2) Has anyone actually managed to dump the image that's contained
+within the
+> > Soupnik collected UNIX versions to an actual disk?
+> 
+>   Yep--that's how I got my system bootstrapped.  dd'd the image to a
+SCSI disk
+> and stuck it in my /73.
+> 
+> > 3) Has anyone actually managed to build a kernel from that source
+code?
+> 
+>   "That" being the stuff in the standard distribution?  Yes.
+> 
+> > "Oh my!" The Second Doctor's nearly favorite phrase.
+> 
+>   What, with "oh dear" and "oh, Jamie!" competing for the status of
+favourite?
+> 
+> --
+> David Evans          (NeXTMail/MIME OK)
+dfevans at bbcr.uwaterloo.ca
+> Ph.D. Candidate, Computer/Synth Junkie
+http://bbcr.uwaterloo.ca/~dfevans/
+> University of Waterloo         "Default is the value selected by the
+composer
+> Ontario, Canada           overridden by your command." - Roland
+TR-707 Manual
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Tue Feb 18 10:48:17 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Mon, 17 Feb 2003 19:48:17 -0500
+Subject: Some questions, was Re: [pups] Test
+In-Reply-To: <000001c2d6e6$70a3cb80$21b4580c@who5>; from hansolofalcon@worldnet.att.net on Mon, Feb 17, 2003 at 07:41:12PM -0500
+References: <20030217185309.A28868@bcr10.uwaterloo.ca> <000001c2d6e6$70a3cb80$21b4580c@who5>
+Message-ID: <20030217194817.B29064@bcr10.uwaterloo.ca>
+
+On Mon, Feb 17, 2003 at 07:41:12PM -0500, Gregg C Levine wrote:
+>  No networking? Why not?
+
+  Don't know.  To save on space in the GENERIC kernel, likely.
+
+> Can that be added?
+
+  Yes.
+
+> And how did you add the
+> source code disks?
+> 
+
+  Hmmm...I'm trying to remember.  I *think* that there was actually networking
+in the SIMH archive, while there is not in the generic install archive.
+
+> And as for the comment, David, I just remember them, and write them
+> down. He did say those, and probably has them filed the way I
+> suggested. Mine second, your selection first, and third.
+
+  Heh.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From iking at killthewabbit.org  Tue Feb 18 16:00:03 2003
+From: iking at killthewabbit.org (Ian King)
+Date: Mon, 17 Feb 2003 22:00:03 -0800
+Subject: [pups] Test
+References: <3E51477B.901B2336@worldnet.att.net> <035101c2d6c7$644562a0$220110ac@WasatchNewport> <3E51536B.F7904A71@worldnet.att.net>
+Message-ID: <001901c2d712$fa849010$450010ac@dawabbit>
+
+Well, I recently posted an inquiry that was answered by complete silence.
+:-)  (Not complete, actually - someone where I work showed up at my office
+to discuss it!)  No worries, I found a DEQNA cable on eBay; of course, I had
+to buy the DEQNA, too, but it never hurts to have spares.  That should be
+here by the time I return from my next business trip (I leave tomorrow), and
+I can begin the process of building a network-enabled 2.11BSD kernel for my
+11/73.
+
+I'm enjoying this: "my PDP-11 - oh, I mean the 11/73, not the 11/34"....  I
+rearranged stuff and things so I have a VT-52 sitting on top of the 11/73's
+cabinet, and the ADM-3a on the desk, connected to the 11/34.  I'm really
+having second thoughts about the DECscope, though - clunky old piece of
+s***, truth be told.  Maybe some artifacts of techology are better off
+forgotten!
+
+I'm also revisiting some old threads in which I'd participated, about Unix
+v6 on the 11/34 - I'm having problems getting cc to work again, with the
+error "can't find c0.lib".  Last time, someone suggested it was a memory
+problem, and indeed the XXDP diagnostic found a memory defect.  This time,
+XXDP doesn't show a memory problem.  I rebuilt my system disk from the
+'sacred copy', but I'm seeing the same problem.  My next step is to boot
+single-user and try it - but that's after I get back from The Road, too.
+
+OK, did I contribute my quota of noise?  Cheers -- Ian
+
+----- Original Message -----
+From: "Gregg C Levine" <drwho8 at worldnet.att.net>
+To: "Greg Haerr" <greg at wasatchmarine.com>
+Cc: <pups at minnie.tuhs.org>
+Sent: Monday, February 17, 2003 1:26 PM
+Subject: Re: [pups] Test
+
+
+> Hello again from Gregg C Levine
+> Oh I know everyone is awake. Except those of us who sleep for work <G> I
+> just haven't heard a squawk from the list since sometime last year. To
+> quote a phrase, "Watch this space!". I'll be posting some questions,
+> RSN.
+> Gregg C Levine drwho8 at worldnet.att.net
+> "This signature voted for the party from Naboo!"
+> Greg Haerr wrote:
+> >
+> > > Sorry for the disturbance. Just a routine test message to confirm that
+> > > the list is awake. I haven't gotten anything since sometime in the
+past.
+> >
+> > Are you trying to wake us all up? - yes, I'm here!
+> >
+> > Regards,
+> >
+> > Greg
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From Bill.Mayhew at oracle.com  Wed Feb 19 01:35:48 2003
+From: Bill.Mayhew at oracle.com (Bill Mayhew)
+Date: Tue, 18 Feb 2003 10:35:48 -0500
+Subject: [pups] Test
+In-Reply-To: <3E51477B.901B2336@worldnet.att.net>
+Message-ID: <001101c2d763$69678000$62dd018a@APRSTBMAYHEW>
+
+Oh, good... the silence is not my imagination!
+
+        -Bill (resisting the temptation to send a simulated auto-reply ;-) )
+__________________________________________
+Bill Mayhew
+The statements and opinions expressed here are my own and do not necessarily
+represent those of Oracle Corporation.
+
+
+-----Original Message-----
+From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]On
+Behalf Of Gregg C Levine
+Sent: Monday, February 17, 2003 3:35 PM
+To: pups at minnie.tuhs.org
+Subject: [pups] Test
+
+
+Test!
+Sorry for the disturbance. Just a routine test message to confirm that
+the list is awake. I haven't gotten anything since sometime in the past.
+Gregg C Levine drwho8 at worldnet.att.net
+"This signature wants to be playing in the snow!"
+
+
+
+From drwho8 at worldnet.att.net  Wed Feb 19 02:50:41 2003
+From: drwho8 at worldnet.att.net (Gregg C Levine)
+Date: Tue, 18 Feb 2003 11:50:41 -0500
+Subject: Some questions, was Re: [pups] Test
+References: <Pine.LNX.4.44.0302180805360.843-100000@gladen>
+Message-ID: <000801c2d76d$e1513d40$eeae580c@who5>
+
+Hello fron Gregg C Levine
+Um no. I was thinking of V7, of the original UNIX. As it happens, I am still
+not comfortable with the earlier versions of BSD. So, I am interested in
+getting V7, or V6 to work via a networked environment. And yes, I have seen
+your file, and the read me for it.
+Gregg C Levine drwho8 at worldnet.att.net
+"Oh my!" The Second Doctor's nearly favorite phrase.
+----- Original Message -----
+From: "Andru Luvisi" <luvisi at andru.sonoma.edu>
+To: "Gregg C Levine" <drwho8 at worldnet.att.net>
+Sent: Tuesday, February 18, 2003 11:19 AM
+Subject: Re: Some questions, was Re: [pups] Test
+
+
+> On Mon, 17 Feb 2003, Gregg C Levine wrote:
+> > Hello again from Gregg C Levine
+> > Here are those questions:
+> > 1) What is the status of networking, with regards to the boot images?
+> > 2) Has anyone actually managed to dump the image that's contained within
+the
+> > Soupnik collected UNIX versions to an actual disk?
+> > 3) Has anyone actually managed to build a kernel from that source code?
+> > Either native, and on a Simh setup will do.
+>
+> If you are asking about 2.11BSD, I have managed to build a kernel with
+> networking support which works on simh.  It is at:
+> http://www.tuhs.org/Archive/PDP-11/Boot_Images/2.11_on_Simh/
+>
+> It's probably not suitable for a real PDP since it only supports RA/MSCP
+> and ram disks, and TS tape drives.
+>
+> Andru
+> --
+> Andru Luvisi, Programmer/Analyst
+>
+>
+> Quote Of The Moment:
+>   I'm not normal.  I know it.  I don't care!
+>        - Ace Of Base
+>
+
+
+
+From luvisi at andru.sonoma.edu  Wed Feb 19 03:57:36 2003
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Tue, 18 Feb 2003 09:57:36 -0800 (PST)
+Subject: Some questions, was Re: [pups] Test
+In-Reply-To: <000801c2d76d$e1513d40$eeae580c@who5>
+Message-ID: <Pine.LNX.4.44.0302180956450.843-100000@gladen>
+
+On Tue, 18 Feb 2003, Gregg C Levine wrote:
+> Hello fron Gregg C Levine
+> Um no. I was thinking of V7, of the original UNIX. As it happens, I am still
+> not comfortable with the earlier versions of BSD. So, I am interested in
+> getting V7, or V6 to work via a networked environment. And yes, I have seen
+> your file, and the read me for it.
+
+I recall V7 had UUCP and that some non-tcp/ip networking implementations
+existed for it, but I have never heard of a tcp/ip stack for V7.  Does
+such a thing exist?
+
+Andru
+-- 
+Andru Luvisi, Programmer/Analyst
+
+Quote Of The Moment:
+  Great spirits have always encountered violent opposition from
+  mediocre minds.
+                  -- Albert Einstein
+  
+  They laughed at Einstein.  They laughed at the Wright Brothers.
+  But they also laughed at Bozo the Clown.
+                  -- Carl Sagan
+
+
+
+From Fred.van.Kempen at microwalt.nl  Wed Feb 19 03:59:14 2003
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Tue, 18 Feb 2003 18:59:14 +0100
+Subject: Some questions, was Re: [pups] Test
+Message-ID: <7AD18F04B62B7440BE22E190A3F7721409DAA2@mwsrv04.microwalt.nl>
+
+> I recall V7 had UUCP and that some non-tcp/ip networking 
+> implementations existed for it,
+Yes, various serial-networking based ones (early DECnet, X.25
+and PacketNet stuff) and perhaps the multiplexer device stuff.
+
+> but I have never heard of a tcp/ip stack for V7.  Does
+> such a thing exist?
+Nope, didnt fit in the address space.  As far as I know, the
+earliest TCP/IP UNIX for PDP-11 was 2.10/2.11bsd.
+
+--f
+
+
+From chpap at ics.forth.gr  Wed Feb 19 22:18:44 2003
+From: chpap at ics.forth.gr (Christos Papachristou)
+Date: Wed, 19 Feb 2003 14:18:44 +0200
+Subject: [pups] (no subject)
+Message-ID: <00e001c2d811$0c4ad670$77b95b8b@ics.forth.gr>
+
+I would like to do a bad sector scan on a RD52 connected to a RQDX1 (The machine is a pdp11/73 without OS) prior to installing BSD2.11.Is there a standalone program like zrqch0(only for RQDX3) that can be downloaded directly to the pdp via vtserver and recognizes the RQDX1 , i.e. a version of zrqb or something similar?
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030219/b9a0e520/attachment.html>
+
+From j.r.engdahl at adelphia.net  Sun Feb 23 10:59:54 2003
+From: j.r.engdahl at adelphia.net (Jonathan Engdahl)
+Date: Sat, 22 Feb 2003 19:59:54 -0500
+Subject: [pups] Re: PDP11 - RQDX1 standalone format utility? --> XXDP
+References: <001201c2d98f$b4ff34d0$77b95b8b@ics.forth.gr>
+Message-ID: <020901c2dad6$e0afcf70$8a00a8c0@arctura>
+
+I documented the procedure to extract a program from XXDP and put a header
+on it so that you can boot it from VTserver or a UNIX disk. It has been a
+long time since I did this to ZRQCH0, so I practiced on the program that I
+think Christos needs (ZRQBC1) and sent it to him.
+
+There's a lot I don't know about the a.out header, so if someone can improve
+my method, let me know.
+
+http://users.safeaccess.com/engdahl/xxdp.htm#hackXXDP
+
+
+"Teach a man to fish..."
+
+--
+Jonathan Engdahl
+http://users.safeaccess.com/engdahl
+
+"The things which are seen are temporary,
+ but the things which are not seen are eternal."  II Cor. 4:18
+
+
+----- Original Message -----
+From: "Christos Papachristou" <chpap at ics.forth.gr>
+To: <cctalk at classiccmp.org>
+Sent: Friday, February 21, 2003 4:57 AM
+Subject: PDP11 - RQDX1 standalone format utility?
+
+
+> I would like to do a bad sector scan on a RD52 connected to a RQDX1
+> controller (The machine is a pdp11/73 without OS) prior to installing
+> BSD2.11.Is there a standalone program like zrqch0(standalone version of
+> zrqc from the  xxdp package - only for RQDX3) that can be downloaded
+> directly to the pdp via vtserver and recognizes the RQDX1 , i.e. a version
+> of zrqb or something similar?
+
+
+
+From cmcnabb at vt.edu  Sun Feb 23 13:04:45 2003
+From: cmcnabb at vt.edu (Christopher McNabb)
+Date: 22 Feb 2003 22:04:45 -0500
+Subject: [pups] 211BSD and TSV05
+Message-ID: <1045969485.30181.9.camel@www.4mcnabb.net>
+
+I have a TS05 tape drive and TSV05 controller.  The TS11 driver for
+211BSD seems to be close to what I need, but not exactly.  I can
+forward, reverse, offline, and run status commands using 'mt', but any
+attempt to read or write data results in a hard error:
+----
+# ansitape -t 
+ts0: hard error bn0 xs0=310<MOT,ONL,PED> xs1=20402<COR,-,UNC>
+xs2=100000<OPM> xs3=40<REV>
+ts0: hard error bn0 xs0=310<MOT,ONL,PED> xs1=20402<COR,-,UNC>
+xs2=100000<OPM> xs3=40<REV>
+ts0: hard error bn0 xs0=10310<RLL,MOT,ONL,PED> xs1=20402<COR,-,UNC>
+xs2=100000<OPM> xs3=40<REV>
+unknown record mode (n) - file 7 skipped
+t - 7:  0 lines (0 chars) in 0 tape blocks
+----
+This continues ad-nauseum until Ctrl-C is pressed.
+So, it looks like the TS11 driver is "almost, but not quite" good
+enough.  Before I start attempting to re-invent the wheel, has anyone
+had success getting a TSV05/TS05 working under 2.11BSD?
+
+-- 
+Christopher L McNabb              Tel:   540 231 7554
+Operating Systems Analyst         Email: cmcnabb at vt.edu
+Virginia Tech                     ICBM:  37.205622N 80.414595W
+GMRS: WPSR255                     ARS:   N2UX  Grid Sq: EM97SD
+
+
+From shoppa at trailing-edge.com  Sun Feb 23 13:42:53 2003
+From: shoppa at trailing-edge.com (Tim Shoppa)
+Date: Sat, 22 Feb 2003 22:42:53 -0500
+Subject: [pups] 211BSD and TSV05
+In-Reply-To: <1045969485.30181.9.camel@www.4mcnabb.net>
+References: <1045969485.30181.9.camel@www.4mcnabb.net>
+Message-ID: <3E58433D.nail38311SDVN@mini-me.trailing-edge.com>
+
+>has anyone had success getting a TSV05/TS05 working under 2.11BSD?
+
+The TSV05 is a TS11-emulating interface, like the TU80 and Emulex
+TC03 and Emulex TC13 (in TS11 mode) and the Dilog DQ132 etc.
+While I've used 2.11BSD with TU80's and TC03's and TC13's and DQ132's
+and they all worked, I've never actually used a real TSV05 under
+2.11BSD.
+
+I'd be inclined to say you've got a hardware problem before
+blaming the 2.11BSD driver.  Can you test your TSV05&TS05 with a
+different OS?  (RT-11, RSX, VMS?)
+
+Tim.
+
+
+
+From hansolofalcon at worldnet.att.net  Sun Feb 23 16:22:44 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Sun, 23 Feb 2003 01:22:44 -0500
+Subject: [pups] Re: PDP11 - RQDX1 standalone format utility? --> XXDP
+In-Reply-To: <020901c2dad6$e0afcf70$8a00a8c0@arctura>
+Message-ID: <000001c2db03$fb0b45c0$b5c3580c@who5>
+
+Hello again from Gregg C Levine
+I've looked at your web pages on the subject of using XXDP to create
+that standalone format utility. And it makes sense. All of it.
+However, there's a broken link on it, regarding XXDP, and where to
+find it. Currently the link which points to the repository at Ibiblio,
+is correct. Or even the one you're using as they both work. But the
+one that says that the manual, and notes, and the OS, are available
+at, is the broken one. It comes up to a file not found error message.
+That guy has always had problems with his site, which is unfortunate.
+It hasn't returned. 
+
+However, what are you running E-11 under? And which version? The
+current one prefers a plain DOS environment, or even a Linux
+environment. The older ones, such as the versions stored on the site
+here, will work under DOS/Windows, even Windows 98SE, as I've proven.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]
+On
+> Behalf Of Jonathan Engdahl
+> Sent: Saturday, February 22, 2003 8:00 PM
+> To: cctech at classiccmp.org; pups at minnie.tuhs.org
+> Subject: [pups] Re: PDP11 - RQDX1 standalone format utility? -->
+XXDP
+> 
+> I documented the procedure to extract a program from XXDP and put a
+header
+> on it so that you can boot it from VTserver or a UNIX disk. It has
+been a
+> long time since I did this to ZRQCH0, so I practiced on the program
+that I
+> think Christos needs (ZRQBC1) and sent it to him.
+> 
+> There's a lot I don't know about the a.out header, so if someone can
+improve
+> my method, let me know.
+> 
+> http://users.safeaccess.com/engdahl/xxdp.htm#hackXXDP
+> 
+> 
+> "Teach a man to fish..."
+> 
+> --
+> Jonathan Engdahl
+> http://users.safeaccess.com/engdahl
+> 
+> "The things which are seen are temporary,
+>  but the things which are not seen are eternal."  II Cor. 4:18
+> 
+> 
+> ----- Original Message -----
+> From: "Christos Papachristou" <chpap at ics.forth.gr>
+> To: <cctalk at classiccmp.org>
+> Sent: Friday, February 21, 2003 4:57 AM
+> Subject: PDP11 - RQDX1 standalone format utility?
+> 
+> 
+> > I would like to do a bad sector scan on a RD52 connected to a
+RQDX1
+> > controller (The machine is a pdp11/73 without OS) prior to
+installing
+> > BSD2.11.Is there a standalone program like zrqch0(standalone
+version of
+> > zrqc from the  xxdp package - only for RQDX3) that can be
+downloaded
+> > directly to the pdp via vtserver and recognizes the RQDX1 , i.e. a
+version
+> > of zrqb or something similar?
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From robinb at ruffnready.co.uk  Sun Feb 23 20:13:46 2003
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Sun, 23 Feb 2003 10:13:46 +0000
+Subject: [pups] 211BSD and TSV05
+In-Reply-To: <1045969485.30181.9.camel@www.4mcnabb.net>
+References: <1045969485.30181.9.camel@www.4mcnabb.net>
+Message-ID: <H8FqNaAa7JW+EwDE@falstaf.demon.co.uk>
+
+Er yes, it's one of the most reliable tape drivers and controller mixes 
+that the OS supports.  I occasionally have had problems when the drive 
+itself has had a nervous breakdown but apart from that it is very good.
+
+Robin
+
+In message <1045969485.30181.9.camel at www.4mcnabb.net>, Christopher 
+McNabb <cmcnabb at vt.edu> writes
+>I have a TS05 tape drive and TSV05 controller.  The TS11 driver for
+>211BSD seems to be close to what I need, but not exactly.  I can
+>forward, reverse, offline, and run status commands using 'mt', but any
+>attempt to read or write data results in a hard error:
+>----
+># ansitape -t
+>ts0: hard error bn0 xs0=310<MOT,ONL,PED> xs1=20402<COR,-,UNC>
+>xs2=100000<OPM> xs3=40<REV>
+>ts0: hard error bn0 xs0=310<MOT,ONL,PED> xs1=20402<COR,-,UNC>
+>xs2=100000<OPM> xs3=40<REV>
+>ts0: hard error bn0 xs0=10310<RLL,MOT,ONL,PED> xs1=20402<COR,-,UNC>
+>xs2=100000<OPM> xs3=40<REV>
+>unknown record mode (n) - file 7 skipped
+>t - 7:  0 lines (0 chars) in 0 tape blocks
+>----
+>This continues ad-nauseum until Ctrl-C is pressed.
+>So, it looks like the TS11 driver is "almost, but not quite" good
+>enough.  Before I start attempting to re-invent the wheel, has anyone
+>had success getting a TSV05/TS05 working under 2.11BSD?
+>
+
+-- 
+Robin Birch
+
+
+
+From j.r.engdahl at adelphia.net  Mon Feb 24 03:15:34 2003
+From: j.r.engdahl at adelphia.net (Jonathan Engdahl)
+Date: Sun, 23 Feb 2003 12:15:34 -0500
+Subject: [pups] Re: PDP11 - RQDX1 standalone format utility? --> XXDP
+References: <000001c2db03$fb0b45c0$b5c3580c@who5>
+Message-ID: <000001c2db74$36932f20$8a00a8c0@arctura>
+
+I fixed the link.
+
+E11 is a bit of a problem. I'm running E11 3.0 demo. I have to run it on a
+machine that still has Windows ME. All the other machines run XP now, and
+E11 doesn't seem to work under XP. I tried to get to www.dbit.com to see if
+there's a fix, but the site seems to be gone.
+
+--
+Jonathan Engdahl
+http://users.safeaccess.com/engdahl
+
+"The things which are seen are temporary,
+ but the things which are not seen are eternal."  II Cor. 4:18
+
+
+----- Original Message -----
+From: "Gregg C Levine" <hansolofalcon at worldnet.att.net>
+To: "'Jonathan Engdahl'" <j.r.engdahl at adelphia.net>; <pups at minnie.tuhs.org>
+Sent: Sunday, February 23, 2003 1:22 AM
+Subject: RE: [pups] Re: PDP11 - RQDX1 standalone format utility? --> XXDP
+
+
+> Hello again from Gregg C Levine
+> I've looked at your web pages on the subject of using XXDP to create
+> that standalone format utility. And it makes sense. All of it.
+> However, there's a broken link on it, regarding XXDP, and where to
+> find it. Currently the link which points to the repository at Ibiblio,
+> is correct. Or even the one you're using as they both work. But the
+> one that says that the manual, and notes, and the OS, are available
+> at, is the broken one. It comes up to a file not found error message.
+> That guy has always had problems with his site, which is unfortunate.
+> It hasn't returned.
+>
+> However, what are you running E-11 under? And which version? The
+> current one prefers a plain DOS environment, or even a Linux
+> environment. The older ones, such as the versions stored on the site
+> here, will work under DOS/Windows, even Windows 98SE, as I've proven.
+> -------------------
+> Gregg C Levine hansolofalcon at worldnet.att.net
+> ------------------------------------------------------------
+> "The Force will be with you...Always." Obi-Wan Kenobi
+> "Use the Force, Luke." Obi-Wan Kenobi
+> (This company dedicates this E-Mail to General Obi-Wan Kenobi )
+> (This company dedicates this E-Mail to Master Yoda )
+>
+>
+>
+> > -----Original Message-----
+> > From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]
+> On
+> > Behalf Of Jonathan Engdahl
+> > Sent: Saturday, February 22, 2003 8:00 PM
+> > To: cctech at classiccmp.org; pups at minnie.tuhs.org
+> > Subject: [pups] Re: PDP11 - RQDX1 standalone format utility? -->
+> XXDP
+> >
+> > I documented the procedure to extract a program from XXDP and put a
+> header
+> > on it so that you can boot it from VTserver or a UNIX disk. It has
+> been a
+> > long time since I did this to ZRQCH0, so I practiced on the program
+> that I
+> > think Christos needs (ZRQBC1) and sent it to him.
+> >
+> > There's a lot I don't know about the a.out header, so if someone can
+> improve
+> > my method, let me know.
+> >
+> > http://users.safeaccess.com/engdahl/xxdp.htm#hackXXDP
+> >
+> >
+> > "Teach a man to fish..."
+> >
+> > --
+> > Jonathan Engdahl
+> > http://users.safeaccess.com/engdahl
+> >
+> > "The things which are seen are temporary,
+> >  but the things which are not seen are eternal."  II Cor. 4:18
+> >
+> >
+> > ----- Original Message -----
+> > From: "Christos Papachristou" <chpap at ics.forth.gr>
+> > To: <cctalk at classiccmp.org>
+> > Sent: Friday, February 21, 2003 4:57 AM
+> > Subject: PDP11 - RQDX1 standalone format utility?
+> >
+> >
+> > > I would like to do a bad sector scan on a RD52 connected to a
+> RQDX1
+> > > controller (The machine is a pdp11/73 without OS) prior to
+> installing
+> > > BSD2.11.Is there a standalone program like zrqch0(standalone
+> version of
+> > > zrqc from the  xxdp package - only for RQDX3) that can be
+> downloaded
+> > > directly to the pdp via vtserver and recognizes the RQDX1 , i.e. a
+> version
+> > > of zrqb or something similar?
+> >
+> > _______________________________________________
+> > PUPS mailing list
+> > PUPS at minnie.tuhs.org
+> > http://minnie.tuhs.org/mailman/listinfo/pups
+>
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From hansolofalcon at worldnet.att.net  Mon Feb 24 06:31:25 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Sun, 23 Feb 2003 15:31:25 -0500
+Subject: [pups] Re: PDP11 - RQDX1 standalone format utility? --> XXDP
+In-Reply-To: <000001c2db74$36932f20$8a00a8c0@arctura>
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAJX/cR7931hGLXAABAjrE9eKAAAAQAAAAxgGbU0JH1xGLYgABAjrE9QEAAAAA@worldnet.att.net>
+
+Hello again from Gregg C Levine
+Regarding Dbit, and E-11. The site is back. But you're right. I don't
+think there's a fix. If there is one, he'll probably deny it.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]
+On
+> Behalf Of Jonathan Engdahl
+> Sent: Sunday, February 23, 2003 12:16 PM
+> To: Gregg C Levine; pups at minnie.tuhs.org
+> Subject: Re: [pups] Re: PDP11 - RQDX1 standalone format utility? -->
+XXDP
+> 
+> I fixed the link.
+> 
+> E11 is a bit of a problem. I'm running E11 3.0 demo. I have to run
+it on a
+> machine that still has Windows ME. All the other machines run XP
+now, and
+> E11 doesn't seem to work under XP. I tried to get to www.dbit.com to
+see if
+> there's a fix, but the site seems to be gone.
+> 
+> --
+> Jonathan Engdahl
+> http://users.safeaccess.com/engdahl
+> 
+> "The things which are seen are temporary,
+>  but the things which are not seen are eternal."  II Cor. 4:18
+> 
+> 
+> ----- Original Message -----
+> From: "Gregg C Levine" <hansolofalcon at worldnet.att.net>
+> To: "'Jonathan Engdahl'" <j.r.engdahl at adelphia.net>;
+<pups at minnie.tuhs.org>
+> Sent: Sunday, February 23, 2003 1:22 AM
+> Subject: RE: [pups] Re: PDP11 - RQDX1 standalone format utility? -->
+XXDP
+> 
+> 
+> > Hello again from Gregg C Levine
+> > I've looked at your web pages on the subject of using XXDP to
+create
+> > that standalone format utility. And it makes sense. All of it.
+> > However, there's a broken link on it, regarding XXDP, and where to
+> > find it. Currently the link which points to the repository at
+Ibiblio,
+> > is correct. Or even the one you're using as they both work. But
+the
+> > one that says that the manual, and notes, and the OS, are
+available
+> > at, is the broken one. It comes up to a file not found error
+message.
+> > That guy has always had problems with his site, which is
+unfortunate.
+> > It hasn't returned.
+> >
+> > However, what are you running E-11 under? And which version? The
+> > current one prefers a plain DOS environment, or even a Linux
+> > environment. The older ones, such as the versions stored on the
+site
+> > here, will work under DOS/Windows, even Windows 98SE, as I've
+proven.
+> > -------------------
+> > Gregg C Levine hansolofalcon at worldnet.att.net
+> > ------------------------------------------------------------
+> > "The Force will be with you...Always." Obi-Wan Kenobi
+> > "Use the Force, Luke." Obi-Wan Kenobi
+> > (This company dedicates this E-Mail to General Obi-Wan Kenobi )
+> > (This company dedicates this E-Mail to Master Yoda )
+> >
+> >
+> >
+> > > -----Original Message-----
+> > > From: pups-admin at minnie.tuhs.org
+[mailto:pups-admin at minnie.tuhs.org]
+> > On
+> > > Behalf Of Jonathan Engdahl
+> > > Sent: Saturday, February 22, 2003 8:00 PM
+> > > To: cctech at classiccmp.org; pups at minnie.tuhs.org
+> > > Subject: [pups] Re: PDP11 - RQDX1 standalone format utility? -->
+> > XXDP
+> > >
+> > > I documented the procedure to extract a program from XXDP and
+put a
+> > header
+> > > on it so that you can boot it from VTserver or a UNIX disk. It
+has
+> > been a
+> > > long time since I did this to ZRQCH0, so I practiced on the
+program
+> > that I
+> > > think Christos needs (ZRQBC1) and sent it to him.
+> > >
+> > > There's a lot I don't know about the a.out header, so if someone
+can
+> > improve
+> > > my method, let me know.
+> > >
+> > > http://users.safeaccess.com/engdahl/xxdp.htm#hackXXDP
+> > >
+> > >
+> > > "Teach a man to fish..."
+> > >
+> > > --
+> > > Jonathan Engdahl
+> > > http://users.safeaccess.com/engdahl
+> > >
+> > > "The things which are seen are temporary,
+> > >  but the things which are not seen are eternal."  II Cor. 4:18
+> > >
+> > >
+> > > ----- Original Message -----
+> > > From: "Christos Papachristou" <chpap at ics.forth.gr>
+> > > To: <cctalk at classiccmp.org>
+> > > Sent: Friday, February 21, 2003 4:57 AM
+> > > Subject: PDP11 - RQDX1 standalone format utility?
+> > >
+> > >
+> > > > I would like to do a bad sector scan on a RD52 connected to a
+> > RQDX1
+> > > > controller (The machine is a pdp11/73 without OS) prior to
+> > installing
+> > > > BSD2.11.Is there a standalone program like zrqch0(standalone
+> > version of
+> > > > zrqc from the  xxdp package - only for RQDX3) that can be
+> > downloaded
+> > > > directly to the pdp via vtserver and recognizes the RQDX1 ,
+i.e. a
+> > version
+> > > > of zrqb or something similar?
+> > >
+> > > _______________________________________________
+> > > PUPS mailing list
+> > > PUPS at minnie.tuhs.org
+> > > http://minnie.tuhs.org/mailman/listinfo/pups
+> >
+> > _______________________________________________
+> > PUPS mailing list
+> > PUPS at minnie.tuhs.org
+> > http://minnie.tuhs.org/mailman/listinfo/pups
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From hansolofalcon at worldnet.att.net  Mon Feb 24 06:31:25 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Sun, 23 Feb 2003 15:31:25 -0500
+Subject: [pups] Re: PDP11 - RQDX1 standalone format utility? --> XXDP
+In-Reply-To: <000001c2db74$36932f20$8a00a8c0@arctura>
+Message-ID: <000201c2db7a$8bfcf8a0$58a7580c@who5>
+
+Hello again from Gregg C Levine
+I can't understand it. When I posted the original reply, that site
+regarding XXDP wasn't up. Now it is. I think this is all because the
+Winter of 2003, is causing chaos to over work itself. And Jonathan, I
+know we'll figure something out. This business is fun, so I'm looking
+at it, as a hobby if nothing else.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]
+On
+> Behalf Of Jonathan Engdahl
+> Sent: Sunday, February 23, 2003 12:16 PM
+> To: Gregg C Levine; pups at minnie.tuhs.org
+> Subject: Re: [pups] Re: PDP11 - RQDX1 standalone format utility? -->
+XXDP
+> 
+> I fixed the link.
+> 
+> E11 is a bit of a problem. I'm running E11 3.0 demo. I have to run
+it on a
+> machine that still has Windows ME. All the other machines run XP
+now, and
+> E11 doesn't seem to work under XP. I tried to get to www.dbit.com to
+see if
+> there's a fix, but the site seems to be gone.
+> 
+> --
+> Jonathan Engdahl
+> http://users.safeaccess.com/engdahl
+> 
+> "The things which are seen are temporary,
+>  but the things which are not seen are eternal."  II Cor. 4:18
+> 
+> 
+> ----- Original Message -----
+> From: "Gregg C Levine" <hansolofalcon at worldnet.att.net>
+> To: "'Jonathan Engdahl'" <j.r.engdahl at adelphia.net>;
+<pups at minnie.tuhs.org>
+> Sent: Sunday, February 23, 2003 1:22 AM
+> Subject: RE: [pups] Re: PDP11 - RQDX1 standalone format utility? -->
+XXDP
+> 
+> 
+> > Hello again from Gregg C Levine
+> > I've looked at your web pages on the subject of using XXDP to
+create
+> > that standalone format utility. And it makes sense. All of it.
+> > However, there's a broken link on it, regarding XXDP, and where to
+> > find it. Currently the link which points to the repository at
+Ibiblio,
+> > is correct. Or even the one you're using as they both work. But
+the
+> > one that says that the manual, and notes, and the OS, are
+available
+> > at, is the broken one. It comes up to a file not found error
+message.
+> > That guy has always had problems with his site, which is
+unfortunate.
+> > It hasn't returned.
+> >
+> > However, what are you running E-11 under? And which version? The
+> > current one prefers a plain DOS environment, or even a Linux
+> > environment. The older ones, such as the versions stored on the
+site
+> > here, will work under DOS/Windows, even Windows 98SE, as I've
+proven.
+> > -------------------
+> > Gregg C Levine hansolofalcon at worldnet.att.net
+> > ------------------------------------------------------------
+> > "The Force will be with you...Always." Obi-Wan Kenobi
+> > "Use the Force, Luke." Obi-Wan Kenobi
+> > (This company dedicates this E-Mail to General Obi-Wan Kenobi )
+> > (This company dedicates this E-Mail to Master Yoda )
+> >
+> >
+> >
+> > > -----Original Message-----
+> > > From: pups-admin at minnie.tuhs.org
+[mailto:pups-admin at minnie.tuhs.org]
+> > On
+> > > Behalf Of Jonathan Engdahl
+> > > Sent: Saturday, February 22, 2003 8:00 PM
+> > > To: cctech at classiccmp.org; pups at minnie.tuhs.org
+> > > Subject: [pups] Re: PDP11 - RQDX1 standalone format utility? -->
+> > XXDP
+> > >
+> > > I documented the procedure to extract a program from XXDP and
+put a
+> > header
+> > > on it so that you can boot it from VTserver or a UNIX disk. It
+has
+> > been a
+> > > long time since I did this to ZRQCH0, so I practiced on the
+program
+> > that I
+> > > think Christos needs (ZRQBC1) and sent it to him.
+> > >
+> > > There's a lot I don't know about the a.out header, so if someone
+can
+> > improve
+> > > my method, let me know.
+> > >
+> > > http://users.safeaccess.com/engdahl/xxdp.htm#hackXXDP
+> > >
+> > >
+> > > "Teach a man to fish..."
+> > >
+> > > --
+> > > Jonathan Engdahl
+> > > http://users.safeaccess.com/engdahl
+> > >
+> > > "The things which are seen are temporary,
+> > >  but the things which are not seen are eternal."  II Cor. 4:18
+> > >
+> > >
+> > > ----- Original Message -----
+> > > From: "Christos Papachristou" <chpap at ics.forth.gr>
+> > > To: <cctalk at classiccmp.org>
+> > > Sent: Friday, February 21, 2003 4:57 AM
+> > > Subject: PDP11 - RQDX1 standalone format utility?
+> > >
+> > >
+> > > > I would like to do a bad sector scan on a RD52 connected to a
+> > RQDX1
+> > > > controller (The machine is a pdp11/73 without OS) prior to
+> > installing
+> > > > BSD2.11.Is there a standalone program like zrqch0(standalone
+> > version of
+> > > > zrqc from the  xxdp package - only for RQDX3) that can be
+> > downloaded
+> > > > directly to the pdp via vtserver and recognizes the RQDX1 ,
+i.e. a
+> > version
+> > > > of zrqb or something similar?
+> > >
+> > > _______________________________________________
+> > > PUPS mailing list
+> > > PUPS at minnie.tuhs.org
+> > > http://minnie.tuhs.org/mailman/listinfo/pups
+> >
+> > _______________________________________________
+> > PUPS mailing list
+> > PUPS at minnie.tuhs.org
+> > http://minnie.tuhs.org/mailman/listinfo/pups
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From michael_davidson at pacbell.net  Mon Feb 24 07:40:40 2003
+From: michael_davidson at pacbell.net (Michael Davidson)
+Date: Sun, 23 Feb 2003 13:40:40 -0800
+Subject: [pups] Re: PDP11 - RQDX1 standalone format utility? --> XXDP
+References: <001201c2d98f$b4ff34d0$77b95b8b@ics.forth.gr> <020901c2dad6$e0afcf70$8a00a8c0@arctura>
+Message-ID: <3E593FD8.2090207@pacbell.net>
+
+Jonathan Engdahl wrote:
+
+>I documented the procedure to extract a program from XXDP and put a header
+>on it so that you can boot it from VTserver or a UNIX disk. It has been a
+>long time since I did this to ZRQCH0, so I practiced on the program that I
+>think Christos needs (ZRQBC1) and sent it to him.
+>
+>There's a lot I don't know about the a.out header, so if someone can improve
+>my method, let me know.
+>
+>http://users.safeaccess.com/engdahl/xxdp.htm#hackXXDP
+>
+There isn't very much to know about the a.out header,
+and what you are doing looks OK although I would probably
+have set a_text to 160000 and left a_data and a_bss as 0.
+
+While I am not really familiar with the BSD boot code that
+vtserver uses when loading a program I am almost certain that
+it will use the entrypoint address in the a.out header and
+not just jump to address 0. (remember it's an actual program
+loader that understands a.out format, not just something that
+only knows how to load a boot block and jump to it)
+
+This is confirmed by the fact that the code you are patching
+into the image at address 0 is wrong if you want it to get
+you to the restart address.
+
+In your example you have:
+
+000020/ 000167
+000022/ 145702
+
+If this was loaded at address 0 in memory and the boot code
+jumped to address 0, you would end up at 145706 *not* 145702
+(of course, you might very well get lucky and still land on
+an instruction boundary, but you would have skipped the first
+2 words of the restart code).
+
+If this code were really necessary (and I'm 99.99% sure that
+it isn't) you would want either:
+
+000137
+145702
+
+or:
+
+000167
+145676
+
+
+
+
+
+
+
+From Fred.van.Kempen at microwalt.nl  Mon Feb 24 08:26:58 2003
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Sun, 23 Feb 2003 23:26:58 +0100
+Subject: [pups] Re: PDP11 - RQDX1 standalone format utility? --> XXDP
+Message-ID: <7AD18F04B62B7440BE22E190A3F7721409DAF5@mwsrv04.microwalt.nl>
+
+Erzatz-11 V3.1 runs fine on Win2K and XP, please get that from
+the site.  If you cant reach it, contact me offlist and I will
+send it to you.
+
+--f
+
+> -----Original Message-----
+> From: Jonathan Engdahl [mailto:j.r.engdahl at adelphia.net]
+> Sent: Sunday, February 23, 2003 6:16 PM
+> To: Gregg C Levine; pups at minnie.tuhs.org
+> Subject: Re: [pups] Re: PDP11 - RQDX1 standalone format utility? -->
+> XXDP
+> 
+> 
+> I fixed the link.
+> 
+> E11 is a bit of a problem. I'm running E11 3.0 demo. I have 
+> to run it on a
+> machine that still has Windows ME. All the other machines run 
+> XP now, and
+> E11 doesn't seem to work under XP. I tried to get to 
+> www.dbit.com to see if
+> there's a fix, but the site seems to be gone.
+> 
+> --
+> Jonathan Engdahl
+> http://users.safeaccess.com/engdahl
+> 
+> "The things which are seen are temporary,
+>  but the things which are not seen are eternal."  II Cor. 4:18
+> 
+> 
+> ----- Original Message -----
+> From: "Gregg C Levine" <hansolofalcon at worldnet.att.net>
+> To: "'Jonathan Engdahl'" <j.r.engdahl at adelphia.net>; 
+> <pups at minnie.tuhs.org>
+> Sent: Sunday, February 23, 2003 1:22 AM
+> Subject: RE: [pups] Re: PDP11 - RQDX1 standalone format 
+> utility? --> XXDP
+> 
+> 
+> > Hello again from Gregg C Levine
+> > I've looked at your web pages on the subject of using XXDP to create
+> > that standalone format utility. And it makes sense. All of it.
+> > However, there's a broken link on it, regarding XXDP, and where to
+> > find it. Currently the link which points to the repository 
+> at Ibiblio,
+> > is correct. Or even the one you're using as they both work. But the
+> > one that says that the manual, and notes, and the OS, are available
+> > at, is the broken one. It comes up to a file not found 
+> error message.
+> > That guy has always had problems with his site, which is 
+> unfortunate.
+> > It hasn't returned.
+> >
+> > However, what are you running E-11 under? And which version? The
+> > current one prefers a plain DOS environment, or even a Linux
+> > environment. The older ones, such as the versions stored on the site
+> > here, will work under DOS/Windows, even Windows 98SE, as 
+> I've proven.
+> > -------------------
+> > Gregg C Levine hansolofalcon at worldnet.att.net
+> > ------------------------------------------------------------
+> > "The Force will be with you...Always." Obi-Wan Kenobi
+> > "Use the Force, Luke." Obi-Wan Kenobi
+> > (This company dedicates this E-Mail to General Obi-Wan Kenobi )
+> > (This company dedicates this E-Mail to Master Yoda )
+> >
+> >
+> >
+> > > -----Original Message-----
+> > > From: pups-admin at minnie.tuhs.org 
+> [mailto:pups-admin at minnie.tuhs.org]
+> > On
+> > > Behalf Of Jonathan Engdahl
+> > > Sent: Saturday, February 22, 2003 8:00 PM
+> > > To: cctech at classiccmp.org; pups at minnie.tuhs.org
+> > > Subject: [pups] Re: PDP11 - RQDX1 standalone format utility? -->
+> > XXDP
+> > >
+> > > I documented the procedure to extract a program from XXDP 
+> and put a
+> > header
+> > > on it so that you can boot it from VTserver or a UNIX disk. It has
+> > been a
+> > > long time since I did this to ZRQCH0, so I practiced on 
+> the program
+> > that I
+> > > think Christos needs (ZRQBC1) and sent it to him.
+> > >
+> > > There's a lot I don't know about the a.out header, so if 
+> someone can
+> > improve
+> > > my method, let me know.
+> > >
+> > > http://users.safeaccess.com/engdahl/xxdp.htm#hackXXDP
+> > >
+> > >
+> > > "Teach a man to fish..."
+> > >
+> > > --
+> > > Jonathan Engdahl
+> > > http://users.safeaccess.com/engdahl
+> > >
+> > > "The things which are seen are temporary,
+> > >  but the things which are not seen are eternal."  II Cor. 4:18
+> > >
+> > >
+> > > ----- Original Message -----
+> > > From: "Christos Papachristou" <chpap at ics.forth.gr>
+> > > To: <cctalk at classiccmp.org>
+> > > Sent: Friday, February 21, 2003 4:57 AM
+> > > Subject: PDP11 - RQDX1 standalone format utility?
+> > >
+> > >
+> > > > I would like to do a bad sector scan on a RD52 connected to a
+> > RQDX1
+> > > > controller (The machine is a pdp11/73 without OS) prior to
+> > installing
+> > > > BSD2.11.Is there a standalone program like zrqch0(standalone
+> > version of
+> > > > zrqc from the  xxdp package - only for RQDX3) that can be
+> > downloaded
+> > > > directly to the pdp via vtserver and recognizes the 
+> RQDX1 , i.e. a
+> > version
+> > > > of zrqb or something similar?
+> > >
+> > > _______________________________________________
+> > > PUPS mailing list
+> > > PUPS at minnie.tuhs.org
+> > > http://minnie.tuhs.org/mailman/listinfo/pups
+> >
+> > _______________________________________________
+> > PUPS mailing list
+> > PUPS at minnie.tuhs.org
+> > http://minnie.tuhs.org/mailman/listinfo/pups
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+> 
+
+
+From cmcnabb at vt.edu  Mon Feb 24 10:41:26 2003
+From: cmcnabb at vt.edu (Christopher McNabb)
+Date: 23 Feb 2003 19:41:26 -0500
+Subject: [pups] 211BSD and TSV05 - Boy, Do I feel stupid
+Message-ID: <1046047286.30181.43.camel@www.4mcnabb.net>
+
+On Sat, 2003-02-22 at 22:04, Christopher McNabb wrote:
+> I have a TS05 tape drive and TSV05 controller.  The TS11 driver for
+> 211BSD seems to be close to what I need, but not exactly.  I can
+> forward, reverse, offline, and run status commands using 'mt', but any
+> attempt to read or write data results in a hard error:
+> ----
+
+
+Well, this problem was fixed by cleaning the heads.  In the words of the
+immortal Homer Simpson, "Doh!"
+ 
+-- 
+Christopher L McNabb              Tel:   540 231 7554
+Operating Systems Analyst         Email: cmcnabb at vt.edu
+Virginia Tech                     ICBM:  37.205622N 80.414595W
+GMRS: WPSR255                     ARS:   N2UX  Grid Sq: EM97SD
+
+
+From robinb at ruffnready.co.uk  Mon Feb 24 11:11:41 2003
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Mon, 24 Feb 2003 01:11:41 +0000
+Subject: [pups] 211BSD and TSV05 - Boy, Do I feel stupid
+In-Reply-To: <1046047286.30181.43.camel@www.4mcnabb.net>
+References: <1046047286.30181.43.camel@www.4mcnabb.net>
+Message-ID: <8SwEWPANFXW+EwnH@falstaf.demon.co.uk>
+
+Oh well, glad it now works.  It's always the simple ones that bite :-)
+
+Robin
+In message <1046047286.30181.43.camel at www.4mcnabb.net>, Christopher 
+McNabb <cmcnabb at vt.edu> writes
+>On Sat, 2003-02-22 at 22:04, Christopher McNabb wrote:
+>> I have a TS05 tape drive and TSV05 controller.  The TS11 driver for
+>> 211BSD seems to be close to what I need, but not exactly.  I can
+>> forward, reverse, offline, and run status commands using 'mt', but any
+>> attempt to read or write data results in a hard error:
+>> ----
+>
+>
+>Well, this problem was fixed by cleaning the heads.  In the words of the
+>immortal Homer Simpson, "Doh!"
+>
+
+-- 
+Robin Birch
+
+
+
+From j.r.engdahl at adelphia.net  Mon Feb 24 12:41:39 2003
+From: j.r.engdahl at adelphia.net (Jonathan Engdahl)
+Date: Sun, 23 Feb 2003 21:41:39 -0500
+Subject: [pups] Re: PDP11 - RQDX1 standalone format utility? --> XXDP
+References: <001201c2d98f$b4ff34d0$77b95b8b@ics.forth.gr> <020901c2dad6$e0afcf70$8a00a8c0@arctura> <3E593FD8.2090207@pacbell.net>
+Message-ID: <008501c2dbae$42286050$8a00a8c0@arctura>
+
+You are right: 000137. The funny thing is, I had it right the first time.
+I'll go update the web page.
+
+On the other header fields, I agree with your idea, but for some reason, I
+have this vague recollection that there was a reason for what I did with
+them. It's always a bad idea to second guess something you did a year ago
+and "fix" it (see the 000137 thing). It's working, so I'd best leave it
+alone until it's proven to be broken. I think I remember setting it up that
+way after reading through the source for some boot loader.
+
+Hmm, yes, it was the "boot" program. VTserver squirts down a small loader
+via ODT, which then loads boot.dd. Same as the boot program that the 512
+byte rauboot program loads. This one:
+
+73Boot from ra(0,0,0) at 0172150
+: ra(0,0,0)unix
+
+ Boot.dd knows enough to chat with the console so you can tell it what file
+you want off the virtual tape or hard drive, and it does some decoding of
+the header, but it's limited. Maybe I should go read that code again.
+
+--
+Jonathan Engdahl
+http://users.safeaccess.com/engdahl
+
+"The things which are seen are temporary,
+ but the things which are not seen are eternal."  II Cor. 4:18
+
+----- Original Message -----
+From: "Michael Davidson" <michael_davidson at pacbell.net>
+To: "Jonathan Engdahl" <j.r.engdahl at adelphia.net>
+Cc: <cctech at classiccmp.org>; <pups at minnie.tuhs.org>
+Sent: Sunday, February 23, 2003 4:40 PM
+Subject: Re: [pups] Re: PDP11 - RQDX1 standalone format utility? --> XXDP
+
+
+> Jonathan Engdahl wrote:
+>
+> >I documented the procedure to extract a program from XXDP and put a
+header
+> >on it so that you can boot it from VTserver or a UNIX disk. It has been a
+> >long time since I did this to ZRQCH0, so I practiced on the program that
+I
+> >think Christos needs (ZRQBC1) and sent it to him.
+> >
+> >There's a lot I don't know about the a.out header, so if someone can
+improve
+> >my method, let me know.
+> >
+> >http://users.safeaccess.com/engdahl/xxdp.htm#hackXXDP
+> >
+> There isn't very much to know about the a.out header,
+> and what you are doing looks OK although I would probably
+> have set a_text to 160000 and left a_data and a_bss as 0.
+>
+> While I am not really familiar with the BSD boot code that
+> vtserver uses when loading a program I am almost certain that
+> it will use the entrypoint address in the a.out header and
+> not just jump to address 0. (remember it's an actual program
+> loader that understands a.out format, not just something that
+> only knows how to load a boot block and jump to it)
+>
+> This is confirmed by the fact that the code you are patching
+> into the image at address 0 is wrong if you want it to get
+> you to the restart address.
+>
+> In your example you have:
+>
+> 000020/ 000167
+> 000022/ 145702
+>
+> If this was loaded at address 0 in memory and the boot code
+> jumped to address 0, you would end up at 145706 *not* 145702
+> (of course, you might very well get lucky and still land on
+> an instruction boundary, but you would have skipped the first
+> 2 words of the restart code).
+>
+> If this code were really necessary (and I'm 99.99% sure that
+> it isn't) you would want either:
+>
+> 000137
+> 145702
+>
+> or:
+>
+> 000167
+> 145676
+>
+>
+>
+>
+>
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From j.r.engdahl at adelphia.net  Mon Feb 24 14:32:57 2003
+From: j.r.engdahl at adelphia.net (Jonathan Engdahl)
+Date: Sun, 23 Feb 2003 23:32:57 -0500
+Subject: [pups] Re: PDP11 - RQDX1 standalone format utility? --> XXDP
+References: <001201c2d98f$b4ff34d0$77b95b8b@ics.forth.gr> <020901c2dad6$e0afcf70$8a00a8c0@arctura> <3E593FD8.2090207@pacbell.net>
+Message-ID: <00cb01c2dbbd$ce8d64f0$8a00a8c0@arctura>
+
+Now that I think of it,
+
+> 000137
+> 145702
+
+is wrong too. Assuming that the program is relocatable (which in this case
+it probably is not), and you simply loaded the entire file into memory, it
+would be offset by the 16 byte header, so you would want to jump to 145722.
+
+I think I will remove that patch at 20 altogether.
+
+Did you know that the output from PDPXASM can be loaded to a barely
+twitching PDP-11 via VTserver? I used PDPXASM to write scope loops for an
+RX02 (DSD 4140) board I resurrected.
+
+--
+Jonathan Engdahl
+http://users.safeaccess.com/engdahl
+
+"The things which are seen are temporary,
+ but the things which are not seen are eternal."  II Cor. 4:18
+
+
+----- Original Message -----
+From: "Michael Davidson" <michael_davidson at pacbell.net>
+To: "Jonathan Engdahl" <j.r.engdahl at adelphia.net>
+Cc: <cctech at classiccmp.org>; <pups at minnie.tuhs.org>
+Sent: Sunday, February 23, 2003 4:40 PM
+Subject: Re: [pups] Re: PDP11 - RQDX1 standalone format utility? --> XXDP
+
+
+> Jonathan Engdahl wrote:
+>
+> >I documented the procedure to extract a program from XXDP and put a
+header
+> >on it so that you can boot it from VTserver or a UNIX disk. It has been a
+> >long time since I did this to ZRQCH0, so I practiced on the program that
+I
+> >think Christos needs (ZRQBC1) and sent it to him.
+> >
+> >There's a lot I don't know about the a.out header, so if someone can
+improve
+> >my method, let me know.
+> >
+> >http://users.safeaccess.com/engdahl/xxdp.htm#hackXXDP
+> >
+> There isn't very much to know about the a.out header,
+> and what you are doing looks OK although I would probably
+> have set a_text to 160000 and left a_data and a_bss as 0.
+>
+> While I am not really familiar with the BSD boot code that
+> vtserver uses when loading a program I am almost certain that
+> it will use the entrypoint address in the a.out header and
+> not just jump to address 0. (remember it's an actual program
+> loader that understands a.out format, not just something that
+> only knows how to load a boot block and jump to it)
+>
+> This is confirmed by the fact that the code you are patching
+> into the image at address 0 is wrong if you want it to get
+> you to the restart address.
+>
+> In your example you have:
+>
+> 000020/ 000167
+> 000022/ 145702
+>
+> If this was loaded at address 0 in memory and the boot code
+> jumped to address 0, you would end up at 145706 *not* 145702
+> (of course, you might very well get lucky and still land on
+> an instruction boundary, but you would have skipped the first
+> 2 words of the restart code).
+>
+> If this code were really necessary (and I'm 99.99% sure that
+> it isn't) you would want either:
+>
+> 000137
+> 145702
+>
+> or:
+>
+> 000167
+> 145676
+>
+>
+>
+>
+>
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From wkt at minnie.tuhs.org  Mon Feb 24 15:10:25 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Mon, 24 Feb 2003 15:10:25 +1000 (EST)
+Subject: [pups] Re: PDP11 - RQDX1 standalone format utility? --> XXDP
+In-Reply-To: <00cb01c2dbbd$ce8d64f0$8a00a8c0@arctura> from Jonathan Engdahl at
+ "Feb 23, 2003 11:32:57 pm"
+Message-ID: <200302240510.h1O5AQP56370@minnie.tuhs.org>
+
+In article by Jonathan Engdahl:
+> Did you know that the output from PDPXASM can be loaded to a barely
+> twitching PDP-11 via VTserver? I used PDPXASM to write scope loops for an
+> RX02 (DSD 4140) board I resurrected.
+
+I'm glad I wrote VTserver, it seems it has more uses than I thought of.
+I'm out of the development loop for the new VTserver, but hopefully
+it's progressing along.
+
+	Warren
+
+
+From hansolofalcon at worldnet.att.net  Mon Feb 24 15:40:18 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Mon, 24 Feb 2003 00:40:18 -0500
+Subject: [pups] Re: PDP11 - RQDX1 standalone format utility? --> XXDP
+In-Reply-To: <00cb01c2dbbd$ce8d64f0$8a00a8c0@arctura>
+Message-ID: <000001c2dbc7$389a3400$0ec6580c@who5>
+
+Hello again from Gregg C Levine
+I've got a PDP-11/53 on order, call it. Would that board work there?
+And where could I find one of these, RX02 (DSD 4140) board(s)? Also,
+what exactly is this RX02 (DSD 4140) board? Its one that I don't quite
+remember hearing about.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]
+On
+> Behalf Of Jonathan Engdahl
+> Sent: Sunday, February 23, 2003 11:33 PM
+> To: cctech at classiccmp.org; pups at minnie.tuhs.org
+> Subject: Re: [pups] Re: PDP11 - RQDX1 standalone format utility? -->
+XXDP
+> 
+> Now that I think of it,
+> 
+> > 000137
+> > 145702
+> 
+> is wrong too. Assuming that the program is relocatable (which in
+this case
+> it probably is not), and you simply loaded the entire file into
+memory, it
+> would be offset by the 16 byte header, so you would want to jump to
+145722.
+> 
+> I think I will remove that patch at 20 altogether.
+> 
+> Did you know that the output from PDPXASM can be loaded to a barely
+> twitching PDP-11 via VTserver? I used PDPXASM to write scope loops
+for an
+> RX02 (DSD 4140) board I resurrected.
+> 
+> --
+> Jonathan Engdahl
+> http://users.safeaccess.com/engdahl
+> 
+> "The things which are seen are temporary,
+>  but the things which are not seen are eternal."  II Cor. 4:18
+> 
+> 
+> ----- Original Message -----
+> From: "Michael Davidson" <michael_davidson at pacbell.net>
+> To: "Jonathan Engdahl" <j.r.engdahl at adelphia.net>
+> Cc: <cctech at classiccmp.org>; <pups at minnie.tuhs.org>
+> Sent: Sunday, February 23, 2003 4:40 PM
+> Subject: Re: [pups] Re: PDP11 - RQDX1 standalone format utility? -->
+XXDP
+> 
+> 
+> > Jonathan Engdahl wrote:
+> >
+> > >I documented the procedure to extract a program from XXDP and put
+a
+> header
+> > >on it so that you can boot it from VTserver or a UNIX disk. It
+has been a
+> > >long time since I did this to ZRQCH0, so I practiced on the
+program that
+> I
+> > >think Christos needs (ZRQBC1) and sent it to him.
+> > >
+> > >There's a lot I don't know about the a.out header, so if someone
+can
+> improve
+> > >my method, let me know.
+> > >
+> > >http://users.safeaccess.com/engdahl/xxdp.htm#hackXXDP
+> > >
+> > There isn't very much to know about the a.out header,
+> > and what you are doing looks OK although I would probably
+> > have set a_text to 160000 and left a_data and a_bss as 0.
+> >
+> > While I am not really familiar with the BSD boot code that
+> > vtserver uses when loading a program I am almost certain that
+> > it will use the entrypoint address in the a.out header and
+> > not just jump to address 0. (remember it's an actual program
+> > loader that understands a.out format, not just something that
+> > only knows how to load a boot block and jump to it)
+> >
+> > This is confirmed by the fact that the code you are patching
+> > into the image at address 0 is wrong if you want it to get
+> > you to the restart address.
+> >
+> > In your example you have:
+> >
+> > 000020/ 000167
+> > 000022/ 145702
+> >
+> > If this was loaded at address 0 in memory and the boot code
+> > jumped to address 0, you would end up at 145706 *not* 145702
+> > (of course, you might very well get lucky and still land on
+> > an instruction boundary, but you would have skipped the first
+> > 2 words of the restart code).
+> >
+> > If this code were really necessary (and I'm 99.99% sure that
+> > it isn't) you would want either:
+> >
+> > 000137
+> > 145702
+> >
+> > or:
+> >
+> > 000167
+> > 145676
+> >
+> >
+> >
+> >
+> >
+> > _______________________________________________
+> > PUPS mailing list
+> > PUPS at minnie.tuhs.org
+> > http://minnie.tuhs.org/mailman/listinfo/pups
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From j.r.engdahl at adelphia.net  Mon Feb 24 16:34:20 2003
+From: j.r.engdahl at adelphia.net (Jonathan Engdahl)
+Date: Mon, 24 Feb 2003 01:34:20 -0500
+Subject: [pups] Re: PDP11 - RQDX1 standalone format utility? --> XXDP
+References: <000001c2dbc7$389a3400$0ec6580c@who5>
+Message-ID: <00e501c2dbce$c3f20800$8a00a8c0@arctura>
+
+The DSD-4140 (Data Systems Design) is an RX-02 compatible floppy controller.
+I had a couple, but they're gone. You can find them on the web here and
+there. I have the manual for it as a directory of .jpg files. I had one that
+was malfunctioning. It was sort of fun diagnosing it. I found a bad bus
+buffer and fixed it.
+
+I think it's an 18-bit DMA board. Might not work with the 11/53. Wait,
+though, I have a disk with a special RT-11 driver for it. It puts the DMA
+buffers in the first 256K, then copies the data if the final destination is
+higher. I'm not sure if BSD can deal with this issue. I've never had to
+worry about it. I have all the diags for the 4140 also.
+
+DSD was bought by Qualogy, so some of their stuff has that name on it.
+
+Arclight (www.arcind.net) shows three in stock. The board number is
+804140-1.
+
+Second picture down on this page:
+http://users.safeaccess.com/engdahl/spare_parts.htm
+
+Here's how it boots:
+http://www.classiccmp.org/mail-archive/classiccmp/2001-06/0032.html
+
+--
+Jonathan Engdahl
+http://users.safeaccess.com/engdahl
+
+"The things which are seen are temporary,
+ but the things which are not seen are eternal."  II Cor. 4:18
+
+
+----- Original Message -----
+From: "Gregg C Levine" <hansolofalcon at worldnet.att.net>
+To: "'Jonathan Engdahl'" <j.r.engdahl at adelphia.net>; <pups at minnie.tuhs.org>
+Sent: Monday, February 24, 2003 12:40 AM
+Subject: RE: [pups] Re: PDP11 - RQDX1 standalone format utility? --> XXDP
+
+
+Hello again from Gregg C Levine
+I've got a PDP-11/53 on order, call it. Would that board work there?
+And where could I find one of these, RX02 (DSD 4140) board(s)? Also,
+what exactly is this RX02 (DSD 4140) board? Its one that I don't quite
+remember hearing about.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke." Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]
+On
+> Behalf Of Jonathan Engdahl
+> Sent: Sunday, February 23, 2003 11:33 PM
+> To: cctech at classiccmp.org; pups at minnie.tuhs.org
+> Subject: Re: [pups] Re: PDP11 - RQDX1 standalone format utility? -->
+XXDP
+>
+> Now that I think of it,
+>
+> > 000137
+> > 145702
+>
+> is wrong too. Assuming that the program is relocatable (which in
+this case
+> it probably is not), and you simply loaded the entire file into
+memory, it
+> would be offset by the 16 byte header, so you would want to jump to
+145722.
+>
+> I think I will remove that patch at 20 altogether.
+>
+> Did you know that the output from PDPXASM can be loaded to a barely
+> twitching PDP-11 via VTserver? I used PDPXASM to write scope loops
+for an
+> RX02 (DSD 4140) board I resurrected.
+>
+> --
+> Jonathan Engdahl
+> http://users.safeaccess.com/engdahl
+>
+> "The things which are seen are temporary,
+>  but the things which are not seen are eternal."  II Cor. 4:18
+>
+>
+> ----- Original Message -----
+> From: "Michael Davidson" <michael_davidson at pacbell.net>
+> To: "Jonathan Engdahl" <j.r.engdahl at adelphia.net>
+> Cc: <cctech at classiccmp.org>; <pups at minnie.tuhs.org>
+> Sent: Sunday, February 23, 2003 4:40 PM
+> Subject: Re: [pups] Re: PDP11 - RQDX1 standalone format utility? -->
+XXDP
+>
+>
+> > Jonathan Engdahl wrote:
+> >
+> > >I documented the procedure to extract a program from XXDP and put
+a
+> header
+> > >on it so that you can boot it from VTserver or a UNIX disk. It
+has been a
+> > >long time since I did this to ZRQCH0, so I practiced on the
+program that
+> I
+> > >think Christos needs (ZRQBC1) and sent it to him.
+> > >
+> > >There's a lot I don't know about the a.out header, so if someone
+can
+> improve
+> > >my method, let me know.
+> > >
+> > >http://users.safeaccess.com/engdahl/xxdp.htm#hackXXDP
+> > >
+> > There isn't very much to know about the a.out header,
+> > and what you are doing looks OK although I would probably
+> > have set a_text to 160000 and left a_data and a_bss as 0.
+> >
+> > While I am not really familiar with the BSD boot code that
+> > vtserver uses when loading a program I am almost certain that
+> > it will use the entrypoint address in the a.out header and
+> > not just jump to address 0. (remember it's an actual program
+> > loader that understands a.out format, not just something that
+> > only knows how to load a boot block and jump to it)
+> >
+> > This is confirmed by the fact that the code you are patching
+> > into the image at address 0 is wrong if you want it to get
+> > you to the restart address.
+> >
+> > In your example you have:
+> >
+> > 000020/ 000167
+> > 000022/ 145702
+> >
+> > If this was loaded at address 0 in memory and the boot code
+> > jumped to address 0, you would end up at 145706 *not* 145702
+> > (of course, you might very well get lucky and still land on
+> > an instruction boundary, but you would have skipped the first
+> > 2 words of the restart code).
+> >
+> > If this code were really necessary (and I'm 99.99% sure that
+> > it isn't) you would want either:
+> >
+> > 000137
+> > 145702
+> >
+> > or:
+> >
+> > 000167
+> > 145676
+> >
+> >
+> >
+> >
+> >
+> > _______________________________________________
+> > PUPS mailing list
+> > PUPS at minnie.tuhs.org
+> > http://minnie.tuhs.org/mailman/listinfo/pups
+>
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From hansolofalcon at worldnet.att.net  Mon Feb 24 17:24:45 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Mon, 24 Feb 2003 02:24:45 -0500
+Subject: DEC Compatible boards was RE: [pups] Re: PDP11 - RQDX1 standalone format utility? --> XXDP
+In-Reply-To: <00e501c2dbce$c3f20800$8a00a8c0@arctura>
+Message-ID: <000101c2dbd5$cf5eaac0$e6c2580c@who5>
+
+Hello again from Gregg C Levine
+Going to the website you suggested www.arcind.net brought up an
+interesting collection of boards, the ones made by Data Translation:
+
+Data Translation:
+1 - DT2762-DI
+1 - DT2762-SE
+1 - DT2762-SE-PG
+
+At first glance I believe them to be the usual items that DT was
+making for DEC systems until whenever they decided to EOL the whole
+product line. DT, not DEC. Can any of you, ID them? Oh, and Jonathan,
+I've sent an e-mail off to the company requesting a quote.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]
+On
+> Behalf Of Jonathan Engdahl
+> Sent: Monday, February 24, 2003 1:34 AM
+> To: Gregg C Levine; pups at minnie.tuhs.org
+> Subject: Re: [pups] Re: PDP11 - RQDX1 standalone format utility? -->
+XXDP
+> 
+> The DSD-4140 (Data Systems Design) is an RX-02 compatible floppy
+controller.
+> I had a couple, but they're gone. You can find them on the web here
+and
+> there. I have the manual for it as a directory of .jpg files. I had
+one that
+> was malfunctioning. It was sort of fun diagnosing it. I found a bad
+bus
+> buffer and fixed it.
+> 
+> I think it's an 18-bit DMA board. Might not work with the 11/53.
+Wait,
+> though, I have a disk with a special RT-11 driver for it. It puts
+the DMA
+> buffers in the first 256K, then copies the data if the final
+destination is
+> higher. I'm not sure if BSD can deal with this issue. I've never had
+to
+> worry about it. I have all the diags for the 4140 also.
+> 
+> DSD was bought by Qualogy, so some of their stuff has that name on
+it.
+> 
+> Arclight (www.arcind.net) shows three in stock. The board number is
+> 804140-1.
+> 
+> Second picture down on this page:
+> http://users.safeaccess.com/engdahl/spare_parts.htm
+> 
+> Here's how it boots:
+> http://www.classiccmp.org/mail-archive/classiccmp/2001-06/0032.html
+> 
+> --
+> Jonathan Engdahl
+> http://users.safeaccess.com/engdahl
+> 
+> "The things which are seen are temporary,
+>  but the things which are not seen are eternal."  II Cor. 4:18
+> 
+> 
+> ----- Original Message -----
+> From: "Gregg C Levine" <hansolofalcon at worldnet.att.net>
+> To: "'Jonathan Engdahl'" <j.r.engdahl at adelphia.net>;
+<pups at minnie.tuhs.org>
+> Sent: Monday, February 24, 2003 12:40 AM
+> Subject: RE: [pups] Re: PDP11 - RQDX1 standalone format utility? -->
+XXDP
+> 
+> 
+> Hello again from Gregg C Levine
+> I've got a PDP-11/53 on order, call it. Would that board work there?
+> And where could I find one of these, RX02 (DSD 4140) board(s)? Also,
+> what exactly is this RX02 (DSD 4140) board? Its one that I don't
+quite
+> remember hearing about.
+> -------------------
+> Gregg C Levine hansolofalcon at worldnet.att.net
+> ------------------------------------------------------------
+> "The Force will be with you...Always." Obi-Wan Kenobi
+> "Use the Force, Luke." Obi-Wan Kenobi
+> (This company dedicates this E-Mail to General Obi-Wan Kenobi )
+> (This company dedicates this E-Mail to Master Yoda )
+> 
+> 
+> 
+> > -----Original Message-----
+> > From: pups-admin at minnie.tuhs.org
+[mailto:pups-admin at minnie.tuhs.org]
+> On
+> > Behalf Of Jonathan Engdahl
+> > Sent: Sunday, February 23, 2003 11:33 PM
+> > To: cctech at classiccmp.org; pups at minnie.tuhs.org
+> > Subject: Re: [pups] Re: PDP11 - RQDX1 standalone format utility?
+-->
+> XXDP
+> >
+> > Now that I think of it,
+> >
+> > > 000137
+> > > 145702
+> >
+> > is wrong too. Assuming that the program is relocatable (which in
+> this case
+> > it probably is not), and you simply loaded the entire file into
+> memory, it
+> > would be offset by the 16 byte header, so you would want to jump
+to
+> 145722.
+> >
+> > I think I will remove that patch at 20 altogether.
+> >
+> > Did you know that the output from PDPXASM can be loaded to a
+barely
+> > twitching PDP-11 via VTserver? I used PDPXASM to write scope loops
+> for an
+> > RX02 (DSD 4140) board I resurrected.
+> >
+> > --
+> > Jonathan Engdahl
+> > http://users.safeaccess.com/engdahl
+> >
+> > "The things which are seen are temporary,
+> >  but the things which are not seen are eternal."  II Cor. 4:18
+> >
+> >
+> > ----- Original Message -----
+> > From: "Michael Davidson" <michael_davidson at pacbell.net>
+> > To: "Jonathan Engdahl" <j.r.engdahl at adelphia.net>
+> > Cc: <cctech at classiccmp.org>; <pups at minnie.tuhs.org>
+> > Sent: Sunday, February 23, 2003 4:40 PM
+> > Subject: Re: [pups] Re: PDP11 - RQDX1 standalone format utility?
+-->
+> XXDP
+> >
+> >
+> > > Jonathan Engdahl wrote:
+> > >
+> > > >I documented the procedure to extract a program from XXDP and
+put
+> a
+> > header
+> > > >on it so that you can boot it from VTserver or a UNIX disk. It
+> has been a
+> > > >long time since I did this to ZRQCH0, so I practiced on the
+> program that
+> > I
+> > > >think Christos needs (ZRQBC1) and sent it to him.
+> > > >
+> > > >There's a lot I don't know about the a.out header, so if
+someone
+> can
+> > improve
+> > > >my method, let me know.
+> > > >
+> > > >http://users.safeaccess.com/engdahl/xxdp.htm#hackXXDP
+> > > >
+> > > There isn't very much to know about the a.out header,
+> > > and what you are doing looks OK although I would probably
+> > > have set a_text to 160000 and left a_data and a_bss as 0.
+> > >
+> > > While I am not really familiar with the BSD boot code that
+> > > vtserver uses when loading a program I am almost certain that
+> > > it will use the entrypoint address in the a.out header and
+> > > not just jump to address 0. (remember it's an actual program
+> > > loader that understands a.out format, not just something that
+> > > only knows how to load a boot block and jump to it)
+> > >
+> > > This is confirmed by the fact that the code you are patching
+> > > into the image at address 0 is wrong if you want it to get
+> > > you to the restart address.
+> > >
+> > > In your example you have:
+> > >
+> > > 000020/ 000167
+> > > 000022/ 145702
+> > >
+> > > If this was loaded at address 0 in memory and the boot code
+> > > jumped to address 0, you would end up at 145706 *not* 145702
+> > > (of course, you might very well get lucky and still land on
+> > > an instruction boundary, but you would have skipped the first
+> > > 2 words of the restart code).
+> > >
+> > > If this code were really necessary (and I'm 99.99% sure that
+> > > it isn't) you would want either:
+> > >
+> > > 000137
+> > > 145702
+> > >
+> > > or:
+> > >
+> > > 000167
+> > > 145676
+> > >
+> > >
+> > >
+> > >
+> > >
+> > > _______________________________________________
+> > > PUPS mailing list
+> > > PUPS at minnie.tuhs.org
+> > > http://minnie.tuhs.org/mailman/listinfo/pups
+> >
+> > _______________________________________________
+> > PUPS mailing list
+> > PUPS at minnie.tuhs.org
+> > http://minnie.tuhs.org/mailman/listinfo/pups
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From cmcnabb at 4mcnabb.net  Sun Feb 23 12:58:57 2003
+From: cmcnabb at 4mcnabb.net (Christopher McNabb)
+Date: 22 Feb 2003 21:58:57 -0500
+Subject: [pups] 211BSD and TSV05
+Message-ID: <1045969136.30181.7.camel@www.4mcnabb.net>
+
+I have a TS05 tape drive and TSV05 controller.  The TS11 driver for
+211BSD seems to be close to what I need, but not exactly.  I can
+forward, reverse, offline, and run status commands using 'mt', but any
+attempt to read or write data results in a hard error:
+----
+# ansitape -t 
+ts0: hard error bn0 xs0=310<MOT,ONL,PED> xs1=20402<COR,-,UNC>
+xs2=100000<OPM> xs3=40<REV>
+ts0: hard error bn0 xs0=310<MOT,ONL,PED> xs1=20402<COR,-,UNC>
+xs2=100000<OPM> xs3=40<REV>
+ts0: hard error bn0 xs0=10310<RLL,MOT,ONL,PED> xs1=20402<COR,-,UNC>
+xs2=100000<OPM> xs3=40<REV>
+unknown record mode (n) - file 7 skipped
+t - 7:  0 lines (0 chars) in 0 tape blocks
+----
+This continues ad-nauseum until Ctrl-C is pressed.
+So, it looks like the TS11 driver is "almost, but not quite" good
+enough.  Before I start attempting to re-invent the wheel, has anyone
+had success getting a TSV05/TS05 working under 2.11BSD?
+
+
+-- 
+Christopher L McNabb
+Operating Systems Analyst         Email: cmcnabb at 4mcnabb.net
+Virginia Tech                     ICBM:  37.1356N 80.4272N
+GMRS: WPSR255                     ARS:   N2UX  Grid Sq: EM97SD
+
+
+From cmcnabb at vt.edu  Wed Feb 26 03:05:14 2003
+From: cmcnabb at vt.edu (Christopher McNabb)
+Date: 25 Feb 2003 12:05:14 -0500
+Subject: [pups] Success!
+Message-ID: <1046192714.2921.13.camel@localhost.localdomain>
+
+Well, here are the results of my weekends "hacking":
+---------------------------
+$ uname -a
+2.11BSD pdp11.4mcnabb.net 2.11BSD 2.11 BSD UNIX #3: Fri Feb 21 21:00:58
+PST 2003     root@:/usr/src/sys/PDP1183  pdp11
+
+$ df
+Filesystem  1K-blocks     Used    Avail Capacity  Mounted on
+/dev/ra0a       10078     3009     7069    30%    /
+/dev/ra0c       10078        2    10076     0%    /tmp
+/dev/ra0d       90718    40963    49755    45%    /usr
+/dev/ra0e       38206    29414     8792    77%    /users
+
+$ sysctl hw
+hw.machine = pdp11
+hw.model = 83
+hw.ncpu = 1
+hw.byteorder = 3412
+hw.physmem = 2097152
+hw.usermem = 0
+hw.pagesize = 1024
+
+$ dmesg
+
+Feb 25 12:02
+...
+<5>ra0: Ver 2 mod 3
+ra0: RD54  size=311200
+attaching qe0 csr 174440
+qe0: DEC DEQNA addr 08:00:2b:07:b7:53
+attaching lo0
+
+phys mem  = 2097152
+avail mem = 1727488
+user mem  = 307200
+-----------------------------------------------
+The machine is an 11/83 with 2 megs of ram, DEQNA, single RD54, TSV05,
+TK50, and 3 DHV11s.
+
+Now it looks like all I have left to do is install 400 odd patches.
+
+-- 
+Christopher L McNabb              Tel:   540 231 7554
+Operating Systems Analyst         Email: cmcnabb at vt.edu
+Virginia Tech                     ICBM:  37.205622N 80.414595W
+GMRS: WPSR255                     ARS:   N2UX  Grid Sq: EM97SD
+
+
+From dfevans at bbcr.uwaterloo.ca  Wed Feb 26 03:35:15 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Tue, 25 Feb 2003 12:35:15 -0500
+Subject: [pups] Success!
+In-Reply-To: <1046192714.2921.13.camel@localhost.localdomain>; from cmcnabb@vt.edu on Tue, Feb 25, 2003 at 12:05:14PM -0500
+References: <1046192714.2921.13.camel@localhost.localdomain>
+Message-ID: <20030225123515.A15813@bcr10.uwaterloo.ca>
+
+On Tue, Feb 25, 2003 at 12:05:14PM -0500, Christopher McNabb wrote:
+> Well, here are the results of my weekends "hacking":
+
+  Looks nice!
+
+> /dev/ra0d       90718    40963    49755    45%    /usr
+> /dev/ra0e       38206    29414     8792    77%    /users
+> 
+
+  I kind of wish I had done something like this; instead I ended up taking
+the SGI route of /usr/people.  Oh well.
+
+> Now it looks like all I have left to do is install 400 odd patches.
+> 
+
+  If somebody goes through this pain, any chance of making a new source kit?
+Though I guess some of the patches are not necessarily desirable in all
+circumstances...
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From Fred.van.Kempen at microwalt.nl  Wed Feb 26 06:01:02 2003
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Tue, 25 Feb 2003 21:01:02 +0100
+Subject: [pups] Success!
+Message-ID: <7AD18F04B62B7440BE22E190A3F7721409DB22@mwsrv04.microwalt.nl>
+
+Chris writes:
+
+> Well, here are the results of my weekends "hacking":
+Yay!  It lives! Good work, dude!
+
+--fred
+
+
+From chpap at ics.forth.gr  Wed Feb 26 06:09:48 2003
+From: chpap at ics.forth.gr (Christos Papachristou)
+Date: Tue, 25 Feb 2003 22:09:48 +0200
+Subject: [pups] DHV11 on BSD2.9
+References: <1046192714.2921.13.camel@localhost.localdomain> <20030225123515.A15813@bcr10.uwaterloo.ca>
+Message-ID: <006101c2dd09$d9a26d20$77b95b8b@ics.forth.gr>
+
+I have read in a message by Steve Schultz that there are 2.9BSD drivers for
+the DHV11-A around. Can I still find them?
+
+
+
+From sms at 2BSD.COM  Wed Feb 26 04:07:55 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Tue, 25 Feb 2003 10:07:55 -0800 (PST)
+Subject: [pups] Success!
+Message-ID: <200302251807.h1PI7tS29457@moe.2bsd.com>
+
+> From: David Evans <dfevans at bbcr.uwaterloo.ca>
+> > Now it looks like all I have left to do is install 400 odd patches.
+
+> 
+>   If somebody goes through this pain, any chance of making a new source kit?
+
+	Most of the kits I've seen out there are around #430 or so - that
+	only leaves a dozen or so patches that need to be applied.
+
+> Though I guess some of the patches are not necessarily desirable in all
+> circumstances...
+
+	By and large they are not only desirable but necessary/mandatory.  There
+	are very few 'frivolous' ("gee, this looks like fun") patches in the
+	batch.   Trying to "pick and choose" which parts of which patches to
+	apply might be doable in the short term but there _will_ come the
+	day when a bug is encountered or a feature desired that was fixed or
+	added as one of the parts/patches that was left out.   Best to get
+	the pain over _once_ and be done with it ;)
+
+	Cheers,
+	Steven Schultz
+
+
+From sms at 2BSD.COM  Wed Feb 26 04:02:24 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Tue, 25 Feb 2003 10:02:24 -0800 (PST)
+Subject: [pups] Success!
+Message-ID: <200302251802.h1PI2O929448@moe.2bsd.com>
+
+> From: Christopher McNabb <cmcnabb at vt.edu>
+> $ dmesg
+> 
+> Feb 25 12:02
+> ...
+> <5>ra0: Ver 2 mod 3
+> ra0: RD54  size=311200
+> attaching qe0 csr 174440
+> qe0: DEC DEQNA addr 08:00:2b:07:b7:53
+> attaching lo0
+> 
+> phys mem  = 2097152
+> avail mem = 1727488
+> user mem  = 307200
+
+	Congratulations!
+
+> Now it looks like all I have left to do is install 400 odd patches.
+
+	Actually you only need to install the ones _after_ the one listed
+	in /VERSION.    Look at the first line of /VERSION, it should look
+	something like this:
+
+		Current Patch Level: 444
+
+	then all you need are the ones between your current version and 444
+	(which is the latest).
+
+	Be sure you have the complete system (all the sources, and include
+	files, etc) installed and read/follow the directions (which are
+	quite extensive) included with each patch.   SOME patches can be
+	"batched" (if a couple patches in sequence are updating the kernel
+	then you don't need to rebuild the kernel after each patch, etc).
+
+	Good Luck!
+
+	Steven Schultz
+
+
+From wkt at minnie.tuhs.org  Wed Feb 26 13:45:09 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 26 Feb 2003 13:45:09 +1000 (EST)
+Subject: [pups] DHV11 on BSD2.9
+In-Reply-To: <006101c2dd09$d9a26d20$77b95b8b@ics.forth.gr> from Christos Papachristou
+ at "Feb 25, 2003 10:09:48 pm"
+Message-ID: <200302260345.h1Q3j9G86503@minnie.tuhs.org>
+
+In article by Christos Papachristou:
+> I have read in a message by Steve Schultz that there are 2.9BSD drivers for
+> the DHV11-A around. Can I still find them?
+
+How about:
+
+./net/sys/dev/dvhp.c    in PDP-11/Distributions/ucb/2.9BSD/usr.tar.gz
+
+P.S zgrepping lists/full_filelist.gz in the Archive is very useful!
+
+	Warren
+
+
+From hansolofalcon at worldnet.att.net  Wed Feb 26 14:42:05 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Tue, 25 Feb 2003 23:42:05 -0500
+Subject: [pups] E-11 and 2.9BSD
+Message-ID: <000401c2dd51$81b4e280$dbc2580c@who5>
+
+Hello from Gregg C Levine
+Okay, here goes:
+I have the current version of E-11 booting correctly on my Windows
+based, (Currently!), backup box. I have booted the 2.9BSD image found
+in the boot images directory from the FTP server. Does any one have
+any suggestions as to how to restore an entire system to an E-11 based
+setup? I have a bunch of empties that were created by John Wilson for
+his emulator.
+
+By the way, Warren your instructions for using the version that's on
+the FTP server worked with this one.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+
+
+
+From chpap at ics.forth.gr  Wed Feb 26 22:25:38 2003
+From: chpap at ics.forth.gr (Christos Papachristou)
+Date: Wed, 26 Feb 2003 14:25:38 +0200
+Subject: [pups] (no subject)
+Message-ID: <001c01c2dd92$2c23e9b0$77b95b8b@ics.forth.gr>
+
+A few questions from a newbie:
+I have installed 2.9BSD on a microPDP11/73 with an RD52, using the MSCP
+version of Jonathan Engdahl. After startup the kernel
+indicates 160kb of memory .I am not familiar with such an old unix to
+find out the details but  I understand it as 256k minus the kernel. The memory
+is M8067-LF i.e. 512k Qbus. Does this mean that the system can't see the
+rest of it and that I have configure/recompile the kernel?
+The system seems anyway to run fine.
+I haven't seen an operational PDP with UNIX before this,
+so I can't judge its speed. When in single user mode it seems to
+me that it runs "fast". However upon entering multi user mode the speed
+drops dramaticaly. I have not yet compiled in the 8 port multiplexer
+(DHV11-A), so only the console is functional and thus no gettys are
+loaded. So ,why is there such a change in speed? Does the multiuser mode
+just rise the nice value of the console tasks?
+
+Some information on the system. It is a KDJ11-B (M8190 -no suffix) i.e. an
+11/84. So, the label on the system says microPDP11/73 (in an BA23 enclosure)
+the cpu is an 11/84 (if the FPU socket is the DIP-40 slot then it is
+unused), and the  2.11BSD second stage boot (version from vtserver) I
+have tried indicates 11/83. The memory is after the CPU and is Qbus (M867-LF).
+If I have understood what I have read in the list, this must be a mixed
+system that could use PMI memory, but just uses Qbus?? What exactly is my
+system? . Moreover the MSCP controller (M8639 YP i.e. RQDX1)
+the serial port multiplexer(M3104 i.e. DHV11-A) and the memory are Qbus while
+the cpu board is indicated as Unibus in the field guide. Can these two bus type
+s be mixed? (If yes , i would be tempted to abuse the dead VAX11/780 in the
+basement. Can this be done?). Anyway, I thought that the best choice of
+a UNIX for it since it only has an RD52 woulbe 2.9 BSD with MSCP support.
+Was this a good guess?
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030226/20a33450/attachment.html>
+
+From bqt at update.uu.se  Wed Feb 26 23:04:39 2003
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Wed, 26 Feb 2003 14:04:39 +0100 (CET)
+Subject: [pups] (no subject)
+In-Reply-To: <001c01c2dd92$2c23e9b0$77b95b8b@ics.forth.gr>
+Message-ID: <Pine.LNX.4.21.0302261358240.23561-100000@Tempo.Update.UU.SE>
+
+On Wed, 26 Feb 2003, Christos Papachristou wrote:
+
+> A few questions from a newbie:
+> I have installed 2.9BSD on a microPDP11/73 with an RD52, using the MSCP
+> version of Jonathan Engdahl. After startup the kernel
+> indicates 160kb of memory .I am not familiar with such an old unix to
+> find out the details but  I understand it as 256k minus the kernel. The memory
+> is M8067-LF i.e. 512k Qbus. Does this mean that the system can't see the
+> rest of it and that I have configure/recompile the kernel?
+> The system seems anyway to run fine.
+
+Are you sure it's reporting bytes, and not words?
+
+> I haven't seen an operational PDP with UNIX before this,
+> so I can't judge its speed. When in single user mode it seems to
+> me that it runs "fast". However upon entering multi user mode the speed
+> drops dramaticaly. I have not yet compiled in the 8 port multiplexer
+> (DHV11-A), so only the console is functional and thus no gettys are
+> loaded. So ,why is there such a change in speed? Does the multiuser mode
+> just rise the nice value of the console tasks?
+
+There shouldn't be a big difference in speed. Are you starting some heavy
+demons?
+
+> Some information on the system. It is a KDJ11-B (M8190 -no suffix) i.e. an
+> 11/84. So, the label on the system says microPDP11/73 (in an BA23 enclosure)
+> the cpu is an 11/84 (if the FPU socket is the DIP-40 slot then it is
+> unused), and the  2.11BSD second stage boot (version from vtserver) I
+> have tried indicates 11/83. The memory is after the CPU and is Qbus (M867-LF).
+> If I have understood what I have read in the list, this must be a mixed
+> system that could use PMI memory, but just uses Qbus?? What exactly is my
+> system?
+
+There exists a specific 11/73 CPU card, but we'll ignore that for now.
+The 11/73, 11/83 and 11/84 all use the same CPU card.
+The differences are in other areas, and cannot always easily be detected
+by software.
+The difference between an 11/73 and 11/83 is if the system have Qbus
+memory or PMI memory. The difference between an 11/83 and 11/84 is if the
+system have the KT84 (or whatever the card is called, my memory fails me
+at the moment) Unibus map, which is a Q-bus to Unibus converter along with
+the Unibus map required. The CPU is always on a Qbus, but in the 11/84,
+nothing but CPU and PMI memory is on this bus.
+
+> Moreover the MSCP controller (M8639 YP i.e. RQDX1)
+> the serial port multiplexer(M3104 i.e. DHV11-A) and the memory are Qbus while
+> the cpu board is indicated as Unibus in the field guide. Can these two bus type
+> s be mixed? (If yes , i would be tempted to abuse the dead VAX11/780 in the
+> basement. Can this be done?).
+
+No.
+As stated above, the CPU card is actually always Qbus. In the 11/84 you
+have a bus adapter to connect the Unibus.
+
+> Anyway, I thought that the best choice of
+> a UNIX for it since it only has an RD52 woulbe 2.9 BSD with MSCP support.
+> Was this a good guess?
+
+Yes, since you probably don't want to pay a lot of money to Mentec for one
+of their OSes. 2.11 is much nicer, but you'll want more memory and disk
+space for that.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Thu Feb 27 01:17:07 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Wed, 26 Feb 2003 10:17:07 -0500
+Subject: [pups] (no subject)
+In-Reply-To: <001c01c2dd92$2c23e9b0$77b95b8b@ics.forth.gr>; from chpap@ics.forth.gr on Wed, Feb 26, 2003 at 02:25:38PM +0200
+References: <001c01c2dd92$2c23e9b0$77b95b8b@ics.forth.gr>
+Message-ID: <20030226101707.A6899@bcr10.uwaterloo.ca>
+
+On Wed, Feb 26, 2003 at 02:25:38PM +0200, Christos Papachristou wrote:
+> I have not yet compiled in the 8 port multiplexer
+> (DHV11-A), so only the console is functional and thus no gettys are
+> loaded.
+
+  Are you *sure* that there are no gettys?  The default install might fire
+them up anyway, and they will repeatedly die and be restarted.  It's been over
+ten years since I looked at a 2.9BSD system, and that was on a Pro350, so I
+can't really help much more than that.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From chpap at ics.forth.gr  Thu Feb 27 02:57:55 2003
+From: chpap at ics.forth.gr (Christos Papachristou)
+Date: Wed, 26 Feb 2003 18:57:55 +0200
+Subject: [pups] (no subject)
+References: <Pine.LNX.4.21.0302261358240.23561-100000@Tempo.Update.UU.SE>
+Message-ID: <006901c2ddb8$3599d470$77b95b8b@ics.forth.gr>
+
+----- Original Message -----
+From: "Johnny Billquist" <bqt at update.uu.se>
+To: "Christos Papachristou" <chpap at ics.forth.gr>
+Cc: <pups at minnie.tuhs.org>
+Sent: Wednesday, February 26, 2003 3:04 PM
+Subject: Re: [pups] (no subject)
+
+
+> On Wed, 26 Feb 2003, Christos Papachristou wrote:
+>
+> > A few questions from a newbie:
+> > I have installed 2.9BSD on a microPDP11/73 with an RD52, using the MSCP
+> > version of Jonathan Engdahl. After startup the kernel
+> > indicates 160kb of memory .I am not familiar with such an old unix to
+> > find out the details but  I understand it as 256k minus the kernel. The
+memory
+> > is M8067-LF i.e. 512k Qbus. Does this mean that the system can't see the
+> > rest of it and that I have configure/recompile the kernel?
+> > The system seems anyway to run fine.
+>
+> Are you sure it's reporting bytes, and not words?
+
+I don't know ,it just says mem=158720
+
+
+>
+> > I haven't seen an operational PDP with UNIX before this,
+> > so I can't judge its speed. When in single user mode it seems to
+> > me that it runs "fast". However upon entering multi user mode the speed
+> > drops dramaticaly. I have not yet compiled in the 8 port multiplexer
+> > (DHV11-A), so only the console is functional and thus no gettys are
+> > loaded. So ,why is there such a change in speed? Does the multiuser mode
+> > just rise the nice value of the console tasks?
+>
+> There shouldn't be a big difference in speed. Are you starting some heavy
+> demons?
+No. It wasn't a problem in speed, the default configuration for getty was
+wrong (it was
+configured for LA36 printer output). This is the first time I use a UNIX
+that was meant for dialups with 110-9600 modems or terminals so please
+excuse me. But I am learning... By the way
+the console runs at 38.4kbps , but the gettys are internaly configured at
+other speeds ,
+the highest being 9.6kbps. Can't I use the full speed of the port?
+
+
+> > Some information on the system. It is a KDJ11-B (M8190 -no suffix) i.e.
+an
+> > 11/84. So, the label on the system says microPDP11/73 (in an BA23
+enclosure)
+> > the cpu is an 11/84 (if the FPU socket is the DIP-40 slot then it is
+> > unused), and the  2.11BSD second stage boot (version from vtserver) I
+> > have tried indicates 11/83. The memory is after the CPU and is Qbus
+(M867-LF).
+> > If I have understood what I have read in the list, this must be a mixed
+> > system that could use PMI memory, but just uses Qbus?? What exactly is
+my
+> > system?
+>
+> There exists a specific 11/73 CPU card, but we'll ignore that for now.
+> The 11/73, 11/83 and 11/84 all use the same CPU card.
+> The differences are in other areas, and cannot always easily be detected
+> by software.
+> The difference between an 11/73 and 11/83 is if the system have Qbus
+> memory or PMI memory. The difference between an 11/83 and 11/84 is if the
+> system have the KT84 (or whatever the card is called, my memory fails me
+> at the moment) Unibus map, which is a Q-bus to Unibus converter along with
+> the Unibus map required. The CPU is always on a Qbus, but in the 11/84,
+> nothing but CPU and PMI memory is on this bus.
+>
+> > Moreover the MSCP controller (M8639 YP i.e. RQDX1)
+> > the serial port multiplexer(M3104 i.e. DHV11-A) and the memory are Qbus
+while
+> > the cpu board is indicated as Unibus in the field guide. Can these two
+bus type
+> > s be mixed? (If yes , i would be tempted to abuse the dead VAX11/780 in
+the
+> > basement. Can this be done?).
+>
+> No.
+> As stated above, the CPU card is actually always Qbus. In the 11/84 you
+> have a bus adapter to connect the Unibus.
+>
+> > Anyway, I thought that the best choice of
+> > a UNIX for it since it only has an RD52 woulbe 2.9 BSD with MSCP
+support.
+> > Was this a good guess?
+>
+> Yes, since you probably don't want to pay a lot of money to Mentec for one
+> of their OSes. 2.11 is much nicer, but you'll want more memory and disk
+> space for that.
+>
+> Johnny
+>
+> Johnny Billquist                  || "I'm on a bus
+>                                   ||  on a psychedelic trip
+> email: bqt at update.uu.se           ||  Reading murder books
+> pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+>
+
+
+
+From chpap at ics.forth.gr  Thu Feb 27 02:58:59 2003
+From: chpap at ics.forth.gr (Christos Papachristou)
+Date: Wed, 26 Feb 2003 18:58:59 +0200
+Subject: [pups] DHV11 on BSD2.9
+Message-ID: <007201c2ddb8$5b593890$77b95b8b@ics.forth.gr>
+
+ The driver is for a DIVA COMP V controller.
+
+> ----- Original Message -----
+> From: "Warren Toomey" <wkt at minnie.tuhs.org>
+> To: "Christos Papachristou" <chpap at ics.forth.gr>
+> Cc: <pups at minnie.tuhs.org>
+> Sent: Wednesday, February 26, 2003 5:45 AM
+> Subject: Re: [pups] DHV11 on BSD2.9
+>
+>
+> > In article by Christos Papachristou:
+> > > I have read in a message by Steve Schultz that there are 2.9BSD
+drivers
+> for
+> > > the DHV11-A around. Can I still find them?
+> >
+> > How about:
+> >
+> > ./net/sys/dev/dvhp.c    in PDP-11/Distributions/ucb/2.9BSD/usr.tar.gz
+> >
+> > P.S zgrepping lists/full_filelist.gz in the Archive is very useful!
+> >
+> > Warren
+> > _______________________________________________
+> > PUPS mailing list
+> > PUPS at minnie.tuhs.org
+> > http://minnie.tuhs.org/mailman/listinfo/pups
+>
+
+
+
+From hansolofalcon at worldnet.att.net  Thu Feb 27 17:46:34 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Thu, 27 Feb 2003 02:46:34 -0500
+Subject: [pups] CDROM drives and PDP-11s
+Message-ID: <000301c2de34$5aa19600$1cc5580c@who5>
+
+Hello from Gregg C Levine
+Here's the problem. I have several CDs containing programs, and such
+like from Tim Shoppa. Two of them say they contain portions which are
+readable only by a CDROM Drive attached to a PDP-11. One of them is
+split in half. Half is readable on either of the two computers here,
+the other half, is in a format that's native to the PDP-11. The other
+is all in that proprietary format. So, has anyone managed to get them
+read to their machines? Or failing that to the appropriate simulators,
+or even emulators? Any suggestions?
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+
+
+
+From bill at cs.scranton.edu  Fri Feb 28 01:08:26 2003
+From: bill at cs.scranton.edu (Bill Gunshannon)
+Date: Thu, 27 Feb 2003 10:08:26 -0500 (EST)
+Subject: [pups] 2.11 on an 11/44
+Message-ID: <20030227093041.Y43050-100000@server1.cs.uofs.edu>
+
+I am trying to put 2.11 on one of my 11/44's.  I picked up the RL02/RK
+images from the archive.  I put the RL02 images on real RL02's (Yes,
+some of us still have and use them!! :-)  My intent was to boot this
+and then use it to build a system on a bigger disk and then go on from
+there.
+
+Here's my configuration:
+
+  11/44 CPU
+  CIS
+  EIS
+  FP11
+  4M memory (actually 3840KB)
+  MMU
+
+  3 RL02 disks
+  A CDU/720-TM SCSI Controller with 4 MAXTOR 340M disks and a QIC tape
+
+Now the problem.
+The system boots fine.  And it will mount /dev/rl1a.  But it won't mount
+/dev/rl2a.  I get "/dev/rl2a on /vol2: No such device or address".
+I get the same error when I try to do a disklabel.  What's more, I also
+get this same error when I try to access any of the RA devices.  I am
+using the GENERIC Kernel which I assume has all the devices in it.
+
+Anybody have any suggestions??
+
+Of course, if I find that the SCSI Controller isn't going to work
+I have another controller and a FUJI Eagle I could use too. But I
+am certain I will need to get all three RL's working in order to
+have enough of a system to do this.
+
+Thanks in advance,
+
+bill
+
+-- 
+Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three wolves
+bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+University of Scranton   |
+Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+
+
+
+From dfevans at bbcr.uwaterloo.ca  Fri Feb 28 01:55:12 2003
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Thu, 27 Feb 2003 10:55:12 -0500
+Subject: [pups] 2.11 on an 11/44
+In-Reply-To: <20030227093041.Y43050-100000@server1.cs.uofs.edu>; from bill@cs.scranton.edu on Thu, Feb 27, 2003 at 10:08:26AM -0500
+References: <20030227093041.Y43050-100000@server1.cs.uofs.edu>
+Message-ID: <20030227105512.D28746@bcr10.uwaterloo.ca>
+
+On Thu, Feb 27, 2003 at 10:08:26AM -0500, Bill Gunshannon wrote:
+> 
+>   A CDU/720-TM SCSI Controller with 4 MAXTOR 340M disks and a QIC tape
+> 
+
+  You could also stick a bigger disk image (I think I used one for an RA80)
+on a SCSI disk and go that way.
+
+-- 
+David Evans          (NeXTMail/MIME OK)             dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+
+From Fred.van.Kempen at microwalt.nl  Fri Feb 28 01:57:21 2003
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Thu, 27 Feb 2003 16:57:21 +0100
+Subject: [pups] 2.11 on an 11/44
+Message-ID: <7AD18F04B62B7440BE22E190A3F7721409DB2E@mwsrv04.microwalt.nl>
+
+Bill,
+
+kernel probably only supports one unit, _OR_ the filesystem doesnt
+have all device nodes (/dev/rlXXX).
+
+--f
+
+> -----Original Message-----
+> From: Bill Gunshannon [mailto:bill at cs.scranton.edu]
+> Sent: Thursday, February 27, 2003 4:08 PM
+> To: pups at minnie.tuhs.org
+> Subject: [pups] 2.11 on an 11/44
+> 
+> 
+> 
+> I am trying to put 2.11 on one of my 11/44's.  I picked up the RL02/RK
+> images from the archive.  I put the RL02 images on real RL02's (Yes,
+> some of us still have and use them!! :-)  My intent was to boot this
+> and then use it to build a system on a bigger disk and then go on from
+> there.
+> 
+> Here's my configuration:
+> 
+>   11/44 CPU
+>   CIS
+>   EIS
+>   FP11
+>   4M memory (actually 3840KB)
+>   MMU
+> 
+>   3 RL02 disks
+>   A CDU/720-TM SCSI Controller with 4 MAXTOR 340M disks and a QIC tape
+> 
+> Now the problem.
+> The system boots fine.  And it will mount /dev/rl1a.  But it 
+> won't mount
+> /dev/rl2a.  I get "/dev/rl2a on /vol2: No such device or address".
+> I get the same error when I try to do a disklabel.  What's 
+> more, I also
+> get this same error when I try to access any of the RA devices.  I am
+> using the GENERIC Kernel which I assume has all the devices in it.
+> 
+> Anybody have any suggestions??
+> 
+> Of course, if I find that the SCSI Controller isn't going to work
+> I have another controller and a FUJI Eagle I could use too. But I
+> am certain I will need to get all three RL's working in order to
+> have enough of a system to do this.
+> 
+> Thanks in advance,
+> 
+> bill
+> 
+> -- 
+> Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  
+> Three wolves
+> bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+> University of Scranton   |
+> Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+> 
+
+
+From bill at cs.scranton.edu  Fri Feb 28 02:02:05 2003
+From: bill at cs.scranton.edu (Bill Gunshannon)
+Date: Thu, 27 Feb 2003 11:02:05 -0500 (EST)
+Subject: [pups] 2.11 on an 11/44
+In-Reply-To: <7AD18F04B62B7440BE22E190A3F7721409DB2E@mwsrv04.microwalt.nl>
+Message-ID: <20030227105917.S43050-100000@server1.cs.uofs.edu>
+
+On Thu, 27 Feb 2003, Fred N. van Kempen wrote:
+
+> Bill,
+>
+> kernel probably only supports one unit, _OR_ the filesystem doesnt
+> have all device nodes (/dev/rlXXX).
+
+Same set of images (and kernel) works fine under SIMH.  Mounts 4 RL's
+without a problem.  It is not till I put it on the real PDP that I have
+the problem.
+
+I should also mention it is not hardware as I can shift the Unit Plugs
+around and the behavior is the same.  RL0 and RL1 mount, nothing else
+is visible.
+
+bill
+
+-- 
+Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three wolves
+bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+University of Scranton   |
+Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+
+
+
+From bqt at update.uu.se  Fri Feb 28 02:28:01 2003
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Thu, 27 Feb 2003 17:28:01 +0100 (CET)
+Subject: [pups] 2.11 on an 11/44
+In-Reply-To: <20030227093041.Y43050-100000@server1.cs.uofs.edu>
+Message-ID: <Pine.LNX.4.21.0302271727050.8407-100000@Tempo.Update.UU.SE>
+
+On Thu, 27 Feb 2003, Bill Gunshannon wrote:
+
+[...]
+
+> Now the problem.
+> The system boots fine.  And it will mount /dev/rl1a.  But it won't mount
+> /dev/rl2a.  I get "/dev/rl2a on /vol2: No such device or address".
+> I get the same error when I try to do a disklabel.  What's more, I also
+> get this same error when I try to access any of the RA devices.  I am
+> using the GENERIC Kernel which I assume has all the devices in it.
+> 
+> Anybody have any suggestions??
+
+What do you see at boot time? Does it show all three RL02s and the
+mscp-controller along with disks?
+
+Second, do you have the entries in /dev?
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From bill at cs.scranton.edu  Fri Feb 28 02:42:29 2003
+From: bill at cs.scranton.edu (Bill Gunshannon)
+Date: Thu, 27 Feb 2003 11:42:29 -0500 (EST)
+Subject: [pups] 2.11 on an 11/44
+In-Reply-To: <Pine.LNX.4.21.0302271727050.8407-100000@Tempo.Update.UU.SE>
+Message-ID: <20030227112931.C43050-100000@server1.cs.uofs.edu>
+
+On Thu, 27 Feb 2003, Johnny Billquist wrote:
+
+> On Thu, 27 Feb 2003, Bill Gunshannon wrote:
+>
+> [...]
+>
+> > Now the problem.
+> > The system boots fine.  And it will mount /dev/rl1a.  But it won't mount
+> > /dev/rl2a.  I get "/dev/rl2a on /vol2: No such device or address".
+> > I get the same error when I try to do a disklabel.  What's more, I also
+> > get this same error when I try to access any of the RA devices.  I am
+> > using the GENERIC Kernel which I assume has all the devices in it.
+> >
+> > Anybody have any suggestions??
+>
+> What do you see at boot time? Does it show all three RL02s and the
+> mscp-controller along with disks?
+
+Actually, I am surprised by the lack of information provided.  I guess
+the newer BSD's have spoiled me.  :-)
+
+------------------
+>>>boot dl0
+
+(Program)
+44Boot from rl(0,0,0) at 0174400
+:
+: rl(0,0,0)unix
+Boot: bootdev=03400 bootcsr=0174400
+2.11 BSD UNIX #5: Thu Jan 11 21:32:08 PST 1996
+    sms1 at sms.sms.iipo.gtegsc.com:/usr/src/sys/GENERIC
+
+
+phys mem  = 3932160
+avail mem = 3719616
+user mem  = 307200
+
+February 29 23:09:36 init: configure system
+
+rk ? csr 177400 vector 220 skipped:  No autoconfig routines.
+rl 0 csr 174400 vector 160 attached
+erase, kill ^U, intr ^C
+#
+
+------------------------
+
+And that's it!!
+I have commented out the RK entries in /etc/fstab as I certainly don't
+have any real RK disks.  :-)
+
+Next, I usually do:
+---------------
+# mount -a
+/dev/rl2a on /vol2: No such device or address
+#
+-------------------
+
+And so it goes.
+
+I should probably mention again, these are the 2.11_on_rl02 images from
+the archive.  It consists of 4 RL02's and 6 RK's and it boots and runs
+fine under SIMH.
+
+>
+> Second, do you have the entries in /dev?
+>
+
+Maybe I'll try running MAKEDEV just to be sure there isn't something
+corrupted, but being as the boot disk and vol1 both transfered and
+copyed to real packs OK I have no reason to suspect there is anything
+wrong with the data on the pack.  Hmmmmm... Maybe I'm just paranoid,
+but I don;t think I will make this assumption.  I think I will make
+a new vol2 pack anyway.
+
+But that still leaves why I see no RA's either.
+
+Any more suggestions?
+
+Is there anyone running a webserver on a PDP-11??  Or will I be the
+first when I get this going??  I was going to do it with Ultrix-11
+but I think it may be easier to get up and definitely more stable on
+2.11BSD.  Ultrix-11 still needs more work getting it back up to real
+production quality. (But I plan on doing it!!)
+
+All the best.
+
+bill
+
+-- 
+Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three wolves
+bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+University of Scranton   |
+Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+
+
+
+From bqt at update.uu.se  Fri Feb 28 02:59:29 2003
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Thu, 27 Feb 2003 17:59:29 +0100 (CET)
+Subject: [pups] 2.11 on an 11/44
+In-Reply-To: <20030227112931.C43050-100000@server1.cs.uofs.edu>
+Message-ID: <Pine.LNX.4.21.0302271756420.8407-100000@Tempo.Update.UU.SE>
+
+On Thu, 27 Feb 2003, Bill Gunshannon wrote:
+
+> On Thu, 27 Feb 2003, Johnny Billquist wrote:
+> 
+> > What do you see at boot time? Does it show all three RL02s and the
+> > mscp-controller along with disks?
+> 
+> Actually, I am surprised by the lack of information provided.  I guess
+> the newer BSD's have spoiled me.  :-)
+
+[stuff deleted...]
+
+Hmmm. It's been a while since I ran 2.11, but I'm pretty sure you should
+see something about the controller at boot. That it attaches, it's csr and
+what vector it will use. The same way you observe the RL11 controller.
+
+Seems like you don't have the controller available from the OS.
+Have you used the controller anywhere else, so that you know it's
+functioning, and that the CSR is set right?
+
+About the RL drives, I guess we'll just have to assume that you don't have
+more than two units generated in the system, unless you have some very
+funny hardware problem.
+
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From sms at 2BSD.COM  Fri Feb 28 03:06:13 2003
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Thu, 27 Feb 2003 09:06:13 -0800 (PST)
+Subject: [pups] 2.11 on an 11/44
+Message-ID: <200302271706.h1RH6Du03730@moe.2bsd.com>
+
+Hi -
+
+> From: Bill Gunshannon <bill at cs.scranton.edu>
+> 
+> I am trying to put 2.11 on one of my 11/44's.  I picked up the RL02/RK
+> images from the archive.  I put the RL02 images on real RL02's (Yes,
+> some of us still have and use them!! :-)  My intent was to boot this
+
+	RL drives were reliable (compared to RA81 and RK06/7 drives) if not 
+	exactly spacious ;)
+
+>   3 RL02 disks
+>   A CDU/720-TM SCSI Controller with 4 MAXTOR 340M disks and a QIC tape
+> 
+> Now the problem.
+> The system boots fine.  And it will mount /dev/rl1a.  But it won't mount
+> /dev/rl2a.  I get "/dev/rl2a on /vol2: No such device or address".
+
+	What rev of the kernel do you have?   First line in /VERSION should
+	have the magic number.
+
+> I get the same error when I try to do a disklabel.  What's more, I also
+> get this same error when I try to access any of the RA devices.  I am
+> using the GENERIC Kernel which I assume has all the devices in it.
+> 
+> Anybody have any suggestions??
+	
+	What I think is happening is that the system is only configured for
+	2 RL drives - the change from 2 to 4 happened quite late (patch #439
+	I think).
+
+	The RA problem sounds like the MSCP driver either isn't in the
+	kernel or wasn't probed/attached at boot time.     You can see if
+	MSCP support's present with something like 'nm -g /unix | grep _raintr"
+	and seeing if you "040364 T _raintr" for the interrupt handler.   If
+	you do get that then check /etc/dtab for a line like:
+
+ra      ? 172150 0      5       raintr          # uda50, rqdx1/2/3
+
+	The '0' for the vector says for the probe/attach logic to assign
+	a vector and tell the controller what value was used.  You could put
+	anything in there (154 or 150 I think is the assigned value for the
+	first MSCP controller).
+
+	If none of that works then I'm stumped as to why the RA drives can't
+	be accessed.
+
+	Good Luck.
+
+	Steven Schultz
+
+
+From iking at killthewabbit.org  Fri Feb 28 02:52:54 2003
+From: iking at killthewabbit.org (Ian King)
+Date: Thu, 27 Feb 2003 08:52:54 -0800
+Subject: [pups] CDROM drives and PDP-11s
+References: <000301c2de34$5aa19600$1cc5580c@who5>
+Message-ID: <001301c2de80$abf1b5c0$450010ac@dawabbit>
+
+John Wilson's PUTR program might be jut the tool - http://www.dbit.com.  I'm
+guessing it might be ODS-2; worst case, I have an InfoServer that can read
+that, and a TK-50 I could dump it to...  :-)  -- Ian
+----- Original Message -----
+From: "Gregg C Levine" <hansolofalcon at worldnet.att.net>
+To: <pups at minnie.tuhs.org>
+Sent: Wednesday, February 26, 2003 11:46 PM
+Subject: [pups] CDROM drives and PDP-11s
+
+
+Hello from Gregg C Levine
+Here's the problem. I have several CDs containing programs, and such
+like from Tim Shoppa. Two of them say they contain portions which are
+readable only by a CDROM Drive attached to a PDP-11. One of them is
+split in half. Half is readable on either of the two computers here,
+the other half, is in a format that's native to the PDP-11. The other
+is all in that proprietary format. So, has anyone managed to get them
+read to their machines? Or failing that to the appropriate simulators,
+or even emulators? Any suggestions?
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke." Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+
+_______________________________________________
+PUPS mailing list
+PUPS at minnie.tuhs.org
+http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From bill at cs.scranton.edu  Fri Feb 28 03:33:25 2003
+From: bill at cs.scranton.edu (Bill Gunshannon)
+Date: Thu, 27 Feb 2003 12:33:25 -0500 (EST)
+Subject: [pups] 2.11 on an 11/44
+In-Reply-To: <Pine.LNX.4.21.0302271756420.8407-100000@Tempo.Update.UU.SE>
+Message-ID: <20030227122420.S43050-100000@server1.cs.uofs.edu>
+
+On Thu, 27 Feb 2003, Johnny Billquist wrote:
+
+> On Thu, 27 Feb 2003, Bill Gunshannon wrote:
+>
+> > On Thu, 27 Feb 2003, Johnny Billquist wrote:
+> >
+> > > What do you see at boot time? Does it show all three RL02s and the
+> > > mscp-controller along with disks?
+> >
+> > Actually, I am surprised by the lack of information provided.  I guess
+> > the newer BSD's have spoiled me.  :-)
+>
+> [stuff deleted...]
+>
+> Hmmm. It's been a while since I ran 2.11, but I'm pretty sure you should
+> see something about the controller at boot. That it attaches, it's csr and
+> what vector it will use. The same way you observe the RL11 controller.
+
+Hmmmm.  Curious.  I looked at the conf for GENERIC and it had all the
+disks.  Maybe I need to build a kernel under SIMH and then move it over
+to the real box.  Should be a trip, I've never built a kernel under 2.x.
+Wonder how close it is to todays BSD's where I do it al the time.
+
+>
+> Seems like you don't have the controller available from the OS.
+> Have you used the controller anywhere else, so that you know it's
+> functioning, and that the CSR is set right?
+
+Yup.  Had RSTS on it when I got it and I tried RT-11 from an
+RL and was able to init Packs, copy files and even boot as a DU.
+HA LI from the RSTS Startup reports iit's offspring as RA8x disks.
+
+
+>
+> About the RL drives, I guess we'll just have to assume that you don't have
+> more than two units generated in the system,
+
+The same kernel mounts all 4 RL02's under SIMH.  :-(
+
+>                                             unless you have some very
+> funny hardware problem.
+
+Maybe I need to crawl in back and check out everything.  Could the
+terminator getting knocked loose cause this??  It's interesting that
+it isn't a particular drive that doesn't whow up, it is the highest
+numbered unit.  Unless I am looking at this wrong.  Do the numbers
+assigned by the Unit Plug coincide with the dev number or does it
+just assign devices sequentially for each drive it sees?  In other
+words, if I had a unit with a 0 plug and a 3 plug would that show
+up as /dev/rl0 and /dev/rl3 or as /dev/rl0 and /dev/rl1?
+Hope that's understandable....
+
+
+bill
+
+-- 
+Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three wolves
+bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+University of Scranton   |
+Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+
+
+
+From bill at cs.scranton.edu  Fri Feb 28 06:25:35 2003
+From: bill at cs.scranton.edu (Bill Gunshannon)
+Date: Thu, 27 Feb 2003 15:25:35 -0500 (EST)
+Subject: [pups] 2.11 on an 11/44
+In-Reply-To: <20030227122420.S43050-100000@server1.cs.uofs.edu>
+Message-ID: <20030227152034.N43050-100000@server1.cs.uofs.edu>
+
+Well, the fun continues. I guess it's not going to be as simple as
+it is with newer BSD's.
+
+When I try to build a custom kernel I get this:
+
+---------------
+
+# make|more
+make -f Make.sys I=/usr/include H=../h M=../machine AS="/bin/as -V" CPP="/lib/cpp -P -DKERNEL -DUOFS -I. -I../h"  CFLAGS="-O -DKERNEL -DUOFS -I. -I../h" ED="/bin/ed"
+cc -O -DKERNEL -DUOFS -I. -I../h -S ../sys/init_main.c
+/bin/ed - < SPLFIX init_main.s
+/bin/as -V - -o init_main.o init_main.s
+rm -f init_main.s
+cc -O -DKERNEL -DUOFS -I. -I../h -S ../sys/init_sysent.c
+/bin/ed - < SPLFIX init_sysent.s
+/bin/as -V - -o init_sysent.o init_sysent.s
+rm -f init_sysent.s
+cc -O -DKERNEL -DUOFS -I. -I../h -S ../sys/kern_acct.c
+/bin/ed - < SPLFIX kern_acct.s
+/bin/as -V - -o kern_acct.o kern_acct.s
+rm -f kern_acct.s
+cc -O -DKERNEL -DUOFS -I. -I../h -S ../sys/kern_clock.c
+/bin/ed - < SPLFIX kern_clock.s
+?
+?
+?
+?
+?
+----------------------
+
+And the "?" go on forever. Can't even break out of it.  Have to
+kill the simulation and start all over.  Anybody run into this??
+Seems to be in the clock code.  Is there something I might have
+missed in the CONFIG file that could cause this??  All I basicly
+did was comment out any hardware I was pretty sure wasn't going
+to show up on my machine.
+
+bill
+
+-- 
+Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three wolves
+bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+University of Scranton   |
+Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+
+
+
+From drwho8 at worldnet.att.net  Tue Feb 18 06:27:40 2003
+From: drwho8 at worldnet.att.net (Gregg C Levine)
+Date: Mon, 17 Feb 2003 15:27:40 -0500
+Subject: [TUHS] Test
+Message-ID: <3E5145BC.A981DD04@worldnet.att.net>
+
+Test!
+Sorry for the disturbance, I have not seen any mail on the list, since
+sometime in the past.
+Gregg C Levine drwho8 at worldnet.att.net
+"This signature would rather be out in the snow!"
+
+
+From jss at subatomix.com  Tue Feb 18 10:38:17 2003
+From: jss at subatomix.com (Jeffrey Sharp)
+Date: Mon, 17 Feb 2003 18:38:17 -0600
+Subject: [TUHS] Test
+In-Reply-To: <3E5145BC.A981DD04@worldnet.att.net>
+References: <3E5145BC.A981DD04@worldnet.att.net>
+Message-ID: <91375728.20030217183817@subatomix.com>
+
+On Monday, February 17, 2003, Gregg C Levine wrote:
+> Sorry for the disturbance, I have not seen any mail on the list, since
+> sometime in the past.
+
+This list is most definitely low-volume.
+
+-- 
+Jeffrey Sharp
+
+
+
+From wkt at minnie.tuhs.org  Tue Feb 18 10:52:45 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Tue, 18 Feb 2003 10:52:45 +1000 (EST)
+Subject: [TUHS] Waking the List Up
+Message-ID: <200302180052.h1I0qkC65023@minnie.tuhs.org>
+
+I guess it's time to wake the list up.
+
+So far the Unix Archive has done well at collecting mostly PDP-11 stuff,
+but now that were in the next century, we should start working on the
+1980s and 1990s.
+
+I'd like to call for volunteer curators. Each would look after a subset
+of the Unix Archive: add files, write README.TXT, rearrange things to
+be more useful.
+
+The Archive has been pretty static for quite some time now, and there are
+a list of things TODO, and I know some of you have things waiting which I
+haven't done yet. So perhaps some new blood, will kick things along.
+
+Any volunteers?
+
+
+From norman at nose.cs.utoronto.ca  Tue Feb 18 11:26:43 2003
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Mon, 17 Feb 2003 20:26:43 -0500
+Subject: [TUHS] Test
+Message-ID: <vHt946rNmMKs.6Wbj3HrG@192.168.0.10>
+
+  This list is most definitely low-volume.
+
+Speak up, please.  We can't hear you up here under the snow.
+
+Norman Wilson
+In a naughtly rosewood igloo somewhere near Toronto, ON
+
+
+
+
+From wkt at minnie.tuhs.org  Tue Feb 18 13:42:23 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Tue, 18 Feb 2003 13:42:23 +1000 (EST)
+Subject: [TUHS] Waking the List Up
+In-Reply-To: <200302180052.h1I0qkC65023@minnie.tuhs.org> from Warren Toomey at
+ "Feb 18, 2003 10:52:45 am"
+Message-ID: <200302180342.h1I3gOO66783@minnie.tuhs.org>
+
+In article by Warren Toomey:
+> I'd like to call for volunteer curators. Each would look after a subset
+> of the Unix Archive: add files, write README.TXT, rearrange things to
+> be more useful.
+
+So far two respondents. I should be a little bit more explicit. I'm
+after volunteers who will act as points of contact, so that other people
+can submit new stuff to the archive. The volunteers could also
+re-organise their subsection, and write some glue documentation so that
+someone browsing the archive can make sense of it all.
+
+So, if you have low bandwidth and/or no new files to contribute, that's
+fine! Just a desire to help tidy up the existing archive and help integrate
+any new material.
+
+	Warren
+
+
+From wgm at telus.net  Wed Feb 19 15:31:05 2003
+From: wgm at telus.net (Wm. G. McGrath)
+Date: Tue, 18 Feb 2003 21:31:05 -0800
+Subject: [TUHS] LoC now involved with saving digital history
+Message-ID: <20030218213105.04c7ab94.wgm@telus.net>
+
+Howdy all,
+
+	Is it possible that the Unix Archive might be able to get a little
+funding or assistance from the Library of Congress? This recent
+story in the Washington Post suggests that there is now a lot of
+money available in theory at least. I wonder if we would qualify for
+funding?
+
+	bill
+
+ Plan Approved to Save U.S. Digital History - 
+http://www.washingtonpost.com/wp-dyn/articles/A10278-2003Feb14.html?referrer=email
+The Library of Congress announced the next step in the effort to 
+preserve that history: congressional approval of its plan for the 
+National Digital Information Infrastructure and Preservation
+Program.
+
+
+From Robertdkeys at aol.com  Wed Feb 19 17:08:09 2003
+From: Robertdkeys at aol.com (Robertdkeys at aol.com)
+Date: Wed, 19 Feb 2003 02:08:09 EST
+Subject: [TUHS] LoC now involved with saving digital history
+Message-ID: <d0.3501fb10.2b848759@aol.com>
+
+Wild long shot.... I used to write grants for this kind of thing.   Find out 
+more
+info and point me to where the granting info is and lets make a collective
+grunt to see if something is possible.  Heck, all kinds of funds are available
+if you submit the right kinds of proposals.  Yeah, I know, it is a pipedream,
+but.....(:+}}...
+
+Bob Keys
+(stirring the history pot, gently.....)
+
+
+
+From Robertdkeys at aol.com  Wed Feb 19 17:41:33 2003
+From: Robertdkeys at aol.com (Robertdkeys at aol.com)
+Date: Wed, 19 Feb 2003 02:41:33 EST
+Subject: [TUHS] LoC now involved with saving digital history
+Message-ID: <1dd.31bc35f.2b848f2d@aol.com>
+
+As I am reading the details of this, it seems that they are at a planning 
+stage,
+and wanting to coordinate the Library of Congress centrally with other federal
+and non-federal agencies and organizations to develop the "network" of
+libraries and repositories for these materials.  It was not clear what funding
+was available to non-federal agencies.  My expectation is that the PUPS
+and TUHS efforts ought to be somewhere in the overall thicket of the Library
+of Congress effort.  We need to find out more about this legislation and
+potential work and funding.  It sounds very interesting...
+
+Spinning the ol' propeller-headed beanie at full speed, and thinking out 
+loud....
+
+Bob Keys
+
+
+From grog at lemis.com  Wed Feb 19 19:17:21 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Wed, 19 Feb 2003 19:47:21 +1030
+Subject: [TUHS] LoC now involved with saving digital history
+In-Reply-To: <20030218213105.04c7ab94.wgm@telus.net>
+References: <20030218213105.04c7ab94.wgm@telus.net>
+Message-ID: <20030219091721.GW17256@wantadilla.lemis.com>
+
+On Tuesday, 18 February 2003 at 21:31:05 -0800, Wm. G. McGrath wrote:
+>
+> Howdy all,
+>
+> 	Is it possible that the Unix Archive might be able to get a
+> little funding or assistance from the Library of Congress? This
+> recent story in the Washington Post suggests that there is now a lot
+> of money available in theory at least. I wonder if we would qualify
+> for funding?
+
+You know that TUHS is based in Australia, right?  "Federal" has a
+different meaning here.  Of course, there's a possibility that the
+Australian government would be interested.  I'll investigate.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+Please note: we block mail from major spammers, notably yahoo.com.
+See http://www.lemis.com/yahoospam.html for further details.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030219/6d9ee61d/attachment.sig>
+
+From iking at windows.microsoft.com  Thu Feb 20 01:26:19 2003
+From: iking at windows.microsoft.com (Ian King)
+Date: Wed, 19 Feb 2003 07:26:19 -0800
+Subject: [TUHS] LoC now involved with saving digital history
+Message-ID: <F7B97826912BC4419D5DDF53B2169453019671D9@WIN-MSG-10.wingroup.windeploy.ntdev.microsoft.com>
+
+This sounds similar to some work with which I'm involved at the
+University of Washington.  I'll see what I can learn....  -- Ian 
+
+-----Original Message-----
+From: Robertdkeys at aol.com [mailto:Robertdkeys at aol.com] 
+Sent: Tuesday, February 18, 2003 11:42 PM
+To: wgm at telus.net; tuhs at minnie.tuhs.org
+Subject: Re: [TUHS] LoC now involved with saving digital history
+
+As I am reading the details of this, it seems that they are at a
+planning 
+stage,
+and wanting to coordinate the Library of Congress centrally with other
+federal
+and non-federal agencies and organizations to develop the "network" of
+libraries and repositories for these materials.  It was not clear what
+funding
+was available to non-federal agencies.  My expectation is that the PUPS
+and TUHS efforts ought to be somewhere in the overall thicket of the
+Library
+of Congress effort.  We need to find out more about this legislation and
+potential work and funding.  It sounds very interesting...
+
+Spinning the ol' propeller-headed beanie at full speed, and thinking out
+
+loud....
+
+Bob Keys
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From iking at windows.microsoft.com  Thu Feb 20 01:29:13 2003
+From: iking at windows.microsoft.com (Ian King)
+Date: Wed, 19 Feb 2003 07:29:13 -0800
+Subject: [TUHS] LoC now involved with saving digital history
+Message-ID: <F7B97826912BC4419D5DDF53B2169453019671DA@WIN-MSG-10.wingroup.windeploy.ntdev.microsoft.com>
+
+Oops, did that go out in HTML?  Sorry, new install of Outlook....  
+
+-----Original Message-----
+From: Ian King 
+Sent: Wednesday, February 19, 2003 7:26 AM
+To: 'Robertdkeys at aol.com'; wgm at telus.net; tuhs at minnie.tuhs.org
+Subject: RE: [TUHS] LoC now involved with saving digital history
+
+
+This sounds similar to some work with which I'm involved at the
+University of Washington.  I'll see what I can learn....  -- Ian 
+
+-----Original Message-----
+From: Robertdkeys at aol.com [mailto:Robertdkeys at aol.com] 
+Sent: Tuesday, February 18, 2003 11:42 PM
+To: wgm at telus.net; tuhs at minnie.tuhs.org
+Subject: Re: [TUHS] LoC now involved with saving digital history
+
+As I am reading the details of this, it seems that they are at a
+planning 
+stage,
+and wanting to coordinate the Library of Congress centrally with other
+federal and non-federal agencies and organizations to develop the
+"network" of libraries and repositories for these materials.  It was not
+clear what funding was available to non-federal agencies.  My
+expectation is that the PUPS and TUHS efforts ought to be somewhere in
+the overall thicket of the Library of Congress effort.  We need to find
+out more about this legislation and potential work and funding.  It
+sounds very interesting...
+
+Spinning the ol' propeller-headed beanie at full speed, and thinking out
+
+loud....
+
+Bob Keys
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From drwho8 at worldnet.att.net  Thu Feb 20 02:56:41 2003
+From: drwho8 at worldnet.att.net (Gregg C Levine)
+Date: Wed, 19 Feb 2003 11:56:41 -0500
+Subject: [TUHS] Tim Shoppa's V6 distribution
+Message-ID: <3E53B749.D906A2B6@worldnet.att.net>
+
+Hello from Gregg C Levine
+Has anyone ever gotten Tim Shoppa's V6 distribution to work, under any
+version of Simh? Theoretically it should be possible, but  I haven't a
+clew, as to how to do so. Any suggestions? I'll leave the networking
+issues alone for the moment.
+Gregg C Levine drwho8 at worldnet.att.net
+"This signature owns a house on Belsavis."
+
+
+From jss at subatomix.com  Thu Feb 20 03:22:13 2003
+From: jss at subatomix.com (Jeffrey Sharp)
+Date: Wed, 19 Feb 2003 11:22:13 -0600
+Subject: [TUHS] HTML Posts (was: LoC now involved...)
+In-Reply-To: <F7B97826912BC4419D5DDF53B2169453019671DA@WIN-MSG-10.wingroup.windeploy.ntdev.microsoft.com>
+References:  <F7B97826912BC4419D5DDF53B2169453019671DA@WIN-MSG-10.wingroup.windeploy.ntdev.microsoft.com>
+Message-ID: <13262421467.20030219112213@subatomix.com>
+
+On Wednesday, February 19, 2003, Ian King wrote:
+> Oops, did that go out in HTML?  Sorry, new install of Outlook....
+
+The list manager (Warren?) can easily protect this and the PUPS list against
+HTML, attachments, and other email badness by using demime. I use it on the
+ClassicCmp lists. It basically drops into the aliases file:
+
+    public-alias: "|/usr/local/bin/demime -8 'private-alias'"
+
+Anything goes in, plain text comes out. It's as simple as that.
+
+-- 
+Jeffrey Sharp
+
+
+
+From peter.jeremy at alcatel.com.au  Thu Feb 20 06:36:09 2003
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Thu, 20 Feb 2003 07:36:09 +1100
+Subject: [TUHS] random(3) definition
+Message-ID: <20030219203609.GA85462@gsmx07.alcatel.com.au>
+
+Does anyone here know why the BSD random(3) is defined to return a
+positive int (31 bits) rather than a full 32 bits of pseudo-entropy?
+(This came up is a discussion comparing random(3) with arc4random(3)
+in another list).
+
+Peter
+
+
+
+From wkt at minnie.tuhs.org  Thu Feb 20 07:09:19 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Thu, 20 Feb 2003 07:09:19 +1000 (EST)
+Subject: [TUHS] random(3) definition
+In-Reply-To: <20030219203609.GA85462@gsmx07.alcatel.com.au> from Peter Jeremy
+ at "Feb 20, 2003 07:36:09 am"
+Message-ID: <200302192109.h1JL9JU91269@minnie.tuhs.org>
+
+In article by Peter Jeremy:
+> Does anyone here know why the BSD random(3) is defined to return a
+> positive int (31 bits) rather than a full 32 bits of pseudo-entropy?
+> (This came up is a discussion comparing random(3) with arc4random(3)
+> in another list).
+> Peter
+
+<wild guess>
+Maybe it's a C-ism. With a 31-bit shift register, the overflow is going
+to stay in a 32-bit variable where it can be dealt with in C. If they
+had used a 32-bit shift register, then grabbing the overflow becomes
+more difficult.
+</wild guess>
+
+	Warren
+
+
+From peter.jeremy at alcatel.com.au  Thu Feb 20 08:02:28 2003
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Thu, 20 Feb 2003 09:02:28 +1100
+Subject: [TUHS] LoC now involved with saving digital history
+In-Reply-To: <20030219091721.GW17256@wantadilla.lemis.com>
+References: <20030218213105.04c7ab94.wgm@telus.net> <20030219091721.GW17256@wantadilla.lemis.com>
+Message-ID: <20030219220228.GT1877@gsmx07.alcatel.com.au>
+
+On 2003-Feb-19 19:47:21 +1030, Greg 'groggy' Lehey <grog at lemis.com> wrote:
+>You know that TUHS is based in Australia, right?  "Federal" has a
+>different meaning here.  Of course, there's a possibility that the
+>Australian government would be interested.  I'll investigate.
+
+Not that great a difference.  Both Oz and the US have a very similar
+Federal/state structure.  Getting US Federal funding for an Oz site
+is unlikely (but the LoC is going to need to work out how to handle
+the fact that the Internet doesn't acknowledge national boundaries
+and some of the information it needs to archive won't be in the US).
+
+Peter
+
+
+From wgm at telus.net  Thu Feb 20 22:25:44 2003
+From: wgm at telus.net (Wm. G. McGrath)
+Date: Thu, 20 Feb 2003 04:25:44 -0800
+Subject: [TUHS] LoC now involved with saving digital history
+In-Reply-To: <20030219220228.GT1877@gsmx07.alcatel.com.au>
+References: <20030218213105.04c7ab94.wgm@telus.net>
+	<20030219091721.GW17256@wantadilla.lemis.com>
+	<20030219220228.GT1877@gsmx07.alcatel.com.au>
+Message-ID: <20030220042544.34ba2783.wgm@telus.net>
+
+On Thu, 20 Feb 2003 09:02:28 +1100
+Peter Jeremy <peter.jeremy at alcatel.com.au> wrote:
+
+>Not that great a difference.  Both Oz and the US have a very
+>similar Federal/state structure.  Getting US Federal funding for an
+>Oz site is unlikely (but the LoC is going to need to work out how
+>to handle the fact that the Internet doesn't acknowledge national
+>boundaries and some of the information it needs to archive won't be
+>in the US).
+
+
+Yup. There are lots of issues here. The story made it to /. 
+http://slashdot.org/article.pl?sid=03/02/16/2322243&mode=thread&tid=99
+and things like media longevity, data formats, and future
+availability came up in the comments section. I believe we need to
+somehow provide the future with the benefit of our intelligence and
+experience as well as with information. And TUHS can be of help
+there. Besides, a great deal of Unix history (not all of it be any
+means) was created in the US: Bell Labs, Digital, Sun, IBM, SCO,
+Xenix, etc. So there is clearly a US 'interest'. I guess the
+question may be whether the Library is going to archive systems or
+restrict itself to content, ie web pages.
+
+	bill
+
+
+From Robertdkeys at aol.com  Fri Feb 21 03:24:09 2003
+From: Robertdkeys at aol.com (Robertdkeys at aol.com)
+Date: Thu, 20 Feb 2003 12:24:09 EST
+Subject: [TUHS] LoC now involved with saving digital history
+Message-ID: <67.a912c89.2b866939@aol.com>
+
+Maybe it might be played from the angle that a US mirror could
+be granted funds in some manner, to complement the down
+under repository.   Just a wild thought...
+
+Bob Keys
+
+
+From grog at lemis.com  Tue Feb 25 10:03:38 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Tue, 25 Feb 2003 10:33:38 +1030
+Subject: [TUHS] LoC now involved with saving digital history
+In-Reply-To: <20030219220228.GT1877@gsmx07.alcatel.com.au>
+References: <20030218213105.04c7ab94.wgm@telus.net> <20030219091721.GW17256@wantadilla.lemis.com> <20030219220228.GT1877@gsmx07.alcatel.com.au>
+Message-ID: <20030225000338.GA2042@wantadilla.lemis.com>
+
+On Thursday, 20 February 2003 at  9:02:28 +1100, Peter Jeremy wrote:
+> On 2003-Feb-19 19:47:21 +1030, Greg 'groggy' Lehey <grog at lemis.com> wrote:
+>> You know that TUHS is based in Australia, right?  "Federal" has a
+>> different meaning here.  Of course, there's a possibility that the
+>> Australian government would be interested.  I'll investigate.
+>
+> Not that great a difference.  Both Oz and the US have a very similar
+> Federal/state structure.  Getting US Federal funding for an Oz site
+> is unlikely (but the LoC is going to need to work out how to handle
+> the fact that the Internet doesn't acknowledge national boundaries
+> and some of the information it needs to archive won't be in the US).
+
+Sorry, I wasn't clear.  In America, "Federal" refers to the American
+federal government.  Here it refers to the Australian federal
+government.  Thus, the funds that the original poster mentioned
+would probably not be available.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+Please note: we block mail from major spammers, notably yahoo.com.
+See http://www.lemis.com/yahoospam.html for further details.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030225/d6aace7a/attachment.sig>
+
+From tfb at tfeb.org  Wed Feb 26 02:13:25 2003
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Tue, 25 Feb 2003 16:13:25 +0000
+Subject: [TUHS] Festoon
+Message-ID: <15963.38437.680360.557601@tfeb.org>
+
+Does anyone remember this program (probably /usr/games/festoon) and in
+which Unixes it was distributed?  I think it must have existed in at
+least some BSDs, but I'm fairly sure it wasn't in the ordinary 4.3
+distribution.
+
+--tim
+
+
+
+From wgm at telus.net  Wed Feb 26 02:05:13 2003
+From: wgm at telus.net (Wm. G. McGrath)
+Date: Tue, 25 Feb 2003 08:05:13 -0800
+Subject: [TUHS] LoC now involved with saving digital history
+In-Reply-To: <20030225000338.GA2042@wantadilla.lemis.com>
+References: <20030218213105.04c7ab94.wgm@telus.net>
+	<20030219091721.GW17256@wantadilla.lemis.com>
+	<20030219220228.GT1877@gsmx07.alcatel.com.au>
+	<20030225000338.GA2042@wantadilla.lemis.com>
+Message-ID: <20030225080513.5b176bfe.wgm@telus.net>
+
+On Tue, 25 Feb 2003 10:33:38 +1030
+"Greg 'groggy' Lehey" <grog at lemis.com> wrote:
+
+>Sorry, I wasn't clear.  In America, "Federal" refers to the
+>American federal government.  Here it refers to the Australian
+>federal government.  Thus, the funds that the original poster
+>mentioned would probably not be available.
+
+Clear enough. As a Canadian I'm certainly aware of the difference
+between federal and regional goverments. AFAIK though Digital was a
+Massachusetts company and thus the LoC has an interest in it's
+activities - along with the rest of the American computer industry.
+It's only logical that they'd have an interest in TUHS archives. It
+would be a shame to see TUHS loose out because of a silly turf war.
+Regardless of where the archive site hardware is located, the
+information in TUHS archives is clearly American. If you are
+interested in the preservation of Unix heritage I really can't see
+the point of nationalistic hostility, refusing to cooperate, or at
+least of trying. The LoC is certainly one of the best data
+repositories on the planet, and a great way of ensuring that
+knowledge about Unix is available to future generations. In my view
+results will probably depend more upon how things are approached
+rather then what country the server is located in. One thing is
+perfectly clear. Digital heritage has become very important.
+
+	bill
+
+http://www.digitalpreservation.gov/ndiipp/repor/repor_plan.html
+http://www.loc.gov/today/pr/2003/03-022.html
+http://www.loc.gov/
+
+
+From hansolofalcon at worldnet.att.net  Wed Feb 26 03:51:31 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Tue, 25 Feb 2003 12:51:31 -0500
+Subject: [TUHS] LoC now involved with saving digital history
+In-Reply-To: <20030225080513.5b176bfe.wgm@telus.net>
+Message-ID: <000001c2dcf6$8f957f00$7ec7580c@who5>
+
+Hello from Gregg C Levine
+Same here. But as an American I am fully aware of the differences on
+all three levels. State, Federal, and City. And why they do, or don't
+work. I did succeed in figuring out what our friend in Oz was talking
+about. And I am pleased that the LoC is getting involved.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: tuhs-admin at minnie.tuhs.org [mailto:tuhs-admin at minnie.tuhs.org]
+On
+> Behalf Of Wm. G. McGrath
+> Sent: Tuesday, February 25, 2003 11:05 AM
+> To: tuhs
+> Subject: Re: [TUHS] LoC now involved with saving digital history
+> 
+> On Tue, 25 Feb 2003 10:33:38 +1030
+> "Greg 'groggy' Lehey" <grog at lemis.com> wrote:
+> 
+> >Sorry, I wasn't clear.  In America, "Federal" refers to the
+> >American federal government.  Here it refers to the Australian
+> >federal government.  Thus, the funds that the original poster
+> >mentioned would probably not be available.
+> 
+> Clear enough. As a Canadian I'm certainly aware of the difference
+> between federal and regional goverments. AFAIK though Digital was a
+> Massachusetts company and thus the LoC has an interest in it's
+> activities - along with the rest of the American computer industry.
+> It's only logical that they'd have an interest in TUHS archives. It
+> would be a shame to see TUHS loose out because of a silly turf war.
+> Regardless of where the archive site hardware is located, the
+> information in TUHS archives is clearly American. If you are
+> interested in the preservation of Unix heritage I really can't see
+> the point of nationalistic hostility, refusing to cooperate, or at
+> least of trying. The LoC is certainly one of the best data
+> repositories on the planet, and a great way of ensuring that
+> knowledge about Unix is available to future generations. In my view
+> results will probably depend more upon how things are approached
+> rather then what country the server is located in. One thing is
+> perfectly clear. Digital heritage has become very important.
+> 
+> 	bill
+> 
+> http://www.digitalpreservation.gov/ndiipp/repor/repor_plan.html
+> http://www.loc.gov/today/pr/2003/03-022.html
+> http://www.loc.gov/
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From shoppa at trailing-edge.com  Wed Feb 26 08:52:35 2003
+From: shoppa at trailing-edge.com (Tim Shoppa)
+Date: Tue, 25 Feb 2003 17:52:35 -0500
+Subject: [TUHS] Festoon
+In-Reply-To: <15963.38437.680360.557601@tfeb.org>
+References: <15963.38437.680360.557601@tfeb.org>
+Message-ID: <3E5BF3B3.nailO3X1PA3FG@mini-me.trailing-edge.com>
+
+>Does anyone remember this program (probably /usr/games/festoon)
+
+It's come up at least twice on alt.folklore.computers in the last decade,
+but I've never seen a pointer to the actual source yet.  e.g.
+
+  http://groups.google.com/groups?hl=en&lr=&ie=UTF-8&oe=UTF-8&threadm=391cb661%40news.adfa.oz.au&rnum=2&prev=/groups%3Fq%3Dfestoon%2Balt.folklore.computers%26ie%3DUTF-8%26oe%3DUTF-8%26hl%3Den%26btnG%3DGoogle%2BSearch
+
+Tim.
+
+
+From norman at nose.cs.utoronto.ca  Wed Feb 26 11:00:51 2003
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Tue, 25 Feb 2003 20:00:51 -0500
+Subject: [TUHS] Festoon
+Message-ID: <200302260101.h1Q11Qn84655@minnie.tuhs.org>
+
+Ron Hardin, who worked at Western Electric in Columbus (I think)
+at the time, confirms that he is the author:
+
+  Festoon was mine, chiefly written one Saturday with a tragically flawed
+  copy of Lester's _Introductory Transformational Grammar of English_
+  bought that morning on a $1 table at Woolworth on my knee.
+
+  The tragic flaw was that there are severe lexical constraints on language,
+  which is why there are so many made-up words in festoon, to avoid them.
+
+  The introduction of awful phrases came in reaction to writer's workbench
+  from Lorinda Cherry, which had a real mine of them; and phrases from my
+  boss, S D Hester, who was a wretched writer.  People contributed on noticing
+  that.
+
+  It was greatly helped by troff (``The _pay_ people to write this crap?'' is
+  a typical reaction.  Apparently it was not out of the question for Western
+  Electric.)
+
+Norman Wilson
+Toronto ON
+On the internet, nobody can tell you're whether you're on the internet.
+
+
+From wkt at minnie.tuhs.org  Wed Feb 26 13:40:15 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Wed, 26 Feb 2003 13:40:15 +1000 (EST)
+Subject: [TUHS] Festoon
+In-Reply-To: <3E5BF3B3.nailO3X1PA3FG@mini-me.trailing-edge.com> from Tim Shoppa
+ at "Feb 25, 2003 05:52:35 pm"
+Message-ID: <200302260340.h1Q3eFY86417@minnie.tuhs.org>
+
+In article by Tim Shoppa:
+> >Does anyone remember this program (probably /usr/games/festoon)
+> 
+> It's come up at least twice on alt.folklore.computers in the last decade,
+> but I've never seen a pointer to the actual source yet.
+
+% tar vtzf PDP-11/Distributions/ucb/2.9BSD/usr.tar.gz | grep -i fest
+-rwxrwxr-x 3/3           37484 Nov 17 13:00 1982 ./games/festoon
+-rw-rw-rw- 1/1            3536 Aug  2 23:08 1983 ./man/cat6/festoon.6
+-rw-r--r-- 3/3            3012 Aug  2 21:26 1983 ./man/man6/festoon.6
+
+% tar vtzf Applications/Shoppa_Tapes/usenix878889.tar.gz | grep -i festoon
+drwxr-xr-x 100/10            0 Mar 29 06:53 1989 usenix89/:Bugs/Festoon/
+drwxr-xr-x 100/10            0 Mar 29 06:53 1989 usenix89/:Bugs/Festoon/:BUGS/
+-r--r--r-- 100/10         2975 Jul  2 02:48 1987 usenix89/:Bugs/Festoon/:BUGS/1
+
+That's all I can find in the Unix Archive at present.
+
+	Warren
+
+P.S ./games/festoon is an 0407 binary. No source.
+
+
+
+From dmr at plan9.bell-labs.com  Wed Feb 26 15:46:31 2003
+From: dmr at plan9.bell-labs.com (Dennis Ritchie)
+Date: Wed, 26 Feb 2003 00:46:31 -0500
+Subject: [TUHS] Festoon
+Message-ID: <73468058224c3fd7d82f1bb84521dbb9@plan9.bell-labs.com>
+
+I have the version of festoon, as enhanced by
+Nils-Peter Nelson, and as Norman Wilson said, mainly
+and originally done by Ron Hardin.  When the
+Usenet interchange referred to happened, I asked
+Ron whether he wanted to release it, and the
+response was
+
+ > fine with me
+
+ > npn's version is at /home/rhh/coma/festoon/fest.c
+ > with pics and tbls
+
+ > i've lost the original
+
+Incidentally, Hardin worked for Bell Labs, though
+at the Columbus location also occupied by
+Western Electric, and until fairly recently was
+a consultant for our own and nearby groups.
+The first Google pages for "hardin sloane"
+yields a bunch of references to his joint
+work with the well-known mathematician
+N. J. A. Sloane.
+
+Binary, but not source, was with research
+8th edition, and may have escaped otherwise.
+
+I'll make the source available to scholars if there's interest.
+It even compiles on Plan 9 (with ape).
+
+	Dennis
+
+
+
+From hansolofalcon at worldnet.att.net  Thu Feb 27 06:50:06 2003
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Wed, 26 Feb 2003 15:50:06 -0500
+Subject: [TUHS] Status of, and licensing of the so called "Ancient UNIX" products
+Message-ID: <002401c2ddd8$af4e1680$38c5580c@who5>
+
+Hello again from Gregg C Levine
+I know I asked this question early on, and I remember, and have the
+original answer filed someplace.... But that was about a year ago.
+Since then I had heard a rumor that the current Copyright Owner of the
+"Ancient UNIX" products had in fact re-released the products under the
+exact same license that both Minix, and BSD use.
+
+ In fact they could called a freely releasable product. Can someone on
+this list confirm this? On a different list, for a different emulator,
+to which that I belong, we there, are having a discussion regarding
+the status of these products. I agreed with a correspondent that the
+BSD ones, such as 2.11, and 2.9 were in fact freely available, pending
+a response that is. 
+
+I am suggesting there, that someone should investigate porting either
+V5, or V6, or even V7 to that platform. And someone naturally is
+making that complaint. Someone else is also claiming that Amdahl did
+just that, and sold it under the name UTS. But as you might guess, it
+is not freely available.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+
+
+
+From wkt at minnie.tuhs.org  Thu Feb 27 07:49:58 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Thu, 27 Feb 2003 07:49:58 +1000 (EST)
+Subject: [TUHS] AT&T Package Design (fwd)
+Message-ID: <200302262149.h1QLnwb98263@minnie.tuhs.org>
+
+----- Forwarded message from Lange, David -----
+
+From: "Lange, David" <Extern.David.Lange at gedas.com>
+Subject: AT&T Package Design
+Date: Wed, 26 Feb 2003 10:25:18 -0500
+
+Just wondering who actually designed the AT&T UNIX package utility. I have
+to admit the documentation of this utility is rather sparse in term of
+examples of scripting problems and handling the I/O. Did internal AT&T
+documentation have any more information or did it merely consist of the
+source? I'm interested in creating patches and dependencies between
+packages. Any information or insight would be welcome.
+
+Regards.
+	D. Lange
+----- End of forwarded message from Lange, David -----
+
+
+From wkt at minnie.tuhs.org  Thu Feb 27 07:58:17 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Thu, 27 Feb 2003 07:58:17 +1000 (EST)
+Subject: [TUHS] Festoon
+In-Reply-To: <73468058224c3fd7d82f1bb84521dbb9@plan9.bell-labs.com> from Dennis
+ Ritchie at "Feb 26, 2003 00:46:31 am"
+Message-ID: <200302262158.h1QLwHu98408@minnie.tuhs.org>
+
+In article by Dennis Ritchie:
+> I'll make the Festoon source available to scholars if there's interest.
+> It even compiles on Plan 9 (with ape).
+> 	Dennis
+
+Dennis has passed the source to me with permission to include it in the
+Unix Archive. It's now there at Applications/Festoon, e.g
+http://www.tuhs.org/Archive/Applications/Festoon/
+until the other mirrors pick it up.
+
+	Warren
+
+
+From grog at lemis.com  Thu Feb 27 08:44:58 2003
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Thu, 27 Feb 2003 09:14:58 +1030
+Subject: [TUHS] Status of, and licensing of the so called "Ancient UNIX" products
+In-Reply-To: <002401c2ddd8$af4e1680$38c5580c@who5>
+References: <002401c2ddd8$af4e1680$38c5580c@who5>
+Message-ID: <20030226224458.GN66520@wantadilla.lemis.com>
+
+On Wednesday, 26 February 2003 at 15:50:06 -0500, Gregg C Levine wrote:
+> Hello again from Gregg C Levine
+> I know I asked this question early on, and I remember, and have the
+> original answer filed someplace.... But that was about a year ago.
+> Since then I had heard a rumor that the current Copyright Owner of the
+> "Ancient UNIX" products had in fact re-released the products under the
+> exact same license that both Minix, and BSD use.
+
+That's not possible.  The licenses aren't the same.
+
+> In fact they could called a freely releasable product. Can someone
+> on this list confirm this?
+
+Yes.  It went around on this list at the time.  I'll attach the
+message again below.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+Please note: we block mail from major spammers, notably yahoo.com.
+See http://www.lemis.com/yahoospam.html for further details.
+-------------- next part --------------
+An embedded message was scrubbed...
+From: unknown sender
+Subject: no subject
+Date: no date
+Size: 100
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20030227/84de5aaf/attachment.mht>
+
+From arnold at skeeve.com  Thu Feb 27 22:06:17 2003
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Thu, 27 Feb 2003 14:06:17 +0200
+Subject: [TUHS] compiling festoon
+Message-ID: <200302271206.h1RC6HSQ001634@localhost.localdomain>
+
+Hi All.
+
+The following diff is necessary to use GCC on a linux system.
+(Anyone know what gcc's builtin `conj' function is? Beats me.)
+
+Warren, you might want to fix that last line in the archive version
+of the file.
+
+Arnold
+----------------
+*** fest.c.dist	Wed Feb 26 23:51:49 2003
+--- fest.c	Thu Feb 27 14:02:55 2003
+***************
+*** 1223,1229 ****
+  static char    *conjlist[] = {"and", "but", "yet", "and", "and"};
+  
+  X 
+! conj(env)
+  	E               env;
+  {
+  	X               v = getxx();
+--- 1223,1229 ----
+  static char    *conjlist[] = {"and", "but", "yet", "and", "and"};
+  
+  X 
+! conjugate(env)
+  	E               env;
+  {
+  	X               v = getxx();
+***************
+*** 1306,1312 ****
+  	} else if (prob(2 * T)) {
+  		v->list.x[i++] = turgid(env);
+  		v->list.x[i++] = comma(env);
+! 		v->list.x[i++] = conj(env);
+  		v->list.x[i++] = sent(env);
+  	} else if (prob(1.5 * T)) {
+  		v->list.x[i++] = lconjsub(env);
+--- 1306,1312 ----
+  	} else if (prob(2 * T)) {
+  		v->list.x[i++] = turgid(env);
+  		v->list.x[i++] = comma(env);
+! 		v->list.x[i++] = conjugate(env);
+  		v->list.x[i++] = sent(env);
+  	} else if (prob(1.5 * T)) {
+  		v->list.x[i++] = lconjsub(env);
+***************
+*** 1327,1333 ****
+  		if (eqn && prob(.5)) {
+  			v->list.x[i++] = equation(env);
+  			v->list.x[i++] = comma(env);
+! 			v->list.x[i++] = conj(env);
+  		}
+  		v->list.x[i++] = sent(env);
+  	} else
+--- 1327,1333 ----
+  		if (eqn && prob(.5)) {
+  			v->list.x[i++] = equation(env);
+  			v->list.x[i++] = comma(env);
+! 			v->list.x[i++] = conjugate(env);
+  		}
+  		v->list.x[i++] = sent(env);
+  	} else
+***************
+*** 1644,1647 ****
+  	label[j++] = '"'; label[j] = '\0';
+  	return(label);
+  }
+- /GO.SYSIN DD fest.c
+\ No newline at end of file
+--- 1644,1646 ----
+
+
+From lars at nocrew.org  Thu Feb 27 22:39:05 2003
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: 27 Feb 2003 13:39:05 +0100
+Subject: [TUHS] compiling festoon
+In-Reply-To: <200302271206.h1RC6HSQ001634@localhost.localdomain>
+References: <200302271206.h1RC6HSQ001634@localhost.localdomain>
+Message-ID: <8565r5dhjq.fsf@junk.nocrew.org>
+
+Aharon Robbins <arnold at skeeve.com> writes:
+> Anyone know what gcc's builtin `conj' function is?
+
+C99 complex conjugation.
+
+-- 
+Lars Brinkhoff,         Services for Unix, Linux, GCC, PDP-10, HTTP
+Brinkhoff Consulting    http://www.brinkhoff.se/
+
+
+From wtoomey at staff.bond.edu.au  Fri Feb 28 13:58:38 2003
+From: wtoomey at staff.bond.edu.au (wtoomey at staff.bond.edu.au)
+Date: Fri, 28 Feb 2003 13:58:38 +1000 (EST)
+Subject: [TUHS] Re: Fw: A milestone from Australian computing history
+In-Reply-To: <01ea01c2ded9$bc807580$bdc38490@nsw.bigpond.net.au>
+Message-ID: <0HB0004OH31TMZ@staff.bond.edu.au>
+
+In article by Max Burnet:
+> From: Bob Supnik <bsupnik at earthlink.net>
+> To: Max Burnet <mburnet at bigpond.net.au>
+> > I've just finished resurrecting Richard Miller's Wollongong port of UNIX
+> V6
+> > to the Interdata 7/32 (1976-77) - the first UNIX port in history.  I hope
+> > to release a kit over the weekend.
+> >
+> > If you have Warren Toomey's mail address, over at PUPS, will you please
+> > forward this on to him as well?
+> >
+> > All the best to you and yours,
+> >
+> > /Bob
+
+Congratulations Bob!!
+
+	Warren
+
+
+From peterjeremy at optushome.com.au  Fri Feb 28 20:46:57 2003
+From: peterjeremy at optushome.com.au (Peter Jeremy)
+Date: Fri, 28 Feb 2003 21:46:57 +1100
+Subject: [TUHS] compiling festoon
+In-Reply-To: <200302271206.h1RC6HSQ001634@localhost.localdomain>
+References: <200302271206.h1RC6HSQ001634@localhost.localdomain>
+Message-ID: <20030228104657.GK53497@cirb503493.alcatel.com.au>
+
+On Thu, Feb 27, 2003 at 02:06:17PM +0200, Aharon Robbins wrote:
+>The following diff is necessary to use GCC on a linux system.
+>(Anyone know what gcc's builtin `conj' function is? Beats me.)
+
+Probably complex conjugate:  conj(a+ib) == a-ib
+
+Peter
+
+
+From wkt at minnie.tuhs.org  Fri Feb 28 09:22:49 2003
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Fri, 28 Feb 2003 09:22:49 +1000 (EST)
+Subject: [TUHS] compiling festoon
+In-Reply-To: <200302271206.h1RC6HSQ001634@localhost.localdomain> from Aharon
+ Robbins at "Feb 27, 2003 02:06:17 pm"
+Message-ID: <200302272322.h1RNMop13970@minnie.tuhs.org>
+
+In article by Aharon Robbins:
+> Hi All.
+> 
+> The following diff is necessary to use GCC on a linux system.
+> (Anyone know what gcc's builtin `conj' function is? Beats me.)
+> 
+> Warren, you might want to fix that last line in the archive version
+> of the file.
+
+Um, it compiles fine for me on FreeBSD using gcc version 2.95.3,
+so I'd say that it's a Linux library. I'll put your suggestion
+into the README.
+
+	Warren
+
+

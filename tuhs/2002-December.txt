@@ -1,0 +1,1688 @@
+From luvisi at andru.sonoma.edu  Tue Dec  3 07:52:27 2002
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Mon, 2 Dec 2002 13:52:27 -0800 (PST)
+Subject: [pups] 2.11BSD networking on simh
+In-Reply-To: <Pine.LNX.4.44.0211281703350.643-100000@gladen>
+Message-ID: <Pine.LNX.4.44.0212021349370.643-100000@gladen>
+
+I finally tracked it down with strace.  The send() function was
+complaining about not being connected.
+
+By changing it to a sendto and providing some hard coded data I was able
+to make it work.  Obviously this is not the "correct" solution, but it
+illustrates the problem.
+
+Here's the patch:
+
+--- sim_ether.c.org     Mon Dec  2 12:43:49 2002
++++ sim_ether.c Mon Dec  2 13:51:47 2002
+@@ -406,7 +406,9 @@
+
+ int pcap_sendpacket(pcap_t* handle, u_char* msg, int len)
+ {
+-  return (send(pcap_fileno(handle), msg, len, 0) == len)?0:-1;
++  struct sockaddr_pkt spkt = { AF_INET, "eth0", -1 };
++  return (sendto(pcap_fileno(handle), msg, len, 0,
++                 (struct sockaddr *)&spkt, sizeof(spkt)) == len)?0:-1;
+ }
+
+ int PacketGetAdapterNames(char* buffer, int* size)
+
+
+
+
+From luvisi at andru.sonoma.edu  Fri Dec  6 03:11:41 2002
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Thu, 5 Dec 2002 09:11:41 -0800 (PST)
+Subject: [pups] Boot_Images and the networking activated version of Simh
+In-Reply-To: <Pine.LNX.4.44.0211290919150.643-100000@gladen>
+Message-ID: <Pine.LNX.4.44.0212050901550.11570-100000@gladen>
+
+All righty.  I have:
+  A working boot image for a networked 2.11BSD system inside simh.
+  Some perl scripts for working with simh tape images.
+  simh startup script for booting the networked image.
+  simh startup script for booting from the install tape.
+  Some basic instructions for how to get the thing going (not a substitute
+    for reading the simh docs and knowing something about UNIX).
+
+I emailed Warren but he seems to be unavailable right now.
+
+So, who's got an archive I can upload it to?
+
+Andru
+-- 
+Andru Luvisi, Programmer/Analyst
+
+
+Quote Of The Moment:
+  "In order to make an apple pie from scratch, you must first create the
+  universe."
+                  -- Carl Sagan
+
+
+
+From wkt at minnie.tuhs.org  Sat Dec  7 15:08:10 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Sat, 7 Dec 2002 15:08:10 +1000 (EST)
+Subject: [pups] Boot_Images and the networking activated version of Simh
+In-Reply-To: <Pine.LNX.4.44.0212050901550.11570-100000@gladen> from Andru Luvisi
+ at "Dec 5, 2002 09:11:41 am"
+Message-ID: <200212070508.gB758B959254@minnie.tuhs.org>
+
+In article by Andru Luvisi:
+> All righty.  I have:
+>   A working boot image for a networked 2.11BSD system inside simh.
+>   Some perl scripts for working with simh tape images.
+>   simh startup script for booting the networked image.
+>   simh startup script for booting from the install tape.
+>   Some basic instructions for how to get the thing going (not a substitute
+>     for reading the simh docs and knowing something about UNIX).
+> 
+> I emailed Warren but he seems to be unavailable right now.
+> 
+> So, who's got an archive I can upload it to?
+
+Try anonymous ftp to minnie.tuhs.org, directory incoming/unix.
+
+Sorry, I've been busy!
+	Warren
+
+
+From Fred.van.Kempen at microwalt.nl  Mon Dec  9 20:00:48 2002
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Mon, 9 Dec 2002 11:00:48 +0100
+Subject: [pups] Boot_Images and the networking activated version of Simh
+Message-ID: <7AD18F04B62B7440BE22E190A3F7721407C72D@mwsrv04.microwalt.nl>
+
+Warren,
+
+Oh, I see Andru already uploaded it to Minnie as well.. OK..
+
+Thanks, Andru!
+
+--fred
+
+
+> -----Original Message-----
+> From: Warren Toomey [mailto:wkt at minnie.tuhs.org]
+> Sent: Saturday, December 07, 2002 6:08 AM
+> To: Andru Luvisi
+> Cc: pups at minnie.tuhs.org
+> Subject: Re: [pups] Boot_Images and the networking activated 
+> version of
+> Simh
+> 
+> 
+> In article by Andru Luvisi:
+> > All righty.  I have:
+> >   A working boot image for a networked 2.11BSD system inside simh.
+> >   Some perl scripts for working with simh tape images.
+> >   simh startup script for booting the networked image.
+> >   simh startup script for booting from the install tape.
+> >   Some basic instructions for how to get the thing going 
+> (not a substitute
+> >     for reading the simh docs and knowing something about UNIX).
+> > 
+> > I emailed Warren but he seems to be unavailable right now.
+> > 
+> > So, who's got an archive I can upload it to?
+> 
+> Try anonymous ftp to minnie.tuhs.org, directory incoming/unix.
+> 
+> Sorry, I've been busy!
+> 	Warren
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+> 
+
+
+From luvisi at andru.sonoma.edu  Thu Dec 12 15:19:04 2002
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Wed, 11 Dec 2002 21:19:04 -0800 (PST)
+Subject: [pups] 2.11BSD images for Simh
+Message-ID: <Pine.LNX.4.44.0212112118430.11570-100000@gladen>
+
+
+From hansolofalcon at worldnet.att.net  Fri Dec 13 15:44:09 2002
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Fri, 13 Dec 2002 00:44:09 -0500
+Subject: [pups] 2.11BSD images for Simh
+In-Reply-To: <Pine.LNX.4.44.0212112118430.11570-100000@gladen>
+Message-ID: <000601c2a26a$acdd1bc0$5069580c@who>
+
+Hello again from Gregg C Levine
+Yes, indeed. I saw them there. Right now I am involved in a totally
+different project, and do not have the bandwidth to download the files.
+So I'll be looking into it, around the second week of next year. 
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org]
+On
+> Behalf Of Andru Luvisi
+> Sent: Thursday, December 12, 2002 12:19 AM
+> To: pups at minnie.tuhs.org
+> Subject: Re: [pups] 2.11BSD images for Simh
+> 
+> From Warren:
+> 
+> >
+> > These file are now in the Unix Archive on minnie.tuhs.org in
+> > PDP-11/Boot_Images/2.11_on_Simh
+> >
+> > The mirror sites should pick them up soon.
+> >
+> 
+> 
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From robinb at ruffnready.co.uk  Tue Dec 17 08:30:18 2002
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Mon, 16 Dec 2002 22:30:18 +0000
+Subject: [pups] 11/34
+Message-ID: <vQEgWqB6Pl$9EwAq@falstaf.demon.co.uk>
+
+Dear All,
+There is a complete 11/34 for sale on EBay (1 day to go).  It comes with 
+a complete V6 with source.
+
+Somebody buy it please.  This is nothing to do with me, I just saw it 
+tonight.  It's in Pontypridd South Wales
+
+Cheers
+
+Robin
+-- 
+Robin Birch
+
+
+
+From kevin at xpuppy.demon.co.uk  Wed Dec 18 04:21:56 2002
+From: kevin at xpuppy.demon.co.uk (Kevin Murrell)
+Date: Tue, 17 Dec 2002 18:21:56 -0000
+Subject: [pups] 11/34
+In-Reply-To: <vQEgWqB6Pl$9EwAq@falstaf.demon.co.uk>
+Message-ID: <000201c2a5f9$2ef5dde0$8000a8c0@ps8xp>
+
+I'm doing my best!
+
+If I get it, I will make whatever sources are useful generally
+available.
+
+Kevin Murrell
+For the Computer Museum at Bletchley Park
+
+-----Original Message-----
+From: pups-admin at minnie.tuhs.org [mailto:pups-admin at minnie.tuhs.org] On
+Behalf Of Robin Birch
+Sent: 16 December 2002 22:30
+To: pups at minnie.tuhs.org
+Subject: [pups] 11/34
+
+Dear All,
+There is a complete 11/34 for sale on EBay (1 day to go).  It comes with
+
+a complete V6 with source.
+
+Somebody buy it please.  This is nothing to do with me, I just saw it 
+tonight.  It's in Pontypridd South Wales
+
+Cheers
+
+Robin
+-- 
+Robin Birch
+
+_______________________________________________
+PUPS mailing list
+PUPS at minnie.tuhs.org
+http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+
+From bwc at coraid.com  Tue Dec 31 04:51:49 2002
+From: bwc at coraid.com (bwc at coraid.com)
+Date: Mon, 30 Dec 2002 13:51:49 -0500
+Subject: [pups] V7 setjmp/longjmp
+Message-ID: <ad59f854675cbdf4887859e421701e4f@coraid.com>
+
+Looking thru the code for setjmp/longjmp (/usr/src/libc/gen/setjmp.s),
+and have a question.  Longjmp seems to make an attempt at restoring
+register two through four, but setjmp doesn't save them.  Where do
+these register get saved from?
+
+ Brantley Coile
+
+
+From michael_davidson at pacbell.net  Tue Dec 31 12:23:14 2002
+From: michael_davidson at pacbell.net (Michael Davidson)
+Date: Mon, 30 Dec 2002 18:23:14 -0800
+Subject: [pups] V7 setjmp/longjmp
+References: <ad59f854675cbdf4887859e421701e4f@coraid.com>
+Message-ID: <3E10FF92.3080807@pacbell.net>
+
+bwc at coraid.com wrote:
+
+>Looking thru the code for setjmp/longjmp (/usr/src/libc/gen/setjmp.s),
+>and have a question.  Longjmp seems to make an attempt at restoring
+>register two through four, but setjmp doesn't save them.  Where do
+>these register get saved from?
+>
+setjmp and longjmp are intimately familiar with the way in which
+the standard stack frame for C functions is laid out
+
+The stack frame itself is maintained by the functions csv and cret
+which are defined in /usr/src/libc/crt/csv.s
+
+The C compiler generates a call to csv at the start of each function:
+
+    jsr    r5, csv
+
+which has the net effect of saving the current value of r5 on the stack,
+setting r5 to point to the saved r5, and saving r4, r3 and r2
+
+and at the end of each function it generates:
+
+    jmp    cret
+
+which restores the values of r2 - r5 and returns to the function's caller.
+
+Thus r5 is used as a frame pointer.
+
+All that setjmp saves are the values of r5, sp and the return address.
+
+When longjmp is called it walks back up the chain of frame pointers
+pointed to by r5 until it gets to the frame immediately below the
+one for the context it wants to return to. It then patches the return
+address in that frame to be the return address saved by setjmp and
+uses cret to restore everything (almost) as if setjmp had just returned.
+
+Note that this means that r4, r3 and r2 get restored to the values
+that they had at the time that the next stack frame was established
+(ie when the "next" function down was called from the original context)
+and that these are not necessarily the values that they had at the
+moment when the original call to setjnp returned. Hence the various
+caveats about not relying on the value of any register variables
+after returning via longjmp.
+
+
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Tue Dec 31 21:04:27 2002
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Tue, 31 Dec 2002 12:04:27 +0100 (MET)
+Subject: [pups] V7 setjmp/longjmp
+Message-ID: <200212311307.gBVD7p600218@bsd.korb>
+
+Michael Davidson distrusted:
+>Note that this means that r4, r3 and r2 get restored to the values
+>that they had at the time that the next stack frame was established
+>(ie when the "next" function down was called from the original context)
+>and that these are not necessarily the values that they had at the
+>moment when the original call to setjnp returned. Hence the various
+>caveats about not relying on the value of any register variables
+>after returning via longjmp.
+
+You can trust register variables when setjmp() returns the second time. Then
+the registers are restored to the values they had when the "next" function was 
+called, that is the "values as of the time longjmp() was called" (quoted from
+longjmp(3)'s man page. Thus any variable behaves the same, regardless of its
+storage class.
+
+By the way, this is not the case in V6. The register variables-- and only
+the register variables-- are restored to the values as of the time setexit() was
+called. (In V6 "setjmp()" is named "setexit()" and "longjmp()" is named "reset()").
+Thus the value of a variable depends on its storage class. If it is register,
+you get the value when setexit() was called, if it is not register, you get
+the value when reset() was called. This might be considered a bug.
+
+Greetings
+
+Wolfgang
+
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Sun Dec  8 08:33:23 2002
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Sat, 7 Dec 2002 23:33:23 +0100 (MET)
+Subject: [TUHS] raise of interrupt level necessary
+Message-ID: <200212080035.gB80Z7t00512@bsd.korb>
+
+Hi,
+
+While studying the V6 kernel, I search for some rules as when to raise
+the interrupt priority level (IPL). I came up with something like this:
+A kernel process needs to raise the IPL if a change of data must be atomic and might 
+be accessed (not necessarily changed) by an IRS.
+
+In light of this rule, some raising of interrupts seem unnecessary:
+- In m40.s changes of the user space segmentation registers are bracketed by raising 
+and lowering the IPL, although these registers are never accessed by an ISR.
+  
+- Likewise, in m40.s, just before the trap routine checks the runrun flag and 
+restores r0, r1 and the user stackpointer, it raises the IPL. I can't see what 
+possibly should go wrong, if being interrupted while restoring the values.
+  
+I'd appreciate any help from someone with more experience in kernel programming.
+
+Greetings,
+
+Wolfgang Helbig
+
+
+
+
+From wkt at minnie.tuhs.org  Thu Dec 12 09:26:47 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Thu, 12 Dec 2002 09:26:47 +1000 (EST)
+Subject: [TUHS] Re: non-broken 4.3BSD set?
+In-Reply-To: <ca.15d9a70c.2b28d371@aol.com> from "Robertdkeys@aol.com" at "Dec
+ 11, 2002 12:44:17 pm"
+Message-ID: <200212112326.gBBNQlr04157@minnie.tuhs.org>
+
+In article by Robertdkeys at aol.com:
+> Warren... is there a non-broken 4.3BSD-Tahoe set somewhere?
+> Bob
+
+As in a bootable 4.3BSD-Tahoe kit? As far as I know, no. The Unix Archive
+has a broken copy in 4BSD/Distributions/4.3BSD-Tahoe, indicating that
+both usr.tar and src.tar are broken.
+
+It might/should be possible to merge files from the CRSG CD set from Kirk
+to recreate these tar files.
+
+Anybody out there have an unbroken Tahoe release?
+
+	Warren
+
+
+From Robertdkeys at aol.com  Thu Dec 12 13:22:24 2002
+From: Robertdkeys at aol.com (Robertdkeys at aol.com)
+Date: Wed, 11 Dec 2002 22:22:24 EST
+Subject: [TUHS] Re: non-broken 4.3BSD set?
+Message-ID: <97.322c633d.2b295af0@aol.com>
+
+The src tarball in the archives is only 35k or
+something like that, so it is mostly gone.  At
+one time, I thought it was more there.
+
+Since I was only needing the dwb section out
+of the sources, to power up a dwb suite on an
+ancient ultrix box, I just used the quasijarus
+0a source tarball (that is supposed to be Tahoe)
+for the bits I needed.  It worked.
+
+But, for the record, it might be nice to have a
+complete, unbroken set, if it still exists, and
+the bits can be rounded up.
+
+Out of curiosity, anyone still running a 4.3BSD
+box?  I had a couple microVAXes up with it until
+my ESDI drives went bellyup a few days back.
+(Ice storms and power glitches ate the drives.)
+I have maybe 30mb of ports of this and that
+(gzip, gmake, psroff, TeX, and other things)
+that I would donate to the archives if there
+was any interest.  MicroVAXen are a cheap way
+of playing old BSD....(:+}}...
+
+Thanks
+
+Bob
+
+
+
+
+From luvisi at andru.sonoma.edu  Thu Dec 12 15:17:30 2002
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Wed, 11 Dec 2002 21:17:30 -0800 (PST)
+Subject: [TUHS] Re: [pups] 2.11BSD images for Simh
+Message-ID: <Pine.LNX.4.44.0212112115220.11570-100000@gladen>
+
+
+From luvisi at andru.sonoma.edu  Thu Dec 12 15:18:12 2002
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Wed, 11 Dec 2002 21:18:12 -0800 (PST)
+Subject: [TUHS] Oops.
+Message-ID: <Pine.LNX.4.44.0212112117520.11570-100000@gladen>
+
+Sorry.  Wrong list.  That was meant for PUPS.
+
+Andru
+-- 
+Andru Luvisi, Programmer/Analyst
+
+Quote Of The Moment:
+  Just once, I wish we would encounter an alien menace that wasn't
+  immune to bullets.
+                  -- The Brigadier, "Dr. Who"
+
+
+
+From hansolofalcon at worldnet.att.net  Fri Dec 13 15:46:46 2002
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Fri, 13 Dec 2002 00:46:46 -0500
+Subject: [TUHS] Oops.
+In-Reply-To: <Pine.LNX.4.44.0212112117520.11570-100000@gladen>
+Message-ID: <000701c2a26b$0c5b36e0$5069580c@who>
+
+Hello again from Gregg C Levine
+Yes, I know, I just finished reading, and replying to your message. And
+do you know which Doctor, the Brigadier was talking to?
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: tuhs-admin at minnie.tuhs.org [mailto:tuhs-admin at minnie.tuhs.org]
+On
+> Behalf Of Andru Luvisi
+> Sent: Thursday, December 12, 2002 12:18 AM
+> To: tuhs at tuhs.org
+> Subject: [TUHS] Oops.
+> 
+> Sorry.  Wrong list.  That was meant for PUPS.
+> 
+> Andru
+> --
+> Andru Luvisi, Programmer/Analyst
+> 
+> Quote Of The Moment:
+>   Just once, I wish we would encounter an alien menace that wasn't
+>   immune to bullets.
+>                   -- The Brigadier, "Dr. Who"
+> 
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From luvisi at andru.sonoma.edu  Thu Dec 12 15:59:37 2002
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Wed, 11 Dec 2002 21:59:37 -0800 (PST)
+Subject: [TUHS] Oops.
+In-Reply-To: <000701c2a26b$0c5b36e0$5069580c@who>
+Message-ID: <Pine.LNX.4.44.0212112152290.11570-100000@gladen>
+
+On Fri, 13 Dec 2002, Gregg C Levine wrote:
+> Hello again from Gregg C Levine
+> Yes, I know, I just finished reading, and replying to your message. And
+> do you know which Doctor, the Brigadier was talking to?
+
+I think it was Jon Pertwee, but it could have been Tom Baker.  Definitely
+not Patrick Throughton.  I remember thinking it was funny when I saw it,
+but it didn't get into my sig list until many years later when fortune(6)
+fed it to me one day at login and I decided to add it, so my memory's a
+bit fuzzy.
+
+Andru
+-- 
+Andru Luvisi, Programmer/Analyst
+
+Quote Of The Moment:
+  I'm not normal.  I know it.  I don't care!
+       - Ace Of Base
+
+
+
+From msokolov at ivan.Harhan.ORG  Thu Dec 12 15:26:28 2002
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Wed, 11 Dec 02 21:26:28 PST
+Subject: [TUHS] Re: non-broken 4.3BSD set?
+Message-ID: <0212120526.AA10904@ivan.Harhan.ORG>
+
+Robertdkeys at aol.com wrote:
+
+> [...] I just used the quasijarus
+> 0a source tarball (that is supposed to be Tahoe) [...]
+
+It is.
+
+> Out of curiosity, anyone still running a 4.3BSD
+> box?  I had a couple microVAXes up with it until
+> my ESDI drives went bellyup a few days back.
+
+Do you mean the plain original 4.3 or enhanced versions like 4.3-Quasijarus?
+The plain original 4.3 doesn't run on MicroVAXen, so if you had 4.3 on yours,
+it must have been *some* enhanced version.
+
+MS
+
+
+From Robertdkeys at aol.com  Fri Dec 13 06:26:53 2002
+From: Robertdkeys at aol.com (Robertdkeys at aol.com)
+Date: Thu, 12 Dec 2002 15:26:53 EST
+Subject: [TUHS] Re: non-broken 4.3BSD set?
+Message-ID: <1a7.d89fef3.2b2a4b0d@aol.com>
+
+It was Q0A.  Has there been any later development
+of it, of interest?
+
+Thanks
+
+Bob
+
+
+From msokolov at ivan.Harhan.ORG  Fri Dec 13 06:45:42 2002
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Thu, 12 Dec 02 12:45:42 PST
+Subject: [TUHS] Re: non-broken 4.3BSD set?
+Message-ID: <0212122045.AA13643@ivan.Harhan.ORG>
+
+Robertdkeys at aol.com wrote:
+
+> It was Q0A.  Has there been any later development
+> of it, of interest?
+
+Yes, there has been. The only problem is that I still haven't managed (in 3
+years) to find time to spin it into a release. :-( There is some hope, though,
+that I'll find a bit of time (enough to spin out the 4.3-QJ0b release) this
+winter.
+
+MS
+
+
+From Robertdkeys at aol.com  Fri Dec 13 09:36:24 2002
+From: Robertdkeys at aol.com (Robertdkeys at aol.com)
+Date: Thu, 12 Dec 2002 18:36:24 EST
+Subject: [TUHS] Re: non-broken 4.3BSD set?
+Message-ID: <14b.18c47235.2b2a7778@aol.com>
+
+Great!  Keep me in mind for any testing if you
+need it.  I have 4 Qbus VAXentoyz that mostly
+just sit and play, when the HD's stay up. Of
+late ESDI drives have been giving me fits, but
+maybe I can scrounge up a few more in the local
+MooU surplus feeding frenzy diving pits.  Maybe,
+someday, some scsi mscp cards might float up
+from the depths!   (dream on.....(:+}}...)
+
+I still am curious as to how many on the lists
+are actually running such critters, currently,
+on Quasijarus or on Ultrix.  I mostly play with
+mine, doing some roffing and TeXing, and porting
+a few minor tidbits.
+
+Did you arrive at any reasonable way to do the
+initial disklabels and boot blocks so one can
+install Quasijarus directly?  The only clean way
+I can do it is to use two other OS installs that
+put enough bits there that Quasijarus is happy.
+There ought to be an easier way.
+
+Anyway, keep me posted as to when Quasijarus 0b
+might become reality.
+
+Thanks
+
+Bob Keys
+
+
+From luvisi at andru.sonoma.edu  Fri Dec 13 12:04:02 2002
+From: luvisi at andru.sonoma.edu (Andru Luvisi)
+Date: Thu, 12 Dec 2002 18:04:02 -0800 (PST)
+Subject: [TUHS] Re: non-broken 4.3BSD set?
+In-Reply-To: <14b.18c47235.2b2a7778@aol.com>
+Message-ID: <Pine.LNX.4.44.0212121759580.11570-100000@gladen>
+
+On Thu, 12 Dec 2002 Robertdkeys at aol.com wrote:
+[snip]
+> Did you arrive at any reasonable way to do the
+> initial disklabels and boot blocks so one can
+> install Quasijarus directly?  The only clean way
+> I can do it is to use two other OS installs that
+> put enough bits there that Quasijarus is happy.
+> There ought to be an easier way.
+[snip]
+
+I haven't tried it, but it occurs to me that it might be possible to start
+installing NetBSD, until the point just after partitioning, and then
+install 4.3...
+
+Andru
+-- 
+Andru Luvisi, Programmer/Analyst
+
+Quote Of The Moment:
+  Signs You're Not Cut Out to Be a Jedi:
+    6. Down pat you have the backwards talk, yet impressed the chicks still
+    are not.
+
+
+
+From Robertdkeys at aol.com  Fri Dec 13 13:09:11 2002
+From: Robertdkeys at aol.com (Robertdkeys at aol.com)
+Date: Thu, 12 Dec 2002 22:09:11 EST
+Subject: [TUHS] Re: non-broken 4.3BSD set?
+Message-ID: <21.28a0fc10.2b2aa957@aol.com>
+
+That is what I do.  After several failures, I
+find that using first NetBSD-1.4.1 boot to both
+label and install boot blocks, followed by second,
+NetBSD-1.2 boot and edlabel to trim the labels
+back to something akin to a Tahoe style label,
+seems to be the only way that works reliably.
+The label 1.4.1 writes is different from the
+Tahoe label, in that it computes incorrect c
+partition sizes.  It does write something that
+I think is bootblock related that seems to must
+be there for Quasijarus to boot on my hardware.
+I am not sure exactly what it is, but using just
+the 1.2 edlabel does not seem to work reliably.
+The 1.2 edlabel seems to write a correct c size
+partition, though, after the 1.4.1 bits are put
+on.  I ought to dd off the binary bits and see
+what is actually being written.  But, the above
+seems to work, for me, and got my crashed disks
+back up a few minutes ago, after hours of prom
+formatting....(:+{{.....  Anyway, that is how I
+get the machine up.  If there is a better or
+easier way, someone holler.  I am wondering if
+a dd image of a working few start blocks on a
+disk could be copied over to a raw formatted
+disk from the tape copy, before the miniroot
+went on, as part of the boot/install process?
+An undersized disk label with reasonably sized
+a and b partitions and a small but installable
+h partition (big enough for the usr tarball to
+fit on) should allow a bootable system to be
+installed.  From that it could be set up on a
+second disk with correctly sized labels.  Or,
+when the tape was written, a selection of disk
+boot/label images could be set up and a correct
+one written to the boot tape for the target disk
+install.  What other ways could this be done?
+
+Michael, what are your thoughts on setting up
+the disks, reasonably?
+
+Thanks
+
+Bob
+
+
+From Robertdkeys at aol.com  Fri Dec 13 15:50:32 2002
+From: Robertdkeys at aol.com (Robertdkeys at aol.com)
+Date: Fri, 13 Dec 2002 00:50:32 EST
+Subject: [TUHS] flaky webster or sigma WQESD4 and RQD11 controllers on KA650???
+Message-ID: <161.18796b3e.2b2acf28@aol.com>
+
+I upgraded my MVII KA630 critters to MVIII KA650
+critters.  The disk controllers in them are the
+old Webster or Sigma WQESD/4 and SCD-RQD11/EC
+(same boards).  When I upgraded the cpu/ram on
+one of the machines, and tried to use the onboard
+formatter rs232 port, the port gave crazy spaces
+and backspaces continuously after the initial
+boot signon msg into the controller formatter
+prom.  Changing it to a DQ696 controller and the
+problem went away.  On a second machine, with
+KA650, it has a tendency to give uda controller
+initialization errors about 50% of the time when
+booting.
+
+Is there an endemic problem with this style 4
+port controller running too fast with a KA650
+compared to a KA630 cpu?  It sure feels like
+that.  It would be a bummer to have to use the
+slower cpus on these machines....(:+{{.....
+
+Anone else run into these kinds of problems?
+
+Ultrix seems to handle it better than Tahoe.
+It might be speed in the hardware and slight
+differences in drivers?
+
+Any suggestions or thoughts appreciated.
+
+Thanks
+
+Bob
+
+
+From msokolov at ivan.Harhan.ORG  Fri Dec 13 15:36:30 2002
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Thu, 12 Dec 02 21:36:30 PST
+Subject: [TUHS] Re: non-broken 4.3BSD set?
+Message-ID: <0212130536.AA13873@ivan.Harhan.ORG>
+
+Robertdkeys at aol.com wrote:
+
+> Great!  Keep me in mind for any testing if you
+> need it.
+
+I currently don't need any testing that I can't do myself, but thanks anyway.
+
+> I still am curious as to how many on the lists
+> are actually running such critters, currently,
+> on Quasijarus or on Ultrix.
+
+Well, Harhan is still up as you can see, despite the incessant bills... Pretty
+much all my work on Quasijarus since 4.3-QJ0a has been on operational issues,
+i.e., issues that don't matter much for hobbyists but become important when you
+use it operationally for your mission-critical computing. All my VAXen are
+running current unreleased code. The Internet feed is WorldCom/UUNET with a
+Quasijarus-based router. I wrote all the code for the latter, which will
+hopefully appear in 4.3-QJ1.
+
+I also have an MV3100 running Ultrix whose sole purpose is to interface an
+Exabyte 8 mm SCSI tape drive to my cluster. Doing backups on TK50s is
+prohibitively expensive. Some day I hope to find time to port 4.3-Quasijarus to
+it.
+
+> Did you arrive at any reasonable way to do the
+> initial disklabels and boot blocks so one can
+> install Quasijarus directly?
+
+That was and still is planned for 4.3-QJ1. 4.3-QJ0a and 4.3-QJ0b "officially"
+support bootstrap only on DEC RA disks. Two of my running MicroVAXen are
+equipped with the latter (RA72s). I also run one with ESDI disks, as I have
+equipped many MicroVAXen in the past. I bootstrap the latter via Ultrix (see my
+other reply).
+
+MS
+
+
+From msokolov at ivan.Harhan.ORG  Fri Dec 13 15:43:18 2002
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Thu, 12 Dec 02 21:43:18 PST
+Subject: [TUHS] Re: non-broken 4.3BSD set?
+Message-ID: <0212130543.AA13885@ivan.Harhan.ORG>
+
+Robertdkeys at aol.com wrote:
+
+> I am wondering if
+> a dd image of a working few start blocks on a
+> disk could be copied over to a raw formatted
+> disk from the tape copy, before the miniroot
+> went on, as part of the boot/install process?
+
+This should work.
+
+> Michael, what are your thoughts on setting up
+> the disks, reasonably?
+
+Well, every time I need to do this, I do some history reenactment, as this is
+how Quasijarus Project was originally bootstrapped. I first install Ultrix on
+the VAX, then write a Tahoe/Quasijarus disk label to the boot disk (by
+compiling disklabel under Ultrix), and then do the normal 4.3-QJ0a install, at
+which point the standalone system sees the label and is happy.
+
+MS
+
+
+From dmr at plan9.bell-labs.com  Fri Dec 13 16:04:29 2002
+From: dmr at plan9.bell-labs.com (Dennis Ritchie)
+Date: Fri, 13 Dec 2002 01:04:29 -0500
+Subject: [TUHS] re: Raise of interrupt level necessary
+Message-ID: <9c4e303326da457e4762dda8f843916a@plan9.bell-labs.com>
+
+Wolfgang Helbig wondered,
+
+ > While studying the V6 kernel, I search for some rules as when to raise
+ > the interrupt priority level (IPL). I came up with something like this:
+ > A kernel process needs to raise the IPL if a change of data must be atomic and might
+ > be accessed (not necessarily changed) by an IRS.
+
+ > In light of this rule, some raising of interrupts seem unnecessary:
+ > - In m40.s changes of the user space segmentation registers are bracketed by raising
+ > and lowering the IPL, although these registers are never accessed by an ISR.
+
+ > - Likewise, in m40.s, just before the trap routine checks the runrun flag and
+ > restores r0, r1 and the user stackpointer, it raises the IPL. I can't see what
+ > possibly should go wrong, if being interrupted while restoring the values.
+ 
+It's quite possible that the code is unnecessarily cautious.
+In general one does not want an interrupt while something
+sensitive is in a half-changed state (for example, some of
+the addressing registers changed, or a stack half-switched).
+
+For example, the clock interrupt routine can inspect user
+space (for display(), for example, though this is inactive
+on the 11/40), and even change it (for profiling).
+It does appear that other things (checking for
+a direct-from user-mode interrupt) in the clock routine
+already guard against these particular problems.
+
+It's been a long time since I've looked at this, however.
+
+	Dennis
+
+
+
+From msokolov at ivan.Harhan.ORG  Fri Dec 13 17:29:58 2002
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Thu, 12 Dec 02 23:29:58 PST
+Subject: [TUHS] flaky webster or sigma WQESD4 and RQD11 controllers on KA650???
+Message-ID: <0212130729.AA13952@ivan.Harhan.ORG>
+
+Robertdkeys at aol.com wrote:
+
+> Is there an endemic problem with this style 4
+> port controller running too fast with a KA650
+> compared to a KA630 cpu?
+
+I have no explanation for your problem, but it has nothing to do with speed.
+Q-bus is Q-bus, and it follows Q-bus timing, which is completely independent of
+the VAX CPU timing.
+
+Is the new CPU board firmly seated? Nothing broken or disturbed in the
+backplane when swapping the boards?
+
+> Ultrix seems to handle it better than Tahoe.
+> It might be speed in the hardware and slight
+> differences in drivers?
+
+Ultrix' MSCP code is vastly superior to anything we've ever had in BSD. I plan
+to lift the MSCP/SCA framework from Ultrix wholesale in Quasijarus down the
+line.
+
+MS
+
+
+From Robertdkeys at aol.com  Sat Dec 14 02:52:14 2002
+From: Robertdkeys at aol.com (Robertdkeys at aol.com)
+Date: Fri, 13 Dec 2002 11:52:14 EST
+Subject: [TUHS] flaky webster or sigma WQESD4 and RQD11 controllers on KA650???
+Message-ID: <161.1881237c.2b2b6a3e@aol.com>
+
+I found out what the problem was.....(sheepishly
+ducking...(:+\\...).  At 3 in the morning I had
+a typeo in the config file that the old eyeballs
+did not catch.  I had typed in the partitions
+to allocate to root and swap, as opposed to just
+the the disks.  It compiled fine, but when run,
+it paniced and dumped itself all over the floor.
+So much for myopic eyes programming at 3 in the
+morning.....
+
+(:+{{.....
+
+Bob
+
+
+From cdl at mpl.ucsd.edu  Sat Dec 14 05:33:51 2002
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Fri, 13 Dec 2002 11:33:51 -0800 (PST)
+Subject: [TUHS] flaky webster or sigma WQESD4 and RQD11 controllers on KA650???
+Message-ID: <200212131933.LAA02973@opihi.ucsd.edu>
+
+> From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+> To: tuhs at tuhs.org
+> Subject: Re: [TUHS] flaky webster or sigma WQESD4 and RQD11 controllers on KA650???
+> Date: Thu, 12 Dec 02 23:29:58 PST
+> 
+> Robertdkeys at aol.com wrote:
+> 
+> > Is there an endemic problem with this style 4
+> > port controller running too fast with a KA650
+> > compared to a KA630 cpu?
+> 
+> I have no explanation for your problem, but it has nothing to do
+> with speed.  Q-bus is Q-bus, and it follows Q-bus timing, which is
+> completely independent of the VAX CPU timing.
+
+Yes but there might be CPU spin-loop timing to run the serial
+maintenance port from the ROM bootstrap code of the controller.
+Not considered good form -- but such things happen.
+
+Some early version of the Sigma RQD11 would work in an 11/73 but not
+a KA630.  I no longer remember the exact symptoms, but I was glad that
+at the time Sigma was only an 80-mile drive from here.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+
+From norman at nose.cs.utoronto.ca  Sat Dec 14 11:21:47 2002
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Fri, 13 Dec 2002 20:21:47 -0500
+Subject: [TUHS] flaky webster or sigma WQESD4 and RQD11 controllers on KA650???
+Message-ID: <200212140122.gBE1Mgn37146@minnie.tuhs.org>
+
+If you can read this, the 4-port Wombat (Webster/Sigma ESDI controller)
+in the KA650 system through which this mail must pass on its way out
+is working fine, as it has since I installed it in that system a year
+and a half ago.
+
+According to my notes, I had no trouble communicating with the onboard
+diagnostic monitor (with the board in another KA650 reserved for system
+testing).  I used the monitor quite a bit, starting it many times,
+first because it took me a long time to realize that the terminator
+had been left installed backwards in one of the drives (so the drive
+wasn't visible to the controller no matter what I did to the cables).
+I don't think I tried the serial port on the back of the Wombat board;
+instead I uttered the magic commands to load and run the Wombat communication
+program on the VAX itself.  I'd expect this to be more timing-sensitive
+than the hardware port.  In any case it worked fine.
+
+Once the controller could see the disks (and I'd done some formatting
+and some testing with the diagnostics), I tested the Wombat under my
+oddball version of UNIX, and found what may be an MSCP implementation
+botch.  A UNIBUS/QBUS MSCP storage port gets only one interrupt vector;
+it is supposed to set one of two flags to indicate whether it is interrupting
+because there were no command slots and it freed one, or because there
+were no messages waiting to be read and it supplied one.  The Wombat
+appeared often to be tardy in setting the `message waiting' flag; my
+port driver often received an interrupt, checked the flags, found nothing
+to do, and of course dismissed the interrupt without realizing that
+the controller had in fact reported an I/O completion.  (And of course
+if I halted the system and took a crash dump I found the flag set.
+It took some real-time tracing to uncover the problem.)
+
+It is easy to work around this--instead of relying on the flag, one
+can go look at the message descriptors to see if there's a new message--
+so that is what my driver now does.  I have a vague memory that the
+original Ultrix MSCP driver, whence the current BSD one is probably
+descended and the current Ultrix one more distantly, already did it
+that way.  Silly me, I programmed from the protocol spec rather than
+just blindly copying someone else's unexplained code ...
+
+None of this explains why Bob Keys is having trouble, but it does
+suggest to me that the Wombat firmware might have other subtle bugs
+that are tickled by particular systems, perhaps even timing-dependent
+problems.  (I haven't checked, but it could well be that the interrupt-
+flag bug would be invisible to a KA630 because it took a little longer
+to get to that part of the interrupt routine.)
+
+I have two Wombat boards with slightly different firmware.  (One is
+labelled RQD11-EC and its diagnostic monitor calls itself WOMBAT;
+the other is branded by SpectraLogic, I forget what model it calls
+itself, but the monitor calls itself SLEUTH.)  My notes don't say
+whether they both displayed the interrupt botch.  I do know that
+communications with the diagnostic monitor worked fine with both.
+The RQD11-EC claimed to have firmware (or perhaps diagnostic monitor)
+version 2.38.
+
+Norman Wilson
+Toronto ON
+
+
+From johnh at psych.usyd.edu.au  Sat Dec 14 12:30:13 2002
+From: johnh at psych.usyd.edu.au (John Holden)
+Date: Sat, 14 Dec 2002 13:30:13 +1100 (EST)
+Subject: [TUHS] flaky webster or sigma WQESD4 and RQD11 controllers on KA650???
+Message-ID: <200212140230.NAA23480@psychwarp.psych.usyd.edu.au>
+
+Early ROM revisions on the Webster MSCP controllers were too slow for the
+KA650 and would often loose interrupts (amoungst other things). Signals such
+as NPR and BR grants were polled from a pseudo microcode loop which took too
+long.
+
+The RS232 interface doesn't use standard receivers. Check for a 5 volt zener on
+the input of an 74LS240 (from the 10 pin i/o connector) and add a schottky
+in parallel (a 1N5818 would do) if one isn't there
+
+
+From Robertdkeys at aol.com  Sat Dec 14 14:00:39 2002
+From: Robertdkeys at aol.com (Robertdkeys at aol.com)
+Date: Fri, 13 Dec 2002 23:00:39 EST
+Subject: [TUHS] flaky webster or sigma WQESD4 and RQD11 controllers on KA650???
+Message-ID: <102.2123e287.2b2c06e7@aol.com>
+
+The particular webster wqesd4 I have looks like
+about an '86 or so board, from chip dates, and
+the main chip that is socketed is marked with
+"ENGR-SAMPLE"...doh....  Maybe I do have a very
+early board that won't run with a faster cpu.
+The rom is a part no. 080469-01 REV 01, if that
+means anything to anyone, as marked on its paper
+label.  The later sigma board does not have the
+problem.  Oh, well, if I have to run it with a
+KA630 at slo-poke gait, so be it....(:+\\...
+
+There are two diodes, one looks like an ordinary
+silicon rectifier and one looks like a zener of
+some sort, possibly, off pin 19 of the 74ls240
+at position V2 on the board.  Those come off
+the J6 pin 10 of 10, and are in parallel.
+
+Thanks
+
+Bob
+
+
+From Robertdkeys at aol.com  Sat Dec 14 14:08:25 2002
+From: Robertdkeys at aol.com (Robertdkeys at aol.com)
+Date: Fri, 13 Dec 2002 23:08:25 EST
+Subject: [TUHS] qbus scsi controllers
+Message-ID: <18d.12dad9df.2b2c08b9@aol.com>
+
+I know it causes one to salivate like Pavlov's
+dogs, even thinking about them, but, anyone know
+of any qbus scsi controllers that might someday
+come available at anything like reasonable sorts
+of guildern de realme?
+
+(running and ducking for cover....(:+]].....)
+
+Just thought I would check.
+
+Thanks
+
+Bob
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Sat Dec 14 18:47:40 2002
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Sat, 14 Dec 2002 09:47:40 +0100 (MET)
+Subject: [TUHS] re: Raise of interrupt level necessary
+Message-ID: <200212141049.gBEAnqb01254@bsd.korb>
+
+Dennis, I greatly appreciate your reply. What amazes me most, is the fact
+that after 20 odd years you still remember those tricky details:
+
+>For example, the clock interrupt routine can inspect user
+>space (for display(), for example, though this is inactive
+>on the 11/40), and even change it (for profiling).
+>It does appear that other things (checking for
+>a direct-from user-mode interrupt) in the clock routine
+>already guard against these particular problems.
+
+To see what happens, I just removed those IPL raising instructions from gword,
+pword,_savu, _aretu, _copyseg, and _clearseg in m40.s. In fact, it didn't crash
+the system. At least on my configuration, ISRs don't touch user space while
+interrupting a kernel process. This rule is broken by the clock ISR, which calls
+display() unconditionally. Just curious: Is there any other reason beside
+seeing blinking lights that justifies calling display() 60 times per second
+and breaking the rule?
+
+I also removed IPL protection from the return sequence of the trap routine,
+still works. Testing was done on Bob Supnik's SIMH PDP-11 simulator with only
+one terminal. By the way, is anyone running V6 on a real PDP-11? Here
+is the diff of my modifications to m40.s:
+
+# diff m40.s.6 m40.s
+44d43
+*       bis     $340,PS
+455,456d453
+*       mov     PS,-(sp)
+*       bis     $340,PS
+472,473d468
+*       mov     PS,-(sp)
+*       bis     $340,PS
+480d474
+*       mov     (sp)+,PS
+485d478
+*       mov     (sp)+,PS
+539d531
+*       bis     $340,PS
+548d539
+*       bis     $340,PS
+594c585
+*       mov     $30340,PS
+---
+.       bis     $30000,PS
+621c612
+*       mov     $30340,PS
+---
+.       bis     $30000,PS
+
+Greetings,
+
+Wolfgang Helbig
+
+
+
+From MichaelDavidson at pacbell.net  Sun Dec 15 09:27:40 2002
+From: MichaelDavidson at pacbell.net (Michael Davidson)
+Date: Sat, 14 Dec 2002 15:27:40 -0800
+Subject: [TUHS] re: Raise of interrupt level necessary
+References: <200212141049.gBEAnqb01254@bsd.korb>
+Message-ID: <3DFBBE6C.5010602@pacbell.net>
+
+Wolfgang Helbig wrote:
+
+>
+>To see what happens, I just removed those IPL raising instructions from gword,
+>pword,_savu, _aretu, _copyseg, and _clearseg in m40.s. In fact, it didn't crash
+>the system. At least on my configuration, ISRs don't touch user space while
+>interrupting a kernel process. This rule is broken by the clock ISR, which calls
+>display() unconditionally. Just curious: Is there any other reason beside
+>seeing blinking lights that justifies calling display() 60 times per second
+>and breaking the rule?
+>
+Well it depends on what you think that the "rule" is ...
+
+If you think that the "rule" is "no ISR can touch user space while
+interrupting a kernel process", then it is display() that breaks
+the rule.
+
+If, however, the rule is "the user PAR and PDR registers will at
+all times reflect the address space mapping of the current user
+process" then it is _copyseg and _clearseg that "break" the rule
+by "borrowing" some of the user PARs and PDRs, and in that case
+it seems appropriate that they should raise the spl level so that
+nobody else will be "surprised" by seeing those registers in an
+apparently inconsistent state.
+
+
+
+
+
+
+
+ 
+
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Sun Dec 15 19:52:22 2002
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Sun, 15 Dec 2002 10:52:22 +0100 (MET)
+Subject: [TUHS] re: Raise of interrupt level necessary
+Message-ID: <200212151154.gBFBsdb02344@bsd.korb>
+
+>Date: Sat, 14 Dec 2002 15:27:40 -0800
+
+Michael Davidson wrote:
+>If you think that the "rule" is "no ISR can touch user space while
+>interrupting a kernel process", then it is display() that breaks
+>the rule.
+
+The point is, that this rule leads to somewhat simpler and therefore
+better code -- breaking the rule calls for some justification.
+Calling display() from the clock-ISR is the only place where an ISR does
+not conform to this rule.
+
+
+Greetings
+
+Wolfgang Helbig
+
+
+
+From iking at windows.microsoft.com  Tue Dec 17 07:43:56 2002
+From: iking at windows.microsoft.com (Ian King)
+Date: Mon, 16 Dec 2002 13:43:56 -0800
+Subject: [TUHS] re: Raise of interrupt level necessary
+Message-ID: <F7B97826912BC4419D5DDF53B21694530A281C@WIN-MSG-10.wingroup.windeploy.ntdev.microsoft.com>
+
+Yes, I have v6 running on an 11/34; it's amazing how easy it is to
+corrupt the filesystem.  :-)  One of these days, I need to dd another
+fresh system disk (RK05) off my "sacred copy" of a PUPS image (tediously
+transferred via 9600 baud serial using Warren's excellent vtserver
+tools).  In any case, why do you ask?  - Ian 
+
+-----Original Message-----
+From: Wolfgang Helbig [mailto:helbig at Informatik.BA-Stuttgart.DE] 
+Sent: Saturday, December 14, 2002 12:48 AM
+To: tuhs at minnie.tuhs.org
+Subject: Re: [TUHS] re: Raise of interrupt level necessary
+
+
+[snip]
+
+I also removed IPL protection from the return sequence of the trap
+routine, still works. Testing was done on Bob Supnik's SIMH PDP-11
+simulator with only one terminal. By the way, is anyone running V6 on a
+real PDP-11? [snip]
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Sun Dec 22 21:15:01 2002
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Sun, 22 Dec 2002 12:15:01 +0100 (MET)
+Subject: [TUHS] In V6 exit(): wakeup(&proc[1])) unnecessary?
+Message-ID: <200212221317.gBMDHnw00205@bsd.korb>
+
+Hi,
+encouraged by the profound answers I thankfully recieved to my previous
+question about the Unix V6 kernel, here is another one:
+
+When a process terminates (in sys1.c/exit()), it explicitly wakes up
+the init process. In light of the fact, that every process has a parent,
+this extra wakeup(&proc[1]) seems unnecessary. Furthermore, the "goto loop:"
+at the end of exit() will never be executed.
+
+So is this just defensive programming, or did I miss something?
+
+Greetings,
+
+Wolfgang Helbig
+
+
+
+From mirian at cosmic.com  Mon Dec 23 05:00:37 2002
+From: mirian at cosmic.com (Mirian Crzig Lennox)
+Date: Sun, 22 Dec 2002 19:00:37 +0000 (UTC)
+Subject: [TUHS] In V6 exit(): wakeup(&proc[1])) unnecessary?
+References: <200212221317.gBMDHnw00205@bsd.korb>
+Message-ID: <slrnb0c2ul.l3u.mirian@trantor.cosmic.com>
+
+On Sun, 22 Dec 2002 12:15:01 +0100 (MET), Wolfgang Helbig <helbig at Informatik.BA-Stuttgart.DE> wrote:
+>
+>When a process terminates (in sys1.c/exit()), it explicitly wakes up
+>the init process. In light of the fact, that every process has a parent,
+>this extra wakeup(&proc[1]) seems unnecessary.
+
+I believe this is meant to handle the case where a process exits
+without having called wait() on its children.
+
+Imagine two processes, A and B, where A is B's parent and A's parent
+is some process other than init.  B calls exit(), becomes a zombie,
+and awakens A.  Some time later, A calls exit() without ever having
+called wait().  This will cause B to become a child of init, and as B
+is a zombie, init should awaken so that B can die.  However, A might
+have any number of zombie children, and it would be redundant to call
+wakeup(&proc[1]) for each one.  Therefore, the wakeup call to init is
+done up front, whether it is needed or not.  This does result in some
+unnecessary wakeup calls but on the whole it seems a good tradeoff for
+code simplicity.
+
+>Furthermore, the "goto loop:" at the end of exit() will never be
+>executed.
+
+This seems to be correct.  I can't think of any normal sequence of
+events which could result in an exiting process having no parent in
+the process table.
+
+--Mirian
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Mon Dec 23 09:01:55 2002
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Mon, 23 Dec 2002 00:01:55 +0100 (MET)
+Subject: [TUHS] In V6 exit(): wakeup(&proc[1])) unnecessary?
+Message-ID: <200212230104.gBN14iw00526@bsd.korb>
+
+>>When a process terminates (in sys1.c/exit()), it explicitly wakes up
+>>the init process. In light of the fact, that every process has a parent,
+>>this extra wakeup(&proc[1]) seems unnecessary.
+>
+>I believe this is meant to handle the case where a process exits
+>without having called wait() on its children.
+>
+>Imagine two processes, A and B, where A is B's parent and A's parent
+>is some process other than init.  B calls exit(), becomes a zombie,
+>and awakens A.  Some time later, A calls exit() without ever having
+>called wait().  This will cause B to become a child of init, and as B
+>is a zombie, init should awaken so that B can die.  However, A might
+>have any number of zombie children, and it would be redundant to call
+>wakeup(&proc[1]) for each one.  Therefore, the wakeup call to init is
+>done up front, whether it is needed or not.  This does result in some
+>unnecessary wakeup calls but on the whole it seems a good tradeoff for
+>code simplicity.
+
+Oh, I see! So the condition to wakeup init would be
+	"Do I have any zombie children"?
+The code as it is is simpler. But harder to understand.
+Thank you very much for your help!
+
+Greetings
+
+Wolfgang Helbig
+
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Tue Dec 24 17:55:03 2002
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Tue, 24 Dec 2002 08:55:03 +0100 (MET)
+Subject: [TUHS] V6: 50 bugs tape
+Message-ID: <200212240957.gBO9vww02281@bsd.korb>
+
+Hi,
+
+someone on this list mentioned a '50 bugs tape', which contains bug fixes
+to Unix V6. Is this list somewhere in the archive?
+
+Thank you,
+
+Wolfgang 
+
+
+
+From wkt at minnie.tuhs.org  Thu Dec 26 19:34:23 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Thu, 26 Dec 2002 19:34:23 +1000 (EST)
+Subject: [TUHS] V6: 50 bugs tape
+In-Reply-To: <200212240957.gBO9vww02281@bsd.korb> from Wolfgang Helbig at "Dec
+ 24, 2002 08:55:03 am"
+Message-ID: <200212260934.gBQ9YOY82046@minnie.tuhs.org>
+
+In article by Wolfgang Helbig:
+> Hi,
+> someone on this list mentioned a '50 bugs tape', which contains bug fixes
+> to Unix V6. Is this list somewhere in the archive?
+> Thank you,
+> Wolfgang 
+
+
+The mythical `50 bugs' tape, described in Peter Salus' book `A Quarter
+Century of UNIX' has been found lurking in the Unix Archive. You can
+find it in PDP-11/Applications/Spencer_Tapes/unsw3.tar.gz as the file
+usr/sys/v6unix/unix_changes.
+
+
+	[ from the updates file at the top of the Unix Archive :-) ]
+
+Warren
+
+
+From mirian at cosmic.com  Sat Dec 28 05:47:14 2002
+From: mirian at cosmic.com (Mirian Crzig Lennox)
+Date: Fri, 27 Dec 2002 19:47:14 +0000 (UTC)
+Subject: [TUHS] V6: 50 bugs tape
+References: <200212260934.gBQ9YOY82046@minnie.tuhs.org>
+Message-ID: <slrnb0pbi2.mg1.mirian@trantor.cosmic.com>
+
+On Thu, 26 Dec 2002 19:34:23 +1000 (EST), Warren Toomey <wkt at minnie.tuhs.org> wrote:
+>In article by Wolfgang Helbig:
+>> Hi,
+>> someone on this list mentioned a '50 bugs tape', which contains bug fixes
+>> to Unix V6. Is this list somewhere in the archive?
+>> Thank you,
+>> Wolfgang 
+>
+>The mythical `50 bugs' tape, described in Peter Salus' book `A Quarter
+>Century of UNIX' has been found lurking in the Unix Archive. You can
+>find it in PDP-11/Applications/Spencer_Tapes/unsw3.tar.gz as the file
+>usr/sys/v6unix/unix_changes.
+
+Minor nitpick: it's actually in
+Applications/Spencer_Tapes/unsw3.tar.gz (no PDP-11 at the beginning).
+
+cheers,
+--Mirian
+
+
+From mirian at cosmic.com  Sat Dec 28 06:58:34 2002
+From: mirian at cosmic.com (Mirian Crzig Lennox)
+Date: Fri, 27 Dec 2002 20:58:34 +0000 (UTC)
+Subject: [TUHS] V6: 50 bugs tape
+References: <200212240957.gBO9vww02281@bsd.korb>
+Message-ID: <slrnb0pfnq.n34.mirian@trantor.cosmic.com>
+
+This reminds me that I fixed a couple of "bugs" (some outright bugs,
+and some mere behaviours which I didn't quite like) in playing with my
+V6/simh environment, and I'm wondering if there is a place I should
+submit them in case others might be interested.  The bugs I've fixed
+so far include:
+
+    * Compensated for the ldiv bug in ctime().
+
+    * Fixed date to allow setting the century in the year.
+
+    * Changed df to read /etc/mtab, rather than use a hard-coded
+      list of filesystems.
+
+    * Mkfs wasn't always initialising the 'ino' variable properly,
+      leading to inconsistent behaviour.  Initialised to zero.
+
+    * Stopped the ps command printing garbage in the COMMAND field
+      of process 0.
+
+
+Some other modifications I've made which bring V6 more in line with
+what a seasoned Unix hacker might wish for:
+
+    * Changed the shell to allow "cd" as well as "chdir".
+
+    * For the mount command, added a -f options for 'fake' mounts
+      which update /etc/mtab without actually mounting a filesystem.
+      (useful for putting the root filesystem in the mtab)
+
+    * Implemented the inverse operation for the umount command.
+
+    * Changed getty and login command to make the default "erase"
+      character be octal 10 rather than hash mark.
+
+    * Changed the stty command to additionally allow setting "erase"
+      and "kill" characters by their octal codes.
+
+If any of these would be considered interesting, I would be only too
+happy to release patches.  I'll doubtless have more, as well, as I
+press on.
+
+My eventual goal is to come up with a 6th edition UNIX which is quite
+usable, while still being recognisable as 6th edition.
+
+cheers!
+--Mirian
+
+
+From wkt at minnie.tuhs.org  Sat Dec 28 07:55:41 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Sat, 28 Dec 2002 07:55:41 +1000 (EST)
+Subject: [TUHS] Re: Patches to improve 6th Edition
+In-Reply-To: <slrnb0pfnq.n34.mirian@trantor.cosmic.com> from Mirian Crzig Lennox
+ at "Dec 27, 2002 08:58:34 pm"
+Message-ID: <200212272155.gBRLtgO99569@minnie.tuhs.org>
+
+In article by Mirian Crzig Lennox:
+> This reminds me that I fixed a couple of "bugs" (some outright bugs,
+> and some mere behaviours which I didn't quite like) in playing with my
+> V6/simh environment, and I'm wondering if there is a place I should
+> submit them in case others might be interested. [ .. ]
+>
+> If any of these would be considered interesting, I would be only too
+> happy to release patches.  I'll doubtless have more, as well, as I
+> press on.
+> 
+> My eventual goal is to come up with a 6th edition UNIX which is quite
+> usable, while still being recognisable as 6th edition.
+> --Mirian
+
+Mirian, I'll definitely make a place somewhere in the Unix Archive
+for your work. 
+
+	Warren
+
+P.S Does anybody want to backport vi to 6th & 7th Edition?! :-)
+
+
+From greg at censoft.com  Sat Dec 28 12:43:57 2002
+From: greg at censoft.com (Greg Haerr)
+Date: Fri, 27 Dec 2002 18:43:57 -0800
+Subject: [TUHS] Re: Patches to improve 6th Edition
+References: <200212272155.gBRLtgO99569@minnie.tuhs.org>
+Message-ID: <02cf01c2ae1a$f8dde6b0$6401a8c0@gregnewport>
+
+> P.S Does anybody want to backport vi to 6th & 7th Edition?! :-)
+
+Isn't the problem here that vi is quite a bit bigger than
+64k I+D?  I can probably dig up some small subset
+versions that I got running on the ELKS project (x86 Linux).
+
+Regards,
+
+Greg
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Sat Dec 28 18:33:00 2002
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Sat, 28 Dec 2002 09:33:00 +0100 (MET)
+Subject: [TUHS] Re: Patches to improve 6th Edition
+Message-ID: <200212281036.gBSAaDZ00211@bsd.korb>
+
+>
+>In article by Mirian Crzig Lennox:
+>> This reminds me that I fixed a couple of "bugs" (some outright bugs,
+>> and some mere behaviours which I didn't quite like) in playing with my
+>> V6/simh environment, and I'm wondering if there is a place I should
+>> submit them in case others might be interested. [ .. ]
+
+Mirian, I'd love to see your fixes! By the way, you might want to
+look at
+	http://www.tuhs.org/Archive/PDP-11/Bug_Fixes/V6enb
+for some changes I applied to V6.
+
+Thanks to Warren and Mirian for helping me to undig the "50 bugs tape"! 
+But the "bugs fixes" look more like performance enhancements. Do you know
+any real bugs in V6? By "real" I mean a bug, that might crash the system.
+
+I ask this, because my system crashes ones in a while. But I changed it
+here and there, so it might be my fault.
+
+Greetings,
+
+Wolfgang
+
+>
+>P.S Does anybody want to backport vi to 6th & 7th Edition?! :-)
+
+Hmm. It's less work to learn ed, so I took that path :-).
+
+
+
+
+From johnh at psych.usyd.edu.au  Sat Dec 28 12:58:45 2002
+From: johnh at psych.usyd.edu.au (John Holden)
+Date: Sat, 28 Dec 2002 13:58:45 +1100 (EST)
+Subject: [TUHS] Re: Patches to improve 6th Edition
+Message-ID: <200212280258.NAA27023@psychwarp.psych.usyd.edu.au>
+
+> P.S Does anybody want to backport vi to 6th & 7th Edition?! :-)
+
+'vi' definately works with I+D space under edition 7 (11/44/45/50/53/55/70/73)
+There was also an overlayed version for I space only under BSD 2.?, but it was
+sooooo slow as to be almost useless
+
+
+From bsw at cuzuco.com  Sat Dec 28 15:19:43 2002
+From: bsw at cuzuco.com (Brian S Walden)
+Date: Sat, 28 Dec 2002 00:19:43 -0500
+Subject: [TUHS] Re: Patches to improve 6th Edition
+Message-ID: <20021228051943.GA6817@panix.com>
+
+Yes there are other bugs you will want to fix as well
+if you are using v6 heavily and not on slow hardware
+(e.g. a simulator).  In the inode allocation route
+(ialloc()) in /usr/sys/ken/alloc.c there is a bug in
+the placement of the loop: tag.  You just have to move
+it up two line to above the while() loop. See the diff below.
+This rare Ken Thompson bug was found in 1988 on an Amdahl UTS machine
+that the hardware finally became fast enough that it caused us panics.
+This bug existed from (at least) the Fifth up until the Eighth
+editions from 1127 (BTL research). The Ninth edition had much
+rewrites in the kernel and the algorthim was changed at that point.
+Since it was in UTS, it must have been in the porting base of
+System V Release 2. This code is the basis for the System V
+filesystem, so it probably didn't exist in BSD releases
+since they used their fast filesystem (cylinder groups, et al.)
+which became UFS. It's amazing thet with the amount of eyes on it
+(via Lions Commentary, etc.) it was not spotted earlier.
+
+It would be good to get a collection of all "unreleased" bug fixes
+that others may have.
+
+
+*** alloc.c.orig        Fri Dec 27 23:23:30 2002
+--- alloc.c     Fri Dec 27 23:23:30 2002
+***************
+*** 163,171 ****
+        int i, j, k, ino;
+  
+        fp = getfs(dev);
+        while(fp->s_ilock)
+                sleep(&fp->s_ilock, PINOD);
+- loop:
+        if(fp->s_ninode > 0) {
+                ino = fp->s_inode[--fp->s_ninode];
+                ip = iget(dev, ino);
+--- 163,171 ----
+        int i, j, k, ino;
+  
+        fp = getfs(dev);
++ loop:
+        while(fp->s_ilock)
+                sleep(&fp->s_ilock, PINOD);
+        if(fp->s_ninode > 0) {
+                ino = fp->s_inode[--fp->s_ninode];
+                ip = iget(dev, ino);
+
+
+In article by Mirian Crzig Lennox:
+> This reminds me that I fixed a couple of "bugs" (some outright bugs,
+> and some mere behaviours which I didn't quite like) in playing with my
+> V6/simh environment, and I'm wondering if there is a place I should
+> submit them in case others might be interested.
+
+
+From mike at ducky.net  Sat Dec 28 17:07:46 2002
+From: mike at ducky.net (Mike Haertel)
+Date: Fri, 27 Dec 2002 23:07:46 -0800 (PST)
+Subject: [TUHS] Re: Patches to improve 6th Edition
+Message-ID: <200212280707.gBS77kOc098669@ducky.net>
+
+In article by Warren Toomey:
+> P.S. Does anybody want to backport vi to 6th and 7th Edition?! :-)
+
+The 2BSD tape contains vi source code that can *definitely* be built
+on 7th edition (I've done it, it was easy) and supposedly can also
+be used to build a 6th-edition "native" vi if you're willing to
+backport the V7 C compiler (I haven't done that yet).
+
+Since many people in 2BSD's time frame would not have had access
+to V7 systems or V7-ish C compilers, the 2BSD tape also contains a
+vi binary for V6 systems.
+
+I think 2BSD was released around the same time as V7, and had an
+assumption that many people would not yet have access to V7, and
+so would want to use 2BSD as an add-on to V6 systems.
+
+Since 6th edition didn't have environment variables, the 2BSD/V6
+version of vi would get the terminal type from a file that mapped
+hardwired serial lines to terminal type names.  I think it was
+called /etc/htmp.
+
+By the way, does anybody else think that vi should have been upgraded
+to vii when V7 came out? :-)
+
+
+From helbig at Informatik.BA-Stuttgart.DE  Sun Dec 29 06:38:31 2002
+From: helbig at Informatik.BA-Stuttgart.DE (Wolfgang Helbig)
+Date: Sat, 28 Dec 2002 21:38:31 +0100 (MET)
+Subject: [TUHS] Re: Patches to improve 6th Edition
+Message-ID: <200212282241.gBSMfk500190@bsd.korb>
+
+some hours ago I wrote:
+>I ask this, because my system crashes ones in a while. But I changed it
+>here and there, so it might be my fault.
+
+It *was* my fault! So far, I have only found one bug in V6: The size
+of swapmap and coremap are configured too small, so they might overflow.
+
+The sizes don't take account of shared text segments, that produce
+extra chunks of free memory. In V6 there are 19 pure executables, so their
+minimal size should be (NPROC+19)*2, or better yet (NPROC+NTEXT)*2, where
+NTEXT should be set to 20 instead of 40 as distributed in param.h .
+
+I don't think this bug ever showed up. It is very unlikely. In V7 these
+sizes are choosen to be even smaller than NPROC and even with its many pure 
+executables, I don't think V7 ever crashed because of this bug.
+
+So, with the only exception reported by Brian S. Walden, there seem to be
+no bugs in V6 that crash systems.
+
+Greetings
+
+Wolfgang
+
+
+

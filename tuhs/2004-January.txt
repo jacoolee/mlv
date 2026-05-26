@@ -1,0 +1,1128 @@
+From brad at heeltoe.com  Tue Jan 20 09:38:37 2004
+From: brad at heeltoe.com (Brad Parker)
+Date: Mon, 19 Jan 2004 18:38:37 -0500
+Subject: [pups] roll-your-own-unibus boards?
+Message-ID: <200401192338.i0JNcb121320@mwave.heeltoe.com>
+
+
+Hi,
+
+I asked this on the classic computer list and I thought I'd ask here
+also...
+
+Does anyone have any thoughts on how hard it would be to make a unibus
+board which is an IDE controller?
+
+I have 4-6 layer boards fabbed regularly and use modern CPLD's & VHDL on
+a regular basis, so the building part looks easy.
+
+I've never looked at unibus controlleqr schematic, but plan to.  I'm
+assuming much of the old ttl can be sucked into something like a Xilinx
+coolrunner CPLD...
+
+I also assume it's reasonably straightforward TTL, and at (by today's
+standards) slow speed... true?
+
+Any hints, or gotcha's as far as fabrication or interface?  Has anyone
+done this (in the modern day, that is :-)
+
+My plan would be to build a 4 layer board of suitable thickness with
+gold fingers, using an existing board for reference (any physical size
+specs I could read?)
+
+I'm well aware of the foolishness of this on one level, but there's a
+side of me that really enjoys this sort of thing...  perhaps medication
+would help :-)
+
+-brad
+
+
+From bqt at update.uu.se  Tue Jan 20 10:35:33 2004
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Tue, 20 Jan 2004 01:35:33 +0100 (CET)
+Subject: [pups] roll-your-own-unibus boards?
+In-Reply-To: <200401192338.i0JNcb121320@mwave.heeltoe.com>
+References: <200401192338.i0JNcb121320@mwave.heeltoe.com>
+Message-ID: <Pine.LNX.4.58.0401200133570.5507@Tempo.Update.UU.SE>
+
+On Mon, 19 Jan 2004, Brad Parker wrote:
+
+> Hi,
+>
+> I asked this on the classic computer list and I thought I'd ask here
+> also...
+>
+> Does anyone have any thoughts on how hard it would be to make a unibus
+> board which is an IDE controller?
+
+Probably not hard at all, from a hardware point of view. The Unibus is
+well documented, and as you noted, slow.
+
+The only possible gotcha is that you better make sure you give enough
+power for the signals. A unibus can be several meters long.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+From michael_davidson at pacbell.net  Tue Jan 20 16:39:33 2004
+From: michael_davidson at pacbell.net (Michael Davidson)
+Date: Mon, 19 Jan 2004 22:39:33 -0800
+Subject: [pups] roll-your-own-unibus boards?
+References: <200401192338.i0JNcb121320@mwave.heeltoe.com>
+Message-ID: <003801c3df20$2ad8baa0$eb8ca140@ca.sco.com>
+
+----- Original Message -----
+From: Brad Parker <brad at heeltoe.com>
+>
+> Does anyone have any thoughts on how hard it would be to make a unibus
+> board which is an IDE controller?
+
+It should be very simple.
+
+Several people have built IDE controllers for the QBUS.
+
+ftp://digital.dp.ua/DEC/ata/README.txt
+
+http://www.chd.dyndns.org/qbus_ide/
+
+A unibus controller will be very similar except for the obvious
+differences in the bus interface.
+
+> I've never looked at unibus controlleqr schematic, but plan to.  I'm
+> assuming much of the old ttl can be sucked into something like a Xilinx
+> coolrunner CPLD...
+
+Yes, but assuming that you are only implementing programmed i/o
+there will be so little logic involved that you might as well just use
+discrete TTL.
+
+In fact, DEC used to make single height modules which did address
+selection and interrupt control (M105 and M7821). If you could find
+a pair of those, your work would be almost completely done for you.
+
+> I also assume it's reasonably straightforward TTL, and at (by today's
+> standards) slow speed... true?
+
+Yes - very straightforward.
+
+>
+> Any hints, or gotcha's as far as fabrication or interface?  Has anyone
+> done this (in the modern day, that is :-)
+
+Yes, make sure that you use appropriate bus transceivers, In particular,
+make sure that your bus drivers conform to the unibus spec, can sink
+sufficient current, and do not have rise times that faster than the spec
+allows.
+
+
+
+From iking at killthewabbit.org  Tue Jan 20 17:03:35 2004
+From: iking at killthewabbit.org (Ian King)
+Date: Mon, 19 Jan 2004 23:03:35 -0800
+Subject: [pups] roll-your-own-unibus boards?
+References: <200401192338.i0JNcb121320@mwave.heeltoe.com>
+	<003801c3df20$2ad8baa0$eb8ca140@ca.sco.com>
+Message-ID: <007201c3df23$858c9c20$f10010ac@dawabbit>
+
+BTW, there's a company called Douglas Electronics (http://www.douglas.com) that
+sells DEC-style breadboards; I've purchased a couple of extenders from them, and
+they were of good quality and promptly shipped.  -- Ian
+
+----- Original Message ----- 
+From: "Michael Davidson" <michael_davidson at pacbell.net>
+To: "Brad Parker" <brad at heeltoe.com>; <pups at minnie.tuhs.org>
+Sent: Monday, January 19, 2004 10:39 PM
+Subject: Re: [pups] roll-your-own-unibus boards?
+
+
+----- Original Message -----
+From: Brad Parker <brad at heeltoe.com>
+>
+> Does anyone have any thoughts on how hard it would be to make a unibus
+> board which is an IDE controller?
+
+It should be very simple.
+
+Several people have built IDE controllers for the QBUS.
+
+ftp://digital.dp.ua/DEC/ata/README.txt
+
+http://www.chd.dyndns.org/qbus_ide/
+
+A unibus controller will be very similar except for the obvious
+differences in the bus interface.
+
+> I've never looked at unibus controlleqr schematic, but plan to.  I'm
+> assuming much of the old ttl can be sucked into something like a Xilinx
+> coolrunner CPLD...
+
+Yes, but assuming that you are only implementing programmed i/o
+there will be so little logic involved that you might as well just use
+discrete TTL.
+
+In fact, DEC used to make single height modules which did address
+selection and interrupt control (M105 and M7821). If you could find
+a pair of those, your work would be almost completely done for you.
+
+> I also assume it's reasonably straightforward TTL, and at (by today's
+> standards) slow speed... true?
+
+Yes - very straightforward.
+
+>
+> Any hints, or gotcha's as far as fabrication or interface?  Has anyone
+> done this (in the modern day, that is :-)
+
+Yes, make sure that you use appropriate bus transceivers, In particular,
+make sure that your bus drivers conform to the unibus spec, can sink
+sufficient current, and do not have rise times that faster than the spec
+allows.
+
+
+_______________________________________________
+PUPS mailing list
+PUPS at minnie.tuhs.org
+http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+From jkunz at unixag-kl.fh-kl.de  Tue Jan 20 19:22:38 2004
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Tue, 20 Jan 2004 10:22:38 +0100
+Subject: [pups] roll-your-own-unibus boards?
+In-Reply-To: <200401192338.i0JNcb121320@mwave.heeltoe.com>
+References: <200401192338.i0JNcb121320@mwave.heeltoe.com>
+Message-ID: <20040120102238.09ba8fb9.jkunz@unixag-kl.fh-kl.de>
+
+On Mon, 19 Jan 2004 18:38:37 -0500
+Brad Parker <brad at heeltoe.com> wrote:
+
+> Does anyone have any thoughts on how hard it would be to make a unibus
+> board which is an IDE controller?
+> 
+> I have 4-6 layer boards fabbed regularly and use modern CPLD's & VHDL
+> on a regular basis, so the building part looks easy.
+I see two problems:
+1. Bus transciever chips.
+2. Software interface.
+
+Most likely you want MSCP, but implementing a UDA50 clone is not quite
+trivial. It is doable, but it would be quite some effort to write the
+firmware for the controler processor. Maybe you can also implement other
+emulations for RL02 or RK07 or ... That should be simpler then MSCP.
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+From dfevans at bbcr.uwaterloo.ca  Tue Jan 20 23:58:31 2004
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Tue, 20 Jan 2004 08:58:31 -0500
+Subject: [pups] roll-your-own-unibus boards?
+In-Reply-To: <003801c3df20$2ad8baa0$eb8ca140@ca.sco.com>
+References: <200401192338.i0JNcb121320@mwave.heeltoe.com>
+	<003801c3df20$2ad8baa0$eb8ca140@ca.sco.com>
+Message-ID: <20040120135831.GB10019@bcr10.uwaterloo.ca>
+
+On Mon, Jan 19, 2004 at 10:39:33PM -0800, Michael Davidson wrote:
+> Several people have built IDE controllers for the QBUS.
+> 
+> ftp://digital.dp.ua/DEC/ata/README.txt
+> 
+
+  This one even claims to have a Unibus variant!
+
+> Yes, but assuming that you are only implementing programmed i/o
+> there will be so little logic involved that you might as well just use
+> discrete TTL.
+> 
+
+  I think that's what the above gizmo does.  However, a DMA engine may not
+be difficult with the appropriate FPGA.
+
+-- 
+David Evans                                         dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+From brad at heeltoe.com  Thu Jan 22 02:50:55 2004
+From: brad at heeltoe.com (Brad Parker)
+Date: Wed, 21 Jan 2004 11:50:55 -0500
+Subject: [pups] roll-your-own-unibus boards? 
+In-Reply-To: Message from Jochen Kunz <jkunz@unixag-kl.fh-kl.de> 
+	<20040120102238.09ba8fb9.jkunz@unixag-kl.fh-kl.de> 
+Message-ID: <200401211650.i0LGotq05854@mwave.heeltoe.com>
+
+
+Jochen Kunz wrote:
+...
+>I see two problems:
+>1. Bus transciever chips.
+
+Yes, this is the big one.  It turns out to be solvable, but not using
+IC's.  National DS3862 would be good, but it just went out of production...
+
+I'm looking into making a "trapzoidal driver" (i.e. controlled edges)
+using a FET and RC on the gate.  Someone else suggested it and it
+sounded like a good idea.  Certainly easy to model/simulate first.
+
+-brad
+
+
+From kstailey at yahoo.com  Fri Jan  2 09:30:06 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Thu, 1 Jan 2004 15:30:06 -0800 (PST)
+Subject: [TUHS] web site detailing Apple's mc68k UNIX, A/UX
+Message-ID: <20040101233006.83124.qmail@web60508.mail.yahoo.com>
+
+http://www.applefritter.com/ui/aux/
+
+Site discusses what it was like to use A/UX, why Apple discontinued it, etc.
+
+
+__________________________________
+Do you Yahoo!?
+Protect your identity with Yahoo! Mail AddressGuard
+http://antispam.yahoo.com/whatsnewfree
+
+From wes.parish at paradise.net.nz  Fri Jan  2 17:53:47 2004
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Fri, 02 Jan 2004 20:53:47 +1300
+Subject: [TUHS] web site detailing Apple's mc68k UNIX, A/UX
+In-Reply-To: <20040101233006.83124.qmail@web60508.mail.yahoo.com>
+References: <20040101233006.83124.qmail@web60508.mail.yahoo.com>
+Message-ID: <200401022053.47399.wes.parish@paradise.net.nz>
+
+I would be interested to know if there is any chance of getting a hobbyist 
+A/UX license out of Apple.  It would be even better if one also got source 
+code, but I also have a hankering for an Aeronautical Pigs Aerobatics Team in 
+the RNZAF - pigs taken out of pig farms and taught to fly, of course -, and 
+that is far more likely to happen ... ;)
+
+Wesley Parish
+
+On Fri, 02 Jan 2004 12:30, Kenneth Stailey wrote:
+> http://www.applefritter.com/ui/aux/
+>
+> Site discusses what it was like to use A/UX, why Apple discontinued it,
+> etc.
+>
+>
+> __________________________________
+> Do you Yahoo!?
+> Protect your identity with Yahoo! Mail AddressGuard
+> http://antispam.yahoo.com/whatsnewfree
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+Wesley Parish
+* * *
+Clinersterton beademung - in all of love.  RIP James Blish
+* * *
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+
+From wkb at freebie.xs4all.nl  Fri Jan  2 20:13:55 2004
+From: wkb at freebie.xs4all.nl (Wilko Bulte)
+Date: Fri, 2 Jan 2004 11:13:55 +0100
+Subject: [TUHS] web site detailing Apple's mc68k UNIX, A/UX
+In-Reply-To: <200401022053.47399.wes.parish@paradise.net.nz>
+References: <20040101233006.83124.qmail@web60508.mail.yahoo.com>
+	<200401022053.47399.wes.parish@paradise.net.nz>
+Message-ID: <20040102101355.GA63342@freebie.xs4all.nl>
+
+On Fri, Jan 02, 2004 at 08:53:47PM +1300, Wesley Parish wrote:
+
+My suggestion would be to ask Jordan Hubbard (jkh at FreeBSD.org),
+maybe he has any idea how feasible this would be
+
+Wilko
+
+> I would be interested to know if there is any chance of getting a hobbyist 
+> A/UX license out of Apple.  It would be even better if one also got source 
+> code, but I also have a hankering for an Aeronautical Pigs Aerobatics Team in 
+> the RNZAF - pigs taken out of pig farms and taught to fly, of course -, and 
+> that is far more likely to happen ... ;)
+> 
+> Wesley Parish
+> 
+> On Fri, 02 Jan 2004 12:30, Kenneth Stailey wrote:
+> > http://www.applefritter.com/ui/aux/
+> >
+> > Site discusses what it was like to use A/UX, why Apple discontinued it,
+> > etc.
+> >
+> >
+> > __________________________________
+> > Do you Yahoo!?
+> > Protect your identity with Yahoo! Mail AddressGuard
+> > http://antispam.yahoo.com/whatsnewfree
+> > _______________________________________________
+> > TUHS mailing list
+> > TUHS at minnie.tuhs.org
+> > http://minnie.tuhs.org/mailman/listinfo/tuhs
+> 
+> -- 
+> Wesley Parish
+> * * *
+> Clinersterton beademung - in all of love.  RIP James Blish
+> * * *
+> Mau e ki, "He aha te mea nui?"
+> You ask, "What is the most important thing?"
+> Maku e ki, "He tangata, he tangata, he tangata."
+> I reply, "It is people, it is people, it is people."
+> 
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+---end of quoted text---
+
+-- 
+Wilko Bulte			wkb at xs4all.nl
+
+From patv at monmouth.com  Fri Jan  2 22:15:58 2004
+From: patv at monmouth.com (Pat Villani)
+Date: Fri, 02 Jan 2004 07:15:58 -0500
+Subject: [TUHS] web site detailing Apple's mc68k UNIX, A/UX
+In-Reply-To: <20040102101355.GA63342@freebie.xs4all.nl>
+References: <20040101233006.83124.qmail@web60508.mail.yahoo.com>
+ <200401022053.47399.wes.parish@paradise.net.nz>
+ <20040102101355.GA63342@freebie.xs4all.nl>
+Message-ID: <3FF560FE.9050305@monmouth.com>
+
+I would agree with Wesley -- not feasible at all.
+
+ From the FAQ quoted in the article, "A/UX is based on AT&T Unix System 
+V.2.2 with numerous extensions from V.3, V.4 (such as streams) and BSD 
+4.2/4.3 (such as networking, the Fast File System, job control, lpr, NFS 
+with Yellow Pages, SCCS and sendmail 5.64)."  This is code in dispute in 
+SCO v. IBM, a.k.a. SCO v. Linux and Open Source.
+
+According to SCO, it is System V.* code that was supposedly stolen and 
+used in Linux.  I exceptionally doubt you can get that code released as 
+open source by SCO because that would kill the case.  Additionally, I 
+doubt you can get free binaries, as someone has to pay the royalties 
+that Apple would owe SCO for each copy.
+
+Pat
+
+Wilko Bulte wrote:
+
+> On Fri, Jan 02, 2004 at 08:53:47PM +1300, Wesley Parish wrote:
+> 
+> My suggestion would be to ask Jordan Hubbard (jkh at FreeBSD.org),
+> maybe he has any idea how feasible this would be
+> 
+> Wilko
+> 
+> 
+>>I would be interested to know if there is any chance of getting a hobbyist 
+>>A/UX license out of Apple.  It would be even better if one also got source 
+>>code, but I also have a hankering for an Aeronautical Pigs Aerobatics Team in 
+>>the RNZAF - pigs taken out of pig farms and taught to fly, of course -, and 
+>>that is far more likely to happen ... ;)
+>>
+>>Wesley Parish
+>>
+>>On Fri, 02 Jan 2004 12:30, Kenneth Stailey wrote:
+>>
+>>>http://www.applefritter.com/ui/aux/
+>>>
+>>>Site discusses what it was like to use A/UX, why Apple discontinued it,
+>>>etc.
+>>>
+>>>
+>>>__________________________________
+>>>Do you Yahoo!?
+>>>Protect your identity with Yahoo! Mail AddressGuard
+>>>http://antispam.yahoo.com/whatsnewfree
+>>>_______________________________________________
+>>>TUHS mailing list
+>>>TUHS at minnie.tuhs.org
+>>>http://minnie.tuhs.org/mailman/listinfo/tuhs
+>>
+>>-- 
+>>Wesley Parish
+>>* * *
+>>Clinersterton beademung - in all of love.  RIP James Blish
+>>* * *
+>>Mau e ki, "He aha te mea nui?"
+>>You ask, "What is the most important thing?"
+>>Maku e ki, "He tangata, he tangata, he tangata."
+>>I reply, "It is people, it is people, it is people."
+>>
+>>_______________________________________________
+>>TUHS mailing list
+>>TUHS at minnie.tuhs.org
+>>http://minnie.tuhs.org/mailman/listinfo/tuhs
+> 
+> ---end of quoted text---
+> 
+
+-- 
+Tact is the ability to describe others as they see themselves. -- 
+Abraham Lincoln
+
+
+
+From kstailey at yahoo.com  Sat Jan  3 00:02:33 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Fri, 2 Jan 2004 06:02:33 -0800 (PST)
+Subject: [TUHS] earily Supnik paper on SIM the precursor to SIMH
+Message-ID: <20040102140233.34911.qmail@web60504.mail.yahoo.com>
+
+http://research.compaq.com/wrl/DECarchives/DTJ/DTJN02/DTJN02HM.HTM
+
+This web page also discusses restoring actual DEC hardware.
+
+
+__________________________________
+Do you Yahoo!?
+Protect your identity with Yahoo! Mail AddressGuard
+http://antispam.yahoo.com/whatsnewfree
+
+From kstailey at yahoo.com  Sat Jan  3 00:17:52 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Fri, 2 Jan 2004 06:17:52 -0800 (PST)
+Subject: [TUHS] is learn(1) free now?
+Message-ID: <20040102141752.75690.qmail@web60506.mail.yahoo.com>
+
+Hi,
+
+When 4.4BSD-lite was released one of the 4.4BSD encumbered things that was cut
+was the online courseware program, learn(1).  When I purchased my copy of _The
+CSRG Archives_ CDROM set I was told in E-mail by McKusick that I did not need
+to sign any license agreements.  I am assuming that this is due to Caldera
+proclaiming that V32 sources and binaries could be redistributed by the public
+legally.  In the CDROM set is a fully encumbered 4.4BSD source tree which
+includes the learn(1) source code.  I spent a few hours last night porting it
+to NetBSD and FreeBSD and tightening up a few bits like gets() vs. fgets().  I
+haven't finished and have yet to distributed the results.  I also have yet to
+get the vi lesson data which the source code that I do have says came on a
+separate user-contributed tape.
+
+I got here because I have newbies in my life now and I need UNIX online
+courseware.  The only thing I could find in the FreeBSD ports tree was
+something called vilearn.
+
+I'm wondering about distributing the results of my porting effort once it
+matures enough to be worth doing so.
+
+Thanks,
+Ken
+
+
+__________________________________
+Do you Yahoo!?
+Protect your identity with Yahoo! Mail AddressGuard
+http://antispam.yahoo.com/whatsnewfree
+
+From tuhs at rops.org  Sat Jan  3 00:36:38 2004
+From: tuhs at rops.org (Roger Willcocks)
+Date: Fri, 2 Jan 2004 14:36:38 -0000
+Subject: [TUHS] web site detailing Apple's mc68k UNIX, A/UX
+References: <20040101233006.83124.qmail@web60508.mail.yahoo.com>
+Message-ID: <001c01c3d13d$d4c24ea0$2301a8c0@burton>
+
+There's another take on the various favours of Apple Unix at
+
+http://www.cfcl.com/~eryk/weblog/archives/000183.html
+
+<quote>
+Depending on how you count that is six or seven unices spread over the last
+twenty years:
+
+
+1) Unix for the Lisa
+2) Unix for the YACC
+3) A/UX
+4) AiX
+5) MkLinux
+6) Rhapsody
+7) Mac OS X
+</quote>
+
+--
+Roger
+
+----- Original Message ----- 
+From: "Kenneth Stailey" <kstailey at yahoo.com>
+To: <tuhs at tuhs.org>
+Sent: Thursday, January 01, 2004 11:30 PM
+Subject: [TUHS] web site detailing Apple's mc68k UNIX, A/UX
+
+
+> http://www.applefritter.com/ui/aux/
+>
+> Site discusses what it was like to use A/UX, why Apple discontinued it,
+etc.
+>
+>
+> __________________________________
+> Do you Yahoo!?
+> Protect your identity with Yahoo! Mail AddressGuard
+> http://antispam.yahoo.com/whatsnewfree
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+From tuhs at rops.org  Sat Jan  3 03:13:52 2004
+From: tuhs at rops.org (Roger Willcocks)
+Date: Fri, 2 Jan 2004 17:13:52 -0000
+Subject: [TUHS] 
+	m68k SVR2 on Perq (was: web site detailing Apple's mc68k UNIX, A/UX)
+Message-ID: <006401c3d153$cb7cf280$2301a8c0@burton>
+
+Incidentally, the Unisoft m68k port of SVR2 at the core of A/UX was also
+ported to the Perq-5 in 1986/1987, to create the Crosfield Studio 9500.
+
+Perq had just folded, but a core group of ex-Perq employees worked with a
+team from the UK company Crosfield Electronics to take the machine (which at
+that time existed only as a wire-wrap prototype) through to production.
+
+I was a member of that team and I have fond memories of sitting in a
+basement office in Pittsburgh surrounded by kernel listings (with a very
+puzzled look on my face).
+
+Just a small footnote in Unix history...
+
+--
+Roger
+
+
+From aek at spies.com  Sat Jan  3 03:49:39 2004
+From: aek at spies.com (Al Kossow)
+Date: Fri, 2 Jan 2004 09:49:39 -0800
+Subject: [TUHS] web site detailing Apple's mc68k UNIX, A/UX
+Message-ID: <200401021749.i02Hnduh031564@spies.com>
+
+
+
+
+> I would be interested to know if there is any chance of getting a hobbyist 
+> A/UX license out of Apple.
+
+A/UX started out as a port of Unisoft SysV. Prior to version 2.0, there was
+no Finder interface at all. A real history of the product should be done at
+some point, as opposed to the half-baked opinions of someone who has only
+seen a very late version of the product.
+
+Since there were per-copy licensing fees to Unisoft, at least for the early
+versions, it seems unlikely that a hobbyist license for A/UX would be possible.
+
+
+From kstailey at yahoo.com  Sat Jan  3 05:47:56 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Fri, 2 Jan 2004 11:47:56 -0800 (PST)
+Subject: [TUHS] is learn(1) free now?
+In-Reply-To: <0401021816.AA09263@ivan.Harhan.ORG>
+Message-ID: <20040102194756.9245.qmail@web60510.mail.yahoo.com>
+
+--- Michael Sokolov <msokolov at ivan.Harhan.ORG> wrote:
+> Kenneth Stailey <kstailey at yahoo.com> wrote:
+> 
+> > When I purchased my copy of _The CSRG Archives_ CDROM set I was
+> > told in E-mail by McKusick that I did not need> > to sign any
+> > license agreements.  I am assuming that this is due to Caldera
+> > proclaiming that V32 sources and binaries could be redistributed
+> > by the public legally.
+> 
+> Yes, this is correct, this is the same reason why Warren was able to
+> remove the password system from his UNIX Archive and make it
+> completely open.
+
+Warren, I see that there is a 4.4BSD-Alpha subdir in the TUHS archive.  Do you
+want a final CSRG 4.4BSD tape to add there too?
+
+> > I also have yet to get the vi lesson data which the source code
+> > that I do have says came on a separate user-contributed tape.
+>
+> I just looked and 4.3BSD-Quasijarus has the vi lesson data as part of the
+> standard system.
+
+Thanks, I have to go through your archive for it now.
+
+> > I got here because I have newbies in my life now and I need UNIX
+> > online courseware.
+>
+> Hear hear.  I sometimes get into this situation too, usually when
+> dating and getting faced with the need to teach a prospective female
+> how to use a real operating system, since the one woman who finally
+> makes it would absolutely have to use 4.3BSD-Quasijarus on my VAXen.
+
+Oh, I was talking about co-workers.  There's been so many layoffs where I work
+that I was hoping to get some more help.
+
+> I looked into learn, but one thing it disappointed me with is that
+> it's woefully outdated.  It starts by setting the tty erase and kill
+> chars to '#' and '@' respectively and teaching you how to edit the
+> command line on a hardcopy tty.  Well, OK, some would see this as
+> good educational value, but the problem is, if you don't actually
+> *have* a hardcopy tty, and most of us don't, it doesn't work too
+> well.  It prints out lessons longer than 24 lines and they scroll
+> off the top of the VT terminal.  It was definitely written with the
+> assumption that one has a hardcopy tty with a long roll of
+> continuous paper, and it expects the student to grab the paper
+> coming out of the teletype and look at what's been printed, but it
+> just doesn't work on a VT terminal.  Not to mention that in the end
+> the lessons give the student little practical learning that would
+> actually be useful when using UNIX on a CRT terminal.  (For example,
+> it would be very practical to explain to the student the difference
+> between ^H and ^? and teach him/her how to deal with it.)
+
+It's so difficult being you.  I was able to save myself the time by
+using the 4.4BSD version of learn(1) since it has already been
+modified for CRT terminals.  You will have to re-invent the wheel
+because of your politics.
+
+> > I'm wondering about distributing the results of my porting effort
+> > once it matures enough to be worth doing so.
+>
+>
+> Well, as a I said 4.3BSD-Quasijarus contains learn and all other
+> "encumbered code" and it is freely available via anonymous FTP from
+> ifctfvax.Harhan.ORG, so...  BTW for those who missed it I released
+> 4.3-QJ0b on 2003-12-07.
+
+Thanks again.  I really do appreciate all the work you have done in this area.
+
+> MS
+
+
+__________________________________
+Do you Yahoo!?
+Protect your identity with Yahoo! Mail AddressGuard
+http://antispam.yahoo.com/whatsnewfree
+
+From msokolov at ivan.Harhan.ORG  Sat Jan  3 04:16:50 2004
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Fri, 2 Jan 04 10:16:50 PST
+Subject: [TUHS] is learn(1) free now?
+Message-ID: <0401021816.AA09263@ivan.Harhan.ORG>
+
+Kenneth Stailey <kstailey at yahoo.com> wrote:
+
+> When I purchased my copy of _The
+> CSRG Archives_ CDROM set I was told in E-mail by McKusick that I did not need
+> to sign any license agreements.  I am assuming that this is due to Caldera
+> proclaiming that V32 sources and binaries could be redistributed by the public
+> legally.
+
+Yes, this is correct, this is the same reason why Warren was able to remove the
+password system from his UNIX Archive and make it completely open.
+
+> In the CDROM set is a fully encumbered 4.4BSD source tree which
+> includes the learn(1) source code.
+
+Yup, I have it too (the whole CD-ROM set).  learn(1) is far older than 4.4BSD
+though, and goes way back.  4.3BSD-Quasijarus has it too.
+
+> I also have yet to
+> get the vi lesson data which the source code that I do have says came on a
+> separate user-contributed tape.
+
+I just looked and 4.3BSD-Quasijarus has the vi lesson data as part of the
+standard system.
+
+> I got here because I have newbies in my life now and I need UNIX online
+> courseware.
+
+Hear hear.  I sometimes get into this situation too, usually when dating and
+getting faced with the need to teach a prospective female how to use a real
+operating system, since the one woman who finally makes it would absolutely
+have to use 4.3BSD-Quasijarus on my VAXen.
+
+I looked into learn, but one thing it disappointed me with is that it's
+woefully outdated.  It starts by setting the tty erase and kill chars to '#'
+and '@' respectively and teaching you how to edit the command line on a
+hardcopy tty.  Well, OK, some would see this as good educational value, but the
+problem is, if you don't actually *have* a hardcopy tty, and most of us don't,
+it doesn't work too well.  It prints out lessons longer than 24 lines and they
+scroll off the top of the VT terminal.  It was definitely written with the
+assumption that one has a hardcopy tty with a long roll of continuous paper,
+and it expects the student to grab the paper coming out of the teletype and
+look at what's been printed, but it just doesn't work on a VT terminal.  Not to
+mention that in the end the lessons give the student little practical learning
+that would actually be useful when using UNIX on a CRT terminal.  (For example,
+it would be very practical to explain to the student the difference between ^H
+and ^? and teach him/her how to deal with it.)
+
+> I'm wondering about distributing the results of my porting effort once it
+> matures enough to be worth doing so.
+
+Well, as a I said 4.3BSD-Quasijarus contains learn and all other "encumbered
+code" and it is freely available via anonymous FTP from ifctfvax.Harhan.ORG,
+so...  BTW for those who missed it I released 4.3-QJ0b on 2003-12-07.
+
+MS
+
+From msokolov at ivan.Harhan.ORG  Sat Jan  3 06:40:12 2004
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Fri, 2 Jan 04 12:40:12 PST
+Subject: [TUHS] is learn(1) free now?
+Message-ID: <0401022040.AA09379@ivan.Harhan.ORG>
+
+Kenneth Stailey <kstailey at yahoo.com> wrote:
+
+> Warren, I see that there is a 4.4BSD-Alpha subdir in the TUHS archive.  Do you
+> want a final CSRG 4.4BSD tape to add there too?
+
+I would definitely want an image of the 4.4BSD tape too!  But I do mean *tape*,
+not what's on Kirk's CD-ROM.  I'm talking about a record-for-record image of
+the Official Release Master tape.
+
+> Thanks, I have to go through your archive for it now.
+
+Actually I just took a closer look and it has been in the distributed
+/usr/lib/learn since 4.3BSD, it was just never added to /usr/src/usr.lib/learn
+for some reason (not even in Quasijarus, I probably didn't notice it).  So you
+don't have to go through the pain of downloading a dist from Harhan to pull it
+out of there, you can just take it from your CD-ROM set.
+
+> It's so difficult being you.
+
+:-)
+
+> I was able to save myself the time by
+> using the 4.4BSD version of learn(1) since it has already been
+> modified for CRT terminals.  You will have to re-invent the wheel
+> because of your politics.
+
+Well I'll take a look at what they did to learn in 4.4BSD and see if any of it
+is acceptable for Quasijarus.  Hopefully I won't have to reinvent the wheel.
+I believe in adding new features without breaking or disturbing historical
+stuff.  It feels so great knowing that my current modern OS (last release
+2003-12-07 counts as current and modern to me) still has nearly all original V7
+UNIX code almost completely untouched.  It's what gives me the right to call it
+UNIX.
+
+As far as learn goes I think I would need to add new lessons for UNIX on a CRT
+or some options or somesuch, but I do NOT want to remove the facility for
+teaching UNIX on a hardcopy tty.  That's such a gem, it should be kept!
+
+MS
+
+From norman at nose.cs.utoronto.ca  Sat Jan  3 13:37:06 2004
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Fri, 02 Jan 2004 22:37:06 -0500
+Subject: [TUHS] is learn(1) free now?
+Message-ID: <20040103033824.5CD121E85@minnie.tuhs.org>
+
+Michael Sokolov:
+
+  It feels so great knowing that my current modern OS (last release
+  2003-12-07 counts as current and modern to me) still has nearly all original V7
+  UNIX code almost completely untouched.  It's what gives me the right to call it
+  UNIX.
+
+=======
+
+You mean you've restored the original version of cat that had only one option,
+and the version of ls that had fewer than a dozen and didn't care how wide
+the screen was; that filenames are only 14 characters long; that fsck has
+been abolished in favour of icheck and ncheck and dcheck; and that file system
+blocks have returned to their original V7 size of 512 bytes?
+
+My hat's off to you if so.
+
+On the other hand, I have to question either your stability or that of your
+system if you have reinstated the original V7 code implementing mpx(2).
+
+Norman Wilson
+Toronto ON
+(who actually used the old multiplexor once, but had to fix it first!)
+
+From msokolov at ivan.Harhan.ORG  Sat Jan  3 14:53:21 2004
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Fri, 2 Jan 04 20:53:21 PST
+Subject: [TUHS] is learn(1) free now?
+Message-ID: <0401030453.AA09644@ivan.Harhan.ORG>
+
+norman at nose.cs.utoronto.ca (Norman Wilson) wrote:
+
+> You mean you've restored the original version of cat that had only one option,
+> [...]
+
+Notice my use of the words "nearly" and "almost" in the part you responded to.
+
+Seriously though, you gotta agree that until 4.3BSD inclusive, Berkeley was
+basically adding to and extending V7.  Sure they added a *lot* and extended
+many of the existing facilities, but with very few exceptions, it was all
+additive, virtually no V7 facility (except the mpx you mentioned) was removed.
+Yes, they added fsck, but icheck is still there!  (No one uses it of course,
+but knowing that nobody removed it gives a warm fuzzy feeling.)  The same goes
+for almost everything else.
+
+Here is the acid test: time-teleport a V7 user from 1979 to a VAX running
+4.3BSD, set PATH=/bin:/usr/bin (no /usr/ucb), do stty old (old tty driver) and
+stty ek (erase # kill @) and see if he feels at home or not.
+
+Of course I never use my systems in this way, I make extensive use of Berkeley
+UNIX facilities, but I like it much better to use a system that is additive
+rather than substitutive with respect to Original UNIX.
+
+MS
+
+From sethm at loomcom.com  Sun Jan  4 05:27:48 2004
+From: sethm at loomcom.com (Seth Morabito)
+Date: Sat, 3 Jan 2004 11:27:48 -0800
+Subject: [TUHS] is learn(1) free now?
+In-Reply-To: <0401030453.AA09644@ivan.Harhan.ORG>
+References: <0401030453.AA09644@ivan.Harhan.ORG>
+Message-ID: <EA5A7A46-3E22-11D8-8B7C-000393CC2C24@loomcom.com>
+
+
+On Jan 2, 2004, at 8:53 PM, Michael Sokolov wrote:
+> Here is the acid test: time-teleport a V7 user from 1979 to a VAX 
+> running
+> 4.3BSD, set PATH=/bin:/usr/bin (no /usr/ucb), do stty old (old tty 
+> driver) and
+> stty ek (erase # kill @) and see if he feels at home or not.
+
+I suspect they would be horrified that more progress hadn't been made 
+in computing environments in the last 25 years :)
+
+In 1979, I was pretty excited when I thought about what computers could 
+be like in the early 2000s.  We all love to preserve history, but 
+there's something to be said for moving on and creating something new 
+as well.
+
+-Seth
+
+
+From kstailey at yahoo.com  Fri Jan  9 02:43:32 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Thu, 8 Jan 2004 08:43:32 -0800 (PST)
+Subject: [TUHS] MicroSoft Money Central Web Site on SCOX
+Message-ID: <20040108164332.17263.qmail@web60509.mail.yahoo.com>
+
+This one was too good to not pass around.
+
+http://moneycentral.msn.com/investor/srs/srsmain.asp?Symbol=SCOX
+
+The sites says (and I quote)
+
+<< The SCO Group, Inc., a small-cap growth company in the technology sector, is
+expected to significantly underperform the market over the next six months with
+very high risk. >>
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Hotjobs: Enter the "Signing Bonus" Sweepstakes
+http://hotjobs.sweepstakes.yahoo.com/signingbonus
+
+From kwall at kurtwerks.com  Fri Jan  9 07:27:35 2004
+From: kwall at kurtwerks.com (Kurt Wall)
+Date: Thu, 8 Jan 2004 16:27:35 -0500
+Subject: [TUHS] MicroSoft Money Central Web Site on SCOX
+In-Reply-To: <20040108164332.17263.qmail@web60509.mail.yahoo.com>
+References: <20040108164332.17263.qmail@web60509.mail.yahoo.com>
+Message-ID: <20040108212735.GA6604@kurtwerks.com>
+
+In a 0.6K blaze of typing glory, Kenneth Stailey wrote:
+> This one was too good to not pass around.
+> 
+> http://moneycentral.msn.com/investor/srs/srsmain.asp?Symbol=SCOX
+> 
+> The sites says (and I quote)
+> 
+><< The SCO Group, Inc., a small-cap growth company in the technology sector, is
+>expected to significantly underperform the market over the next six months with
+>very high risk. >>
+
+"significantly underperform"?  What a very polite circumlocution for 
+"crater."
+
+Kurt
+-- 
+"The first rule of magic is simple.  Don't waste your time waving your
+hands and hoping when a rock or a club will do."
+		-- McCloctnik the Lucid
+
+From asbesto at freaknet.org  Mon Jan 12 02:01:08 2004
+From: asbesto at freaknet.org (asbesto)
+Date: Sun, 11 Jan 2004 16:01:08 +0000
+Subject: [TUHS] medialab.dyndns.org blocked and no more exist, use
+	medialab.freaknet.org instead!
+Message-ID: <20040111160108.GA3360@freaknet.org>
+
+medialab.dyndns.org blocked - medialab.freaknet.org is the solution!
+
+dyndns.org blocked our domain "medialab.dyndns.org" for a not
+well specified "account violation" problem. we're trying to solve
+that, but the real problems is the large amount of google indexes
+pointing to medialab.dyndns.org
+
+this free domain was born when we was not able to register a "real"
+domain. now we have freaknet.org and medialab.freaknet.org, but there's
+nothing to do for all the old links resting into the net :)
+
+this address is used from many users around the world, to telnet, 
+ssh, rlogin and surf our free computer network!
+
+so, here i announce that medialab.dyndns.org now is not working
+anymore, and people can use medialab.freaknet.org instead. 
+
+Hope this message will be soon indexed by google :)))
+
+sorry for this - more details and all the story background can be
+read at our main site, http://www.freaknet.org in the news section.
+
+tnx all and god bless all PDP/11 in the world.
+
+-- 
+[asbesto : freaknet medialab : radio#cybernet : GPG key on  keyservers]
+[ MAIL ATTACH, SPAM, HTML, WORD, and msgs larger than 95K > /dev/null ]
+[http://www.freaknet.org/asbesto IW9HGS http://kyuzz.org/radiocybernet]
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040111/f6c6cfb1/attachment.sig>
+
+From jrvalverde at cnb.uam.es  Mon Jan 12 20:18:44 2004
+From: jrvalverde at cnb.uam.es (Jos� R. Valverde)
+Date: Mon, 12 Jan 2004 11:18:44 +0100
+Subject: [TUHS] is learn(1) free now?
+Message-ID: <20040112111844.40aa04fd.jrvalverde@cnb.uam.es>
+
+Learn is free. At least it's author, some unherad of guy named Brian 
+Kernighan is making it publicly available on the Net through his
+web page :-)
+
+	http://cm.bell-labs.com/cm/cs/who/bwk/
+
+It's been there for a long while.
+
+I had a similar problem with novice users some years ago, and remembered
+good old faithful 'learn' from Ultrix. I also remembered having compiled
+it at some point in OSF/1. So I went to the net and started a search, and
+lo! there it was at Brian's page.
+
+I ported it to IRIX, which is where I had said novice users, and being at
+it, to Linux as well. I must have the ported code somewhere but I'm on
+Holidays now.
+
+A look at AIX and Tru64 revealed it is still there in new versions of these,
+which proved great for me: DWK code did not come with all the lessons I had
+used before, and I could just copy the lessons from these systems over and 
+use them with the port.
+
+Therefore, yes, it is free, it is available on the Net, I have already ported
+it to modern systems, and the lessons are still distributed with
+some commercial UNIX variants should you need them.
+
+				j
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+
+From wes.parish at paradise.net.nz  Mon Jan 26 19:46:20 2004
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Mon, 26 Jan 2004 22:46:20 +1300
+Subject: [TUHS] Sys III - Yet Again
+Message-ID: <200401262246.20993.wes.parish@paradise.net.nz>
+
+I just thought of a reason _why_ Caldera was unable to clarify the status of 
+System III - if you look at the documents on Groklaw.net, 
+http://www.groklaw.net/staticpages/index.php?page=legal-docs
+
+one of them's a document between Novell and SCO Original, where the System V 
+releases are enumerated.  Another is a similar document which mentions the 
+Ancient Unix and their manuals as being part of the deal.
+
+Neither document that I can recall, mentions anything about System III - and 
+apparently Warren Toomey had to supply them with that, so it would appear 
+that System III is - quite literally - unclaimed by anyone, apart from its 
+copyright notices, and thus - since neither The SCO Group nor Novell has laid 
+claim to it in their copyright battle - it could well be considered Public 
+Domain.
+
+Just a thought, and don't take my word for it.
+-- 
+Wesley Parish
+* * *
+Clinersterton beademung - in all of love.  RIP James Blish
+* * *
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+
+From Pat.Villani at hp.com  Tue Jan 27 00:54:58 2004
+From: Pat.Villani at hp.com (Pat Villani)
+Date: Mon, 26 Jan 2004 09:54:58 -0500
+Subject: [TUHS] Sys III - Yet Again
+In-Reply-To: <200401262246.20993.wes.parish@paradise.net.nz>
+References: <200401262246.20993.wes.parish@paradise.net.nz>
+Message-ID: <40152A42.8080107@hp.com>
+
+It's a bit more complicated than that, so no one should rush out and claim that 
+System III is public domain.  Omission from this set of documentation does not 
+mean that no one owns it.  Instead, it means that the original owner still owns 
+it.  Whether that is AT&T, Unix Systems Labs, now defunct, or the lawful owners 
+of its assets, Lucent Technologies, Novell or SCO is uncertain, but there is an 
+owner.
+
+In my opinion, the original asset purchase agreement and follow on amendments 
+were poorly written and do not address the actual ownership of intellectual 
+property.  It is my opinion that they have confused license to use and 
+distribute with ownership, i.e., copyright.  They would have done well to look 
+at book contracts and author agreements for a model.
+
+Of course, that is my opinion, not that of HP or anyone associated with HP.  In 
+addition, I am not a lawyer and anyone affected by these matters should seek 
+legal counsel prior to taking any action.
+
+Pat
+
+Wesley Parish wrote:
+
+> I just thought of a reason _why_ Caldera was unable to clarify the status of 
+> System III - if you look at the documents on Groklaw.net, 
+> http://www.groklaw.net/staticpages/index.php?page=legal-docs
+> 
+> one of them's a document between Novell and SCO Original, where the System V 
+> releases are enumerated.  Another is a similar document which mentions the 
+> Ancient Unix and their manuals as being part of the deal.
+> 
+> Neither document that I can recall, mentions anything about System III - and 
+> apparently Warren Toomey had to supply them with that, so it would appear 
+> that System III is - quite literally - unclaimed by anyone, apart from its 
+> copyright notices, and thus - since neither The SCO Group nor Novell has laid 
+> claim to it in their copyright battle - it could well be considered Public 
+> Domain.
+> 
+> Just a thought, and don't take my word for it.
+
+-- 
+Things could always be worse; for instance, you could be ugly and work in the 
+Post Office. -- Adrienne E. Gusoff
+
+
+

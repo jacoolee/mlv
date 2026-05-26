@@ -1,0 +1,961 @@
+From xhomer at isani.org  Sun Feb  1 05:17:39 2004
+From: xhomer at isani.org (Tarik Isani)
+Date: Sat, 31 Jan 2004 09:17:39 -1000
+Subject: [pups] DEC PRO or P/OS
+Message-ID: <20040131191739.GA6934@isani.org>
+
+Fred N. van Kempen wrote:
+> Well, those programs emulate both the CPU (which *is* the same as
+> those found in the PRO systems), but *also* the surrounding stuff
+> like disk controllers, serial controllers and so on.
+> 
+> It would not be (that) hard to add "PRO" emulation to SimH, if some
+> sort of hardware specs are still available.
+> 
+> cheers,
+> 	Fred
+
+This is actually exactly what I have done.  The emulator is
+available here:
+
+http://xhomer.isani.org/
+
+Tarik
+
+From kelli217 at crosswinds.net  Thu Feb 12 11:28:16 2004
+From: kelli217 at crosswinds.net (Kelli Halliburton)
+Date: Wed, 11 Feb 2004 19:28:16 -0600
+Subject: [pups] Just the FAQs, ma'am...
+Message-ID: <003d01c3f107$7e7a1160$24406b43@beta>
+
+Can someone direct me to the FAQ?
+
+From dfevans at bbcr.uwaterloo.ca  Thu Feb 12 11:54:14 2004
+From: dfevans at bbcr.uwaterloo.ca (David Evans)
+Date: Wed, 11 Feb 2004 20:54:14 -0500
+Subject: [pups] Just the FAQs, ma'am...
+In-Reply-To: <003d01c3f107$7e7a1160$24406b43@beta>
+References: <003d01c3f107$7e7a1160$24406b43@beta>
+Message-ID: <20040212015414.GI25370@bcr10.uwaterloo.ca>
+
+On Wed, Feb 11, 2004 at 07:28:16PM -0600, Kelli Halliburton wrote:
+> Can someone direct me to the FAQ?
+
+  There's this...
+
+http://minnie.tuhs.org/PUPS/pupsfaq.html
+
+which can be found here:
+
+http://minnie.tuhs.org/PUPS/index.html
+
+There's this too:
+
+http://www.village.org/pdp-11/faq.html
+
+and this:
+
+http://www.pdp11.org/
+
+-- 
+David Evans                                         dfevans at bbcr.uwaterloo.ca
+Ph.D. Candidate, Computer/Synth Junkie     http://bbcr.uwaterloo.ca/~dfevans/
+University of Waterloo         "Default is the value selected by the composer
+Ontario, Canada           overridden by your command." - Roland TR-707 Manual
+
+From ant at emict.com.ua  Wed Feb 18 23:22:38 2004
+From: ant at emict.com.ua (Andriy Tkachuk)
+Date: Wed, 18 Feb 2004 15:22:38 +0200
+Subject: [pups] how to extract Keith_Bostic_v7 files?
+Message-ID: <001901c3f622$47c63980$6300000a@dima>
+
+Hi guys.
+
+$subj ?
+
+I've tried to seach the list, but no success.
+It seems, that http://minnie.tuhs.org/cgi-bin/pups.cgi don't work
+
+Thanks,
+  Andriy Tkachuk
+
+
+From andrit at ukr.net  Thu Feb 19 01:50:43 2004
+From: andrit at ukr.net (Andriy Tkachuk)
+Date: Wed, 18 Feb 2004 17:50:43 +0200
+Subject: [pups] how to extract Keith_Bostic_v7 files?
+Message-ID: <000501c3f636$f7326dd0$6300000a@dima>
+
+ Hi guys.
+ 
+ $subj ?
+ 
+ I've tried to seach the list, but no success.
+ It seems, that http://minnie.tuhs.org/cgi-bin/pups.cgi don't work
+ 
+ Thanks,
+   Andriy Tkachuk
+
+
+From wkt at tuhs.org  Thu Feb 19 08:21:09 2004
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 19 Feb 2004 08:21:09 +1000
+Subject: [pups] how to extract Keith_Bostic_v7 files?
+In-Reply-To: <001901c3f622$47c63980$6300000a@dima>
+References: <001901c3f622$47c63980$6300000a@dima>
+Message-ID: <20040218222109.GA40747@minnie.tuhs.org>
+
+On Wed, Feb 18, 2004 at 03:22:38PM +0200, Andriy Tkachuk wrote:
+> I've tried to seach the list, but no success.
+> It seems, that http://minnie.tuhs.org/cgi-bin/pups.cgi don't work
+
+Sorry, the list is now running under mailman. You can go to
+
+
+The files in Keith_Bostic_v7 are tape records directly from
+the original 7th Edition distribution tape. The original details
+on how to install such a tape are at:
+http://minnie.tuhs.org/PUPS/Setup/v7_setup.html
+
+file 0: block size 512: 16 records		boot loader
+file 1: block size 512: 14 records		standalone cat program
+file 2: block size 512: 1 records		README file
+file 3: block size 512: 22 records		standalone mkfs program
+file 4: block size 512: 22 records		standalone restor program
+file 5: block size 10240: 202 records		dump of /
+file 6: block size 10240: 937 records		dump of /usr
+
+Probably the best way to extract the stuff from file 5 and file 6 would
+be to package the whole thing up into a SIMH tar file, and follow the
+boot instructions using a SIMH PDP-11 simulator. Or you could use a real
+PDP-11.
+
+If you only want the files, then Henry_Spencer_v7 has the same files.
+
+Cheers,
+	Warren
+
+From Hellwig.Geisse at mni.fh-giessen.de  Thu Feb 19 08:25:44 2004
+From: Hellwig.Geisse at mni.fh-giessen.de (Hellwig.Geisse at mni.fh-giessen.de)
+Date: Wed, 18 Feb 2004 23:25:44 +0100 (CET)
+Subject: [pups] how to extract Keith_Bostic_v7 files?
+In-Reply-To: <001901c3f622$47c63980$6300000a@dima>
+Message-ID: <XFMail.20040218232544.Hellwig.Geisse@mni.fh-giessen.de>
+
+Hi Andriy,
+
+On 18-Feb-2004 Andriy Tkachuk wrote:
+> Hi guys.
+> 
+> $subj ?
+> 
+> I've tried to seach the list, but no success.
+> It seems, that http://minnie.tuhs.org/cgi-bin/pups.cgi don't work
+> 
+> Thanks,
+>   Andriy Tkachuk
+> 
+
+some time ago I did exactly that, extract the v7 files
+in two formats: as a file hierarchy under Linux, and
+as a "tape" suitable to use with Bob Supnik's simulator.
+Here you can find the results:
+
+http://telexx.mni.fh-giessen.de/PDP11-UNIX/index.html
+
+Feel free to ask if you have any questions.
+
+Hellwig
+
+
+From wkt at tuhs.org  Wed Feb  4 11:45:40 2004
+From: wkt at tuhs.org (Warren Toomey)
+Date: Wed, 4 Feb 2004 11:45:40 +1000
+Subject: [TUHS] Location of a Coherent distribution?
+Message-ID: <20040204014540.GB85382@minnie.tuhs.org>
+
+Hi all,
+	Does anybody know of a distribution of Mark William's Coherent
+available on-line, or if someone has a distribution could they make a
+copy for me. Ditto for Idris. I'm particularly interested in their
+header files, and how closely they match the contemporary Unix headers.
+
+Thanks,
+	Warren
+
+From ckeck at mail.keck.cx  Wed Feb  4 23:10:58 2004
+From: ckeck at mail.keck.cx (Cornelius Keck)
+Date: Wed, 4 Feb 2004 07:10:58 -0600 (CST)
+Subject: [TUHS] Location of a Coherent distribution?
+In-Reply-To: <Pine.BSF.4.58.0402040217200.17836@mail.keck.cx>
+References: <20040204014540.GB85382@minnie.tuhs.org>
+ <Pine.BSF.4.58.0402040217200.17836@mail.keck.cx>
+Message-ID: <Pine.BSF.4.58.0402040708080.18707@mail.keck.cx>
+
+
+Warren et al:
+
+> 	Does anybody know of a distribution of Mark William's Coherent
+> available on-line, or if someone has a distribution could they make a
+> copy for me. Ditto for Idris. I'm particularly interested in their
+> header files, and how closely they match the contemporary Unix headers.
+
+ftp.mayn.de used to serve the stuff, but it they switched servers,
+and it looks as if their archives are still high&dry. Planetmirror
+pleads amnesia.I grabbed a copy of mayn's coherent tree last April,
+some 2GB tgz'd.  This is the complete Coherent installation, in form
+of a copy of .dd floppy images, and some additional pieces.
+Unfortunately I don't have any FTP server set up anywhere, so do you,
+by chance, have a place where I can drop it off?
+
+BTW.. should anyboy's response get nuked by my smtpd, please respond
+to usenet54 at keck.us.
+
+Cornelius
+
+-- 
+                             Cornelius Keck
+                 cornelius at keck.cx / ckeck at texoma.net
+
+From ljb at merit.edu  Thu Feb  5 02:09:14 2004
+From: ljb at merit.edu (Larry J. Blunk)
+Date: 04 Feb 2004 11:09:14 -0500
+Subject: [TUHS] Location of a Coherent distribution?
+In-Reply-To: <20040204014540.GB85382@minnie.tuhs.org>
+References: <20040204014540.GB85382@minnie.tuhs.org>
+Message-ID: <1075910954.3793.11.camel@ablate.merit.edu>
+
+
+   I have header files for QNX and SunOS 4.1.4 if you are
+interested.
+
+
+On Tue, 2004-02-03 at 20:45, Warren Toomey wrote:
+> Hi all,
+> 	Does anybody know of a distribution of Mark William's Coherent
+> available on-line, or if someone has a distribution could they make a
+> copy for me. Ditto for Idris. I'm particularly interested in their
+> header files, and how closely they match the contemporary Unix headers.
+> 
+> Thanks,
+> 	Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From asmodai at ao.mine.nu  Thu Feb  5 03:53:20 2004
+From: asmodai at ao.mine.nu (Paul Ward)
+Date: Wed, 4 Feb 2004 17:53:20 +0000
+Subject: [TUHS] Location of a Coherent distribution?
+In-Reply-To: <20040204014540.GB85382@minnie.tuhs.org>
+References: <20040204014540.GB85382@minnie.tuhs.org>
+Message-ID: <111235107266.20040204175320@ao.mine.nu>
+
+Hello Warren,
+
+Wednesday, February 4, 2004, 1:45:40 AM, you wrote:
+
+
+WT> Hi all,
+WT> 	Does anybody know of a distribution of Mark William's Coherent
+WT> available on-line, or if someone has a distribution could they make a
+WT> copy for me. Ditto for Idris. I'm particularly interested in their
+WT> header files, and how closely they match the contemporary Unix headers.
+
+I have Coherent 4.2.10 binary/source here.
+I'm in the process of uploading to tuhs ftpd.
+
+[asmodai at oberth.unixware.org.uk]$ ls -al Coherent-4.2.10.rar
+-rw-r-----   1 asmodai  100      20703444 Jun 14  2003 Coherent-4.2.10.rar
+
+
+-- 
+Best regards,
+ Paul                            mailto:asmodai at ao.mine.nu
+
+
+From wkt at tuhs.org  Thu Feb  5 13:04:46 2004
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 5 Feb 2004 13:04:46 +1000
+Subject: [TUHS] Location of a Coherent distribution?
+In-Reply-To: <Pine.BSF.4.58.0402040708080.18707@mail.keck.cx>
+References: <20040204014540.GB85382@minnie.tuhs.org>
+	<Pine.BSF.4.58.0402040217200.17836@mail.keck.cx>
+	<Pine.BSF.4.58.0402040708080.18707@mail.keck.cx>
+Message-ID: <20040205030446.GB99755@minnie.tuhs.org>
+
+On Wed, Feb 04, 2004 at 07:10:58AM -0600, Cornelius Keck wrote:
+> Warren et al:
+> > 	Does anybody know of a distribution of Mark William's Coherent
+> 
+> ftp.mayn.de used to serve the stuff, but it they switched servers,
+> and it looks as if their archives are still high&dry. Planetmirror
+> pleads amnesia.I grabbed a copy of mayn's coherent tree last April,
+> some 2GB tgz'd.
+
+I've put everything I've been sent or have found up at
+http://www.tuhs.org/Archive/Other/Coherent/
+
+Are you sure mayn's coherent is 2GB? I don't have that much room spare :)
+
+Thank all for your contributions!!
+
+	Warren
+
+From ckeck at mail.keck.cx  Thu Feb  5 18:14:07 2004
+From: ckeck at mail.keck.cx (Cornelius Keck)
+Date: Thu, 5 Feb 2004 02:14:07 -0600 (CST)
+Subject: [TUHS] Location of a Coherent distribution?
+In-Reply-To: <20040205030446.GB99755@minnie.tuhs.org>
+References: <20040204014540.GB85382@minnie.tuhs.org>
+	<Pine.BSF.4.58.0402040708080.18707@mail.keck.cx>
+	<20040205030446.GB99755@minnie.tuhs.org>
+Message-ID: <Pine.BSF.4.58.0402050201470.23111@mail.keck.cx>
+
+Yikes, that what happens while typing in a decaf'd state.
+Sorry about the mixup, it's 20MB, not 2G.
+
+
+> I've put everything I've been sent or have found up at
+> http://www.tuhs.org/Archive/Other/Coherent/
+
+Hmm... mine's pretty much the same as the things underneath
+.../Coherent1, so that's already all there. The header files
+can be found at the usual place after installing the base,
+and optionally the kernel source. To get to the contents, one
+would need a fairly conservatively equipped PC ((34)86, 16MB,
+AHA1542C*, or IDE controller with a not too large disk), and
+another machine, running some recent *BSD/Linux/Solaris, to
+then install the goodies on the former, set up a UUCP connection
+to the latter, to get the stuff distributed in it's unpacked
+form, because, AFAIK, MWC never got around to implement any
+decent IP stack.
+
+I'm currently still in France, but I should have some
+sufficiently outdated hardware somewhere, to get this installed
+within one or two weeks.
+
+Hope this helps!
+
+Regards,
+
+Cornelius
+
+-- 
+                             Cornelius Keck
+                 cornelius at keck.cx / usenet54 at keck.us
+
+From asmodai at ao.mine.nu  Thu Feb  5 18:35:59 2004
+From: asmodai at ao.mine.nu (Paul Ward)
+Date: Thu, 5 Feb 2004 08:35:59 +0000
+Subject: [TUHS] Location of a Coherent distribution?
+In-Reply-To: <Pine.BSF.4.58.0402050201470.23111@mail.keck.cx>
+References: <20040204014540.GB85382@minnie.tuhs.org>
+ <Pine.BSF.4.58.0402040708080.18707@mail.keck.cx>
+ <20040205030446.GB99755@minnie.tuhs.org>
+ <Pine.BSF.4.58.0402050201470.23111@mail.keck.cx>
+Message-ID: <105288061280.20040205083559@ao.mine.nu>
+
+Hello Cornelius,
+
+Thursday, February 5, 2004, 8:14:07 AM, you wrote:
+
+
+CK> Yikes, that what happens while typing in a decaf'd state.
+CK> Sorry about the mixup, it's 20MB, not 2G.
+
+
+>> I've put everything I've been sent or have found up at
+>> http://www.tuhs.org/Archive/Other/Coherent/
+
+CK> Hmm... mine's pretty much the same as the things underneath
+CK> .../Coherent1, so that's already all there. The header files
+CK> can be found at the usual place after installing the base,
+CK> and optionally the kernel source. To get to the contents, one
+CK> would need a fairly conservatively equipped PC ((34)86, 16MB,
+CK> AHA1542C*, or IDE controller with a not too large disk), and
+CK> another machine, running some recent *BSD/Linux/Solaris, to
+CK> then install the goodies on the former, set up a UUCP connection
+CK> to the latter, to get the stuff distributed in it's unpacked
+CK> form, because, AFAIK, MWC never got around to implement any
+CK> decent IP stack.
+
+Yes, seems that we all gave Warren the same thing.
+
+I've had 4.2.10 running on a box for a while now - not done a thing
+with it yet re network stack.
+
+Photos of the box in "action".
+
+http://ao.mine.nu/Pics/MVC-537F.JPG
+http://ao.mine.nu/Pics/MVC-538F.JPG
+http://ao.mine.nu/Pics/MVC-539F.JPG
+
+There is a TCP/IP stack floating round for Coherent (I have Tulip and
+NE2000 drivers for it), but I forget where to obtain it now.  If I
+locate it, I'll upload it for Warren to add.
+
+Incidentally, there is also no virtual memory support with 4.2.10.
+
+-- 
+Best regards,
+ Paul                            mailto:asmodai at ao.mine.nu
+
+
+From ckeck at mail.keck.cx  Thu Feb  5 20:56:58 2004
+From: ckeck at mail.keck.cx (Cornelius Keck)
+Date: Thu, 5 Feb 2004 04:56:58 -0600 (CST)
+Subject: [TUHS] Location of a Coherent distribution?
+In-Reply-To: <105288061280.20040205083559@ao.mine.nu>
+References: <20040204014540.GB85382@minnie.tuhs.org>
+	<20040205030446.GB99755@minnie.tuhs.org>
+	<105288061280.20040205083559@ao.mine.nu>
+Message-ID: <Pine.BSF.4.58.0402050454490.23746@mail.keck.cx>
+
+> There is a TCP/IP stack floating round for Coherent (I have Tulip and
+> NE2000 drivers for it), but I forget where to obtain it now.  If I
+> locate it, I'll upload it for Warren to add.
+
+Hmmm... could that have been ka9q, that MSDos thingie, adapted
+to use some NE2000 directly?
+
+> Incidentally, there is also no virtual memory support with 4.2.10.
+
+Yes.. but then Coherent was small enough to just squeeze by without,
+unless one installed X11, and started too many clients.
+
+
+-- 
+                             Cornelius Keck
+                 cornelius at keck.cx / usenet54 at keck.us
+
+From asmodai at ao.mine.nu  Thu Feb  5 21:17:55 2004
+From: asmodai at ao.mine.nu (Paul Ward)
+Date: Thu, 5 Feb 2004 11:17:55 +0000
+Subject: [TUHS] Location of a Coherent distribution?
+In-Reply-To: <Pine.BSF.4.58.0402050454490.23746@mail.keck.cx>
+References: <20040204014540.GB85382@minnie.tuhs.org>
+ <Pine.BSF.4.58.0402040708080.18707@mail.keck.cx>
+ <20040205030446.GB99755@minnie.tuhs.org>
+ <Pine.BSF.4.58.0402050201470.23111@mail.keck.cx>
+ <105288061280.20040205083559@ao.mine.nu>
+ <Pine.BSF.4.58.0402050454490.23746@mail.keck.cx>
+Message-ID: <29297777120.20040205111755@ao.mine.nu>
+
+Hello Cornelius,
+
+Thursday, February 5, 2004, 10:56:58 AM, you wrote:
+
+>> There is a TCP/IP stack floating round for Coherent (I have Tulip and
+>> NE2000 drivers for it), but I forget where to obtain it now.  If I
+>> locate it, I'll upload it for Warren to add.
+
+CK> Hmmm... could that have been ka9q, that MSDos thingie, adapted
+CK> to use some NE2000 directly?
+
+Appears it is indeed, taken from the archive:
+
+info on tcpip.gtz
+Author: various
+Date: June 7, 1994
+Copyright: freely distribatable for non-commercial purposes.
+Uploaded by: Randy Wright, (rw at rwsys.wimsey.bc.ca)
+Description:
+Adapted from KA9Q/K5JB, this is a user level implementation of
+tcp/ip. It has been modified to support 32 bit coding, event
+drive, and stripped of all that I could not test. It does
+not support ax.25 or netrom. It does support ethernet (with
+ne2000.gtz device driver) and slip. It has a dialer and a
+domain name client. Compiles with either gcc OR mwc compiler.
+
+requires: coherent 4.2 or higher. 
+
+--Randy Wright
+
+A quick google reveals
+http://www1.vobis.de/bbs/firmen/ct/share/index_ch.htm to be a source
+for download (search for cohulip.tar).
+
+>> Incidentally, there is also no virtual memory support with 4.2.10.
+
+CK> Yes.. but then Coherent was small enough to just squeeze by without,
+CK> unless one installed X11, and started too many clients.
+
+The box I have it on is a 486sx/25 with 8Mb RAM - remembering the joys
+of X11R6 + fvwm back when it ran Linux 2.0.29, I'm tempted to install
+X11 on it now :)
+
+-- 
+Best regards,
+ Paul                            mailto:asmodai at ao.mine.nu
+
+
+From ckeck at mail.keck.cx  Thu Feb  5 21:36:48 2004
+From: ckeck at mail.keck.cx (Cornelius Keck)
+Date: Thu, 5 Feb 2004 05:36:48 -0600 (CST)
+Subject: [TUHS] Location of a Coherent distribution?
+In-Reply-To: <105288061280.20040205083559@ao.mine.nu>
+References: <20040204014540.GB85382@minnie.tuhs.org>
+	<20040205030446.GB99755@minnie.tuhs.org>
+	<105288061280.20040205083559@ao.mine.nu>
+Message-ID: <Pine.BSF.4.58.0402050534250.23822@mail.keck.cx>
+
+> There is a TCP/IP stack floating round for Coherent (I have Tulip and
+> NE2000 drivers for it), but I forget where to obtain it now.  If I
+> locate it, I'll upload it for Warren to add.
+
+BTW, some excavation on ftp.demon.co.uk shows this:
+
+
+Current directory is /pub/coherent/sources32/network/
+
+[DIRECTORY]  Parent Directory
+[FILE]       00INDEX. . . . . . . . . . . . . . . . .    [Nov 24  1998]     87B
+[FILE]       00demon. . . . . . . . . . . . . . . . .    [Nov 24  1998]    276B
+[BINARY]     cohulip.tgz. . . . . . . . . . . . . . .    [Apr 17  1995]    840K
+[BINARY]     ka9q.tar.Z . . . . . . . . . . . . . . .    [Feb 12  1995]    851K
+[BINARY]     tcpipFIX03.tar . . . . . . . . . . . . .    [Feb 12  1995]    120K
+
+The matching location on tuhs looks empty,btw.
+
+
+-- 
+                             Cornelius Keck
+                 cornelius at keck.cx / usenet54 at keck.us
+
+From wes.parish at paradise.net.nz  Mon Feb  9 19:24:09 2004
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Mon, 09 Feb 2004 22:24:09 +1300
+Subject: [TUHS] IBM's AOS
+Message-ID: <200402092224.09361.wes.parish@paradise.net.nz>
+
+Does anyone know anything more about it than I do, which is that it was a 
+rebadged 4.3BSD for the RT platform?  And stands for Academic Operating 
+System?
+-- 
+Wesley Parish
+* * *
+Clinersterton beademung - in all of love.  RIP James Blish
+* * *
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+
+From barron at telerama.com  Tue Feb 10 02:44:27 2004
+From: barron at telerama.com (Pat Barron)
+Date: Mon,  9 Feb 2004 11:44:27 -0500
+Subject: [TUHS] IBM's AOS
+In-Reply-To: <200402092224.09361.wes.parish@paradise.net.nz>
+References: <200402092224.09361.wes.parish@paradise.net.nz>
+Message-ID: <1076345067.4027b8eb80ed1@webmail.telerama.com>
+
+Quoting Wesley Parish <wes.parish at paradise.net.nz>:
+> Does anyone know anything more about it than I do, which is that it was a 
+> rebadged 4.3BSD for the RT platform?  And stands for Academic Operating 
+> System?
+
+The first version of AOS was basically a straight port of 4.2BSD.
+The second version was a straight port of 4.3BSD.  As a friend of
+mine once described it, "With all the bugs, just like you remember
+them!" (since the initial releases were done without any of the
+publicly available fixes - though many of those were added over
+time)
+
+Aside from the support for "minidisks" (a way of dividing up a
+hard drive that was compatible with AIX 2.x for the RT, sort
+of like DOS/Windows "FDISK" partitions....), and support for some
+RT-specific devices like the ACIS Experimental Display, there
+really wasn't much remarkable about it, as such - just another
+port of 4.xBSD ...
+
+--Pat.
+
+From russell283 at comcast.net  Tue Feb 10 05:44:26 2004
+From: russell283 at comcast.net (russ)
+Date: Mon, 9 Feb 2004 12:44:26 -0700
+Subject: [TUHS] Re: TUHS Digest, Vol 9, Issue 1
+References: <20040204020009.912C22044@minnie.tuhs.org>
+Message-ID: <009601c3ef45$2324c4e0$0400000a@inet>
+
+
+----- Original Message ----- 
+From: <tuhs-request at minnie.tuhs.org>
+To: <tuhs at minnie.tuhs.org>
+Sent: Tuesday, February 03, 2004 7:00 PM
+Subject: TUHS Digest, Vol 9, Issue 1
+
+
+> Send TUHS mailing list submissions to
+> tuhs at minnie.tuhs.org
+> 
+> To subscribe or unsubscribe via the World Wide Web, visit
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+> or, via email, send a message with subject or body 'help' to
+> tuhs-request at minnie.tuhs.org
+> 
+> You can reach the person managing the list at
+> tuhs-owner at minnie.tuhs.org
+> 
+> When replying, please edit your Subject line so it is more specific
+> than "Re: Contents of TUHS digest..."
+> 
+> 
+> Today's Topics:
+> 
+>    1. Location of a Coherent distribution? (Warren Toomey)
+> 
+> 
+> ----------------------------------------------------------------------
+> 
+> Message: 1
+> Date: Wed, 4 Feb 2004 11:45:40 +1000
+> From: Warren Toomey <wkt at tuhs.org>
+> Subject: [TUHS] Location of a Coherent distribution?
+> To: The Unix Heritage Society <tuhs at tuhs.org>
+> Message-ID: <20040204014540.GB85382 at minnie.tuhs.org>
+> Content-Type: text/plain; charset=us-ascii
+> 
+> Hi all,
+> Does anybody know of a distribution of Mark William's Coherent
+> available on-line, or if someone has a distribution could they make a
+> copy for me. Ditto for Idris. I'm particularly interested in their
+> header files, and how closely they match the contemporary Unix headers.
+> 
+> Thanks,
+> Warren
+> 
+> ------------------------------
+> 
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+> 
+> 
+> End of TUHS Digest, Vol 9, Issue 1
+> **********************************
+
+From macbiesz at optonline.net  Thu Feb 19 08:26:08 2004
+From: macbiesz at optonline.net (Maciek Bieszczad)
+Date: Wed, 18 Feb 2004 17:26:08 -0500
+Subject: [TUHS] RE: [pups] how to extract Keith_Bostic_v7 files?
+In-Reply-To: <001901c3f622$47c63980$6300000a@dima>
+Message-ID: <000001c3f66e$34e9f850$02fea8c0@DELL>
+
+Normal GNU zip works fine for me.
+
+# wget [...]/f0.gz
+
+[...]
+
+17:23:31 (73.37 KB/s) - `f0.gz' saved [4733/4733]
+
+# file f0.gz
+f0.gz: gzip compressed data, was "f0", from Unix, max compression
+# gzip -d f0.gz && file f0
+f0: PDP-11 executable
+
+-----Original Message-----
+From: pups-bounces at minnie.tuhs.org [mailto:pups-bounces at minnie.tuhs.org]
+On Behalf Of Andriy Tkachuk
+Sent: Wednesday, February 18, 2004 8:23 AM
+To: pups at minnie.tuhs.org
+Subject: [pups] how to extract Keith_Bostic_v7 files?
+
+Hi guys.
+
+$subj ?
+
+I've tried to seach the list, but no success.
+It seems, that http://minnie.tuhs.org/cgi-bin/pups.cgi don't work
+
+Thanks,
+  Andriy Tkachuk
+
+_______________________________________________
+PUPS mailing list
+PUPS at minnie.tuhs.org
+http://minnie.tuhs.org/mailman/listinfo/pups
+
+
+From jdavid at farfalle.com  Mon Feb 23 04:28:29 2004
+From: jdavid at farfalle.com (David Ruggiero)
+Date: Sun, 22 Feb 2004 10:28:29 -0800
+Subject: [TUHS] Oldish UnixWare 2.x boxed copy - useful to TUHS or someone?
+Message-ID: <4.3.2.7.2.20040222102606.00b70e90@postal.farfalle.com>
+
+Subject says it. I've got an old (well, 10+ years old) copy of Unixware 
+(pre-old-SCO; I think it's release 2.01 or 2.03) in a boxed set with 
+manuals, CDROMs, patch diskettes, etc. Is this of any use to TUHS or 
+someone else as a donation or is it "too recent"?
+
+cheers, /David/
+
+
+From wes.parish at paradise.net.nz  Sat Feb 28 20:47:13 2004
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Sat, 28 Feb 2004 23:47:13 +1300
+Subject: [TUHS] Quasijarus.Z problem
+Message-ID: <200402282347.13723.wes.parish@paradise.net.nz>
+
+I downloaded the two Quasijarus distros, and tried " tar zxvf *.tar.Z ", and 
+nothing happened.
+
+I was under the impression that gzip (both standalone and included in tar) 
+knew how to handle compress files.  Apparently not.
+
+My system's Mandrake 9.2, tar (GNU tar) 1.13.25.  Is there some incantation 
+I'm not doing?  Any ideas?
+
+Thanks.
+-- 
+Wesley Parish
+* * *
+Clinersterton beademung - in all of love.  RIP James Blish
+* * *
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+
+From msokolov at ivan.Harhan.ORG  Sun Feb 29 03:04:34 2004
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Sat, 28 Feb 04 09:04:34 PST
+Subject: [TUHS] Quasijarus.Z problem
+Message-ID: <0402281704.AA01091@ivan.Harhan.ORG>
+
+Wesley Parish <wes.parish at paradise.net.nz> wrote:
+
+> I downloaded the two Quasijarus distros,
+
+Not sure which two do you mean, but keep in mind that the current release is
+4.3BSD-Quasijarus0c, and that Warren's archive is no longer the main
+distribution site for 4.3BSD-Quasijarus and is not up to date.  The main
+distribution site for 4.3BSD-Quasijarus is ifctfvax.Harhan.ORG.
+
+> I was under the impression that gzip (both standalone and included in tar) 
+> knew how to handle compress files.  Apparently not.
+
+Use real compress, get it from
+
+ifctfvax.Harhan.ORG:/pub/UNIX/components/compress.tar
+
+I'm using compress -s mode, which produces the same strong compression ratio as
+gzip (stronger than original compress), but without the politically unacceptable
+letter 'g'.
+
+MS
+
+From lm at bitmover.com  Sun Feb 29 12:26:45 2004
+From: lm at bitmover.com (Larry McVoy)
+Date: Sat, 28 Feb 2004 18:26:45 -0800
+Subject: [TUHS] Re: TUHS Digest, Vol 9, Issue 7
+In-Reply-To: <20040229020016.2F8381FCC@minnie.tuhs.org>
+References: <20040229020016.2F8381FCC@minnie.tuhs.org>
+Message-ID: <20040229022645.GA30103@work.bitmover.com>
+
+This is a sort of lame message but I'm having a sort of lame day, dealing
+with some lame people who created some lame problems and I'm sick of lame.
+
+OK, enough with the whining already.  The good part is that I got a
+message from this list.  I am on a zillion mailing listings, I've been
+around since the arpa net had 11 IMPs, and long enough before that that I
+wacked pathalias.  I witnessed first hand the first posting of 
+
+			  +-------------------+
+			   \ WARNING: Morons /
+			     \ next hundred /
+			       \ postings /
+				\  !!!!  /
+				 \      /
+				  \    /
+				    \/
+
+back in the days where netnews was how we communicated and virtually everyone
+on news had a PhD or a Masters or was headed there (those were the days, eh?).
+
+I love getting mail from this list, it brightens up my day.  After a day of
+nothing but cleaning up other people's messes, people who work for me and 
+should know better, I was in a foul mood.  Really foul.  And then some mail
+from this list showed up and it just changed my whole day.  Not because the
+mail was that uplifting but because it is a connection to my past, back 
+when I used to argue with Guy Harris and thought I was right, back when 
+all I wanted was to work at Sun.
+
+I really like this list, it's bright spot, but I wished you people were
+a little more vocal.  Maybe it's just me but I wonder if I'm really the 
+only one who revels in the past a bit...  Maybe I need to get out more :)
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+From hubby at nather.net  Sun Feb 29 12:08:17 2004
+From: hubby at nather.net (Markus Weber)
+Date: Sat, 28 Feb 2004 20:08:17 -0600
+Subject: [TUHS] Quasijarus.Z problem
+In-Reply-To: <0402281704.AA01091@ivan.Harhan.ORG>
+Message-ID: <PMEAIMBALAHKECEIMJFGEEJIMMAA.hubby@nather.net>
+
+> -----Original Message-----
+> From: Michael Sokolov [mailto:msokolov at ivan.Harhan.ORG]
+> Subject: Re: [TUHS] Quasijarus.Z problem
+>
+> Not sure which two do you mean, but keep in mind that the current
+> release is 4.3BSD-Quasijarus0c [...]
+
+I just updated the SIMH installation tape and pre-installed disk images to
+Quasijarus0c. See www.itsecuritygeek.com, Downloads, Retrocomputing.
+
+Markus
+
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.593 / Virus Database: 376 - Release Date: 2/20/2004
+
+
+From wes.parish at paradise.net.nz  Sun Feb 29 17:18:21 2004
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Sun, 29 Feb 2004 20:18:21 +1300
+Subject: [TUHS] Quasijarus.Z problem
+In-Reply-To: <PMEAIMBALAHKECEIMJFGEEJIMMAA.hubby@nather.net>
+References: <PMEAIMBALAHKECEIMJFGEEJIMMAA.hubby@nather.net>
+Message-ID: <200402292018.21880.wes.parish@paradise.net.nz>
+
+I've just started downloading the Quasijarus0c disk image and the tape install 
+file; I'd been using the tribug.org site, and that only has the Quasijarus0 
+and Quasijarus0a distributions.
+
+Thanks to all who offered me assistance and pointers.  I appreciate it 
+greatly.
+
+Wesley Parish
+
+On Sun, 29 Feb 2004 15:08, Markus Weber wrote:
+> > -----Original Message-----
+> > From: Michael Sokolov [mailto:msokolov at ivan.Harhan.ORG]
+> > Subject: Re: [TUHS] Quasijarus.Z problem
+> >
+> > Not sure which two do you mean, but keep in mind that the current
+> > release is 4.3BSD-Quasijarus0c [...]
+>
+> I just updated the SIMH installation tape and pre-installed disk images to
+> Quasijarus0c. See www.itsecuritygeek.com, Downloads, Retrocomputing.
+>
+> Markus
+>
+> ---
+> Outgoing mail is certified Virus Free.
+> Checked by AVG anti-virus system (http://www.grisoft.com).
+> Version: 6.0.593 / Virus Database: 376 - Release Date: 2/20/2004
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+Wesley Parish
+* * *
+Clinersterton beademung - in all of love.  RIP James Blish
+* * *
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+
+From wes.parish at paradise.net.nz  Sun Feb 29 17:34:03 2004
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Sun, 29 Feb 2004 20:34:03 +1300
+Subject: [TUHS] Microsoft, SCO, and a certain License
+Message-ID: <200402292034.03414.wes.parish@paradise.net.nz>
+
+I know the SCO topic's been done to death, and all, but I was thinking about 
+the Microsoft purchase of a Unix license (apparently) for their MS SFU 
+(Windows Services For Unix) which contrary to the plain meaning of the name, 
+is essentially a Unix (apparently OpenBSD, according to rumour) box on top of 
+the Windows kernel and Win32 API.
+
+The question is, wouldn't that put Microsoft and the SCO Group in breach of 
+the settlement between AT&T and Berkeley?  If Win SFU _is_ OpenBSD, and 
+Microsoft have bought a license to run it from the SCO Group of all people, 
+isn't that in effect picking a fight with Theo de Raadt?
+
+This isn't definite, of course - some details I'm not sure of.  But I think if 
+this is so, we have some very interesting few years to look forward to.
+-- 
+Wesley Parish
+* * *
+Clinersterton beademung - in all of love.  RIP James Blish
+* * *
+Mau e ki, "He aha te mea nui?"
+You ask, "What is the most important thing?"
+Maku e ki, "He tangata, he tangata, he tangata."
+I reply, "It is people, it is people, it is people."
+
+
+From grog at lemis.com  Sun Feb 29 17:54:30 2004
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Sun, 29 Feb 2004 18:24:30 +1030
+Subject: [TUHS] Microsoft, SCO, and a certain License
+In-Reply-To: <200402292034.03414.wes.parish@paradise.net.nz>
+References: <200402292034.03414.wes.parish@paradise.net.nz>
+Message-ID: <20040229075430.GD49757@wantadilla.lemis.com>
+
+On Sunday, 29 February 2004 at 20:34:03 +1300, Wesley Parish wrote:
+> I know the SCO topic's been done to death, and all, but I was thinking about
+> the Microsoft purchase of a Unix license (apparently) for their MS SFU
+> (Windows Services For Unix) which contrary to the plain meaning of the name,
+> is essentially a Unix (apparently OpenBSD, according to rumour) box on top of
+> the Windows kernel and Win32 API.
+>
+> The question is, wouldn't that put Microsoft and the SCO Group in
+> breach of the settlement between AT&T and Berkeley?
+
+That settlement was superseded by Caldera's release of Ancient UNIX
+two years ago.  See http://www.lemis.com/grog/UNIX/ and
+http://www.lemis.com/grog/UNIX/ancient-source-all.pdf.
+
+> If Win SFU _is_ OpenBSD, and Microsoft have bought a license to run
+> it from the SCO Group of all people,
+
+If it's OpenBSD, SCO can't give anybody a license to use it.
+
+> isn't that in effect picking a fight with Theo de Raadt?
+
+Why?  As long as they use it within the terms of the license, I can't
+see that anybody can object.  As you can see from
+http://www.openbsd.org/policy.html, about the only thing Microsoft
+could do wrong there would be not to recognize openly the fact that
+they got it from OpenBSD.
+
+> This isn't definite, of course - some details I'm not sure of.
+
+The most important detail is whether it was, in fact, derived from
+OpenBSD.  This sounds very unlikely to me.  If it were the case, why
+would they pay anything to SCO?
+
+> But I think if this is so, we have some very interesting few years
+> to look forward to.
+
+Even then, there's little that people can complain about.
+
+Greg
+--
+Note: I discard all HTML mail unseen.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040229/4696caa0/attachment.sig>
+

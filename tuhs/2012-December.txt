@@ -1,0 +1,147 @@
+From cyrille.lefevre-lists at laposte.net  Thu Dec  6 02:44:16 2012
+From: cyrille.lefevre-lists at laposte.net (Cyrille Lefevre)
+Date: Wed, 05 Dec 2012 17:44:16 +0100
+Subject: [TUHS] The UNIX System: Making Computers More Productive
+Message-ID: <50BF79E0.7030100@laposte.net>
+
+Hi,
+
+Don't remember if this was already posted to this list, so, just in case 
+it wasn't...
+
+The UNIX System: Making Computers More Productive
+
+http://techchannel.att.com/play-video.cfm/2012/2/22/AT&T-Archives-The-UNIX-System
+
+In the late 1960s, Bell Laboratories computer scientists Dennis Ritchie 
+and Ken Thompson started work on a project that was inspired by an 
+operating system called Multics, a joint project of MIT, GE, and Bell 
+Labs. The host and narrator of this film, Victor Vyssotsky, also had 
+worked on the Multics project. Ritchie and Thompson, recognizing some of 
+the problems with the Multics OS, set out to create a more useful, 
+flexible, and portable system for programmers to work with.
+
+What's fascinating about the growth of UNIX is the long amount of time 
+that it was given to develop, almost organically, and based on the needs 
+of the users and programmers. The first installation of the program was 
+done as late as 1972 (on a NY Telephone branch computer). It was in 
+conjunction with the refinement of the C programming language, 
+principally designed by Dennis Ritchie.
+
+Because the Bell System had limitations placed by the government that 
+prevented them from selling software, UNIX was made available under 
+license to universities and the government. This helped further its 
+development, as well as making it a more "open" system.
+
+This film "The UNIX System: Making Computers More Productive", is one of 
+two that Bell Labs made in 1982 about UNIX's significance, impact and 
+usability. Even 10 years after its first installation, it's still an 
+introduction to the system. The other film, "The UNIX System: Making 
+Computers Easier to Use", is roughly the same, only a little shorter. 
+The former film was geared towards software developers and computer 
+science students, the latter towards programmers specifically.
+
+The film contains interviews with primary developers Ritchie, Thompson, 
+Brian Kernighan, and many others.
+
+While widespread use of UNIX has waned, most modern operating systems 
+have at least a conceptual foundation in UNIX.
+
+Release date: 02/22/2012
+
+http://wpc.5C42.att-acdn.net/005C42/techchannel/10959/videos/10959_AA11180_Unix_FL8_576x432_700K.flv
+
+Regards,
+
+Cyrille Lefevre
+-- 
+mailto:Cyrille.Lefevre-lists at laposte.net
+
+
+From mrox128 at gmail.com  Mon Dec 31 14:36:48 2012
+From: mrox128 at gmail.com (Rox 64)
+Date: Mon, 31 Dec 2012 05:36:48 +0100
+Subject: [TUHS] Unable to boot v7 UNIX
+Message-ID: <CAGWMD9FhF4JBV_=hTdCai71VDSa91cCx397mH8BwpV0i7OaSVQ@mail.gmail.com>
+
+Hi guys, new SIMH (and Research Unix) user here coming from the future
+(Linux), haha. Well, as the mail subject says, I have a problem.
+
+After creating a bootable disk from a virgin Unix v7 distribution tape by
+following this guide, http://homepages.thm.de/~hg53/pdp11-unix/, and after
+umounting the usr file system and halting the machine, SIMH returns:
+        HALT instruction, PC: 000002 (HALT)
+after running the command:
+        pdp11 run.conf
+and I cannot boot my 87,9 MB 'system.hp' disk.
+
+I thought the problem was on the final line of 'run.conf':
+        run 2002
+But when I use SIMH without .conf files and by manually typing the
+following commands:
+        set cpu 11/45
+        set cpu 256k
+        set rp0 rp04
+        attach rp0 system.hp
+        boot rp0
+I see the same HALT message too.
+
+I'm currently unning SIMH from Debian/Ubuntu package 3.8.1-5build1. Should
+I update to a newest one? Or did I make a mistake when creating my bootable
+disk?
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20121231/59fbd246/attachment.html>
+
+From mrox128 at gmail.com  Mon Dec 31 14:43:31 2012
+From: mrox128 at gmail.com (Rox 64)
+Date: Mon, 31 Dec 2012 05:43:31 +0100
+Subject: [TUHS] Unable to boot v7 UNIX
+In-Reply-To: <CAGWMD9FhF4JBV_=hTdCai71VDSa91cCx397mH8BwpV0i7OaSVQ@mail.gmail.com>
+References: <CAGWMD9FhF4JBV_=hTdCai71VDSa91cCx397mH8BwpV0i7OaSVQ@mail.gmail.com>
+Message-ID: <CAGWMD9Fodsv7_xSwr28k0hJYQDNZPhbpQHL9sBDTsN-mAeL_vA@mail.gmail.com>
+
+Ah crap, this mail was for the SIMH mailing list. Sorry for the confusion.
+Anyway, if someone here uses SIMH and knows a solution, I would be happy to
+hear it.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20121231/3274b56c/attachment.html>
+
+From hellwig.geisse at mni.thm.de  Mon Dec 31 20:12:50 2012
+From: hellwig.geisse at mni.thm.de (Hellwig Geisse)
+Date: Mon, 31 Dec 2012 11:12:50 +0100
+Subject: [TUHS] Unable to boot v7 UNIX
+In-Reply-To: <CAGWMD9FhF4JBV_=hTdCai71VDSa91cCx397mH8BwpV0i7OaSVQ@mail.gmail.com>
+References: <CAGWMD9FhF4JBV_=hTdCai71VDSa91cCx397mH8BwpV0i7OaSVQ@mail.gmail.com>
+Message-ID: <1356948770.6404.1084.camel@papa>
+
+Hi Rox,
+
+On Mon, 2012-12-31 at 05:36 +0100, Rox 64 wrote:
+> I'm currently unning SIMH from Debian/Ubuntu package 3.8.1-5build1.
+> Should I update to a newest one? Or did I make a mistake when creating
+> my bootable disk?
+
+I cannot reproduce the behavior you describe, sorry. I'm using
+32-bit Ubuntu, and compiled SIMH 3.9-0 freshly out-of-the-box.
+Everything comes up as it should, including UNIX V7 multi-user
+mode.
+
+Did you remember to
+  -  substitute 'tm' for the tape in all commands
+  -  substitute 'hp' for the disk in all commands
+  -  use hptmunix when booting
+  -  do a 'mv hptmunix unix' in preparing further bootstraps
+  -  'make rp04' and 'make tm' in /dev for creating devices
+  -  use 153406 as size for the filesystem on /dev/rp3
+  -  copy /usr/mdec/hpuboot as boot block?
+Each of these steps is absolutely necessary to successfully
+boot the system.
+
+Good luck!
+
+Hellwig
+
+
+

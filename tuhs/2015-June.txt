@@ -1,0 +1,2527 @@
+From meillo at marmaro.de  Mon Jun  1 04:06:03 2015
+From: meillo at marmaro.de (markus schnalke)
+Date: Sun, 31 May 2015 20:06:03 +0200
+Subject: [TUHS] Questions about the history of cut(1)
+In-Reply-To: <CAC20D2O5xQigVpck734bopOa7a0hS8mgw=G0gwR064Ywa8PE0w@mail.gmail.com>
+References: <201505181036.t4IAagZS031943@coolidge.cs.dartmouth.edu>
+ <CAC20D2O5xQigVpck734bopOa7a0hS8mgw=G0gwR064Ywa8PE0w@mail.gmail.com>
+Message-ID: <1Yz7cZ-3Wn-00@marmaro.de>
+
+Thanks a lot for all your responses. They helped and encouraged me.
+
+[2015-05-18 11:06] Clem Cole <clemc at ccc.com>
+>
+> I thought it came from USG, as it was definitely in PWB 3.0 [which was
+> "rebranded" as System III post break-up], I think it may have been in PWB 2.0.
+>   Mashey might remember.   I'll check any doc I have at home tonight, but do
+> not think I still have PWB 2.0 bits anywhere.  I think Warren has a TAR image
+> from Henry of the PWB 1.0 which to check.
+
+
+This is what I found out so far:
+
+1) cut was part of System III. The sources are online:
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=SysIII/usr/src/cmd/cut.c
+In consequence, cut was part of PWB 3.0, as well, because that's
+the same.
+
+2) These sources of (presumely) PWB 1.0 show no signs of cut:
+http://minnie.tuhs.org/Archive/PDP-11/Distributions/usdl/
+
+3) I couldn't find any sources or useful documentation about PWB 2.0.
+
+4) I've discovered that cut was present in CB Unix 2.1 (which I
+haven't even known it existed. ;-) ). I found scanned man pages,
+which date November 1979:
+ftp://sunsite.icm.edu.pl/pub/unix/UnixArchive/PDP-11/Distributions/other/CB_Unix/cbunix_man1_02.pdf
+(cut is on PDF page 57)
+Unfortunately, I wasn't able to find sources or, actually, much
+useful information at all on CB Unix.
+
+
+Possibly, you can help me a further step from this point on.
+
+I think, interesting would be sources or docs about PWB 2.0 and
+CB Unix and the relation i.e. code transfer between PWB and CB Unix.
+
+
+meillo
+
+
+From david at kdbarto.org  Mon Jun  1 04:14:17 2015
+From: david at kdbarto.org (David Barto)
+Date: Sun, 31 May 2015 11:14:17 -0700
+Subject: [TUHS] So I'm looking through some old SVR3.1 source
+Message-ID: <BA8E7D4A-23F4-41AC-8B5E-EC653E9D0830@kdbarto.org>
+
+Just cuz of this list and recent comments about SVRx and I see this comment in ftrap.s
+
+fpreent:			    # this is the point we return to 
+				    # when we are executing the n+1th
+				    # floating point instruction in a
+				    # contiguous sequence of floating
+				    # point instructions (floating
+				    # pointlessly forever?)
+
+
+Makes me wonder how many other humorous comments are buried in the code.
+
+	David
+
+Oh, if no one out there has a SVR3.1 distribution (apparently for the 3b2), I’ve got one to send out….
+
+
+
+From b4 at gewt.net  Mon Jun  1 04:29:17 2015
+From: b4 at gewt.net (Cory Smelosky)
+Date: Sun, 31 May 2015 14:29:17 -0400 (EDT)
+Subject: [TUHS] So I'm looking through some old SVR3.1 source
+In-Reply-To: <BA8E7D4A-23F4-41AC-8B5E-EC653E9D0830@kdbarto.org>
+References: <BA8E7D4A-23F4-41AC-8B5E-EC653E9D0830@kdbarto.org>
+Message-ID: <alpine.BSF.2.20.1505311427180.670@meaghan.gimme-sympathy.org>
+
+On Sun, 31 May 2015, David Barto wrote:
+
+> Just cuz of this list and recent comments about SVRx and I see this comment in ftrap.s
+>
+> fpreent:			    # this is the point we return to
+> 				    # when we are executing the n+1th
+> 				    # floating point instruction in a
+> 				    # contiguous sequence of floating
+> 				    # point instructions (floating
+> 				    # pointlessly forever?)
+>
+>
+> Makes me wonder how many other humorous comments are buried in the code.
+>
+
+Hmmm. I can't find ftrap.s in mine.
+
+> 	David
+>
+> Oh, if no one out there has a SVR3.1 distribution (apparently for the 3b2), I?ve got one to send out?.
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+-- 
+Cory Smelosky
+http://gewt.net Personal stuff
+http://gimme-sympathy.org Projects
+
+
+From mah at mhorton.net  Mon Jun  1 08:18:12 2015
+From: mah at mhorton.net (Mary Ann Horton)
+Date: Sun, 31 May 2015 15:18:12 -0700
+Subject: [TUHS] Questions about the history of cut(1)
+In-Reply-To: <1Yz7cZ-3Wn-00@marmaro.de>
+References: <201505181036.t4IAagZS031943@coolidge.cs.dartmouth.edu>
+ <CAC20D2O5xQigVpck734bopOa7a0hS8mgw=G0gwR064Ywa8PE0w@mail.gmail.com>
+ <1Yz7cZ-3Wn-00@marmaro.de>
+Message-ID: <556B88A4.3080605@mhorton.net>
+
+CB UNIX paralleled USG/PWB versions, so that's a strong hint that PWB 2 
+had cut/paste.  My recollection is also that it did, but I don't have 
+any doc or source to confirm that.
+
+On 05/31/2015 11:06 AM, markus schnalke wrote:
+> Thanks a lot for all your responses. They helped and encouraged me.
+>
+> [2015-05-18 11:06] Clem Cole <clemc at ccc.com>
+>> I thought it came from USG, as it was definitely in PWB 3.0 [which was
+>> "rebranded" as System III post break-up], I think it may have been in PWB 2.0.
+>>    Mashey might remember.   I'll check any doc I have at home tonight, but do
+>> not think I still have PWB 2.0 bits anywhere.  I think Warren has a TAR image
+>> from Henry of the PWB 1.0 which to check.
+>
+> This is what I found out so far:
+>
+> 1) cut was part of System III. The sources are online:
+> http://minnie.tuhs.org/cgi-bin/utree.pl?file=SysIII/usr/src/cmd/cut.c
+> In consequence, cut was part of PWB 3.0, as well, because that's
+> the same.
+>
+> 2) These sources of (presumely) PWB 1.0 show no signs of cut:
+> http://minnie.tuhs.org/Archive/PDP-11/Distributions/usdl/
+>
+> 3) I couldn't find any sources or useful documentation about PWB 2.0.
+>
+> 4) I've discovered that cut was present in CB Unix 2.1 (which I
+> haven't even known it existed. ;-) ). I found scanned man pages,
+> which date November 1979:
+> ftp://sunsite.icm.edu.pl/pub/unix/UnixArchive/PDP-11/Distributions/other/CB_Unix/cbunix_man1_02.pdf
+> (cut is on PDF page 57)
+> Unfortunately, I wasn't able to find sources or, actually, much
+> useful information at all on CB Unix.
+>
+>
+> Possibly, you can help me a further step from this point on.
+>
+> I think, interesting would be sources or docs about PWB 2.0 and
+> CB Unix and the relation i.e. code transfer between PWB and CB Unix.
+>
+>
+> meillo
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From clemc at ccc.com  Tue Jun  2 00:14:53 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Mon, 1 Jun 2015 10:14:53 -0400
+Subject: [TUHS] Questions about the history of cut(1)
+In-Reply-To: <556B88A4.3080605@mhorton.net>
+References: <201505181036.t4IAagZS031943@coolidge.cs.dartmouth.edu>
+ <CAC20D2O5xQigVpck734bopOa7a0hS8mgw=G0gwR064Ywa8PE0w@mail.gmail.com>
+ <1Yz7cZ-3Wn-00@marmaro.de> <556B88A4.3080605@mhorton.net>
+Message-ID: <CAC20D2N95V=iXNFhK2z4rgcikGaX9fA4XE7W5-hRTUH9Z2+vfQ@mail.gmail.com>
+
++1
+
+Similarly, I can not find any PWB 2.0 info, but I agree that if CB UNIX had
+it, that is a strong indication that it was part of PWB 2.0.
+
+On Sun, May 31, 2015 at 6:18 PM, Mary Ann Horton <mah at mhorton.net> wrote:
+
+> CB UNIX paralleled USG/PWB versions, so that's a strong hint that PWB 2
+> had cut/paste.  My recollection is also that it did, but I don't have any
+> doc or source to confirm that.
+>
+>
+> On 05/31/2015 11:06 AM, markus schnalke wrote:
+>
+>> Thanks a lot for all your responses. They helped and encouraged me.
+>>
+>> [2015-05-18 11:06] Clem Cole <clemc at ccc.com>
+>>
+>>> I thought it came from USG, as it was definitely in PWB 3.0 [which was
+>>> "rebranded" as System III post break-up], I think it may have been in
+>>> PWB 2.0.
+>>>    Mashey might remember.   I'll check any doc I have at home tonight,
+>>> but do
+>>> not think I still have PWB 2.0 bits anywhere.  I think Warren has a TAR
+>>> image
+>>> from Henry of the PWB 1.0 which to check.
+>>>
+>>
+>> This is what I found out so far:
+>>
+>> 1) cut was part of System III. The sources are online:
+>> http://minnie.tuhs.org/cgi-bin/utree.pl?file=SysIII/usr/src/cmd/cut.c
+>> In consequence, cut was part of PWB 3.0, as well, because that's
+>> the same.
+>>
+>> 2) These sources of (presumely) PWB 1.0 show no signs of cut:
+>> http://minnie.tuhs.org/Archive/PDP-11/Distributions/usdl/
+>>
+>> 3) I couldn't find any sources or useful documentation about PWB 2.0.
+>>
+>> 4) I've discovered that cut was present in CB Unix 2.1 (which I
+>> haven't even known it existed. ;-) ). I found scanned man pages,
+>> which date November 1979:
+>>
+>> ftp://sunsite.icm.edu.pl/pub/unix/UnixArchive/PDP-11/Distributions/other/CB_Unix/cbunix_man1_02.pdf
+>> (cut is on PDF page 57)
+>> Unfortunately, I wasn't able to find sources or, actually, much
+>> useful information at all on CB Unix.
+>>
+>>
+>> Possibly, you can help me a further step from this point on.
+>>
+>> I think, interesting would be sources or docs about PWB 2.0 and
+>> CB Unix and the relation i.e. code transfer between PWB and CB Unix.
+>>
+>>
+>> meillo
+>> _______________________________________________
+>> TUHS mailing list
+>> TUHS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>>
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150601/906339bb/attachment.html>
+
+From meillo at marmaro.de  Wed Jun  3 03:31:56 2015
+From: meillo at marmaro.de (markus schnalke)
+Date: Tue, 02 Jun 2015 19:31:56 +0200
+Subject: [TUHS] Questions about the history of cut(1)
+In-Reply-To: <CAC20D2N95V=iXNFhK2z4rgcikGaX9fA4XE7W5-hRTUH9Z2+vfQ@mail.gmail.com>
+References: <201505181036.t4IAagZS031943@coolidge.cs.dartmouth.edu>
+ <CAC20D2O5xQigVpck734bopOa7a0hS8mgw=G0gwR064Ywa8PE0w@mail.gmail.com>
+ <1Yz7cZ-3Wn-00@marmaro.de> <556B88A4.3080605@mhorton.net>
+ <CAC20D2N95V=iXNFhK2z4rgcikGaX9fA4XE7W5-hRTUH9Z2+vfQ@mail.gmail.com>
+Message-ID: <1Yzq2e-0rq-00@marmaro.de>
+
+[2015-06-01 10:14] Clem Cole <clemc at ccc.com>
+>
+> +1
+> 
+> Similarly, I can not find any PWB 2.0 info, but I agree that if CB UNIX had
+> it, that is a strong indication that it was part of PWB 2.0.
+> 
+> On Sun, May 31, 2015 at 6:18 PM, Mary Ann Horton <mah at mhorton.net> wrote:
+> 
+>> CB UNIX paralleled USG/PWB versions, so that's a strong hint that PWB 2
+>> had cut/paste.  My recollection is also that it did, but I don't have any
+>> doc or source to confirm that.
+
+Thanks to both of you.
+
+
+meillo
+
+
+From beebe at math.utah.edu  Sat Jun  6 03:16:59 2015
+From: beebe at math.utah.edu (Nelson H. F. Beebe)
+Date: Fri, 5 Jun 2015 11:16:59 -0600 (MDT)
+Subject: [TUHS]  Unix and the PDP-10
+Message-ID: <CMM.0.95.0.1433524619.beebe@psi.math.utah.edu>
+
+This new paper may be of interest to list readers:
+
+        Dan Murphy
+        TENEX and TOPS-20
+	IEEE Annals of the History of Computing 37(1) 75--82 (2015)
+        http://dx.doi.org/10.1109/MAHC.2015.15
+
+In particular, the author notes on page 81:
+
+>> ...
+>> The fact that UNIX was implemented in a reasonably portable language
+>> (at least as compared with 36-bit MACRO) also encouraged its spread to
+>> new and less expensive machines.  If I could have done just one thing
+>> differently in the history of TENEX and TOPS-20, it would be to have
+>> coded it in a higher-level language. With that, it's probable that the
+>> system, or at least large parts of it, would have spread to other
+>> architectures and ultimately survived the demise of the 36-bit
+>> architecture.
+>> ...
+
+-------------------------------------------------------------------------------
+- Nelson H. F. Beebe                    Tel: +1 801 581 5254                  -
+- University of Utah                    FAX: +1 801 581 4148                  -
+- Department of Mathematics, 110 LCB    Internet e-mail: beebe at math.utah.edu  -
+- 155 S 1400 E RM 233                       beebe at acm.org  beebe at computer.org -
+- Salt Lake City, UT 84112-0090, USA    URL: http://www.math.utah.edu/~beebe/ -
+-------------------------------------------------------------------------------
+
+
+From arnold at skeeve.com  Thu Jun 11 21:31:44 2015
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Thu, 11 Jun 2015 14:31:44 +0300
+Subject: [TUHS] DMR's web site
+Message-ID: <201506111131.t5BBVinx002446@skeeve.com>
+
+Hello All.
+
+FYI.
+
+Warren - can you mirror?
+
+> Date: Thu, 11 Jun 2015 04:41:39 -0400 (EDT)
+> From: Brian Kernighan <bwk at cs.princeton.edu>
+> Subject: dmr web site (fwd)
+>
+> Finally indeed.  I can't recall who else asked me about
+> Dennis's pages, so feel free to pass this on.
+> And someone ought to make a mirror.  If I were not far
+> away at the moment, I'd do so myself.
+>
+> Brian
+>
+> ---------- Forwarded message ----------
+> Date: Tue, 09 Jun 2015 16:32:13 -0400
+> To: Brian Kernighan <bwk at CS.Princeton.EDU>
+> Subject: dmr web site
+>
+> finally, try this: https://www.bell-labs.com/usr/dmr/www/
+>
+> It's almost a complete copy of Dennis Ritchie's pages, with some
+> adaptation needed for the new location.  There are a few broken links,
+> but hopefully they're not too annoying.
+
+
+From 0intro at gmail.com  Thu Jun 11 21:40:49 2015
+From: 0intro at gmail.com (David du Colombier)
+Date: Thu, 11 Jun 2015 13:40:49 +0200
+Subject: [TUHS] DMR's web site
+In-Reply-To: <201506111131.t5BBVinx002446@skeeve.com>
+References: <201506111131.t5BBVinx002446@skeeve.com>
+Message-ID: <CANUoZoHreJOPRGHnXkFtgL5ZK83xhCqf+rKCT-bCCtFB5bR2yg@mail.gmail.com>
+
+By the way, a full mirror of the former Bell Labs CSRC server is available here:
+
+https://9p.io/
+
+Of course, it includes Dennis Ritchie's pages:
+
+https://9p.io/who/dmr
+
+-- 
+David du Colombier
+
+
+From sdaoden at yandex.com  Thu Jun 11 22:18:05 2015
+From: sdaoden at yandex.com (Steffen Nurpmeso)
+Date: Thu, 11 Jun 2015 14:18:05 +0200
+Subject: [TUHS] DMR's web site
+In-Reply-To: <CANUoZoHreJOPRGHnXkFtgL5ZK83xhCqf+rKCT-bCCtFB5bR2yg@mail.gmail.com>
+References: <201506111131.t5BBVinx002446@skeeve.com>
+ <CANUoZoHreJOPRGHnXkFtgL5ZK83xhCqf+rKCT-bCCtFB5bR2yg@mail.gmail.com>
+Message-ID: <20150611121805.ze9kKhNWMILR%sdaoden@yandex.com>
+
+David du Colombier <0intro at gmail.com> wrote:
+ |By the way, a full mirror of the former Bell Labs CSRC server \
+ |is available here:
+ |
+ |https://9p.io/
+ |
+ |Of course, it includes Dennis Ritchie's pages:
+ |
+ |https://9p.io/who/dmr
+
+And there the photograph of Dennis Ritchie shows a human being,
+not a distorted artifact.
+
+--steffen
+
+
+From cubexyz at gmail.com  Sat Jun 13 04:23:33 2015
+From: cubexyz at gmail.com (Mark Longridge)
+Date: Fri, 12 Jun 2015 14:23:33 -0400
+Subject: [TUHS] recreating bj.s for Unix v5
+Message-ID: <CADxT5N76MBfw9n7ZBdudhqPkZv1rnJu3j89dsbK1bFyutDVm5Q@mail.gmail.com>
+
+I noticed that the assembly source file for blackjack is missing from
+the source tree so I tried to recreate it, so far unsuccessfully.
+
+My first idea was to grab bj.s from 2.11BSD and assemble it the Unix
+v5 as command. That seems to generate a bunch of errors. Also other
+assembly source files don't seem to have .even in them.
+
+Another idea would be generate the source code from the executable
+itself, but there doesn't seem to be a disassembler for early Unix.
+
+It's possible that v5 bj.s was printed out somewhere but so far no
+luck finding it.
+
+Mark
+
+
+From jnc at mercury.lcs.mit.edu  Sat Jun 13 04:39:36 2015
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Fri, 12 Jun 2015 14:39:36 -0400 (EDT)
+Subject: [TUHS] recreating bj.s for Unix v5
+Message-ID: <20150612183937.00ECF18C0BE@mercury.lcs.mit.edu>
+
+    > From: Mark Longridge <cubexyz at gmail.com>
+
+    > My first idea was to grab bj.s from 2.11BSD and assemble it the Unix v5
+    > as command. That seems to generate a bunch of errors. Also other
+    > assembly source files don't seem to have .even in them.
+
+My first question was going to be 'Maybe try an earlier version of the
+source?', but I see there is no earlier version online. Odd. ISTR that some
+of the fun things in V6 came without source, maybe blackjack was the same way?
+
+    > Another idea would be generate the source code from the executable
+    > itself, but there doesn't seem to be a disassembler for early Unix.
+
+Where's the binary? I'd like to take a look at it, and see if the source was
+assembler, or C (there's a C version in the source tree, too). Then I can
+look and see how close it is to that 2.11 source - that may be a
+re-implementation, and totally different.
+
+	Noel
+
+
+From cubexyz at gmail.com  Sat Jun 13 05:01:51 2015
+From: cubexyz at gmail.com (Mark Longridge)
+Date: Fri, 12 Jun 2015 15:01:51 -0400
+Subject: [TUHS] recreating bj.s for Unix v5
+In-Reply-To: <20150612183937.00ECF18C0BE@mercury.lcs.mit.edu>
+References: <20150612183937.00ECF18C0BE@mercury.lcs.mit.edu>
+Message-ID: <CADxT5N4M_=DWC86R=JpKuKa+wt5HRb22Y9XVM3SkfvGff6UnAw@mail.gmail.com>
+
+Here it is:
+
+http://www.maxhost.org/other/unix-v5-bj-pdp-11-executable
+
+Judging by it's small size I figure the original code was assembly language.
+
+On 6/12/15, Noel Chiappa <jnc at mercury.lcs.mit.edu> wrote:
+>     > From: Mark Longridge <cubexyz at gmail.com>
+>
+>     > My first idea was to grab bj.s from 2.11BSD and assemble it the Unix
+> v5
+>     > as command. That seems to generate a bunch of errors. Also other
+>     > assembly source files don't seem to have .even in them.
+>
+> My first question was going to be 'Maybe try an earlier version of the
+> source?', but I see there is no earlier version online. Odd. ISTR that some
+> of the fun things in V6 came without source, maybe blackjack was the same
+> way?
+>
+>     > Another idea would be generate the source code from the executable
+>     > itself, but there doesn't seem to be a disassembler for early Unix.
+>
+> Where's the binary? I'd like to take a look at it, and see if the source
+> was
+> assembler, or C (there's a C version in the source tree, too). Then I can
+> look and see how close it is to that 2.11 source - that may be a
+> re-implementation, and totally different.
+>
+> 	Noel
+>
+
+
+From jnc at mercury.lcs.mit.edu  Sat Jun 13 05:31:23 2015
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Fri, 12 Jun 2015 15:31:23 -0400 (EDT)
+Subject: [TUHS] recreating bj.s for Unix v5
+Message-ID: <20150612193123.F29F418C0C0@mercury.lcs.mit.edu>
+
+    > From: Mark Longridge <cubexyz at gmail.com>
+
+    > My first idea was to grab bj.s from 2.11BSD and assemble it the Unix v5
+    > as command. That seems to generate a bunch of errors.
+
+I saw that there's a SysIII bj.s, which is almost identical to the 2.11 one;
+so the latter is probably descended from the first, which I assume is Bell
+source. So I grabbed it and tried to assemble it.
+
+The errors are because bj.s is designed to be assembled along with another
+assembler source file, which contains the following routines which are
+missing from bj.s:
+
+ mesg
+ decml
+ nline
+
+Dunno if you're aware of this, but, the line 'as a.s b.s' _doesn't_
+separately assemble a.s and b.s, rather it's as if you'd typed
+'cat a.s b.s > temp.s ; as temp.s'. (This is used in the demi-enigmatic
+"as data.s l.s" in the system generation procedure.)
+
+I looked around in the sources that come with V6, and I didn't see any obvious
+such file. I'm going to whip the required routines up really quickly, and see
+if the results assemble/run.
+
+
+I looked to see if I could steal them from the binary of 'bj' on V6, and...
+it looks like that binary is totally different from this source. Let me look
+into this...
+
+
+    > Also other assembly source files don't seem to have .even in them.
+
+The V6 assembler groks '.even'.
+
+	Noel
+
+
+From jnc at mercury.lcs.mit.edu  Sat Jun 13 06:00:43 2015
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Fri, 12 Jun 2015 16:00:43 -0400 (EDT)
+Subject: [TUHS] recreating bj.s for Unix v5
+Message-ID: <20150612200043.4F65218C0C0@mercury.lcs.mit.edu>
+
+    > From: Noel Chiappa
+
+    > another assembler source file, which contains the following routines
+    > which are missing from bj.s:
+
+I missed some. It also wants quest1, quest2 and quest5 (and maybe more).
+This may present a bit of a problem, as I can't find any trace of them
+anywhere, and will have to work out from the source what their arguments,
+etc are, what they do, etc.
+
+I wonder how on earth the 2.11 people got this to assemble? (Or maybe they
+didn't?)
+
+	Noel
+
+
+From cubexyz at gmail.com  Sat Jun 13 06:16:20 2015
+From: cubexyz at gmail.com (Mark Longridge)
+Date: Fri, 12 Jun 2015 16:16:20 -0400
+Subject: [TUHS] recreating bj.s for Unix v5
+In-Reply-To: <20150612200043.4F65218C0C0@mercury.lcs.mit.edu>
+References: <20150612200043.4F65218C0C0@mercury.lcs.mit.edu>
+Message-ID: <CADxT5N543fP++gdHAWkJRcRYQ3YgZm+LFxjsxig5tNijz6X9bQ@mail.gmail.com>
+
+> I missed some. It also wants quest1, quest2 and quest5 (and maybe more).
+> This may present a bit of a problem, as I can't find any trace of them
+> anywhere, and will have to work out from the source what their arguments,
+> etc are, what they do, etc.
+>
+> I wonder how on earth the 2.11 people got this to assemble? (Or maybe they
+> didn't?)
+>
+ >       Noel
+
+
+You gave me a good hint :)
+
+in 2.11bsd:
+
+cd /usr/src/games/pdp
+su
+make bj
+
+which does:
+
+as -o bj.o etc.s bj.s us.s
+ld -o bj bj.o -lc
+
+the executable seems to work OK.
+
+I tried to assemble it in v5 and it actually does assemble but then
+gives "Memory fault -- Core dumped" when trying to run it.
+
+I was wrong about .even, the v5 assembler does understand it. It might
+just be easier to modify a later version of bj.c so the v5 compiler
+could use it.
+
+On 6/12/15, Noel Chiappa <jnc at mercury.lcs.mit.edu> wrote:
+>     > From: Noel Chiappa
+>
+>     > another assembler source file, which contains the following routines
+>     > which are missing from bj.s:
+>
+> I missed some. It also wants quest1, quest2 and quest5 (and maybe more).
+> This may present a bit of a problem, as I can't find any trace of them
+> anywhere, and will have to work out from the source what their arguments,
+> etc are, what they do, etc.
+>
+> I wonder how on earth the 2.11 people got this to assemble? (Or maybe they
+> didn't?)
+>
+> 	Noel
+>
+
+
+From cubexyz at gmail.com  Sat Jun 13 06:33:36 2015
+From: cubexyz at gmail.com (Mark Longridge)
+Date: Fri, 12 Jun 2015 16:33:36 -0400
+Subject: [TUHS] success, bj assembled and linked in Unix v5
+Message-ID: <CADxT5N5pj38fVwBg9EturdHndYXWStd2Q0GqU9T_qC0MbFFwjA@mail.gmail.com>
+
+OK, success...
+
+in Unix v5:
+
+as bj.s etc.s us.s
+ld a.out -lc
+mv a.out bj
+chmod 0744 bj
+
+It seems to work OK now. Probably should work on v6 and v7 as well.
+
+Mark
+
+
+From jnc at mercury.lcs.mit.edu  Sat Jun 13 06:51:32 2015
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Fri, 12 Jun 2015 16:51:32 -0400 (EDT)
+Subject: [TUHS] success, bj assembled and linked in Unix v5
+Message-ID: <20150612205132.BE2C718C0C0@mercury.lcs.mit.edu>
+
+    > From: Mark Longridge <cubexyz at gmail.com>
+
+    > OK, success...
+
+Yeah, I just got there too, but by a slightly longer route!
+
+(Google wasn't turning up the matches for the routines I needed, which you
+found in etc.s, etc - it seems the source archive on Minnie isn't being
+indexed by Google. So I wound up cobbling them together with a mix of stuff
+from other places, along with stuff I wrote/modified.)
+
+    > Probably should work on v6 and v7 as well.
+
+Does on V6, dunno about V7.
+
+    > It seems to work OK now.
+
+Yes, but this is _not_ the source for the V5/V6 'bj'. (I just checked,
+and the V5 and V6 binaries are identical.)
+
+Right at the moment, I've used enough time on this - I may get back to
+it later, and disassemble the V5/V6 binary and see what the original
+source looks like.
+
+	Noel
+
+
+From cowan at ccil.org  Sat Jun 13 06:57:30 2015
+From: cowan at ccil.org (cowan at ccil.org)
+Date: Fri, 12 Jun 2015 16:57:30 -0400
+Subject: [TUHS] success, bj assembled and linked in Unix v5
+In-Reply-To: <CADxT5N5pj38fVwBg9EturdHndYXWStd2Q0GqU9T_qC0MbFFwjA@mail.gmail.com>
+References: <CADxT5N5pj38fVwBg9EturdHndYXWStd2Q0GqU9T_qC0MbFFwjA@mail.gmail.com>
+Message-ID: <5d69d0d25b14df67d255357b897087c2.squirrel@www.ccil.org>
+
+Mark Longridge scripsit:
+
+> OK, success...
+>
+> in Unix v5:
+
+Excellent!  Why not post a transcript of a game?
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Pour moi, les villes du Silmarillion ont plus de realite que Babylone.
+                --Christopher Tolkien, as interviewed by Le Monde
+
+
+
+
+From ron at ronnatalie.com  Sat Jun 13 07:01:20 2015
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Fri, 12 Jun 2015 17:01:20 -0400
+Subject: [TUHS] success, bj assembled and linked in Unix v5
+In-Reply-To: <CADxT5N5pj38fVwBg9EturdHndYXWStd2Q0GqU9T_qC0MbFFwjA@mail.gmail.com>
+References: <CADxT5N5pj38fVwBg9EturdHndYXWStd2Q0GqU9T_qC0MbFFwjA@mail.gmail.com>
+Message-ID: <116CD5A1-BA47-4F7D-9DE5-C1AA87A34848@ronnatalie.com>
+
+744?   You want the group and others to be able to read but not execute?
+
+> On Jun 12, 2015, at 4:33 PM, Mark Longridge <cubexyz at gmail.com> wrote:
+> 
+> OK, success...
+> 
+> in Unix v5:
+> 
+> as bj.s etc.s us.s
+> ld a.out -lc
+> mv a.out bj
+> chmod 0744 bj
+> 
+> It seems to work OK now. Probably should work on v6 and v7 as well.
+> 
+> Mark
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From cubexyz at gmail.com  Sat Jun 13 08:23:18 2015
+From: cubexyz at gmail.com (Mark Longridge)
+Date: Fri, 12 Jun 2015 18:23:18 -0400
+Subject: [TUHS] success, bj assembled and linked in Unix v5
+In-Reply-To: <116CD5A1-BA47-4F7D-9DE5-C1AA87A34848@ronnatalie.com>
+References: <CADxT5N5pj38fVwBg9EturdHndYXWStd2Q0GqU9T_qC0MbFFwjA@mail.gmail.com>
+ <116CD5A1-BA47-4F7D-9DE5-C1AA87A34848@ronnatalie.com>
+Message-ID: <CADxT5N5azoGMBj=9N6pdZiv450gLcu-38qF_jFWscCcY0TwY=Q@mail.gmail.com>
+
+> 744?   You want the group and others to be able to read but not execute?
+
+You are right, chmod 0755 would have made more sense.
+
+On 6/12/15, Ronald Natalie <ron at ronnatalie.com> wrote:
+> 744?   You want the group and others to be able to read but not execute?
+>
+>> On Jun 12, 2015, at 4:33 PM, Mark Longridge <cubexyz at gmail.com> wrote:
+>>
+>> OK, success...
+>>
+>> in Unix v5:
+>>
+>> as bj.s etc.s us.s
+>> ld a.out -lc
+>> mv a.out bj
+>> chmod 0744 bj
+>>
+>> It seems to work OK now. Probably should work on v6 and v7 as well.
+>>
+>> Mark
+>> _______________________________________________
+>> TUHS mailing list
+>> TUHS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+
+
+From grog at lemis.com  Sat Jun 13 08:46:38 2015
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Sat, 13 Jun 2015 08:46:38 +1000
+Subject: [TUHS] recreating bj.s for Unix v5
+In-Reply-To: <CADxT5N4M_=DWC86R=JpKuKa+wt5HRb22Y9XVM3SkfvGff6UnAw@mail.gmail.com>
+References: <20150612183937.00ECF18C0BE@mercury.lcs.mit.edu>
+ <CADxT5N4M_=DWC86R=JpKuKa+wt5HRb22Y9XVM3SkfvGff6UnAw@mail.gmail.com>
+Message-ID: <20150612224638.GE76944@eureka.lemis.com>
+
+On Friday, 12 June 2015 at 15:01:51 -0400, Mark Longridge wrote:
+> On 6/12/15, Noel Chiappa <jnc at mercury.lcs.mit.edu> wrote:
+>> Where's the binary? I'd like to take a look at it, and see if the
+>> source was assembler, or C (there's a C version in the source tree,
+>> too). Then I can look and see how close it is to that 2.11 source -
+>> that may be a re-implementation, and totally different.
+>
+> Here it is:
+>
+> http://www.maxhost.org/other/unix-v5-bj-pdp-11-executable
+>
+> Judging by it's small size I figure the original code was assembly
+> language.
+
+Wouldn't it make sense to disassemble it and create a source file from
+that?
+
+Greg
+--
+Sent from my desktop computer.
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft MUA reports
+problems, please read http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 196 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150613/b33312b7/attachment.sig>
+
+From dave at horsfall.org  Sun Jun 14 03:48:36 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sun, 14 Jun 2015 03:48:36 +1000 (EST)
+Subject: [TUHS] success, bj assembled and linked in Unix v5
+In-Reply-To: <CADxT5N5pj38fVwBg9EturdHndYXWStd2Q0GqU9T_qC0MbFFwjA@mail.gmail.com>
+References: <CADxT5N5pj38fVwBg9EturdHndYXWStd2Q0GqU9T_qC0MbFFwjA@mail.gmail.com>
+Message-ID: <alpine.BSF.2.11.1506140346240.67022@aneurin.horsfall.org>
+
+On Fri, 12 Jun 2015, Mark Longridge wrote:
+
+> chmod 0744 bj
+
+That has to be the world's oddest "chmod" command.
+
+-- 
+Dave Horsfall DTM (VK2KFU)   "Those who don't understand security will suffer."
+http://www.horsfall.org/spam.html (and check the home page whilst you're there)
+
+
+From norman at oclsc.org  Sun Jun 14 11:08:48 2015
+From: norman at oclsc.org (Norman Wilson)
+Date: Sat, 13 Jun 2015 21:08:48 -0400 (EDT)
+Subject: [TUHS] success, bj assembled and linked in Unix v5
+Message-ID: <20150614010848.E047B1DE38E@lignose.oclsc.org>
+
+Mark Longridge:
+
+  chmod 0744 bj
+
+Dave Horsfall:
+
+  That has to be the world's oddest "chmod" command.
+
+======
+
+Not by a long shot.
+
+Recently, for reasons related both to NFS permissions and to
+hardware testing, I have occasionally been making directories
+with mode 753.
+
+At the place I worked 20 years ago, we wanted a directory
+into which anonymous ftp could write, so that people could
+send us files; but we didn't want it to become a place for
+creeps to stash their creepy files.  I thought about the
+problem briefly, then made the directory with mode 0270,
+owned by the user used for anonymous ftp and by a group
+containing all the staff members allowed to receive files
+that way.  That way creeps could deposit files but couldn't
+see what was there.
+
+I also told cron to run every ten minutes, changing the
+permissions of any file in that directory to 0060.
+
+Oh, and I had already maniacally (and paranoiacally)
+excised from ftpd the code allowing ftp to change permissions.
+
+I admit I can't think of a reason to use 744 offhand, since
+if you can read the file you can copy it and make the copy
+executable.  But UNIX permissions can be used in so many
+interesting ways that I'm not willing to claim there is no
+such reason just because I can't see what it is.
+
+Norman Wilson
+Toronto ON
+
+
+From cowan at mercury.ccil.org  Sun Jun 14 11:41:55 2015
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Sat, 13 Jun 2015 21:41:55 -0400
+Subject: [TUHS] success, bj assembled and linked in Unix v5
+In-Reply-To: <20150614010848.E047B1DE38E@lignose.oclsc.org>
+References: <20150614010848.E047B1DE38E@lignose.oclsc.org>
+Message-ID: <20150614014155.GC20321@mercury.ccil.org>
+
+Norman Wilson scripsit:
+
+> Oh, and I had already maniacally (and paranoiacally)
+> excised from ftpd the code allowing ftp to change permissions.
+
+I needed an FTP server some time back to support only *non*-anonymous
+logins, where the logins had nothing to do with the underlying system.
+I came up with this:
+
+<http://ccil.org/~cowan/publish-ftpd>
+
+I was going to add HTTP support with basic auth, but never got around
+to it.
+
+> I admit I can't think of a reason to use 744 offhand, since
+> if you can read the file you can copy it and make the copy
+> executable.  
+
+But it won't be owned by the original owner, which means any setuid bit
+will give it the permissions of the copy-maker.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Awk!" sed Grep. "A fscking python is perloining my Ruby; let me bash
+    him with a Cshell!  Vi didn't I mount it on a troff?" --Francis Turner
+
+
+From random832 at fastmail.us  Sun Jun 14 12:50:24 2015
+From: random832 at fastmail.us (random832 at fastmail.us)
+Date: Sat, 13 Jun 2015 22:50:24 -0400
+Subject: [TUHS] success, bj assembled and linked in Unix v5
+In-Reply-To: <20150614014155.GC20321@mercury.ccil.org>
+References: <20150614010848.E047B1DE38E@lignose.oclsc.org>
+ <20150614014155.GC20321@mercury.ccil.org>
+Message-ID: <1434250224.3528778.294918977.25E8E029@webmail.messagingengine.com>
+
+
+
+On Sat, Jun 13, 2015, at 21:41, John Cowan wrote:
+> But it won't be owned by the original owner, which means any setuid bit
+> will give it the permissions of the copy-maker.
+
+Right, but 744 doesn't include a setuid bit.
+
+
+From lars at nocrew.org  Mon Jun 15 15:14:04 2015
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: Mon, 15 Jun 2015 07:14:04 +0200
+Subject: [TUHS] recreating bj.s for Unix v5
+In-Reply-To: <CADxT5N76MBfw9n7ZBdudhqPkZv1rnJu3j89dsbK1bFyutDVm5Q@mail.gmail.com>
+ (Mark Longridge's message of "Fri, 12 Jun 2015 14:23:33 -0400")
+References: <CADxT5N76MBfw9n7ZBdudhqPkZv1rnJu3j89dsbK1bFyutDVm5Q@mail.gmail.com>
+Message-ID: <86egldo8o3.fsf@vps34351.public.cloudvps.com>
+
+Mark Longridge <cubexyz at gmail.com> writes:
+> Another idea would be generate the source code from the executable
+> itself, but there doesn't seem to be a disassembler for early Unix.
+
+There is a PDP-11 disassembler in GNU binutils.  Maybe you can adapt it
+four your needs.
+
+
+From arnold at skeeve.com  Wed Jun 17 15:29:04 2015
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Wed, 17 Jun 2015 08:29:04 +0300
+Subject: [TUHS] O'Reilly X11 books, take two
+Message-ID: <201506170529.t5H5T4u4004247@skeeve.com>
+
+Hi All.
+
+As mentioned a few weeks ago, I have a full set of the O'Reilly X11 books
+from the early 90s.  
+
+I'm willing to send them on to a better home for the cost of mailing
+from Israel.
+
+One person said they were interested but didn't follow up with me, so
+I'm again offering to the list.  First one to get back to me wins. :-)
+
+Thanks,
+
+Arnold
+
+
+From arnold at skeeve.com  Wed Jun 17 15:31:24 2015
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Wed, 17 Jun 2015 08:31:24 +0300
+Subject: [TUHS] typesetting history
+Message-ID: <201506170531.t5H5VOUY004316@skeeve.com>
+
+I recently came across this:
+
+	http://www.cs.princeton.edu/~bwk/202
+
+It's been there for a while but I hadn't noticed it. It describes the
+trials and tribulations of getting the Mergenthaler 202 up and running
+at Bell Labs and is very interesting reading.
+
+I have already requested that they archive their work with TUHS and
+gotten a positve response about this from David Brailsford. In the
+meantime, it's fun reading!
+
+Enjoy,
+
+Arnold
+
+
+From gilbertmm at sdf.org  Wed Jun 17 15:47:38 2015
+From: gilbertmm at sdf.org (Gilbert Morgan)
+Date: Tue, 16 Jun 2015 22:47:38 -0700
+Subject: [TUHS] O'Reilly X11 books, take two
+In-Reply-To: <201506170529.t5H5T4u4004247@skeeve.com>
+References: <201506170529.t5H5T4u4004247@skeeve.com>
+Message-ID: <8428059f5d1a95246037786bac1be280.squirrel@wm.sdf.org>
+
+I'm interested. Count me in.
+
+
+<quote who="Aharon Robbins">
+> Hi All.
+>
+> As mentioned a few weeks ago, I have a full set of the O'Reilly X11 books
+> from the early 90s.
+>
+> I'm willing to send them on to a better home for the cost of mailing
+> from Israel.
+>
+> One person said they were interested but didn't follow up with me, so
+> I'm again offering to the list.  First one to get back to me wins. :-)
+>
+> Thanks,
+>
+> Arnold
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+-- 
+gilbertmm at sdf.org
+SDF Public Access UNIX System - http://sdf.org
+
+
+
+From arnold at skeeve.com  Wed Jun 17 16:45:40 2015
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Wed, 17 Jun 2015 00:45:40 -0600
+Subject: [TUHS] X11 books
+In-Reply-To: <8428059f5d1a95246037786bac1be280.squirrel@wm.sdf.org>
+References: <201506170529.t5H5T4u4004247@skeeve.com>
+ <8428059f5d1a95246037786bac1be280.squirrel@wm.sdf.org>
+Message-ID: <201506170645.t5H6jevF008625@freefriends.org>
+
+OK, you got it. Please send mailing address.
+
+Thanks,
+
+Arnold
+
+"Gilbert Morgan" <gilbertmm at sdf.org> wrote:
+
+> I'm interested. Count me in.
+>
+>
+> <quote who="Aharon Robbins">
+> > Hi All.
+> >
+> > As mentioned a few weeks ago, I have a full set of the O'Reilly X11 books
+> > from the early 90s.
+> >
+> > I'm willing to send them on to a better home for the cost of mailing
+> > from Israel.
+> >
+> > One person said they were interested but didn't follow up with me, so
+> > I'm again offering to the list.  First one to get back to me wins. :-)
+> >
+> > Thanks,
+> >
+> > Arnold
+> > _______________________________________________
+> > TUHS mailing list
+> > TUHS at minnie.tuhs.org
+> > https://minnie.tuhs.org/mailman/listinfo/tuhs
+> >
+>
+>
+> -- 
+> gilbertmm at sdf.org
+> SDF Public Access UNIX System - http://sdf.org
+
+
+From grog at lemis.com  Wed Jun 17 17:50:39 2015
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Wed, 17 Jun 2015 17:50:39 +1000
+Subject: [TUHS] X11 books
+In-Reply-To: <201506170645.t5H6jevF008625@freefriends.org>
+References: <201506170529.t5H5T4u4004247@skeeve.com>
+ <8428059f5d1a95246037786bac1be280.squirrel@wm.sdf.org>
+ <201506170645.t5H6jevF008625@freefriends.org>
+Message-ID: <20150617075039.GE75431@eureka.lemis.com>
+
+On Wednesday, 17 June 2015 at  0:45:40 -0600, arnold at skeeve.com wrote:
+> "Gilbert Morgan" <gilbertmm at sdf.org> wrote:
+>> <quote who="Aharon Robbins">
+>>> Hi All.
+>>>
+>>> As mentioned a few weeks ago, I have a full set of the O'Reilly X11 books
+>>> from the early 90s.
+>>>
+>>> I'm willing to send them on to a better home for the cost of mailing
+>>> from Israel.
+>
+>> I'm interested. Count me in.
+>
+> OK, you got it. Please send mailing address.
+
+If anybody else is interested, I have a set too.  Also the complete
+4.4BSD manual set.  Postage would be from Australia this time.
+
+Greg
+--
+Sent from my desktop computer.
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft MUA reports
+problems, please read http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 196 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150617/8f594f65/attachment.sig>
+
+From meillo at marmaro.de  Wed Jun 17 18:03:33 2015
+From: meillo at marmaro.de (markus schnalke)
+Date: Wed, 17 Jun 2015 10:03:33 +0200
+Subject: [TUHS] X11 books
+In-Reply-To: <20150617075039.GE75431@eureka.lemis.com>
+References: <201506170529.t5H5T4u4004247@skeeve.com>
+ <8428059f5d1a95246037786bac1be280.squirrel@wm.sdf.org>
+ <201506170645.t5H6jevF008625@freefriends.org>
+ <20150617075039.GE75431@eureka.lemis.com>
+Message-ID: <1Z58Jp-0u6-00@marmaro.de>
+
+[2015-06-17 17:50] Greg 'groggy' Lehey <grog at lemis.com>
+>
+> Also the complete 4.4BSD manual set.
+
+I'm interested in the 4.4BSD manuals.
+
+
+meillo
+
+
+From gilbertmm at sdf.org  Wed Jun 17 18:12:03 2015
+From: gilbertmm at sdf.org (Gilbert Morgan)
+Date: Wed, 17 Jun 2015 01:12:03 -0700
+Subject: [TUHS] X11 books
+In-Reply-To: <1Z58Jp-0u6-00@marmaro.de>
+References: <201506170529.t5H5T4u4004247@skeeve.com>
+ <8428059f5d1a95246037786bac1be280.squirrel@wm.sdf.org>
+ <201506170645.t5H6jevF008625@freefriends.org>
+ <20150617075039.GE75431@eureka.lemis.com> <1Z58Jp-0u6-00@marmaro.de>
+Message-ID: <f073c56a853e6f25712bee73f2568841.squirrel@wm.sdf.org>
+
+If Markus ends up not getting the 4.4BSD Manuals, I will take them. Just
+let me know.
+
+<quote who="markus schnalke">
+> [2015-06-17 17:50] Greg 'groggy' Lehey <grog at lemis.com>
+>>
+>> Also the complete 4.4BSD manual set.
+>
+> I'm interested in the 4.4BSD manuals.
+>
+>
+> meillo
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+-- 
+gilbertmm at sdf.org
+SDF Public Access UNIX System - http://sdf.org
+
+
+
+From vu3rdd at gmail.com  Wed Jun 17 19:26:10 2015
+From: vu3rdd at gmail.com (Ramakrishnan Muthukrishnan)
+Date: Wed, 17 Jun 2015 14:56:10 +0530
+Subject: [TUHS] Plan 9/Inferno Manuals?
+Message-ID: <CAA6Yd9W818JDhwGBPEz37t7fxNDMuxiqoWQwAB5e_D6NZT-Lcg@mail.gmail.com>
+
+Anyone got Plan 9 4th edition manuals or Inferno Manuals? I will be
+interested to buy them. Vitanuova used to sell them, but their payment
+system is down for years now and has been brought up to Charles many
+times, but it seem to be still down, so there is no way to buy it from
+them.
+
+-- 
+  Ramakrishnan
+
+
+From 0intro at gmail.com  Wed Jun 17 19:34:09 2015
+From: 0intro at gmail.com (David du Colombier)
+Date: Wed, 17 Jun 2015 11:34:09 +0200
+Subject: [TUHS] Plan 9/Inferno Manuals?
+In-Reply-To: <CAA6Yd9W818JDhwGBPEz37t7fxNDMuxiqoWQwAB5e_D6NZT-Lcg@mail.gmail.com>
+References: <CAA6Yd9W818JDhwGBPEz37t7fxNDMuxiqoWQwAB5e_D6NZT-Lcg@mail.gmail.com>
+Message-ID: <CANUoZoEi1J7mwA=8NWhLxOAgGXXu+N2Do38FPaySp7emj6F8YQ@mail.gmail.com>
+
+> Anyone got Plan 9 4th edition manuals or Inferno Manuals? I will be
+> interested to buy them. Vitanuova used to sell them, but their payment
+> system is down for years now and has been brought up to Charles many
+> times, but it seem to be still down, so there is no way to buy it from
+> them.
+
+Alternatively, you could still generate the two up-to-date PDF manuals
+from /sys/doc and print them on one of the print-on-demand services.
+You won't get the nice colorful covers though.
+
+-- 
+David du Colombier
+
+
+From vu3rdd at gmail.com  Wed Jun 17 19:39:56 2015
+From: vu3rdd at gmail.com (Ramakrishnan Muthukrishnan)
+Date: Wed, 17 Jun 2015 15:09:56 +0530
+Subject: [TUHS] Plan 9/Inferno Manuals?
+In-Reply-To: <CANUoZoEi1J7mwA=8NWhLxOAgGXXu+N2Do38FPaySp7emj6F8YQ@mail.gmail.com>
+References: <CAA6Yd9W818JDhwGBPEz37t7fxNDMuxiqoWQwAB5e_D6NZT-Lcg@mail.gmail.com>
+ <CANUoZoEi1J7mwA=8NWhLxOAgGXXu+N2Do38FPaySp7emj6F8YQ@mail.gmail.com>
+Message-ID: <CAA6Yd9VyFQ9DcSLwHV6U1T6daRO2hVLU5t6jyXLTBqCzuCixoQ@mail.gmail.com>
+
+On Wed, Jun 17, 2015 at 3:04 PM, David du Colombier <0intro at gmail.com> wrote:
+>> Anyone got Plan 9 4th edition manuals or Inferno Manuals? I will be
+>> interested to buy them. Vitanuova used to sell them, but their payment
+>> system is down for years now and has been brought up to Charles many
+>> times, but it seem to be still down, so there is no way to buy it from
+>> them.
+>
+> Alternatively, you could still generate the two up-to-date PDF manuals
+> from /sys/doc and print them on one of the print-on-demand services.
+
+yes, I have PDFs of them. I just wanted to know if anyone has original
+copies for sale.
+
+-- 
+  Ramakrishnan
+
+
+From milov at cs.uwlax.edu  Wed Jun 17 21:52:38 2015
+From: milov at cs.uwlax.edu (Milo Velimirovic)
+Date: Wed, 17 Jun 2015 06:52:38 -0500
+Subject: [TUHS] typesetting history
+In-Reply-To: <201506170531.t5H5VOUY004316@skeeve.com>
+References: <201506170531.t5H5VOUY004316@skeeve.com>
+Message-ID: <9D67C5EA-3395-47FB-BB7E-05C471FD1B2F@cs.uwlax.edu>
+
+Oh my! This brings back memories from the 1980s. I worked at a publishing company and had many dealings with a 202. I suspect that our travails were increased by the equipment we used to drive our 202, a DG Eclipse S/130 and a serial connection that used the paper tape reader interface.
+
+ - Milo
+
+> On Jun 17, 2015, at 12:31 AM, Aharon Robbins <arnold at skeeve.com> wrote:
+> 
+> I recently came across this:
+> 
+> 	http://www.cs.princeton.edu/~bwk/202
+> 
+> It's been there for a while but I hadn't noticed it. It describes the
+> trials and tribulations of getting the Mergenthaler 202 up and running
+> at Bell Labs and is very interesting reading.
+> 
+> I have already requested that they archive their work with TUHS and
+> gotten a positve response about this from David Brailsford. In the
+> meantime, it's fun reading!
+> 
+> Enjoy,
+> 
+> Arnold
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+
+From gregg.drwho8 at gmail.com  Thu Jun 18 00:49:24 2015
+From: gregg.drwho8 at gmail.com (Gregg Levine)
+Date: Wed, 17 Jun 2015 10:49:24 -0400
+Subject: [TUHS] typesetting history
+In-Reply-To: <9D67C5EA-3395-47FB-BB7E-05C471FD1B2F@cs.uwlax.edu>
+References: <201506170531.t5H5VOUY004316@skeeve.com>
+ <9D67C5EA-3395-47FB-BB7E-05C471FD1B2F@cs.uwlax.edu>
+Message-ID: <CAC5iaNFVUYLhXWHgRnf3T6f1xw=9LUaB7akPEGgujwC_+MhK3Q@mail.gmail.com>
+
+Hello!
+On a setup like that?
+ I may not know UNIX as much as I want to, as much as all of you, but
+I do know my way around a DG Eclipse and a Mergenthaler 202. Do recall
+who set things up? Because they did it wrong. That Mergenthaler 202
+had a dedicated port for communicating with the host. The tape reader
+was only used upon starting the machine when it gets uncrated by the
+company rep. The new users need to follow a series of steps to load
+the fonts into the machines internal storage. The user needs to use a
+special system to write a FST tape to do that.
+
+Now if you were talking about a Mergenthaler VIP then yes you'd need
+to go through the tape device, a special contraption was constructed
+to translate serial into something the tape device understood.
+
+How do I know this? My father ran a series of phototypesetting shops
+each being run by DG hardware, including that fellow. While those
+systems didn't run the dedicated OS that DG normally supplied, they
+ran one written for the purposes of doing composition.
+
+Incidentally some of the features of UNIX were constructed to do
+phototypesetting, and in this case that's how copies of the C
+programming book were originally set.
+
+Now I freely admit if someone did indeed succeed in porting UNIX to
+that DG, and in fact that's why the two were connected that way, but
+for the vast majority of shops during the late 80s and during most of
+the 90s who bought the software I've described and also the hardware
+that's how it was done.
+
+The one who did not. picked the same hardware, but an APS Mark 5 type
+printer......
+
+I'd give one of my favorite character's lives (if possible) to obtain
+one of those specialized terminals..... It was similar to the Altair
+and ASR33 (with paper tape reader/punch feature enabled) but it used a
+VDT.
+-----
+Gregg C Levine gregg.drwho8 at gmail.com
+"This signature fought the Time Wars, time and again."
+
+
+On Wed, Jun 17, 2015 at 7:52 AM, Milo Velimirovic <milov at cs.uwlax.edu> wrote:
+> Oh my! This brings back memories from the 1980s. I worked at a publishing company and had many dealings with a 202. I suspect that our travails were increased by the equipment we used to drive our 202, a DG Eclipse S/130 and a serial connection that used the paper tape reader interface.
+>
+>  - Milo
+>
+>> On Jun 17, 2015, at 12:31 AM, Aharon Robbins <arnold at skeeve.com> wrote:
+>>
+>> I recently came across this:
+>>
+>>       http://www.cs.princeton.edu/~bwk/202
+>>
+>> It's been there for a while but I hadn't noticed it. It describes the
+>> trials and tribulations of getting the Mergenthaler 202 up and running
+>> at Bell Labs and is very interesting reading.
+>>
+>> I have already requested that they archive their work with TUHS and
+>> gotten a positve response about this from David Brailsford. In the
+>> meantime, it's fun reading!
+>>
+>> Enjoy,
+>>
+>> Arnold
+>> _______________________________________________
+>> TUHS mailing list
+>> TUHS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From ckeck at texoma.net  Thu Jun 18 00:44:25 2015
+From: ckeck at texoma.net (Cornelius Keck)
+Date: Wed, 17 Jun 2015 10:44:25 -0400
+Subject: [TUHS] X11 books
+In-Reply-To: <20150617075039.GE75431@eureka.lemis.com>
+References: <201506170529.t5H5T4u4004247@skeeve.com>
+ <8428059f5d1a95246037786bac1be280.squirrel@wm.sdf.org>
+ <201506170645.t5H6jevF008625@freefriends.org>
+ <20150617075039.GE75431@eureka.lemis.com>
+Message-ID: <599fa6736330390a8b4211860def5a9e.squirrel@www.texoma.net>
+
+I'll take the X11 set, and the 4.4BSD if nobody else picks them up..
+
+
+On Wed, June 17, 2015 03:50, Greg 'groggy' Lehey wrote:
+> On Wednesday, 17 June 2015 at  0:45:40 -0600, arnold at skeeve.com wrote:
+>
+>> "Gilbert Morgan" <gilbertmm at sdf.org> wrote:
+>>
+>>> <quote who="Aharon Robbins">
+>>>
+>>>> Hi All.
+>>>>
+>>>>
+>>>> As mentioned a few weeks ago, I have a full set of the O'Reilly X11
+>>>> books from the early 90s.
+>>>>
+>>>> I'm willing to send them on to a better home for the cost of
+>>>> mailing from Israel.
+>>
+>>> I'm interested. Count me in.
+>>>
+>>
+>> OK, you got it. Please send mailing address.
+>>
+>
+> If anybody else is interested, I have a set too.  Also the complete
+> 4.4BSD manual set.  Postage would be from Australia this time.
+>
+>
+> Greg
+> --
+> Sent from my desktop computer.
+> Finger grog at FreeBSD.org for PGP public key.
+> See complete headers for address and phone numbers.
+> This message is digitally signed.  If your Microsoft MUA reports
+> problems, please read http://tinyurl.com/broken-mua
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+
+
+
+
+From brantleycoile at me.com  Thu Jun 18 00:55:32 2015
+From: brantleycoile at me.com (Brantley Coile)
+Date: Wed, 17 Jun 2015 10:55:32 -0400
+Subject: [TUHS] Anyone have a pdf of the C/A/T manual
+Message-ID: <6D611BE2-8FF1-4B61-9263-95BBEC779F0A@me.com>
+
+I remember seeing a manual on the C/A/T typesetter at one point.  I didn’t see it in bitsavers.org. 
+
+Anyone have a pdf of it?
+
+bwc
+
+
+
+From cowan at ccil.org  Thu Jun 18 03:09:27 2015
+From: cowan at ccil.org (cowan at ccil.org)
+Date: Wed, 17 Jun 2015 13:09:27 -0400
+Subject: [TUHS] typesetting history
+In-Reply-To: <CAC5iaNFVUYLhXWHgRnf3T6f1xw=9LUaB7akPEGgujwC_+MhK3Q@mail.gmail.com>
+References: <201506170531.t5H5VOUY004316@skeeve.com>
+ <9D67C5EA-3395-47FB-BB7E-05C471FD1B2F@cs.uwlax.edu>
+ <CAC5iaNFVUYLhXWHgRnf3T6f1xw=9LUaB7akPEGgujwC_+MhK3Q@mail.gmail.com>
+Message-ID: <3673be10cad03fd03b3f3e2485eeebc1.squirrel@www.ccil.org>
+
+Gregg Levine scripsit:
+
+> Now I freely admit if someone did indeed succeed in porting UNIX to
+> that DG, and in fact that's why the two were connected that way, but
+> for the vast majority of shops during the late 80s and during most of
+> the 90s who bought the software I've described and also the hardware
+> that's how it was done.
+
+AFAIK there was no port of any 16-bit Unix to the Eclipse.  The Eclipse
+MV (32-bit) had a port of SVR2.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Sir, I quite agree with you, but what are we two against so many?
+    --George Bernard Shaw,
+         to a man booing at the opening of _Arms and the Man_
+
+
+
+
+From gregg.drwho8 at gmail.com  Thu Jun 18 04:47:18 2015
+From: gregg.drwho8 at gmail.com (Gregg Levine)
+Date: Wed, 17 Jun 2015 14:47:18 -0400
+Subject: [TUHS] typesetting history
+In-Reply-To: <3673be10cad03fd03b3f3e2485eeebc1.squirrel@www.ccil.org>
+References: <201506170531.t5H5VOUY004316@skeeve.com>
+ <9D67C5EA-3395-47FB-BB7E-05C471FD1B2F@cs.uwlax.edu>
+ <CAC5iaNFVUYLhXWHgRnf3T6f1xw=9LUaB7akPEGgujwC_+MhK3Q@mail.gmail.com>
+ <3673be10cad03fd03b3f3e2485eeebc1.squirrel@www.ccil.org>
+Message-ID: <CAC5iaNHoo28GCQdyaN440NwADdWAs1oJeuJ37TgWJhQ7MPuDCA@mail.gmail.com>
+
+Hello!
+Indeed. I did know about the MV series of machines and in fact that's
+the fellow I met during the period that I referenced. I knew that no
+such port was constructed for the first generation machines.
+
+And incidentally the DG machines I first met were a NOVA-2 and then a
+NOVA-3. Finally one who started out as a NOVA-4 but became an MV
+Eclipse design.
+-----
+Gregg C Levine gregg.drwho8 at gmail.com
+"This signature fought the Time Wars, time and again."
+
+
+On Wed, Jun 17, 2015 at 1:09 PM,  <cowan at ccil.org> wrote:
+> Gregg Levine scripsit:
+>
+>> Now I freely admit if someone did indeed succeed in porting UNIX to
+>> that DG, and in fact that's why the two were connected that way, but
+>> for the vast majority of shops during the late 80s and during most of
+>> the 90s who bought the software I've described and also the hardware
+>> that's how it was done.
+>
+> AFAIK there was no port of any 16-bit Unix to the Eclipse.  The Eclipse
+> MV (32-bit) had a port of SVR2.
+>
+> --
+> John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+> Sir, I quite agree with you, but what are we two against so many?
+>     --George Bernard Shaw,
+>          to a man booing at the opening of _Arms and the Man_
+>
+>
+
+
+From reed at reedmedia.net  Thu Jun 18 05:53:05 2015
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Wed, 17 Jun 2015 14:53:05 -0500 (CDT)
+Subject: [TUHS] BSD manual set experience
+Message-ID: <alpine.NEB.2.11.1506171343420.26100@t1.m.reedmedia.net>
+
+Prompted by another thread, I decided to share about some of my 
+experience with providing printed BSD manuals.
+
+I was given a 4.4BSD set with the understanding that I would work on 
+preparing new print editions using NetBSD. It was a significant 
+undertaking. I ended up just doing Section 8 System. Here is a summary 
+of what I did:
+
+- Build the NetBSD distribution (which gets the manual pages generated 
+or at least put in place).
+
+- Manual clean up, like remove a link to manual page that wasn't needed 
+and remove a duplicated manual (in two sub-sections).
+
+- Learned about permuted index (the long KWIC index cross-reference). 
+Generated a list of characters and terms to ignore for building my 
+permuted index. Wrote script to generate it, including converting to 
+LaTeX using longtable. This resulted in 2937 entries and was 68 pages in 
+printed book.
+
+- Create list of all an section 8 pages, pruned for duplicate inodes.
+
+- Also have a list of 40 filenames of other manpages to include in the 
+man8 book. These are system maintenance procedures or commands that are 
+in wrong section or could be section 8 (or weren't installed). (Examples 
+are ipftest, pkg_admin, postsuper.)
+
+- Generate a sorted list of all the manuals.
+
+- Look for any missing manual pages. Script to check for libexec or sbin 
+tools not in man8, such as supfilesrv or supscan is really supservers.8 
+and missing kdigest.8. Get those files in place as needed. I cannot 
+remember now, but I think I may have wrote some missing manuals or got 
+others to submit some (officially).
+
+- Script to make sure all man pages are in order. This found some 
+duplicate manual pages with different inodes, wrong man macro DT values, 
+wrong filename, wrong sections, etc. Some of these were reported 
+upstream or fixed.
+
+- Script to create the book as a single huge postscript file, then a 
+PDF. Reviewed the possible ROFF related errors and warnings.
+(On 2009-10-23, it was 1304 pdf pages from 572 manuals.)
+
+- Script to figure out licenses. This was substantial! It looked for 
+copyright patterns in manual source, excluded junk formatting like 
+revision control markers, include some extra licenses that weren't 
+included in the manpage itself (like GPL2). Then another script to 
+generate LaTeX from the copyrights and licenses. It removed duplicate 
+license statements and sorted the copyrights.  So some license 
+statements had many copyrights using the same license verbiage.
+
+This represented 620 copyrighted files with approximately 683 copyright 
+lines and 109 different licenses. Yes 109! That resulted in 
+approximately 68 printed pages, pages 1461 through 1529. This didn't 
+duplicate any license verbiage. (I just realized that was the same 
+length as my permuted index.)
+
+A few things to note:  Some authors chose to use different names for 
+different copyright statements. Some authors used their names or 
+assigned the copyright to the project. Some licenses included software 
+or authors names instead of generic terms. Many BSD style licenses were 
+slightly changed with different grammar, etc. Many contributors created 
+own license or reworded someone else's existing license text. As an 
+example: "If it breaks then you get to keep both pieces." :)
+
+The four most common license statements represented 113 "THE REGENTS AND 
+CONTRIBUTORS" manuals, 75 "THE NETBSD FOUNDATION, INC." manuals, and 35 
+"IBM" (aka Postfix) manuals, and 30 generic "THE AUTHOR AND 
+CONTRIBUTORS" manuals.
+
+I found many were missing licenses. I hunted down original authors, 
+looked in CVS history, etc to help resolve some of these. I also 
+reported about still missing licenses to the project. We will assume 
+they meant it is open source and can be distributed since nobody has 
+complained for years (even prior to my printed work) :)
+
+- Generated a list of required advertising acknowledgments in LaTeX to 
+import into one printed book (and for webpage).
+
+- Split my long PDF into two volumes. Used LaTeX pdfpages package and 
+includepdf to include the generated PDFs. I made sure the page numbers 
+continued in the second book from end of previous volume. (After 
+printing, I realized a mistake where the second volume had odd numbers 
+on left pages, but order is still correct, so I assume nobody else 
+noticed.)
+
+Historically, the System Manager's Manual (SMM) also included other 
+system installation and administration documentation (in addition to the 
+manual pages). My work didn't include that documentation (some of which 
+was unmaintained since 4.4BSD in 1993 and covers some software and 
+features that are no longer included with NetBSD). That could be another 
+project.
+
+I only did the SMM / manual section 8. I realized if I did all manuals, 
+my book set would be well over ten thousand printed pages. The amount of 
+work and initial printing costs would not be worth it with the little 
+money it could bring in. It was certainly a learning experience, plus 
+some benefit such as cleanup of some mandoc/roff code, filename renames, 
+copyright/license additions, and manual pages added.
+
+  Jeremy C. Reed
+
+echo 'EhZ[h ^jjf0%%h[[Zc[Z_W$d[j%Xeeai%ZW[ced#]dk#f[d]k_d%' | \
+  tr            '#-~'            '\-.-{'
+
+
+
+From dave at horsfall.org  Fri Jun 19 02:53:58 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Fri, 19 Jun 2015 02:53:58 +1000 (EST)
+Subject: [TUHS] X11 books
+In-Reply-To: <20150617075039.GE75431@eureka.lemis.com>
+References: <201506170529.t5H5T4u4004247@skeeve.com>
+ <8428059f5d1a95246037786bac1be280.squirrel@wm.sdf.org>
+ <201506170645.t5H6jevF008625@freefriends.org>
+ <20150617075039.GE75431@eureka.lemis.com>
+Message-ID: <alpine.BSF.2.11.1506190250120.59883@aneurin.horsfall.org>
+
+On Wed, 17 Jun 2015, Greg 'groggy' Lehey wrote:
+
+> If anybody else is interested, I have a set too.  Also the complete
+> 4.4BSD manual set.  Postage would be from Australia this time.
+
+Herewith my (belated) interest in the BSD docs...  I'm in .AU land.
+
+-- 
+Dave Horsfall DTM (VK2KFU)   "Those who don't understand security will suffer."
+http://www.horsfall.org/spam.html (and check the home page whilst you're there)
+
+
+From dave at horsfall.org  Fri Jun 19 03:10:20 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Fri, 19 Jun 2015 03:10:20 +1000 (EST)
+Subject: [TUHS] Plan 9/Inferno Manuals?
+In-Reply-To: <CANUoZoEi1J7mwA=8NWhLxOAgGXXu+N2Do38FPaySp7emj6F8YQ@mail.gmail.com>
+References: <CAA6Yd9W818JDhwGBPEz37t7fxNDMuxiqoWQwAB5e_D6NZT-Lcg@mail.gmail.com>
+ <CANUoZoEi1J7mwA=8NWhLxOAgGXXu+N2Do38FPaySp7emj6F8YQ@mail.gmail.com>
+Message-ID: <alpine.BSF.2.11.1506190302530.59883@aneurin.horsfall.org>
+
+On Wed, 17 Jun 2015, David du Colombier wrote:
+
+> Alternatively, you could still generate the two up-to-date PDF manuals 
+> from /sys/doc and print them on one of the print-on-demand services. You 
+> won't get the nice colorful covers though.
+
+And you won't even get that far if the material contains the dreaded word 
+"Copyright"...
+
+Yeah, it's freely redistributable. "But Sir, it's copyright!"
+
+KwikCopy, I'm looking at you.
+
+-- 
+Dave Horsfall DTM (VK2KFU)   "Those who don't understand security will suffer."
+http://www.horsfall.org/spam.html (and check the home page whilst you're there)
+
+
+From aram.h at mgk.ro  Fri Jun 19 03:27:35 2015
+From: aram.h at mgk.ro (=?UTF-8?B?QXJhbSBIxIN2xINybmVhbnU=?=)
+Date: Thu, 18 Jun 2015 19:27:35 +0200
+Subject: [TUHS] Plan 9/Inferno Manuals?
+In-Reply-To: <alpine.BSF.2.11.1506190302530.59883@aneurin.horsfall.org>
+References: <CAA6Yd9W818JDhwGBPEz37t7fxNDMuxiqoWQwAB5e_D6NZT-Lcg@mail.gmail.com>
+ <CANUoZoEi1J7mwA=8NWhLxOAgGXXu+N2Do38FPaySp7emj6F8YQ@mail.gmail.com>
+ <alpine.BSF.2.11.1506190302530.59883@aneurin.horsfall.org>
+Message-ID: <CAEAzY38SQDtK4t345MU2KLdLOYLho8H2cAJJ4+HnmGh3vvs5nw@mail.gmail.com>
+
+On Thu, Jun 18, 2015 at 7:10 PM, Dave Horsfall <dave at horsfall.org> wrote:
+> And you won't even get that far if the material contains the dreaded word
+> "Copyright"...
+
+Plan 9 (including the manuals) is licensed under the LPL, which is
+quite similar to the MIT license.
+
+-- 
+Aram Hăvărneanu
+
+
+From random832 at fastmail.us  Fri Jun 19 03:33:27 2015
+From: random832 at fastmail.us (random832 at fastmail.us)
+Date: Thu, 18 Jun 2015 13:33:27 -0400
+Subject: [TUHS] Plan 9/Inferno Manuals?
+In-Reply-To: <CAEAzY38SQDtK4t345MU2KLdLOYLho8H2cAJJ4+HnmGh3vvs5nw@mail.gmail.com>
+References: <CAA6Yd9W818JDhwGBPEz37t7fxNDMuxiqoWQwAB5e_D6NZT-Lcg@mail.gmail.com>
+ <CANUoZoEi1J7mwA=8NWhLxOAgGXXu+N2Do38FPaySp7emj6F8YQ@mail.gmail.com>
+ <alpine.BSF.2.11.1506190302530.59883@aneurin.horsfall.org>
+ <CAEAzY38SQDtK4t345MU2KLdLOYLho8H2cAJJ4+HnmGh3vvs5nw@mail.gmail.com>
+Message-ID: <1434648807.4188905.299226985.63F09DDE@webmail.messagingengine.com>
+
+On Thu, Jun 18, 2015, at 13:27, Aram Hăvărneanu wrote:
+> On Thu, Jun 18, 2015 at 7:10 PM, Dave Horsfall <dave at horsfall.org> wrote:
+> > And you won't even get that far if the material contains the dreaded word
+> > "Copyright"...
+> 
+> Plan 9 (including the manuals) is licensed under the LPL, which is
+> quite similar to the MIT license.
+
+The point is that a free license doesn't matter if the guy at the print
+shop can't read.
+
+
+From khm at sciops.net  Fri Jun 19 03:32:17 2015
+From: khm at sciops.net (Kurt H Maier)
+Date: Thu, 18 Jun 2015 17:32:17 +0000
+Subject: [TUHS] Plan 9/Inferno Manuals?
+In-Reply-To: <CAEAzY38SQDtK4t345MU2KLdLOYLho8H2cAJJ4+HnmGh3vvs5nw@mail.gmail.com>
+References: <CAA6Yd9W818JDhwGBPEz37t7fxNDMuxiqoWQwAB5e_D6NZT-Lcg@mail.gmail.com>
+ <CANUoZoEi1J7mwA=8NWhLxOAgGXXu+N2Do38FPaySp7emj6F8YQ@mail.gmail.com>
+ <alpine.BSF.2.11.1506190302530.59883@aneurin.horsfall.org>
+ <CAEAzY38SQDtK4t345MU2KLdLOYLho8H2cAJJ4+HnmGh3vvs5nw@mail.gmail.com>
+Message-ID: <20150618173217.Horde.2OjN1k4Pd2pKHekoeVCHuxi@ssl.eumx.net>
+
+Quoting Aram Hăvărneanu <aram.h at mgk.ro>:
+
+> On Thu, Jun 18, 2015 at 7:10 PM, Dave Horsfall <dave at horsfall.org> wrote:
+>> And you won't even get that far if the material contains the dreaded word
+>> "Copyright"...
+>
+> Plan 9 (including the manuals) is licensed under the LPL, which is
+> quite similar to the MIT license.
+
+These subtleties are lost on the people who work the front desk at print
+shops.  Anti-litigation practices indicate that anything with any kind of
+copyright verbage is verboten.
+
+khm
+
+
+
+From cym224 at gmail.com  Fri Jun 19 05:04:23 2015
+From: cym224 at gmail.com (Nemo)
+Date: Thu, 18 Jun 2015 15:04:23 -0400
+Subject: [TUHS] Plan 9/Inferno Manuals?
+In-Reply-To: <20150618173217.Horde.2OjN1k4Pd2pKHekoeVCHuxi@ssl.eumx.net>
+References: <CAA6Yd9W818JDhwGBPEz37t7fxNDMuxiqoWQwAB5e_D6NZT-Lcg@mail.gmail.com>
+ <CANUoZoEi1J7mwA=8NWhLxOAgGXXu+N2Do38FPaySp7emj6F8YQ@mail.gmail.com>
+ <alpine.BSF.2.11.1506190302530.59883@aneurin.horsfall.org>
+ <CAEAzY38SQDtK4t345MU2KLdLOYLho8H2cAJJ4+HnmGh3vvs5nw@mail.gmail.com>
+ <20150618173217.Horde.2OjN1k4Pd2pKHekoeVCHuxi@ssl.eumx.net>
+Message-ID: <CAJfiPzwQS_Jnob-ju7a19n8ycvKGn6GHN2U=rMWbN0_xDvdK_w@mail.gmail.com>
+
+On 18 June 2015 at 13:32, Kurt H Maier <khm at sciops.net> wrote:
+> Quoting Aram Hăvărneanu <aram.h at mgk.ro>:
+>
+>> On Thu, Jun 18, 2015 at 7:10 PM, Dave Horsfall <dave at horsfall.org> wrote:
+>>>
+>>> And you won't even get that far if the material contains the dreaded word
+>>> "Copyright"...
+>>
+>>
+>> Plan 9 (including the manuals) is licensed under the LPL, which is
+>> quite similar to the MIT license.
+>
+>
+> These subtleties are lost on the people who work the front desk at print
+> shops.  Anti-litigation practices indicate that anything with any kind of
+> copyright verbage is verboten.
+
+Indeed.  Some years ago, we were hosting a standards meeting and went
+out to copy the latest draft.  The first shop would not touch it
+because it said copyright -- despite the author being present with
+identification.  Kinko's, as it was then, copied it after we signed a
+waiver.
+
+N.
+
+
+From dave at horsfall.org  Mon Jun 22 02:06:54 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Mon, 22 Jun 2015 02:06:54 +1000 (EST)
+Subject: [TUHS] Anyone else here remember Portapunch?
+Message-ID: <alpine.BSF.2.11.1506220203320.96902@aneurin.horsfall.org>
+
+---------- Forwarded message ----------
+Subject: Re: [GreenKeys] Replacing Chad, was: Black tape
+
+On Sun, 21 Jun 2015, Jones, Douglas W wrote:
+
+> The flaws in the Votomatic were a bit subtle, but in retrospect, if you 
+> read the patents for the IBM Portapunch (the direct predecessor of the 
+> Votomatic) and for the Votomatic, you find that the flaw that was its 
+> eventual downfall -- at least in the public's mind -- is fully 
+> documented in the patents.  Of course IBM's (and later CESI's, after IBM 
+> walked away from the Votomatic in the late 1960s) salesmen never 
+> mentioned those flaws.
+
+Portapunch?  Arrgghh!
+
+We had to put up with that Satan-spawn in our University days...  Only 40 
+columns wide, it had specific encodings for FORTRAN words, and it was just 
+as well that FORTRAN ignored white space (I know this for a fact, when I 
+fed a deck into a "real" card reader one time).
+
+Being but mere impecunious Uni students and having to actually buy the 
+things, we resorted to fixing mis-punches by literally sticky-taping the 
+chads back.
+
+For some reason, the computer operators (IBM 360/50) hated us...
+
+I really do hope that the inventor of Portapunch is still having holes 
+punched through him with a paper-clip.
+
+
+From dave at horsfall.org  Mon Jun 29 17:30:16 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Mon, 29 Jun 2015 17:30:16 +1000 (EST)
+Subject: [TUHS] We've lost Greg Chesson
+Message-ID: <alpine.BSF.2.11.1506291728540.96902@aneurin.horsfall.org>
+
+Haven't found any more info...
+
+-- 
+Dave Horsfall  (VK2KFU)  "Those who don't understand security will suffer"
+http://www.horsfall.org/  It's just a silly little web site, that's all...
+
+---------- Forwarded message ----------
+Date: Sun, 28 Jun 2015 18:50:42 -0400
+From: Dave Farber
+To: ip <ip at listbox.com>
+Subject: [IP] Death of Greg Chesson
+
+---------- Forwarded message ----------
+From: "Lauren Weinstein"
+Date: Jun 28, 2015 6:43 PM
+Subject: Death of Greg Chesson
+To: <dave at farber.net>
+Cc:
+
+
+Dave, fyi.
+
+https://plus.google.com/u/0/+LaurenWeinstein/posts/bRdbj1B1qQG
+
+--Lauren--
+Lauren Weinstein (lauren at vortex.com): http://www.vortex.com/lauren
+Founder:
+ - Network Neutrality Squad: http://www.nnsquad.org
+ - PRIVACY Forum: http://www.vortex.com/privacy-info
+Co-Founder: People For Internet Responsibility:
+http://www.pfir.org/pfir-info
+Member: ACM Committee on Computers and Public Policy
+Lauren's Blog: http://lauren.vortex.com
+Google+: http://google.com/+LaurenWeinstein
+Twitter: http://twitter.com/laurenweinstein
+Tel: +1 (818) 225-2800 / Skype: vortex.com
+
+Archives [feed-icon-10x10.jpg] | Modify Your Subscription | Unsubscribe Now
+[listbox-logo-small.png]
+
+From clemc at ccc.com  Mon Jun 29 22:44:58 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Mon, 29 Jun 2015 07:44:58 -0500
+Subject: [TUHS] We've lost Greg Chesson
+In-Reply-To: <alpine.BSF.2.11.1506291728540.96902@aneurin.horsfall.org>
+References: <alpine.BSF.2.11.1506291728540.96902@aneurin.horsfall.org>
+Message-ID: <CAC20D2MqtPfMe_SdkCfFFthF_5Rth8y2Q6U2xm-ZgbkAA0tQZg@mail.gmail.com>
+
+Greg had been sick for a while.   Sad loss.
+Clem
+
+On Mon, Jun 29, 2015 at 2:30 AM, Dave Horsfall <dave at horsfall.org> wrote:
+
+> Haven't found any more info...
+>
+> --
+> Dave Horsfall  (VK2KFU)  "Those who don't understand security will suffer"
+> http://www.horsfall.org/  It's just a silly little web site, that's all...
+>
+> ---------- Forwarded message ----------
+> Date: Sun, 28 Jun 2015 18:50:42 -0400
+> From: Dave Farber
+> To: ip <ip at listbox.com>
+> Subject: [IP] Death of Greg Chesson
+>
+> ---------- Forwarded message ----------
+> From: "Lauren Weinstein"
+> Date: Jun 28, 2015 6:43 PM
+> Subject: Death of Greg Chesson
+> To: <dave at farber.net>
+> Cc:
+>
+>
+> Dave, fyi.
+>
+> https://plus.google.com/u/0/+LaurenWeinstein/posts/bRdbj1B1qQG
+>
+> --Lauren--
+> Lauren Weinstein (lauren at vortex.com): http://www.vortex.com/lauren
+> Founder:
+>  - Network Neutrality Squad: http://www.nnsquad.org
+>  - PRIVACY Forum: http://www.vortex.com/privacy-info
+> Co-Founder: People For Internet Responsibility:
+> http://www.pfir.org/pfir-info
+> Member: ACM Committee on Computers and Public Policy
+> Lauren's Blog: http://lauren.vortex.com
+> Google+: http://google.com/+LaurenWeinstein
+> Twitter: http://twitter.com/laurenweinstein
+> Tel: +1 (818) 225-2800 / Skype: vortex.com
+>
+> Archives [feed-icon-10x10.jpg] | Modify Your Subscription | Unsubscribe Now
+> [listbox-logo-small.png]
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150629/289ad180/attachment.html>
+
+From lm at mcvoy.com  Mon Jun 29 22:52:38 2015
+From: lm at mcvoy.com (Larry McVoy)
+Date: Mon, 29 Jun 2015 05:52:38 -0700
+Subject: [TUHS] We've lost Greg Chesson
+In-Reply-To: <CAC20D2MqtPfMe_SdkCfFFthF_5Rth8y2Q6U2xm-ZgbkAA0tQZg@mail.gmail.com>
+References: <alpine.BSF.2.11.1506291728540.96902@aneurin.horsfall.org>
+ <CAC20D2MqtPfMe_SdkCfFFthF_5Rth8y2Q6U2xm-ZgbkAA0tQZg@mail.gmail.com>
+Message-ID: <20150629125238.GA23951@mcvoy.com>
+
+On Mon, Jun 29, 2015 at 07:44:58AM -0500, Clem Cole wrote:
+> Greg had been sick for a while.   Sad loss.
+> Clem
+
+Greg is/was a good friend of mine, was my mentor at SGI.  He came up to
+see me a while back, he was sharp as ever.
+
+I put everyone who is sick on my excavator because it makes them feel
+better:
+
+http://www.mcvoy.com/lm/xtp+excavator/
+
+--lm
+
+
+From lm at mcvoy.com  Mon Jun 29 23:52:22 2015
+From: lm at mcvoy.com (Larry McVoy)
+Date: Mon, 29 Jun 2015 06:52:22 -0700
+Subject: [TUHS] We've lost Greg Chesson
+In-Reply-To: <20150629125238.GA23951@mcvoy.com>
+References: <alpine.BSF.2.11.1506291728540.96902@aneurin.horsfall.org>
+ <CAC20D2MqtPfMe_SdkCfFFthF_5Rth8y2Q6U2xm-ZgbkAA0tQZg@mail.gmail.com>
+ <20150629125238.GA23951@mcvoy.com>
+Message-ID: <20150629135222.GC24918@mcvoy.com>
+
+
+I'm going to be AFK all day but a couple of things:
+
+If anyone wants to come out for the funeral (once I figure out
+when/where that is) I can offer up a place to stay.  Looking at you,
+Clem, love to meet you in person and talk Masscomp.
+
+When I get back to a keyboard I thought maybe it would be nice to share
+some Greg stories, I have enough of them.  So I'll try and do that.
+
+On Mon, Jun 29, 2015 at 05:52:38AM -0700, Larry McVoy wrote:
+> On Mon, Jun 29, 2015 at 07:44:58AM -0500, Clem Cole wrote:
+> > Greg had been sick for a while.   Sad loss.
+> > Clem
+> 
+> Greg is/was a good friend of mine, was my mentor at SGI.  He came up to
+> see me a while back, he was sharp as ever.
+> 
+> I put everyone who is sick on my excavator because it makes them feel
+> better:
+> 
+> http://www.mcvoy.com/lm/xtp+excavator/
+> 
+> --lm
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+---
+Larry McVoy            	     lm at mcvoy.com             http://www.mcvoy.com/lm 
+
+
+From mah at mhorton.net  Tue Jun 30 03:03:54 2015
+From: mah at mhorton.net (Mary Ann Horton)
+Date: Mon, 29 Jun 2015 10:03:54 -0700
+Subject: [TUHS] We've lost Greg Chesson
+In-Reply-To: <alpine.BSF.2.11.1506291728540.96902@aneurin.horsfall.org>
+References: <alpine.BSF.2.11.1506291728540.96902@aneurin.horsfall.org>
+Message-ID: <20150629100354.12481zqiuso7z4vu@webmail.mhorton.net>
+
+I'm so sorry to hear of Greg's passing.  I still have the "Reach Out  
+And Grep Someone" bumper sticker he gave me on my cubicle at SDG&E.
+
+   Mary Ann
+
+Quoting Dave Horsfall <dave at horsfall.org>:
+
+> Haven't found any more info...
+>
+> --
+> Dave Horsfall  (VK2KFU)  "Those who don't understand security will suffer"
+> http://www.horsfall.org/  It's just a silly little web site, that's all...
+>
+> ---------- Forwarded message ----------
+> Date: Sun, 28 Jun 2015 18:50:42 -0400
+> From: Dave Farber
+> To: ip <ip at listbox.com>
+> Subject: [IP] Death of Greg Chesson
+>
+> ---------- Forwarded message ----------
+> From: "Lauren Weinstein"
+> Date: Jun 28, 2015 6:43 PM
+> Subject: Death of Greg Chesson
+> To: <dave at farber.net>
+> Cc:
+>
+>
+> Dave, fyi.
+>
+> https://plus.google.com/u/0/+LaurenWeinstein/posts/bRdbj1B1qQG
+>
+> --Lauren--
+> Lauren Weinstein (lauren at vortex.com): http://www.vortex.com/lauren
+> Founder:
+>  - Network Neutrality Squad: http://www.nnsquad.org
+>  - PRIVACY Forum: http://www.vortex.com/privacy-info
+> Co-Founder: People For Internet Responsibility:
+> http://www.pfir.org/pfir-info
+> Member: ACM Committee on Computers and Public Policy
+> Lauren's Blog: http://lauren.vortex.com
+> Google+: http://google.com/+LaurenWeinstein
+> Twitter: http://twitter.com/laurenweinstein
+> Tel: +1 (818) 225-2800 / Skype: vortex.com
+>
+> Archives [feed-icon-10x10.jpg] | Modify Your Subscription | Unsubscribe Now
+> [listbox-logo-small.png]
+
+
+
+From norman at oclsc.org  Tue Jun 30 08:25:47 2015
+From: norman at oclsc.org (Norman Wilson)
+Date: Mon, 29 Jun 2015 18:25:47 -0400 (EDT)
+Subject: [TUHS] We've lost Greg Chesson
+Message-ID: <20150629222547.E81011DE391@lignose.oclsc.org>
+
+  When I get back to a keyboard I thought maybe it would be nice to share
+  some Greg stories, I have enough of them.  So I'll try and do that.
+
+If anyone wants to do that in person, USENIX ATC is next
+week and would be an appropriate venue.  Perhaps a Greg
+Chesson Memorial BOF?
+
+Norman Wilson
+Toronto ON
+
+
+From dave at horsfall.org  Tue Jun 30 09:12:46 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Tue, 30 Jun 2015 09:12:46 +1000 (EST)
+Subject: [TUHS] We've lost Greg Chesson
+In-Reply-To: <20150629125238.GA23951@mcvoy.com>
+References: <alpine.BSF.2.11.1506291728540.96902@aneurin.horsfall.org>
+ <CAC20D2MqtPfMe_SdkCfFFthF_5Rth8y2Q6U2xm-ZgbkAA0tQZg@mail.gmail.com>
+ <20150629125238.GA23951@mcvoy.com>
+Message-ID: <alpine.BSF.2.11.1506300833490.96902@aneurin.horsfall.org>
+
+On Mon, 29 Jun 2015, Larry McVoy wrote:
+
+> I put everyone who is sick on my excavator because it makes them feel 
+> better:
+> 
+> http://www.mcvoy.com/lm/xtp+excavator/
+
+For some reason, I am reminded of the hayride scene in "The Dish" (yes, 
+they do a hayride from time to time).
+
+See the film.
+
+I've been to PKS, and took a few photos; their machine room has lots of 
+computers labelled "Unix" :-)
+
+Oh, they're over here somewhere: 
+
+http://www.horsfall.org/The_Dish/
+
+My favourite is http://www.horsfall.org/The_Dish/dscf0010.jpg .
+
+Ah, here it is: http://www.horsfall.org/The_Dish/dscf0017.jpg .
+
+-- 
+Dave Horsfall  (VK2KFU)  "Those who don't understand security will suffer"
+http://www.horsfall.org/  It's just a silly little web site, that's all...
+
+
+From rudi.j.blom at gmail.com  Tue Jun 30 12:18:38 2015
+From: rudi.j.blom at gmail.com (Rudi Blom)
+Date: Tue, 30 Jun 2015 09:18:38 +0700
+Subject: [TUHS] We've lost Greg Chesson
+Message-ID: <CAMYpm84Dn1vgJ9_-r2pxtC_Oi3pxnGsS9sCGOW0ahsq-sJi7sQ@mail.gmail.com>
+
+Much to my surprise I see there isn't a WIKI page on Greg Chesson yet?
+
+Maybe some of his friends get get together on submit one ?
+
+Cheers,
+rudi
+
+On 6/30/15, tuhs-request at minnie.tuhs.org <tuhs-request at minnie.tuhs.org> wrote:
+> Send TUHS mailing list submissions to
+> 	tuhs at minnie.tuhs.org
+>
+> To subscribe or unsubscribe via the World Wide Web, visit
+> 	https://minnie.tuhs.org/mailman/listinfo/tuhs
+> or, via email, send a message with subject or body 'help' to
+> 	tuhs-request at minnie.tuhs.org
+>
+> You can reach the person managing the list at
+> 	tuhs-owner at minnie.tuhs.org
+>
+> When replying, please edit your Subject line so it is more specific
+> than "Re: Contents of TUHS digest..."
+>
+>
+> Today's Topics:
+>
+>    1. We've lost Greg Chesson (Dave Horsfall)
+>    2. Re: We've lost Greg Chesson (Clem Cole)
+>    3. Re: We've lost Greg Chesson (Larry McVoy)
+>    4. Re: We've lost Greg Chesson (Larry McVoy)
+>    5. Re: We've lost Greg Chesson (Mary Ann Horton)
+>    6. Re: We've lost Greg Chesson (Norman Wilson)
+>    7. Re: We've lost Greg Chesson (Dave Horsfall)
+>
+>
+> ----------------------------------------------------------------------
+>
+> Message: 1
+> Date: Mon, 29 Jun 2015 17:30:16 +1000 (EST)
+> From: Dave Horsfall <dave at horsfall.org>
+> To: The Eunuchs Hysterical Society <tuhs at tuhs.org>
+> Subject: [TUHS] We've lost Greg Chesson
+> Message-ID: <alpine.BSF.2.11.1506291728540.96902 at aneurin.horsfall.org>
+> Content-Type: text/plain; charset="utf-8"
+>
+> Haven't found any more info...
+>
+> --
+> Dave Horsfall  (VK2KFU)  "Those who don't understand security will suffer"
+> http://www.horsfall.org/  It's just a silly little web site, that's all...
+>
+> ---------- Forwarded message ----------
+> Date: Sun, 28 Jun 2015 18:50:42 -0400
+> From: Dave Farber
+> To: ip <ip at listbox.com>
+> Subject: [IP] Death of Greg Chesson
+>
+> ---------- Forwarded message ----------
+> From: "Lauren Weinstein"
+> Date: Jun 28, 2015 6:43 PM
+> Subject: Death of Greg Chesson
+> To: <dave at farber.net>
+> Cc:
+>
+>
+> Dave, fyi.
+>
+> https://plus.google.com/u/0/+LaurenWeinstein/posts/bRdbj1B1qQG
+>
+> --Lauren--
+> Lauren Weinstein (lauren at vortex.com): http://www.vortex.com/lauren
+> Founder:
+> ?- Network Neutrality Squad: http://www.nnsquad.org
+> ?- PRIVACY Forum: http://www.vortex.com/privacy-info
+> Co-Founder: People For Internet Responsibility:
+> http://www.pfir.org/pfir-info
+> Member: ACM Committee on Computers and Public Policy
+> Lauren's Blog: http://lauren.vortex.com
+> Google+: http://google.com/+LaurenWeinstein
+> Twitter: http://twitter.com/laurenweinstein
+> Tel: +1 (818) 225-2800 / Skype: vortex.com
+>
+> Archives [feed-icon-10x10.jpg] | Modify Your Subscription | Unsubscribe Now
+> [listbox-logo-small.png]
+>
+> ------------------------------
+>
+> Message: 2
+> Date: Mon, 29 Jun 2015 07:44:58 -0500
+> From: Clem Cole <clemc at ccc.com>
+> To: Dave Horsfall <dave at horsfall.org>
+> Cc: The Eunuchs Hysterical Society <tuhs at tuhs.org>
+> Subject: Re: [TUHS] We've lost Greg Chesson
+> Message-ID:
+> 	<CAC20D2MqtPfMe_SdkCfFFthF_5Rth8y2Q6U2xm-ZgbkAA0tQZg at mail.gmail.com>
+> Content-Type: text/plain; charset="utf-8"
+>
+> Greg had been sick for a while.   Sad loss.
+> Clem
+>
+> On Mon, Jun 29, 2015 at 2:30 AM, Dave Horsfall <dave at horsfall.org> wrote:
+>
+>> Haven't found any more info...
+>>
+>> --
+>> Dave Horsfall  (VK2KFU)  "Those who don't understand security will
+>> suffer"
+>> http://www.horsfall.org/  It's just a silly little web site, that's
+>> all...
+>>
+>> ---------- Forwarded message ----------
+>> Date: Sun, 28 Jun 2015 18:50:42 -0400
+>> From: Dave Farber
+>> To: ip <ip at listbox.com>
+>> Subject: [IP] Death of Greg Chesson
+>>
+>> ---------- Forwarded message ----------
+>> From: "Lauren Weinstein"
+>> Date: Jun 28, 2015 6:43 PM
+>> Subject: Death of Greg Chesson
+>> To: <dave at farber.net>
+>> Cc:
+>>
+>>
+>> Dave, fyi.
+>>
+>> https://plus.google.com/u/0/+LaurenWeinstein/posts/bRdbj1B1qQG
+>>
+>> --Lauren--
+>> Lauren Weinstein (lauren at vortex.com): http://www.vortex.com/lauren
+>> Founder:
+>>  - Network Neutrality Squad: http://www.nnsquad.org
+>>  - PRIVACY Forum: http://www.vortex.com/privacy-info
+>> Co-Founder: People For Internet Responsibility:
+>> http://www.pfir.org/pfir-info
+>> Member: ACM Committee on Computers and Public Policy
+>> Lauren's Blog: http://lauren.vortex.com
+>> Google+: http://google.com/+LaurenWeinstein
+>> Twitter: http://twitter.com/laurenweinstein
+>> Tel: +1 (818) 225-2800 / Skype: vortex.com
+>>
+>> Archives [feed-icon-10x10.jpg] | Modify Your Subscription | Unsubscribe
+>> Now
+>> [listbox-logo-small.png]
+>> _______________________________________________
+>> TUHS mailing list
+>> TUHS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>>
+>>
+> -------------- next part --------------
+> An HTML attachment was scrubbed...
+> URL:
+> <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150629/289ad180/attachment-0001.html>
+>
+> ------------------------------
+>
+> Message: 3
+> Date: Mon, 29 Jun 2015 05:52:38 -0700
+> From: Larry McVoy <lm at mcvoy.com>
+> To: Clem Cole <clemc at ccc.com>
+> Cc: The Eunuchs Hysterical Society <tuhs at tuhs.org>
+> Subject: Re: [TUHS] We've lost Greg Chesson
+> Message-ID: <20150629125238.GA23951 at mcvoy.com>
+> Content-Type: text/plain; charset=us-ascii
+>
+> On Mon, Jun 29, 2015 at 07:44:58AM -0500, Clem Cole wrote:
+>> Greg had been sick for a while.   Sad loss.
+>> Clem
+>
+> Greg is/was a good friend of mine, was my mentor at SGI.  He came up to
+> see me a while back, he was sharp as ever.
+>
+> I put everyone who is sick on my excavator because it makes them feel
+> better:
+>
+> http://www.mcvoy.com/lm/xtp+excavator/
+>
+> --lm
+>
+>
+> ------------------------------
+>
+> Message: 4
+> Date: Mon, 29 Jun 2015 06:52:22 -0700
+> From: Larry McVoy <lm at mcvoy.com>
+> To: Clem Cole <clemc at ccc.com>
+> Cc: The Eunuchs Hysterical Society <tuhs at tuhs.org>
+> Subject: Re: [TUHS] We've lost Greg Chesson
+> Message-ID: <20150629135222.GC24918 at mcvoy.com>
+> Content-Type: text/plain; charset=us-ascii
+>
+>
+> I'm going to be AFK all day but a couple of things:
+>
+> If anyone wants to come out for the funeral (once I figure out
+> when/where that is) I can offer up a place to stay.  Looking at you,
+> Clem, love to meet you in person and talk Masscomp.
+>
+> When I get back to a keyboard I thought maybe it would be nice to share
+> some Greg stories, I have enough of them.  So I'll try and do that.
+>
+> On Mon, Jun 29, 2015 at 05:52:38AM -0700, Larry McVoy wrote:
+>> On Mon, Jun 29, 2015 at 07:44:58AM -0500, Clem Cole wrote:
+>> > Greg had been sick for a while.   Sad loss.
+>> > Clem
+>>
+>> Greg is/was a good friend of mine, was my mentor at SGI.  He came up to
+>> see me a while back, he was sharp as ever.
+>>
+>> I put everyone who is sick on my excavator because it makes them feel
+>> better:
+>>
+>> http://www.mcvoy.com/lm/xtp+excavator/
+>>
+>> --lm
+>> _______________________________________________
+>> TUHS mailing list
+>> TUHS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+> --
+> ---
+> Larry McVoy            	     lm at mcvoy.com
+> http://www.mcvoy.com/lm
+>
+>
+> ------------------------------
+>
+> Message: 5
+> Date: Mon, 29 Jun 2015 10:03:54 -0700
+> From: Mary Ann Horton <mah at mhorton.net>
+> To: tuhs at minnie.tuhs.org
+> Subject: Re: [TUHS] We've lost Greg Chesson
+> Message-ID: <20150629100354.12481zqiuso7z4vu at webmail.mhorton.net>
+> Content-Type: text/plain; charset=UTF-8; DelSp="Yes"; format="flowed"
+>
+> I'm so sorry to hear of Greg's passing.  I still have the "Reach Out
+> And Grep Someone" bumper sticker he gave me on my cubicle at SDG&E.
+>
+>    Mary Ann
+>
+> Quoting Dave Horsfall <dave at horsfall.org>:
+>
+>> Haven't found any more info...
+>>
+>> --
+>> Dave Horsfall  (VK2KFU)  "Those who don't understand security will
+>> suffer"
+>> http://www.horsfall.org/  It's just a silly little web site, that's
+>> all...
+>>
+>> ---------- Forwarded message ----------
+>> Date: Sun, 28 Jun 2015 18:50:42 -0400
+>> From: Dave Farber
+>> To: ip <ip at listbox.com>
+>> Subject: [IP] Death of Greg Chesson
+>>
+>> ---------- Forwarded message ----------
+>> From: "Lauren Weinstein"
+>> Date: Jun 28, 2015 6:43 PM
+>> Subject: Death of Greg Chesson
+>> To: <dave at farber.net>
+>> Cc:
+>>
+>>
+>> Dave, fyi.
+>>
+>> https://plus.google.com/u/0/+LaurenWeinstein/posts/bRdbj1B1qQG
+>>
+>> --Lauren--
+>> Lauren Weinstein (lauren at vortex.com): http://www.vortex.com/lauren
+>> Founder:
+>> ?- Network Neutrality Squad: http://www.nnsquad.org
+>> ?- PRIVACY Forum: http://www.vortex.com/privacy-info
+>> Co-Founder: People For Internet Responsibility:
+>> http://www.pfir.org/pfir-info
+>> Member: ACM Committee on Computers and Public Policy
+>> Lauren's Blog: http://lauren.vortex.com
+>> Google+: http://google.com/+LaurenWeinstein
+>> Twitter: http://twitter.com/laurenweinstein
+>> Tel: +1 (818) 225-2800 / Skype: vortex.com
+>>
+>> Archives [feed-icon-10x10.jpg] | Modify Your Subscription | Unsubscribe
+>> Now
+>> [listbox-logo-small.png]
+>
+>
+>
+> ------------------------------
+>
+> Message: 6
+> Date: Mon, 29 Jun 2015 18:25:47 -0400 (EDT)
+> From: norman at oclsc.org (Norman Wilson)
+> To: tuhs at tuhs.org
+> Subject: Re: [TUHS] We've lost Greg Chesson
+> Message-ID: <20150629222547.E81011DE391 at lignose.oclsc.org>
+>
+>   When I get back to a keyboard I thought maybe it would be nice to share
+>   some Greg stories, I have enough of them.  So I'll try and do that.
+>
+> If anyone wants to do that in person, USENIX ATC is next
+> week and would be an appropriate venue.  Perhaps a Greg
+> Chesson Memorial BOF?
+>
+> Norman Wilson
+> Toronto ON
+>
+>
+> ------------------------------
+>
+> Message: 7
+> Date: Tue, 30 Jun 2015 09:12:46 +1000 (EST)
+> From: Dave Horsfall <dave at horsfall.org>
+> To: The Eunuchs Hysterical Society <tuhs at tuhs.org>
+> Subject: Re: [TUHS] We've lost Greg Chesson
+> Message-ID: <alpine.BSF.2.11.1506300833490.96902 at aneurin.horsfall.org>
+> Content-Type: TEXT/PLAIN; charset=US-ASCII
+>
+> On Mon, 29 Jun 2015, Larry McVoy wrote:
+>
+>> I put everyone who is sick on my excavator because it makes them feel
+>> better:
+>>
+>> http://www.mcvoy.com/lm/xtp+excavator/
+>
+> For some reason, I am reminded of the hayride scene in "The Dish" (yes,
+> they do a hayride from time to time).
+>
+> See the film.
+>
+> I've been to PKS, and took a few photos; their machine room has lots of
+> computers labelled "Unix" :-)
+>
+> Oh, they're over here somewhere:
+>
+> http://www.horsfall.org/The_Dish/
+>
+> My favourite is http://www.horsfall.org/The_Dish/dscf0010.jpg .
+>
+> Ah, here it is: http://www.horsfall.org/The_Dish/dscf0017.jpg .
+>
+> --
+> Dave Horsfall  (VK2KFU)  "Those who don't understand security will suffer"
+> http://www.horsfall.org/  It's just a silly little web site, that's all...
+>
+>
+> ------------------------------
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+> End of TUHS Digest, Vol 125, Issue 15
+> *************************************
+>
+
+
+From lm at mcvoy.com  Tue Jun 30 13:37:18 2015
+From: lm at mcvoy.com (Larry McVoy)
+Date: Mon, 29 Jun 2015 20:37:18 -0700
+Subject: [TUHS] We've lost Greg Chesson
+In-Reply-To: <20150629222547.E81011DE391@lignose.oclsc.org>
+References: <20150629222547.E81011DE391@lignose.oclsc.org>
+Message-ID: <20150630033718.GD20453@mcvoy.com>
+
+That's a cool idea.  If that happens I'll show up and blather on about
+how much I loved Greg.
+
+On Mon, Jun 29, 2015 at 06:25:47PM -0400, Norman Wilson wrote:
+>   When I get back to a keyboard I thought maybe it would be nice to share
+>   some Greg stories, I have enough of them.  So I'll try and do that.
+> 
+> If anyone wants to do that in person, USENIX ATC is next
+> week and would be an appropriate venue.  Perhaps a Greg
+> Chesson Memorial BOF?
+> 
+> Norman Wilson
+> Toronto ON
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+---
+Larry McVoy            	     lm at mcvoy.com             http://www.mcvoy.com/lm 
+
+
+From dds at aueb.gr  Tue Jun 30 18:15:20 2015
+From: dds at aueb.gr (Diomidis Spinellis)
+Date: Tue, 30 Jun 2015 11:15:20 +0300
+Subject: [TUHS] We've lost Greg Chesson
+In-Reply-To: <CAMYpm84Dn1vgJ9_-r2pxtC_Oi3pxnGsS9sCGOW0ahsq-sJi7sQ@mail.gmail.com>
+References: <CAMYpm84Dn1vgJ9_-r2pxtC_Oi3pxnGsS9sCGOW0ahsq-sJi7sQ@mail.gmail.com>
+Message-ID: <55925018.1090501@aueb.gr>
+
+I'd love to document Greg Chesson's contributions in the Unix history
+repository [1].  I'm ashamed to say that I seem to have missed them.
+Are there particular pieces of code we know he authored?  Just send me a
+brief note, or, even better, a GitHub pull request for the author-path
+map files [2].  I will summarize to the list.
+
+[1] https://github.com/dspinellis/unix-history-repo
+[2]
+https://github.com/dspinellis/unix-history-make/tree/master/src/author-path
+
+Many thanks,
+
+Diomidis
+
+On 30/06/2015 05:18, Rudi Blom wrote:
+> Much to my surprise I see there isn't a WIKI page on Greg Chesson yet?
+> 
+> Maybe some of his friends get get together on submit one ?
+> 
+> Cheers,
+> rudi
+
+
+

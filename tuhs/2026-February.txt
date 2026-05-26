@@ -1,0 +1,3856 @@
+From tuhs at tuhs.org  Sun Feb  1 11:54:53 2026
+From: tuhs at tuhs.org (Warren Toomey via TUHS)
+Date: Sun, 1 Feb 2026 11:54:53 +1000
+Subject: [TUHS] Boston Children's Museum RK05 Driver: Questions
+Message-ID: <aX6ybUnkXdmDs8YS@minnie.tuhs.org>
+
+Hi all, for some reason I thought about the RK05 driver written by
+Bill Mayhew and Brent Byer at the Boston Children's Museum. Based
+on the minor device number, it remaps blocks 1 to 2435 as blocks
+2436 to 4871, and remaps blocks 2436 to 4871 down to blocks 1 to 2435.
+
+According to the notes in the driver (see dmr/rk.c in
+https://www.tuhs.org/Archive/Distributions/UNSW/1/record0.tar.gz):
+
+  The effect of this mapping is to centralize disk head motion about the
+  center of the disk. The optimization is ideal for those RK's which
+  serve as both root device and swap device. It is less than ideal,
+  although probably still an improvement over traditional form, for RK's
+  used exclusively as mounted file systems.
+
+Question: how much of a win was this, and why was the idea of moving
+(some/all) of the i-nodes to the centre of the disk not used until
+we got the fast filesystem?
+
+Cheers, Warren
+
+From tuhs at tuhs.org  Sun Feb  1 14:03:19 2026
+From: tuhs at tuhs.org (Jonathan Gray via TUHS)
+Date: Sun, 1 Feb 2026 15:03:19 +1100
+Subject: [TUHS] Mix Utah V4 and the V4 Man Pages
+In-Reply-To: <aX0oFlGjrP1XzeUC@minnie.tuhs.org>
+References: <aXwFdbeBxn2156S6@minnie.tuhs.org>
+ <aXweIpwbBe0mGtj5@minnie.tuhs.org>
+ <f0a6b9cd-c835-4138-8067-3357def214d3@gmail.com>
+ <bqsuYlxwhIrzHArWq_fUh324z-OZj6Kiyidv_1yJGQSmJX58SQT4xIGma7XUSWP0wTIe4fyTHU-B9lp5ZAX7oX2ybAwWHLkEFWkjrUTDkWE=@protonmail.com>
+ <aX0oFlGjrP1XzeUC@minnie.tuhs.org>
+Message-ID: <aX7Qh1No8V9S-Qvg@largo.jsg.id.au>
+
+On Sat, Jan 31, 2026 at 07:52:22AM +1000, Warren Toomey via TUHS wrote:
+> On 1/29/26 9:57 PM, Warren Toomey via TUHS wrote:
+> > Hi all, sorry for the delay but I've just added V4 to the Unix Archive here:
+> > 
+> > https://www.tuhs.org/Archive/Distributions/Research/Utah_v4/
+> >
+> > And it's also now in the Unix Tree at
+> > https://minnie.tuhs.org/cgi-bin/utree.pl?file=V4
+> 
+> On Fri, Jan 30, 2026 at 06:08:30PM +0000, segaloco via TUHS wrote:
+> > Regarding the V4 manpage sources, would it be appropriate to merge those
+> > with this entry in the tree at /usr/man?  At the very least the blurb on
+> > the root directory should then probably mention the providence of the
+> > two pieces and their being amalgamated for tree reasons.
+> 
+> I wasn't sure if I should mix the V4 manuals from
+> https://www.tuhs.org/Archive/Distributions/Research/Dennis_v4/
+> with the Utah tape as there is no nroff on the Utah tape but
+> the man pages are written in nroff.
+> 
+> But, yes, I can add some blurb that explains the amalgamation.
+> 
+> So, a related question, does anybody know why nroff was _not_ on the
+> Utah V4 tape, especially as it was a late snapshot of V4?
+
+Documented as not being on the tape:
+
+"The following programs out of the programmer's manual are not
+provided: catsim(I), man(I), nroff(I), opr(I), plot(I), speak(I),
+troff(I), tss(I), gerts(III), vt(III), azel(VI), m6(VI),
+maze(VI), ov(VI), sky(VI), spline(VI), tmg(VI), yacc(VI),
+dpd(VII), tmheader(VII), vs(VII), 20boot(VIII) and update(VIII).
+
+The source of the following programs from the manual is not
+provided: cref(I), proof(I), bj(VI), chess(VI), cubic(VI),
+moo(VI), ttt(VI) and wump(VI)."
+
+https://www.tuhs.org/Archive/Applications/Dennis_Tapes/Gao_Analysis/v4_dist/setup.pdf
+
+Though the Utah tape has a yacc binary and update.
+
+From tuhs at tuhs.org  Sun Feb  1 15:59:55 2026
+From: tuhs at tuhs.org (segaloco via TUHS)
+Date: Sun, 01 Feb 2026 05:59:55 +0000
+Subject: [TUHS] Mix Utah V4 and the V4 Man Pages
+In-Reply-To: <aX7Qh1No8V9S-Qvg@largo.jsg.id.au>
+References: <aXwFdbeBxn2156S6@minnie.tuhs.org>
+ <aXweIpwbBe0mGtj5@minnie.tuhs.org>
+ <f0a6b9cd-c835-4138-8067-3357def214d3@gmail.com>
+ <bqsuYlxwhIrzHArWq_fUh324z-OZj6Kiyidv_1yJGQSmJX58SQT4xIGma7XUSWP0wTIe4fyTHU-B9lp5ZAX7oX2ybAwWHLkEFWkjrUTDkWE=@protonmail.com>
+ <aX0oFlGjrP1XzeUC@minnie.tuhs.org> <aX7Qh1No8V9S-Qvg@largo.jsg.id.au>
+Message-ID: <lBTUw1rDEZnhwdefe9dtSJlvv-kmHFB9NH4uQL1nGUTlaxt60C8BfWa3XyUS8xjnwHw4fHFTfNPTsTfCtOvGV1pOQdLnAOLaOsP9m6JQVMk=@protonmail.com>
+
+On Saturday, January 31st, 2026 at 20:03, Jonathan Gray via TUHS <tuhs at tuhs.org> wrote:
+
+> On Sat, Jan 31, 2026 at 07:52:22AM +1000, Warren Toomey via TUHS wrote:
+> 
+> > On 1/29/26 9:57 PM, Warren Toomey via TUHS wrote:
+> > 
+> > > Hi all, sorry for the delay but I've just added V4 to the Unix Archive here:
+> > > 
+> > > https://www.tuhs.org/Archive/Distributions/Research/Utah_v4/
+> > > 
+> > > And it's also now in the Unix Tree at
+> > > https://minnie.tuhs.org/cgi-bin/utree.pl?file=V4
+> > 
+> > On Fri, Jan 30, 2026 at 06:08:30PM +0000, segaloco via TUHS wrote:
+> > 
+> > > Regarding the V4 manpage sources, would it be appropriate to merge those
+> > > with this entry in the tree at /usr/man? At the very least the blurb on
+> > > the root directory should then probably mention the providence of the
+> > > two pieces and their being amalgamated for tree reasons.
+> > 
+> > I wasn't sure if I should mix the V4 manuals from
+> > https://www.tuhs.org/Archive/Distributions/Research/Dennis_v4/
+> > with the Utah tape as there is no nroff on the Utah tape but
+> > the man pages are written in nroff.
+> > 
+> > But, yes, I can add some blurb that explains the amalgamation.
+> > 
+> > So, a related question, does anybody know why nroff was not on the
+> > Utah V4 tape, especially as it was a late snapshot of V4?
+> 
+> 
+> Documented as not being on the tape:
+> 
+> "The following programs out of the programmer's manual are not
+> provided: catsim(I), man(I), nroff(I), opr(I), plot(I), speak(I),
+> troff(I), tss(I), gerts(III), vt(III), azel(VI), m6(VI),
+> maze(VI), ov(VI), sky(VI), spline(VI), tmg(VI), yacc(VI),
+> dpd(VII), tmheader(VII), vs(VII), 20boot(VIII) and update(VIII).
+> 
+> The source of the following programs from the manual is not
+> provided: cref(I), proof(I), bj(VI), chess(VI), cubic(VI),
+> moo(VI), ttt(VI) and wump(VI)."
+> 
+> https://www.tuhs.org/Archive/Applications/Dennis_Tapes/Gao_Analysis/v4_dist/setup.pdf
+> 
+> Though the Utah tape has a yacc binary and update.
+
+Actually, what is the "man.tap" available here?
+
+https://www.tuhs.org/Archive/Distributions/Research/Utah_v4/
+
+I'm not somewhere I can dig around more than with od, certainly looks
+like there are manpage sources in there.
+
+>From the looks of it, nroff was missing from other, earlier versions
+as well.  For instance, the s1/s2 bits tapes don't appear to have nroff
+present despite it being in the V2 manual.  Is it known whether nroff
+was primarily developed on the "trunk" MH PDP-11 or if it might have
+lived elsewhere, leading to it not getting swept along for the tapes cut
+for external users?
+
+- Matt G.
+
+From tuhs at tuhs.org  Sun Feb  1 21:09:00 2026
+From: tuhs at tuhs.org (Angelo Papenhoff via TUHS)
+Date: Sun, 1 Feb 2026 12:09:00 +0100
+Subject: [TUHS] Mix Utah V4 and the V4 Man Pages
+In-Reply-To: <lBTUw1rDEZnhwdefe9dtSJlvv-kmHFB9NH4uQL1nGUTlaxt60C8BfWa3XyUS8xjnwHw4fHFTfNPTsTfCtOvGV1pOQdLnAOLaOsP9m6JQVMk=@protonmail.com>
+References: <aXwFdbeBxn2156S6@minnie.tuhs.org>
+ <aXweIpwbBe0mGtj5@minnie.tuhs.org>
+ <f0a6b9cd-c835-4138-8067-3357def214d3@gmail.com>
+ <bqsuYlxwhIrzHArWq_fUh324z-OZj6Kiyidv_1yJGQSmJX58SQT4xIGma7XUSWP0wTIe4fyTHU-B9lp5ZAX7oX2ybAwWHLkEFWkjrUTDkWE=@protonmail.com>
+ <aX0oFlGjrP1XzeUC@minnie.tuhs.org>
+ <aX7Qh1No8V9S-Qvg@largo.jsg.id.au>
+ <lBTUw1rDEZnhwdefe9dtSJlvv-kmHFB9NH4uQL1nGUTlaxt60C8BfWa3XyUS8xjnwHw4fHFTfNPTsTfCtOvGV1pOQdLnAOLaOsP9m6JQVMk=@protonmail.com>
+Message-ID: <aX80TGzWo8fbc0wz@indra.papnet.eu>
+
+That would be the Dennis_V4 manual source which i've put onto a tape so
+you can load it on V4 and have a usable manual (i included nroff from v6
+in my "distro" too), see my expanded guide at http://squoze.net/UNIX/v4/README
+
+aap
+
+> Actually, what is the "man.tap" available here?
+> 
+> https://www.tuhs.org/Archive/Distributions/Research/Utah_v4/
+> 
+> I'm not somewhere I can dig around more than with od, certainly looks
+> like there are manpage sources in there.
+> 
+> From the looks of it, nroff was missing from other, earlier versions
+> as well.  For instance, the s1/s2 bits tapes don't appear to have nroff
+> present despite it being in the V2 manual.  Is it known whether nroff
+> was primarily developed on the "trunk" MH PDP-11 or if it might have
+> lived elsewhere, leading to it not getting swept along for the tapes cut
+> for external users?
+> 
+> - Matt G.
+
+From tuhs at tuhs.org  Mon Feb  2 02:43:16 2026
+From: tuhs at tuhs.org (Paul Winalski via TUHS)
+Date: Sun, 1 Feb 2026 11:43:16 -0500
+Subject: [TUHS] Boston Children's Museum RK05 Driver: Questions
+In-Reply-To: <aX6ybUnkXdmDs8YS@minnie.tuhs.org>
+References: <aX6ybUnkXdmDs8YS@minnie.tuhs.org>
+Message-ID: <CABH=_VQOPtqPrgZU9Djn587a+PR-ZbbRNimfptGCYZHr8fzpoQ@mail.gmail.com>
+
+On Sat, Jan 31, 2026 at 9:01 PM Warren Toomey via TUHS <tuhs at tuhs.org>
+wrote:
+
+>
+> Question: how much of a win was this, and why was the idea of moving
+> (some/all) of the i-nodes to the centre of the disk not used until
+> we got the fast filesystem?
+>
+> It was not uncommon to have unconventional data placement schemes on disk
+files to minimize head movement.  IBM's compilers used something called
+split cylinder allocation for their compilers' three scratch files.
+Instead of having a contiguous set of cylinders for each file, each
+cylinder was split between the three scratch files (for example, file #1
+using heads 1-3, file #2 heads 5-7, etc.).  This allowed the compiler to
+use the three files simultaneously with little or no head movement.
+
+I imagine that by the time the fast filesystem came along memory was cheap
+and plentiful enough to allow sufficient caching (both in the disk
+controller and by the driver) to mitigate most head motion delays for
+frequently accessed data structures such as inodes.
+
+-Paul W.
+
+From tuhs at tuhs.org  Tue Feb  3 08:23:58 2026
+From: tuhs at tuhs.org (Diomidis Spinellis via TUHS)
+Date: Tue, 3 Feb 2026 00:23:58 +0200
+Subject: [TUHS] Unix v4 tape FOSDEM talk
+Message-ID: <afff48d4-ec11-4720-873a-056ee54c35f3@aueb.gr>
+
+I gave a short talk at FOSDEM 2026 on integrating the v4 tape into the 
+GitHub Unix history repository.  It's now available online at 
+https://ftp.belnet.be/mirror/FOSDEM/video/2026/h2215/DCDAUY-the_v4_tape_in_the_unix_history_repo.av1.webm
+
+
+Diomidis - https://www.spinellis.gr
+
+From tuhs at tuhs.org  Tue Feb  3 09:22:16 2026
+From: tuhs at tuhs.org (Warner Losh via TUHS)
+Date: Mon, 2 Feb 2026 16:22:16 -0700
+Subject: [TUHS] Unix v4 tape FOSDEM talk
+In-Reply-To: <afff48d4-ec11-4720-873a-056ee54c35f3@aueb.gr>
+References: <afff48d4-ec11-4720-873a-056ee54c35f3@aueb.gr>
+Message-ID: <CANCZdfqoj6g9ZjQoCgoLi4omeBLK2cxf7P52gGm49CKODXLsmg@mail.gmail.com>
+
+Thanks for posting this. This was an awesome presentation.
+
+Warner
+
+On Mon, Feb 2, 2026, 3:24 PM Diomidis Spinellis via TUHS <tuhs at tuhs.org>
+wrote:
+
+> I gave a short talk at FOSDEM 2026 on integrating the v4 tape into the
+> GitHub Unix history repository.  It's now available online at
+>
+> https://ftp.belnet.be/mirror/FOSDEM/video/2026/h2215/DCDAUY-the_v4_tape_in_the_unix_history_repo.av1.webm
+>
+>
+> Diomidis - https://www.spinellis.gr
+>
+
+From tuhs at tuhs.org  Wed Feb  4 22:32:05 2026
+From: tuhs at tuhs.org (=?utf-8?q?Cameron_M=C3=AD=C4=8Be=C3=A1l_Tyre_via_TUHS?=)
+Date: Wed, 04 Feb 2026 12:32:05 +0000
+Subject: [TUHS] Unix v4 tape FOSDEM talk
+In-Reply-To: <CANCZdfqoj6g9ZjQoCgoLi4omeBLK2cxf7P52gGm49CKODXLsmg@mail.gmail.com>
+References: <afff48d4-ec11-4720-873a-056ee54c35f3@aueb.gr>
+ <CANCZdfqoj6g9ZjQoCgoLi4omeBLK2cxf7P52gGm49CKODXLsmg@mail.gmail.com>
+Message-ID: <huinI-l4mj-Kl_FEgnb2cqmaJUVSk1MSUrL6iS7FK-_XMEE1IOpQsjWdy0Ktt1edepiTeWNFZohSCgn7haG0DYiTDuYN7na5LFmu0B7UX-Q=@protonmail.ch>
+
+Διομήδης,
+
+I second Warner's comment. I finally got a chance to sit down and watch your presentation. It was perfect. Thank you for sharing it.
+
+Με εκτίμηση,
+
+Cameron
+
+
+-------- Original Message --------
+On Monday, 02/02/26 at 23:22 Warner Losh via TUHS <tuhs at tuhs.org> wrote:
+Thanks for posting this. This was an awesome presentation.
+
+Warner
+
+On Mon, Feb 2, 2026, 3:24 PM Diomidis Spinellis via TUHS <tuhs at tuhs.org>
+wrote:
+
+> I gave a short talk at FOSDEM 2026 on integrating the v4 tape into the
+> GitHub Unix history repository.  It's now available online at
+>
+> https://ftp.belnet.be/mirror/FOSDEM/video/2026/h2215/DCDAUY-the_v4_tape_in_the_unix_history_repo.av1.webm
+>
+>
+> Diomidis - https://www.spinellis.gr
+>
+
+
+From tuhs at tuhs.org  Wed Feb  4 23:18:26 2026
+From: tuhs at tuhs.org (Angelo Papenhoff via TUHS)
+Date: Wed, 4 Feb 2026 14:18:26 +0100
+Subject: [TUHS] Unix v4 tape FOSDEM talk
+In-Reply-To: <afff48d4-ec11-4720-873a-056ee54c35f3@aueb.gr>
+References: <afff48d4-ec11-4720-873a-056ee54c35f3@aueb.gr>
+Message-ID: <aYNHInJVz7TKoruq@indra.papnet.eu>
+
+Thanks for the talk Diomidis!
+
+only one thing was weird: the v4 kernel was not written in New B,
+already the language of the last1120c compiler was called C.
+
+>From (what i claim is) New B we only have a few binary commands in a
+threaded code that deals with bytes, so very early-C-like semantics.
+See http://squoze.net/NB/
+
+cheers,
+aap
+
+On 03/02/26, Diomidis Spinellis via TUHS wrote:
+> I gave a short talk at FOSDEM 2026 on integrating the v4 tape into the 
+> GitHub Unix history repository.  It's now available online at 
+> https://ftp.belnet.be/mirror/FOSDEM/video/2026/h2215/DCDAUY-the_v4_tape_in_the_unix_history_repo.av1.webm
+> 
+> 
+> Diomidis - https://www.spinellis.gr
+
+From tuhs at tuhs.org  Fri Feb  6 02:00:58 2026
+From: tuhs at tuhs.org (Briam Rodriguez via TUHS)
+Date: Thu, 5 Feb 2026 11:00:58 -0500
+Subject: [TUHS] Unix v4 tape FOSDEM talk
+In-Reply-To: <afff48d4-ec11-4720-873a-056ee54c35f3@aueb.gr>
+References: <afff48d4-ec11-4720-873a-056ee54c35f3@aueb.gr>
+Message-ID: <8e16d2f1-ff73-4a3c-a6e4-f8f74a6a982c@gmail.com>
+
+Diomidis,
+
+Amazing talk! Still in the process of watching, but I wanted to send you 
+a note to thank you for the call out!
+
+Excellent and informative presentation!
+
+-- Briam R.
+
+On 2/2/26 5:23 PM, Diomidis Spinellis via TUHS wrote:
+> I gave a short talk at FOSDEM 2026 on integrating the v4 tape into the 
+> GitHub Unix history repository.  It's now available online at 
+> https://ftp.belnet.be/mirror/FOSDEM/video/2026/h2215/DCDAUY-the_v4_tape_in_the_unix_history_repo.av1.webm
+>
+>
+> Diomidis - https://www.spinellis.gr
+
+From tuhs at tuhs.org  Fri Feb  6 22:10:44 2026
+From: tuhs at tuhs.org (Arnold Robbins via TUHS)
+Date: Fri, 06 Feb 2026 14:10:44 +0200
+Subject: [TUHS] "A Supplemental Document For Awk" - now on github
+Message-ID: <202602061210.616CAmdV040391@freefriends.org>
+
+Hi All.
+
+In the mid-1980s, John W. Pierce's "A Supplementatl Document For Awk"
+circulated on USENET.
+
+I decided to put this document up on USENET for its historical
+interest.  It formats just fine with groff.
+
+See https://github.com/arnoldrobbins/awksupp if you're interested.
+
+Arnold
+
+From tuhs at tuhs.org  Fri Feb  6 22:11:28 2026
+From: tuhs at tuhs.org (Arnold Robbins via TUHS)
+Date: Fri, 06 Feb 2026 14:11:28 +0200
+Subject: [TUHS] "A Supplemental Document For Awk" - now on github
+Message-ID: <202602061211.616CBVP0040442@freefriends.org>
+
+> I decided to put this document up on USENET ...
+
+s/USENET/GitHub/
+
+Sorry,
+
+Arnold
+
+From tuhs at tuhs.org  Sat Feb  7 02:01:46 2026
+From: tuhs at tuhs.org (ron minnich via TUHS)
+Date: Fri, 6 Feb 2026 08:01:46 -0800
+Subject: [TUHS] inodes, inumbers, and versions
+Message-ID: <CAP6exYKwbG37DkqKjg4E_tBmX5_pi9+bZT9=-GoiR6HxH9mxDw@mail.gmail.com>
+
+At some point there was an issue around inumbers being recycled, such that
+a file might be opened, have an inumber that had been used, and confusion
+followed.
+
+IIRC, there was a version field that was added to the inode (?), so protect
+against this.
+
+I'm sure I've got lots of this wrong. It was a long time ago and the
+neurons are dead.
+
+My question: in our modern era :-), I assume all inumbers are 64 bits, and,
+for a given file system, never reused? Is that a safe assumption?
+
+This has come up as part of a question involving user-mode 9p servers.
+
+thanks
+
+From tuhs at tuhs.org  Sat Feb  7 02:26:33 2026
+From: tuhs at tuhs.org (Tom Lyon via TUHS)
+Date: Fri, 6 Feb 2026 08:26:33 -0800
+Subject: [TUHS] inodes, inumbers, and versions
+In-Reply-To: <CAP6exYKwbG37DkqKjg4E_tBmX5_pi9+bZT9=-GoiR6HxH9mxDw@mail.gmail.com>
+References: <CAP6exYKwbG37DkqKjg4E_tBmX5_pi9+bZT9=-GoiR6HxH9mxDw@mail.gmail.com>
+Message-ID: <CANxB0bSoMxQhWOHu-Z5mNKni7rko0FV7oMe-H79YuvCRMA_BcQ@mail.gmail.com>
+
+Sounds like more of a problem with NFS file handles - the server doesn't
+keep track of what's open.
+
+On Fri, Feb 6, 2026 at 8:02 AM ron minnich via TUHS <tuhs at tuhs.org> wrote:
+
+> At some point there was an issue around inumbers being recycled, such that
+> a file might be opened, have an inumber that had been used, and confusion
+> followed.
+>
+> IIRC, there was a version field that was added to the inode (?), so protect
+> against this.
+>
+> I'm sure I've got lots of this wrong. It was a long time ago and the
+> neurons are dead.
+>
+> My question: in our modern era :-), I assume all inumbers are 64 bits, and,
+> for a given file system, never reused? Is that a safe assumption?
+>
+> This has come up as part of a question involving user-mode 9p servers.
+>
+> thanks
+>
+
+From tuhs at tuhs.org  Sat Feb  7 03:34:14 2026
+From: tuhs at tuhs.org (Al Kossow via TUHS)
+Date: Fri, 6 Feb 2026 09:34:14 -0800
+Subject: [TUHS] CHM Unix recovery video
+Message-ID: <7f125b23-57e1-a632-67ae-6dc9da0a199d@bitsavers.org>
+
+featuring Warren at the end...
+
+Computer History Museum Recovers Rare UNIX History: https://youtu.be/-xlq_MPWNKk
+
+From tuhs at tuhs.org  Sat Feb  7 03:53:22 2026
+From: tuhs at tuhs.org (Bakul Shah via TUHS)
+Date: Fri, 6 Feb 2026 09:53:22 -0800
+Subject: [TUHS] inodes, inumbers, and versions
+In-Reply-To: <CAP6exYKwbG37DkqKjg4E_tBmX5_pi9+bZT9=-GoiR6HxH9mxDw@mail.gmail.com>
+References: <CAP6exYKwbG37DkqKjg4E_tBmX5_pi9+bZT9=-GoiR6HxH9mxDw@mail.gmail.com>
+Message-ID: <C9FE9DEA-958D-46DA-B69D-4174A9D6220C@iitbombay.org>
+
+
+
+> On Feb 6, 2026, at 8:01 AM, ron minnich via TUHS <tuhs at tuhs.org> wrote:
+> 
+> At some point there was an issue around inumbers being recycled, such that
+> a file might be opened, have an inumber that had been used, and confusion
+> followed.
+
+An opened file's dir entry may be removed but its inode would not be removed
+until its refcount (number of opens) drops to zero so no such confusion.
+
+> IIRC, there was a version field that was added to the inode (?), so protect
+> against this.
+
+This was likely added for the "stateless" NFS to deal with "ABA problem".
+
+
+From tuhs at tuhs.org  Sat Feb  7 04:14:44 2026
+From: tuhs at tuhs.org (Ronald Natalie via TUHS)
+Date: Fri, 06 Feb 2026 18:14:44 +0000
+Subject: [TUHS] inodes, inumbers, and versions
+In-Reply-To: <CAP6exYKwbG37DkqKjg4E_tBmX5_pi9+bZT9=-GoiR6HxH9mxDw@mail.gmail.com>
+References: <CAP6exYKwbG37DkqKjg4E_tBmX5_pi9+bZT9=-GoiR6HxH9mxDw@mail.gmail.com>
+Message-ID: <em0a058317-2c9b-48b2-bcfa-b509017f4608@ronnatalie.com>
+
+The inode is the essence of the file (pretty much everything other than 
+its name).  If it got reused while someone was still referencing it they 
+got the wrong file.   The inodes kept  a reffence count of the number of 
+directory entries that referred to it so it knew when to deallocate it.  
+  There was no “owner” directory, all links to an inode were the same.
+
+After a crash, in the early days, you would run dcheck which would scan 
+through all the directories on the system and count references tt and 
+then check that against the reference count in the inode.   The most 
+common discrepency was that the reference count in both places would go 
+to zero but for whatever reason (most likely the file was being held 
+open at the crash).   You’d have to manually run clri to mark it unused.
+
+There was a 100 element inode freelist in the superblock, but unlike the 
+data block freelist, it wasn’t linked to more free items.   Once the 100 
+were used up, the kernel scanned all the inodes looking for freeones to 
+repopulate the list.
+
+Eventually, we got fsck, and the systems stopped crashing so much.   
+However, it was required to understand the filesystem and the various 
+tools:  icheck, dcheck, ncheck, clri, etc...
+
+It wasn’t until later (Berkeley, I think) that someone overhauled the 
+filesystem code to assure that things were ordered in a way that never 
+left the filesystem in a degenerate state on crashing.
+
+------ Original Message ------
+>From "ron minnich via TUHS" <tuhs at tuhs.org>
+To "The Eunuchs Hysterical Society" <tuhs at tuhs.org>
+Date 2/6/2026 11:01:46 AM
+Subject [TUHS] inodes, inumbers, and versions
+
+>At some point there was an issue around inumbers being recycled, such that
+>a file might be opened, have an inumber that had been used, and confusion
+>followed.
+>
+>IIRC, there was a version field that was added to the inode (?), so protect
+>against this.
+>
+>I'm sure I've got lots of this wrong. It was a long time ago and the
+>neurons are dead.
+>
+>My question: in our modern era :-), I assume all inumbers are 64 bits, and,
+>for a given file system, never reused? Is that a safe assumption?
+>
+>This has come up as part of a question involving user-mode 9p servers.
+>
+>thanks
+
+From tuhs at tuhs.org  Sat Feb  7 04:33:12 2026
+From: tuhs at tuhs.org (Larry McVoy via TUHS)
+Date: Fri, 6 Feb 2026 10:33:12 -0800
+Subject: [TUHS] inodes, inumbers, and versions
+In-Reply-To: <em0a058317-2c9b-48b2-bcfa-b509017f4608@ronnatalie.com>
+References: <CAP6exYKwbG37DkqKjg4E_tBmX5_pi9+bZT9=-GoiR6HxH9mxDw@mail.gmail.com>
+ <em0a058317-2c9b-48b2-bcfa-b509017f4608@ronnatalie.com>
+Message-ID: <20260206183312.GA16693@mcvoy.com>
+
+> It wasn???t until later (Berkeley, I think) that someone overhauled the
+> filesystem code to assure that things were ordered in a way that never left
+> the filesystem in a degenerate state on crashing.
+
+That feature was not in the first UFS in BSD nor was it in SunOS.  Want to
+nuke your filesystem?  Untar a tarball and pull power while that was running.
+Left a huge mess.
+
+ZFS did something about this.
+
+From tuhs at tuhs.org  Sat Feb  7 04:45:38 2026
+From: tuhs at tuhs.org (Bakul Shah via TUHS)
+Date: Fri, 6 Feb 2026 10:45:38 -0800
+Subject: [TUHS] inodes, inumbers, and versions
+In-Reply-To: <em0a058317-2c9b-48b2-bcfa-b509017f4608@ronnatalie.com>
+References: <CAP6exYKwbG37DkqKjg4E_tBmX5_pi9+bZT9=-GoiR6HxH9mxDw@mail.gmail.com>
+ <em0a058317-2c9b-48b2-bcfa-b509017f4608@ronnatalie.com>
+Message-ID: <CB836AD0-7DF9-4576-8221-77ED3CB16289@iitbombay.org>
+
+
+
+> On Feb 6, 2026, at 10:14 AM, Ronald Natalie via TUHS <tuhs at tuhs.org> wrote:
+> 
+> The inode is the essence of the file (pretty much everything other than its name).  If it got reused while someone was still referencing it they got the wrong file.
+
+The in-core refcount of # of opens (i_count, not i_nlink) protects against
+this. Even if you do "rm foo", foo's inode is not freed if someone has foo
+open. Its inode is freed only after the last close. [Least how it was in v7).
+
+You do have ensure that the FS structure is consistent after a crash.
+
+From tuhs at tuhs.org  Sat Feb  7 05:05:11 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Fri, 6 Feb 2026 14:05:11 -0500
+Subject: [TUHS] inodes, inumbers, and versions
+In-Reply-To: <em0a058317-2c9b-48b2-bcfa-b509017f4608@ronnatalie.com>
+References: <CAP6exYKwbG37DkqKjg4E_tBmX5_pi9+bZT9=-GoiR6HxH9mxDw@mail.gmail.com>
+ <em0a058317-2c9b-48b2-bcfa-b509017f4608@ronnatalie.com>
+Message-ID: <CAC20D2NP4ks-cpXJ8xhKRZzmbMcFJxvTf5jL15HkzfZ=Ms+1qQ@mail.gmail.com>
+
+below
+
+On Fri, Feb 6, 2026 at 1:14 PM Ronald Natalie via TUHS <tuhs at tuhs.org>
+wrote:
+
+> ...
+> It wasn’t until later (Berkeley, I think) that someone overhauled the
+> filesystem code to assure that things were ordered in a way that never
+> left the filesystem in a degenerate state on crashing.
+>
+It was George Goble at Purdue who did the work to "harden" the file system
+in the original 4.1BSD code in approx 1980 [which was pushed back to UCB
+and was first included in BSD4.1A].  Besides the Dual Vax, George spliced a
+PDP-11 into the memory bus of one of his Vaxes and wrote a really neat
+memory analyzer/kernel debugger [which, sadly, was before USENIX had formal
+papers and may be lost to time].
+
+Using it, he found several races and at least one zero-day issue in 4.1,
+all of which led up to his dual-CPU "Purdue Vax," a paper all its own.  I
+remember the USENIX meeting (after he found ther zero-day), he had an
+invite-only/closed-door meeting with about 10-15 of the major UNIX systems
+people, and he explained it and the fix [Unix had a reputation of being
+secure, and this was the time of the UNIX *vs.* VMS fights in many places
+and George was worried that if the zero-day got out, it would hurt the
+reputation of not being "production quality."]   IIRC, the changes for both
+file system hardening and this fix were in a Purdue directory on one of the
+USENIX tapes [although I may have had them at Tektronix directly from
+George].
+
+From tuhs at tuhs.org  Sat Feb  7 05:31:48 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Fri, 6 Feb 2026 14:31:48 -0500
+Subject: [TUHS] CHM Unix recovery video
+In-Reply-To: <7f125b23-57e1-a632-67ae-6dc9da0a199d@bitsavers.org>
+References: <7f125b23-57e1-a632-67ae-6dc9da0a199d@bitsavers.org>
+Message-ID: <CAC20D2Ozve6PTmHyxD6cBs+bD9XymwfxJ8ArY2hGTMusZ5y9Xg@mail.gmail.com>
+
+Very nicely done.
+Thank you.
+Clem
+
+On Fri, Feb 6, 2026 at 12:34 PM Al Kossow via TUHS <tuhs at tuhs.org> wrote:
+
+> featuring Warren at the end...
+>
+> Computer History Museum Recovers Rare UNIX History:
+> https://youtu.be/-xlq_MPWNKk
+>
+
+From tuhs at tuhs.org  Mon Feb  9 20:35:51 2026
+From: tuhs at tuhs.org (Arnold Robbins via TUHS)
+Date: Mon, 09 Feb 2026 12:35:51 +0200
+Subject: [TUHS] Portable C Compiler Revived - Revived!
+Message-ID: <202602091035.619AZrnF079020@freefriends.org>
+
+Hi All.
+
+To anyone who's interested, the revived version of the venerable
+Portable C Compiler (PCC) is available on GitHub. See
+https://github.com/PortableCC.
+
+The original system hosting this project became unavailable (IIRC)
+in October of 2023.
+
+A while back Anders Magnusson put the whole history of PCC up on Github,
+but at the time it had a number of bugs and I was not able to use it to
+compile gawk.  :-(
+
+However, as of today, the various bugs that were blocking me
+are fixed.  So I thought I might mention it here on this list.
+
+Enjoy,
+
+Arnold
+
+From tuhs at tuhs.org  Tue Feb 10 02:05:38 2026
+From: tuhs at tuhs.org (Daria Phoebe Brashear via TUHS)
+Date: Mon, 9 Feb 2026 11:05:38 -0500
+Subject: [TUHS] Siemens RTL window manager
+Message-ID: <CAMHoRJgYKbOBv5xMpD6Xoxpcd1Rc7Tx553J1t5nxUWYfyQ=DZw@mail.gmail.com>
+
+Every time I spend time manually tiling windows, I think about the
+Siemens RTL Window Manager. Despite being approximately X11R4 years
+old in terms of coming to Unix, binaries of this built from
+X11R3-contrib were still floating around when I started exploring
+things past the base environment we were provided; Like the Andrew
+Window Manager and the port for X11, the source for this was lost for
+a while but unlike wmc, someone found, patched and shared a copy of
+the source a while back(+), and I dug out my copy again recently to
+hopefully play with.
+
+Lest the tarball ever become unavailable at the URL from the email,
+I've pushed a copy to GitHub here:
+https://github.com/dariaphoebe/rtl-wm
+
+
++ https://lists.suckless.org/dev/1112/10398.html
+
+-- 
+Daria Phoebe Brashear
+AuriStor, Inc
+dariaphoebe.com
+
+From tuhs at tuhs.org  Tue Feb 10 12:20:04 2026
+From: tuhs at tuhs.org (Briam Rodriguez via TUHS)
+Date: Mon, 9 Feb 2026 21:20:04 -0500
+Subject: [TUHS] Siemens RTL window manager
+In-Reply-To: <CAMHoRJgYKbOBv5xMpD6Xoxpcd1Rc7Tx553J1t5nxUWYfyQ=DZw@mail.gmail.com>
+References: <CAMHoRJgYKbOBv5xMpD6Xoxpcd1Rc7Tx553J1t5nxUWYfyQ=DZw@mail.gmail.com>
+Message-ID: <7e97d26a-3a86-4ea9-921f-99668bdc3e08@gmail.com>
+
+Took a bit to get it to crank over, and the mouse support is a bit janky 
+(def. not made for a trackpad!) but happy to report it compiles on macos 
+26.2 using xquartz.
+
+If anyone's interested i can supply the patches.
+
+-- Briam R.
+
+On 2/9/26 11:05 AM, Daria Phoebe Brashear via TUHS wrote:
+> Every time I spend time manually tiling windows, I think about the
+> Siemens RTL Window Manager. Despite being approximately X11R4 years
+> old in terms of coming to Unix, binaries of this built from
+> X11R3-contrib were still floating around when I started exploring
+> things past the base environment we were provided; Like the Andrew
+> Window Manager and the port for X11, the source for this was lost for
+> a while but unlike wmc, someone found, patched and shared a copy of
+> the source a while back(+), and I dug out my copy again recently to
+> hopefully play with.
+>
+> Lest the tarball ever become unavailable at the URL from the email,
+> I've pushed a copy to GitHub here:
+> https://github.com/dariaphoebe/rtl-wm
+>
+>
+> +https://lists.suckless.org/dev/1112/10398.html
+>
+
+From tuhs at tuhs.org  Tue Feb 10 12:51:01 2026
+From: tuhs at tuhs.org (Larry McVoy via TUHS)
+Date: Mon, 9 Feb 2026 18:51:01 -0800
+Subject: [TUHS] Siemens RTL window manager
+In-Reply-To: <7e97d26a-3a86-4ea9-921f-99668bdc3e08@gmail.com>
+References: <CAMHoRJgYKbOBv5xMpD6Xoxpcd1Rc7Tx553J1t5nxUWYfyQ=DZw@mail.gmail.com>
+ <7e97d26a-3a86-4ea9-921f-99668bdc3e08@gmail.com>
+Message-ID: <20260210025101.GN13898@mcvoy.com>
+
+Does anyone remeber ctwm an offshoot of twm?  I ran ctwm for years, finally
+gave in when I switched to Xubuntu and used their manager.  Did so because
+what I was doing was weird and all sorts of stuff didn't work, xubuntu
+just works.
+
+On Mon, Feb 09, 2026 at 09:20:04PM -0500, Briam Rodriguez via TUHS wrote:
+> Took a bit to get it to crank over, and the mouse support is a bit janky
+> (def. not made for a trackpad!) but happy to report it compiles on macos
+> 26.2 using xquartz.
+> 
+> If anyone's interested i can supply the patches.
+> 
+> -- Briam R.
+> 
+> On 2/9/26 11:05 AM, Daria Phoebe Brashear via TUHS wrote:
+> >Every time I spend time manually tiling windows, I think about the
+> >Siemens RTL Window Manager. Despite being approximately X11R4 years
+> >old in terms of coming to Unix, binaries of this built from
+> >X11R3-contrib were still floating around when I started exploring
+> >things past the base environment we were provided; Like the Andrew
+> >Window Manager and the port for X11, the source for this was lost for
+> >a while but unlike wmc, someone found, patched and shared a copy of
+> >the source a while back(+), and I dug out my copy again recently to
+> >hopefully play with.
+> >
+> >Lest the tarball ever become unavailable at the URL from the email,
+> >I've pushed a copy to GitHub here:
+> >https://github.com/dariaphoebe/rtl-wm
+> >
+> >
+> >+https://lists.suckless.org/dev/1112/10398.html
+> >
+
+-- 
+---
+Larry McVoy           Retired to fishing          http://www.mcvoy.com/lm/boat
+
+From tuhs at tuhs.org  Tue Feb 10 13:05:47 2026
+From: tuhs at tuhs.org (George Michaelson via TUHS)
+Date: Tue, 10 Feb 2026 13:05:47 +1000
+Subject: [TUHS] Siemens RTL window manager
+In-Reply-To: <20260210025101.GN13898@mcvoy.com>
+References: <CAMHoRJgYKbOBv5xMpD6Xoxpcd1Rc7Tx553J1t5nxUWYfyQ=DZw@mail.gmail.com>
+ <7e97d26a-3a86-4ea9-921f-99668bdc3e08@gmail.com>
+ <20260210025101.GN13898@mcvoy.com>
+Message-ID: <CAKr6gn0fBdY2yzg_tE2=-3XW8Xc878fD269WideEE-XnHmTSaw@mail.gmail.com>
+
+I wound up in tvtwm. I decided I wanted the simplicity of twm and the
+framed desktop adjacency of fvwm, and tvtwm was in principle more fluid but
+you could make keybindings jump in the virtual region aligned to "desktops"
+and keep twm simplicity so I stopped there.
+
+I didn't like fvwm because it reminded me of the OSF/1 CDE and I had
+disliked that so it was tainted by association of L&F but was actually
+perfectly cromulent.
+
+I liked what Colas? Naboo?? did at INRIA. I think it was LISP and called
+Koala or something. Only ran it briefly.
+
+-G
+
+On Tue, Feb 10, 2026 at 9:51 AM Larry McVoy via TUHS <tuhs at tuhs.org> wrote:
+
+> Does anyone remeber ctwm an offshoot of twm?  I ran ctwm for years, finally
+> gave in when I switched to Xubuntu and used their manager.  Did so because
+> what I was doing was weird and all sorts of stuff didn't work, xubuntu
+> just works.
+>
+> On Mon, Feb 09, 2026 at 09:20:04PM -0500, Briam Rodriguez via TUHS wrote:
+> > Took a bit to get it to crank over, and the mouse support is a bit janky
+> > (def. not made for a trackpad!) but happy to report it compiles on macos
+> > 26.2 using xquartz.
+> >
+> > If anyone's interested i can supply the patches.
+> >
+> > -- Briam R.
+> >
+> > On 2/9/26 11:05 AM, Daria Phoebe Brashear via TUHS wrote:
+> > >Every time I spend time manually tiling windows, I think about the
+> > >Siemens RTL Window Manager. Despite being approximately X11R4 years
+> > >old in terms of coming to Unix, binaries of this built from
+> > >X11R3-contrib were still floating around when I started exploring
+> > >things past the base environment we were provided; Like the Andrew
+> > >Window Manager and the port for X11, the source for this was lost for
+> > >a while but unlike wmc, someone found, patched and shared a copy of
+> > >the source a while back(+), and I dug out my copy again recently to
+> > >hopefully play with.
+> > >
+> > >Lest the tarball ever become unavailable at the URL from the email,
+> > >I've pushed a copy to GitHub here:
+> > >https://github.com/dariaphoebe/rtl-wm
+> > >
+> > >
+> > >+https://lists.suckless.org/dev/1112/10398.html
+> > >
+>
+> --
+> ---
+> Larry McVoy           Retired to fishing
+> http://www.mcvoy.com/lm/boat
+>
+
+From tuhs at tuhs.org  Tue Feb 10 13:14:48 2026
+From: tuhs at tuhs.org (Larry McVoy via TUHS)
+Date: Mon, 9 Feb 2026 19:14:48 -0800
+Subject: [TUHS] Siemens RTL window manager
+In-Reply-To: <CAKr6gn0fBdY2yzg_tE2=-3XW8Xc878fD269WideEE-XnHmTSaw@mail.gmail.com>
+References: <CAMHoRJgYKbOBv5xMpD6Xoxpcd1Rc7Tx553J1t5nxUWYfyQ=DZw@mail.gmail.com>
+ <7e97d26a-3a86-4ea9-921f-99668bdc3e08@gmail.com>
+ <20260210025101.GN13898@mcvoy.com>
+ <CAKr6gn0fBdY2yzg_tE2=-3XW8Xc878fD269WideEE-XnHmTSaw@mail.gmail.com>
+Message-ID: <20260210031448.GP13898@mcvoy.com>
+
+I think I went there for a bit but somehow ctwm sucked me in.  Maybe it was
+the virtual desktops?  That's a big deal for me, I have 6 right now.
+
+On Tue, Feb 10, 2026 at 01:05:47PM +1000, George Michaelson wrote:
+> I wound up in tvtwm. I decided I wanted the simplicity of twm and the
+> framed desktop adjacency of fvwm, and tvtwm was in principle more fluid but
+> you could make keybindings jump in the virtual region aligned to "desktops"
+> and keep twm simplicity so I stopped there.
+> 
+> I didn't like fvwm because it reminded me of the OSF/1 CDE and I had
+> disliked that so it was tainted by association of L&F but was actually
+> perfectly cromulent.
+> 
+> I liked what Colas? Naboo?? did at INRIA. I think it was LISP and called
+> Koala or something. Only ran it briefly.
+> 
+> -G
+> 
+> On Tue, Feb 10, 2026 at 9:51???AM Larry McVoy via TUHS <tuhs at tuhs.org> wrote:
+> 
+> > Does anyone remeber ctwm an offshoot of twm?  I ran ctwm for years, finally
+> > gave in when I switched to Xubuntu and used their manager.  Did so because
+> > what I was doing was weird and all sorts of stuff didn't work, xubuntu
+> > just works.
+> >
+> > On Mon, Feb 09, 2026 at 09:20:04PM -0500, Briam Rodriguez via TUHS wrote:
+> > > Took a bit to get it to crank over, and the mouse support is a bit janky
+> > > (def. not made for a trackpad!) but happy to report it compiles on macos
+> > > 26.2 using xquartz.
+> > >
+> > > If anyone's interested i can supply the patches.
+> > >
+> > > -- Briam R.
+> > >
+> > > On 2/9/26 11:05 AM, Daria Phoebe Brashear via TUHS wrote:
+> > > >Every time I spend time manually tiling windows, I think about the
+> > > >Siemens RTL Window Manager. Despite being approximately X11R4 years
+> > > >old in terms of coming to Unix, binaries of this built from
+> > > >X11R3-contrib were still floating around when I started exploring
+> > > >things past the base environment we were provided; Like the Andrew
+> > > >Window Manager and the port for X11, the source for this was lost for
+> > > >a while but unlike wmc, someone found, patched and shared a copy of
+> > > >the source a while back(+), and I dug out my copy again recently to
+> > > >hopefully play with.
+> > > >
+> > > >Lest the tarball ever become unavailable at the URL from the email,
+> > > >I've pushed a copy to GitHub here:
+> > > >https://github.com/dariaphoebe/rtl-wm
+> > > >
+> > > >
+> > > >+https://lists.suckless.org/dev/1112/10398.html
+> > > >
+> >
+> > --
+> > ---
+> > Larry McVoy           Retired to fishing
+> > http://www.mcvoy.com/lm/boat
+> >
+
+-- 
+---
+Larry McVoy           Retired to fishing          http://www.mcvoy.com/lm/boat
+
+From tuhs at tuhs.org  Tue Feb 10 17:00:59 2026
+From: tuhs at tuhs.org (John Cowan via TUHS)
+Date: Tue, 10 Feb 2026 02:00:59 -0500
+Subject: [TUHS] Portable C Compiler Revived - Revived!
+In-Reply-To: <202602091035.619AZrnF079020@freefriends.org>
+References: <202602091035.619AZrnF079020@freefriends.org>
+Message-ID: <CAD2gp_SX43vpAH9vphtGTs0ocYUD1H61SD4XP_Ui+J6YP=P5xg@mail.gmail.com>
+
+>
+> To anyone who's interested, the revived version of the venerable
+> Portable C Compiler (PCC) is available on GitHub. See
+> https://github.com/PortableCC.
+>
+
+There's some interesting things in there: the f77 and fcom compilers (but
+not the i77 library); the "inc" (?) and "none" (bare metal) operating
+systems; and the "m16c" (Mitsubishi), "nova" (Data General), "pdp7", and
+"pdp10" architectures. There is also a separate compiler called "mip": I
+don't know what that is.
+
+>
+
+From tuhs at tuhs.org  Tue Feb 10 17:17:17 2026
+From: tuhs at tuhs.org (Arnold Robbins via TUHS)
+Date: Tue, 10 Feb 2026 00:17:17 -0700
+Subject: [TUHS] Portable C Compiler Revived - Revived!
+In-Reply-To: <CAD2gp_SX43vpAH9vphtGTs0ocYUD1H61SD4XP_Ui+J6YP=P5xg@mail.gmail.com>
+References: <202602091035.619AZrnF079020@freefriends.org>
+ <CAD2gp_SX43vpAH9vphtGTs0ocYUD1H61SD4XP_Ui+J6YP=P5xg@mail.gmail.com>
+Message-ID: <202602100717.61A7HHSL066638@freefriends.org>
+
+John Cowan <cowan at ccil.org> wrote:
+
+> >
+> > To anyone who's interested, the revived version of the venerable
+> > Portable C Compiler (PCC) is available on GitHub. See
+> > https://github.com/PortableCC.
+> >
+>
+> There's some interesting things in there: the f77 and fcom compilers (but
+> not the i77 library); the "inc" (?) and "none" (bare metal) operating
+> systems; and the "m16c" (Mitsubishi), "nova" (Data General), "pdp7", and
+> "pdp10" architectures. There is also a separate compiler called "mip": I
+> don't know what that is.
+>
+> >
+
+I also want to be clear that this isn't my repository or code; it
+belongs to Anders Magnusson. I just wanted to bring it to the
+attention of the crowd here.
+
+Arnold
+
+From tuhs at tuhs.org  Tue Feb 10 17:35:04 2026
+From: tuhs at tuhs.org (Lars Brinkhoff via TUHS)
+Date: Tue, 10 Feb 2026 07:35:04 +0000
+Subject: [TUHS] Portable C Compiler Revived - Revived!
+In-Reply-To: <CAD2gp_SX43vpAH9vphtGTs0ocYUD1H61SD4XP_Ui+J6YP=P5xg@mail.gmail.com>
+ (John Cowan via TUHS's message of "Tue, 10 Feb 2026 02:00:59 -0500")
+References: <202602091035.619AZrnF079020@freefriends.org>
+ <CAD2gp_SX43vpAH9vphtGTs0ocYUD1H61SD4XP_Ui+J6YP=P5xg@mail.gmail.com>
+Message-ID: <7wv7g53vbr.fsf@junk.nocrew.org>
+
+John Cowan wrote:
+>> https://github.com/PortableCC.
+> There's some interesting things in there: [...]
+> "pdp10" architectures.
+
+This was briefly used by Magnusson attempting to port NetBSD to
+the PDP-10.
+
+From tuhs at tuhs.org  Tue Feb 10 20:01:47 2026
+From: tuhs at tuhs.org (Hauke Fath via TUHS)
+Date: Tue, 10 Feb 2026 11:01:47 +0100
+Subject: [TUHS] Siemens RTL window manager
+In-Reply-To: <20260210025101.GN13898@mcvoy.com>
+References: <CAMHoRJgYKbOBv5xMpD6Xoxpcd1Rc7Tx553J1t5nxUWYfyQ=DZw@mail.gmail.com>
+ <7e97d26a-3a86-4ea9-921f-99668bdc3e08@gmail.com>
+ <20260210025101.GN13898@mcvoy.com>
+Message-ID: <20260210110147722337.8f0f6096@Espresso.Rhein-Neckar.DE>
+
+On Mon, 9 Feb 2026 18:51:01 -0800, Larry McVoy via TUHS wrote:
+> Does anyone remeber ctwm an offshoot of twm?  I ran ctwm for years, finally
+> gave in when I switched to Xubuntu and used their manager.
+
+ctwm has been NetBSD's default window manager for a while:
+<https://blog.netbsd.org/tnf/entry/default_window_manager_switched_to>
+
+Cheerio,
+Hauke
+
+-- 
+Hauke Fath                        <hauke at Espresso.Rhein-Neckar.DE>
+Linnéweg 7
+64342 Seeheim-Jugenheim
+Germany
+
+From tuhs at tuhs.org  Wed Feb 11 03:08:35 2026
+From: tuhs at tuhs.org (Daria Phoebe Brashear via TUHS)
+Date: Tue, 10 Feb 2026 12:08:35 -0500
+Subject: [TUHS] Siemens RTL window manager
+In-Reply-To: <7e97d26a-3a86-4ea9-921f-99668bdc3e08@gmail.com>
+References: <CAMHoRJgYKbOBv5xMpD6Xoxpcd1Rc7Tx553J1t5nxUWYfyQ=DZw@mail.gmail.com>
+ <7e97d26a-3a86-4ea9-921f-99668bdc3e08@gmail.com>
+Message-ID: <CAMHoRJhxu76xBsPNKn8Lcf+qWic5FznTsQt59OQy5fABvj-toQ@mail.gmail.com>
+
+Fork it and pull request? I planned to do this anyway (at this point
+macOS is all I actually have physical hardware for anyway)
+
+On Mon, Feb 9, 2026 at 9:20 PM Briam Rodriguez via TUHS <tuhs at tuhs.org> wrote:
+>
+> Took a bit to get it to crank over, and the mouse support is a bit janky
+> (def. not made for a trackpad!) but happy to report it compiles on macos
+> 26.2 using xquartz.
+>
+> If anyone's interested i can supply the patches.
+>
+> -- Briam R.
+>
+> On 2/9/26 11:05 AM, Daria Phoebe Brashear via TUHS wrote:
+> > Every time I spend time manually tiling windows, I think about the
+> > Siemens RTL Window Manager. Despite being approximately X11R4 years
+> > old in terms of coming to Unix, binaries of this built from
+> > X11R3-contrib were still floating around when I started exploring
+> > things past the base environment we were provided; Like the Andrew
+> > Window Manager and the port for X11, the source for this was lost for
+> > a while but unlike wmc, someone found, patched and shared a copy of
+> > the source a while back(+), and I dug out my copy again recently to
+> > hopefully play with.
+> >
+> > Lest the tarball ever become unavailable at the URL from the email,
+> > I've pushed a copy to GitHub here:
+> > https://github.com/dariaphoebe/rtl-wm
+> >
+> >
+> > +https://lists.suckless.org/dev/1112/10398.html
+> >
+
+
+
+-- 
+Daria Phoebe Brashear
+AuriStor, Inc
+dariaphoebe.com
+
+From tuhs at tuhs.org  Wed Feb 11 03:12:55 2026
+From: tuhs at tuhs.org (Daria Phoebe Brashear via TUHS)
+Date: Tue, 10 Feb 2026 12:12:55 -0500
+Subject: [TUHS] Siemens RTL window manager
+In-Reply-To: <CAKr6gn0fBdY2yzg_tE2=-3XW8Xc878fD269WideEE-XnHmTSaw@mail.gmail.com>
+References: <CAMHoRJgYKbOBv5xMpD6Xoxpcd1Rc7Tx553J1t5nxUWYfyQ=DZw@mail.gmail.com>
+ <7e97d26a-3a86-4ea9-921f-99668bdc3e08@gmail.com>
+ <20260210025101.GN13898@mcvoy.com>
+ <CAKr6gn0fBdY2yzg_tE2=-3XW8Xc878fD269WideEE-XnHmTSaw@mail.gmail.com>
+Message-ID: <CAMHoRJjiONXTUKdeWD2==DibNHKU2zLwEfW8kr264wzq4TmXLQ@mail.gmail.com>
+
+On Mon, Feb 9, 2026 at 10:12 PM George Michaelson via TUHS
+<tuhs at tuhs.org> wrote:
+>
+> I wound up in tvtwm. I decided I wanted the simplicity of twm and the
+> framed desktop adjacency of fvwm, and tvtwm was in principle more fluid but
+> you could make keybindings jump in the virtual region aligned to "desktops"
+> and keep twm simplicity so I stopped there.
+>
+> I didn't like fvwm because it reminded me of the OSF/1 CDE and I had
+> disliked that so it was tainted by association of L&F but was actually
+> perfectly cromulent.
+
+I started with wmc (the Andrew window manager fork), then mwm: had I
+liked mwm, fvwm probably would have sufficed.
+But my life took a twisted path of briefly twm, tvtwm, olwm, then
+olvwm; I then carried private patches and a set of menus for a custom
+version of olvwm for YEARS, across SunOS 4, Solaris, and Linux.
+
+
+-- 
+Daria Phoebe Brashear
+AuriStor, Inc
+dariaphoebe.com
+
+From tuhs at tuhs.org  Wed Feb 11 06:05:00 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Tue, 10 Feb 2026 15:05:00 -0500
+Subject: [TUHS] Portable C Compiler Revived - Revived!
+In-Reply-To: <CAD2gp_SX43vpAH9vphtGTs0ocYUD1H61SD4XP_Ui+J6YP=P5xg@mail.gmail.com>
+References: <202602091035.619AZrnF079020@freefriends.org>
+ <CAD2gp_SX43vpAH9vphtGTs0ocYUD1H61SD4XP_Ui+J6YP=P5xg@mail.gmail.com>
+Message-ID: <CAC20D2NSkS3_x37Ki5y=hoiSSBiEzNQ8rCYzDnq0zovqv4=qUg@mail.gmail.com>
+
+below. As Arnold says, the repository is Anders Magnusson, and Arnold was
+just saying that he was able to get that compiler to compile awk.  At his
+suggestion, I reached out to Anders for clarification (and CC'ed Arnold).
+Much of our interface is below.
+
+
+
+On Tue, Feb 10, 2026 at 2:01 AM John Cowan via TUHS <tuhs at tuhs.org> wrote:
+
+> There's some interesting things in there: the f77 and fcom compilers (but
+> not the i77 library);
+
+Yes, that would need to be added as a minimum if this were to
+be targeted for real work. I did not poke at it too far, but given that it
+is missing i77, I suspect the ANSI suite would return a number of issues.
+Moreover, the UCB 4.X release of F77 was never particularly strong (and
+could not pass it either).
+
+
+
+> the "inc" (?) and "none" (bare metal) operating
+> systems; and the "m16c" (Mitsubishi), "nova" (Data General), "pdp7", and
+> "pdp10" architectures.
+
+Yes, he was extremely prolific but .. there are some missing pieces.  WRT
+to the pdp10 target, it would be interesting how compairs the one in Panda
+(TOPS-20) distribution, which is used to prove a "UNIX-Like" (sort of) set
+of commands for TOPS-20.
+
+
+
+
+> There is also a separate compiler called "mip": I don't know what that is.
+>
+The mip directory in the original PCC suite is the "Machine Independent
+Pieces" and is common to all target ISAs and OSs (which are primarily
+UNIX-based).
+
+My Question to Anders in blue/ his response in orange:
+
+1.) So, the first core question I have is, what is the provenance of your
+code base? Is it based on one of the original PCC threads (V7 or V32)
+directly, or modified by UCB (or someone else), or any of this code based
+on the later PCC2?
+
+
+The original 32V code. I fetched it when Caldera released it around 25
+years ago.  The BSD improvements was not released publically then.
+
+
+I had a wiki up until a few years ago about this (until the machine running
+it broke down).  Quite trivial but with some useful information.  Haven't
+spent any time to set it up again.  Available using webarchive:
+
+
+https://web.archive.org/web/20230819230148/http://pcc.ludd.ltu.se/
+
+2.) Looking at the man page source, am I correct in believing the C
+front-end supports C99?
+
+True.  I have over the last 25 years done quite some improvements, also in
+the backend.
+
+3.) You have a directory called cxxcom and seem to build a binary of that
+name, but no man page.  Looking at some of the files, such as cgram.y It
+looks to me like you are declaring C++ tokens also?  So I'm thinking this
+is a C++ implementation.  If so, does it try to follow any of the C++
+standards (which ones)?
+
+
+:-)  This was something I did quite some time ago (around 20 years ago)
+(because I had some free time).   It is not working; and is very
+rudimentary.  It passed "Hello World", but not much more than that.  I
+checked it in so that it shouldn't get lost if someone wants to rescurrect
+it.
+
+4.) You have a bunch of backends besides PDP-11 and VAX.  You clearly wrote
+many of these, which is impressive.  Did the PDP-11 and Vax start from the
+original Johnson (PDP-11) and Riesner (Vax) code bases? Did any of the
+others come from elsewhere (such as the set released by Steve Ward's RTS
+group at MIT)?
+
+The VAX was from 32V.  The PDP11 backend was written by me, and as far as I
+remember, there is no other backend coming from any other sources (mostly
+due to licensing issues).
+
+5.) The compilers generate assembler mnemonic as did the originals.  Given
+the wide range of architectures and OS targets, the question arises: which
+assemblers and linkers does each target support, and is there a repository
+for them?
+
+Well, no. The output is for the OS (or SDK) which it has been ported to. It
+is usually expected to run in a Unix environment.
+Also note that many of the (more obscure) backends are not complete; for
+example Nova do not support any floating point.
+
+6.) It was unclear to me if these compilers could easily be built as
+cross-compilers.
+
+Yes, most of them can.  It uses the normal configure, so just specify a
+different target.
+I have broken out the floating point stuff so targets like vax/pdp11 easily
+should be able to cross-compile.
+
+
+A small idea/request.   It would be helpful if you had a text file called
+READ_ME with notes like my questions and maybe a few more details WRT to
+each, plus any hints on how to build them.  I also think it would be
+helpful to include a short description of the provenance. Since I think
+these are based on either V7/V32 PCC, it might be wise to consider placing
+a copy of the Caldera license [
+https://www.tuhs.org/Archive/Caldera-license.pdf] at the top level of your
+tree.
+
+I think the questions you asked are answered on the (archived) web site.
+Maybe add a link to it somewhere?
+The caldera license is added to each file (as is common), but having
+license information about the project might be a good idea as well.
+
+...I am not really up-to-speed with using git/github, so feel free to
+provide improvements that way :-)
+I'm trying to learn (in the little time I have left hacking - daytime job
+takes quite some time for me).
+
+From tuhs at tuhs.org  Wed Feb 11 11:10:34 2026
+From: tuhs at tuhs.org (Briam Rodriguez via TUHS)
+Date: Tue, 10 Feb 2026 20:10:34 -0500
+Subject: [TUHS] Siemens RTL window manager
+In-Reply-To: <CAMHoRJhxu76xBsPNKn8Lcf+qWic5FznTsQt59OQy5fABvj-toQ@mail.gmail.com>
+References: <CAMHoRJgYKbOBv5xMpD6Xoxpcd1Rc7Tx553J1t5nxUWYfyQ=DZw@mail.gmail.com>
+ <7e97d26a-3a86-4ea9-921f-99668bdc3e08@gmail.com>
+ <CAMHoRJhxu76xBsPNKn8Lcf+qWic5FznTsQt59OQy5fABvj-toQ@mail.gmail.com>
+Message-ID: <cb71890e-3e51-484e-9c29-1673e4ca1ecf@gmail.com>
+
+Hi Daria,
+
+I got rtl-wm building and running on macOS (tested on Apple Silicon with 
+MacPorts). Opened a PR with the changes:
+
+https://github.com/dariaphoebe/rtl-wm/pull/1
+
+The changes are minimal:
+- Two small source fixes (NULL → '\0' for char assignments - these were 
+causing errors on modern clang)
+- A Makefile.macos for building with MacPorts X11
+- Updated README with macOS instructions
+
+No changes to the original Imakefile or build system. Requires liboldX 
+which isn't in MacPorts anymore, but builds fine from source.
+
+Let me know if you'd like any changes to the PR.
+
+-- Briam R.
+
+On 2/10/26 12:08 PM, Daria Phoebe Brashear wrote:
+> Fork it and pull request? I planned to do this anyway (at this point
+> macOS is all I actually have physical hardware for anyway)
+>
+> On Mon, Feb 9, 2026 at 9:20 PM Briam Rodriguez via TUHS <tuhs at tuhs.org> wrote:
+>> Took a bit to get it to crank over, and the mouse support is a bit janky
+>> (def. not made for a trackpad!) but happy to report it compiles on macos
+>> 26.2 using xquartz.
+>>
+>> If anyone's interested i can supply the patches.
+>>
+>> -- Briam R.
+>>
+>> On 2/9/26 11:05 AM, Daria Phoebe Brashear via TUHS wrote:
+>>> Every time I spend time manually tiling windows, I think about the
+>>> Siemens RTL Window Manager. Despite being approximately X11R4 years
+>>> old in terms of coming to Unix, binaries of this built from
+>>> X11R3-contrib were still floating around when I started exploring
+>>> things past the base environment we were provided; Like the Andrew
+>>> Window Manager and the port for X11, the source for this was lost for
+>>> a while but unlike wmc, someone found, patched and shared a copy of
+>>> the source a while back(+), and I dug out my copy again recently to
+>>> hopefully play with.
+>>>
+>>> Lest the tarball ever become unavailable at the URL from the email,
+>>> I've pushed a copy to GitHub here:
+>>> https://github.com/dariaphoebe/rtl-wm
+>>>
+>>>
+>>> +https://lists.suckless.org/dev/1112/10398.html
+>>>
+>
+>
+
+From tuhs at tuhs.org  Fri Feb 13 15:19:42 2026
+From: tuhs at tuhs.org (Matt Day via TUHS)
+Date: Thu, 12 Feb 2026 22:19:42 -0700
+Subject: [TUHS] First machine to run rogue?
+In-Reply-To: <CAEoi9W6Tr=b7O2Bn+GkXYCadCqrDdXiLTkL=eX-RaDZ9a7m+bw@mail.gmail.com>
+References: <CAEoi9W6Tr=b7O2Bn+GkXYCadCqrDdXiLTkL=eX-RaDZ9a7m+bw@mail.gmail.com>
+Message-ID: <CAHrGxA25E3W+_Tahkxqk9kvL9DUssuExGuGh-4RzKNFpgiXRVA@mail.gmail.com>
+
+On Thu, Jul 1, 2021 at 8:07 PM Dan Cross <crossd at gmail.com> wrote:
+
+> What was the first machine to run rogue? I understand that it was written
+> by Glenn Wichman and Michael Toy at UC Santa Cruz ca. 1980, using the
+> `curses` library (Ken Arnold's original, not Mary Ann's rewrite). I've seen
+> at least one place that indicates it first ran on 6th Edition, but that
+> doesn't sound right to me. The first reference I can find in BSD is in 2.79
+> ("rogue.doc"), which also appears to be the first release to ship curses.
+>
+
+This post by Glenn Wichman to net.games.rogue on 1984-04-06 explains rogue
+was first developed on a PDP 11/70:
+
+> Relay-Version: version B 2.10 5/3/83; site utzoo.UUCP
+> Posting-Version: version B 2.10.1 6/24/83; site fortune.UUCP
+> Path: utzoo!watmath!clyde!burl!we13!ihnp4!zehntel!dual!fortune!grw
+> From: grw at fortune.UUCP (Glenn Wichman)
+> Newsgroups: net.games.rogue
+> Subject: Re: Rogue History: Information Desired
+> Message-ID: <2980 at fortune.UUCP>
+> Date: Fri, 6-Apr-84 17:48:26 EST
+> Article-I.D.: fortune.2980
+> Posted: Fri Apr  6 17:48:26 1984
+> Date-Received: Sun, 8-Apr-84 01:15:55 EST
+> References: <1599 at stolaf.UUCP>
+> Organization: Fortune Systems, Redwood City, CA
+> Lines: 39
+>
+>
+> 1.  When was the first Rogue version made and where?  Who did it?
+>
+> The first version of Rogue was written in the fall of 1980 in
+> an apartment in Santa Cruz colloquially known as "Camelot".
+> The original idea for the game came suddenly and simultaneously
+> to the two roommates, Michael C. Toy and Glenn R. Wichman.  The
+> name "rogue" was given the game by Glenn.  It was written in C
+> under UNIX on a PDP 11/70 at U.C. Santa Cruz.  It was one of the
+> earliest programs to use the "curses" terminal-independent cursor
+> library developed by Ken Arnold.  Later, (winter of '81) development
+> of the game moved from Santa Cruz to Berkeley, where Ken Arnold
+> got involved.
+>
+> 2.  Did it catch on immediately or was it another Lord of the Rings?
+>
+> It caught on immediately, like wildfire.  It had already become
+> the most popular game at UC Santa Cruz even before there were
+> monsters in the game, and all you could do was explore levels.
+>
+> 3.  When did the differing versions begin proliferating and what are
+> they?
+>
+> I can't give a complete answer to this.  The current official
+> version that is most widespread is 5.3.  A group in San Diego
+> hacked up a version called ad_d, and a group in the midwest
+> came up with the "Super-rogue" enhancements.  There are also
+> tons of local mutants.
+>
+> 4.  What can be expected in the near future?
+>
+> Rogue is now available for the IBM-PC.  Most of our development
+> energies are going towards the home computer market now.  I
+> won't say anything more except exciting things can be expected
+> in the future from the rogue people (Michael Toy, Jon Lane, Ken
+> Arnold, Glenn Wichman).
+>
+>
+>         -Glenn R. Wichman
+
+https://groups.google.com/groups?selm=2980 at fortune.UUCP
+
+From tuhs at tuhs.org  Sat Feb 14 05:30:53 2026
+From: tuhs at tuhs.org (segaloco via TUHS)
+Date: Fri, 13 Feb 2026 19:30:53 +0000
+Subject: [TUHS] UNIX System V Golf Clubs?
+Message-ID: <JIaVK1f1CHg_UpZNyF5ups1qujm6nAz3u_9I_X0lku__6AmbTwMbilbLCYBQ-csdJirZtTfgTxT4mL3pBLOvqnYuittO0PHHC_9GeFK0AOk=@protonmail.com>
+
+Thought folks on list might find this amusing:
+
+https://www.ebay.com/itm/177857384642
+
+One of DMRs pages concerned UNIX trademarks/product names spotted out
+there in the wild, and while many were quite interesting, I think this
+is particularly odd because the product is not only named UNIX but
+subtitled "System V JR".  I hardly think that is a coincidence, but
+given these are golf clubs...I really don't know what to think.
+
+Anywho, apparently "All American Golf" produced or sold UNIX System V
+golf clubs at some point.  Probably not licensed stuff, this feels
+similar to the photo of an "OBAMA" backpack with a miscolored Sonic the
+Hedgehog on it.  Gotta love bootlegs.
+
+Any weird oddly specific UNIX-related bootlegs in anyone's memories
+worth sharing?
+
+- Matt G.
+
+From tuhs at tuhs.org  Sat Feb 14 05:34:52 2026
+From: tuhs at tuhs.org (Dan Cross via TUHS)
+Date: Fri, 13 Feb 2026 14:34:52 -0500
+Subject: [TUHS] UNIX System V Golf Clubs?
+In-Reply-To: <JIaVK1f1CHg_UpZNyF5ups1qujm6nAz3u_9I_X0lku__6AmbTwMbilbLCYBQ-csdJirZtTfgTxT4mL3pBLOvqnYuittO0PHHC_9GeFK0AOk=@protonmail.com>
+References: <JIaVK1f1CHg_UpZNyF5ups1qujm6nAz3u_9I_X0lku__6AmbTwMbilbLCYBQ-csdJirZtTfgTxT4mL3pBLOvqnYuittO0PHHC_9GeFK0AOk=@protonmail.com>
+Message-ID: <CAEoi9W4Z_KMe9Y66EuNFc-T+By1QOCPAtwsXCSRxYZXJVTuSyw@mail.gmail.com>
+
+On Fri, Feb 13, 2026 at 2:31 PM segaloco via TUHS <tuhs at tuhs.org> wrote:
+> Thought folks on list might find this amusing:
+>
+> https://www.ebay.com/itm/177857384642
+>
+> One of DMRs pages concerned UNIX trademarks/product names spotted out
+> there in the wild, and while many were quite interesting, I think this
+> is particularly odd because the product is not only named UNIX but
+> subtitled "System V JR".  I hardly think that is a coincidence, but
+> given these are golf clubs...I really don't know what to think.
+>
+> Anywho, apparently "All American Golf" produced or sold UNIX System V
+> golf clubs at some point.  Probably not licensed stuff, this feels
+> similar to the photo of an "OBAMA" backpack with a miscolored Sonic the
+> Hedgehog on it.  Gotta love bootlegs.
+>
+> Any weird oddly specific UNIX-related bootlegs in anyone's memories
+> worth sharing?
+
+Oh that's wild.  I wonder if they were some sort of promotional swag
+kind of thing?
+
+        - Dan C.
+
+From tuhs at tuhs.org  Sat Feb 14 05:44:18 2026
+From: tuhs at tuhs.org (segaloco via TUHS)
+Date: Fri, 13 Feb 2026 19:44:18 +0000
+Subject: [TUHS] Kartus's Software Demand Paging System?
+Message-ID: <GmEY1xFAXsWYIUUWriGZCHzCn_YEsr_VL7W4NjRSL2koonXGtFqs6La8WH6Cfu3giqg6WH9wTSpyqL84SCCs3mAvyd1_qfEgzSZ-5wOrbDs=@protonmail.com>
+
+I'm having trouble turning up info on something I recently read about.
+For background, Basic-16 was the 8086 SGS developed in BTL for various
+UNIX and telco experiments on Intel 8086 systems.  Like other SGSs, this
+one includes a simulator, b16sim.  This simulator includes a "-p" option
+to request that a "paged" version of the simulator be used.  This then
+references a subsystem by J. S. Kartus:
+
+> B16sim can be invoked in two versions.  There is an "incore" version which can
+> address programs up to 32K bytes in length and a paged version which can
+> address up to 1M bytes.  The paged version is implemented using the
+> "Software Demand Paging" system of J. S. Kartus (see REFERENCES).
+
+With the REFERENCES entry given as:
+
+> J. S. Kartus, "Software Demand Paging User's Manual," 2523-781228.02MF.
+
+Does anyone have any recollection of what precisely this subsystem
+entailed and if it had any influence on later hardware demand paging
+efforts inside BTL?  Thanks for any insights!
+
+- Matt G.
+
+From tuhs at tuhs.org  Sat Feb 14 05:52:15 2026
+From: tuhs at tuhs.org (Ron Natalie via TUHS)
+Date: Fri, 13 Feb 2026 19:52:15 +0000
+Subject: [TUHS] UNIX System V Golf Clubs?
+In-Reply-To: <JIaVK1f1CHg_UpZNyF5ups1qujm6nAz3u_9I_X0lku__6AmbTwMbilbLCYBQ-csdJirZtTfgTxT4mL3pBLOvqnYuittO0PHHC_9GeFK0AOk=@protonmail.com>
+References: <JIaVK1f1CHg_UpZNyF5ups1qujm6nAz3u_9I_X0lku__6AmbTwMbilbLCYBQ-csdJirZtTfgTxT4mL3pBLOvqnYuittO0PHHC_9GeFK0AOk=@protonmail.com>
+Message-ID: <em65b273ce-1985-4681-bbe3-80f1cf682568@ronnatalie.com>
+
+I think it’s just UNIX SYSTEM JR.    The seller obvious has mistaken the 
+V for a JR.
+
+
+
+From tuhs at tuhs.org  Sat Feb 14 05:56:31 2026
+From: tuhs at tuhs.org (Dan Cross via TUHS)
+Date: Fri, 13 Feb 2026 14:56:31 -0500
+Subject: [TUHS] UNIX System V Golf Clubs?
+In-Reply-To: <em65b273ce-1985-4681-bbe3-80f1cf682568@ronnatalie.com>
+References: <JIaVK1f1CHg_UpZNyF5ups1qujm6nAz3u_9I_X0lku__6AmbTwMbilbLCYBQ-csdJirZtTfgTxT4mL3pBLOvqnYuittO0PHHC_9GeFK0AOk=@protonmail.com>
+ <em65b273ce-1985-4681-bbe3-80f1cf682568@ronnatalie.com>
+Message-ID: <CAEoi9W78wP9utfmQwYjL3fAT13W-kuGyhRhifYmgaS2Udi9rVg@mail.gmail.com>
+
+On Fri, Feb 13, 2026 at 2:52 PM Ron Natalie via TUHS <tuhs at tuhs.org> wrote:
+> I think it’s just UNIX SYSTEM JR.    The seller obvious has mistaken the
+> V for a JR.
+
+I don't know about that....If you zoom in on one of the pictures in
+the listing, it pretty clearly looks like a "V" to me. The "Jr" is
+printed further down the shaft, in a darker color.
+
+        - Dan C.
+
+From tuhs at tuhs.org  Sat Feb 14 05:58:41 2026
+From: tuhs at tuhs.org (segaloco via TUHS)
+Date: Fri, 13 Feb 2026 19:58:41 +0000
+Subject: [TUHS] UNIX System V Golf Clubs?
+In-Reply-To: <em65b273ce-1985-4681-bbe3-80f1cf682568@ronnatalie.com>
+References: <JIaVK1f1CHg_UpZNyF5ups1qujm6nAz3u_9I_X0lku__6AmbTwMbilbLCYBQ-csdJirZtTfgTxT4mL3pBLOvqnYuittO0PHHC_9GeFK0AOk=@protonmail.com>
+ <em65b273ce-1985-4681-bbe3-80f1cf682568@ronnatalie.com>
+Message-ID: <8NxkQ_AgEif2cGDuCq7ZJ6EPc6FYGev9j1u1sQ52Zx_POGNa7pDaWUeElXPra7vXUNucvpHahRGYINUvjAVNK_UUeQ80ACGgTSuv9gL0Zdg=@protonmail.com>
+
+On Friday, February 13th, 2026 at 11:52, Ron Natalie via TUHS <tuhs at tuhs.org> wrote:
+
+> I think it’s just UNIX SYSTEM JR.    The seller obvious has mistaken the
+> V for a JR.
+> 
+> 
+> 
+
+Here's an off-eBay link of the image: https://i.imgur.com/7fhfzLq.jpeg
+
+It very much is a UNIX System V JR, complete with serifs on the V.  I
+can message the seller about the providence but I usually don't get
+anywhere with that, these sellers always wind up being junkers that
+don't know the slightest about what they're selling.  This is both a
+good source of undervalued computing history assets *and* mysterious
+objects that nobody can determine the origin of.  It's a tossup really.
+Makes me wish there was a more focused market for this sort of thing...
+
+- Matt G.
+
+From tuhs at tuhs.org  Sat Feb 14 06:38:25 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Fri, 13 Feb 2026 15:38:25 -0500
+Subject: [TUHS] Kartus's Software Demand Paging System?
+In-Reply-To: <GmEY1xFAXsWYIUUWriGZCHzCn_YEsr_VL7W4NjRSL2koonXGtFqs6La8WH6Cfu3giqg6WH9wTSpyqL84SCCs3mAvyd1_qfEgzSZ-5wOrbDs=@protonmail.com>
+References: <GmEY1xFAXsWYIUUWriGZCHzCn_YEsr_VL7W4NjRSL2koonXGtFqs6La8WH6Cfu3giqg6WH9wTSpyqL84SCCs3mAvyd1_qfEgzSZ-5wOrbDs=@protonmail.com>
+Message-ID: <CAC20D2OgL7UbOpR=g6dUA4J6LZZ5rv7c7dxABH71sYb85ZkrKA@mail.gmail.com>
+
+On Fri, Feb 13, 2026 at 2:44 PM segaloco via TUHS <tuhs at tuhs.org> wrote:
+
+> I'm having trouble turning up info on something I recently read about.
+> For background, Basic-16 was the 8086 SGS developed in BTL for various
+> UNIX and telco experiments on Intel 8086 systems.  Like other SGSs, this
+> one includes a simulator, b16sim.  This simulator includes a "-p" option
+> to request that a "paged" version of the simulator be used.  This then
+> references a subsystem by J. S. Kartus:
+>
+
+I remember reading a little about B16sim in a technical paper
+published in October
+1984 in the *AT&T Bell Laboratories Technical Journal* (Volume 63, Issue 8,
+p. 1791). You can download a PDF of that paperat:
+https://www.nokia.com/bell-labs/about/dennis-m-ritchie/otherports/newp.pdf
+
+IIRC, the authors were using an 8086 and built their own base-limit
+register MMU to get 2M into the system.  I wonder if they were using the
+"pages" similarly to how DEC did in the PDP-11 databooks, which were 4096
+bytes in size.  I'm referring to Chapter 6, Memory Management [Pages
+135-169], in the 1981 Version of the PDP-11 Processor Handbook (the one
+with a green cover with white letters). In fact, if you read the sections
+about memory management, two of the most important registers are the PAR —
+Page Address Register and the PDR — Page Descriptor Register
+
+If you do turn up sources, that would be wonderful to add to the TUSH
+archive.
+
+Clem
+
+From tuhs at tuhs.org  Sat Feb 14 12:17:16 2026
+From: tuhs at tuhs.org (Mary Ann Horton via TUHS)
+Date: Fri, 13 Feb 2026 18:17:16 -0800
+Subject: [TUHS] UNIX System V Golf Clubs?
+In-Reply-To: <8NxkQ_AgEif2cGDuCq7ZJ6EPc6FYGev9j1u1sQ52Zx_POGNa7pDaWUeElXPra7vXUNucvpHahRGYINUvjAVNK_UUeQ80ACGgTSuv9gL0Zdg=@protonmail.com>
+References: <JIaVK1f1CHg_UpZNyF5ups1qujm6nAz3u_9I_X0lku__6AmbTwMbilbLCYBQ-csdJirZtTfgTxT4mL3pBLOvqnYuittO0PHHC_9GeFK0AOk=@protonmail.com>
+ <em65b273ce-1985-4681-bbe3-80f1cf682568@ronnatalie.com>
+ <8NxkQ_AgEif2cGDuCq7ZJ6EPc6FYGev9j1u1sQ52Zx_POGNa7pDaWUeElXPra7vXUNucvpHahRGYINUvjAVNK_UUeQ80ACGgTSuv9gL0Zdg=@protonmail.com>
+Message-ID: <93464b7d-8479-49fa-8b43-acf11bc46e29@mhorton.net>
+
+According to Gemini:
+
+Finding that "UNIX" mark on a black graphite shaft usually points to a 
+specific era of golf technology. Based on trademark records and 
+historical manufacturing, here is who owns (or owned) that name in the 
+golf world:
+
+
+      The Likely Owner: Yonex Co., Ltd.
+
+The most prominent owner of the *UNIX* trademark for sporting goods is 
+*Yonex* (a major Japanese manufacturer).
+
+  *
+
+    *The Trademark:* Yonex registered "UNIX" for use in Class 28
+    (Sporting Goods). They used this branding primarily in the late
+    1980s and throughout the 1990s.
+
+  *
+
+    *The Connection:* Yonex was a pioneer in using *high-modulus
+    graphite* (carbon fiber). During that era, many Japanese
+    manufacturers used high-tech, computer-adjacent names to emphasize
+    the precision of their graphite shafts compared to traditional steel.
+
+
+
+From tuhs at tuhs.org  Sat Feb 14 14:20:30 2026
+From: tuhs at tuhs.org (Mark Seiden via TUHS)
+Date: Fri, 13 Feb 2026 20:20:30 -0800
+Subject: [TUHS] UNIX System V Golf Clubs?
+In-Reply-To: <CAEoi9W4Z_KMe9Y66EuNFc-T+By1QOCPAtwsXCSRxYZXJVTuSyw@mail.gmail.com>
+References: <JIaVK1f1CHg_UpZNyF5ups1qujm6nAz3u_9I_X0lku__6AmbTwMbilbLCYBQ-csdJirZtTfgTxT4mL3pBLOvqnYuittO0PHHC_9GeFK0AOk=@protonmail.com>
+ <CAEoi9W4Z_KMe9Y66EuNFc-T+By1QOCPAtwsXCSRxYZXJVTuSyw@mail.gmail.com>
+Message-ID: <5CEEB605-0BF0-4A35-B0A8-32FF3D3F9D01@seiden.com>
+
+not exactly a bootleg, given the legal scope that applies to trademarks, 
+
+regarding the golf clubs, trademark published in 1992:
+https://tsdr.uspto.gov/#caseNumber=74306860
+is pertinent.  apparently it was challenged and abandoned within two years.
+
+if you go to 
+https://tmsearch.uspto.gov/search/search-results
+
+you can observe the approximately 5 live trademarks for UNIX, Unix, UniX, etc.
+and 81 dead/cancelled/abandoned trademarks for all kinds of things.
+
+
+(i recall with some amusement there was a vacuum cleaner called “VAX” in the UK.)
+
+(and at one point on a visit to kyoto i saw a restaurant that had the bsd daemon as its logo…)
+
+
+> On Feb 13, 2026, at 11:34 AM, Dan Cross via TUHS <tuhs at tuhs.org> wrote:
+> 
+> On Fri, Feb 13, 2026 at 2:31 PM segaloco via TUHS <tuhs at tuhs.org <mailto:tuhs at tuhs.org>> wrote:
+>> Thought folks on list might find this amusing:
+>> 
+>> https://www.ebay.com/itm/177857384642
+>> 
+>> One of DMRs pages concerned UNIX trademarks/product names spotted out
+>> there in the wild, and while many were quite interesting, I think this
+>> is particularly odd because the product is not only named UNIX but
+>> subtitled "System V JR".  I hardly think that is a coincidence, but
+>> given these are golf clubs...I really don't know what to think.
+>> 
+>> Anywho, apparently "All American Golf" produced or sold UNIX System V
+>> golf clubs at some point.  Probably not licensed stuff, this feels
+>> similar to the photo of an "OBAMA" backpack with a miscolored Sonic the
+>> Hedgehog on it.  Gotta love bootlegs.
+>> 
+>> Any weird oddly specific UNIX-related bootlegs in anyone's memories
+>> worth sharing?
+> 
+> Oh that's wild.  I wonder if they were some sort of promotional swag
+> kind of thing?
+> 
+>        - Dan C.
+
+
+From tuhs at tuhs.org  Wed Feb 18 06:37:57 2026
+From: tuhs at tuhs.org (Folkert van Heusden via TUHS)
+Date: Tue, 17 Feb 2026 21:37:57 +0100
+Subject: [TUHS] benchmark
+Message-ID: <2fec0671da53cd13209768284e63d6e2@vanheusden.com>
+
+Hello,
+
+I wrote a PDP11/70 emulator that I would like to know the relative speed 
+(relative to a real PDP11) of.
+
+For that I wrote a benchmark that only (crudely) tests the CPU-speed: no 
+i/o (only when it is finished), no mmu.
+
+Anyone willing to give it a try? I tested it on my own emulator and on 
+simh.
+
+https://komputilo.nl/emulation/PDP-11/benchmark/
+
+-- 
+www.vanheusden.com [1]
+
+Links:
+------
+[1] http://www.vanheusden.com
+
+From tuhs at tuhs.org  Wed Feb 18 09:35:08 2026
+From: tuhs at tuhs.org (segaloco via TUHS)
+Date: Tue, 17 Feb 2026 23:35:08 +0000
+Subject: [TUHS] benchmark
+In-Reply-To: <2fec0671da53cd13209768284e63d6e2@vanheusden.com>
+References: <2fec0671da53cd13209768284e63d6e2@vanheusden.com>
+Message-ID: <NH7aJzZQjUYmq7mtDX-TuhyKDVDQlwx8A8Pf5-bu8VnD_aXtSGaWlBs80M0x2Qmn5fw3ZUMgNK8YbF5L88L9hGEkTm8Xrk8jl6Gqdjdtucw=@protonmail.com>
+
+On Tuesday, February 17th, 2026 at 12:38, Folkert van Heusden via TUHS <tuhs at tuhs.org> wrote:
+
+> Hello,
+> 
+> I wrote a PDP11/70 emulator that I would like to know the relative speed
+> (relative to a real PDP11) of.
+> 
+> For that I wrote a benchmark that only (crudely) tests the CPU-speed: no
+> i/o (only when it is finished), no mmu.
+> 
+> Anyone willing to give it a try? I tested it on my own emulator and on
+> simh.
+> 
+> https://komputilo.nl/emulation/PDP-11/benchmark/
+> 
+> --
+> www.vanheusden.com [1]
+> 
+> Links:
+> ------
+> [1] http://www.vanheusden.com
+> 
+
+Towards the TUHS end, are there any PDP-11 UNIX benchmarks from back in
+the day worth comparing with?  I know I've seen benchmark statistics in
+BSTJ articles, but I couldn't tell you from memory if the actual code of
+the benchmark is available.
+
+Either way, that may be a viable angle to this sort of thing, finding
+existing benchmark analyses and applying them to your emulator.
+
+- Matt G.
+
+From tuhs at tuhs.org  Wed Feb 18 10:07:01 2026
+From: tuhs at tuhs.org (Tom Lyon via TUHS)
+Date: Tue, 17 Feb 2026 16:07:01 -0800
+Subject: [TUHS] List of earliest UNIX licensees?
+Message-ID: <CANxB0bRerVqXPvULYCKXkz0UT4-7kncRb5geGZp08GgncdWb_w@mail.gmail.com>
+
+I seem to recall seeing somewhere a list of the earliest UNIX licensees -
+from one of Ken's notebooks, maybe?
+
+Can anyone point me to it?
+
+From tuhs at tuhs.org  Wed Feb 18 10:17:55 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Tue, 17 Feb 2026 19:17:55 -0500
+Subject: [TUHS] List of earliest UNIX licensees?
+In-Reply-To: <CANxB0bRerVqXPvULYCKXkz0UT4-7kncRb5geGZp08GgncdWb_w@mail.gmail.com>
+References: <CANxB0bRerVqXPvULYCKXkz0UT4-7kncRb5geGZp08GgncdWb_w@mail.gmail.com>
+Message-ID: <CAC20D2MHL1Wc9TiwZ3SJgz4Cvsb5z80QuNqab3NMoYkeJeJAWA@mail.gmail.com>
+
+I believe one of the earliest UNIX News has names and contact info for many
+other of the first licensees.
+
+Sent from a handheld expect more typos than usual
+
+
+On Tue, Feb 17, 2026 at 7:07 PM Tom Lyon via TUHS <tuhs at tuhs.org> wrote:
+
+> I seem to recall seeing somewhere a list of the earliest UNIX licensees -
+> from one of Ken's notebooks, maybe?
+>
+> Can anyone point me to it?
+>
+
+From tuhs at tuhs.org  Wed Feb 18 10:41:25 2026
+From: tuhs at tuhs.org (Jonathan Gray via TUHS)
+Date: Wed, 18 Feb 2026 11:41:25 +1100
+Subject: [TUHS] List of earliest UNIX licensees?
+In-Reply-To: <CANxB0bRerVqXPvULYCKXkz0UT4-7kncRb5geGZp08GgncdWb_w@mail.gmail.com>
+References: <CANxB0bRerVqXPvULYCKXkz0UT4-7kncRb5geGZp08GgncdWb_w@mail.gmail.com>
+Message-ID: <aZUKtZLQMvASfAM9@largo.jsg.id.au>
+
+On Tue, Feb 17, 2026 at 04:07:01PM -0800, Tom Lyon via TUHS wrote:
+> I seem to recall seeing somewhere a list of the earliest UNIX licensees -
+> from one of Ken's notebooks, maybe?
+> 
+> Can anyone point me to it?
+
+tuhs Applications/Dennis_Tapes
+ken/distr/form.m
+https://github.com/jonathangray/unix-licensees/blob/main/ken-1975-list
+
+A timeline of licenses/installs:
+https://github.com/jonathangray/unix-licensees/blob/main/dates.pdf
+
+number of licenses/installs at various times:
+https://github.com/jonathangray/unix-licensees/blob/main/numbers.pdf
+
+From tuhs at tuhs.org  Wed Feb 18 11:15:18 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Tue, 17 Feb 2026 20:15:18 -0500
+Subject: [TUHS] List of earliest UNIX licensees?
+In-Reply-To: <CAC20D2MHL1Wc9TiwZ3SJgz4Cvsb5z80QuNqab3NMoYkeJeJAWA@mail.gmail.com>
+References: <CANxB0bRerVqXPvULYCKXkz0UT4-7kncRb5geGZp08GgncdWb_w@mail.gmail.com>
+ <CAC20D2MHL1Wc9TiwZ3SJgz4Cvsb5z80QuNqab3NMoYkeJeJAWA@mail.gmail.com>
+Message-ID: <CAC20D2MBbUvmU9W-Z+7x=YjBrQeiA8vt1tjth1X8u_2bNuq8Fw@mail.gmail.com>
+
+Found it:
+https://www.tuhs.org/Archive/Documentation/Usenix/Early_Newsletters/19750730-unix-news-n1.pdf
+
+
+Sent from a handheld expect more typos than usual
+
+
+On Tue, Feb 17, 2026 at 7:17 PM Clem Cole <clemc at ccc.com> wrote:
+
+> I believe one of the earliest UNIX News has names and contact info for
+> many other of the first licensees.
+>
+> Sent from a handheld expect more typos than usual
+>
+>
+> On Tue, Feb 17, 2026 at 7:07 PM Tom Lyon via TUHS <tuhs at tuhs.org> wrote:
+>
+>> I seem to recall seeing somewhere a list of the earliest UNIX licensees -
+>> from one of Ken's notebooks, maybe?
+>>
+>> Can anyone point me to it?
+>>
+>
+
+From tuhs at tuhs.org  Wed Feb 18 11:28:59 2026
+From: tuhs at tuhs.org (Tom Lyon via TUHS)
+Date: Tue, 17 Feb 2026 17:28:59 -0800
+Subject: [TUHS] List of earliest UNIX licensees?
+In-Reply-To: <aZUKtZLQMvASfAM9@largo.jsg.id.au>
+References: <CANxB0bRerVqXPvULYCKXkz0UT4-7kncRb5geGZp08GgncdWb_w@mail.gmail.com>
+ <aZUKtZLQMvASfAM9@largo.jsg.id.au>
+Message-ID: <CANxB0bRF5tOw7KO6b45ipw96dMQMxAuPL3Mwz2DFi0iD-PS02w@mail.gmail.com>
+
+Thanks, Jonathan.
+
+I'm guessing now that Ken's 1975 list was a list of licensees for V6, or
+perhaps those who had already received a tape.
+Anyone know if V4/5 users needed a new license for V6?
+
+
+On Tue, Feb 17, 2026 at 4:41 PM Jonathan Gray <jsg at jsg.id.au> wrote:
+
+> On Tue, Feb 17, 2026 at 04:07:01PM -0800, Tom Lyon via TUHS wrote:
+> > I seem to recall seeing somewhere a list of the earliest UNIX licensees -
+> > from one of Ken's notebooks, maybe?
+> >
+> > Can anyone point me to it?
+>
+> tuhs Applications/Dennis_Tapes
+> ken/distr/form.m
+> https://github.com/jonathangray/unix-licensees/blob/main/ken-1975-list
+>
+> A timeline of licenses/installs:
+> https://github.com/jonathangray/unix-licensees/blob/main/dates.pdf
+>
+> number of licenses/installs at various times:
+> https://github.com/jonathangray/unix-licensees/blob/main/numbers.pdf
+>
+
+From tuhs at tuhs.org  Wed Feb 18 11:41:20 2026
+From: tuhs at tuhs.org (George Michaelson via TUHS)
+Date: Wed, 18 Feb 2026 11:41:20 +1000
+Subject: [TUHS] List of earliest UNIX licensees?
+In-Reply-To: <CANxB0bRF5tOw7KO6b45ipw96dMQMxAuPL3Mwz2DFi0iD-PS02w@mail.gmail.com>
+References: <CANxB0bRerVqXPvULYCKXkz0UT4-7kncRb5geGZp08GgncdWb_w@mail.gmail.com>
+ <aZUKtZLQMvASfAM9@largo.jsg.id.au>
+ <CANxB0bRF5tOw7KO6b45ipw96dMQMxAuPL3Mwz2DFi0iD-PS02w@mail.gmail.com>
+Message-ID: <CAKr6gn225uLqmVTOgODXEa5PcUP4g1FzOPHvry22dOTR7evSFA@mail.gmail.com>
+
+Gosh. If that address list at the end is indicative of recent people
+playing..
+
+Jeff Tansley at Edinburgh Uni, and Prof Heath at Heriot-Watt. So both
+Edinburgh uni were exploring things. And Louvain and Jerusalem uni.  I
+think I met Tansley (as a kid probably - I was 14 in 1975. he'd have come
+to a garden party or something my parents were very hospitable in the
+academic fried finger food and drinks circuit)
+
+-G
+
+
+
+On Wed, Feb 18, 2026 at 11:29 AM Tom Lyon via TUHS <tuhs at tuhs.org> wrote:
+
+> Thanks, Jonathan.
+>
+> I'm guessing now that Ken's 1975 list was a list of licensees for V6, or
+> perhaps those who had already received a tape.
+> Anyone know if V4/5 users needed a new license for V6?
+>
+>
+> On Tue, Feb 17, 2026 at 4:41 PM Jonathan Gray <jsg at jsg.id.au> wrote:
+>
+> > On Tue, Feb 17, 2026 at 04:07:01PM -0800, Tom Lyon via TUHS wrote:
+> > > I seem to recall seeing somewhere a list of the earliest UNIX
+> licensees -
+> > > from one of Ken's notebooks, maybe?
+> > >
+> > > Can anyone point me to it?
+> >
+> > tuhs Applications/Dennis_Tapes
+> > ken/distr/form.m
+> > https://github.com/jonathangray/unix-licensees/blob/main/ken-1975-list
+> >
+> > A timeline of licenses/installs:
+> > https://github.com/jonathangray/unix-licensees/blob/main/dates.pdf
+> >
+> > number of licenses/installs at various times:
+> > https://github.com/jonathangray/unix-licensees/blob/main/numbers.pdf
+> >
+>
+
+From tuhs at tuhs.org  Wed Feb 18 11:56:55 2026
+From: tuhs at tuhs.org (steve jenkin via TUHS)
+Date: Wed, 18 Feb 2026 12:56:55 +1100
+Subject: [TUHS] benchmark
+In-Reply-To: <NH7aJzZQjUYmq7mtDX-TuhyKDVDQlwx8A8Pf5-bu8VnD_aXtSGaWlBs80M0x2Qmn5fw3ZUMgNK8YbF5L88L9hGEkTm8Xrk8jl6Gqdjdtucw=@protonmail.com>
+References: <2fec0671da53cd13209768284e63d6e2@vanheusden.com>
+ <NH7aJzZQjUYmq7mtDX-TuhyKDVDQlwx8A8Pf5-bu8VnD_aXtSGaWlBs80M0x2Qmn5fw3ZUMgNK8YbF5L88L9hGEkTm8Xrk8jl6Gqdjdtucw=@protonmail.com>
+Message-ID: <3427C1C4-22C2-476B-B9A0-A1783749747B@canb.auug.org.au>
+
+In the absence of responses, 
+	John Lions started a quick benchmark using ‘dc’.
+
+Could be done at trade shows on many machines, if there was an open console.
+
+I saw a long list of these benchmarks in 1986 - maybe 100 m/c.
+
+Ken McDonnell did a lot of work on benchmarking.
+Pyramid hired him to the USA.
+
+Someone who knows the TUHS site / Doco might have a better answer for you.
+
+> On 18 Feb 2026, at 10:35, segaloco via TUHS <tuhs at tuhs.org> wrote:
+> 
+> Towards the TUHS end, are there any PDP-11 UNIX benchmarks from back in
+> the day worth comparing with? 
+
+
+=============
+
+<https://www.tuhs.org/Usenet/comp.unix.wizards/1988-September/021320.html>
+
+BENCHMARKING SUITES
+
+The following benchmark suites are available. 
+In some cases, I haven't yet determined how to obtain the item.
+
+* Monash University (MUSBUS) benchmark suite, which has been posted to Usenet in comp.sources.unix. 
+This suite was authored by Ken J. McDonnell, now with Pyramid Technology: kenj at pyrnova.pyramid.com. 
+It may be obtained from uunet.uu.net via anonymous ftp, or via the archive server at uunet!netlib. 
+The 5.0 version is in comp.sources.unix/volume11/musbus;
+
+=============
+
+Vol V No 1 AUUGN, 1984
+<https://www.tuhs.org/Archive/Documentation/AUUGN/AUUGN-V05.1.pdf>
+pg 44
+
+Tim Long: Quick Benchmarks of the Machines on Display
+
+A simple cpu-bound benchmark was run on each of the machines on display.
+
+The benchmark was "echo 99k2vp8opq I /bin/time dc > /dev/null’.
+ It uses dc (the desk calculator) to calculate the square root of 2 to 99 decimal places,
+and to "print" the result in decimal and then in octal.
+
+=============
+
+Vol 7 No 6 AUUGN, April 1987
+<https://www.tuhs.org/Archive/Documentation/AUUGN/AUUGN-V07.6.pdf>
+
+pg 12
+Taking Performance Evaluation out of the "Stone Age"
+Ken J. McDonell
+
+pg 16 
+Table 1: MUSBUS diagnostic tests.
+
+
+=============
+
+--
+
+From tuhs at tuhs.org  Wed Feb 18 12:17:53 2026
+From: tuhs at tuhs.org (Erik E. Fair via TUHS)
+Date: Tue, 17 Feb 2026 18:17:53 -0800
+Subject: [TUHS] benchmark
+In-Reply-To: <3427C1C4-22C2-476B-B9A0-A1783749747B@canb.auug.org.au>
+References: <NH7aJzZQjUYmq7mtDX-TuhyKDVDQlwx8A8Pf5-bu8VnD_aXtSGaWlBs80M0x2Qmn5fw3ZUMgNK8YbF5L88L9hGEkTm8Xrk8jl6Gqdjdtucw=@protonmail.com>
+Message-ID: <6389.1771381073@cesium.clock.org>
+
+See https://netlib.org/performance/html/dhrystone.data.col0.html
+
+There are Dhrystone benchmarks for the PDP-11/70 & 11/34 listed therein, alongside many others.
+
+	Erik
+
+From tuhs at tuhs.org  Wed Feb 18 14:43:43 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Tue, 17 Feb 2026 23:43:43 -0500
+Subject: [TUHS] benchmark
+In-Reply-To: <2fec0671da53cd13209768284e63d6e2@vanheusden.com>
+References: <2fec0671da53cd13209768284e63d6e2@vanheusden.com>
+Message-ID: <CAC20D2OX7bUSVGvr0B_rH-kxdJeCPPhZ2crgY2GxnZDm9CpU0A@mail.gmail.com>
+
+The SPEC suite is well regarded and there are many results available on the
+main website. However the complete suite costs money. But some parts are
+FOSS and available at https://spec.cs.miami.edu/sources/
+
+Larry’s lmbench https://lmbench.sourceforge.net/whatis_lmbench.html Is well
+known and a lot more drystone useful than simple things like drystone.
+
+Some others to consider are UnixBench, Bonnie++, foo, iozone. These tools
+measure metrics like context switching, process creation, file system
+throughput, and data transfer rates.
+[image: Jetstor]Jetstor +4
+
+   - *System & CPU Benchmarks:*
+      - *UnixBench:* A classic benchmark for testing CPU, memory, and file
+      system performance.
+      - *Phoronix Test Suite:* An comprehensive, open-source testing and
+      benchmarking platform for Linux and other operating systems.
+      - *Hardinfo:* Provides detailed system information and basic
+      benchmarks.
+      - *Dhrystone/Whetstone:* Tests for integer and floating-point CPU
+      performance.
+   - *Disk I/O & Filesystem Benchmarks:*
+      - *Bonnie++:* Tests file system performance, such as file creation
+      and deletion.
+      - *IOzone:* Measures filesystem performance across various
+      operations, including read/write speeds.
+      - *fio:* A flexible tool for stress-testing storage, often used for
+      benchmarking SSDs and virtual hardware.
+   - *Networking & Other Benchmarks:*
+      - *Iperf/Netpipe:* Often used within clusters to measure network
+      throughput.
+      - *AIM7:* Used to measure the performance of multiuser/shared systems.
+
+
+
+
+One other thought. You might want to try to run whichever suite you pick
+against a known baseline of real hardware.  I believe SDF-ICM has Miss
+Piggy available again on the Internet. This system is an 11/70 that was the
+original development system at Microsoft, but I’m not sure what OS they
+have running on it.
+
+
+
+Sent from a handheld expect more typos than usual
+
+
+On Tue, Feb 17, 2026 at 3:38 PM Folkert van Heusden via TUHS <tuhs at tuhs.org>
+wrote:
+
+> Hello,
+>
+> I wrote a PDP11/70 emulator that I would like to know the relative speed
+> (relative to a real PDP11) of.
+>
+> For that I wrote a benchmark that only (crudely) tests the CPU-speed: no
+> i/o (only when it is finished), no mmu.
+>
+> Anyone willing to give it a try? I tested it on my own emulator and on
+> simh.
+>
+> https://komputilo.nl/emulation/PDP-11/benchmark/
+>
+> --
+> www.vanheusden.com [1]
+>
+> Links:
+> ------
+> [1] http://www.vanheusden.com
+>
+
+From tuhs at tuhs.org  Wed Feb 18 14:50:13 2026
+From: tuhs at tuhs.org (Larry McVoy via TUHS)
+Date: Tue, 17 Feb 2026 20:50:13 -0800
+Subject: [TUHS] benchmark
+In-Reply-To: <CAC20D2OX7bUSVGvr0B_rH-kxdJeCPPhZ2crgY2GxnZDm9CpU0A@mail.gmail.com>
+References: <2fec0671da53cd13209768284e63d6e2@vanheusden.com>
+ <CAC20D2OX7bUSVGvr0B_rH-kxdJeCPPhZ2crgY2GxnZDm9CpU0A@mail.gmail.com>
+Message-ID: <20260218045013.GT4989@mcvoy.com>
+
+I have a version that deals with all the 64 bit issues that I need to post.
+It's pretty surprising how well lmbench has held up.  The GNU people ripped
+off mhz because of course they did.
+
+On Tue, Feb 17, 2026 at 11:43:43PM -0500, Clem Cole via TUHS wrote:
+> The SPEC suite is well regarded and there are many results available on the
+> main website. However the complete suite costs money. But some parts are
+> FOSS and available at https://spec.cs.miami.edu/sources/
+> 
+> Larry???s lmbench https://lmbench.sourceforge.net/whatis_lmbench.html Is well
+> known and a lot more drystone useful than simple things like drystone.
+> 
+> Some others to consider are UnixBench, Bonnie++, foo, iozone. These tools
+> measure metrics like context switching, process creation, file system
+> throughput, and data transfer rates.
+> [image: Jetstor]Jetstor +4
+> 
+>    - *System & CPU Benchmarks:*
+>       - *UnixBench:* A classic benchmark for testing CPU, memory, and file
+>       system performance.
+>       - *Phoronix Test Suite:* An comprehensive, open-source testing and
+>       benchmarking platform for Linux and other operating systems.
+>       - *Hardinfo:* Provides detailed system information and basic
+>       benchmarks.
+>       - *Dhrystone/Whetstone:* Tests for integer and floating-point CPU
+>       performance.
+>    - *Disk I/O & Filesystem Benchmarks:*
+>       - *Bonnie++:* Tests file system performance, such as file creation
+>       and deletion.
+>       - *IOzone:* Measures filesystem performance across various
+>       operations, including read/write speeds.
+>       - *fio:* A flexible tool for stress-testing storage, often used for
+>       benchmarking SSDs and virtual hardware.
+>    - *Networking & Other Benchmarks:*
+>       - *Iperf/Netpipe:* Often used within clusters to measure network
+>       throughput.
+>       - *AIM7:* Used to measure the performance of multiuser/shared systems.
+> 
+> 
+> 
+> 
+> One other thought. You might want to try to run whichever suite you pick
+> against a known baseline of real hardware.  I believe SDF-ICM has Miss
+> Piggy available again on the Internet. This system is an 11/70 that was the
+> original development system at Microsoft, but I???m not sure what OS they
+> have running on it.
+> 
+> 
+> 
+> Sent from a handheld expect more typos than usual
+> 
+> 
+> On Tue, Feb 17, 2026 at 3:38???PM Folkert van Heusden via TUHS <tuhs at tuhs.org>
+> wrote:
+> 
+> > Hello,
+> >
+> > I wrote a PDP11/70 emulator that I would like to know the relative speed
+> > (relative to a real PDP11) of.
+> >
+> > For that I wrote a benchmark that only (crudely) tests the CPU-speed: no
+> > i/o (only when it is finished), no mmu.
+> >
+> > Anyone willing to give it a try? I tested it on my own emulator and on
+> > simh.
+> >
+> > https://komputilo.nl/emulation/PDP-11/benchmark/
+> >
+> > --
+> > www.vanheusden.com [1]
+> >
+> > Links:
+> > ------
+> > [1] http://www.vanheusden.com
+> >
+
+-- 
+---
+Larry McVoy           Retired to fishing          http://www.mcvoy.com/lm/boat
+
+From tuhs at tuhs.org  Wed Feb 18 16:42:13 2026
+From: tuhs at tuhs.org (Folkert van Heusden via TUHS)
+Date: Wed, 18 Feb 2026 07:42:13 +0100
+Subject: [TUHS] benchmark
+In-Reply-To: <CAC20D2OX7bUSVGvr0B_rH-kxdJeCPPhZ2crgY2GxnZDm9CpU0A@mail.gmail.com>
+References: <2fec0671da53cd13209768284e63d6e2@vanheusden.com>
+ <CAC20D2OX7bUSVGvr0B_rH-kxdJeCPPhZ2crgY2GxnZDm9CpU0A@mail.gmail.com>
+Message-ID: <d06da3bc8d3cdd31a56d4f46f69c5f5a@vanheusden.com>
+
+Hi,
+
+Yes, but I wanted to solely test the cpu and also be independent from an 
+OS, so bare metal. So that's why I made my version.
+
+I also doubt that most of the benchmarks mentioned there will run on a 
+regular pdp11?
+
+regards
+
+On 2026-02-18 05:43, Clem Cole wrote:
+
+> The SPEC suite is well regarded and there are many results available on 
+> the main website. However the complete suite costs money. But some 
+> parts are FOSS and available at https://spec.cs.miami.edu/sources/
+> 
+> Larry's lmbench https://lmbench.sourceforge.net/whatis_lmbench.html Is 
+> well known and a lot more drystone useful than simple things like 
+> drystone.
+> 
+> Some others to consider are UnixBench, Bonnie++, foo, iozone. These 
+> tools measure metrics like context switching, process creation, file 
+> system throughput, and data transfer rates.
+> Jetstor +4
+> 
+> * System & CPU Benchmarks:
+> 
+> * UnixBench: A classic benchmark for testing CPU, memory, and file 
+> system performance.
+> * Phoronix Test Suite: An comprehensive, open-source testing and 
+> benchmarking platform for Linux and other operating systems.
+> * Hardinfo: Provides detailed system information and basic benchmarks.
+> * Dhrystone/Whetstone: Tests for integer and floating-point CPU 
+> performance.
+> 
+> * Disk I/O & Filesystem Benchmarks:
+> 
+> * Bonnie++: Tests file system performance, such as file creation and 
+> deletion.
+> * IOzone: Measures filesystem performance across various operations, 
+> including read/write speeds.
+> * fio: A flexible tool for stress-testing storage, often used for 
+> benchmarking SSDs and virtual hardware.
+> 
+> * Networking & Other Benchmarks:
+> 
+> * Iperf/Netpipe: Often used within clusters to measure network 
+> throughput.
+> * AIM7: Used to measure the performance of multiuser/shared systems.
+> 
+> One other thought. You might want to try to run whichever suite you 
+> pick against a known baseline of real hardware.  I believe SDF-ICM has 
+> Miss Piggy available again on the Internet. This system is an 11/70 
+> that was the original development system at Microsoft, but I'm not sure 
+> what OS they have running on it.
+> 
+> Sent from a handheld expect more typos than usual
+> 
+> On Tue, Feb 17, 2026 at 3:38 PM Folkert van Heusden via TUHS 
+> <tuhs at tuhs.org> wrote:
+> 
+>> Hello,
+>> 
+>> I wrote a PDP11/70 emulator that I would like to know the relative 
+>> speed
+>> (relative to a real PDP11) of.
+>> 
+>> For that I wrote a benchmark that only (crudely) tests the CPU-speed: 
+>> no
+>> i/o (only when it is finished), no mmu.
+>> 
+>> Anyone willing to give it a try? I tested it on my own emulator and on
+>> simh.
+>> 
+>> https://komputilo.nl/emulation/PDP-11/benchmark/
+>> 
+>> --
+>> www.vanheusden.com [1] [1]
+>> 
+>> Links:
+>> ------
+>> [1] http://www.vanheusden.com
+
+-- 
+www.vanheusden.com [1]
+
+Links:
+------
+[1] http://www.vanheusden.com
+
+From tuhs at tuhs.org  Wed Feb 18 18:06:37 2026
+From: tuhs at tuhs.org (Luther Johnson via TUHS)
+Date: Wed, 18 Feb 2026 01:06:37 -0700
+Subject: [TUHS] benchmark
+In-Reply-To: <d06da3bc8d3cdd31a56d4f46f69c5f5a@vanheusden.com>
+References: <2fec0671da53cd13209768284e63d6e2@vanheusden.com>
+ <CAC20D2OX7bUSVGvr0B_rH-kxdJeCPPhZ2crgY2GxnZDm9CpU0A@mail.gmail.com>
+ <d06da3bc8d3cdd31a56d4f46f69c5f5a@vanheusden.com>
+Message-ID: <45723419-9bf9-b6d5-5ddf-f1590a195686@makerlisp.com>
+
+It sounds like you want something more synthetic, and compute-bound, 
+perhaps like the EEMBC CoreMark, if dhrystone and whetstone seem too 
+artificial. Now CoreMark wasn't around in the olden days of early UNIX 
+on a PDP-11/70, but there are some FPGA projects out there that 
+implement PDP-11's ... like wfjm's w11 ( https://wfjm.github.io/home/w11 
+). You could get someone to run a benchmark on one of these FPGA 
+11/70's, to get a baseline, then run it on your emulator, to get an idea 
+of how where you are, compared to "real hardware" ... and the authors of 
+FPGA PDP-11 implementations probably have a fair idea of where their 
+implementations stand with respect to original 11's ... and there are 
+still some PDP-11's out there, a few years ago there was a company that 
+still built them, fairly similar to the originals ... anyhow just some 
+ideas to chew on ...
+
+On 02/17/2026 11:42 PM, Folkert van Heusden via TUHS wrote:
+> Hi,
+>
+> Yes, but I wanted to solely test the cpu and also be independent from 
+> an OS, so bare metal. So that's why I made my version.
+>
+> I also doubt that most of the benchmarks mentioned there will run on a 
+> regular pdp11?
+>
+> regards
+>
+> On 2026-02-18 05:43, Clem Cole wrote:
+>
+>> The SPEC suite is well regarded and there are many results available 
+>> on the main website. However the complete suite costs money. But some 
+>> parts are FOSS and available at https://spec.cs.miami.edu/sources/
+>>
+>> Larry's lmbench https://lmbench.sourceforge.net/whatis_lmbench.html 
+>> Is well known and a lot more drystone useful than simple things like 
+>> drystone.
+>>
+>> Some others to consider are UnixBench, Bonnie++, foo, iozone. These 
+>> tools measure metrics like context switching, process creation, file 
+>> system throughput, and data transfer rates.
+>> Jetstor +4
+>>
+>> * System & CPU Benchmarks:
+>>
+>> * UnixBench: A classic benchmark for testing CPU, memory, and file 
+>> system performance.
+>> * Phoronix Test Suite: An comprehensive, open-source testing and 
+>> benchmarking platform for Linux and other operating systems.
+>> * Hardinfo: Provides detailed system information and basic benchmarks.
+>> * Dhrystone/Whetstone: Tests for integer and floating-point CPU 
+>> performance.
+>>
+>> * Disk I/O & Filesystem Benchmarks:
+>>
+>> * Bonnie++: Tests file system performance, such as file creation and 
+>> deletion.
+>> * IOzone: Measures filesystem performance across various operations, 
+>> including read/write speeds.
+>> * fio: A flexible tool for stress-testing storage, often used for 
+>> benchmarking SSDs and virtual hardware.
+>>
+>> * Networking & Other Benchmarks:
+>>
+>> * Iperf/Netpipe: Often used within clusters to measure network 
+>> throughput.
+>> * AIM7: Used to measure the performance of multiuser/shared systems.
+>>
+>> One other thought. You might want to try to run whichever suite you 
+>> pick against a known baseline of real hardware.  I believe SDF-ICM 
+>> has Miss Piggy available again on the Internet. This system is an 
+>> 11/70 that was the original development system at Microsoft, but I'm 
+>> not sure what OS they have running on it.
+>>
+>> Sent from a handheld expect more typos than usual
+>>
+>> On Tue, Feb 17, 2026 at 3:38 PM Folkert van Heusden via TUHS 
+>> <tuhs at tuhs.org> wrote:
+>>
+>>> Hello,
+>>>
+>>> I wrote a PDP11/70 emulator that I would like to know the relative 
+>>> speed
+>>> (relative to a real PDP11) of.
+>>>
+>>> For that I wrote a benchmark that only (crudely) tests the 
+>>> CPU-speed: no
+>>> i/o (only when it is finished), no mmu.
+>>>
+>>> Anyone willing to give it a try? I tested it on my own emulator and on
+>>> simh.
+>>>
+>>> https://komputilo.nl/emulation/PDP-11/benchmark/
+>>>
+>>> -- 
+>>> www.vanheusden.com [1] [1]
+>>>
+>>> Links:
+>>> ------
+>>> [1] http://www.vanheusden.com
+>
+
+
+From tuhs at tuhs.org  Thu Feb 19 02:29:33 2026
+From: tuhs at tuhs.org (Pete Wright via TUHS)
+Date: Wed, 18 Feb 2026 08:29:33 -0800
+Subject: [TUHS] benchmark
+In-Reply-To: <20260218045013.GT4989@mcvoy.com>
+References: <2fec0671da53cd13209768284e63d6e2@vanheusden.com>
+ <CAC20D2OX7bUSVGvr0B_rH-kxdJeCPPhZ2crgY2GxnZDm9CpU0A@mail.gmail.com>
+ <20260218045013.GT4989@mcvoy.com>
+Message-ID: <3a2ec915-a9f3-4d54-96fa-7f81ec8452ea@nomadlogic.org>
+
+
+
+On 2/17/26 20:50, Larry McVoy via TUHS wrote:
+> I have a version that deals with all the 64 bit issues that I need to post.
+> It's pretty surprising how well lmbench has held up.  The GNU people ripped
+> off mhz because of course they did.
+> 
+
+kinda OT but i always wanted to thank you for lmdd and lmbench Larry. 
+we relied heavily on those tools early in my carrier building high-rez 
+video playback suites for film/vfx studios.  i remember my mentor at the 
+time teaching me about optimal track layout, and using only the outer 
+tracks on disks to achieve sustained throughput, using lmdd.  they also 
+uncovered more than a few bugs on irix and linux for us.
+
+so...thanks!
+
+-pete
+
+-- 
+Pete Wright
+pete at nomadlogic.org
+
+
+From tuhs at tuhs.org  Thu Feb 19 03:43:39 2026
+From: tuhs at tuhs.org (Adam Thornton via TUHS)
+Date: Wed, 18 Feb 2026 10:43:39 -0700
+Subject: [TUHS] Miss Piggy OS
+In-Reply-To: <CAC20D2OX7bUSVGvr0B_rH-kxdJeCPPhZ2crgY2GxnZDm9CpU0A@mail.gmail.com>
+References: <2fec0671da53cd13209768284e63d6e2@vanheusden.com>
+ <CAC20D2OX7bUSVGvr0B_rH-kxdJeCPPhZ2crgY2GxnZDm9CpU0A@mail.gmail.com>
+Message-ID: <CAP2nic07GREeE1Y7GXuALmPdHS_C6AFP3ALVKrzAqKqxe36qyA@mail.gmail.com>
+
+Back before the catastrophe, Miss Piggy was running v7 Unix, I think.  I
+would suspect it's still the same.
+
+Adam
+
+On Wed, Feb 18, 2026 at 1:22 AM Clem Cole via TUHS <tuhs at tuhs.org> wrote:
+
+>
+> One other thought. You might want to try to run whichever suite you pick
+> against a known baseline of real hardware.  I believe SDF-ICM has Miss
+> Piggy available again on the Internet. This system is an 11/70 that was the
+> original development system at Microsoft, but I’m not sure what OS they
+> have running on it.
+>
+>
+
+From tuhs at tuhs.org  Thu Feb 19 04:03:43 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Wed, 18 Feb 2026 13:03:43 -0500
+Subject: [TUHS] Miss Piggy OS
+In-Reply-To: <CAP2nic07GREeE1Y7GXuALmPdHS_C6AFP3ALVKrzAqKqxe36qyA@mail.gmail.com>
+References: <2fec0671da53cd13209768284e63d6e2@vanheusden.com>
+ <CAC20D2OX7bUSVGvr0B_rH-kxdJeCPPhZ2crgY2GxnZDm9CpU0A@mail.gmail.com>
+ <CAP2nic07GREeE1Y7GXuALmPdHS_C6AFP3ALVKrzAqKqxe36qyA@mail.gmail.com>
+Message-ID: <CAC20D2OAQnFDh7o=hXJCi0L=eDoJSZtJ2+0w7ZFsgugaTsteEw@mail.gmail.com>
+
+I am of the same belief. I’ll try logging in later today.
+
+Sent from a handheld expect more typos than usual
+
+
+On Wed, Feb 18, 2026 at 12:44 PM Adam Thornton via TUHS <tuhs at tuhs.org>
+wrote:
+
+> Back before the catastrophe, Miss Piggy was running v7 Unix, I think.  I
+> would suspect it's still the same.
+>
+> Adam
+>
+> On Wed, Feb 18, 2026 at 1:22 AM Clem Cole via TUHS <tuhs at tuhs.org> wrote:
+>
+> >
+> > One other thought. You might want to try to run whichever suite you pick
+> > against a known baseline of real hardware.  I believe SDF-ICM has Miss
+> > Piggy available again on the Internet. This system is an 11/70 that was
+> the
+> > original development system at Microsoft, but I’m not sure what OS they
+> > have running on it.
+> >
+> >
+>
+
+From tuhs at tuhs.org  Thu Feb 19 04:17:17 2026
+From: tuhs at tuhs.org (Jacobson, Doug W [E CPE] via TUHS)
+Date: Wed, 18 Feb 2026 18:17:17 +0000
+Subject: [TUHS] List of earliest UNIX licensees?
+In-Reply-To: <aZUKtZLQMvASfAM9@largo.jsg.id.au>
+References: <CANxB0bRerVqXPvULYCKXkz0UT4-7kncRb5geGZp08GgncdWb_w@mail.gmail.com>
+ <aZUKtZLQMvASfAM9@largo.jsg.id.au>
+Message-ID: <CH2PR04MB65551D0A93482EFF38A59F9EAC6AA@CH2PR04MB6555.namprd04.prod.outlook.com>
+
+Very fun, this got me to look through my files, and I found my V6 license dated Feb 1980.  There was also one dated March 1977, but I'm not sure we executed it.  Both were licensed to the same CPU.  The 1977 agreement listed UNIX v6, and the 1980 agreement listed Mini-UNIX v6.  Also found the V7 license and several BSD ones.
+
+Doug
+
+
+-----Original Message-----
+From: Jonathan Gray via TUHS <tuhs at tuhs.org> 
+Sent: Tuesday, February 17, 2026 6:41 PM
+To: Tom Lyon <pugs78 at gmail.com>
+Cc: tuhs at tuhs.org
+Subject: [TUHS] Re: List of earliest UNIX licensees?
+
+On Tue, Feb 17, 2026 at 04:07:01PM -0800, Tom Lyon via TUHS wrote:
+> I seem to recall seeing somewhere a list of the earliest UNIX 
+> licensees - from one of Ken's notebooks, maybe?
+> 
+> Can anyone point me to it?
+
+tuhs Applications/Dennis_Tapes
+ken/distr/form.m
+https://github.com/jonathangray/unix-licensees/blob/main/ken-1975-list
+
+A timeline of licenses/installs:
+https://github.com/jonathangray/unix-licensees/blob/main/dates.pdf
+
+number of licenses/installs at various times:
+https://github.com/jonathangray/unix-licensees/blob/main/numbers.pdf
+
+From tuhs at tuhs.org  Thu Feb 19 12:31:37 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Wed, 18 Feb 2026 21:31:37 -0500
+Subject: [TUHS] Miss Piggy OS
+In-Reply-To: <CAC20D2OAQnFDh7o=hXJCi0L=eDoJSZtJ2+0w7ZFsgugaTsteEw@mail.gmail.com>
+References: <2fec0671da53cd13209768284e63d6e2@vanheusden.com>
+ <CAC20D2OX7bUSVGvr0B_rH-kxdJeCPPhZ2crgY2GxnZDm9CpU0A@mail.gmail.com>
+ <CAP2nic07GREeE1Y7GXuALmPdHS_C6AFP3ALVKrzAqKqxe36qyA@mail.gmail.com>
+ <CAC20D2OAQnFDh7o=hXJCi0L=eDoJSZtJ2+0w7ZFsgugaTsteEw@mail.gmail.com>
+Message-ID: <CAC20D2OjXL=o6ZxqgVm79coixufESBLu6z__RDE+HiAcZWOuPQ@mail.gmail.com>
+
+I checked and our memory is correct. Miss Piggy is running a V7 flavor.
+
+Sent from a handheld expect more typos than usual
+
+
+On Wed, Feb 18, 2026 at 1:03 PM Clem Cole <clemc at ccc.com> wrote:
+
+> I am of the same belief. I’ll try logging in later today.
+>
+> Sent from a handheld expect more typos than usual
+>
+>
+> On Wed, Feb 18, 2026 at 12:44 PM Adam Thornton via TUHS <tuhs at tuhs.org>
+> wrote:
+>
+>> Back before the catastrophe, Miss Piggy was running v7 Unix, I think.  I
+>> would suspect it's still the same.
+>>
+>> Adam
+>>
+>> On Wed, Feb 18, 2026 at 1:22 AM Clem Cole via TUHS <tuhs at tuhs.org> wrote:
+>>
+>> >
+>> > One other thought. You might want to try to run whichever suite you pick
+>> > against a known baseline of real hardware.  I believe SDF-ICM has Miss
+>> > Piggy available again on the Internet. This system is an 11/70 that was
+>> the
+>> > original development system at Microsoft, but I’m not sure what OS they
+>> > have running on it.
+>> >
+>> >
+>>
+>
+
+From tuhs at tuhs.org  Fri Feb 20 08:49:05 2026
+From: tuhs at tuhs.org (segaloco via TUHS)
+Date: Thu, 19 Feb 2026 22:49:05 +0000
+Subject: [TUHS] WECo-specific UNIX Activities
+Message-ID: <s-4-sOiAQ4zSN-JvPljGMYV_sVi3wIhA4KyNRc1JBu8TVTLDF-QoS2wkcs4xKDRcEwbFjoce69l9d1-0GcruEJr5g27IYnMXy_oP3Qg9RXg=@protonmail.com>
+
+UNIX is a trademark of Bell Laboratories...so the familiar footnote goes.
+
+However, Western Electric handled much of the later distribution, and I find myself wondering a bit esoteric of a point.  Within the Bell System, Western Electric and Bell Laboratories complemented each other but were separate entities.  However, Western Electric had their own engineering department, distinct from the inventions brought over from the Labs.
+
+In the case of UNIX, as I understand it, all major players were BTL, between research, USG, PWB, and Columbus.  WECos stakes early on were turnkey systems and special computing applications like COSMOS.  However, I don't ever really see mention in literature of UNIX R&D or support infrastructure that falls specifically under the Western Electric umbrella.
+
+Did WECo personnel go directly to USG for support or was there some sort of WECo layer for all things UNIX, distinct from research and USG, that then communicated up?
+
+- Matt G.
+
+From tuhs at tuhs.org  Fri Feb 20 11:38:56 2026
+From: tuhs at tuhs.org (Thalia Archibald via TUHS)
+Date: Fri, 20 Feb 2026 01:38:56 +0000
+Subject: [TUHS] List of earliest UNIX licensees?
+In-Reply-To: <CANxB0bRF5tOw7KO6b45ipw96dMQMxAuPL3Mwz2DFi0iD-PS02w@mail.gmail.com>
+References: <CANxB0bRerVqXPvULYCKXkz0UT4-7kncRb5geGZp08GgncdWb_w@mail.gmail.com>
+ <aZUKtZLQMvASfAM9@largo.jsg.id.au>
+ <CANxB0bRF5tOw7KO6b45ipw96dMQMxAuPL3Mwz2DFi0iD-PS02w@mail.gmail.com>
+Message-ID: <85504CCE-B827-4387-8C59-A14CB6B6E25B@archibald.dev>
+
+On Feb 17, 2026, at 18:28, Tom Lyon wrote:
+> On Tue, Feb 17, 2026 at 4:41 PM Jonathan Gray wrote:
+>> On Tue, Feb 17, 2026 at 04:07:01PM -0800, Tom Lyon wrote:
+>>> I seem to recall seeing somewhere a list of the earliest UNIX licensees -
+>>> from one of Ken's notebooks, maybe?
+>> 
+>> https://github.com/jonathangray/unix-licensees
+> 
+> I'm guessing now that Ken's 1975 list was a list of licensees for V6, or
+> perhaps those who had already received a tape.
+
+Hi Tom,
+
+I made an annotated bibliography of hundreds of early UNIX sources organized by
+institution or publication. I created it while researching the context of the
+Utah V4 tape. Since it wasn’t used for any work—it was a candidate OS for the
+new graphics lab, but DEC DOS was used instead—, no one had written anything
+about our early UNIX involvement and I had to search generally for other early
+users. My project focuses on early users, including licensee lists, licenses,
+UNIX-related publications, and graphics work.
+    https://github.com/thaliaarchi/unix-history
+
+Ken’s 1975 list is the earliest licensee list I know of. It’s a form letter file
+which has templated letters that were sent to early users with variable
+substitutions for each user. Although the date would suggest these are V6
+licensees, it’s representative of who Ken mailed about licensing UNIX since V4.
+    https://github.com/thaliaarchi/unix-history/blob/main/lists/1975-06-27_ken/y
+
+I reverse engineered its format and am working on recovering the garbage
+collected blocks. The order appears to be when he added them to the form
+database, replying to batches of licensing inquiries. After finishing my
+analysis, I will have a partial order of when memory blocks were written in the
+file, which could hopefully reveal who was in the list before certain letters
+were sent.
+    https://github.com/thaliaarchi/unix-form-read
+
+The first UNIX News list from a month later appears to be lightly reformatted
+from Ken’s list, trimmed to just those who subscribed. I’ve uploaded more
+legible scan of that issue I requested from Waterloo, which allowed me to
+correct my transcription.
+    https://archive.org/details/unix_news_july-30-1975_waterloo/page/8/mode/2up
+    https://github.com/thaliaarchi/unix-history/blob/main/lists/1975-07-30_news.txt
+
+Hopefully you can make use of this. Enjoy!
+
+Thalia
+
+From tuhs at tuhs.org  Fri Feb 20 11:50:59 2026
+From: tuhs at tuhs.org (Thalia Archibald via TUHS)
+Date: Fri, 20 Feb 2026 01:50:59 +0000
+Subject: [TUHS] List of earliest UNIX licensees?
+In-Reply-To: <CH2PR04MB65551D0A93482EFF38A59F9EAC6AA@CH2PR04MB6555.namprd04.prod.outlook.com>
+References: <CANxB0bRerVqXPvULYCKXkz0UT4-7kncRb5geGZp08GgncdWb_w@mail.gmail.com>
+ <aZUKtZLQMvASfAM9@largo.jsg.id.au>
+ <CH2PR04MB65551D0A93482EFF38A59F9EAC6AA@CH2PR04MB6555.namprd04.prod.outlook.com>
+Message-ID: <CDC3A51C-5CC7-4CC6-BA8B-744031B37401@archibald.dev>
+
+On Feb 18, 2026, at 11:17, Jacobson, Doug W [E CPE] wrote:
+> Very fun, this got me to look through my files, and I found my V6 license dated Feb 1980.  There was also one dated March 1977, but I'm not sure we executed it.  Both were licensed to the same CPU.  The 1977 agreement listed UNIX v6, and the 1980 agreement listed Mini-UNIX v6.  Also found the V7 license and several BSD ones.
+> 
+> Doug
+
+Hi Doug,
+
+I’ve been gathering UNIX license agreements and would be very interested to add
+those. I haven’t seen a Mini-UNIX license and the 1977 license from KU Leuven is
+missing several pages. They change over time and the distribution contents
+description is especially interesting.
+    https://archive.org/search?query=subject%3A%22UNIX+license%22&sort=date
+    https://github.com/thaliaarchi/unix-history/tree/main/licenses
+
+Thalia
+
+From tuhs at tuhs.org  Sat Feb 21 00:43:02 2026
+From: tuhs at tuhs.org (Ron Natalie via TUHS)
+Date: Fri, 20 Feb 2026 14:43:02 +0000
+Subject: [TUHS] List of earliest UNIX licensees?
+In-Reply-To: <85504CCE-B827-4387-8C59-A14CB6B6E25B@archibald.dev>
+References: <CANxB0bRerVqXPvULYCKXkz0UT4-7kncRb5geGZp08GgncdWb_w@mail.gmail.com>
+ <aZUKtZLQMvASfAM9@largo.jsg.id.au>
+ <CANxB0bRF5tOw7KO6b45ipw96dMQMxAuPL3Mwz2DFi0iD-PS02w@mail.gmail.com>
+ <85504CCE-B827-4387-8C59-A14CB6B6E25B@archibald.dev>
+Message-ID: <emcef6a7d3-0e6c-416f-907f-45cd04ff6164@ronnatalie.com>
+
+Some of the names on that list bring back memories.    Bill Huggins was 
+one of my professors at JHU.   I suspect he was on the license as he. 
+Was chair of the EE department (Hopkins had no CS department at the 
+time.  If you wanted to do computers you were either in EE or math).  He 
+wasn’t a Unix guy mainly but a RSTS Basic Plus guy.   It was a deal we 
+made to get basic running on emulation on UNIX that allowed us to run 
+UNIX full time.
+
+Bill confided in me to not ever move when you were as old as he was (I 
+was only 20 at the time).  He says he was forced to shuffle through 
+things that he knew then he would never finish.
+
+
+
+
+------ Original Message ------
+From "Thalia Archibald via TUHS" <tuhs at tuhs.org>
+To "Tom Lyon" <pugs78 at gmail.com>
+Cc "Jonathan Gray" <jsg at jsg.id.au>; tuhs at tuhs.org
+Date 2/19/2026 21:38:56
+Subject [TUHS] Re: List of earliest UNIX licensees?
+
+>On Feb 17, 2026, at 18:28, Tom Lyon wrote:
+>>  On Tue, Feb 17, 2026 at 4:41 PM Jonathan Gray wrote:
+>>>  On Tue, Feb 17, 2026 at 04:07:01PM -0800, Tom Lyon wrote:
+>>>>  I seem to recall seeing somewhere a list of the earliest UNIX licensees -
+>>>>  from one of Ken's notebooks, maybe?
+>>>
+>>>https://github.com/jonathangray/unix-licensees
+>>
+>>  I'm guessing now that Ken's 1975 list was a list of licensees for V6, or
+>>  perhaps those who had already received a tape.
+>
+>Hi Tom,
+>
+>I made an annotated bibliography of hundreds of early UNIX sources organized by
+>institution or publication. I created it while researching the context of the
+>Utah V4 tape. Since it wasn’t used for any work—it was a candidate OS for the
+>new graphics lab, but DEC DOS was used instead—, no one had written anything
+>about our early UNIX involvement and I had to search generally for other early
+>users. My project focuses on early users, including licensee lists, licenses,
+>UNIX-related publications, and graphics work.
+>https://github.com/thaliaarchi/unix-history
+>
+>Ken’s 1975 list is the earliest licensee list I know of. It’s a form letter file
+>which has templated letters that were sent to early users with variable
+>substitutions for each user. Although the date would suggest these are V6
+>licensees, it’s representative of who Ken mailed about licensing UNIX since V4.
+>https://github.com/thaliaarchi/unix-history/blob/main/lists/1975-06-27_ken/y
+>
+>I reverse engineered its format and am working on recovering the garbage
+>collected blocks. The order appears to be when he added them to the form
+>database, replying to batches of licensing inquiries. After finishing my
+>analysis, I will have a partial order of when memory blocks were written in the
+>file, which could hopefully reveal who was in the list before certain letters
+>were sent.
+>https://github.com/thaliaarchi/unix-form-read
+>
+>The first UNIX News list from a month later appears to be lightly reformatted
+>from Ken’s list, trimmed to just those who subscribed. I’ve uploaded more
+>legible scan of that issue I requested from Waterloo, which allowed me to
+>correct my transcription.
+>https://archive.org/details/unix_news_july-30-1975_waterloo/page/8/mode/2up
+>https://github.com/thaliaarchi/unix-history/blob/main/lists/1975-07-30_news.txt
+>
+>Hopefully you can make use of this. Enjoy!
+>
+>Thalia
+
+From tuhs at tuhs.org  Sat Feb 21 16:59:08 2026
+From: tuhs at tuhs.org (segaloco via TUHS)
+Date: Sat, 21 Feb 2026 06:59:08 +0000
+Subject: [TUHS] Perfect Binding Spotted on Odd System V 1982 Manual
+Message-ID: <jh5j_fBJibwgre7dHTZLGSGxE_a1SFNU-ZE62LKoyQLJHwHRbty5ksp7XgHFmzav8_YE-YVlAvhxQ3r4UeJlvLaRHGUoDy9NA1dKvDTRHBQ=@protonmail.com>
+
+Spotted and purchased this interesting manual on eBay this evening:
+
+https://www.ebay.com/itm/406711470034
+
+This is a UNIX System V User's Manual, or so the cover says.  The cover
+page inside then says Release 5.0 and June 1982, but no notice about
+internal use only.  There is no Western Electric logotype at all on the
+front cover, whereas other covers I've seen have retained the text but
+dropped the Bell System logo due to divestiture.
+
+All in all this has properties between that of the June 1982 and January
+1983 manuals, and furthermore the perfect binding is odd.  In any case,
+when received I'll flip through to see if there are any major
+differences worth noting.  If nothing else, this shows that there may be
+other manuals from the initial release floating around out there in
+different binding formats.
+
+- Matt G.
+
+From tuhs at tuhs.org  Sun Feb 22 01:47:29 2026
+From: tuhs at tuhs.org (ron minnich via TUHS)
+Date: Sat, 21 Feb 2026 07:47:29 -0800
+Subject: [TUHS] Perfect Binding Spotted on Odd System V 1982 Manual
+In-Reply-To: <jh5j_fBJibwgre7dHTZLGSGxE_a1SFNU-ZE62LKoyQLJHwHRbty5ksp7XgHFmzav8_YE-YVlAvhxQ3r4UeJlvLaRHGUoDy9NA1dKvDTRHBQ=@protonmail.com>
+References: <jh5j_fBJibwgre7dHTZLGSGxE_a1SFNU-ZE62LKoyQLJHwHRbty5ksp7XgHFmzav8_YE-YVlAvhxQ3r4UeJlvLaRHGUoDy9NA1dKvDTRHBQ=@protonmail.com>
+Message-ID: <CAP6exYJTKCa6ebeWkAhqbPF+259M-pdDPSC4KTk0OoSmG03pGQ@mail.gmail.com>
+
+there is a funny thing if you can find manuals ca 1984, when the great bell
+system breakup occurred.
+
+Manuals I got around that time from ATT had a sticker over the Bell System
+logo. Evidently as part of the
+final breakup, ATT lost the right to use the logo; that went with the seven
+baby bells. The manuals
+were either printed before the decision came down, and had to be
+retrofitted; or were delivered from stock, requiring the coverup.
+
+ron
+
+On Fri, Feb 20, 2026 at 11:07 PM segaloco via TUHS <tuhs at tuhs.org> wrote:
+
+> Spotted and purchased this interesting manual on eBay this evening:
+>
+> https://www.ebay.com/itm/406711470034
+>
+> This is a UNIX System V User's Manual, or so the cover says.  The cover
+> page inside then says Release 5.0 and June 1982, but no notice about
+> internal use only.  There is no Western Electric logotype at all on the
+> front cover, whereas other covers I've seen have retained the text but
+> dropped the Bell System logo due to divestiture.
+>
+> All in all this has properties between that of the June 1982 and January
+> 1983 manuals, and furthermore the perfect binding is odd.  In any case,
+> when received I'll flip through to see if there are any major
+> differences worth noting.  If nothing else, this shows that there may be
+> other manuals from the initial release floating around out there in
+> different binding formats.
+>
+> - Matt G.
+>
+
+From tuhs at tuhs.org  Wed Feb 25 02:26:25 2026
+From: tuhs at tuhs.org (Alex Bochannek via TUHS)
+Date: Tue, 24 Feb 2026 08:26:25 -0800
+Subject: [TUHS] "A New Command Language for UNIX and Related Systems",
+ Sturzenbecker CL (1982)
+Message-ID: <m25x7myuoe.fsf@bochannek.com>
+
+Hello!
+
+Last week I got a scan of Bell Labs TM-82-45192-3, M. C. Sturzenbecker,
+"A New Command Language for UNIX and Related Systems" from the Bell Labs
+archives thanks to Rebecca Nadolny at Nokia. Rich Salz suggested I
+should share the information here.
+
+I first noticed a reference to this document in David Korn's
+"Introduction to KSH-i" memo from 1986 and because I had not heard about
+it before, requested a copy.
+
+Most significantly, this Shell uses typed variables and goes into some
+detail explaining the challenges around that. The references to broader
+developments in command languages and the desire to make this CL
+applicable to Unix and non-Unix systems is quite interesting.
+
+I am curious how well known this memo was at the time given the broad
+distribution list it was apparently sent to (which I suspect was common
+for TMs). David Korn cites it, but were others aware of it as well? Was
+it known outside Bell Labs? Was the implementation of CL used by others?
+Was it ever implemented on non-Unix systems? The document mentions that
+CL was implemented for Unix Release 4.0, which also made me wonder how
+widely that release was used inside the Bell System.
+
+Unfortunately the scan is too large to send here, but I am happy to
+share it.
+
+Thanks!
+
+-- 
+Alex.
+
+From tuhs at tuhs.org  Wed Feb 25 06:46:34 2026
+From: tuhs at tuhs.org (Arnold Robbins via TUHS)
+Date: Tue, 24 Feb 2026 13:46:34 -0700
+Subject: [TUHS] "A New Command Language for UNIX and Related Systems",
+ Sturzenbecker CL (1982)
+In-Reply-To: <m25x7myuoe.fsf@bochannek.com>
+References: <m25x7myuoe.fsf@bochannek.com>
+Message-ID: <202602242046.61OKkY2A016899@freefriends.org>
+
+Hi.
+
+Alex Bochannek via TUHS <tuhs at tuhs.org> wrote:
+
+> The document mentions that
+> CL was implemented for Unix Release 4.0, which also made me wonder how
+> widely that release was used inside the Bell System.
+
+I think it was used pretty widely. I've described this before, check
+the archives, but circa 19833-1984 I did some contract programming
+for Southern Bell on a PDP-11/70 running Unix 4.0.  It was the
+standard version of Unix inside the Bell System.
+
+Arnold
+
+From tuhs at tuhs.org  Wed Feb 25 07:40:48 2026
+From: tuhs at tuhs.org (segaloco via TUHS)
+Date: Tue, 24 Feb 2026 21:40:48 +0000
+Subject: [TUHS] "A New Command Language for UNIX and Related Systems",
+ Sturzenbecker CL (1982)
+In-Reply-To: <202602242046.61OKkY2A016899@freefriends.org>
+References: <m25x7myuoe.fsf@bochannek.com>
+ <202602242046.61OKkY2A016899@freefriends.org>
+Message-ID: <17cIgYXErhgcwjGWjfYfMLVbTWAuwSE4aJcRAHrvvQXgSN6zP2IrE62hFK3Q2EuXpk6k80gvW3Fb_naGlvvrOw6N75mBbYRD4AkQFPrgYx8=@protonmail.com>
+
+On Tuesday, February 24th, 2026 at 12:47, Arnold Robbins via TUHS <tuhs at tuhs.org> wrote:
+
+> Hi.
+> 
+> Alex Bochannek via TUHS <tuhs at tuhs.org> wrote:
+> 
+> > The document mentions that
+> > CL was implemented for Unix Release 4.0, which also made me wonder how
+> > widely that release was used inside the Bell System.
+> 
+> I think it was used pretty widely. I've described this before, check
+> the archives, but circa 19833-1984 I did some contract programming
+> for Southern Bell on a PDP-11/70 running Unix 4.0.  It was the
+> standard version of Unix inside the Bell System.
+> 
+> Arnold
+> 
+
+Long musing on Release 4.x incoming.
+
+My reading of documents agrees that Release 4.x was pretty wide-spread.
+The story I've heard goes that AT&T tended to stabilize with odd
+releases and then add a bunch of new stuff on even releases, so BTL was
+probably more likely to be on a even release when available, same story
+from what I've read with PWB 2.0.  I've read anecdotes that SVR2 was
+originally to be Release 6.0 but by that time divested AT&T decided to
+just go all in on UNIX releases and stuck with the System V trademark.
+Internal BTL editions of this release are indeed also labeled System V
+Release 2 whereas the prior versions were Release 5.0 for internal use.
+
+Release 4.0 was popular enough to have a couple of nice printed volumes
+of papers from the "Documents For" collection.  One such starter package
+is available here:
+
+https://archive.org/details/unix-programming-starter-package
+
+It was also the beginning of the end for the simplicity of document
+distro, Release 4.x is the first release we see the manual split into
+u_man and a_man, and the unbundling of the secondary volume TROFF
+sources may have occurred around the same time.  By SVR2, what was a
+single programmer's manual and volume 2 is now a_man, u_man, and p_man,
+along with all the papers strewn amongst a number of different
+independent volumes.
+
+However unlikely, Release 4.x is potentially more likely to have
+survived in a cast-off tape or disk pack than earlier PWB and USG stuff.
+However unlikely one of my goals is to hopefully start finding rapport
+with nearby telco offices to see if I can suss out any old stuff from
+that time.  That said, I've got no idea how wide-spread the various BTL
+UNIX flavors were outside in the larger Bell System ecosystem, if for
+instance any random telco office would've had USG generics or PWB, or if
+most of their UNIX would be in more deeply embedded apps like COSMOS or
+ESS units.  I don't know how this bodes for the chances of a UNIX 4.0 or
+any other esoteric thing just sitting and rotting under the floor of a
+switching office somewhere.  Unfortunately my letter and gift of an old
+Bell System commemorative token have resulted in no return of contact
+from the closest office to me (360-REgent) so remains a mystery.  They
+do have what looks like a pre-divestiture 5ESS running in their
+basement at least...so maybe there's hope for some old UNIX hiding
+somewhere...
+
+- Matt G.
+
+From tuhs at tuhs.org  Wed Feb 25 12:04:44 2026
+From: tuhs at tuhs.org (Al Kossow via TUHS)
+Date: Tue, 24 Feb 2026 18:04:44 -0800
+Subject: [TUHS] CHM V4 Unix recovery video up on YouTube
+Message-ID: <350d41ab-7a58-b87f-07a3-357a8ff02a4b@bitsavers.org>
+
+https://www.youtube.com/watch?v=-xlq_MPWNKk&t=198s
+
+From tuhs at tuhs.org  Wed Feb 25 12:09:59 2026
+From: tuhs at tuhs.org (Al Kossow via TUHS)
+Date: Tue, 24 Feb 2026 18:09:59 -0800
+Subject: [TUHS] CHM V4 Unix recovery video up on YouTube
+In-Reply-To: <350d41ab-7a58-b87f-07a3-357a8ff02a4b@bitsavers.org>
+References: <350d41ab-7a58-b87f-07a3-357a8ff02a4b@bitsavers.org>
+Message-ID: <cc10af20-37fe-769c-bc23-3a71cc012337@bitsavers.org>
+
+On 2/24/26 6:04 PM, Al Kossow via TUHS wrote:
+> https://www.youtube.com/watch?v=-xlq_MPWNKk&t=198s
+
+oops
+https://www.youtube.com/watch?v=-xlq_MPWNKk
+
+From tuhs at tuhs.org  Wed Feb 25 17:27:59 2026
+From: tuhs at tuhs.org (Arnold Robbins via TUHS)
+Date: Wed, 25 Feb 2026 00:27:59 -0700
+Subject: [TUHS] "A New Command Language for UNIX and Related Systems",
+ Sturzenbecker CL (1982)
+In-Reply-To: <17cIgYXErhgcwjGWjfYfMLVbTWAuwSE4aJcRAHrvvQXgSN6zP2IrE62hFK3Q2EuXpk6k80gvW3Fb_naGlvvrOw6N75mBbYRD4AkQFPrgYx8=@protonmail.com>
+References: <m25x7myuoe.fsf@bochannek.com>
+ <202602242046.61OKkY2A016899@freefriends.org>
+ <17cIgYXErhgcwjGWjfYfMLVbTWAuwSE4aJcRAHrvvQXgSN6zP2IrE62hFK3Q2EuXpk6k80gvW3Fb_naGlvvrOw6N75mBbYRD4AkQFPrgYx8=@protonmail.com>
+Message-ID: <202602250727.61P7RxGF058810@freefriends.org>
+
+The whole point of USG -- the Unix Support Group -- was to unify the
+various Unix variants in use in the Bell System into one flavor
+that could be used everywhere.  Thus the fact that there are bits
+and pieces from Research, PWB, and even "Columbus Unix" in Unix 3.0
+and 4.0 and on to System V.
+
+In my work at Southern Bell, Unix was used for generic computing,
+not just software development. My job was to write a program that
+would nightly read data read in from an HR tape and construct a
+fast access database such that guards in the lobby could look people
+up by name.
+
+My point is that Unix wasn't just in the switching centers.
+
+As to releases, odd vs. even, etc., I don't know about that. I was
+told that AT&T released to the world one version behind what they
+ran internally, thus Unix 4.0 inside the Bell System, Unix 3.0 (System III)
+outside.  With divestiture on the way and AT&T getting ready
+to go into the computer business, they decided to skip releasing
+Unix 4.0 and go straight to System V both internally and externally.
+
+HTH,
+
+Arnold
+
+segaloco via TUHS <tuhs at tuhs.org> wrote:
+
+> Long musing on Release 4.x incoming.
+>
+> My reading of documents agrees that Release 4.x was pretty wide-spread.
+> The story I've heard goes that AT&T tended to stabilize with odd
+> releases and then add a bunch of new stuff on even releases, so BTL was
+> probably more likely to be on a even release when available, same story
+> from what I've read with PWB 2.0.  I've read anecdotes that SVR2 was
+> originally to be Release 6.0 but by that time divested AT&T decided to
+> just go all in on UNIX releases and stuck with the System V trademark.
+> Internal BTL editions of this release are indeed also labeled System V
+> Release 2 whereas the prior versions were Release 5.0 for internal use.
+>
+> Release 4.0 was popular enough to have a couple of nice printed volumes
+> of papers from the "Documents For" collection.  One such starter package
+> is available here:
+>
+> https://archive.org/details/unix-programming-starter-package
+>
+> It was also the beginning of the end for the simplicity of document
+> distro, Release 4.x is the first release we see the manual split into
+> u_man and a_man, and the unbundling of the secondary volume TROFF
+> sources may have occurred around the same time.  By SVR2, what was a
+> single programmer's manual and volume 2 is now a_man, u_man, and p_man,
+> along with all the papers strewn amongst a number of different
+> independent volumes.
+>
+> However unlikely, Release 4.x is potentially more likely to have
+> survived in a cast-off tape or disk pack than earlier PWB and USG stuff.
+> However unlikely one of my goals is to hopefully start finding rapport
+> with nearby telco offices to see if I can suss out any old stuff from
+> that time.  That said, I've got no idea how wide-spread the various BTL
+> UNIX flavors were outside in the larger Bell System ecosystem, if for
+> instance any random telco office would've had USG generics or PWB, or if
+> most of their UNIX would be in more deeply embedded apps like COSMOS or
+> ESS units.  I don't know how this bodes for the chances of a UNIX 4.0 or
+> any other esoteric thing just sitting and rotting under the floor of a
+> switching office somewhere.  Unfortunately my letter and gift of an old
+> Bell System commemorative token have resulted in no return of contact
+> from the closest office to me (360-REgent) so remains a mystery.  They
+> do have what looks like a pre-divestiture 5ESS running in their
+> basement at least...so maybe there's hope for some old UNIX hiding
+> somewhere...
+>
+> - Matt G.
+
+From tuhs at tuhs.org  Fri Feb 27 03:30:25 2026
+From: tuhs at tuhs.org (segaloco via TUHS)
+Date: Thu, 26 Feb 2026 17:30:25 +0000
+Subject: [TUHS] Ongoing UNIX Manual Scans
+Message-ID: <H2n_XQRM4B_z3Aj5bVg0Vq4q5qO9JD-DKrZ37zRnI4T7Wa21zBNjVonqDQm720aFcGCuqrOyIGT4gVfOpUdlwD_meZVRtgr2P9Wwhc_EG98=@protonmail.com>
+
+Hello, starting a new thread for a new round of UNIX manual scans I'm
+going to be working up over the next few months.  To start it all off,
+here is the cover and introductory pages from the December, 1983 manual
+UNIX System V Release 2.0 Programmer Reference Manual, known on-line as
+"p_man".
+
+https://archive.org/details/unix-system-v-release-2-programmer-reference-manual-btl-edition
+
+Currently this is just the "man0" bits, so getting started, TOC, ptx,
+and the binder cover.  I intend to scan the other sections and add them
+to this same archive.org listing.  For now I did want to share this bit
+since the permuted index in particular lists all the non-administrative
+sections, giving folks an idea of what is in both the user and
+programmer-level manuals.  I happen to have both BTL editions for SVR2
+so will be scanning both.  Unfortunately I do not have the corresponding
+System Administrator's Manual, although I do have the same for SVR1,
+likewise BTL internal, so that I'll be moving into after the SVR2 stuff.
+
+Anywho, if you spot anything in this permuted index that you want any
+info on before I post more pages, let me know and I can prioritize those
+bits.  All in all this is roughly what I intend to scan:
+
+- SVR2 BTL User's Reference Manual
+- SVR2 BTL Programmer Reference Manual
+- Release 5.0 BTL User's Reference Manual
+- Release 5.0 BTL System Administrator's Reference Manual
+- Release 4.0 User's Reference Manual
+- Release 5.0 3B5 User's Reference Manual
+
+It's a lot so won't happen super duper fast, but that should greatly
+expand the archived early 80's manuals.  Even better that they're
+varying degrees of branched off from the commercially released PWB
+descendants released at that time.  Anywho, I'll keep at it, I'll update
+once the rest of the PRM is up, and will go from there.
+
+- Matt G.
+
+P.S. As always, if you have similarly long lost UNIX manuals, especially
+AT&T stuff, I'm happy to arrange scanning operations.  I recently
+revamped my process to achieve both higher scan quality and smaller
+file sizes, so feeling better lately about generating reams of scans.
+
+From tuhs at tuhs.org  Fri Feb 27 08:29:38 2026
+From: tuhs at tuhs.org (segaloco via TUHS)
+Date: Thu, 26 Feb 2026 22:29:38 +0000
+Subject: [TUHS] Perfect Binding Spotted on Odd System V 1982 Manual
+In-Reply-To: <CAP6exYJTKCa6ebeWkAhqbPF+259M-pdDPSC4KTk0OoSmG03pGQ@mail.gmail.com>
+References: <jh5j_fBJibwgre7dHTZLGSGxE_a1SFNU-ZE62LKoyQLJHwHRbty5ksp7XgHFmzav8_YE-YVlAvhxQ3r4UeJlvLaRHGUoDy9NA1dKvDTRHBQ=@protonmail.com>
+ <CAP6exYJTKCa6ebeWkAhqbPF+259M-pdDPSC4KTk0OoSmG03pGQ@mail.gmail.com>
+Message-ID: <1eXFn_utoDUOhzxY5ibSW5TYFT_OF5W9hubW8NNcOENUuZPSxuKoOXFcvzpWb9RqUEjhObrL2Ur1FTk3yjBG-c_M1H4r-zNb80TounMjaSU=@protonmail.com>
+
+On Saturday, February 21st, 2026 at 07:48, ron minnich via TUHS <tuhs at tuhs.org> wrote:
+
+> there is a funny thing if you can find manuals ca 1984, when the great bell
+> system breakup occurred.
+> 
+> Manuals I got around that time from ATT had a sticker over the Bell System
+> logo. Evidently as part of the
+> final breakup, ATT lost the right to use the logo; that went with the seven
+> baby bells. The manuals
+> were either printed before the decision came down, and had to be
+> retrofitted; or were delivered from stock, requiring the coverup.
+> 
+> ron
+> 
+> On Fri, Feb 20, 2026 at 11:07 PM segaloco via TUHS <tuhs at tuhs.org> wrote:
+> 
+> > Spotted and purchased this interesting manual on eBay this evening:
+> >
+> > https://www.ebay.com/itm/406711470034
+> >
+> > This is a UNIX System V User's Manual, or so the cover says.  The cover
+> > page inside then says Release 5.0 and June 1982, but no notice about
+> > internal use only.  There is no Western Electric logotype at all on the
+> > front cover, whereas other covers I've seen have retained the text but
+> > dropped the Bell System logo due to divestiture.
+> >
+> > All in all this has properties between that of the June 1982 and January
+> > 1983 manuals, and furthermore the perfect binding is odd.  In any case,
+> > when received I'll flip through to see if there are any major
+> > differences worth noting.  If nothing else, this shows that there may be
+> > other manuals from the initial release floating around out there in
+> > different binding formats.
+> >
+> > - Matt G.
+> >
+> 
+
+Got this in the mail today.  Flipping through it really is a weird
+intermediate between the manuals labelled Release 5.0 vs System V.  On
+the cover it says System V and has had the Western Electric branding
+fully removed.  However, internally the copyright is granted to BTL, not
+WECo like the manuals actually outright labeled System V.  To top it all
+off, the select code for the document given on the cover is 301-925.
+All System V labeled User's Manuals I've seen before are 301-905, with
+301-925 being instead the Release 5.0 labeled volume.
+
+So all in all, this is closest to the Release 5.0 rather than System V
+manual but has the latter's characteristics of the name "System V" and
+diminishment or elimination of Western Electric branding from the cover.
+
+Of course there is then just the oddball fact of it being perfect bound.
+The cover is of high glossy quality and doesn't appear to have breaks,
+so I suspect this was legitimately produced rather than someone chopping
+up and gluing together a comb-bound version.
+
+Here is a photo of all three: https://imgur.com/XJwrjLk
+
+Of note, slight variations in text alignment indicate all three covers
+are from separate masters, note the alignment of the grid pattern with
+the UNIX text on Release 5.0 vs the two System V volumes.  Also note the
+document select code in the bottom right, and where the vertical orange
+line crosses the "Trademark of Bell Laboratories" text.  Finally, the
+grid lines came out both thicker and brighter on the perfect-bound
+volume.
+
+Anywho, would certainly be interested if anyone recalls the timeline
+on this, because I keep finding slight cover variations on this 5.0/V
+timeframe and am starting to wonder how many different cover variations
+were actually shipped.  I can at least name the following areas of
+variety:
+
+- "system" vs. "operating system" for the UNIX System text
+- Branding as WECo logotype with Bell, without Bell, and without logo altogether
+- 301-925 vs 301-905 select code (with ISS. 1 vs Issue 1 text)
+- Release 5.0 vs System V
+- White comb binding with title on spine, black comb binding with no text, perfect binding with no text
+- Discrepancy between cover page and title page re: Release 5.0 vs System V
+- Various shifting around of the grid alignment in the background
+
+Quite an interesting amount of variety in this one specific release.
+
+- Matt G.
+
+From tuhs at tuhs.org  Fri Feb 27 08:52:01 2026
+From: tuhs at tuhs.org (ROBERT MYERS via TUHS)
+Date: Thu, 26 Feb 2026 16:52:01 -0600
+Subject: [TUHS] Can PDP-11/23 PLUS run Unix?
+References: <71B1F7AB-C723-4EF3-A93F-CEAF4E8FE52F.ref@yahoo.com>
+Message-ID: <71B1F7AB-C723-4EF3-A93F-CEAF4E8FE52F@yahoo.com>
+
+I’ve just obtained a 11/23 Plus system off of EBay and plan to get a QBone to emulate memory along with a few other things.  I need to know if Floating Point support is a requirement as well if I can also emulate up to 4 Mb of memory.  I’m interested in v6/v7/BSD2.11 for Unix variants.
+Sent from my iPhone
+
+From tuhs at tuhs.org  Fri Feb 27 08:55:31 2026
+From: tuhs at tuhs.org (Madeline Autumn-Rose via TUHS)
+Date: Thu, 26 Feb 2026 14:55:31 -0800
+Subject: [TUHS] Can PDP-11/23 PLUS run Unix?
+In-Reply-To: <71B1F7AB-C723-4EF3-A93F-CEAF4E8FE52F@yahoo.com>
+References: <71B1F7AB-C723-4EF3-A93F-CEAF4E8FE52F@yahoo.com>
+Message-ID: <50E438AF-700C-47A2-AE2F-986D72B9048D@gewt.net>
+
+iirc 11/23 lacks supervisor mode so you’d be limited to the 2.9 port with MSCP but it’s been a bit so I could be mistaken
+
+Sent from my iPhone
+
+> On Feb 26, 2026, at 14:52, ROBERT MYERS via TUHS <tuhs at tuhs.org> wrote:
+> 
+> ﻿I’ve just obtained a 11/23 Plus system off of EBay and plan to get a QBone to emulate memory along with a few other things.  I need to know if Floating Point support is a requirement as well if I can also emulate up to 4 Mb of memory.  I’m interested in v6/v7/BSD2.11 for Unix variants.
+> Sent from my iPhone
+
+
+From tuhs at tuhs.org  Fri Feb 27 09:02:41 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Thu, 26 Feb 2026 18:02:41 -0500
+Subject: [TUHS] Can PDP-11/23 PLUS run Unix?
+In-Reply-To: <71B1F7AB-C723-4EF3-A93F-CEAF4E8FE52F@yahoo.com>
+References: <71B1F7AB-C723-4EF3-A93F-CEAF4E8FE52F.ref@yahoo.com>
+ <71B1F7AB-C723-4EF3-A93F-CEAF4E8FE52F@yahoo.com>
+Message-ID: <CAC20D2MsokSj22ZQx-N2YDtijdVqCq9nK69cqg7dyOgnhwR+bw@mail.gmail.com>
+
+https://gunkies.org/wiki/PDP-11/23#:~:text=hampage.hu,are%20no%20problems%20with%20this.
+
+
+To your questions. Because it lacks separate I/D
+Space and does not support supervisor mode (only user and kernel) 2.11BSD
+will not work.  However V6 and V7 are possible. I think Ultrix-11 should be
+able to work and is more likely to have the low level details that 11/23
+will need.
+
+
+Sent from a handheld expect more typos than usual
+
+
+On Thu, Feb 26, 2026 at 5:52 PM ROBERT MYERS via TUHS <tuhs at tuhs.org> wrote:
+
+> I’ve just obtained a 11/23 Plus system off of EBay and plan to get a QBone
+> to emulate memory along with a few other things.  I need to know if
+> Floating Point support is a requirement as well if I can also emulate up to
+> 4 Mb of memory.  I’m interested in v6/v7/BSD2.11 for Unix variants.
+> Sent from my iPhone
+>
+
+From tuhs at tuhs.org  Fri Feb 27 09:06:14 2026
+From: tuhs at tuhs.org (Madeline Autumn-Rose via TUHS)
+Date: Thu, 26 Feb 2026 15:06:14 -0800
+Subject: [TUHS] Can PDP-11/23 PLUS run Unix?
+In-Reply-To: <CAC20D2MsokSj22ZQx-N2YDtijdVqCq9nK69cqg7dyOgnhwR+bw@mail.gmail.com>
+References: <CAC20D2MsokSj22ZQx-N2YDtijdVqCq9nK69cqg7dyOgnhwR+bw@mail.gmail.com>
+Message-ID: <0B6A3066-4E1A-4040-9372-BDABBFAF14C2@gewt.net>
+
+v7m is also an option
+Sent from my iPhone
+
+> On Feb 26, 2026, at 15:03, Clem Cole via TUHS <tuhs at tuhs.org> wrote:
+> 
+> ﻿https://gunkies.org/wiki/PDP-11/23#:~:text=hampage.hu,are%20no%20problems%20with%20this.
+> 
+> 
+> To your questions. Because it lacks separate I/D
+> Space and does not support supervisor mode (only user and kernel) 2.11BSD
+> will not work.  However V6 and V7 are possible. I think Ultrix-11 should be
+> able to work and is more likely to have the low level details that 11/23
+> will need.
+> 
+> 
+> Sent from a handheld expect more typos than usual
+> 
+> 
+>> On Thu, Feb 26, 2026 at 5:52 PM ROBERT MYERS via TUHS <tuhs at tuhs.org> wrote:
+>> 
+>> I’ve just obtained a 11/23 Plus system off of EBay and plan to get a QBone
+>> to emulate memory along with a few other things.  I need to know if
+>> Floating Point support is a requirement as well if I can also emulate up to
+>> 4 Mb of memory.  I’m interested in v6/v7/BSD2.11 for Unix variants.
+>> Sent from my iPhone
+>> 
+
+
+From tuhs at tuhs.org  Fri Feb 27 09:19:46 2026
+From: tuhs at tuhs.org (segaloco via TUHS)
+Date: Thu, 26 Feb 2026 23:19:46 +0000
+Subject: [TUHS] Can PDP-11/23 PLUS run Unix?
+In-Reply-To: <0B6A3066-4E1A-4040-9372-BDABBFAF14C2@gewt.net>
+References: <CAC20D2MsokSj22ZQx-N2YDtijdVqCq9nK69cqg7dyOgnhwR+bw@mail.gmail.com>
+ <0B6A3066-4E1A-4040-9372-BDABBFAF14C2@gewt.net>
+Message-ID: <58Q4xQYpenb2pcLBu-BJcsVO5bJ94wz-VIZEpEiVHRtSrS-HbkQIrno-P5Thuji3y4IIpf3vEmRVIOdAPhKHj0CLfsH05HCvPqTRBdrqWCw=@protonmail.com>
+
+On Thursday, February 26th, 2026 at 15:06, Madeline Autumn-Rose via TUHS <tuhs at tuhs.org> wrote:
+
+> v7m is also an option
+> Sent from my iPhone
+> 
+> > On Feb 26, 2026, at 15:03, Clem Cole via TUHS <tuhs at tuhs.org> wrote:
+> >
+> > ﻿https://gunkies.org/wiki/PDP-11/23#:~:text=hampage.hu,are%20no%20problems%20with%20this.
+> >
+> >
+> > To your questions. Because it lacks separate I/D
+> > Space and does not support supervisor mode (only user and kernel) 2.11BSD
+> > will not work.  However V6 and V7 are possible. I think Ultrix-11 should be
+> > able to work and is more likely to have the low level details that 11/23
+> > will need.
+> >
+> >
+> > Sent from a handheld expect more typos than usual
+> >
+> >
+> >> On Thu, Feb 26, 2026 at 5:52 PM ROBERT MYERS via TUHS <tuhs at tuhs.org> wrote:
+> >>
+> >> I’ve just obtained a 11/23 Plus system off of EBay and plan to get a QBone
+> >> to emulate memory along with a few other things.  I need to know if
+> >> Floating Point support is a requirement as well if I can also emulate up to
+> >> 4 Mb of memory.  I’m interested in v6/v7/BSD2.11 for Unix variants.
+> >> Sent from my iPhone
+> >>
+> 
+>
+
+Here is a salient document:
+
+https://www.tuhs.org/Archive/Documentation/Manuals/Unix_4.0/Volume_2/F.5.3_UNIX_on_the_PDP_11_34.pdf
+
+Therein Ted Kowalski describes the process of moving UNIX from the
+PDP-11/70 to the PDP-11/34, with mentions of the PDP-11/23 also being a
+beneficiary of the porting efforts.  If there's not an out-of-the-box
+solution already, this paper may be useful in re-porting V6, as would be
+referring to Mini-UNIX and LSX, both of which are in the UNIX tree.
+
+- Matt G.
+
+From tuhs at tuhs.org  Fri Feb 27 10:50:01 2026
+From: tuhs at tuhs.org (Jay Logue via TUHS)
+Date: Thu, 26 Feb 2026 16:50:01 -0800
+Subject: [TUHS] Can PDP-11/23 PLUS run Unix?
+In-Reply-To: <71B1F7AB-C723-4EF3-A93F-CEAF4E8FE52F@yahoo.com>
+References: <71B1F7AB-C723-4EF3-A93F-CEAF4E8FE52F.ref@yahoo.com>
+ <71B1F7AB-C723-4EF3-A93F-CEAF4E8FE52F@yahoo.com>
+Message-ID: <f3b5be3c-f6b1-4770-baab-4a742fb9958c@toaster.com>
+
+As others have said, 2.9BSD will run, but 2.11 wont.
+
+Check out the 2.9BSD-MSCP.txt file in this directory: 
+https://www.tuhs.org/Archive/Distributions/UCB/2.9-derivatives/2.9BSD-MSCP/
+
+--Jay
+
+On 2/26/26 14:52, ROBERT MYERS via TUHS wrote:
+> I’ve just obtained a 11/23 Plus system off of EBay and plan to get a QBone to emulate memory along with a few other things.  I need to know if Floating Point support is a requirement as well if I can also emulate up to 4 Mb of memory.  I’m interested in v6/v7/BSD2.11 for Unix variants.
+> Sent from my iPhone
+
+
+From tuhs at tuhs.org  Fri Feb 27 12:03:34 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Thu, 26 Feb 2026 21:03:34 -0500
+Subject: [TUHS] Can PDP-11/23 PLUS run Unix?
+In-Reply-To: <0B6A3066-4E1A-4040-9372-BDABBFAF14C2@gewt.net>
+References: <CAC20D2MsokSj22ZQx-N2YDtijdVqCq9nK69cqg7dyOgnhwR+bw@mail.gmail.com>
+ <0B6A3066-4E1A-4040-9372-BDABBFAF14C2@gewt.net>
+Message-ID: <CAC20D2PhxPGP_E24fv9y6XbDhTJwareA9eE+_dZ6mfvVGLkNUQ@mail.gmail.com>
+
+Absolutely.  v7m was the precursor to both Ultrix-11 and 2.9BSD [2.10BSD
+took from Ultrix-11, while 2.8 and 2.9, v7m]. You can even see the emails
+from DEC giving the Berkeley team to use anything from either
+
+I suggested Ultrix-11 as I know it has simple (binary) installation media
+readily available that supports the 11/23 [sources are also on TUHS].  But
+unlike V7m, it was a standard product (supported by DEC at the time)
+packaged appropriately  and included a number of enhancements (ie it was a
+DEC product and you can even download a PDF of it’s official software
+product description (SPD) - which is the official document that described
+what DEC would provide support.
+
+
+v7m was basically a tape distribution by DEC made available to Unix V7
+licensees ( and followed the ATT “abandoned on your doorstep” style of
+license).  But yes, it supports more models of PDP-11 than the original
+Seventh Edition but trying to get it running on real hardware will take
+more effort.
+
+
+Sent from a handheld expect more typos than usual
+
+
+On Thu, Feb 26, 2026 at 6:06 PM Madeline Autumn-Rose <b4 at gewt.net> wrote:
+
+> v7m is also an option
+> Sent from my iPhone
+>
+> > On Feb 26, 2026, at 15:03, Clem Cole via TUHS <tuhs at tuhs.org> wrote:
+> >
+> > ﻿
+> https://gunkies.org/wiki/PDP-11/23#:~:text=hampage.hu,are%20no%20problems%20with%20this
+> .
+> >
+> >
+> > To your questions. Because it lacks separate I/D
+> > Space and does not support supervisor mode (only user and kernel) 2.11BSD
+> > will not work.  However V6 and V7 are possible. I think Ultrix-11 should
+> be
+> > able to work and is more likely to have the low level details that 11/23
+> > will need.
+> >
+> >
+> > Sent from a handheld expect more typos than usual
+> >
+> >
+> >> On Thu, Feb 26, 2026 at 5:52 PM ROBERT MYERS via TUHS <tuhs at tuhs.org>
+> wrote:
+> >>
+> >> I’ve just obtained a 11/23 Plus system off of EBay and plan to get a
+> QBone
+> >> to emulate memory along with a few other things.  I need to know if
+> >> Floating Point support is a requirement as well if I can also emulate
+> up to
+> >> 4 Mb of memory.  I’m interested in v6/v7/BSD2.11 for Unix variants.
+> >> Sent from my iPhone
+> >>
+>
+>
+
+From tuhs at tuhs.org  Fri Feb 27 13:42:40 2026
+From: tuhs at tuhs.org (ROBERT MYERS via TUHS)
+Date: Thu, 26 Feb 2026 21:42:40 -0600
+Subject: [TUHS] Can PDP-11/23 PLUS run Unix?
+In-Reply-To: <58Q4xQYpenb2pcLBu-BJcsVO5bJ94wz-VIZEpEiVHRtSrS-HbkQIrno-P5Thuji3y4IIpf3vEmRVIOdAPhKHj0CLfsH05HCvPqTRBdrqWCw=@protonmail.com>
+References: <CAC20D2MsokSj22ZQx-N2YDtijdVqCq9nK69cqg7dyOgnhwR+bw@mail.gmail.com>
+ <0B6A3066-4E1A-4040-9372-BDABBFAF14C2@gewt.net>
+ <58Q4xQYpenb2pcLBu-BJcsVO5bJ94wz-VIZEpEiVHRtSrS-HbkQIrno-P5Thuji3y4IIpf3vEmRVIOdAPhKHj0CLfsH05HCvPqTRBdrqWCw=@protonmail.com>
+Message-ID: <F95BE2C5-AAA9-42CC-8912-98A86C68F6A8@yahoo.com>
+
+Can Mini-Uniz run on a 11/23 Plus?  I know it runs on a 11/40.
+
+> On Feb 26, 2026, at 5:19 PM, segaloco via TUHS <tuhs at tuhs.org> wrote:
+> 
+> On Thursday, February 26th, 2026 at 15:06, Madeline Autumn-Rose via TUHS <tuhs at tuhs.org> wrote:
+> 
+>> v7m is also an option
+>> Sent from my iPhone
+>> 
+>>> On Feb 26, 2026, at 15:03, Clem Cole via TUHS <tuhs at tuhs.org> wrote:
+>>> 
+>>> ﻿https://gunkies.org/wiki/PDP-11/23#:~:text=hampage.hu,are%20no%20problems%20with%20this.
+>>> 
+>>> 
+>>> To your questions. Because it lacks separate I/D
+>>> Space and does not support supervisor mode (only user and kernel) 2.11BSD
+>>> will not work.  However V6 and V7 are possible. I think Ultrix-11 should be
+>>> able to work and is more likely to have the low level details that 11/23
+>>> will need.
+>>> 
+>>> 
+>>> Sent from a handheld expect more typos than usual
+>>> 
+>>> 
+>>>> On Thu, Feb 26, 2026 at 5:52 PM ROBERT MYERS via TUHS <tuhs at tuhs.org> wrote:
+>>>> 
+>>>> I’ve just obtained a 11/23 Plus system off of EBay and plan to get a QBone
+>>>> to emulate memory along with a few other things.  I need to know if
+>>>> Floating Point support is a requirement as well if I can also emulate up to
+>>>> 4 Mb of memory.  I’m interested in v6/v7/BSD2.11 for Unix variants.
+>>>> Sent from my iPhone
+>>>> 
+>> 
+>> 
+> 
+> Here is a salient document:
+> 
+> https://www.tuhs.org/Archive/Documentation/Manuals/Unix_4.0/Volume_2/F.5.3_UNIX_on_the_PDP_11_34.pdf
+> 
+> Therein Ted Kowalski describes the process of moving UNIX from the
+> PDP-11/70 to the PDP-11/34, with mentions of the PDP-11/23 also being a
+> beneficiary of the porting efforts.  If there's not an out-of-the-box
+> solution already, this paper may be useful in re-porting V6, as would be
+> referring to Mini-UNIX and LSX, both of which are in the UNIX tree.
+> 
+> - Matt G.
+
+
+From tuhs at tuhs.org  Fri Feb 27 18:30:40 2026
+From: tuhs at tuhs.org (Arnold Robbins via TUHS)
+Date: Fri, 27 Feb 2026 01:30:40 -0700
+Subject: [TUHS] Perfect Binding Spotted on Odd System V 1982 Manual
+In-Reply-To: <1eXFn_utoDUOhzxY5ibSW5TYFT_OF5W9hubW8NNcOENUuZPSxuKoOXFcvzpWb9RqUEjhObrL2Ur1FTk3yjBG-c_M1H4r-zNb80TounMjaSU=@protonmail.com>
+References: <jh5j_fBJibwgre7dHTZLGSGxE_a1SFNU-ZE62LKoyQLJHwHRbty5ksp7XgHFmzav8_YE-YVlAvhxQ3r4UeJlvLaRHGUoDy9NA1dKvDTRHBQ=@protonmail.com>
+ <CAP6exYJTKCa6ebeWkAhqbPF+259M-pdDPSC4KTk0OoSmG03pGQ@mail.gmail.com>
+ <1eXFn_utoDUOhzxY5ibSW5TYFT_OF5W9hubW8NNcOENUuZPSxuKoOXFcvzpWb9RqUEjhObrL2Ur1FTk3yjBG-c_M1H4r-zNb80TounMjaSU=@protonmail.com>
+Message-ID: <202602270830.61R8Ue10005833@freefriends.org>
+
+segaloco via TUHS <tuhs at tuhs.org> wrote:
+
+> Quite an interesting amount of variety in this one specific release.
+
+What you may be seeing is simply that AT&T would have printed N copies of
+the manual each time, and when they ran out, they printed more, using
+whatever the legal department told them to use at the time. The original
+System V was on the market for several years before S5R2 came out, and
+I doubt that AT&T would have printed huge numbers of manuals just to
+have them taking up space somewhere.
+
+This is all just a guess, not any kind of first-hand knowledge.
+
+Arnold
+
+From tuhs at tuhs.org  Fri Feb 27 23:37:26 2026
+From: tuhs at tuhs.org (Noel Chiappa via TUHS)
+Date: Fri, 27 Feb 2026 08:37:26 -0500 (EST)
+Subject: [TUHS] Can PDP-11/23 PLUS run Unix?
+Message-ID: <20260227133726.3A59218C07B@mercury.lcs.mit.edu>
+
+    > From: Matt Gilmore
+
+    > If there's not an out-of-the-box solution already, this paper may be
+    > useful in re-porting V6
+
+Not quite "out-of-the-box", but there are detailed instructions on how to
+bring up V6 on a /23:
+
+  https://gunkies.org/wiki/Running_UNIX_V6_on_an_-11/23
+
+That page was prepared after actually doing it on actual hardware, so there
+are no not-yet-seen tarpits (note the reference to "has been observed to
+trash the disk, if you are really unlucky").
+
+I suspect the biggest obstacle is likely to be getting the bits onto whatever
+the OP is using for mass storage (I see a reference to "QBone to emulate
+memory", but whether "memory" there refers to 'main memory' or 'mass storage'
+I'm not clear on, although the later "emulate up to 4 Mb of memory" makes me
+think the former might have been meant; I'm not familiar with the QBone).
+
+You do need the KTF11-A memory management chip to run anything other than
+MINI-UNIX or LSX, but I think all -11/23 Plus systems have it.
+
+
+    >> I need to know if Floating Point support is a requirement as well
+
+Not required; "if it has a KEF11-A floating point chip, [a small amount of ]
+additional work is needed to allow its general use, since the -11/40 did not
+support FP11 floating point, and so there is no code to handle it in m40.s."
+
+    "if I can also emulate up to 4 Mb of memory
+
+"All -11/23's after the (very rare) model A can support more than 256KB of
+main memory. If you put more than 256KB on an -11/23 and boot V6, it will
+ignore the extra memory above 256KB (technically, above 248KB)." but it's
+simple to allow use of more (see the instructions, for how).
+
+
+    > From: Robert Myers
+
+    > Can Mini-Uniz run on a 11/23 Plus?
+
+It should; I got it to run on an -11/03. See:
+
+  http://ana-3.lcs.mit.edu/~jnc/tech/unix/Mini/Mini.html
+
+but there's no point if you hsve a KTF11-A.
+
+	Noel
+
+From tuhs at tuhs.org  Fri Feb 27 23:50:28 2026
+From: tuhs at tuhs.org (Noel Chiappa via TUHS)
+Date: Fri, 27 Feb 2026 08:50:28 -0500 (EST)
+Subject: [TUHS] Can PDP-11/23 PLUS run Unix?
+Message-ID: <20260227135028.6721518C07B@mercury.lcs.mit.edu>
+
+    > From: Matt Gilmore
+
+    > Here is a salient document:
+
+    > Therein Ted Kowalski describes the process of moving UNIX from the
+    > PDP-11/70 to the PDP-11/34
+
+Why he started with the /70 version, which is a far way more complicated than
+the /23 & /34, instead of the already extant /40 version, which is almost
+exactly what one needs for the /23 & /34, is completely unclear to me.
+
+The /40 uses the same memory management as that supported by the /23 (the
+'simple' kind, i.e. without split I+D and Supervisor mode).
+
+	Noel
+
+From tuhs at tuhs.org  Fri Feb 27 23:52:38 2026
+From: tuhs at tuhs.org (Ron Natalie via TUHS)
+Date: Fri, 27 Feb 2026 13:52:38 +0000
+Subject: [TUHS] Can PDP-11/23 PLUS run Unix?
+In-Reply-To: <20260227133726.3A59218C07B@mercury.lcs.mit.edu>
+References: <20260227133726.3A59218C07B@mercury.lcs.mit.edu>
+Message-ID: <em40938de7-21ba-48d7-b8b7-e78c13788899@ronnatalie.com>
+
+I was responsible for bringing up UNIX on an 11/23.    It was a long 
+time ago, but this system replaced an existing lsi11 (11/03) that was 
+already running miniUNIX, so I almost certainly used that to fill in the 
+initial root image.   We were already running a full up V6 UNIX on the 
+11/45 downstairs, so I could shuffle things around pretty easily.   I 
+suspect all the machines had RK05 controllers.
+
+Amusingly, we had built our own little console switch that let us switch 
+things from system to system.    Once we got UNIX up on the lab 
+computer, we messed with one of the grad students by switching him back 
+and forth between the two machines until he caught on.
+
+
+
+
+------ Original Message ------
+From "Noel Chiappa via TUHS" <tuhs at tuhs.org>
+To tuhs at tuhs.org
+Cc jnc at mercury.lcs.mit.edu
+Date 2/27/2026 09:37:26
+Subject [TUHS] Re: Can PDP-11/23 PLUS run Unix?
+
+>     > From: Matt Gilmore
+>
+>     > If there's not an out-of-the-box solution already, this paper may be
+>     > useful in re-porting V6
+>
+>Not quite "out-of-the-box", but there are detailed instructions on how to
+>bring up V6 on a /23:
+>
+>https://gunkies.org/wiki/Running_UNIX_V6_on_an_-11/23
+>
+>That page was prepared after actually doing it on actual hardware, so there
+>are no not-yet-seen tarpits (note the reference to "has been observed to
+>trash the disk, if you are really unlucky").
+>
+>I suspect the biggest obstacle is likely to be getting the bits onto whatever
+>the OP is using for mass storage (I see a reference to "QBone to emulate
+>memory", but whether "memory" there refers to 'main memory' or 'mass storage'
+>I'm not clear on, although the later "emulate up to 4 Mb of memory" makes me
+>think the former might have been meant; I'm not familiar with the QBone).
+>
+>You do need the KTF11-A memory management chip to run anything other than
+>MINI-UNIX or LSX, but I think all -11/23 Plus systems have it.
+>
+>
+>     >> I need to know if Floating Point support is a requirement as well
+>
+>Not required; "if it has a KEF11-A floating point chip, [a small amount of ]
+>additional work is needed to allow its general use, since the -11/40 did not
+>support FP11 floating point, and so there is no code to handle it in m40.s."
+>
+>     "if I can also emulate up to 4 Mb of memory
+>
+>"All -11/23's after the (very rare) model A can support more than 256KB of
+>main memory. If you put more than 256KB on an -11/23 and boot V6, it will
+>ignore the extra memory above 256KB (technically, above 248KB)." but it's
+>simple to allow use of more (see the instructions, for how).
+>
+>
+>     > From: Robert Myers
+>
+>     > Can Mini-Uniz run on a 11/23 Plus?
+>
+>It should; I got it to run on an -11/03. See:
+>
+>http://ana-3.lcs.mit.edu/~jnc/tech/unix/Mini/Mini.html
+>
+>but there's no point if you hsve a KTF11-A.
+>
+>	Noel
+
+From tuhs at tuhs.org  Sat Feb 28 00:00:11 2026
+From: tuhs at tuhs.org (Ron Natalie via TUHS)
+Date: Fri, 27 Feb 2026 14:00:11 +0000
+Subject: [TUHS] Can PDP-11/23 PLUS run Unix?
+In-Reply-To: <20260227135028.6721518C07B@mercury.lcs.mit.edu>
+References: <20260227135028.6721518C07B@mercury.lcs.mit.edu>
+Message-ID: <em19e664c2-7f5e-44bc-a630-cf2c9cd3185c@ronnatalie.com>
+
+There’s not really anything much different across the lines on the 
+PDP-11 kernels.   We ran essentially the same source base on the 11/23, 
+24, 40 (if it had memory management), 34, 45, and 70.    The 24, 45, and 
+70 had split I/D and the early V6s would run on any, but once we built 
+our kernels for split I/D, we couldn’t run them on the 34s we had.   The 
+70 could address more memory (as did the 24).     When the kernels 
+started getting larger, we ended up having to put overlays on the 
+non-split machines.   The death of them were when we needed an 
+additional segment register to map the BSDish mbufs for the TCP code.   
+At that point, all the non-split I/D machines were recycled into various 
+utility roles (mostly internet routers, but also as an I/O controller 
+for the HEP).   The UNIX kernel was replaced with my Little Operating 
+System (No time for sharing) that I used tor place Noel’s MIT C gateway 
+as it had some limitations and Noel had been exiled to the Bahamas or 
+something while we were trying to get things running.
+
+Eventually, even the 70s got too small for the jobs needed and they got 
+recycled into routers as well.    An 11/70 is sort of overkill for this, 
+but I had them for free.
+
+I have fond memories of my years on the PDP-11 and those early UNIXes.   
+  I remember when they finally got the PDP-11 down to a single chip 
+(T11).   Of course, the DEC guy doing the marketing says “it has the 
+full instruction set other than the MARK instruction.”   Me and one 
+other geek are going “What?   No mark instruction?”    This instruction 
+is about the most useless thing in the world.
+
+------ Original Message ------
+From "Noel Chiappa via TUHS" <tuhs at tuhs.org>
+To tuhs at tuhs.org
+Cc jnc at mercury.lcs.mit.edu
+Date 2/27/2026 09:50:28
+Subject [TUHS] Re: Can PDP-11/23 PLUS run Unix?
+
+>     > From: Matt Gilmore
+>
+>     > Here is a salient document:
+>
+>     > Therein Ted Kowalski describes the process of moving UNIX from the
+>     > PDP-11/70 to the PDP-11/34
+>
+>Why he started with the /70 version, which is a far way more complicated than
+>the /23 & /34, instead of the already extant /40 version, which is almost
+>exactly what one needs for the /23 & /34, is completely unclear to me.
+>
+>The /40 uses the same memory management as that supported by the /23 (the
+>'simple' kind, i.e. without split I+D and Supervisor mode).
+>
+>	Noel
+
+From tuhs at tuhs.org  Sat Feb 28 02:30:17 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Fri, 27 Feb 2026 11:30:17 -0500
+Subject: [TUHS] Can PDP-11/23 PLUS run Unix?
+In-Reply-To: <20260227135028.6721518C07B@mercury.lcs.mit.edu>
+References: <20260227135028.6721518C07B@mercury.lcs.mit.edu>
+Message-ID: <CAC20D2PPj5ry26WJnDiX43Os3XsaM0m5aT=miuygoOL9wvuDsw@mail.gmail.com>
+
+Below
+
+On Fri, Feb 27, 2026 at 8:50 AM Noel Chiappa via TUHS <tuhs at tuhs.org> wrote:
+
+>     > From: Matt Gilmore
+>
+>     > Here is a salient document:
+>
+>     > Therein Ted Kowalski describes the process of moving UNIX from the
+>     > PDP-11/70 to the PDP-11/34
+>
+> Why he started with the /70 version, which is a far way more complicated
+> than
+> the /23 & /34, instead of the already extant /40 version, which is almost
+> exactly what one needs for the /23 & /34, is completely unclear to me.
+>
+He didn't actually.   About 6 months before Ted arrived at CMU for his OYIC
+master's time[IIRC Wayne Gramlich and Danny Klien had fingers in that pot
+too], I worked on the 11/34 port of V6 to the 11/34.  We started with the
+11/40 version and changed a few things that differed between the 40 and 34
+(CMU-EE/CS did not have an 11/23 in the mid/late '70s).   Ted brought with
+him the V6++/TS bits from USG.  We switched to his kernel and already had
+his USG-based system running. [I think I have an archive of that system].
+
+
+I believe he wrote that document in 1981 for USG release of Unix 4.0, as
+documentation on the differences.
+
+From tuhs at tuhs.org  Sat Feb 28 07:48:12 2026
+From: tuhs at tuhs.org (Noel Chiappa via TUHS)
+Date: Fri, 27 Feb 2026 16:48:12 -0500 (EST)
+Subject: [TUHS] Can PDP-11/23 PLUS run Unix?
+Message-ID: <20260227214812.44AC918C082@mercury.lcs.mit.edu>
+
+    > From: Clem Cole
+
+    >> Why he started with the /70 version .. instead of the already extant
+    >> /40 version
+
+    > He didn't actually. 
+
+The paper spends a lot of space, in Section 2.2 'Instruction Backup',
+describing how to do instruction backup. Section 3 'Implementation of
+PDP-11/34 UNIX' is not clear if he re-wrote that stuff; it lists "fault
+handling" as something he did write (which could include instruction backup,
+but might not). Instruction backup on machines without an MMR1 (like the /34)
+was fully supported as of V5 (which supported the /40). Why all the attention
+to instruction backup, if it was already done?
+
+
+Also (unrelated to the above, but since I'm posting) use of overlays in the
+kernel, useful on machines without separate I+D, came in with BSD 2.9:
+
+  https://gunkies.org/wiki/2.9BSD
+
+but it's poorly docuented; what I could find is linked there.
+
+	Noel
+
+From tuhs at tuhs.org  Sat Feb 28 08:14:55 2026
+From: tuhs at tuhs.org (Al Kossow via TUHS)
+Date: Fri, 27 Feb 2026 14:14:55 -0800
+Subject: [TUHS] Can PDP-11/23 PLUS run Unix?
+In-Reply-To: <20260227214812.44AC918C082@mercury.lcs.mit.edu>
+References: <20260227214812.44AC918C082@mercury.lcs.mit.edu>
+Message-ID: <4d4b0a5e-0bf6-6eed-5fd3-f86ffa586bde@bitsavers.org>
+
+On 2/27/26 1:48 PM, Noel Chiappa via TUHS wrote:
+
+> Also (unrelated to the above, but since I'm posting) use of overlays in the
+> kernel, useful on machines without separate I+D, came in with BSD 2.9:
+> 
+>    https://gunkies.org/wiki/2.9BSD
+> 
+
+I was wondering why no one was mentioning 2.9 as something that
+could be run on an F11
+
+
+From tuhs at tuhs.org  Sat Feb 28 08:33:33 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Fri, 27 Feb 2026 17:33:33 -0500
+Subject: [TUHS] Can PDP-11/23 PLUS run Unix?
+In-Reply-To: <20260227214812.44AC918C082@mercury.lcs.mit.edu>
+References: <20260227214812.44AC918C082@mercury.lcs.mit.edu>
+Message-ID: <CAC20D2P4Jexu8ze-RUnEhzDa6g9yLpwF8gVcBm6bp_X95kL5+A@mail.gmail.com>
+
+below..
+
+On Fri, Feb 27, 2026 at 4:48 PM Noel Chiappa via TUHS <tuhs at tuhs.org> wrote:
+
+>  Why all the attention to instruction backup, if it was already done?
+>
+I have no idea. And sadly, we can not ask him.  We lost him several years
+ago to cancer.   I tried to get Lisa (his widow) to let me review his
+collection of technology, but she wouldn't allow it, and I believe some
+treasures have been lost.  I know he had some stuff from CMU (such as his
+ISPS system, which he developed for his PhD).
+
+>
+> Also (unrelated to the above, but since I'm posting) use of overlays in the
+> kernel, useful on machines without separate I+D, came in with BSD 2.9:
+>
+Actually, it came from v7m.  Fred Cantor wrote it.  Bostic and the 2. X
+crew pulled it from v7m.
+
+v7m and 2.XBSD can run on both Unibus and QBUS PDP-11s, but as I said, the
+F-11 lacks a separate I/D Space and does not support supervisor mode (only
+user and kernel), so 2.11BSD will not work.
+
+It's a matter of taste and effort between Ultrix-11 and 2.9BSD.  If you
+have a Unibone or a Qbone, thern its easy to use simh to create the proper
+disk images.   Then load them into the SSD on the Unibone/QBone.   A while
+back, I helped Dave Plummer with getting his PDP-11/83 running with 2.11BSD
+using this scheme.
+
+Clem
+
+From tuhs at tuhs.org  Sat Feb 28 08:41:43 2026
+From: tuhs at tuhs.org (Phil Budne via TUHS)
+Date: Fri, 27 Feb 2026 17:41:43 -0500
+Subject: [TUHS] Can PDP-11/23 PLUS run Unix?
+In-Reply-To: <20260227214812.44AC918C082@mercury.lcs.mit.edu>
+References: <20260227214812.44AC918C082@mercury.lcs.mit.edu>
+Message-ID: <202602272241.61RMfhMa077737@ultimate.com>
+
+Noel Chiappa wrote:
+> Also (unrelated to the above, but since I'm posting) use of overlays in the
+> kernel, useful on machines without separate I+D, came in with BSD 2.9:
+>
+>   https://gunkies.org/wiki/2.9BSD
+>
+> but it's poorly docuented; what I could find is linked there.
+>
+> 	Noel
+
+V7M has overlays (c. 1981), I have 1983 as the date for BSD 2.9.
+
+https://www.tuhs.org/cgi-bin/utree.pl?file=V7M/sys/conf/mch_ov.s contains:
+
+/ machine language assist
+/ (OVERLAY KERNEL VERSION)
+/ for non-separate I & D space CPU's
+/ 11/23, 11/24, 11/34, 11/40, & 11/60 CPUs
+/ Fred Canter 8/3/81
+/
+/ Many thanks to Bill Shannon for the overlay kernel modifications.
+
+There's some discussion in
+https://www.tuhs.org/cgi-bin/utree.pl?file=V7M/doc/setup
+
+    The first step is to select the type of
+    unix system most appropriate to your CPU, there
+    are three; unix_id for the separate I & D space
+    CPUs (PDP11/44, PDP11/45, PDP11/55, & PDP11/70);
+    unix_i for the non-separate I & D space CPUs
+    (PDP11/23, PDP11/24, PDP11/34, PDP11/40, & PDP11/60);
+    unix_ov the overlay text kernel for the non-separate
+    I & D space CPUs.
+    The size limitations of the unix_i kernel
+    makes its use as an actual unix system
+    inappropriate, its only purpose in life is
+    to initially load unix from the distribution tape.
+    The overlay text unix kernel should be used
+    as the multi-user unix system on the non-separate
+    I & D space machines.
+
+The overlay kernel is loaded (linked) by:
+https://www.tuhs.org/cgi-bin/utree.pl?file=V7M/sys/conf/ovload
+

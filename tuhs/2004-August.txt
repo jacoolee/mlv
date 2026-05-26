@@ -1,0 +1,1519 @@
+From robinb at ruffnready.co.uk  Thu Aug 12 03:28:13 2004
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Wed, 11 Aug 2004 18:28:13 +0100
+Subject: [pups] Installing begemot
+Message-ID: <xA2QmgAtclGBFwZa@falstaf.demon.co.uk>
+
+Hi All,
+Well I know it's been quiet for ages on this but hopefully someone is 
+listening.
+
+I've just started to put P11 on a new Linux box and am having problems 
+building begemot.  It keeps blowing out when compiling panic.  Is there 
+a more recent version or are there some obvious patches I can do.
+
+Regards
+
+Robin
+-- 
+Robin Birch
+
+From grog at lemis.com  Thu Aug 12 09:54:18 2004
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Thu, 12 Aug 2004 09:24:18 +0930
+Subject: [pups] Installing begemot
+In-Reply-To: <xA2QmgAtclGBFwZa@falstaf.demon.co.uk>
+References: <xA2QmgAtclGBFwZa@falstaf.demon.co.uk>
+Message-ID: <20040811235417.GY19643@wantadilla.lemis.com>
+
+On Wednesday, 11 August 2004 at 18:28:13 +0100, Robin Birch wrote:
+> Hi All,
+> Well I know it's been quiet for ages on this but hopefully someone is
+> listening.
+>
+> I've just started to put P11 on a new Linux box and am having problems
+> building begemot.  It keeps blowing out when compiling panic.  Is there
+> a more recent version or are there some obvious patches I can do.
+
+It hasn't been updated in a while IIRC.  What are your error messages?
+
+Greg
+--
+Note: I discard all HTML mail unseen.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040812/d66a20bd/attachment.sig>
+
+From robinb at ruffnready.co.uk  Fri Aug 13 03:49:11 2004
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Thu, 12 Aug 2004 18:49:11 +0100
+Subject: [pups] Installing begemot
+In-Reply-To: <20040811235417.GY19643@wantadilla.lemis.com>
+References: <xA2QmgAtclGBFwZa@falstaf.demon.co.uk>
+ <20040811235417.GY19643@wantadilla.lemis.com>
+Message-ID: <A$osJPBX26GBFws0@falstaf.demon.co.uk>
+
+Greg,
+I've sent you a list of what I get.  I think, from the messages that I 
+am getting the problem is in the various selections in the header file. 
+I got it through by changing the definitions in the .c files.  The 
+compiler doesn't seem to handle variations in the declarations very 
+well.
+
+All,
+I have a different problem as well.  There is something broken in the 
+configuration of this computer!!!!!  If I execute a shell file by going 
+/bin/sh filename then it works ok but if I try running a shell script 
+with #!/bin/sh in the first line I get a bad permission error.  This is 
+preventing me from running make scripts and all sorts of things.  Any 
+ideas?
+
+Robin
+-- 
+Robin Birch
+
+From wkt at tuhs.org  Fri Aug 13 06:39:16 2004
+From: wkt at tuhs.org (Warren Toomey)
+Date: Fri, 13 Aug 2004 06:39:16 +1000
+Subject: [pups] Installing begemot
+In-Reply-To: <A$osJPBX26GBFws0@falstaf.demon.co.uk>
+References: <xA2QmgAtclGBFwZa@falstaf.demon.co.uk>
+	<20040811235417.GY19643@wantadilla.lemis.com>
+	<A$osJPBX26GBFws0@falstaf.demon.co.uk>
+Message-ID: <20040812203916.GA28699@minnie.tuhs.org>
+
+On Thu, Aug 12, 2004 at 06:49:11PM +0100, Robin Birch wrote:
+> I have a different problem as well.  There is something broken in the 
+> configuration of this computer!!!!!  If I execute a shell file by going 
+> /bin/sh filename then it works ok but if I try running a shell script 
+> with #!/bin/sh in the first line I get a bad permission error.  This is 
+> preventing me from running make scripts and all sorts of things.  Any 
+> ideas?
+
+More details please. Which is "this computer"? What OS and version is it
+running? What's your login shell? Is the shell script executable?
+
+	Warren
+
+From robinb at ruffnready.co.uk  Fri Aug 13 06:29:48 2004
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Thu, 12 Aug 2004 21:29:48 +0100
+Subject: [pups] Installing begemot
+In-Reply-To: <411BBDD3.3050400@sun.com>
+References: <xA2QmgAtclGBFwZa@falstaf.demon.co.uk>
+ <20040811235417.GY19643@wantadilla.lemis.com>
+ <A$osJPBX26GBFws0@falstaf.demon.co.uk> <411BBDD3.3050400@sun.com>
+Message-ID: <lIyVkxA8M9GBFwbB@falstaf.demon.co.uk>
+
+In message <411BBDD3.3050400 at sun.com>, Chris Drake <chris.drake at sun.com> 
+writes
+>I'd be interested in seeing your results and final analysis for begemot.
+>I tried (briefly) getting it to run and gave up.  Post 'em!
+>
+>> I have a different problem as well.  There is something broken in the 
+>>configuration of this computer!!!!!  If I execute a shell file by 
+>>going /bin/sh filename then it works ok but if I try running a shell 
+>>script  with #!/bin/sh in the first line I get a bad permission error.
+>
+>Starting with the simplest possibility --  if you run "sh filename", all
+>you need are read permissions on the file.  If you run "filename" with the
+>#!/bin/sh in the first line, the filename itself needs to have execute
+>permissions enabled.
+>
+>Try  chmod a+x filename  and see if that helps.
+>
+>If that's not the issue, then more detail on the error message would be
+>good.  There are tons of different messages and if you don't get the exact
+>right one when you're trying to debug, you can go down lots of wild rat 
+>holes...
+>
+>       - Chris
+>
+Hi Chris,
+The most curious one is a "bad interpreter" one.  This is what I get 
+along with the permissions moan.  But curiously if I run it sh filename 
+then all works.
+
+It is as though there is some global shell permissions set up that is 
+munged.
+
+Robin
+-- 
+Robin Birch
+
+From robinb at ruffnready.co.uk  Fri Aug 13 06:27:41 2004
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Thu, 12 Aug 2004 21:27:41 +0100
+Subject: [pups] Installing begemot
+In-Reply-To: <7AD18F04B62B7440BE22E190A3F772140F6047@mwsrv04.microwalt.nl>
+References: <7AD18F04B62B7440BE22E190A3F772140F6047@mwsrv04.microwalt.nl>
+Message-ID: <rYSWgRA9K9GBFwaT@falstaf.demon.co.uk>
+
+In message 
+<7AD18F04B62B7440BE22E190A3F772140F6047 at mwsrv04.microwalt.nl>, Fred N. 
+van Kempen <Fred.van.Kempen at microwalt.nl> writes
+>> I have a different problem as well.  There is something broken in the
+>> configuration of this computer!!!!!  If I execute a shell
+>> file by going
+>> /bin/sh filename then it works ok but if I try running a shell script
+>> with #!/bin/sh in the first line I get a bad permission
+>> error.  This is
+>> preventing me from running make scripts and all sorts of things.  Any
+>> ideas?
+>Make sure the scripts have mode 0755 (or 0555, or whatever, as
+>long as you have both read AND execute perm on the file...
+>
+>--f
+Done that.  What happens is that sometimes I get a permissions complaint 
+but sometimes I get a "bad interpreter" message.  If I execute the shell 
+with the file name as a parameter then it all works.  I'm stumped.
+
+Robin
+-- 
+Robin Birch
+
+From robinb at ruffnready.co.uk  Fri Aug 13 07:12:07 2004
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Thu, 12 Aug 2004 22:12:07 +0100
+Subject: [pups] Installing begemot
+In-Reply-To: <20040812203916.GA28699@minnie.tuhs.org>
+References: <xA2QmgAtclGBFwZa@falstaf.demon.co.uk>
+ <20040811235417.GY19643@wantadilla.lemis.com>
+ <A$osJPBX26GBFws0@falstaf.demon.co.uk>
+ <20040812203916.GA28699@minnie.tuhs.org>
+Message-ID: <N40fIwBn09GBFwdA@falstaf.demon.co.uk>
+
+In message <20040812203916.GA28699 at minnie.tuhs.org>, Warren Toomey 
+<wkt at tuhs.org> writes
+>On Thu, Aug 12, 2004 at 06:49:11PM +0100, Robin Birch wrote:
+>> I have a different problem as well.  There is something broken in the
+>> configuration of this computer!!!!!  If I execute a shell file by going
+>> /bin/sh filename then it works ok but if I try running a shell script
+>> with #!/bin/sh in the first line I get a bad permission error.  This is
+>> preventing me from running make scripts and all sorts of things.  Any
+>> ideas?
+>
+>More details please. Which is "this computer"? What OS and version is it
+>running? What's your login shell? Is the shell script executable?
+>
+>       Warren
+Hi Warren,
+SuSE Linux Version 8.
+bash shell also tried with tsch
+Shell script permissions 755
+
+I also get a bad interpreter message if I try and exec the scripts.
+
+Cheers
+
+Robin
+>_______________________________________________
+>PUPS mailing list
+>PUPS at minnie.tuhs.org
+>http://minnie.tuhs.org/mailman/listinfo/pups
+
+-- 
+Robin Birch
+
+From robinb at ruffnready.co.uk  Fri Aug 13 07:14:39 2004
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Thu, 12 Aug 2004 22:14:39 +0100
+Subject: [pups] Installing begemot
+In-Reply-To: <411BD929.4080009@sun.com>
+References: <xA2QmgAtclGBFwZa@falstaf.demon.co.uk>
+ <20040811235417.GY19643@wantadilla.lemis.com>
+ <A$osJPBX26GBFws0@falstaf.demon.co.uk> <411BBDD3.3050400@sun.com>
+ <lIyVkxA8M9GBFwbB@falstaf.demon.co.uk> <411BD929.4080009@sun.com>
+Message-ID: <w4iQoNC$29GBFwab@falstaf.demon.co.uk>
+
+In message <411BD929.4080009 at sun.com>, Chris Drake <Chris.Drake at sun.com> 
+writes
+>> The most curious one is a "bad interpreter" one.  This is what I get 
+>>along with the permissions moan.  But curiously if I run it sh 
+>>filename then all works.
+>>  It is as though there is some global shell permissions set up that 
+>>is munged.
+>
+>Hoo, you've got a weirdo, all right.  Darn, I was hoping it was trivial.
+>
+>Bad interpreter: sounds like the first line where you select "the shell"
+>is munched somehow.  Officially, you can select any interpreter you want -
+>but you gotta get the name right.  :)
+>
+>More thoughts:
+>       - any problems with the pathname?  Is it /bin/sh and nothing else?
+>       - check perms on /, /bin, and /bin/sh just in case something got
+>         zapped
+>       - what's your normal shell?  How about it you change /bin/sh to
+>         the thing you run normally?
+>       - does anything follow the "sh" on the line?  Like, perchance any
+>         strange nonprintable chars that might be interpreted as a part
+>         of the name or as a parameter to the shell?
+>       - try #!/bin/sh -x   to see if you get any output from the script
+>         as it's run
+>       - do other scripts like one-liners work OK?  Ie,
+>               #!/bin/sh
+>               echo hello world
+>       - any other messages?
+>
+>Just saw Warren's email, and he has a few good ones as well - like, what are
+>you running on?  :)
+>
+>       - Chris
+>
+Hi Chris,
+See my reply to Warren.  I'll try this all tomorrow, the system is in 
+work.
+
+Cheers
+
+Robin
+-- 
+Robin Birch
+
+From cdl at mpl.ucsd.edu  Fri Aug 13 09:01:22 2004
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Thu, 12 Aug 2004 16:01:22 -0700 (PDT)
+Subject: [pups] Installing begemot
+Message-ID: <200408122301.i7CN1MX01938@opihi.ucsd.edu>
+
+> Date: Thu, 12 Aug 2004 18:49:11 +0100
+> To: "Greg 'groggy' Lehey" <grog at lemis.com>
+> From: Robin Birch <robinb at ruffnready.co.uk>
+> Subject: Re: [pups] Installing begemot
+
+> I have a different problem as well.  There is something broken in the 
+> configuration of this computer!!!!!  If I execute a shell file by going 
+> /bin/sh filename then it works ok but if I try running a shell script 
+> with #!/bin/sh in the first line I get a bad permission error.  This is 
+> preventing me from running make scripts and all sorts of things.  Any 
+> ideas?
+
+Yes.  See the following transcript of a session.  I created a small
+script named "bad" which just does "date" to show that it worked.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+iota: try 1107$ ls -l bad
+-rwxrwxr-x  1 cdl cdl 16 Aug 12 15:56 bad*
+iota: try 1108$ /bin/sh bad
+Thu Aug 12 15:57:37 PDT 2004
+iota: try 1109$ ./bad
+: bad interpreter: No such file or directory
+iota: try 1110$ cat bad
+#!/bin/sh
+date
+iota: try 1111$ od -c bad
+0000000   #   !   /   b   i   n   /   s   h  \r  \n   d   a   t   e  \n
+0000020
+iota: try 1112$
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Note that there is a '\r' character at the end of the #! line.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+
+From sms at 2BSD.COM  Fri Aug 13 09:29:51 2004
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Thu, 12 Aug 2004 16:29:51 -0700 (PDT)
+Subject: [pups] Installing begemot
+In-Reply-To: <200408122301.i7CN1MX01938@opihi.ucsd.edu>
+Message-ID: <Pine.BSI.4.05L.10408121627090.18049-100000@moe.2bsd.com>
+
+
+On Thu, 12 Aug 2004, Carl Lowenstein wrote:
+
+> iota: try 1109$ ./bad
+> : bad interpreter: No such file or directory
+> iota: try 1110$ cat bad
+> #!/bin/sh
+> date
+> iota: try 1111$ od -c bad
+> 0000000   #   !   /   b   i   n   /   s   h  \r  \n   d   a   t   e  \n
+> 0000020
+> iota: try 1112$
+> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+> 
+> Note that there is a '\r' character at the end of the #! line.
+
+	And that's the cause of the problem.  The kernel is scanning for
+	'\n' and when it finds the (unix) end-of-line character it then
+	tries to exec the program "/bin/sh\r" and fails.
+
+	Was the original script created on a windoze box perhaps?  Or was
+	a different method of getting a \r  used? :)
+
+	Cheers,
+	Steven Schultz
+
+
+From robinb at ruffnready.co.uk  Fri Aug 13 17:15:51 2004
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Fri, 13 Aug 2004 08:15:51 +0100
+Subject: [pups] Installing begemot
+In-Reply-To: <200408122301.i7CN1MX01938@opihi.ucsd.edu>
+References: <200408122301.i7CN1MX01938@opihi.ucsd.edu>
+Message-ID: <eDFrWEBnqGHBFwlB@falstaf.demon.co.uk>
+
+In message <200408122301.i7CN1MX01938 at opihi.ucsd.edu>, Carl Lowenstein 
+<cdl at mpl.ucsd.edu> writes
+>> Date: Thu, 12 Aug 2004 18:49:11 +0100
+>> To: "Greg 'groggy' Lehey" <grog at lemis.com>
+>> From: Robin Birch <robinb at ruffnready.co.uk>
+>> Subject: Re: [pups] Installing begemot
+>
+>> I have a different problem as well.  There is something broken in the
+>> configuration of this computer!!!!!  If I execute a shell file by going
+>> /bin/sh filename then it works ok but if I try running a shell script
+>> with #!/bin/sh in the first line I get a bad permission error.  This is
+>> preventing me from running make scripts and all sorts of things.  Any
+>> ideas?
+>
+>Yes.  See the following transcript of a session.  I created a small
+>script named "bad" which just does "date" to show that it worked.
+>- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+>iota: try 1107$ ls -l bad
+>-rwxrwxr-x  1 cdl cdl 16 Aug 12 15:56 bad*
+>iota: try 1108$ /bin/sh bad
+>Thu Aug 12 15:57:37 PDT 2004
+>iota: try 1109$ ./bad
+>: bad interpreter: No such file or directory
+>iota: try 1110$ cat bad
+>#!/bin/sh
+>date
+>iota: try 1111$ od -c bad
+>0000000   #   !   /   b   i   n   /   s   h  \r  \n   d   a   t   e  \n
+>0000020
+>iota: try 1112$
+>- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+>
+>Note that there is a '\r' character at the end of the #! line.
+>
+>    carl
+Ahhhhhhhhhhhh :-)
+
+Well done, I'll try sorting this out at work.  I feel like a bulk tr 
+script coming on.
+
+Robin
+-- 
+Robin Birch
+
+From robinb at ruffnready.co.uk  Fri Aug 13 17:19:15 2004
+From: robinb at ruffnready.co.uk (Robin Birch)
+Date: Fri, 13 Aug 2004 08:19:15 +0100
+Subject: [pups] Installing begemot
+In-Reply-To: <Pine.BSI.4.05L.10408121627090.18049-100000@moe.2bsd.com>
+References: <200408122301.i7CN1MX01938@opihi.ucsd.edu>
+ <Pine.BSI.4.05L.10408121627090.18049-100000@moe.2bsd.com>
+Message-ID: <RDwoGlBztGHBFwFC@falstaf.demon.co.uk>
+
+In message <Pine.BSI.4.05L.10408121627090.18049-100000 at moe.2bsd.com>, 
+Steven M. Schultz <sms at 2BSD.COM> writes
+>
+>On Thu, 12 Aug 2004, Carl Lowenstein wrote:
+>
+>> iota: try 1109$ ./bad
+>> : bad interpreter: No such file or directory
+>> iota: try 1110$ cat bad
+>> #!/bin/sh
+>> date
+>> iota: try 1111$ od -c bad
+>> 0000000   #   !   /   b   i   n   /   s   h  \r  \n   d   a   t   e  \n
+>> 0000020
+>> iota: try 1112$
+>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+>>
+>> Note that there is a '\r' character at the end of the #! line.
+>
+>       And that's the cause of the problem.  The kernel is scanning for
+>       '\n' and when it finds the (unix) end-of-line character it then
+>       tries to exec the program "/bin/sh\r" and fails.
+>
+>       Was the original script created on a windoze box perhaps?  Or was
+>       a different method of getting a \r  used? :)
+>
+>       Cheers,
+>       Steven Schultz
+>
+Hi Steve,
+Long time no chat.
+
+The scripts were tar'd off a Mandrake linux system then untar'd on a 
+SuSE system.  Something has got munged in the process I guess.
+
+What I'll do is a make really clean and then tr the whole thing to add 
+\n instead of \r and start again.
+
+Cheers
+
+Robin
+>_______________________________________________
+>PUPS mailing list
+>PUPS at minnie.tuhs.org
+>http://minnie.tuhs.org/mailman/listinfo/pups
+
+-- 
+Robin Birch
+
+From grog at lemis.com  Fri Aug 13 17:33:57 2004
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Fri, 13 Aug 2004 17:03:57 +0930
+Subject: [pups] Installing begemot
+In-Reply-To: <RDwoGlBztGHBFwFC@falstaf.demon.co.uk>
+References: <200408122301.i7CN1MX01938@opihi.ucsd.edu>
+	<Pine.BSI.4.05L.10408121627090.18049-100000@moe.2bsd.com>
+	<RDwoGlBztGHBFwFC@falstaf.demon.co.uk>
+Message-ID: <20040813073357.GW19643@wantadilla.lemis.com>
+
+On Friday, 13 August 2004 at  8:19:15 +0100, Robin Birch wrote:
+> In message <Pine.BSI.4.05L.10408121627090.18049-100000 at moe.2bsd.com>,
+> Steven M. Schultz <sms at 2BSD.COM> writes
+>>
+>> On Thu, 12 Aug 2004, Carl Lowenstein wrote:
+>>
+>>> iota: try 1109$ ./bad
+>>> : bad interpreter: No such file or directory
+>>> iota: try 1110$ cat bad
+>>> #!/bin/sh
+>>> date
+>>> iota: try 1111$ od -c bad
+>>> 0000000   #   !   /   b   i   n   /   s   h  \r  \n   d   a   t   e  \n
+>>> 0000020
+>>> iota: try 1112$
+>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+>>>
+>>> Note that there is a '\r' character at the end of the #! line.
+>>
+>>      And that's the cause of the problem.  The kernel is scanning for
+>>      '\n' and when it finds the (unix) end-of-line character it then
+>>      tries to exec the program "/bin/sh\r" and fails.
+>>
+>>      Was the original script created on a windoze box perhaps?  Or was
+>>      a different method of getting a \r  used? :)
+>>
+>>      Cheers,
+>>      Steven Schultz
+>>
+> Hi Steve,
+> Long time no chat.
+>
+> The scripts were tar'd off a Mandrake linux system then untar'd on a
+> SuSE system.  Something has got munged in the process I guess.
+>
+> What I'll do is a make really clean and then tr the whole thing to add
+> \n instead of \r and start again.
+
+Judging by the above, you want to remove the \r, not change them to
+\n.
+
+Greg
+--
+Note: I discard all HTML mail unseen.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040813/cdf6887b/attachment.sig>
+
+From robinb at ruffnready.co.uk  Fri Aug 13 20:33:23 2004
+From: robinb at ruffnready.co.uk (robinb at ruffnready.co.uk)
+Date: Fri, 13 Aug 2004 11:33:23 +0100
+Subject: [pups] Installing begemot
+In-Reply-To: <20040813073357.GW19643@wantadilla.lemis.com>
+Message-ID: <E1BvZND-000C9v-0b@anchor-post-37.mail.demon.net>
+
+grog at lemis.com wrote:
+> On Friday, 13 August 2004 at  8:19:15 +0100, Robin Birch wrote:
+> > In message <Pine.BSI.4.05L.10408121627090.18049-100000 at moe.2bsd.com>,
+> > Steven M. Schultz <sms at 2BSD.COM> writes
+> >>
+> >> On Thu, 12 Aug 2004, Carl Lowenstein wrote:
+> >>
+> >>> iota: try 1109$ ./bad
+> >>> : bad interpreter: No such file or directory
+> >>> iota: try 1110$ cat bad
+> >>> #!/bin/sh
+> >>> date
+> >>> iota: try 1111$ od -c bad
+> >>> 0000000   #   !   /   b   i   n   /   s   h  r  n   d   a   t   e  n
+> >>> 0000020
+> >>> iota: try 1112$
+> >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+> >>>
+> >>> Note that there is a 'r' character at the end of the #! line.
+> >>
+> >>      And that's the cause of the problem.  The kernel is scanning for
+> >>      'n' and when it finds the (unix) end-of-line character it then
+> >>      tries to exec the program "/bin/shr" and fails.
+> >>
+> >>      Was the original script created on a windoze box perhaps?  Or was
+> >>      a different method of getting a r  used? :)
+> >>
+> >>      Cheers,
+> >>      Steven Schultz
+> >>
+> > Hi Steve,
+> > Long time no chat.
+> >
+> > The scripts were tar'd off a Mandrake linux system then untar'd on a
+> > SuSE system.  Something has got munged in the process I guess.
+> >
+> > What I'll do is a make really clean and then tr the whole thing to add
+> > n instead of r and start again.
+> Judging by the above, you want to remove the r, not change them to
+> n.
+> Greg
+In case the first reply didn't get there, I am having difficulties everywhere at the moemnt :-((((
+
+It is more complicated than just the /r.  I've checked the scripts and they are quite legal.  I can run them from my home directory but not from the directory I am using to build the packages in.  This is the same for the distributed scripts and any that I write.  The package directory is on a separate device fom the home directories and all of the directories above the packages one are set 777.
+
+I'm now positively confused!!!!!
+
+Robin
+> --
+> Note: I discard all HTML mail unseen.
+> Finger grog at lemis.com for PGP public key.
+> See complete headers for address and phone numbers.
+> 
+
+
+From robinb at falstaf.demon.co.uk  Fri Aug 13 20:29:32 2004
+From: robinb at falstaf.demon.co.uk (robinb at falstaf.demon.co.uk)
+Date: Fri, 13 Aug 2004 11:29:32 +0100
+Subject: [pups] Installing begemot
+In-Reply-To: <20040813073357.GW19643@wantadilla.lemis.com>
+Message-ID: <E1BvZJU-0006tA-0X@anchor-post-33.mail.demon.net>
+
+grog at lemis.com wrote:
+> On Friday, 13 August 2004 at  8:19:15 +0100, Robin Birch wrote:
+> > In message <Pine.BSI.4.05L.10408121627090.18049-100000 at moe.2bsd.com>,
+> > Steven M. Schultz <sms at 2BSD.COM> writes
+> >>
+> >> On Thu, 12 Aug 2004, Carl Lowenstein wrote:
+> >>
+> >>> iota: try 1109$ ./bad
+> >>> : bad interpreter: No such file or directory
+> >>> iota: try 1110$ cat bad
+> >>> #!/bin/sh
+> >>> date
+> >>> iota: try 1111$ od -c bad
+> >>> 0000000   #   !   /   b   i   n   /   s   h  r  n   d   a   t   e  n
+> >>> 0000020
+> >>> iota: try 1112$
+> >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+> >>>
+> >>> Note that there is a 'r' character at the end of the #! line.
+> >>
+> >>      And that's the cause of the problem.  The kernel is scanning for
+> >>      'n' and when it finds the (unix) end-of-line character it then
+> >>      tries to exec the program "/bin/shr" and fails.
+> >>
+> >>      Was the original script created on a windoze box perhaps?  Or was
+> >>      a different method of getting a r  used? :)
+> >>
+> >>      Cheers,
+> >>      Steven Schultz
+> >>
+> > Hi Steve,
+> > Long time no chat.
+> >
+> > The scripts were tar'd off a Mandrake linux system then untar'd on a
+> > SuSE system.  Something has got munged in the process I guess.
+> >
+> > What I'll do is a make really clean and then tr the whole thing to add
+> > n instead of r and start again.
+> Judging by the above, you want to remove the r, not change them to
+> n.
+> Greg
+It's more complicated than that.  The issue isn't to do with /r, I've checked all that, it's to do with permissions.  If I execute the script in my home directory it runs fine, if I execute it in the directory I am intending to use for building packages on it blows out.  This happens whenther I use the scripts from the package or write my own.  I have all of the directories above this set to 777, right up to wherre I have the device mounted.  It is on a separate device.
+
+I am now well confused!!!!!!
+
+Robin
+> --
+> Note: I discard all HTML mail unseen.
+> Finger grog at lemis.com for PGP public key.
+> See complete headers for address and phone numbers.
+> 
+
+
+From bill at cs.uofs.edu  Fri Aug 13 22:36:23 2004
+From: bill at cs.uofs.edu (Bill Gunshannon)
+Date: Fri, 13 Aug 2004 08:36:23 -0400 (EDT)
+Subject: [pups] Installing begemot
+In-Reply-To: <E1BvZJU-0006tA-0X@anchor-post-33.mail.demon.net>
+Message-ID: <20040813083349.Q1698-100000@server2.cs.uofs.edu>
+
+On Fri, 13 Aug 2004 robinb at falstaf.demon.co.uk wrote:
+
+> grog at lemis.com wrote:
+>
+> It's more complicated than that.  The issue isn't to do with /r, I've
+> checked all that, it's to do with permissions.  If I execute the script
+> in my home directory it runs fine, if I execute it in the directory
+> I am intending to use for building packages on it blows out.  This
+> happens whenther I use the scripts from the package or write my own.
+> I have all of the directories above this set to 777, right up to
+> wherre I have the device mounted.  It is on a separate device.
+>
+> I am now well confused!!!!!!
+
+I think Linux supports "no_exec" on mounted partitions.  Check to see
+if you have accidentally included this option in your mount.
+
+bill
+
+
+-- 
+Bill Gunshannon          |  de-moc-ra-cy (di mok' ra see) n.  Three wolves
+bill at cs.scranton.edu     |  and a sheep voting on what's for dinner.
+University of Scranton   |
+Scranton, Pennsylvania   |         #include <std.disclaimer.h>
+
+
+From robinb at ruffnready.co.uk  Sat Aug 14 01:17:44 2004
+From: robinb at ruffnready.co.uk (robinb at ruffnready.co.uk)
+Date: Fri, 13 Aug 2004 16:17:44 +0100
+Subject: [pups] installing begemot etc
+Message-ID: <E1BvdoO-000M0f-0U@anchor-post-30.mail.demon.net>
+
+Ok Guys,
+I humbly apologise for not working this out from day one :-)
+
+The problem was that I'd mounted the device after fstab from the desktop and SuSE in this configuration appears to prevent shell scripts from being fired off.  If I mount everything in fstab at boot time then it all works.
+
+Don't know whether this is a general SuSE thing or whether it is just a "feature" of the version that I'm running (8.2).
+
+Well, you live and learn don't you :-)
+
+Chears and thanks for all of the advice, through which I learn't stuff so it wasn't all that bad.
+
+Robin
+
+
+From asmodai at ao.mine.nu  Fri Aug 13 09:46:00 2004
+From: asmodai at ao.mine.nu (Paul Ward)
+Date: Fri, 13 Aug 2004 00:46:00 +0100
+Subject: [pups] Installing begemot
+In-Reply-To: <200408122301.i7CN1MX01938@opihi.ucsd.edu>
+References: <200408122301.i7CN1MX01938@opihi.ucsd.edu>
+Message-ID: <200408130046.38979.asmodai@ao.mine.nu>
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+On Friday 13 August 2004 00:01, Carl Lowenstein wrote:
+> > Date: Thu, 12 Aug 2004 18:49:11 +0100
+> > To: "Greg 'groggy' Lehey" <grog at lemis.com>
+> > From: Robin Birch <robinb at ruffnready.co.uk>
+> > Subject: Re: [pups] Installing begemot
+> >
+> > I have a different problem as well.  There is something broken in the
+> > configuration of this computer!!!!!  If I execute a shell file by going
+> > /bin/sh filename then it works ok but if I try running a shell script
+> > with #!/bin/sh in the first line I get a bad permission error.  This is
+> > preventing me from running make scripts and all sorts of things.  Any
+> > ideas?
+>
+> Yes.  See the following transcript of a session.  I created a small
+> script named "bad" which just does "date" to show that it worked.
+> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+> iota: try 1107$ ls -l bad
+> -rwxrwxr-x  1 cdl cdl 16 Aug 12 15:56 bad*
+> iota: try 1108$ /bin/sh bad
+> Thu Aug 12 15:57:37 PDT 2004
+> iota: try 1109$ ./bad
+>
+> : bad interpreter: No such file or directory
+>
+> iota: try 1110$ cat bad
+> #!/bin/sh
+> date
+> iota: try 1111$ od -c bad
+> 0000000   #   !   /   b   i   n   /   s   h  \r  \n   d   a   t   e  \n
+> 0000020
+> iota: try 1112$
+> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+>
+> Note that there is a '\r' character at the end of the #! line.
+>
+>     carl
+
+The problem is often more simple than that, especially with Linux.
+Take a look inside /etc/fstab.
+
+if you see "noexec" in any of the mountpoint options, that'll be why you're 
+getting the "bad interpreter" responses.
+
+Removal of the offending option will probably fix the problem :)
+
+- -- 
+Best regards,
+ Paul                            mailto:asmodai at ao.mine.nu
+ http://ao.mine.nu/   (NeXTmail) mailto:nextmail at ao.mine.nu
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQFBHAFcrImhuhEwHs4RAremAJ9BDGWkljOI/YHi3f//Jc+4Mi/P3QCgpzZa
+ls0hupO+XT2h8rXP4/HSXvY=
+=65n2
+-----END PGP SIGNATURE-----
+
+From slapin at drevlanka.ru  Mon Aug  9 21:22:28 2004
+From: slapin at drevlanka.ru (Sergey Lapin)
+Date: Mon, 9 Aug 2004 15:22:28 +0400 (MSD)
+Subject: [TUHS] Emulators
+Message-ID: <Pine.LNX.4.44.0408091509560.27583-100000@cl.drevlanka.ru>
+
+Hi all!!!
+
+While educating people some unix stuff (at time, spare from work as 
+admin), I have a need for making some simple UNIX-like  environment for 
+people to try to type some simple commands. Now I need to make it possible 
+to do it remotely. Are there any emulators, that are capable to run V5/6/7 
+or (better) 4.2BSD, and accessible by telnet or something like that?
+Additional thing I need is vi, any emulator that is capable of
+running vi could make me happy!!! 
+
+Emulation is needed because of unlimited virtualization possibility, 
+unlimited variation of configurations, and, of course, zero time for 
+recover after root errors. simh runs fast 60 instances on P233.
+
+But now I need vi :(
+
+Thanks a lot!
+
+S.
+
+
+
+From jrvalverde at cnb.uam.es  Mon Aug  9 23:16:43 2004
+From: jrvalverde at cnb.uam.es (=?ISO-8859-15?Q?Jos=E9?= R. Valverde)
+Date: Mon, 9 Aug 2004 15:16:43 +0200
+Subject: [TUHS] Emulators
+In-Reply-To: <Pine.LNX.4.44.0408091509560.27583-100000@cl.drevlanka.ru>
+References: <Pine.LNX.4.44.0408091509560.27583-100000@cl.drevlanka.ru>
+Message-ID: <20040809151643.0b5707ea.jrvalverde@cnb.uam.es>
+
+On Mon, 9 Aug 2004 15:22:28 +0400 (MSD)
+Sergey Lapin <slapin at drevlanka.ru> wrote:
+> Hi all!!!
+> 
+> While educating people some unix stuff (at time, spare from work as 
+> admin), I have a need for making some simple UNIX-like  environment for 
+> people to try to type some simple commands. Now I need to make it possible 
+> to do it remotely. Are there any emulators, that are capable to run V5/6/7 
+> or (better) 4.2BSD, and accessible by telnet or something like that?
+> Additional thing I need is vi, any emulator that is capable of
+> running vi could make me happy!!! 
+> 
+I think you can do this with SIMH. Various scenarios come to mind:
+UNIX v5/6/7
+	AFAIK you don't have support for IP on these by default, hence
+
+	- separate instances for each user: this requires multiplying
+the UNIX disks for each user, hence requires more space. OTOH, starting
+the system reduces to writing a script to start simh and calling it
+from the login script
+
+	- many users sharing the same instance: there's only one copy of
+the system and everybody logs-in on it, saves space, but takes more work.
+You can set up simh to attach a number of serial lines to telnet ports
+and ask people to telnet to those ports. This is akin to coming into a
+computer room and looking for a free terminal (only you can't see until
+you try). This may be enhanced substituting the login script of a normal
+account by a new one that tries the ports in turn looking for a free one
+automatically.
+
+4.x BSD, ULTRIX 3.1, 2.11bsd
+	I've been able to run 4.3 from TUHS images without any problem.
+I configured the network following the standard procedures and using a
+valid IP, and it works as a standalone machines allowing incoming/outgoing
+IP connections. No problem here.
+
+> Emulation is needed because of unlimited virtualization possibility, 
+> unlimited variation of configurations, and, of course, zero time for 
+> recover after root errors. simh runs fast 60 instances on P233.
+> 
+> But now I need vi :(
+> 
+
+That's a toughie. VI is big and demands a lot from the system (on ancient
+machines). You'll need to configure them with extra memory.. It does not
+depend on the emulator itself, mind you, but on the operating system 
+providing the required support libraries. 
+
+There are small-footprint editors around, but most I found require curses
+so you'd need to port curses back to these ancient systems.
+
+There is a simplistic vi-clone called s whose source code appeared in "A 
+Software Tools Sampler", by Web Miller. You can get the sources from his
+site
+	http://globin.cse.psu.edu/globin/html/software.html
+
+The book says it worked on 4.x BSD. I was back-porting it to V7 just
+before holidays but found some problems and left it until I find more
+spare time to work on it.
+
+If you can get it to work or find another one that works, let us know, I
+for one would welcome it.
+
+				j
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+
+From newsham at lava.net  Tue Aug 10 05:11:01 2004
+From: newsham at lava.net (Tim Newsham)
+Date: Mon, 9 Aug 2004 09:11:01 -1000 (HST)
+Subject: [TUHS] Emulators
+In-Reply-To: <20040809151643.0b5707ea.jrvalverde@cnb.uam.es>
+References: <Pine.LNX.4.44.0408091509560.27583-100000@cl.drevlanka.ru>
+ <20040809151643.0b5707ea.jrvalverde@cnb.uam.es>
+Message-ID: <Pine.BSI.4.58.0408090907030.23447@malasada.lava.net>
+
+> > to do it remotely. Are there any emulators, that are capable to run V5/6/7
+> > or (better) 4.2BSD, and accessible by telnet or something like that?
+
+As was pointed out, you dont get tcp/ip with v5/6/7.
+4.2BSD does not run on the simh hardware, although you can
+get quasijarus (4.3BSD) to run.
+
+> > Additional thing I need is vi, any emulator that is capable of
+> > running vi could make me happy!!!
+
+You can run vi in quasijarus.
+
+> 	- many users sharing the same instance: there's only one copy of
+> the system and everybody logs-in on it, saves space, but takes more work.
+
+You can't do this with v5/v6/v7 (at least with the pdp-11) since they
+dont support the multi-serial card that simh emulates.  You only
+get the console (which you can access over telnet if you configure
+it so).
+
+I don't remember if you can use the interdata32 port with multiple
+ttys.
+
+You can do this in quasijarus just fine, or even just run telnetd
+on the emulated system itself.
+
+Tim N.
+
+From wkt at tuhs.org  Tue Aug 10 09:20:10 2004
+From: wkt at tuhs.org (Warren Toomey)
+Date: Tue, 10 Aug 2004 09:20:10 +1000
+Subject: [TUHS] Emulators
+In-Reply-To: <Pine.LNX.4.44.0408091509560.27583-100000@cl.drevlanka.ru>
+References: <Pine.LNX.4.44.0408091509560.27583-100000@cl.drevlanka.ru>
+Message-ID: <20040809232010.GA60336@minnie.tuhs.org>
+
+On Mon, Aug 09, 2004 at 03:22:28PM +0400, Sergey Lapin wrote:
+> Emulation is needed because of unlimited virtualization possibility, 
+> unlimited variation of configurations, and, of course, zero time for 
+> recover after root errors. simh runs fast 60 instances on P233.
+> But now I need vi :(
+
+You can build my Apout emulator to run 2.11BSD binaries. Then write a
+front-end .profile shell script to invoke/exec Apout at login time. The
+nice thing with Apout is that there is zero CPU usage unless you are
+actually running commands.
+
+http://www.tuhs.org/Archive/PDP-11/Emulators/Apout/
+
+	Warren
+
+From slapin at drevlanka.ru  Tue Aug 10 21:07:10 2004
+From: slapin at drevlanka.ru (Sergey Lapin)
+Date: Tue, 10 Aug 2004 15:07:10 +0400 (MSD)
+Subject: [TUHS] Emulators
+In-Reply-To: <Pine.BSI.4.58.0408090907030.23447@malasada.lava.net>
+Message-ID: <Pine.LNX.4.44.0408101451330.2653-100000@cl.drevlanka.ru>
+
+On Mon, 9 Aug 2004, Tim Newsham wrote:
+
+> > > to do it remotely. Are there any emulators, that are capable to run V5/6/7
+> > > or (better) 4.2BSD, and accessible by telnet or something like that?
+> 
+> As was pointed out, you dont get tcp/ip with v5/6/7.
+> 4.2BSD does not run on the simh hardware, although you can
+> get quasijarus (4.3BSD) to run.
+I've got Quasijarus up and running on simh and experimented a lot with it.
+Got some fun with learn(1) program, while ex lessons are quite nasty at 
+end :)
+
+Well, but it is quite a resource hog comparing to V7.
+So there are questions: is there vi for V7? I heard 1BSD, as set of 
+patches/software for V7, contains one, but I might be wrong...
+Also, as for simh and Quasijarus:
+Is it possible to run simh using tap or other virtual interface to forward 
+some 
+ports to Quazijarus's services?
+The machine, I'll host this stuff on will be on colocation and policy 
+there is no MAC address changes and no promisceous mode interfaces and no 
+additional ethernet cards...
+
+If that will work, I'll go write socket redirector program (to get free 
+consoles from one port using simh) :)
+
+Also are there any ppp/slip software for V7 and 4.3BSD?
+This way a problem could be solved other way around...
+
+> 
+> > > Additional thing I need is vi, any emulator that is capable of
+> > > running vi could make me happy!!!
+> 
+> You can run vi in quasijarus.
+The best could be have vi under V7 also.
+
+> 
+> > 	- many users sharing the same instance: there's only one copy of
+> > the system and everybody logs-in on it, saves space, but takes more work.
+> 
+> You can't do this with v5/v6/v7 (at least with the pdp-11) since they
+> dont support the multi-serial card that simh emulates.  You only
+> get the console (which you can access over telnet if you configure
+> it so).
+Does V7 support several serial lines to put getty on? Does simh provide 
+such a hardware for it?
+
+
+> 
+> I don't remember if you can use the interdata32 port with multiple
+> ttys.
+Will check that soon.
+
+> 
+> You can do this in quasijarus just fine, or even just run telnetd
+> on the emulated system itself.
+I can't have dedicated ethernet card for it :(
+
+Thanks a lot!!!
+
+S.
+
+
+
+From slapin at drevlanka.ru  Tue Aug 10 22:17:08 2004
+From: slapin at drevlanka.ru (Sergey Lapin)
+Date: Tue, 10 Aug 2004 16:17:08 +0400 (MSD)
+Subject: [TUHS] V7 and TCP/IP
+Message-ID: <Pine.LNX.4.44.0408101614420.2653-100000@cl.drevlanka.ru>
+
+Hi, all!!!
+Just lazy interest:
+Was there some TCP/IP implementations for V7, that could be found
+now?
+
+All the best,
+S.
+
+
+
+From newsham at lava.net  Wed Aug 11 04:52:36 2004
+From: newsham at lava.net (Tim Newsham)
+Date: Tue, 10 Aug 2004 08:52:36 -1000 (HST)
+Subject: [TUHS] Emulators
+In-Reply-To: <Pine.LNX.4.44.0408101451330.2653-100000@cl.drevlanka.ru>
+References: <Pine.LNX.4.44.0408101451330.2653-100000@cl.drevlanka.ru>
+Message-ID: <Pine.BSI.4.58.0408100849360.23447@malasada.lava.net>
+
+> Is it possible to run simh using tap or other virtual interface to forward
+> some
+> ports to Quazijarus's services?
+> The machine, I'll host this stuff on will be on colocation and policy
+> there is no MAC address changes and no promisceous mode interfaces and no
+> additional ethernet cards...
+
+I'm betting the changes wouldn't be that hard.  /dev/tun is really
+easy to use, and should only involve a few lines of change.
+
+If you don't really need networking, but just want remote access,
+you can set simh up to have multiple tty's that use listening
+sockets on the local machine.  Then people can telnet in to the
+machine, but will reach a tty instead of a telnetd/pty.  Of course
+there would be no outgoing traffic allowed.
+
+Tim N.
+
+From slapin at drevlanka.ru  Wed Aug 11 20:26:51 2004
+From: slapin at drevlanka.ru (Sergey Lapin)
+Date: Wed, 11 Aug 2004 14:26:51 +0400 (MSD)
+Subject: [TUHS] simh+Quasijarus success
+Message-ID: <Pine.LNX.4.44.0408111416510.6443-100000@cl.drevlanka.ru>
+
+Hi, all!!!
+Still trying to implement multi-user unix-learning environment.
+
+So, I run simh with Quasijarus, when I telnet to port, that is redirected 
+from serial, it automatically picks up unused line, that is fine, and 
+eleminates a need for reconfiguration.
+
+But there is something interesting: I want to implement possibility to 
+allow outgoing connections from emulated VAX. As I understand, 4.3BSD  
+supports SLIP protocol. And I can get SLIP working through emulated serial 
+line. So, the problem is:
+
+1. How it was used to setup SLIP lines in 4.3BSD? :)
+2. The other end - will slirp package work in such case?
+
+All the best, and thanks for all help,
+
+S.
+
+
+From jrvalverde at cnb.uam.es  Wed Aug 11 21:15:33 2004
+From: jrvalverde at cnb.uam.es (=?ISO-8859-15?Q?Jos=E9?= R. Valverde)
+Date: Wed, 11 Aug 2004 13:15:33 +0200
+Subject: [TUHS] simh+Quasijarus success
+In-Reply-To: <Pine.LNX.4.44.0408111416510.6443-100000@cl.drevlanka.ru>
+References: <Pine.LNX.4.44.0408111416510.6443-100000@cl.drevlanka.ru>
+Message-ID: <20040811131533.2d8de811.jrvalverde@cnb.uam.es>
+
+On Wed, 11 Aug 2004 14:26:51 +0400 (MSD)
+Sergey Lapin <slapin at drevlanka.ru> wrote:
+ething interesting: I want to implement possibility to 
+> allow outgoing connections from emulated VAX. As I understand, 4.3BSD  
+> supports SLIP protocol. And I can get SLIP working through emulated serial 
+>
+Again, you don't need to. Just configure IP as usual using an emulated
+Ethernet card. E.g. add to the SIMH configuration:
+
+set xq mac=01-02-03-04-05-06
+at xq0 eth0
+
+Then boot as usual. When the system comes up, it will recognize an ethernet
+card that you can configure as you want. E.g. on boot a message
+
+qe0: delqa, hardware address 01:02:03:04:05:06
+
+will appear in the system log, and you can use a /etc/netstart script like
+the one that follows to configure the net:
+
+- ------------------------- 8< cut here 8< -----------------------
+#!/bin/sh -
+#
+#       @(#)netstart    1.1 (Berkeley) 1/10/99
+
+routedflags=-q
+rwhod=NO
+
+# myname is my symbolic name
+# my-netmask is specified in /etc/networks
+#
+#hostname=myname.my.domain
+hostname=quasijarus.drevlanka.ru# should be the actual internet name of the emulated machine
+mynetmask=81.211.111.250	# should be an actual valid IP address
+mygateway=81.211.111.1		# should be the real IP of the gateway you use
+
+hostname $hostname
+
+ifconfig imp0 inet $hostname
+ifconfig de0 inet $hostname netmask $mynetmask
+ifconfig qe0 inet $hostname netmask $mynetmask
+ifconfig lo0  inet localhost
+route add $hostname localhost 0
+hostid $hostname
+route add default $mygateway 0
+- ------------------------- 8< cut here 8< -----------------------
+
+That should do the trick: now if you have a valid spare IP address to assign
+the emulated machine, and use it above, your emulated system will behave like
+any other Internet host.
+
+Oh, and of course you will want to have a valid /etc/resolv.conf file so
+users in the emulated host can resolve names,like e.g.
+
+domain drevlanka.ru
+nameserver 195.161.9.196
+nameserver 81.211.111.254
+
+See the manual and FAQ for SIMH for more details on what's going on and other
+possible alternatives.
+
+The same goes for 2.11BSD, which takes half the amount of space that 4.3BSD
+does, and ultrix-3.1 which takes even less yet. E.g. from my setups here:
+
+# du -sk 2.11bsd 4.4bsd ultrix-3.1
+325328  2.11bsd
+608952  4.3bsd
+20524   ultrix-3.1
+
+Which is to say, may be you will be better off using Ultrix-3.1, which BTW
+also includes vi, more and much more... In this case just edit the /etc/rc
+file to set the appropriate parameters to ifconfig and default route.
+
+				j
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+
+From slapin at drevlanka.ru  Wed Aug 11 21:34:49 2004
+From: slapin at drevlanka.ru (Sergey Lapin)
+Date: Wed, 11 Aug 2004 15:34:49 +0400 (MSD)
+Subject: [TUHS] simh+Quasijarus success
+In-Reply-To: <20040811131533.2d8de811.jrvalverde@cnb.uam.es>
+Message-ID: <Pine.LNX.4.44.0408111526180.6443-100000@cl.drevlanka.ru>
+
+On Wed, 11 Aug 2004, [ISO-8859-15] JosИ R. Valverde wrote:
+
+> On Wed, 11 Aug 2004 14:26:51 +0400 (MSD)
+> Sergey Lapin <slapin at drevlanka.ru> wrote:
+> ething interesting: I want to implement possibility to 
+> > allow outgoing connections from emulated VAX. As I understand, 4.3BSD  
+> > supports SLIP protocol. And I can get SLIP working through emulated serial 
+> >
+> Again, you don't need to. Just configure IP as usual using an emulated
+> Ethernet card. E.g. add to the SIMH configuration:
+> 
+> set xq mac=01-02-03-04-05-06
+> at xq0 eth0
+> 
+> Then boot as usual. When the system comes up, it will recognize an ethernet
+> card that you can configure as you want. E.g. on boot a message
+> 
+> qe0: delqa, hardware address 01:02:03:04:05:06
+> 
+> will appear in the system log, and you can use a /etc/netstart script like
+> the one that follows to configure the net:
+[skip]
+
+I have no SPARE address. And this thing entirely should be avoided there 
+for 2 reasons
+1. This is colocated host, ISP has a policy on no MAC address/IP address 
+tweaking. Non-standard services are too expensive and should be avoided at 
+all costs.
+
+2. This is not dedicated box, hosting email services and www. Not loaded, 
+but critical in sence, that services should work.
+
+> # du -sk 2.11bsd 4.4bsd ultrix-3.1
+> 325328  2.11bsd
+> 608952  4.3bsd
+> 20524   ultrix-3.1
+> 
+> Which is to say, may be you will be better off using Ultrix-3.1, which BTW
+> also includes vi, more and much more... In this case just edit the /etc/rc
+> file to set the appropriate parameters to ifconfig and default route.
+
+I think about emulating all these systems because of educational nature of 
+the project.., Also, maybe free shells for people :)
+
+S.
+
+
+From kstailey at yahoo.com  Fri Aug 13 02:46:47 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Thu, 12 Aug 2004 09:46:47 -0700 (PDT)
+Subject: [TUHS] Emulators
+In-Reply-To: <Pine.LNX.4.44.0408091509560.27583-100000@cl.drevlanka.ru>
+Message-ID: <20040812164647.53184.qmail@web50601.mail.yahoo.com>
+
+
+--- Sergey Lapin <slapin at drevlanka.ru> wrote:
+
+> Hi all!!!
+> 
+> While educating people some unix stuff (at time, spare from work as 
+> admin), I have a need for making some simple UNIX-like  environment for 
+> people to try to type some simple commands. Now I need to make it possible 
+> to do it remotely. Are there any emulators, that are capable to run V5/6/7 
+> or (better) 4.2BSD, and accessible by telnet or something like that?
+> Additional thing I need is vi, any emulator that is capable of
+> running vi could make me happy!!! 
+> 
+> Emulation is needed because of unlimited virtualization possibility, 
+> unlimited variation of configurations, and, of course, zero time for 
+> recover after root errors. simh runs fast 60 instances on P233.
+> 
+> But now I need vi :(
+> 
+> Thanks a lot!
+> 
+> S.
+
+SIMH lets you put the console on a telnet session so a single user can access
+any OS that does console I/O over the network.  Not as good as TCP/IP in the
+OS.
+
+Harti's p11 PDP-11 emulator is the very best for running 2.11BSD with TCP/IP
+
+http://people.freebsd.org/~harti/
+
+When the CPU is running the idle loop p11 suspends so no wasted CPU.
+
+
+From wkt at tuhs.org  Fri Aug 13 06:37:37 2004
+From: wkt at tuhs.org (Warren Toomey)
+Date: Fri, 13 Aug 2004 06:37:37 +1000
+Subject: [TUHS] Emulators
+In-Reply-To: <20040812164647.53184.qmail@web50601.mail.yahoo.com>
+References: <Pine.LNX.4.44.0408091509560.27583-100000@cl.drevlanka.ru>
+	<20040812164647.53184.qmail@web50601.mail.yahoo.com>
+Message-ID: <20040812203737.GA28683@minnie.tuhs.org>
+
+On Thu, Aug 12, 2004 at 09:46:47AM -0700, Kenneth Stailey wrote:
+> Harti's p11 PDP-11 emulator is the very best for running 2.11BSD with TCP/IP
+> http://people.freebsd.org/~harti/
+> When the CPU is running the idle loop p11 suspends so no wasted CPU.
+
+Hmm, the same as Apout :-)
+	Warren
+
+From md1gavan at mdstud.chalmers.se  Mon Aug 16 21:57:55 2004
+From: md1gavan at mdstud.chalmers.se (Anders Gavare)
+Date: Mon, 16 Aug 2004 13:57:55 +0200 (MEST)
+Subject: [TUHS] Sprite in mips64emul
+Message-ID: <Pine.GSO.4.58.0408161347030.22944@fraggel55.mdstud.chalmers.se>
+
+Hi TUHS list,
+
+In May, Maciek Bieszczad wrote this to the mailing list
+(http://minnie.tuhs.org/pipermail/tuhs/2004-May/001022.html):
+
+> It's possible that Sprite could run on the mips64emul DECstation
+> emulator (Ultrix runs well enough to start DECwindows):
+>
+> http://www.mdstud.chalmers.se/~md1gavan/mips64emul/index.html
+
+The emulator didn't actually support running Sprite in May, but nowadays
+it does.  Read the following URL for more info:
+
+http://www.mdstud.chalmers.se/~md1gavan/mips64emul/current-doc/index.html#sprite
+
+
+Anders
+
+From kstailey at yahoo.com  Thu Aug 19 06:41:59 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Wed, 18 Aug 2004 13:41:59 -0700 (PDT)
+Subject: [TUHS] WEBSTER
+Message-ID: <20040818204159.44707.qmail@web50606.mail.yahoo.com>
+
+Hi,
+
+I have a copy of the WEBSTER server and client port to UNIX by
+
+ * David A. Curry
+ * Purdue University
+ * Engineering Computer Network
+ * April, 1986
+
+I see in the doc directory a very TOPS-20-ish docuement webster.hlp which
+describes the way to invoke the client:
+
+  @WEBSTER word-to-define
+
+I'm assuming the @ is the TOPS-20 prompt.  It also says you can use
+
+  If you want to look up more than one word, just do
+
+        @WEBSTER<return>
+
+  and you will be prompted with
+
+        Word:
+
+  Type the word, or hit <return> to exit.
+
+But if the @ prompt wasn't enough evidence of TOPS-20 you also get:
+
+  <escape> and "?" are used the same way in Webster as in most programs.
+  <escape> tries to complete what you have typed so far, and "?" lists
+  those words that match your partial word.
+
+Which is pure TOPS-20 "COMND JSYS".  See this page for what "COMND JSYS" is:
+
+http://pdp-10.trailing-edge.com/decuslib20-01/01/decus/20-0002/comnd.doc.html
+
+There is some cryptic mentioning about EBCDIC conversion as if the dictionary
+data went from ASCII to EBCDIC and back to ASCII causing some degradation.
+
+ebcdictp.ememo talks about the format of the EBCDIC tape (not that I have one)
+and errors.ememo says:
+
+   2)   Pronunciation records.
+
+          Three classes of errors occur here.
+
+          During the translation to EBCDIC occurances of the glyphs *( and
+     )* in the pronunciation records were treated in the same way as in other
+     records, that is encoded as <( and >) (representing left and right
+     braces), rather than left as is.  Thus a schwa precceding or following an
+     optional phoneme was lost.
+
+I just blew a few minutes looking it over today and ported it to FreeBSD/AMD64
+catching a 
+
+        char word[BUFSIZ];
+        isnumber(word)
+
+bug and some other minor things.
+
+Does anyone else have this treasure running?  I like it better than dict for
+etymologies.
+
+
+From kstailey at yahoo.com  Thu Aug 19 06:42:03 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Wed, 18 Aug 2004 13:42:03 -0700 (PDT)
+Subject: [TUHS] WEBSTER
+Message-ID: <20040818204203.98924.qmail@web50601.mail.yahoo.com>
+
+Hi,
+
+I have a copy of the WEBSTER server and client port to UNIX by
+
+ * David A. Curry
+ * Purdue University
+ * Engineering Computer Network
+ * April, 1986
+
+I see in the doc directory a very TOPS-20-ish docuement webster.hlp which
+describes the way to invoke the client:
+
+  @WEBSTER word-to-define
+
+I'm assuming the @ is the TOPS-20 prompt.  It also says you can use
+
+  If you want to look up more than one word, just do
+
+        @WEBSTER<return>
+
+  and you will be prompted with
+
+        Word:
+
+  Type the word, or hit <return> to exit.
+
+But if the @ prompt wasn't enough evidence of TOPS-20 you also get:
+
+  <escape> and "?" are used the same way in Webster as in most programs.
+  <escape> tries to complete what you have typed so far, and "?" lists
+  those words that match your partial word.
+
+Which is pure TOPS-20 "COMND JSYS".  See this page for what "COMND JSYS" is:
+
+http://pdp-10.trailing-edge.com/decuslib20-01/01/decus/20-0002/comnd.doc.html
+
+There is some cryptic mentioning about EBCDIC conversion as if the dictionary
+data went from ASCII to EBCDIC and back to ASCII causing some degradation.
+
+ebcdictp.ememo talks about the format of the EBCDIC tape (not that I have one)
+and errors.ememo says:
+
+   2)   Pronunciation records.
+
+          Three classes of errors occur here.
+
+          During the translation to EBCDIC occurances of the glyphs *( and
+     )* in the pronunciation records were treated in the same way as in other
+     records, that is encoded as <( and >) (representing left and right
+     braces), rather than left as is.  Thus a schwa precceding or following an
+     optional phoneme was lost.
+
+I just blew a few minutes looking it over today and ported it to FreeBSD/AMD64
+catching a 
+
+        char word[BUFSIZ];
+        isnumber(word)
+
+bug and some other minor things.
+
+Does anyone else have this treasure running?  I like it better than dict for
+etymologies.
+
+
+From kstailey at yahoo.com  Thu Aug 19 09:05:00 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Wed, 18 Aug 2004 16:05:00 -0700 (PDT)
+Subject: [TUHS] WEBSTER
+In-Reply-To: <20040818224059.GS88156@wantadilla.lemis.com>
+Message-ID: <20040818230500.11872.qmail@web50603.mail.yahoo.com>
+
+
+--- Greg 'groggy' Lehey <grog at lemis.com> wrote:
+
+> On Wednesday, 18 August 2004 at 13:41:59 -0700, Kenneth Stailey wrote:
+> On Wednesday, 18 August 2004 at 13:42:03 -0700, Kenneth Stailey wrote:
+> >
+> > I have a copy of the WEBSTER server and client port to UNIX by
+> > ...
+> 
+> Is there some subtle difference between these two messages?
+> 
+> Greg
+> --
+
+Yahoo! mail web site is acting up today.  I clicked send and then got a blank
+page.  Clicked back and then screwed up by clicking Send again in all the
+confusion.  Happy you asked?
+
+From grog at lemis.com  Thu Aug 19 08:41:00 2004
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Thu, 19 Aug 2004 08:11:00 +0930
+Subject: [TUHS] WEBSTER
+In-Reply-To: <20040818204203.98924.qmail@web50601.mail.yahoo.com>
+	<20040818204159.44707.qmail@web50606.mail.yahoo.com>
+References: <20040818204203.98924.qmail@web50601.mail.yahoo.com>
+	<20040818204159.44707.qmail@web50606.mail.yahoo.com>
+Message-ID: <20040818224059.GS88156@wantadilla.lemis.com>
+
+On Wednesday, 18 August 2004 at 13:41:59 -0700, Kenneth Stailey wrote:
+On Wednesday, 18 August 2004 at 13:42:03 -0700, Kenneth Stailey wrote:
+>
+> I have a copy of the WEBSTER server and client port to UNIX by
+> ...
+
+Is there some subtle difference between these two messages?
+
+Greg
+--
+Note: I discard all HTML mail unseen.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040819/0a736e17/attachment.sig>
+
+From macbiesz at optonline.net  Thu Aug 19 11:30:41 2004
+From: macbiesz at optonline.net (macbiesz at optonline.net)
+Date: Wed, 18 Aug 2004 21:30:41 -0400
+Subject: [TUHS] WEBSTER
+Message-ID: <203359c2031c01.2031c01203359c@optonline.net>
+
+> I have a copy of the WEBSTER server and client port to UNIX by [...]
+
+By the way, you can get the original TOPS-20 source code (dictionary/orig_src.tar), as well as more documentation and history from this site:
+
+http://lost-contact.mit.edu/afs/net/project/afs32/ops/user/jweiss/webster/src/server/
+
+There's also a working Motif interface to the client (the original xwebster used HP widgets):
+
+http://www.scn.rain.com/pub/text/xwebster.motif.tar.Z
+
+
+

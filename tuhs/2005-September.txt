@@ -1,0 +1,948 @@
+From imp at bsdimp.com  Thu Sep  1 00:45:37 2005
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Wed, 31 Aug 2005 08:45:37 -0600 (MDT)
+Subject: [TUHS] A patch for compiling vtserver under linux ...
+In-Reply-To: <20050831074730.GA21204@minnie.tuhs.org>
+References: <20050830204424.GA9088@freaknet.org>
+	<20050831074730.GA21204@minnie.tuhs.org>
+Message-ID: <20050831.084537.52166471.imp@bsdimp.com>
+
+In message: <20050831074730.GA21204 at minnie.tuhs.org>
+            Warren Toomey <wkt at tuhs.org> writes:
+: On Tue, Aug 30, 2005 at 08:44:24PM +0000, asbesto wrote:
+: > Here's a patch to compile vtserver 2.3a-20010404 under linux:
+: 
+: 	[ patch omitted]
+: 
+: Thanks Asbesto and also congratulations on getting your system to
+: boot.  Fred van Kempen has taken over maintenance of vtserver, but
+: I don't have a working e-mail address for him. Does anybody know
+: how to contact him?
+
+I'm surprised the patch is even necessary.  vtserver builds on my
+redhad development environment unchanged...
+
+Warner
+
+
+From lm at bitmover.com  Thu Sep  1 11:39:12 2005
+From: lm at bitmover.com (Larry McVoy)
+Date: Wed, 31 Aug 2005 18:39:12 -0700
+Subject: [TUHS] looking for old school hackers
+Message-ID: <20050901013912.GD1166@bitmover.com>
+
+Hi,
+
+Sorry if this is spam but in a flash of "well, duh!" insight I realized
+this is the right place.
+
+We're looking for systems people and we really like minimalists.
+What I tell people when I hire them is "If it's in the 1986 SVID or if
+it is sockets or mmap, you can use it.  Anything else is off limits".
+And our code works everywhere, we can bring up a new platform in about
+an hour and our source base is not trivial.
+
+We're all C and bourne shell (ok, yeah, some tcl/tk for guis).  We're
+hacking bwk's awk source base (he sent me ~bwk/awk with all the source,
+tests, the source to the book in english and french, gotta love that)
+so we can use it to be the front end to our simple database (if you
+think about it an SQL select statement looks one heck of a lot like an
+awk program).  It's pretty cool, we're making a scripting language for
+systems people that is small.  Kind of what perl would have been if it
+had been part of V7.  Oh, and the language is going to be open source
+if that's important to you.
+
+We are looking for a few solid programmers.  We pay well, we're
+profitable, no debt, no outside investors, stable revenue stream, and
+we're growing.  Our growth is limited by our ability to hire which in turn
+is limited by my taste.  Which is very much in line with this community,
+small is good, simple is good, complex sucks.  We live and die by Brian's
+comment that debugging is harder than coding so if you were clever when
+you were coding you are by definition not smart enough to debug the code.
+
+What we have to offer is a stable place to work, no crap from idiot
+managers or money grubbing VC's.  What we are working is cutting edge,
+ping me for information, it's more than what is publicly known.
+
+We're in the Bay Area and we want you to be too.  If it's a fit we'll
+pay to relocate you.
+
+Please let me know if you are interested.  And if you aren't but you
+know someone who is a good fit we'll cough up a $10K referral fee 
+provided that they last at least one year here.
+
+Thanks,
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From asbesto at freaknet.org  Fri Sep  2 01:33:59 2005
+From: asbesto at freaknet.org (asbesto)
+Date: Thu, 1 Sep 2005 15:33:59 +0000
+Subject: [TUHS] the Data General ECLIPSE MV/7800XP ... booted from tape! :)
+Message-ID: <20050901153359.GA11035@freaknet.org>
+
+
+well,
+
+another great day! we booted via tape! :)))
+
+the problem was that the eclipse need to load the "MICROCODE"
+before read anything else; and we had 2 problems:
+
+1) 
+the tape head was so dirty that we can feel the dirt on 
+the head touching with a finger! after cleaning it, the
+tape reader now perfectly!
+
+2)
+the microcode original tape is ... in horrible conditions! it
+release magnetic particles touching it, and the tape reader
+can't read it :(((
+
+BUT
+
+we found that a microcode copy can be loaded from the hard
+disk (a 550 mb disk, very big and huge ! :)
+
+so, we can now load the microcode from hard disk and, after
+that, boot the DG/UX installation tape :D
+
+AND WE'RE SO HAPPY, SOOO HAPPY, WE LOVE ALL ! :)
+
+the main problem is how to do a backup of the whole disk, 
+to preserve the original AOS/VS installation, before trying
+an installation of DG/UX.
+
+Any hint? :)
+
+p.s. some images here:
+
+http://dyne.org/~asbesto/eclipse/eflags
+
+
+many tnx to eflags for the help (he's the guy in the photos).
+It's a sort of JESUS. He touch hardware imposing hands, then 
+the hardware magically works. 
+
+ :)
+
+
+-- 
+[ asbesto : IW9HGS : freaknet medialab : radiocybernet : poetry ]
+[ http://freaknet.org/asbesto http://papuasia.org/radiocybernet ]
+[ http://www.emergelab.org :: NON SCRIVERMI USANDO LE ACCENTATE ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC, SPAM ]
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20050901/d03867a5/attachment.sig>
+
+From asbesto at freaknet.org  Fri Sep  2 07:04:42 2005
+From: asbesto at freaknet.org (asbesto)
+Date: Thu, 1 Sep 2005 21:04:42 +0000
+Subject: [TUHS] we break into AOS/VS :)
+Message-ID: <20050901210442.GA26986@freaknet.org>
+
+
+http://zaverio.net/eclipse/eflags/
+
+we hacked in! :)
+
+-- 
+[ asbesto : IW9HGS : freaknet medialab : radiocybernet : poetry ]
+[ http://freaknet.org/asbesto http://papuasia.org/radiocybernet ]
+[ http://www.emergelab.org :: NON SCRIVERMI USANDO LE ACCENTATE ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC, SPAM ]
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20050901/6ac555a6/attachment.sig>
+
+From vasco at icpnet.pl  Fri Sep  2 20:23:55 2005
+From: vasco at icpnet.pl (Andrzej Popielewicz)
+Date: Fri, 02 Sep 2005 12:23:55 +0200
+Subject: [TUHS] we break into AOS/VS :)
+In-Reply-To: <20050901210442.GA26986@freaknet.org>
+References: <20050901210442.GA26986@freaknet.org>
+Message-ID: <4318283B.8040407@icpnet.pl>
+
+Użytkownik asbesto napisał:
+
+>http://zaverio.net/eclipse/eflags/
+>
+>we hacked in! :)
+>
+>  
+>
+>------------------------------------------------------------------------
+>
+>_______________________________________________
+>TUHS mailing list
+>TUHS at minnie.tuhs.org
+>http://minnie.tuhs.org/mailman/listinfo/tuhs
+>  
+>
+Congratulations.
+If I were You I would not touch AOS/VS disk. There is no warranty , that
+You will be able to install UX or restore AOS from tape and You can end
+up with two not working systems. Try to find another disk and then
+install UX if possible.
+
+I have spent 8 years on IBM mainframe so I have "sympathy" for these old
+machines.
+
+Andrzej
+
+
+
+From asbesto at freaknet.org  Fri Sep  2 21:37:57 2005
+From: asbesto at freaknet.org (asbesto)
+Date: Fri, 2 Sep 2005 11:37:57 +0000
+Subject: [TUHS] we break into AOS/VS :)
+In-Reply-To: <4318283B.8040407@icpnet.pl>
+References: <20050901210442.GA26986@freaknet.org> <4318283B.8040407@icpnet.pl>
+Message-ID: <20050902113757.GA8334@freaknet.org>
+
+Il Fri, Sep 02, 2005 at 12:23:55PM +0200, Andrzej Popielewicz rigurgitava:
+
+> >http://zaverio.net/eclipse/eflags/
+> >we hacked in! :)
+> Congratulations.
+
+tnx :)
+
+> If I were You I would not touch AOS/VS disk. There is no warranty , that
+> You will be able to install UX or restore AOS from tape and You can end
+> up with two not working systems. Try to find another disk and then
+> install UX if possible.
+
+that's our problem - we don't have AOS/VS installation tapes, this
+is very strange. we only have DG/UX installation tapes, but the 
+system itself use AOS/VS ... :(
+
+the main problem is :
+
+- how to do a full disk backup of the actual system, and
+- how to RESTORE IT back in the eclipse having a working AOS/VS
+  again!
+
+really we don't know how to do this; we can't find informations about
+AOS/VS, the only manual is Phrack Magazine #44 :( 
+
+the best is to have AOS/VS installation tapes - where can we search for
+them ? 
+
+BOOOH :(
+
+now we are studying AOS/VS, maybe in the next days we can offer free
+access to the machine (it's the main goal of our lab: let people use
+those old computers; we have 2 digital VAX/VMS online now, it's our
+idea of having a "working" museum :)
+
+> I have spent 8 years on IBM mainframe so I have "sympathy" for these old
+> machines.
+
+me too! :)
+
+-- 
+[ asbesto : IW9HGS : freaknet medialab : radiocybernet : poetry ]
+[ http://freaknet.org/asbesto http://papuasia.org/radiocybernet ]
+[ http://www.emergelab.org :: NON SCRIVERMI USANDO LE ACCENTATE ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC, SPAM ]
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20050902/e38cacb7/attachment.sig>
+
+From asbesto at freaknet.org  Mon Sep  5 01:17:18 2005
+From: asbesto at freaknet.org (asbesto)
+Date: Sun, 4 Sep 2005 15:17:18 +0000
+Subject: [TUHS] news about the Data General Eclipse 
+Message-ID: <20050904151718.GA20124@freaknet.org>
+
+
+well,
+
+we discovered that we have MV/UX installed together with AOS/VS,
+so we have a weird UNIX running ... under AOS/VS 
+
+:)))
+
+so, our goal is, for now, to preserve the actual system, and
+to make a copy of the tapes (now we can use "dd" to read/copy
+them)
+
+we're experimenting, stay tuned
+
+we wrote some documentation in http://zaverio.net/eclipse/stuff,
+and we will put online some help ASAP
+
+p.s. any help/hint appreciated :)
+
+
+-- 
+[ asbesto : IW9HGS : freaknet medialab : radiocybernet : poetry ]
+[ http://freaknet.org/asbesto http://papuasia.org/radiocybernet ]
+[ http://www.emergelab.org :: NON SCRIVERMI USANDO LE ACCENTATE ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC, SPAM ]
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20050904/2e40fb9d/attachment.sig>
+
+From asbesto at freaknet.org  Mon Sep  5 01:48:12 2005
+From: asbesto at freaknet.org (asbesto)
+Date: Sun, 4 Sep 2005 15:48:12 +0000
+Subject: [TUHS] Jesus uses Eclipse MV/7800XP
+Message-ID: <20050904154812.GA22617@freaknet.org>
+
+
+Fun at Poetry Hacklab :
+
+http://zaverio.net/eclipse/eflags/tn/dscn6703.jpg.html
+
+other at
+
+http://zaverio.net/eclipse/eflags/
+
+and some .MOV under "stuff" :)
+
+enjoy! :)
+
+-- 
+[ asbesto : IW9HGS : freaknet medialab : radiocybernet : poetry ]
+[ http://freaknet.org/asbesto http://papuasia.org/radiocybernet ]
+[ http://www.emergelab.org :: NON SCRIVERMI USANDO LE ACCENTATE ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC, SPAM ]
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20050904/d8ab2d91/attachment.sig>
+
+From iking at killthewabbit.org  Mon Sep  5 03:21:38 2005
+From: iking at killthewabbit.org (Ian King)
+Date: Sun, 4 Sep 2005 10:21:38 -0700
+Subject: [TUHS] news about the Data General Eclipse 
+In-Reply-To: <20050904151718.GA20124@freaknet.org>
+Message-ID: <004101c5b175$1c0ab180$2a0010ac@killthewabbit.org>
+
+As I recall, that's the way MV/UX worked: it ran on top of AOS/VS.  
+
+-----Original Message-----
+From: tuhs-bounces at minnie.tuhs.org [mailto:tuhs-bounces at minnie.tuhs.org]
+On Behalf Of asbesto
+Sent: Sunday, September 04, 2005 8:17 AM
+To: tuhs at minnie.tuhs.org
+Subject: [TUHS] news about the Data General Eclipse 
+
+
+
+well,
+
+we discovered that we have MV/UX installed together with AOS/VS, so we
+have a weird UNIX running ... under AOS/VS 
+
+:)))
+
+so, our goal is, for now, to preserve the actual system, and
+to make a copy of the tapes (now we can use "dd" to read/copy
+them)
+
+we're experimenting, stay tuned
+
+we wrote some documentation in http://zaverio.net/eclipse/stuff, and we
+will put online some help ASAP
+
+p.s. any help/hint appreciated :)
+
+
+-- 
+[ asbesto : IW9HGS : freaknet medialab : radiocybernet : poetry ] [
+http://freaknet.org/asbesto http://papuasia.org/radiocybernet ] [
+http://www.emergelab.org :: NON SCRIVERMI USANDO LE ACCENTATE ] [ *I
+DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC, SPAM ]
+
+
+
+
+From asbesto at freaknet.org  Wed Sep  7 06:12:26 2005
+From: asbesto at freaknet.org (asbesto)
+Date: Tue, 6 Sep 2005 20:12:26 +0000
+Subject: [TUHS] DG/UX 4 tape images ... are incoming!
+Message-ID: <20050906201226.GA3594@freaknet.org>
+
+
+We're succesfully dumping the DG/UX tapes we have here. :)
+
+we had a lot of problem due to "Sticky shed syndrome": the
+tape stick to the head, causing the tape to lock while
+reading data ...
+
+cooking tapes will be a solution, but we followed another
+idea: we used a special Teflon Lubricant Spray (here in
+italy is "CRC TEFLON PENLUB SPRAY"
+
+this is PERFECT for tapes - we had to rewind the tape 
+spraying the lubricant on the tape. this cause no 
+problems at all, and we red sticky tapes without 
+problems!
+
+the tape images are here:
+
+http://zaverio.net/eclipse/stuff/TAPE-IMAGES/
+
+i don't know if there is (C) on those tapes - and really, i
+don't care about it. I think preserving them is a MISSION for
+us, and, so, here are the images.
+
+happy hacking! :)
+ 
+
+
+-- 
+[ asbesto : IW9HGS : freaknet medialab : radiocybernet : poetry ]
+[ http://freaknet.org/asbesto http://papuasia.org/radiocybernet ]
+[ http://www.emergelab.org :: NON SCRIVERMI USANDO LE ACCENTATE ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC, SPAM ]
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20050906/05caf4a2/attachment.sig>
+
+From vasco at icpnet.pl  Sun Sep 11 18:42:38 2005
+From: vasco at icpnet.pl (Andrzej Popielewicz)
+Date: Sun, 11 Sep 2005 10:42:38 +0200
+Subject: [TUHS] DG/UX 4 tape images ... are incoming!
+In-Reply-To: <20050906201226.GA3594@freaknet.org>
+References: <20050906201226.GA3594@freaknet.org>
+Message-ID: <4323EDFE.1070002@icpnet.pl>
+
+Użytkownik asbesto napisał:
+
+>We're succesfully dumping the DG/UX tapes we have here. :)
+>
+>we had a lot of problem due to "Sticky shed syndrome": the
+>tape stick to the head, causing the tape to lock while
+>reading data ...
+>
+>cooking tapes will be a solution, but we followed another
+>idea: we used a special Teflon Lubricant Spray (here in
+>italy is "CRC TEFLON PENLUB SPRAY"
+>
+>this is PERFECT for tapes - we had to rewind the tape 
+>spraying the lubricant on the tape. this cause no 
+>problems at all, and we red sticky tapes without 
+>problems!
+>
+>the tape images are here:
+>
+>http://zaverio.net/eclipse/stuff/TAPE-IMAGES/
+>
+>i don't know if there is (C) on those tapes - and really, i
+>don't care about it. I think preserving them is a MISSION for
+>us, and, so, here are the images.
+>
+>happy hacking! :)
+> 
+>
+>
+>  
+>
+>------------------------------------------------------------------------
+>
+>_______________________________________________
+>TUHS mailing list
+>TUHS at minnie.tuhs.org
+>http://minnie.tuhs.org/mailman/listinfo/tuhs
+>  
+>
+I have seen in
+
+http://www.computermuseum-muenchen.de
+
+a pdp project starting.
+
+
+
+From gunnarr at acm.org  Thu Sep 15 22:38:08 2005
+From: gunnarr at acm.org (Gunnar Ritter)
+Date: Thu, 15 Sep 2005 14:38:08 +0200
+Subject: [TUHS] Enhanced troff available
+Message-ID: <43296b30.UeKZoLxd0OuPcmR1%gunnarr@acm.org>
+
+Hi,
+
+perhaps some people on this list are interested to hear that I have
+updated troff (from OpenSolaris code) to support:
+
+- direct access to PostScript Type 1 and Type 42 (converted TrueType)
+  fonts
+- small capitals, old-style numerals, and ligatures from PostScript
+  "expert" fonts
+- pairwise kerning of characters and letter space tracking, including
+  a request to create kerning pairs for characters from different fonts
+- hanging characters
+- arbitrary letter sizes, including fractional points
+- text input according to the locale, including UTF-8 input on most
+  platforms
+- hyphenation of international languages
+- international paper sizes such as A4
+- DSC-conforming PostScript output
+- PDF bookmarks
+- higher device resolutions.
+
+Source code is available at <http://heirloom.sourceforge.net/doctools.html>.
+
+	Gunnar
+
+
+From txomsy at yahoo.es  Sun Sep 25 21:31:47 2005
+From: txomsy at yahoo.es (Jose R. Valverde)
+Date: Sun, 25 Sep 2005 13:31:47 +0200
+Subject: [TUHS] UZI
+Message-ID: <20050925133147.218abf0c.txomsy@yahoo.es>
+
+I thought someone might be interested. Regarding UNIX history, it is certainly
+interesting, although the code is not directly descended from ATT UNIX, but
+rather an independent lineage:
+
+	http://www.dougbraun.com/uzi.html
+
+an implementation of UNIX for Zilog machines. I have been aware of UNIX
+initiatives for Zilog since the 80's (some friends of mine worked on a
+port for the Z8000), and like to check from time to time is somthing
+pops up.
+
+This one is an independent implementation of Unix 7th Ed written from
+scratch.
+
+	Link to derivative work to port UZI to the veberable MSX:
+
+	http://uzux.sf.net/
+
+And another interesting one, the One Man Unix (OMU)
+
+	http://tallyho.bc.nu/~steve/omu.html
+
+another one written from scratch, this one for the 6809, and later
+ported to the 68000, even with an RT version!
+
+I think it is worth preserving these works as well: they are a huge
+tribute to the simplicity of UNIX design and its popularity. Perhaps
+they might find some space in the 'others' category of the archive
+together with Coherent, Trix and some others?
+
+				j
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20050925/1770b8dc/attachment.sig>
+
+From newsham at lava.net  Tue Sep 27 03:09:05 2005
+From: newsham at lava.net (Tim Newsham)
+Date: Mon, 26 Sep 2005 07:09:05 -1000 (HST)
+Subject: [TUHS] kronos
+Message-ID: <Pine.BSI.4.61.0509260704260.21333@malasada.lava.net>
+
+I accidentally stumbled across this:
+   http://www.excelsior-usa.com/krg/krg.html
+
+Perhaps only marginally relevant to tuhs.  It's a historic soviet system 
+modelled after Wirth's Lilith system.  There's an emulator on the page 
+that works in windows.  You can log in as "sys" with no password.  There 
+are some familiar unix commands like "cd" and "ls", and others like "find" 
+which seem to differ from the traditional unix commands.  The system is 
+written in modula II.  There is some account information in /usr/etc and 
+some docs (I think /doc or /usr/doc?) but they are in russian.
+
+I'd love to hear more about the system if anyone here knows more about
+it.
+
+Tim Newsham
+http://www.lava.net/~newsham/
+
+
+From madcrow.maxwell at gmail.com  Mon Sep 26 22:55:52 2005
+From: madcrow.maxwell at gmail.com (Madcrow Maxwell)
+Date: Mon, 26 Sep 2005 08:55:52 -0400
+Subject: [TUHS] UZI
+In-Reply-To: <20050925133147.218abf0c.txomsy@yahoo.es>
+References: <20050925133147.218abf0c.txomsy@yahoo.es>
+Message-ID: <8dd2d95c05092605557c4895a2@mail.gmail.com>
+
+On 9/25/05, Jose R. Valverde <txomsy at yahoo.es> wrote:
+
+> I thought someone might be interested. Regarding UNIX history, it is certainly
+> interesting, although the code is not directly descended from ATT UNIX, but
+> rather an independent lineage:
+>
+>         http://www.dougbraun.com/uzi.html
+
+
+Very cool... a V7 clone for Z80... Very cool. I'm still holding out
+for a unix clone for 6502 as Unix on a C64 would be very VERY cool,
+but this is pretty good as it is...
+
+Also, I couldn't find the UZUX you mentioned and the link didn't go
+anywhere, but I did find UZIX which sounds quite similar. It's address
+is http://uzix.sourceforge.net/
+
+
+From billcu1 at verizon.net  Tue Sep 27 05:28:33 2005
+From: billcu1 at verizon.net (Bill Cunningham)
+Date: Mon, 26 Sep 2005 15:28:33 -0400
+Subject: [TUHS] C compiler
+Message-ID: <001801c5c2d0$7c87fc40$2f01a8c0@myhome.westell.com>
+
+    In some of the eary versions of unix if I'm correct you had to generate
+the C compiler. Now how was that done? Was the compiler written in assembly
+and the assembler generated crt0 crt1 and so on?
+
+Bill
+
+
+
+
+From wkt at tuhs.org  Tue Sep 27 08:04:29 2005
+From: wkt at tuhs.org (Warren Toomey)
+Date: Tue, 27 Sep 2005 08:04:29 +1000
+Subject: [TUHS] C compiler
+In-Reply-To: <001801c5c2d0$7c87fc40$2f01a8c0@myhome.westell.com>
+References: <001801c5c2d0$7c87fc40$2f01a8c0@myhome.westell.com>
+Message-ID: <20050926220429.GA88706@minnie.tuhs.org>
+
+On Mon, Sep 26, 2005 at 03:28:33PM -0400, Bill Cunningham wrote:
+>     In some of the eary versions of unix if I'm correct you had to generate
+> the C compiler. Now how was that done? Was the compiler written in assembly
+> and the assembler generated crt0 crt1 and so on?
+
+If you had a distribution tape, then it came with C compiler binaries and
+source. You used the compiler binaries to rebuild the compiler.
+
+Obviously, to get to that point was a bit harder. 
+A good reference to this is "The Development of the C Language" by
+Dennis Ritchie, available at http://cm.bell-labs.com/cm/cs/who/dmr/chist.html
+
+A quick read seems to indicate that Ken created a language called B which
+was patterned on BCPL, with a compiler initially in assembly language. Then
+Ken rewrote the B compiler in B and bootstrapped it using the existing
+compiler. Then Dennis extended the B language to become NB, which then
+evolved to become C.
+
+Along the way, new language features were added in to the compiler,
+but the features couldn't be used _in_ the compiler until they worked.
+As noted on this page, http://cm.bell-labs.com/cm/cs/who/dmr/primevalC.html,
+Dennis says "Evolving compilers written in their own language are careful
+not to take advantage of their own latest features."
+
+Cheers,
+	Warren
+
+
+From rbelk at jam.rr.com  Tue Sep 27 08:51:51 2005
+From: rbelk at jam.rr.com (Randy Belk)
+Date: Mon, 26 Sep 2005 17:51:51 -0500
+Subject: [TUHS] UZI
+In-Reply-To: <8dd2d95c05092605557c4895a2@mail.gmail.com>
+References: <20050925133147.218abf0c.txomsy@yahoo.es>
+	<8dd2d95c05092605557c4895a2@mail.gmail.com>
+Message-ID: <43387B87.5020105@jam.rr.com>
+
+Madcrow Maxwell wrote:
+
+>On 9/25/05, Jose R. Valverde <txomsy at yahoo.es> wrote:
+>
+>  
+>
+>>I thought someone might be interested. Regarding UNIX history, it is certainly
+>>interesting, although the code is not directly descended from ATT UNIX, but
+>>rather an independent lineage:
+>>
+>>        http://www.dougbraun.com/uzi.html
+>>    
+>>
+>
+>
+>Very cool... a V7 clone for Z80... Very cool. I'm still holding out
+>for a unix clone for 6502 as Unix on a C64 would be very VERY cool,
+>but this is pretty good as it is...
+>
+>Also, I couldn't find the UZUX you mentioned and the link didn't go
+>anywhere, but I did find UZIX which sounds quite similar. It's address
+>is http://uzix.sourceforge.net/
+>_______________________________________________
+>TUHS mailing list
+>TUHS at minnie.tuhs.org
+>http://minnie.tuhs.org/mailman/listinfo/tuhs
+>  
+>
+There already is a UNIX clone for the Commodore 64
+Lunix - http://lng.sourceforge.net/
+
+
+
+From wes.parish at paradise.net.nz  Tue Sep 27 17:45:03 2005
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Tue, 27 Sep 2005 19:45:03 +1200
+Subject: [TUHS] C compiler
+In-Reply-To: <20050926220429.GA88706@minnie.tuhs.org>
+References: <001801c5c2d0$7c87fc40$2f01a8c0@myhome.westell.com>
+	<20050926220429.GA88706@minnie.tuhs.org>
+Message-ID: <200509271945.04036.wes.parish@paradise.net.nz>
+
+B!  I would like to have a look at that - that, and NB.
+
+Does anyone know if they're still extant, or their documentation at the very 
+least?  (I've seen BCPL, and read some of its documentation, but it's still a 
+hop-skip-and-a-jump away from C.  Some BCPL things do seem a little bit 
+strange to a C user ... ;)
+
+Wesley Parish
+
+On Tue, 27 Sep 2005 10:04, Warren Toomey wrote:
+> On Mon, Sep 26, 2005 at 03:28:33PM -0400, Bill Cunningham wrote:
+> >     In some of the eary versions of unix if I'm correct you had to
+> > generate the C compiler. Now how was that done? Was the compiler written
+> > in assembly and the assembler generated crt0 crt1 and so on?
+>
+> If you had a distribution tape, then it came with C compiler binaries and
+> source. You used the compiler binaries to rebuild the compiler.
+>
+> Obviously, to get to that point was a bit harder.
+> A good reference to this is "The Development of the C Language" by
+> Dennis Ritchie, available at
+> http://cm.bell-labs.com/cm/cs/who/dmr/chist.html
+>
+> A quick read seems to indicate that Ken created a language called B which
+> was patterned on BCPL, with a compiler initially in assembly language. Then
+> Ken rewrote the B compiler in B and bootstrapped it using the existing
+> compiler. Then Dennis extended the B language to become NB, which then
+> evolved to become C.
+>
+> Along the way, new language features were added in to the compiler,
+> but the features couldn't be used _in_ the compiler until they worked.
+> As noted on this page,
+> http://cm.bell-labs.com/cm/cs/who/dmr/primevalC.html, Dennis says "Evolving
+> compilers written in their own language are careful not to take advantage
+> of their own latest features."
+>
+> Cheers,
+> 	Warren
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+Clinersterton beademung, with all of love - RIP James Blish
+-----
+Mau e ki, he aha te mea nui?
+You ask, what is the most important thing?
+Maku e ki, he tangata, he tangata, he tangata.
+I reply, it is people, it is people, it is people.
+
+
+From wkt at tuhs.org  Tue Sep 27 17:44:34 2005
+From: wkt at tuhs.org (Warren Toomey)
+Date: Tue, 27 Sep 2005 17:44:34 +1000
+Subject: [TUHS] C compiler
+In-Reply-To: <200509271945.04036.wes.parish@paradise.net.nz>
+References: <001801c5c2d0$7c87fc40$2f01a8c0@myhome.westell.com>
+	<20050926220429.GA88706@minnie.tuhs.org>
+	<200509271945.04036.wes.parish@paradise.net.nz>
+Message-ID: <20050927074434.GA10695@minnie.tuhs.org>
+
+On Tue, Sep 27, 2005 at 07:45:03PM +1200, Wesley Parish wrote:
+> B!  I would like to have a look at that - that, and NB.
+> Does anyone know if they're still extant, or their documentation at the very 
+> least?  (I've seen BCPL, and read some of its documentation, but it's still a 
+> hop-skip-and-a-jump away from C.  Some BCPL things do seem a little bit 
+> strange to a C user ... ;)
+
+One or both of the referenced articles suggest that all traces have disappeared.
+There may be a B or NB language manual laying around... Yes:
+http://cm.bell-labs.com/cm/cs/who/dmr/kbman.html and
+http://cm.bell-labs.com/cm/cs/who/dmr/bintro.html
+
+	Warren
+
+
+From txomsy at yahoo.es  Tue Sep 27 19:43:17 2005
+From: txomsy at yahoo.es (Jose R Valverde)
+Date: Tue, 27 Sep 2005 11:43:17 +0200 (CEST)
+Subject: [TUHS] B and BCPL
+Message-ID: <20050927094317.89057.qmail@web26104.mail.ukl.yahoo.com>
+
+See in 
+
+http://www.cl.cam.ac.uk/users/mr/index.html
+
+where you can find an existing, working (!) and even
+maintained (!!) and evolving (!!!) BCPL system.
+
+And on
+
+http://www.catb.org/retro/
+
+you'll find a link to a B-to-C translator:
+
+http://www.catb.org/retro/btoc.tar.gz
+
+BTW, and just in case my previous mail got lost: the 
+correct URL for UZIX (UNIX for the MSX) is
+
+http://uzix.sf.net/
+
+(sorry 'bout the mistake)
+
+                              j
+
+
+
+		
+______________________________________________ 
+Renovamos el Correo Yahoo! 
+Nuevos servicios, más seguridad 
+http://correo.yahoo.es
+
+
+From txomsy at yahoo.es  Tue Sep 27 19:44:30 2005
+From: txomsy at yahoo.es (Jose R Valverde)
+Date: Tue, 27 Sep 2005 11:44:30 +0200 (CEST)
+Subject: [TUHS] UZIX
+Message-ID: <20050927094430.48745.qmail@web26101.mail.ukl.yahoo.com>
+
+Sorry, it was my mistake. I was typing on a slow
+remote
+connection and didn't notice until you brought it up.
+
+The correct link is
+
+http://uzix.sf.net
+
+That's the home page for UZIX, a descendant of UZI
+aiming
+for the MSX.
+
+Sorry again,
+
+                       j
+
+
+
+
+
+
+		
+______________________________________________ 
+Renovamos el Correo Yahoo! 
+Nuevos servicios, más seguridad 
+http://correo.yahoo.es
+
+
+From wes.parish at paradise.net.nz  Tue Sep 27 20:13:31 2005
+From: wes.parish at paradise.net.nz (Wesley Parish)
+Date: Tue, 27 Sep 2005 22:13:31 +1200
+Subject: [TUHS] B and BCPL
+In-Reply-To: <20050927094317.89057.qmail@web26104.mail.ukl.yahoo.com>
+References: <20050927094317.89057.qmail@web26104.mail.ukl.yahoo.com>
+Message-ID: <200509272213.31299.wes.parish@paradise.net.nz>
+
+Many thanks
+
+Wesley Parish
+
+On Tue, 27 Sep 2005 21:43, Jose R Valverde wrote:
+> See in
+>
+> http://www.cl.cam.ac.uk/users/mr/index.html
+>
+> where you can find an existing, working (!) and even
+> maintained (!!) and evolving (!!!) BCPL system.
+>
+> And on
+>
+> http://www.catb.org/retro/
+>
+> you'll find a link to a B-to-C translator:
+>
+> http://www.catb.org/retro/btoc.tar.gz
+>
+> BTW, and just in case my previous mail got lost: the
+> correct URL for UZIX (UNIX for the MSX) is
+>
+> http://uzix.sf.net/
+>
+> (sorry 'bout the mistake)
+>
+>                               j
+>
+> On Tue, 27 Sep 2005 19:44, Warren Toomey wrote:
+> One or both of the referenced articles suggest that all traces have
+> disappeared. There may be a B or NB language manual laying around... Yes:
+> http://cm.bell-labs.com/cm/cs/who/dmr/kbman.html and
+> http://cm.bell-labs.com/cm/cs/who/dmr/bintro.html
+>
+> 	Warren
+> _______________________________________________
+>
+>
+> ______________________________________________
+> Renovamos el Correo Yahoo!
+> Nuevos servicios, más seguridad
+> http://correo.yahoo.es
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-- 
+Clinersterton beademung, with all of love - RIP James Blish
+-----
+Mau e ki, he aha te mea nui?
+You ask, what is the most important thing?
+Maku e ki, he tangata, he tangata, he tangata.
+I reply, it is people, it is people, it is people.
+
+

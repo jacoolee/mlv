@@ -1,0 +1,817 @@
+From neozeed at gmail.com  Thu Dec  2 06:50:46 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Wed, 1 Dec 2010 15:50:46 -0500
+Subject: [TUHS] NetBSD 0.9
+Message-ID: <AANLkTincWxZfdb_k=fLRsut5B+OeNDVL+4VAm6TAPFND@mail.gmail.com>
+
+I asked a while back if anyone had any NetBSD 0.8 or 0.9 archives.. I
+thought I'd let the list know that I did manage to find NetBSD 0.9, and
+using VMWare I've managed to revive it into something that Qemu can run.
+
+If anyone has VMWare and wants to stroll down memory lane, I've uploaded the
+install diskettes here:
+http://sourceforge.net/projects/bsd42/files/Install%20tapes/NetBSD/0.9/NetBSD%200.9%20i386%20floppies.zip/download
+
+And I've setup an archive with Qemu & NetBSD all ready to go here:
+http://sourceforge.net/projects/bsd42/files/4BSD%20under%20Windows/v0.4/NetBSD%200.9.zip/download
+
+If anyone wants to use their own qemu for their own platform, I've had to
+modify the hw/pc.c and remove the NE2000 definition of 0x300,9 as irq 9 is
+in use somewhere else in the emulator and it won't allow any sharing on
+Irq9.. (Wasn't IRQ 9 shared anyways with the cascade controller???)
+
+At any rate, I built irc, lynx & bzip2 on there, and they seem to function
+just fine.
+
+Again if anyone has any lead on NetBSD 0.8 that'd be great, I'd like to save
+these from the digitial dumpster....
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20101201/cd279ecb/attachment.html>
+
+From claunia at claunia.com  Thu Dec  2 07:12:57 2010
+From: claunia at claunia.com (Natalia Portillo)
+Date: Wed, 1 Dec 2010 21:12:57 +0000
+Subject: [TUHS] NetBSD 0.9
+In-Reply-To: <AANLkTincWxZfdb_k=fLRsut5B+OeNDVL+4VAm6TAPFND@mail.gmail.com>
+References: <AANLkTincWxZfdb_k=fLRsut5B+OeNDVL+4VAm6TAPFND@mail.gmail.com>
+Message-ID: <84B54C7D-A4DC-4036-BB19-94B00FCAF1A3@claunia.com>
+
+Hi Jason,
+
+Would you please write a howto to the QEMU Official OS Support List at http://www.claunia.com/qemu/ ?
+
+Thanks in advance,
+Natalia Portillo
+
+El 01/12/2010, a las 20:50, Jason Stevens escribió:
+
+> I asked a while back if anyone had any NetBSD 0.8 or 0.9 archives.. I thought I'd let the list know that I did manage to find NetBSD 0.9, and using VMWare I've managed to revive it into something that Qemu can run.
+> 
+> If anyone has VMWare and wants to stroll down memory lane, I've uploaded the install diskettes here:
+> http://sourceforge.net/projects/bsd42/files/Install%20tapes/NetBSD/0.9/NetBSD%200.9%20i386%20floppies.zip/download
+> 
+> And I've setup an archive with Qemu & NetBSD all ready to go here:
+> http://sourceforge.net/projects/bsd42/files/4BSD%20under%20Windows/v0.4/NetBSD%200.9.zip/download
+> 
+> If anyone wants to use their own qemu for their own platform, I've had to modify the hw/pc.c and remove the NE2000 definition of 0x300,9 as irq 9 is in use somewhere else in the emulator and it won't allow any sharing on Irq9.. (Wasn't IRQ 9 shared anyways with the cascade controller???)
+> 
+> At any rate, I built irc, lynx & bzip2 on there, and they seem to function just fine.
+> 
+> Again if anyone has any lead on NetBSD 0.8 that'd be great, I'd like to save these from the digitial dumpster....
+> 
+> 
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20101201/d1fef335/attachment.html>
+
+From bqt at softjar.se  Thu Dec  2 20:54:03 2010
+From: bqt at softjar.se (Johnny Billquist)
+Date: Thu, 02 Dec 2010 11:54:03 +0100
+Subject: [TUHS] NetBSD 0.9
+In-Reply-To: <mailman.1.1291255202.1100.tuhs@minnie.tuhs.org>
+References: <mailman.1.1291255202.1100.tuhs@minnie.tuhs.org>
+Message-ID: <4CF77ACB.40507@softjar.se>
+
+On 12/02/10 03:00, Jason Stevens<neozeed at gmail.com> wrote:
+
+> I asked a while back if anyone had any NetBSD 0.8 or 0.9 archives.. I
+> thought I'd let the list know that I did manage to find NetBSD 0.9, and
+> using VMWare I've managed to revive it into something that Qemu can run.
+>
+> If anyone has VMWare and wants to stroll down memory lane, I've uploaded the
+> install diskettes here:
+> http://sourceforge.net/projects/bsd42/files/Install%20tapes/NetBSD/0.9/NetBSD%200.9%20i386%20floppies.zip/download
+>
+> And I've setup an archive with Qemu&  NetBSD all ready to go here:
+> http://sourceforge.net/projects/bsd42/files/4BSD%20under%20Windows/v0.4/NetBSD%200.9.zip/download
+>
+> If anyone wants to use their own qemu for their own platform, I've had to
+> modify the hw/pc.c and remove the NE2000 definition of 0x300,9 as irq 9 is
+> in use somewhere else in the emulator and it won't allow any sharing on
+> Irq9.. (Wasn't IRQ 9 shared anyways with the cascade controller???)
+>
+> At any rate, I built irc, lynx&  bzip2 on there, and they seem to function
+> just fine.
+>
+> Again if anyone has any lead on NetBSD 0.8 that'd be great, I'd like to save
+> these from the digitial dumpster....
+
+Maybe I'm totally dense, or something...?
+
+cvs -P :pserver:anoncvs at anoncvs.netbsd.org:/cvsroot co -R netbsd-0-8 src
+
+or substitute the tag netbsd-0-9 or netbsd-0-9-base if you need those 
+revisions. Nothing is going to disappear into a digital dumpster when 
+you have revision control systems...
+
+(There are bunch of more tags related to NetBSD 0.9 as well, if you want 
+to know, and you can get at any other version you want as well, just as 
+easily.)
+
+If you want binaries and not just sources, then it might be a bit more 
+tricky. But since you can build the system from the sources, I can't see 
+that this should be a big hurdle.
+
+	Johnny
+
+
+From reed at reedmedia.net  Thu Dec  2 21:27:48 2010
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Thu, 2 Dec 2010 05:27:48 -0600 (CST)
+Subject: [TUHS] NetBSD 0.9
+In-Reply-To: <4CF77ACB.40507@softjar.se>
+References: <mailman.1.1291255202.1100.tuhs@minnie.tuhs.org>
+	<4CF77ACB.40507@softjar.se>
+Message-ID: <alpine.NEB.2.01.1012020526200.18254@t1.m.reedmedia.net>
+
+> Maybe I'm totally dense, or something...?
+> 
+> cvs -P :pserver:anoncvs at anoncvs.netbsd.org:/cvsroot co -R netbsd-0-8 src
+
+
+ cvs -d :pserver:anoncvs at anoncvs.netbsd.org:/cvsroot co -r netbsd-0-9 \
+src/sys/kern/kern_exit.c
+
+(note I changed -P and -R to -d and -r respectively)
+
+ cat src/sys/kern/kern_exit.c
+
+
+From bqt at softjar.se  Fri Dec  3 01:16:12 2010
+From: bqt at softjar.se (Johnny Billquist)
+Date: Thu, 02 Dec 2010 16:16:12 +0100
+Subject: [TUHS] NetBSD 0.8
+In-Reply-To: <mailman.1.1289959202.23203.tuhs@minnie.tuhs.org>
+References: <mailman.1.1289959202.23203.tuhs@minnie.tuhs.org>
+Message-ID: <4CF7B83C.3090203@softjar.se>
+
+On 11/17/10 03:00, Jason Stevens<neozeed at gmail.com> wrote:
+
+> I don't suppose anyone has this kicking around, or any pre-release vax
+> images of netbsd?
+>
+> I did manage to get 1.2 installed on SIMH for what it's worth....
+
+Btw, fwiw, I'm pretty sure VAX only started working with NetBSD 0.9, and 
+the first machine supported was the VAX-11/750.
+
+	Johnny
+
+
+From neozeed at gmail.com  Fri Dec  3 01:26:07 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Thu, 2 Dec 2010 10:26:07 -0500
+Subject: [TUHS] NetBSD 0.8
+In-Reply-To: <4CF7B83C.3090203@softjar.se>
+References: <mailman.1.1289959202.23203.tuhs@minnie.tuhs.org>
+	<4CF7B83C.3090203@softjar.se>
+Message-ID: <AANLkTim8JJ7uLwqy2AnQ4kYLzQqDjrJao7QcranYRFEY@mail.gmail.com>
+
+I was reading something along those lines too, but the 0.9 that I've been
+able to locate doesn't include any vax directory under the kernel arch...
+I'm sure it's in CVS though as it didn't sound mainline support.........
+
+Sorry I forget where I was even reading that from, I think it was the
+wayback machine's versions of the NetBSD webpage.
+
+On Thu, Dec 2, 2010 at 10:16 AM, Johnny Billquist <bqt at softjar.se> wrote:
+
+> On 11/17/10 03:00, Jason Stevens<neozeed at gmail.com> wrote:
+>
+> I don't suppose anyone has this kicking around, or any pre-release vax
+>> images of netbsd?
+>>
+>> I did manage to get 1.2 installed on SIMH for what it's worth....
+>>
+>
+> Btw, fwiw, I'm pretty sure VAX only started working with NetBSD 0.9, and
+> the first machine supported was the VAX-11/750.
+>
+>        Johnny
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20101202/e942bae8/attachment.html>
+
+From bqt at softjar.se  Fri Dec  3 04:46:36 2010
+From: bqt at softjar.se (Johnny Billquist)
+Date: Thu, 02 Dec 2010 19:46:36 +0100
+Subject: [TUHS] NetBSD 0.8
+In-Reply-To: <AANLkTim8JJ7uLwqy2AnQ4kYLzQqDjrJao7QcranYRFEY@mail.gmail.com>
+References: <mailman.1.1289959202.23203.tuhs@minnie.tuhs.org>	<4CF7B83C.3090203@softjar.se>
+	<AANLkTim8JJ7uLwqy2AnQ4kYLzQqDjrJao7QcranYRFEY@mail.gmail.com>
+Message-ID: <4CF7E98C.4010302@softjar.se>
+
+Well, in my case I know, since I ran NetBSD 0.9 on a VAX... :-)
+And a 11/750 at that.
+
+But my hazy memory seems to tell me that the port didn't start working 
+until some time into 0.9. Looking at the archives, the merging of the 
+VAX code seems to have been at the 1.0 timeframe. Hmm, my bad... You 
+will not be able to pull 0.9 out from CVS then.
+
+You might want to try talking to ragge, but I suspect he might not have 
+any code laying around from the 0.9 timeframe either...
+
+	Johnny
+
+On 12/02/10 16:26, Jason Stevens wrote:
+> I was reading something along those lines too, but the 0.9 that I've
+> been able to locate doesn't include any vax directory under the kernel
+> arch... I'm sure it's in CVS though as it didn't sound mainline
+> support.........
+> Sorry I forget where I was even reading that from, I think it was the
+> wayback machine's versions of the NetBSD webpage.
+>
+> On Thu, Dec 2, 2010 at 10:16 AM, Johnny Billquist <bqt at softjar.se
+> <mailto:bqt at softjar.se>> wrote:
+>
+>     On 11/17/10 03:00, Jason Stevens<neozeed at gmail.com
+>     <mailto:neozeed at gmail.com>> wrote:
+>
+>         I don't suppose anyone has this kicking around, or any
+>         pre-release vax
+>         images of netbsd?
+>
+>         I did manage to get 1.2 installed on SIMH for what it's worth....
+>
+>
+>     Btw, fwiw, I'm pretty sure VAX only started working with NetBSD 0.9,
+>     and the first machine supported was the VAX-11/750.
+>
+>             Johnny
+>
+>
+
+
+
+From bqt at softjar.se  Fri Dec  3 20:28:35 2010
+From: bqt at softjar.se (Johnny Billquist)
+Date: Fri, 03 Dec 2010 11:28:35 +0100
+Subject: [TUHS] NetBSD 0.9
+In-Reply-To: <mailman.1.1291341601.16646.tuhs@minnie.tuhs.org>
+References: <mailman.1.1291341601.16646.tuhs@minnie.tuhs.org>
+Message-ID: <4CF8C653.10406@softjar.se>
+
+On 12/03/10 03:00, "Jeremy C. Reed"<reed at reedmedia.net> wrote:
+
+>> >  Maybe I'm totally dense, or something...?
+>> >
+>> >  cvs -P :pserver:anoncvs at anoncvs.netbsd.org:/cvsroot co -R netbsd-0-8 src
+>
+>   cvs -d :pserver:anoncvs at anoncvs.netbsd.org:/cvsroot co -r netbsd-0-9 \
+> src/sys/kern/kern_exit.c
+>
+> (note I changed -P and -R to -d and -r respectively)
+
+Wow. Did I really write that? :-)
+Thanks for the correction. I have no excuse.
+
+>   cat src/sys/kern/kern_exit.c
+
+Anything in particular we should look for?
+
+	Johnny
+
+
+From neozeed at gmail.com  Fri Dec  3 21:14:45 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Fri, 3 Dec 2010 06:14:45 -0500
+Subject: [TUHS] NetBSD 0.9
+In-Reply-To: <4CF8C653.10406@softjar.se>
+References: <mailman.1.1291341601.16646.tuhs@minnie.tuhs.org>
+	<4CF8C653.10406@softjar.se>
+Message-ID: <AANLkTikDXeXeYNrgpRmWcW1TuzQGS_Qf8_vQSK7O0d81@mail.gmail.com>
+
+This is by no means complete.....
+Although we do have kern_exit.c from NetBSD 0.9 and from 386BSD 0.0 pl24
+I'll have to mash things around to see what happens...  I didn't get a
+chance yesterday with some great white north type nation blocking
+ipsec.........
+
+/netbsd-0.8/src/src/bin/df/df.c
+/netbsd-0.8/src/src/include/ar.h
+/netbsd-0.8/src/src/include/assert.h
+/netbsd-0.8/src/src/include/ctype.h
+/netbsd-0.8/src/src/include/grp.h
+/netbsd-0.8/src/src/include/nlist.h
+/netbsd-0.8/src/src/include/protocols/dumprestore.h
+/netbsd-0.8/src/src/include/pwd.h
+/netbsd-0.8/src/src/include/setjmp.h
+/netbsd-0.8/src/src/include/time.h
+/netbsd-0.8/src/src/include/utmp.h
+/netbsd-0.8/src/src/lib/libc/gen/ctype_.c
+/netbsd-0.8/src/src/lib/libc/gen/isctype.c
+/netbsd-0.8/src/src/sbin/restore/dirs.c
+/netbsd-0.8/src/src/sbin/restore/pathnames.h
+/netbsd-0.8/src/src/sbin/restore/restore.h
+/netbsd-0.8/src/src/sbin/restore/tape.c
+/netbsd-0.8/src/src/sys/arch/i386/i386/conf.c
+/netbsd-0.8/src/src/sys/conf/param.c
+/netbsd-0.8/src/src/sys/kern/init_main.c
+/netbsd-0.8/src/src/sys/kern/kern_acct.c
+/netbsd-0.8/src/src/sys/kern/kern_clock.c
+/netbsd-0.8/src/src/sys/kern/kern_descrip.c
+/netbsd-0.8/src/src/sys/kern/kern_exit.c
+/netbsd-0.8/src/src/sys/kern/kern_fork.c
+/netbsd-0.8/src/src/sys/kern/kern_prot.c
+/netbsd-0.8/src/src/sys/kern/kern_resource.c
+/netbsd-0.8/src/src/sys/kern/kern_sig.c
+/netbsd-0.8/src/src/sys/kern/kern_subr.c
+/netbsd-0.8/src/src/sys/kern/kern_synch.c
+/netbsd-0.8/src/src/sys/kern/subr_disk.c
+/netbsd-0.8/src/src/sys/kern/subr_prf.c
+/netbsd-0.8/src/src/sys/kern/sys_generic.c
+/netbsd-0.8/src/src/sys/kern/sys_process.c
+/netbsd-0.8/src/src/sys/kern/sysv_shm.c
+/netbsd-0.8/src/src/sys/kern/tty.c
+/netbsd-0.8/src/src/sys/kern/tty_conf.c
+/netbsd-0.8/src/src/sys/kern/vfs_lookup.c
+/netbsd-0.8/src/src/sys/kern/vfs_subr.c
+/netbsd-0.8/src/src/sys/kern/vfs_syscalls.c
+/netbsd-0.8/src/src/sys/kern/vfs_vnops.c
+/netbsd-0.8/src/src/sys/sys/acct.h
+/netbsd-0.8/src/src/sys/sys/buf.h
+/netbsd-0.8/src/src/sys/sys/callout.h
+/netbsd-0.8/src/src/sys/sys/conf.h
+/netbsd-0.8/src/src/sys/sys/dkstat.h
+/netbsd-0.8/src/src/sys/sys/errno.h
+/netbsd-0.8/src/src/sys/sys/exec.h
+/netbsd-0.8/src/src/sys/sys/fcntl.h
+/netbsd-0.8/src/src/sys/sys/ioctl.h
+/netbsd-0.8/src/src/sys/sys/ioctl_compat.h
+/netbsd-0.8/src/src/sys/sys/ipc.h
+/netbsd-0.8/src/src/sys/sys/kernel.h
+/netbsd-0.8/src/src/sys/sys/param.h
+/netbsd-0.8/src/src/sys/sys/proc.h
+/netbsd-0.8/src/src/sys/sys/shm.h
+/netbsd-0.8/src/src/sys/sys/signal.h
+/netbsd-0.8/src/src/sys/sys/stat.h
+/netbsd-0.8/src/src/sys/sys/systm.h
+/netbsd-0.8/src/src/sys/sys/timeb.h
+/netbsd-0.8/src/src/sys/sys/times.h
+/netbsd-0.8/src/src/sys/sys/tty.h
+/netbsd-0.8/src/src/sys/sys/ttydefaults.h
+/netbsd-0.8/src/src/sys/sys/types.h
+/netbsd-0.8/src/src/sys/ufs/dir.h
+/netbsd-0.8/src/src/sys/ufs/ufs_lookup.c
+/netbsd-0.8/src/src/sys/ufs/ufs_vfsops.c
+/netbsd-0.8/src/src/usr.bin/m4/serv.c
+/netbsd-0.8/src/src/usr.bin/mesg/mesg.c
+/netbsd-0.8/src/src/usr.sbin/lpr/common_source/common.c
+/netbsd-0.8/src/src/usr.sbin/lpr/lpr/lpr.c
+
+
+On Fri, Dec 3, 2010 at 5:28 AM, Johnny Billquist <bqt at softjar.se> wrote:
+
+> On 12/03/10 03:00, "Jeremy C. Reed"<reed at reedmedia.net> wrote:
+>
+>  >  Maybe I'm totally dense, or something...?
+>>> >
+>>> >  cvs -P :pserver:anoncvs at anoncvs.netbsd.org:/cvsroot co -R netbsd-0-8
+>>> src
+>>>
+>>
+>>  cvs -d :pserver:anoncvs at anoncvs.netbsd.org:/cvsroot co -r netbsd-0-9 \
+>> src/sys/kern/kern_exit.c
+>>
+>> (note I changed -P and -R to -d and -r respectively)
+>>
+>
+> Wow. Did I really write that? :-)
+> Thanks for the correction. I have no excuse.
+>
+>
+>   cat src/sys/kern/kern_exit.c
+>>
+>
+> Anything in particular we should look for?
+>
+>        Johnny
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20101203/66fce70e/attachment.html>
+
+From dugo at xs4all.nl  Fri Dec  3 22:10:47 2010
+From: dugo at xs4all.nl (Jacob Goense)
+Date: Fri, 3 Dec 2010 13:10:47 +0100
+Subject: [TUHS] NetBSD 0.8/0.9
+In-Reply-To: <AANLkTikDXeXeYNrgpRmWcW1TuzQGS_Qf8_vQSK7O0d81@mail.gmail.com>
+References: <mailman.1.1291341601.16646.tuhs@minnie.tuhs.org>
+	<4CF8C653.10406@softjar.se>
+	<AANLkTikDXeXeYNrgpRmWcW1TuzQGS_Qf8_vQSK7O0d81@mail.gmail.com>
+Message-ID: <cd8b98f0028b2465fcbb5acfb556aa35.squirrel@webmail.xs4all.nl>
+
+> This is by no means complete.....
+> Although we do have kern_exit.c from NetBSD 0.9 and from 386BSD 0.0 pl24
+> I'll have to mash things around to see what happens...  I didn't get a
+> chance yesterday with some great white north type nation blocking
+> ipsec.........
+[snip list of missing 0.8 source files]
+
+You mean 386BSD 0.1 pl24 right, that, 0.9, the Net/2 tarball and the CVS
+comments might help in rebuilding something resembling NetBSD 0.8.
+
+Sounds a bit like back breeding extinct species ;)
+
+/Jacob
+
+
+
+From bqt at softjar.se  Fri Dec  3 22:49:04 2010
+From: bqt at softjar.se (Johnny Billquist)
+Date: Fri, 03 Dec 2010 13:49:04 +0100
+Subject: [TUHS] NetBSD 0.8/0.9
+In-Reply-To: <cd8b98f0028b2465fcbb5acfb556aa35.squirrel@webmail.xs4all.nl>
+References: <mailman.1.1291341601.16646.tuhs@minnie.tuhs.org>
+	<4CF8C653.10406@softjar.se>
+	<AANLkTikDXeXeYNrgpRmWcW1TuzQGS_Qf8_vQSK7O0d81@mail.gmail.com>
+	<cd8b98f0028b2465fcbb5acfb556aa35.squirrel@webmail.xs4all.nl>
+Message-ID: <4CF8E740.5000804@softjar.se>
+
+On 12/03/10 13:10, Jacob Goense wrote:
+>> This is by no means complete.....
+>> Although we do have kern_exit.c from NetBSD 0.9 and from 386BSD 0.0 pl24
+>> I'll have to mash things around to see what happens...  I didn't get a
+>> chance yesterday with some great white north type nation blocking
+>> ipsec.........
+> [snip list of missing 0.8 source files]
+>
+> You mean 386BSD 0.1 pl24 right, that, 0.9, the Net/2 tarball and the CVS
+> comments might help in rebuilding something resembling NetBSD 0.8.
+>
+> Sounds a bit like back breeding extinct species ;)
+
+If we disregard VAX support, have anyone looked at what NetBSD-0.8 looks 
+like in the CVS repository? There exists a netbsd-0-8 tag, after all.
+
+	Johnny
+
+
+
+From neozeed at gmail.com  Fri Dec  3 23:28:47 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Fri, 3 Dec 2010 08:28:47 -0500
+Subject: [TUHS] NetBSD 0.8/0.9
+In-Reply-To: <4CF8E740.5000804@softjar.se>
+References: <mailman.1.1291341601.16646.tuhs@minnie.tuhs.org>
+	<4CF8C653.10406@softjar.se>
+	<AANLkTikDXeXeYNrgpRmWcW1TuzQGS_Qf8_vQSK7O0d81@mail.gmail.com>
+	<cd8b98f0028b2465fcbb5acfb556aa35.squirrel@webmail.xs4all.nl>
+	<4CF8E740.5000804@softjar.se>
+Message-ID: <AANLkTikEkgf9JVpPynLT1J4G9ubJtD99ZSWM2kcqCy7G@mail.gmail.com>
+
+>
+> If we disregard VAX support, have anyone looked at what NetBSD-0.8 looks
+> like in the CVS repository? There exists a netbsd-0-8 tag, after all.
+>
+>        Johnny
+>
+> I used the web interface, and there is just a lot of intentionality removed
+stuff..
+
+for example, back to kern_exit:
+
+Revision *1.1.1.1* *(vendor branch)*, *Sun Mar 21 09:46:31 1993 UTC* (17
+years, 8 months ago) by *cgd*
+Branch: *WFJ-920714, CSRG*
+CVS Tags: *patchkit-0-2-2, netbsd-alpha-1, netbsd-0-8, WFJ-386bsd-01*
+Changes since *1.1: +1 -1 lines*
+
+initial import of 386bsd-0.1 sources
+
+------------------------------
+
+revision 1.1.1.1 intentionally removed
+
+
+Also FWIW back to the VAX, it doesn't seem to appear until 1.0 ..?
+
+
+File: [cvs.netbsd.org]
+<http://cvsweb.netbsd.org/bsdweb.cgi/?only_with_tag=MAIN#dirlist> /
+src <http://cvsweb.netbsd.org/bsdweb.cgi/src/?only_with_tag=MAIN#dirlist>
+/ sys <http://cvsweb.netbsd.org/bsdweb.cgi/src/sys/?only_with_tag=MAIN#dirlist>
+/ arch <http://cvsweb.netbsd.org/bsdweb.cgi/src/sys/arch/?only_with_tag=MAIN#dirlist>
+/ vax <http://cvsweb.netbsd.org/bsdweb.cgi/src/sys/arch/vax/?only_with_tag=MAIN#dirlist>
+/ conf <http://cvsweb.netbsd.org/bsdweb.cgi/src/sys/arch/vax/conf/?only_with_tag=MAIN#dirlist>
+/ GENERIC <http://cvsweb.netbsd.org/bsdweb.cgi/src/sys/arch/vax/conf/GENERIC?only_with_tag=MAIN>
+(*download* <http://cvsweb.netbsd.org/bsdweb.cgi/~checkout~/src/sys/arch/vax/conf/GENERIC?rev=1.1&only_with_tag=MAIN>)
+
+Revision *1.1*, *Tue Aug 2 20:19:21 1994 UTC* (16 years, 4 months ago)
+by *ragge*
+Branch: *MAIN*
+CVS Tags: *netbsd-1-0-base, netbsd-1-0-RELEASE, netbsd-1-0-PATCH1,
+netbsd-1-0-PATCH06, netbsd-1-0-PATCH05, netbsd-1-0-PATCH04,
+netbsd-1-0-PATCH03, netbsd-1-0-PATCH02, netbsd-1-0-PATCH0, netbsd-1-0*
+
+Initial VAX port merging.
+
+#
+# GENERIC VAX, currently only supports 11/750 anyway.
+#	$Id: GENERIC,v 1.1 1994/08/02 20:19:21 ragge Exp $
+#
+
+include "std.vax"
+
+options         "VAX750"
+
+options		SWAPPAGER, DEVPAGER, VNODEPAGER
+options         INET
+options		FFS
+options		COMPAT_09
+maxusers	16
+
+options           GENERIC
+
+config          vmunix          swap generic
+
+uba0		at nexus ?
+
+uda0		at uba?	csr 0172150
+ra0		at uda0 drive 0
+
+de0		at uba? csr 0174510
+
+pseudo-device   loop
+pseudo-device   pty	48
+
+
+
+Which would be right in how you mentioned it being only for the 11/750......
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20101203/ffccc259/attachment.html>
+
+From neozeed at gmail.com  Mon Dec  6 00:53:33 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sun, 5 Dec 2010 09:53:33 -0500
+Subject: [TUHS] claunia.com
+Message-ID: <AANLkTinOS+atR0Rmaw0-0H=CrCk9LMWoFtm+OdBSrqA4@mail.gmail.com>
+
+I hate to post this publicly, but Natalia's email address that I have
+is also on the domain... Anyways it's expired, you may want to renew
+clanuia.com.
+
+
+I'm sorry for posting this publicly, wasting peoples time bandwidth etc etc.....
+
+Jason
+
+
+From neozeed at gmail.com  Mon Dec  6 02:54:17 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sun, 5 Dec 2010 11:54:17 -0500
+Subject: [TUHS] NetBSD 0.8 kernel builds & runs!
+Message-ID: <AANLkTik40yJ5CDLEoTFr1K6t7-z4HBM5tj3XQmRY_YB4@mail.gmail.com>
+
+I had to use a good chunk of 386 BSD pl 23 to fill in the missing
+parts from the CVS archive of the kernel, but I got it to build!
+
+>From the NetBSD 0.8 release/announcement it doe say:
+
+The source for NetBSD is derived from 386BSD 0.1, patched
+with the 0.2.2 patch kit.  In addition, many programs in
+UCB's second BSD Networking Software Release which were
+missing from 386BSD have been integrated into NetBSD, some
+of the changes from the upcoming 0.2.3 patch kit have been
+included, and many local additions and bug fixes have
+been performed.
+
+So I'm assuming this wouldn't be too far off then.
+
+So for the curious, here is a dmesg:
+
+386BSD 0.1 (GENERICISA) #2: Sun Dec  5 13:30:14 PST 2010
+  root at branch.oldbsd.org:/usr/src/sys.386bsd/arch/compile/J
+real mem  = 67104768
+avail mem = 64663552
+pc0 at 0x60-0x6f irq 1 on isa
+pc0: color
+wdc0 at 0x1f0-0x1f7 irq 14 on isa
+wdc0: <QEMU HARDDISK>
+wd0 at wdc0 slave 0
+fdc0 at 0x3f0-0x3f7 irq 6 drq 2 on isa
+ne0 at 0x320 irq 10 on isa
+ ethernet address 52:54:00:12:34:56
+npx0 at 0xf0 irq 13 on isa
+wdc0: extra interrupt
+wdc0: extra interrupt
+ISA strayintr 4004ff
+ISA strayintr 4004ff
+ISA strayintr 4004ff
+ISA strayintr 2ff
+ISA strayintr 2ff
+ISA strayintr 2ff
+ISA strayintr 2ff
+ISA strayintr 2ff
+ISA strayintr 2ff
+ISA strayintr 2ff
+Too many ISA strayintr not logging any more
+
+I'm not sure if the 386BSD name is hanging around because of all the
+386 BSD files I included of if it wasn't renamed in NetBSD 0.8 ...  I
+can give anyone the list of files, steps etc, or it may be easier to
+just download the merged & built sources here:
+
+http://vpsland.superglobalmegacorp.com/install/NetBSD/NetBSD-0.8/Resurrection/kernel08-build.tar.gz
+
+Thanks to everyone for providing the CVS and a few hints on what was
+going on with it..!
+
+
+From neozeed at gmail.com  Mon Dec  6 11:05:21 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sun, 5 Dec 2010 20:05:21 -0500
+Subject: [TUHS] NetBSD 0.8 built
+Message-ID: <AANLkTim12zz2CnsOUjiaReUhvs_imsgPofuRwr89bpUK@mail.gmail.com>
+
+well I think I've flogged this dead horse enough... :)
+
+Basically I've mashed in as much as I could figure out, and got the
+majority of a make install (build world?) on this thing to work..  I
+still don't know where /usr/bin/install comes from as I couldn't
+readily identify the source in NetBSD 0.9 or any of the 386 BSD's...
+I'm probably looking in the wrong place or maybe it's just from Net/2?
+I didn't spend too long trying to work out stuff like that.
+
+If anyone wants, it's in a Qemu runnable image here:
+http://sourceforge.net/projects/bsd42/files/4BSD%20under%20Windows/v0.4/NetBSD%200.8.zip/download
+
+It is just under 50MB, which I guess isn't bad since it's source and binaries..
+
+I've manually copied over a few things from etc, and it seems that
+NetBSD 0.8 still identifies itself as 386BSD.. did anyone run 0.8 and
+remember?  The CVS history on /etc/motd seems to have the 0.8 still
+reporting as 386BSD which didn't change until 0.9 ...
+
+
+From imp at bsdimp.com  Mon Dec  6 11:43:32 2010
+From: imp at bsdimp.com (Warner Losh)
+Date: Sun, 05 Dec 2010 18:43:32 -0700
+Subject: [TUHS] NetBSD 0.8 built
+In-Reply-To: <AANLkTim12zz2CnsOUjiaReUhvs_imsgPofuRwr89bpUK@mail.gmail.com>
+References: <AANLkTim12zz2CnsOUjiaReUhvs_imsgPofuRwr89bpUK@mail.gmail.com>
+Message-ID: <4CFC3FC4.9070505@bsdimp.com>
+
+On 12/05/2010 18:05, Jason Stevens wrote:
+>   I
+> still don't know where /usr/bin/install comes from as I couldn't
+> readily identify the source in NetBSD 0.9 or any of the 386 BSD's...
+src/usr.bin/xinstall, of course :)
+
+Warner
+
+
+
+From neozeed at gmail.com  Mon Dec  6 11:56:04 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sun, 5 Dec 2010 20:56:04 -0500
+Subject: [TUHS] NetBSD 0.8 built
+In-Reply-To: <4CFC3FC4.9070505@bsdimp.com>
+References: <AANLkTim12zz2CnsOUjiaReUhvs_imsgPofuRwr89bpUK@mail.gmail.com>
+	<4CFC3FC4.9070505@bsdimp.com>
+Message-ID: <AANLkTikBSuaxaXPppdsrf0UGsFP2jnns0t3D6xs2OvCw@mail.gmail.com>
+
+Thanks!  .. silly me looking for 'install'....!!!!
+
+On Sun, Dec 5, 2010 at 8:43 PM, Warner Losh <imp at bsdimp.com> wrote:
+> On 12/05/2010 18:05, Jason Stevens wrote:
+>>
+>>  I
+>> still don't know where /usr/bin/install comes from as I couldn't
+>> readily identify the source in NetBSD 0.9 or any of the 386 BSD's...
+>
+> src/usr.bin/xinstall, of course :)
+>
+> Warner
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+From neozeed at gmail.com  Tue Dec  7 17:12:55 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Tue, 7 Dec 2010 02:12:55 -0500
+Subject: [TUHS] 386BSD 0.0 booting on Bochs
+Message-ID: <AANLkTim8=jba-CsdpONz5hnqJqa5UwNK-eHJfUZLYFpC@mail.gmail.com>
+
+For anyone that is even remotely interested, I found a way to 'cheat'
+the install process, and I've gotten 386 BSD 0.0 to install under
+bochs.  Qemu is convinced it can't read the disk for a kernel....
+
+But it does work, well as well as 386BSD 0.0 can work.
+
+http://vpsland.superglobalmegacorp.com/install/386BSD/386bsd-0.0/bochs/
+
+I'll try to clean up what I can later.......
+
+
+From reed at reedmedia.net  Sat Dec 11 02:23:30 2010
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Fri, 10 Dec 2010 10:23:30 -0600 (CST)
+Subject: [TUHS] NetBSD 0.9
+In-Reply-To: <AANLkTincWxZfdb_k=fLRsut5B+OeNDVL+4VAm6TAPFND@mail.gmail.com>
+References: <AANLkTincWxZfdb_k=fLRsut5B+OeNDVL+4VAm6TAPFND@mail.gmail.com>
+Message-ID: <alpine.NEB.2.01.1012101022030.2051@t1.m.reedmedia.net>
+
+On Wed, 1 Dec 2010, Jason Stevens wrote:
+
+> At any rate, I built irc, lynx & bzip2 on there, and they seem to 
+> function just fine.
+
+Were those were modern/recent releases of irc, lynx, and bzip2 built 
+using old NetBSD 0.9 (old gcc, old libc, etc)?
+
+
+From neozeed at gmail.com  Sat Dec 11 03:20:51 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Fri, 10 Dec 2010 12:20:51 -0500
+Subject: [TUHS] NetBSD 0.9
+In-Reply-To: <alpine.NEB.2.01.1012101022030.2051@t1.m.reedmedia.net>
+References: <AANLkTincWxZfdb_k=fLRsut5B+OeNDVL+4VAm6TAPFND@mail.gmail.com>
+	<alpine.NEB.2.01.1012101022030.2051@t1.m.reedmedia.net>
+Message-ID: <AANLkTi=s-BNtwAP0WDjRe3pG3pCO+KBvX2av+XV2q=qH@mail.gmail.com>
+
+These are all on NetBSD 0.9 i386 with no modifications to the system,
+and they just represent source I had quickly on hand...  NetBSD 0.9
+uses gcc 2.4.5
+
+I have to admit, I'm almost thinking of something like this for
+embeded systems, having more then 4mb of ram is common place now, and
+hell I like the idea of static exe's so I don't have dll issues... As
+the dynamic libs didn't come into play until NetBSD 0.9, right?
+
+netbsd# dmesg
+NetBSD 0.9 (QEMU) #0: Wed Dec  1 14:58:34 PST 2010
+ root at netbsd:/usr/src/sys/arch/i386/compile/QEMU
+CPU: i486DX (486-class CPU)
+real mem  = 67104768
+avail mem = 64659456
+using 153 buffers containing 1257472 bytes of memory
+pc0 at 0x60-0x6f irq 1 on isa
+pc0: color
+wdc0 at 0x1f0-0x1f7 irq 14 on isa
+wd0 at wdc0 targ 0: 511MB 1040 cyl, 16 head, 63 sec <QEMU HARDDISK>
+fdc0 at 0x3f0-0x3f7 irq 6 drq 2 on isa
+ne0 at 0x320-0x32f irq 10 on isa
+ne0: ne2000 ethernet address 52:54:00:12:34:56
+npx0 at 0xf0-0xff on isa
+npx0: using exception 16
+biomask 4040 ttymask 2 netmask 400 impmask 402
+wdc0: extra interrupt
+wdc0: extra interrupt
+
+
+
+netbsd# lynx -version
+
+Lynx Version 2.8.1rel.2 (1998)
+Copyrights held by the University of Kansas, CERN, and other contributors.
+Distributed under the GNU General Public License.
+See http://lynx.browser.org/ and the online help for more information.
+
+netbsd# irc --version
+ircII version 4.4 (19971207)
+
+netbsd# bzip2 --version
+bzip2, a block-sorting file compressor.  Version 1.0.6, 6-Sept-2010.
+
+  Copyright (C) 1996-2010 by Julian Seward.
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms set out in the LICENSE file, which is included
+  in the bzip2-1.0.6 source distribution.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  LICENSE file for more details.
+
+
+On Fri, Dec 10, 2010 at 11:23 AM, Jeremy C. Reed <reed at reedmedia.net> wrote:
+> On Wed, 1 Dec 2010, Jason Stevens wrote:
+>
+>> At any rate, I built irc, lynx & bzip2 on there, and they seem to
+>> function just fine.
+>
+> Were those were modern/recent releases of irc, lynx, and bzip2 built
+> using old NetBSD 0.9 (old gcc, old libc, etc)?
+>
+
+

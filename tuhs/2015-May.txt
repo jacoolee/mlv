@@ -1,0 +1,2154 @@
+From cubexyz at gmail.com  Tue May  5 06:23:30 2015
+From: cubexyz at gmail.com (Mark Longridge)
+Date: Mon, 4 May 2015 16:23:30 -0400
+Subject: [TUHS] Had a crack at assembling the Unix v1 kernel
+Message-ID: <CADxT5N4dN2VNd5npqWQ_1Gf75WiMaRxP7e_RKP+NxOzTSGJt2Q@mail.gmail.com>
+
+Ok, I looked around for the instructions on how to assemble the Unix
+v1 kernel and couldn't find anything so I tried:
+
+as u0.s u1.s u2.s u3.s u4.s u5.s u6.s u7.s u8.s u9.s ux.s
+
+and that made a.out and I stripped it and it looked like it was around
+the same size as /etc/core (it was 16400 bytes rather than 16448 for
+some reason).
+
+I'm not sure where Unix v1 is loading the kernel from. I'm guessing
+it's /etc/core and if that's the case then I must have been successful
+building the kernel. In all the other versions of Unix there was
+always a file like 'unix' in the root directory but I guess Unix v1
+was different?
+
+Mark
+
+
+From jnc at mercury.lcs.mit.edu  Tue May  5 06:44:45 2015
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon,  4 May 2015 16:44:45 -0400 (EDT)
+Subject: [TUHS] Had a crack at assembling the Unix v1 kernel
+Message-ID: <20150504204445.5859E18C0DB@mercury.lcs.mit.edu>
+
+    > From: Mark Longridge <cubexyz at gmail.com>
+
+    > I'm not sure where Unix v1 is loading the kernel from. .. In all the
+    > other versions of Unix there was always a file like 'unix' in the root
+    > directory but I guess Unix v1 was different?
+
+I don't know much about the other versions, but it would all depend on what's
+in the bootstrap (usually contained in block 0 of drive 0, at least on older
+11's). In V6, the bootstrap in block 0 prompts for a file name, and when that
+is entered, it loads that file into memory and starts it. (It doesn't have
+to be in the root directory, IIRC - I'm pretty sure the bootstrap will accept
+full path names.)
+
+How did you create a V1 filesystem? (I don't know, BTW, what they look like -
+is that documented anywhere?) It's probably not the same layout as the V6
+(which I think is the same as V5).
+
+	Noel
+
+
+From dave at horsfall.org  Tue May  5 07:04:17 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Tue, 5 May 2015 07:04:17 +1000 (EST)
+Subject: [TUHS] Had a crack at assembling the Unix v1 kernel
+In-Reply-To: <20150504204445.5859E18C0DB@mercury.lcs.mit.edu>
+References: <20150504204445.5859E18C0DB@mercury.lcs.mit.edu>
+Message-ID: <alpine.BSF.2.11.1505050700280.58219@aneurin.horsfall.org>
+
+On Mon, 4 May 2015, Noel Chiappa wrote:
+
+> I don't know much about the other versions, but it would all depend on 
+> what's in the bootstrap (usually contained in block 0 of drive 0, at 
+> least on older 11's). In V6, the bootstrap in block 0 prompts for a file 
+> name, and when that is entered, it loads that file into memory and 
+> starts it. (It doesn't have to be in the root directory, IIRC - I'm 
+> pretty sure the bootstrap will accept full path names.)
+
+I'm pretty sure that it didn't have the full namei() functionality, so all 
+files had to be in the root directory.  Of course, I've been wrong 
+before...
+
+We were constantly writing boot blocks to get the mostest out of the
+leastest, so I suppose it was possible.
+
+-- 
+Dave Horsfall DTM (VK2KFU)   "Those who don't understand security will suffer."
+http://www.horsfall.org/spam.html (and check the home page whilst you're there)
+
+
+From wkt at tuhs.org  Tue May  5 07:55:49 2015
+From: wkt at tuhs.org (Warren Toomey)
+Date: Tue, 5 May 2015 07:55:49 +1000
+Subject: [TUHS] Had a crack at assembling the Unix v1 kernel
+In-Reply-To: <CADxT5N4dN2VNd5npqWQ_1Gf75WiMaRxP7e_RKP+NxOzTSGJt2Q@mail.gmail.com>
+References: <CADxT5N4dN2VNd5npqWQ_1Gf75WiMaRxP7e_RKP+NxOzTSGJt2Q@mail.gmail.com>
+Message-ID: <20150504215548.GA3824@www.oztivo.net>
+
+On Mon, May 04, 2015 at 04:23:30PM -0400, Mark Longridge wrote:
+> Ok, I looked around for the instructions on how to assemble the Unix
+> v1 kernel and couldn't find anything so I tried:
+> 
+> as u0.s u1.s u2.s u3.s u4.s u5.s u6.s u7.s u8.s u9.s ux.s
+
+Have a look here: https://code.google.com/p/unix-jun72/
+
+This is the effort to recover the v1 kernel and make a working system.
+
+Cheers, Warren
+
+
+From jnc at mercury.lcs.mit.edu  Tue May  5 07:48:19 2015
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon,  4 May 2015 17:48:19 -0400 (EDT)
+Subject: [TUHS] Had a crack at assembling the Unix v1 kernel
+Message-ID: <20150504214819.5EAC618C0DE@mercury.lcs.mit.edu>
+
+    > From: Dave Horsfall <dave at horsfall.org>
+
+    >> In V6, the bootstrap in block 0 prompts for a file name, and when that
+    >> is entered, it loads that file into memory and starts it. (It doesn't
+    >> have to be in the root directory, IIRC - I'm pretty sure the bootstrap
+    >> will accept full path names.)
+
+    > I'm pretty sure that it didn't have the full namei() functionality, so
+    > all files had to be in the root directory.
+
+It depends on what you mean by the first "it" above - if you meant 'V6', then
+no. From the Distribution V6's /src/mdec/fsboot.s:
+		
+  / read in path name
+  / breaking on '/' into 14 ch names
+
+The process of breaking the name up into segments, and then later finding
+each name in the appropriate directory, can be seen. The code is kind of
+obscure, but if you look at the RL bootstap I dis-assembled:
+
+  http://ana-3.lcs.mit.edu/~jnc/tech/unix/rlboot.s
+
+it's pretty much the same code, and a little better commented in the 'read
+in directories' part.
+
+	Noel
+
+
+From cubexyz at gmail.com  Tue May  5 10:29:34 2015
+From: cubexyz at gmail.com (Mark Longridge)
+Date: Mon, 4 May 2015 20:29:34 -0400
+Subject: [TUHS] Had a crack at assembling the Unix v1 kernel
+In-Reply-To: <alpine.BSF.2.11.1505050700280.58219@aneurin.horsfall.org>
+References: <20150504204445.5859E18C0DB@mercury.lcs.mit.edu>
+ <alpine.BSF.2.11.1505050700280.58219@aneurin.horsfall.org>
+Message-ID: <CADxT5N5oZEeZrSv-SRjmAL843COxuhzuDYucKFUcuiJDNO9+xQ@mail.gmail.com>
+
+I just tried it with my Unix v5 and v6, never touched the boot block
+in either case.
+
+v5: will not accept the kernel filename in a subdirectory.
+
+v6: accepted the kernel filename in a subdirectory.
+
+Mark
+
+On 5/4/15, Dave Horsfall <dave at horsfall.org> wrote:
+> On Mon, 4 May 2015, Noel Chiappa wrote:
+>
+>> I don't know much about the other versions, but it would all depend on
+>> what's in the bootstrap (usually contained in block 0 of drive 0, at
+>> least on older 11's). In V6, the bootstrap in block 0 prompts for a file
+>> name, and when that is entered, it loads that file into memory and
+>> starts it. (It doesn't have to be in the root directory, IIRC - I'm
+>> pretty sure the bootstrap will accept full path names.)
+>
+> I'm pretty sure that it didn't have the full namei() functionality, so all
+> files had to be in the root directory.  Of course, I've been wrong
+> before...
+>
+> We were constantly writing boot blocks to get the mostest out of the
+> leastest, so I suppose it was possible.
+>
+> --
+> Dave Horsfall DTM (VK2KFU)   "Those who don't understand security will
+> suffer."
+> http://www.horsfall.org/spam.html (and check the home page whilst you're
+> there)
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+From jnc at mercury.lcs.mit.edu  Tue May  5 22:24:33 2015
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Tue,  5 May 2015 08:24:33 -0400 (EDT)
+Subject: [TUHS] Had a crack at assembling the Unix v1 kernel
+Message-ID: <20150505122433.D74B118C0C5@mercury.lcs.mit.edu>
+
+    > From: Mark Longridge
+
+    > I'm not sure where Unix v1 is loading the kernel from. 
+
+    > From: Warren Toomey
+
+    > Have a look here: https://code.google.com/p/unix-jun72/
+
+Thanks for the pointer! From poking around there, it looks like V1 had
+special 'cold boot' and 'warm boot' disk partitions.
+
+I wonder why they lost the 'warm boot' capability in later versions? Maybe it
+became reliable enough that the extra complexity of supporting it wasn't
+worth it?
+
+	Noel
+
+
+From ron at ronnatalie.com  Wed May  6 03:35:48 2015
+From: ron at ronnatalie.com (Ronald Natalie)
+Date: Tue, 5 May 2015 13:35:48 -0400
+Subject: [TUHS] Had a crack at assembling the Unix v1 kernel
+In-Reply-To: <20150504214819.5EAC618C0DE@mercury.lcs.mit.edu>
+References: <20150504214819.5EAC618C0DE@mercury.lcs.mit.edu>
+Message-ID: <68A00AF8-7201-469E-9A0A-F82877E1B20F@ronnatalie.com>
+
+I find it amusing that the listing includes a copy of the filesystem as a bunch of assembler directives.
+
+
+
+From arnold at skeeve.com  Mon May 11 18:20:40 2015
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Mon, 11 May 2015 11:20:40 +0300
+Subject: [TUHS] reading 9 track tapes?
+Message-ID: <201505110820.t4B8Kec5013263@skeeve.com>
+
+Hi.
+
+Can anyone still read 9 track tapes? We just uncovered two that date
+from my wife's time in grad school, circa 1989 - 1990.  They would
+be tar tapes.
+
+Thanks!
+
+Arnold
+
+
+From arnold at skeeve.com  Mon May 11 18:19:32 2015
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Mon, 11 May 2015 11:19:32 +0300
+Subject: [TUHS] Are the O'Reilly X books worth hanging onto?
+Message-ID: <201505110819.t4B8JWc0013238@skeeve.com>
+
+Hello All.
+
+I have a full set of the O'Reilly X reference manuals - Volumes 1-5, 6a
+and 6b. Also "The X Window System In A Nutshell". These are all from
+like the mid-1990s.
+
+Are they worth hanging onto?
+
+If not, does anyone on this list want them?  If so, I'll send them for
+the cost of postage from Israel.
+
+Thanks,
+
+Arnold
+
+
+From aps at ieee.org  Tue May 12 01:07:04 2015
+From: aps at ieee.org (Armando Stettner)
+Date: Mon, 11 May 2015 08:07:04 -0700
+Subject: [TUHS] reading 9 track tapes?
+In-Reply-To: <201505110820.t4B8Kec5013263@skeeve.com>
+References: <201505110820.t4B8Kec5013263@skeeve.com>
+Message-ID: <B5DE3D31-9C3D-4D9C-807A-58B1F0197C43@ieee.org>
+
+How about the computer museum in Mountain View or Paul Allen's computer museum (with many working antiques) in Seattle?
+
+   aps
+
+Sent from my iPad
+
+> On May 11, 2015, at 01:20, Aharon Robbins <arnold at skeeve.com> wrote:
+> 
+> Hi.
+> 
+> Can anyone still read 9 track tapes? We just uncovered two that date
+> from my wife's time in grad school, circa 1989 - 1990.  They would
+> be tar tapes.
+> 
+> Thanks!
+> 
+> Arnold
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+> 
+
+
+From dave at horsfall.org  Tue May 12 02:35:46 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Tue, 12 May 2015 02:35:46 +1000 (EST)
+Subject: [TUHS] Are the O'Reilly X books worth hanging onto?
+In-Reply-To: <201505110819.t4B8JWc0013238@skeeve.com>
+References: <201505110819.t4B8JWc0013238@skeeve.com>
+Message-ID: <alpine.BSF.2.11.1505120233220.54716@aneurin.horsfall.org>
+
+On Mon, 11 May 2015, Aharon Robbins wrote:
+
+> I have a full set of the O'Reilly X reference manuals - Volumes 1-5, 6a 
+> and 6b. Also "The X Window System In A Nutshell". These are all from 
+> like the mid-1990s.
+> 
+> Are they worth hanging onto?
+
+In general I've found the O'Reilly books to be superb, but the "X" ones 
+will be a little dated by now (I once had that set).
+
+-- 
+Dave Horsfall DTM (VK2KFU)   "Those who don't understand security will suffer."
+http://www.horsfall.org/spam.html (and check the home page whilst you're there)
+
+
+From jnc at mercury.lcs.mit.edu  Tue May 12 03:18:56 2015
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon, 11 May 2015 13:18:56 -0400 (EDT)
+Subject: [TUHS] reading 9 track tapes?
+Message-ID: <20150511171856.A757518C0FC@mercury.lcs.mit.edu>
+
+    > From: Aharon Robbins
+
+    > Can anyone still read 9 track tapes? We just un-covered two that date
+    > from my wife's time in grad school, circa 1989 - 1990. They would be
+    > tar tapes.
+
+That old, the issue is not going to be the format (TAR is still grokkable),
+but the physical condition of the tapes; that old, they might have issues
+with shedding of oxide, etc (which a heat soak can mostly cure). If you
+really want them read, I would recommend a specialist in reading old tapes;
+it will cost, but if you really want the data... I have used Chuck Guzis, in
+Washington (state) in the US.
+
+	Noel
+
+
+From jfoust at threedee.com  Tue May 12 03:35:41 2015
+From: jfoust at threedee.com (John Foust)
+Date: Mon, 11 May 2015 12:35:41 -0500
+Subject: [TUHS] reading 9 track tapes?
+In-Reply-To: <20150511171856.A757518C0FC@mercury.lcs.mit.edu>
+References: <20150511171856.A757518C0FC@mercury.lcs.mit.edu>
+Message-ID: <20150511184850.0904214DCB@www.oztivo.net>
+
+At 12:18 PM 5/11/2015, Noel Chiappa wrote:
+>    > From: Aharon Robbins
+>
+>    > Can anyone still read 9 track tapes? We just un-covered two that date
+>    > from my wife's time in grad school, circa 1989 - 1990. They would be
+>    > tar tapes.
+>
+>That old, the issue is not going to be the format (TAR is still grokkable),
+>but the physical condition of the tapes; that old, they might have issues
+>with shedding of oxide, etc (which a heat soak can mostly cure). If you
+>really want them read, I would recommend a specialist in reading old tapes;
+>it will cost, but if you really want the data... I have used Chuck Guzis, in
+>Washington (state) in the US.
+
+Oh, that tape may be just fine if it was kept in office conditions.
+
+Chuck Guzis is at http://sydex.com/ .  He'd do a fine job.
+
+There may be others at the Classic Computer Collector mailing
+list who could assist.
+
+- John
+
+
+
+From noufal at nibrahim.net.in  Tue May 12 15:46:29 2015
+From: noufal at nibrahim.net.in (Noufal Ibrahim KV)
+Date: Tue, 12 May 2015 11:16:29 +0530
+Subject: [TUHS] reading 9 track tapes?
+In-Reply-To: <20150511184850.0904214DCB@www.oztivo.net> (John Foust's message
+ of "Mon, 11 May 2015 12:35:41 -0500")
+References: <20150511171856.A757518C0FC@mercury.lcs.mit.edu>
+ <20150511184850.0904214DCB@www.oztivo.net>
+Message-ID: <87bnhq73gq.fsf@nibrahim.net.in>
+
+On Mon, May 11 2015, John Foust wrote:
+
+
+[...]
+
+> Oh, that tape may be just fine if it was kept in office conditions.
+>
+> Chuck Guzis is at http://sydex.com/ .  He'd do a fine job.
+>
+> There may be others at the Classic Computer Collector mailing list who
+> could assist.
+
+[...]
+
+The Internet Archive[1] has a lot of hardware to extract information
+from old media though I don't know if all of it is available.
+
+
+
+Footnotes: 
+[1]  http://archive.org
+
+-- 
+Cordially,
+Noufal
+http://nibrahim.net.in
+
+
+From jfoust at threedee.com  Wed May 13 00:02:10 2015
+From: jfoust at threedee.com (John Foust)
+Date: Tue, 12 May 2015 09:02:10 -0500
+Subject: [TUHS] reading 9 track tapes?
+In-Reply-To: <87bnhq73gq.fsf@nibrahim.net.in>
+References: <20150511171856.A757518C0FC@mercury.lcs.mit.edu>
+ <20150511184850.0904214DCB@www.oztivo.net>
+ <87bnhq73gq.fsf@nibrahim.net.in>
+Message-ID: <20150512140244.165C61538E@www.oztivo.net>
+
+At 12:46 AM 5/12/2015, Noufal Ibrahim KV wrote:
+>The Internet Archive[1] has a lot of hardware to extract information
+>from old media though I don't know if all of it is available.
+
+Yes, I'm sure they do - as does the Computer History Museum, or many
+of the other computer museums, and a fair number of mailing-list houses,
+as well as many collectors, all still have functioning 9-tracks.
+There's a few on eBay at any given moment.
+
+A few years ago I travelled to Bettendorf, Iowa, to drop off two failed
+9-track drives I had.  A fellow there (http://www.comco-inc.com/) has 
+one of the few - perhaps only? - remaining 9-track service and repair 
+businesses.  At that time he was hoping to down-size and retire, and 
+was dreaming of finding someone to take over the business.  It sounded 
+like he had a bunch of 88780-class 9-tracks that would go to the 
+scrapper.  At the time, he offered to sell me a working 88780-style 
+drive for about $1800.
+
+He said most people just want to read old tape data, not write
+it, so he wished for a new method to be able to read 7- and 9-track
+tapes just to recover data.  One can imagine a flexible read head,
+a digitizer, and the rest is software.  Indeed, that's what a few
+people have made as an experiment.  
+
+There's still some equipment and processes that require a real drive 
+and that do not work with tape emulators.  He said there's a company 
+out there that makes a modern 7-track drive for the seismic end of 
+the oil industry at $50K a pop.  He repaired and sold many 9914-style
+drives because they handled a longer block length needed by some
+oil industry applications.  Another remaining market was a few 
+specific models of 9-track that work with old Alcatel phone switches.
+
+- John
+
+
+
+From meillo at marmaro.de  Mon May 18 04:00:42 2015
+From: meillo at marmaro.de (markus schnalke)
+Date: Sun, 17 May 2015 20:00:42 +0200
+Subject: [TUHS] Questions about the history of cut(1)
+Message-ID: <1Yu2rj-41H-00@marmaro.de>
+
+Hoi.
+
+What started as the plan to write a short portrait of cut(1)
+for a free german online magazine (translation to English is
+not done yet) became a closer look at the history of cut(1).
+Well, the topic got me hooked at some point. The text is still
+only about eight pages long and far from scientific quality,
+but it features some facts not found in Wikipedia. ;-)
+
+So, let me come to my questions.
+
+1) The oldest version of cut that I found is this one in System III.
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=SysIII/usr/src/cmd
+(The file date says 1980-04-11.) As the sccsid reads version 1.5,
+there must be older code. How can I find it? Is there a story of
+how cut appeared for the first time?
+
+2) As far as I found out, POSIX.2-1992 introduced the byte mode
+(-b) and added multi-byte support for the character mode. Is
+this correct?
+
+3) Old BSD sources reference POSIX Draft 9 (which, it seems,
+they implement) but lack multi-byte support and the byte mode.
+They also support decreasing lists, which, they state, POSIX
+Draft 9 would not.
+http://minnie.tuhs.org/cgi-bin/utree.pl?file=4.3BSD-Reno/src/usr.bin/cut/cut.c
+The only POSIX.2 Draft I have access to is Draft 11.2.
+http://www.nic.funet.fi/pub/doc/posix/p1003.2/d11.2/all.ps
+It does specify the multi-byte stuff and does also allow
+decreasing lists. Hence, it appears that these things were
+added somewhen between Draft 9 and Draft 11.2. Does anyone
+know details?
+
+It would be great, if you can give me some pointers for
+further research or even share some cut-stories from the
+good old days. :-)
+
+
+meillo
+
+
+P.S.
+In case you understand German, feel free to have a look at the
+current version of the text: http://hg.marmaro.de/docs/cut/file/
+I welcome your comments, but bear with me, the text issn't meant
+to become a doctoral thesis; I just want to write it for fun and
+to learn about the historical background.
+
+
+From doug at cs.dartmouth.edu  Mon May 18 20:36:42 2015
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Mon, 18 May 2015 06:36:42 -0400
+Subject: [TUHS] Questions about the history of cut(1)
+Message-ID: <201505181036.t4IAagZS031943@coolidge.cs.dartmouth.edu>
+
+I believe cut/paste originated in PWB Unix, but I can't recall who
+wrote it.
+
+Doug
+
+
+From cowan at mercury.ccil.org  Mon May 18 21:49:40 2015
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Mon, 18 May 2015 07:49:40 -0400
+Subject: [TUHS] Questions about the history of cut(1)
+In-Reply-To: <201505181036.t4IAagZS031943@coolidge.cs.dartmouth.edu>
+References: <201505181036.t4IAagZS031943@coolidge.cs.dartmouth.edu>
+Message-ID: <20150518114940.GA14275@mercury.ccil.org>
+
+Doug McIlroy scripsit:
+
+> I believe cut/paste originated in PWB Unix, but I can't recall who
+> wrote it.
+
+Huh.  I didn't know paste(1) existed; I've always used pr -m to laminate
+files (with appropriate options to shut off the unwanted formatting).
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+There is / One art / No more / No less
+To do / All things / With art- / -Lessness          --Piet Hein
+
+
+From meillo at marmaro.de  Tue May 19 00:04:38 2015
+From: meillo at marmaro.de (markus schnalke)
+Date: Mon, 18 May 2015 16:04:38 +0200
+Subject: [TUHS] Questions about the history of cut(1)
+In-Reply-To: <201505181036.t4IAagZS031943@coolidge.cs.dartmouth.edu>
+References: <201505181036.t4IAagZS031943@coolidge.cs.dartmouth.edu>
+Message-ID: <1YuLeo-1Qx-00@marmaro.de>
+
+[2015-05-18 06:36] Doug McIlroy <doug at cs.dartmouth.edu>
+>
+> I believe cut/paste originated in PWB Unix, but I can't recall who
+> wrote it.
+
+Thanks for your reply.
+
+I checked the PWB code of bostic and spencer ...
+	http://minnie.tuhs.org/Archive/PDP-11/Distributions/usdl/
+	http://minnie.tuhs.org/cgi-bin/utree.pl?file=PWB1
+... but couldn't find any signs of cut or paste there.
+
+
+meillo
+
+
+From akosela at andykosela.com  Tue May 19 01:01:02 2015
+From: akosela at andykosela.com (Andy Kosela)
+Date: Mon, 18 May 2015 10:01:02 -0500
+Subject: [TUHS] Questions about the history of cut(1)
+In-Reply-To: <1YuLeo-1Qx-00@marmaro.de>
+References: <201505181036.t4IAagZS031943@coolidge.cs.dartmouth.edu>
+ <1YuLeo-1Qx-00@marmaro.de>
+Message-ID: <CALMnNGhuHKHooQre4oG6v2dnu6PWqUncSouSeBSirLAYx6fqSQ@mail.gmail.com>
+
+On Monday, May 18, 2015, markus schnalke <meillo at marmaro.de> wrote:
+
+> [2015-05-18 06:36] Doug McIlroy <doug at cs.dartmouth.edu <javascript:;>>
+> >
+> > I believe cut/paste originated in PWB Unix, but I can't recall who
+> > wrote it.
+>
+> Thanks for your reply.
+>
+> I checked the PWB code of bostic and spencer ...
+>         http://minnie.tuhs.org/Archive/PDP-11/Distributions/usdl/
+>         http://minnie.tuhs.org/cgi-bin/utree.pl?file=PWB1
+> ... but couldn't find any signs of cut or paste there.
+>
+
+FreeBSD man page states it originated in System III.  If you browse the
+code of it, it is certainly there, but System III was a mix of various
+versions, including PWB/UNIX.
+
+Anyway, a very interesting research subject.  Keep going!
+
+--Andy
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150518/2a4a8b01/attachment.html>
+
+From clemc at ccc.com  Tue May 19 01:06:59 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Mon, 18 May 2015 11:06:59 -0400
+Subject: [TUHS] Questions about the history of cut(1)
+In-Reply-To: <201505181036.t4IAagZS031943@coolidge.cs.dartmouth.edu>
+References: <201505181036.t4IAagZS031943@coolidge.cs.dartmouth.edu>
+Message-ID: <CAC20D2O5xQigVpck734bopOa7a0hS8mgw=G0gwR064Ywa8PE0w@mail.gmail.com>
+
+I thought it came from USG, as it was definitely in PWB 3.0 [which was
+"rebranded" as System III post break-up], I think it may have been in PWB
+2.0.   Mashey might remember.   I'll check any doc I have at home tonight,
+but do not think I still have PWB 2.0 bits anywhere.  I think Warren has a
+TAR image from Henry of the PWB 1.0 which to check.
+
+Clem
+
+On Mon, May 18, 2015 at 6:36 AM, Doug McIlroy <doug at cs.dartmouth.edu> wrote:
+
+> I believe cut/paste originated in PWB Unix, but I can't recall who
+> wrote it.
+>
+> Doug
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150518/f29ddca5/attachment.html>
+
+From clemc at ccc.com  Tue May 19 01:20:55 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Mon, 18 May 2015 11:20:55 -0400
+Subject: [TUHS] Questions about the history of cut(1)
+In-Reply-To: <CALMnNGhuHKHooQre4oG6v2dnu6PWqUncSouSeBSirLAYx6fqSQ@mail.gmail.com>
+References: <201505181036.t4IAagZS031943@coolidge.cs.dartmouth.edu>
+ <1YuLeo-1Qx-00@marmaro.de>
+ <CALMnNGhuHKHooQre4oG6v2dnu6PWqUncSouSeBSirLAYx6fqSQ@mail.gmail.com>
+Message-ID: <CAC20D2OCXv-5=ZqgjY-oh6E3naMXa+M0ufwctjr_JiuVXXaoTA@mail.gmail.com>
+
+On Mon, May 18, 2015 at 11:01 AM, Andy Kosela <akosela at andykosela.com>
+wrote:
+
+> System III was a mix of various versions, including PWB/UNIX.
+>
+
+​System III was originally called PWB 3.0 and early distributions from AT&T
+has the covers as PWB 3.0 on it.
+
+The name "System III" was a rebranding.   At the time, AT&T wanted to make
+a run at the enterprise computer business and marketing types did not think
+the PWB moniker was a good idea when trying to sell it.
+
+You are correct, the PWB 3.0 took a number things from a lot of different
+places, including the Columbus guys [who gave use the shmat() and ip stuff,
+as well a Napierville, Whippany etc.], much less what came from Research.
+
+Research Seventh Edition kernel went out to the operating companies in PWB
+2.0, so by the time 3.0 was done, the v7's kernel basis was already
+established.  It was not generally available outside the Bell System, but
+some people did have it - probably from the OYOC types who brought it with
+them for some feature or another.
+
+Clem
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150518/a60de32a/attachment.html>
+
+From random832 at fastmail.us  Tue May 19 01:13:06 2015
+From: random832 at fastmail.us (random832 at fastmail.us)
+Date: Mon, 18 May 2015 11:13:06 -0400
+Subject: [TUHS] Questions about the history of cut(1)
+In-Reply-To: <201505181036.t4IAagZS031943@coolidge.cs.dartmouth.edu>
+References: <201505181036.t4IAagZS031943@coolidge.cs.dartmouth.edu>
+Message-ID: <1431961986.1331476.271734905.2B816C6E@webmail.messagingengine.com>
+
+On Mon, May 18, 2015, at 06:36, Doug McIlroy wrote:
+> I believe cut/paste originated in PWB Unix, but I can't recall who
+> wrote it.
+
+Who or what is the GWRL referenced in the comments?
+
+/* cut : cut and paste columns of a table (projection of a relation) 
+(GWRL) */
+/* paste: concatenate corresponding lines of each file in parallel.
+Release 1.4 (GWRL) */
+
+
+From dds at aueb.gr  Tue May 19 06:07:53 2015
+From: dds at aueb.gr (Diomidis Spinellis)
+Date: Mon, 18 May 2015 23:07:53 +0300
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the MSR
+ '15 Best Data Showcase Award
+Message-ID: <555A4699.5060107@aueb.gr>
+
+Since early 2013 I've occasionally asked this list for help, and shared
+the progress regarding the creation of a Unix Git repository containing
+Unix releases from the 1970s until today [1].
+
+On Saturday I presented this work [2, 3] at MSR '15: The 12th Working
+Conference on Mining Software Repositories, and on Sunday I discussed
+the work with the participants over a poster [4] (complete with commits
+shown in a teletype (lcase) and a VT-220 font).  Amazingly, the work
+received the conference's "Best Data Showcase Award", for which I'm
+obviously very happy.
+
+I'd like to thank again the many individuals who contributed to the
+effort. Brian W. Kernighan, Doug McIlroy, and Arnold D. Robbins helped
+with Bell Labs login identifiers. Clem Cole, Era Eriksson, Mary Ann
+Horton, Kirk McKusick, Jeremy C. Reed, Ingo Schwarze, and Anatole Shaw
+helped with BSD login identifiers. The BSD SCCS import code is based on
+work by H. Merijn Brand and Jonathan Gray.
+
+A lot of work remains to be done.  Given that the build process is
+shared as open source code, it is easy to contribute additions and fixes
+through GitHub pull requests on the build software repository [5], but
+if you feel uncomfortable with that, just send me email. The most useful
+community contribution would be to increase the coverage of imported
+snapshot files that are attributed to a specific author. Currently,
+about 90 thousand files (out of a total of 160 thousand) are getting
+assigned an author through a default rule. Similarly, there are about
+250 authors (primarily early FreeBSD ones) for which only the identifier
+is known. Both are listed in the build repository's unmatched directory
+[6], and contributions are welcomed (start with early editions; I can
+propagate from there). Most importantly, more branches of open source
+systems can be added, such as NetBSD OpenBSD, DragonFlyBSD, and illumos.
+Ideally, current right holders of other important historical Unix
+releases, such as System III, System V, NeXTSTEP, and SunOS, will
+release their systems under a license that would allow their
+incorporation into this repository.  If you know people who can help in
+this, please nudge them.
+
+--Diomidis
+
+[1] https://github.com/dspinellis/unix-history-repo
+[2]
+http://www.dmst.aueb.gr/dds/pubs/conf/2015-MSR-Unix-History/html/Spi15c.html
+(HTML)
+[3]
+http://www.dmst.aueb.gr/dds/pubs/conf/2015-MSR-Unix-History/html/Spi15c.pdf
+(PDF)
+[4]
+http://www.dmst.aueb.gr/dds/pubs/conf/2015-MSR-Unix-History/html/poster.pdf
+(105MB)
+[5] https://github.com/dspinellis/unix-history-make
+[6]
+https://github.com/dspinellis/unix-history-make/tree/master/src/unmatched
+
+
+
+From tih at hamartun.priv.no  Tue May 19 19:24:56 2015
+From: tih at hamartun.priv.no (Tom Ivar Helbekkmo)
+Date: Tue, 19 May 2015 11:24:56 +0200
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+	MSR '15 Best Data Showcase Award
+In-Reply-To: <555A4699.5060107@aueb.gr> (Diomidis Spinellis's message of "Mon, 
+ 18 May 2015 23:07:53 +0300")
+References: <555A4699.5060107@aueb.gr>
+Message-ID: <m2twv8j4wn.fsf@athene.hamartun.priv.no>
+
+Diomidis Spinellis <dds at aueb.gr> writes:
+
+> Since early 2013 I've occasionally asked this list for help, and shared
+> the progress regarding the creation of a Unix Git repository containing
+> Unix releases from the 1970s until today [1].
+
+This is so cool!  Great work!  :)
+
+> Most importantly, more branches of open source systems can be added,
+> such as NetBSD, OpenBSD, DragonFlyBSD, and illumos.
+
+Getting early NetBSD in there would help complete the continuity, seeing
+as NetBSD was a fork of 386BSD, and FreeBSD a later fork of NetBSD.
+
+-tih
+-- 
+Popularity is the hallmark of mediocrity.  --Niles Crane, "Frasier"
+
+
+From fair-tuhs at netbsd.org  Tue May 19 20:04:16 2015
+From: fair-tuhs at netbsd.org (Erik E. Fair)
+Date: Tue, 19 May 2015 03:04:16 -0700
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+	MSR '15 Best Data Showcase Award
+In-Reply-To: <m2twv8j4wn.fsf@athene.hamartun.priv.no>
+References: <555A4699.5060107@aueb.gr>
+Message-ID: <236.1432029856@cesium.clock.org>
+
+Congratulations!
+
+The NetBSD source repository has not changed source control systems since project inception - we're still using CVS, and the whole thing can be browsed at anoncvs.netbsd.org. A bunch of stuff is now "in the attic" (nominally "deleted" from the repository, but so far as I know that just means it's not fetched by default with an unadorned "get" command - it's still in the repository archive).
+
+The history you're looking to collect is available for copy any time.
+
+	Erik <fair at netbsd.org> (among other addresses)
+
+
+From dugo at xs4all.nl  Tue May 19 23:19:48 2015
+From: dugo at xs4all.nl (Jacob Goense)
+Date: Tue, 19 May 2015 15:19:48 +0200
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <236.1432029856@cesium.clock.org>
+References: <555A4699.5060107@aueb.gr> <236.1432029856@cesium.clock.org>
+Message-ID: <e8d26052f0632b48fe8c4398ca110f08@xs4all.nl>
+
+On 2015-05-19 12:04, Erik E. Fair wrote:
+> The NetBSD source repository has not changed source control systems
+> since project inception - we're still using CVS, and the whole thing
+> can be browsed at anoncvs.netbsd.org. A bunch of stuff is now "in the
+> attic" (nominally "deleted" from the repository, but so far as I know
+> that just means it's not fetched by default with an unadorned "get"
+> command - it's still in the repository archive).
+> 
+> The history you're looking to collect is available for copy any time.
+
+There is a pile of "revision #.# intentionally removed" in there. See
+http://www.onlamp.com/pub/a/bsd/2006/09/14/netbsd_future.html?page=2
+for Hannum's story behind it.
+
+Deadly quote "and nobody cares about that early code history any more
+--so this is all water under the bridge."
+
+They are available in a manilla folder through a coughing man in a
+raincoat if you know in which parking garage you have to look. Not
+sure what the consequences are if they appear as a pull request for
+dspinellis's truly awesome unix-history-repo.
+
+
+/Jacob
+
+
+From sdaoden at yandex.com  Tue May 19 23:48:05 2015
+From: sdaoden at yandex.com (Steffen Nurpmeso)
+Date: Tue, 19 May 2015 15:48:05 +0200
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <e8d26052f0632b48fe8c4398ca110f08@xs4all.nl>
+References: <555A4699.5060107@aueb.gr> <236.1432029856@cesium.clock.org>
+ <e8d26052f0632b48fe8c4398ca110f08@xs4all.nl>
+Message-ID: <20150519134805.5XPp-9sfoaQCoUSbLHeU@yandex.com>
+
+Jacob Goense <dugo at xs4all.nl> wrote:
+ |On 2015-05-19 12:04, Erik E. Fair wrote:
+ |> The NetBSD source repository has not changed source control systems
+ |> since project inception - we're still using CVS, and the whole thing
+ |> can be browsed at anoncvs.netbsd.org. A bunch of stuff is now "in the
+ |> attic" (nominally "deleted" from the repository, but so far as I know
+ |> that just means it's not fetched by default with an unadorned "get"
+ |> command - it's still in the repository archive).
+ |> 
+ |> The history you're looking to collect is available for copy any time.
+ |
+ |There is a pile of "revision #.# intentionally removed" in there. See
+ |http://www.onlamp.com/pub/a/bsd/2006/09/14/netbsd_future.html?page=2
+ |for Hannum's story behind it.
+ |
+ |Deadly quote "and nobody cares about that early code history any more
+ |--so this is all water under the bridge."
+ |
+ |They are available in a manilla folder through a coughing man in a
+ |raincoat if you know in which parking garage you have to look. Not
+ |sure what the consequences are if they appear as a pull request for
+ |dspinellis's truly awesome unix-history-repo.
+
+I also thought that was bad advise – Jörg Sonnenberger of NetBSD
+converted the repository to Fossil.  I have lost that address; he
+automatically converts _that_ to git(1) on github [1], which
+i track myself, however.
+
+Note that he is the one who is developing the used converter, and
+that in turn had some errors in the past, resulting in history to
+become invalid.  That didn't happen for quite a while now (afaik!)
+but since it was very weird about two years ago and occasionally
+happened still last year one possibly should ask him before
+integrating all those millions of objects into such a large
+repository.
+
+  [1] https://github.com/jsonn/src
+
+--steffen
+
+
+From spedraja at gmail.com  Wed May 20 00:36:14 2015
+From: spedraja at gmail.com (SPC)
+Date: Tue, 19 May 2015 16:36:14 +0200
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <20150519134805.5XPp-9sfoaQCoUSbLHeU@yandex.com>
+References: <555A4699.5060107@aueb.gr> <236.1432029856@cesium.clock.org>
+ <e8d26052f0632b48fe8c4398ca110f08@xs4all.nl>
+ <20150519134805.5XPp-9sfoaQCoUSbLHeU@yandex.com>
+Message-ID: <CACytpF-5F7vfMd2DRiU-xrMtBfk2o0+M4N45VbAZLLvOcNtKHw@mail.gmail.com>
+
+Congratulations !
+
+Gracias | Regards - Saludos | Greetings | Freundliche Grüße | Salutations
+​
+-- 
+*Sergio Pedraja*
+-- 
+mobile: +34-699-996568
+twitter: @sergio_pedraja | skype: Sergio Pedraja
+--
+http://plus.google.com/u/0/101292256663392735405
+http://www.linkedin.com/in/sergiopedraja
+http://www.quora.com/Sergio-Pedraja
+http://spedraja.wordpress.com
+https://www.xing.com/profile/Sergio_Pedraja <http://spedraja.wordpress.com/>
+-----
+No crea todo lo que ve, ni crea que está viéndolo todo
+
+
+2015-05-19 15:48 GMT+02:00 Steffen Nurpmeso <sdaoden at yandex.com>:
+
+> Jacob Goense <dugo at xs4all.nl> wrote:
+>  |On 2015-05-19 12:04, Erik E. Fair wrote:
+>  |> The NetBSD source repository has not changed source control systems
+>  |> since project inception - we're still using CVS, and the whole thing
+>  |> can be browsed at anoncvs.netbsd.org. A bunch of stuff is now "in the
+>  |> attic" (nominally "deleted" from the repository, but so far as I know
+>  |> that just means it's not fetched by default with an unadorned "get"
+>  |> command - it's still in the repository archive).
+>  |>
+>  |> The history you're looking to collect is available for copy any time.
+>  |
+>  |There is a pile of "revision #.# intentionally removed" in there. See
+>  |http://www.onlamp.com/pub/a/bsd/2006/09/14/netbsd_future.html?page=2
+>  |for Hannum's story behind it.
+>  |
+>  |Deadly quote "and nobody cares about that early code history any more
+>  |--so this is all water under the bridge."
+>  |
+>  |They are available in a manilla folder through a coughing man in a
+>  |raincoat if you know in which parking garage you have to look. Not
+>  |sure what the consequences are if they appear as a pull request for
+>  |dspinellis's truly awesome unix-history-repo.
+>
+> I also thought that was bad advise – Jörg Sonnenberger of NetBSD
+> converted the repository to Fossil.  I have lost that address; he
+> automatically converts _that_ to git(1) on github [1], which
+> i track myself, however.
+>
+> Note that he is the one who is developing the used converter, and
+> that in turn had some errors in the past, resulting in history to
+> become invalid.  That didn't happen for quite a while now (afaik!)
+> but since it was very weird about two years ago and occasionally
+> happened still last year one possibly should ask him before
+> integrating all those millions of objects into such a large
+> repository.
+>
+>   [1] https://github.com/jsonn/src
+>
+> --steffen
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150519/38366bae/attachment.html>
+
+From clemc at ccc.com  Wed May 20 00:53:54 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Tue, 19 May 2015 10:53:54 -0400
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <555A4699.5060107@aueb.gr>
+References: <555A4699.5060107@aueb.gr>
+Message-ID: <CAC20D2NRLhTcR05eLZcS1ZNkBgZa-BTLrH8aw9KTppRJjyrMAw@mail.gmail.com>
+
+Diomidis,
+
+What a wonderful gift to the community.   Thank you.
+
+Clem Cole
+
+On Mon, May 18, 2015 at 4:07 PM, Diomidis Spinellis <dds at aueb.gr> wrote:
+
+> Since early 2013 I've occasionally asked this list for help, and shared
+> the progress regarding the creation of a Unix Git repository containing
+> Unix releases from the 1970s until today [1].
+>
+> On Saturday I presented this work [2, 3] at MSR '15: The 12th Working
+> Conference on Mining Software Repositories, and on Sunday I discussed
+> the work with the participants over a poster [4] (complete with commits
+> shown in a teletype (lcase) and a VT-220 font).  Amazingly, the work
+> received the conference's "Best Data Showcase Award", for which I'm
+> obviously very happy.
+>
+> I'd like to thank again the many individuals who contributed to the
+> effort. Brian W. Kernighan, Doug McIlroy, and Arnold D. Robbins helped
+> with Bell Labs login identifiers. Clem Cole, Era Eriksson, Mary Ann
+> Horton, Kirk McKusick, Jeremy C. Reed, Ingo Schwarze, and Anatole Shaw
+> helped with BSD login identifiers. The BSD SCCS import code is based on
+> work by H. Merijn Brand and Jonathan Gray.
+>
+> A lot of work remains to be done.  Given that the build process is
+> shared as open source code, it is easy to contribute additions and fixes
+> through GitHub pull requests on the build software repository [5], but
+> if you feel uncomfortable with that, just send me email. The most useful
+> community contribution would be to increase the coverage of imported
+> snapshot files that are attributed to a specific author. Currently,
+> about 90 thousand files (out of a total of 160 thousand) are getting
+> assigned an author through a default rule. Similarly, there are about
+> 250 authors (primarily early FreeBSD ones) for which only the identifier
+> is known. Both are listed in the build repository's unmatched directory
+> [6], and contributions are welcomed (start with early editions; I can
+> propagate from there). Most importantly, more branches of open source
+> systems can be added, such as NetBSD OpenBSD, DragonFlyBSD, and illumos.
+> Ideally, current right holders of other important historical Unix
+> releases, such as System III, System V, NeXTSTEP, and SunOS, will
+> release their systems under a license that would allow their
+> incorporation into this repository.  If you know people who can help in
+> this, please nudge them.
+>
+> --Diomidis
+>
+> [1] https://github.com/dspinellis/unix-history-repo
+> [2]
+>
+> http://www.dmst.aueb.gr/dds/pubs/conf/2015-MSR-Unix-History/html/Spi15c.html
+> (HTML)
+> [3]
+> http://www.dmst.aueb.gr/dds/pubs/conf/2015-MSR-Unix-History/html/Spi15c.pdf
+> (PDF)
+> [4]
+> http://www.dmst.aueb.gr/dds/pubs/conf/2015-MSR-Unix-History/html/poster.pdf
+> (105MB)
+> [5] https://github.com/dspinellis/unix-history-make
+> [6]
+> https://github.com/dspinellis/unix-history-make/tree/master/src/unmatched
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150519/db46ac41/attachment.html>
+
+From doug at cs.dartmouth.edu  Wed May 20 01:40:17 2015
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Tue, 19 May 2015 11:40:17 -0400
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+Message-ID: <201505191540.t4JFeHCb022903@coolidge.cs.dartmouth.edu>
+
+
+A fantastic curatorial exploit!              
+
+> Deadly quote "and nobody cares about that early code history any more
+> --so this is all water under the bridge."
+
+This particular metaphor always reminds me of the Farberism: "That's
+water over the bridge." Dave, a major presence at Bell Labs, master
+malaprop, friend of many and collaborator with several of the early
+Unix team, may be counted as an honorary Unixian.
+
+Doug
+
+
+From imp at bsdimp.com  Wed May 20 01:55:12 2015
+From: imp at bsdimp.com (Warner Losh)
+Date: Tue, 19 May 2015 09:55:12 -0600
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+	MSR '15 Best Data Showcase Award
+In-Reply-To: <m2twv8j4wn.fsf@athene.hamartun.priv.no>
+References: <555A4699.5060107@aueb.gr> <m2twv8j4wn.fsf@athene.hamartun.priv.no>
+Message-ID: <A36C5506-04E8-42FC-B120-B980AA4623D4@bsdimp.com>
+
+
+> On May 19, 2015, at 3:24 AM, Tom Ivar Helbekkmo <tih at hamartun.priv.no> wrote:
+> 
+> Diomidis Spinellis <dds at aueb.gr> writes:
+> 
+>> Since early 2013 I've occasionally asked this list for help, and shared
+>> the progress regarding the creation of a Unix Git repository containing
+>> Unix releases from the 1970s until today [1].
+> 
+> This is so cool!  Great work!  :)
+> 
+>> Most importantly, more branches of open source systems can be added,
+>> such as NetBSD, OpenBSD, DragonFlyBSD, and illumos.
+> 
+> Getting early NetBSD in there would help complete the continuity, seeing
+> as NetBSD was a fork of 386BSD, and FreeBSD a later fork of NetBSD.
+
+FreeBSD was never a fork of NetBSD. OpenBSD was a later fork of NetBSD.
+FreeBSD and NetBSD both forked from the patch kits that were produced for
+the 386BSD project.
+
+Warner
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 842 bytes
+Desc: Message signed with OpenPGP using GPGMail
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150519/30c664b4/attachment.sig>
+
+From cowan at ccil.org  Wed May 20 02:26:29 2015
+From: cowan at ccil.org (cowan at ccil.org)
+Date: Tue, 19 May 2015 12:26:29 -0400
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <201505191540.t4JFeHCb022903@coolidge.cs.dartmouth.edu>
+References: <201505191540.t4JFeHCb022903@coolidge.cs.dartmouth.edu>
+Message-ID: <730de02d297f103beb8c006bc74bd7d5.squirrel@www.ccil.org>
+
+Doug McIlroy scripsit:
+
+> an honorary Unixian.
+
+Did that term actually have currency in the Elder Days, or did you
+make it up just now?  I note the comparable term "Multician"
+<http://multicians.org>
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+MEET US AT POINT ORANGE AT MIDNIGHT BRING YOUR DUCK OR PREPARE TO FACE
+WUGGUMS
+
+
+
+
+From tih at hamartun.priv.no  Wed May 20 02:48:06 2015
+From: tih at hamartun.priv.no (Tom Ivar Helbekkmo)
+Date: Tue, 19 May 2015 18:48:06 +0200
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+	MSR '15 Best Data Showcase Award
+In-Reply-To: <A36C5506-04E8-42FC-B120-B980AA4623D4@bsdimp.com> (Warner Losh's
+ message of "Tue, 19 May 2015 09:55:12 -0600")
+References: <555A4699.5060107@aueb.gr> <m2twv8j4wn.fsf@athene.hamartun.priv.no>
+ <A36C5506-04E8-42FC-B120-B980AA4623D4@bsdimp.com>
+Message-ID: <m2d21wh5tl.fsf@athene.hamartun.priv.no>
+
+Warner Losh <imp at bsdimp.com> writes:
+
+>> Getting early NetBSD in there would help complete the continuity, seeing
+>> as NetBSD was a fork of 386BSD, and FreeBSD a later fork of NetBSD.
+>
+> FreeBSD was never a fork of NetBSD. OpenBSD was a later fork of NetBSD.
+> FreeBSD and NetBSD both forked from the patch kits that were produced for
+> the 386BSD project.
+
+I stand corrected!  Looking at Éric Lévénez' time line of Unix, I see
+that you're right.  In my own recollection, the FreeBSD split, which
+happened a few months after Chris Demetriou and others started NetBSD,
+was out of NetBSD -- but it seems it was, after all, a parallel fork
+from Bill Jolitz' code base.  (The whole thing triggered because he
+didn't adopt the patch kits, and the NetBSD/FreeBSD separation taking
+place because of differences of opinion on multi-architecture support.)
+
+And, while it's a subject: the split was on very friendly terms.  :)
+
+-tih
+-- 
+Popularity is the hallmark of mediocrity.  --Niles Crane, "Frasier"
+
+
+From doug at cs.dartmouth.edu  Wed May 20 03:29:17 2015
+From: doug at cs.dartmouth.edu (Doug McIlroy)
+Date: Tue, 19 May 2015 13:29:17 -0400
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <730de02d297f103beb8c006bc74bd7d5.squirrel@www.ccil.org>
+References: <201505191540.t4JFeHCb022903@coolidge.cs.dartmouth.edu>
+ <730de02d297f103beb8c006bc74bd7d5.squirrel@www.ccil.org>
+Message-ID: <201505191729.t4JHTHWo024117@coolidge.cs.dartmouth.edu>
+
+> > an honorary Unixian.
+  
+> Did that term actually have currency in the Elder Days, or did you
+> make it up just now?  I note the comparable term "Multician"
+
+A nonce imitation of "Multician". The Unix room was universally
+known as such, but there was no distinctive moniker for its
+inhabitants.
+
+Doug
+
+
+From clemc at ccc.com  Wed May 20 03:30:21 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Tue, 19 May 2015 13:30:21 -0400
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <m2d21wh5tl.fsf@athene.hamartun.priv.no>
+References: <555A4699.5060107@aueb.gr> <m2twv8j4wn.fsf@athene.hamartun.priv.no>
+ <A36C5506-04E8-42FC-B120-B980AA4623D4@bsdimp.com>
+ <m2d21wh5tl.fsf@athene.hamartun.priv.no>
+Message-ID: <CAC20D2M4G0ibM6o=CVV8eg=fHC3gSyQM=osH3z7yf3dv8Hodgw@mail.gmail.com>
+
+On Tue, May 19, 2015 at 12:48 PM, Tom Ivar Helbekkmo <tih at hamartun.priv.no>
+wrote:
+
+> And, while it's a subject: the split was on very friendly terms.  :)
+
+
+​Yes, they had different goals.   Jordan wanted to create a 386/PC friendly
+install - be a low/no cost answer to MSFT when the target was Intel HW that
+could be bought anywhere - i.e. HW purchased from "computer shopper".
+[The port to other HW like Alpha would not come until much later]
+
+NetBSD wanted to take the CRSG token make a solid system for research that
+ran everywhere - i.e. lots of different target HW - 68K many different
+vendors, Vax, Power, sparc, much less x86.  In fact, they would take back
+from FreeBSD a lot of the 386 work eventually.
+
+The NetBSD/OpenBSD fork would happen much later in time and that was based
+on personalities and group management [that one was sad, but knowing both
+group of people, understandable].
+
+BTW: Linux would eventually take much of the install work that FreeBSD
+originally developed - particularly in set up/install provisioning.​  At
+the time, the Linux installs were pretty weak.
+
+I know in my own case, many of us were worried that the AT&T/BSDi/UCB case
+was going to make a "freely available" UNIX unable to happen.  Little did
+we know that if AT&T had won, Linux (and all of the "clones") would have
+been in violation of the AT&T IP - the trade secrets - and they would have
+had to be removed from the market also.   I've often wondered what would
+have really happened if that had occurred.
+
+Instead, of course, a lot of hackers (myself included) quickly downloaded
+Linux and started hacking and moving linux from toy to something real.
+
+That said, I run the MacOS Unix flavor on my desk (and my wife, and each
+child), FreeBSD & OpenBSD on my servers at home, but progam Linux for my
+job these days.
+
+Clem
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150519/bc174265/attachment.html>
+
+From tih at hamartun.priv.no  Wed May 20 04:06:17 2015
+From: tih at hamartun.priv.no (Tom Ivar Helbekkmo)
+Date: Tue, 19 May 2015 20:06:17 +0200
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+	MSR '15 Best Data Showcase Award
+In-Reply-To: <CAC20D2M4G0ibM6o=CVV8eg=fHC3gSyQM=osH3z7yf3dv8Hodgw@mail.gmail.com>
+ (Clem Cole's message of "Tue, 19 May 2015 13:30:21 -0400")
+References: <555A4699.5060107@aueb.gr> <m2twv8j4wn.fsf@athene.hamartun.priv.no>
+ <A36C5506-04E8-42FC-B120-B980AA4623D4@bsdimp.com>
+ <m2d21wh5tl.fsf@athene.hamartun.priv.no>
+ <CAC20D2M4G0ibM6o=CVV8eg=fHC3gSyQM=osH3z7yf3dv8Hodgw@mail.gmail.com>
+Message-ID: <m2382sfnmu.fsf@athene.hamartun.priv.no>
+
+Clem Cole <clemc at ccc.com> writes:
+
+> That said, I run the MacOS Unix flavor on my desk (and my wife, and each
+> child), FreeBSD & OpenBSD on my servers at home, but progam Linux for my
+> job these days.
+
+I sysadmin Linux for a living, but at home I run NetBSD on Intel (and
+have done so ever since it was called "386bsd 0.0"), 4.3BSD on VAXen,
+and 2.11BSD on PDP-11 systems.  :)
+
+-tih
+-- 
+Popularity is the hallmark of mediocrity.  --Niles Crane, "Frasier"
+
+
+From cowan at ccil.org  Wed May 20 04:55:57 2015
+From: cowan at ccil.org (cowan at ccil.org)
+Date: Tue, 19 May 2015 14:55:57 -0400
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <CAC20D2M4G0ibM6o=CVV8eg=fHC3gSyQM=osH3z7yf3dv8Hodgw@mail.gmail.com>
+References: <555A4699.5060107@aueb.gr> <m2twv8j4wn.fsf@athene.hamartun.priv.no>
+ <A36C5506-04E8-42FC-B120-B980AA4623D4@bsdimp.com>
+ <m2d21wh5tl.fsf@athene.hamartun.priv.no>
+ <CAC20D2M4G0ibM6o=CVV8eg=fHC3gSyQM=osH3z7yf3dv8Hodgw@mail.gmail.com>
+Message-ID: <5b6c7ed2577c8761e41923c5774bdd93.squirrel@www.ccil.org>
+
+Clem Cole scripsit:
+
+> NetBSD wanted to take the CRSG token make a solid system for research that
+> ran everywhere - i.e. lots of different target HW - 68K many different
+> vendors, Vax, Power, sparc, much less x86.  In fact, they would take back
+> from FreeBSD a lot of the 386 work eventually.
+
+The Hannum interview says that portability wasn't the focus in the *very*
+beginning, and that getting NetBSD running on different architectures
+was because they had a lot of different architectures around.  So it
+was making a virtue of what started out as necessity.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Do what you will / this Life's a Fiction
+And is made up of / Contradiction.  --William Blake
+
+
+
+
+
+From akosela at andykosela.com  Wed May 20 13:07:50 2015
+From: akosela at andykosela.com (Andy Kosela)
+Date: Tue, 19 May 2015 22:07:50 -0500
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <5b6c7ed2577c8761e41923c5774bdd93.squirrel@www.ccil.org>
+References: <555A4699.5060107@aueb.gr> <m2twv8j4wn.fsf@athene.hamartun.priv.no>
+ <A36C5506-04E8-42FC-B120-B980AA4623D4@bsdimp.com>
+ <m2d21wh5tl.fsf@athene.hamartun.priv.no>
+ <CAC20D2M4G0ibM6o=CVV8eg=fHC3gSyQM=osH3z7yf3dv8Hodgw@mail.gmail.com>
+ <5b6c7ed2577c8761e41923c5774bdd93.squirrel@www.ccil.org>
+Message-ID: <CALMnNGgnqY1cLW4wZRYhCB3P_nRXHoSiZvsdDnN0_BZcGyuFLw@mail.gmail.com>
+
+On Tue, May 19, 2015 at 1:55 PM,  <cowan at ccil.org> wrote:
+> Clem Cole scripsit:
+>
+>> NetBSD wanted to take the CRSG token make a solid system for research that
+>> ran everywhere - i.e. lots of different target HW - 68K many different
+>> vendors, Vax, Power, sparc, much less x86.  In fact, they would take back
+>> from FreeBSD a lot of the 386 work eventually.
+>
+> The Hannum interview says that portability wasn't the focus in the *very*
+> beginning, and that getting NetBSD running on different architectures
+> was because they had a lot of different architectures around.  So it
+> was making a virtue of what started out as necessity.
+
+In the *very* beginning Hannum wasn't even there to testify about it.
+NetBSD was basically a project of Chris Demetriou (what is he doing
+these days?) with the help of Theo, who made the second commit to the
+tree.
+
+And Warner is right about FreeBSD beginnings.  There was a lot of
+personalities clashes in those early days.  I still believe that if we
+were able to come up with one project instead of three, *BSD would be
+much more successful and would displace Linux easily in the server
+market.
+
+--Andy
+
+
+From dwalker at doomd.net  Thu May 21 11:42:21 2015
+From: dwalker at doomd.net (Derrik Walker v2.0)
+Date: Wed, 20 May 2015 21:42:21 -0400
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <555A4699.5060107@aueb.gr>
+References: <555A4699.5060107@aueb.gr>
+Message-ID: <555D37FD.5010507@doomd.net>
+
+On 05/18/2015 04:07 PM, Diomidis Spinellis wrote:
+> Since early 2013 I've occasionally asked this list for help, and shared
+> the progress regarding the creation of a Unix Git repository containing
+> Unix releases from the 1970s until today [1].
+>
+> On Saturday I presented this work [2, 3] at MSR '15: The 12th Working
+> Conference on Mining Software Repositories, and on Sunday I discussed
+> the work with the participants over a poster [4] (complete with commits
+> shown in a teletype (lcase) and a VT-220 font).  Amazingly, the work
+> received the conference's "Best Data Showcase Award", for which I'm
+> obviously very happy.
+>
+This work is AMAZING!  I've been collecting UNIX source code and 
+documents since the mid '90's.  I have accumulated more that 20 gig of 
+stuff ( including goodies like the NCD contributed CD they use to 
+distribute with their X-tubes and one release of the Prime Time Freeware 
+for UNIX ), and papers as PDF files I've found here and there ( like 
+dmr's web page ).
+
+But, my stuff is just a pile of barely organized sub-directories under 
+~/unix on my main Linux system.  This work however ... is very well done.
+
+Of course, I've snarked your paper and poster pdf's and am cloning the 
+repository as I type this for my collection ( I only have the BSD stuff 
+that's in the Archive ).
+
+Congrats on the award.  It's well deserved!  And thanks for doing this!
+
+I was wondering if you were planning on adding any of the Solaris stuff 
+( I managed to get one source release of open Solaris before Oracle 
+bought out sun ) or Darwin? Unfortunately, I don't seem to have the 
+Darwin source anymore  ( some bits of my collection have been lost to 
+time ), but I can contribute what I have of Open Solaris if you want it.
+
+-- 
+-- Derrik
+
+Derrik Walker v2.0, RHCE
+dwalker at doomd.net
+
+"Those UNIX guys, they think weird!" -- John C. Dvorak
+
+
+
+From dds at aueb.gr  Thu May 21 21:50:33 2015
+From: dds at aueb.gr (Diomidis Spinellis)
+Date: Thu, 21 May 2015 14:50:33 +0300
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <555D37FD.5010507@doomd.net>
+References: <555A4699.5060107@aueb.gr> <555D37FD.5010507@doomd.net>
+Message-ID: <555DC689.3050906@aueb.gr>
+
+On 21/05/2015 04:42, Derrik Walker v2.0 wrote:
+> I was wondering if you were planning on adding any of the Solaris stuff
+> ( I managed to get one source release of open Solaris before Oracle
+> bought out sun ) or Darwin? Unfortunately, I don't seem to have the
+> Darwin source anymore  ( some bits of my collection have been lost to
+> time ), but I can contribute what I have of Open Solaris if you want it.
+
+I was thinking about this.  The candidates are illumos and OpenIndiana,
+which contain commits until the present time.
+
+The first commit on illumos is from 2005.
+
+commit 7c478bd95313f5f23a4c958a745db2134aa03244
+Author: stevel at tonic-gate <none at none>
+Date:   Tue Jun 14 00:00:00 2005 -0700
+
+    OpenSolaris Launch
+
+This leaves a long dark period between 32V and 2005.  It'd therefore
+prefer to wait, until we can get System V and early versions of SunOS
+available under some type of open source license.
+
+
+From asbesto at freaknet.org  Thu May 21 22:48:03 2015
+From: asbesto at freaknet.org (asbesto)
+Date: Thu, 21 May 2015 12:48:03 +0000
+Subject: [TUHS] reading 9 track tapes?
+In-Reply-To: <201505110820.t4B8Kec5013263@skeeve.com>
+References: <201505110820.t4B8Kec5013263@skeeve.com>
+Message-ID: <20150521124803.GB1221@freaknet.org>
+
+Mon, May 11, 2015 at 11:20:40AM +0300, Aharon Robbins wrote:
+
+> Can anyone still read 9 track tapes? We just uncovered two that date
+> from my wife's time in grad school, circa 1989 - 1990.  They would
+> be tar tapes.
+
+we have a working setup for data recovery :)
+we're in Sicilia, Italy!
+
+;)
+
+-- 
+[ ::::::::: 73 de IW9HGS : http://freaknet.org/asbesto ::::::::::: ]
+[ Freaknet Medialab :: Poetry Hacklab : Dyne.Org :: Radio Cybernet ]
+[ NON SCRIVERMI USANDO LETTERE ACCENTATE  -  NON MANDARMI ALLEGATI ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC and SPAM ]
+
+
+
+From asbesto at freaknet.org  Thu May 21 22:50:40 2015
+From: asbesto at freaknet.org (asbesto)
+Date: Thu, 21 May 2015 12:50:40 +0000
+Subject: [TUHS] reading 9 track tapes?
+In-Reply-To: <20150511184850.0904214DCB@www.oztivo.net>
+References: <20150511171856.A757518C0FC@mercury.lcs.mit.edu>
+ <20150511184850.0904214DCB@www.oztivo.net>
+Message-ID: <20150521125040.GC1221@freaknet.org>
+
+Mon, May 11, 2015 at 12:35:41PM -0500, John Foust wrote:
+
+> >    > Can anyone still read 9 track tapes? We just un-covered two that date
+
+> >but the physical condition of the tapes; that old, they might have issues
+> >with shedding of oxide, etc (which a heat soak can mostly cure). If you
+
+> Oh, that tape may be just fine if it was kept in office conditions.
+
+well, it's a matter of chemical bonds that broke; something in
+the tape just change due to age, and sometimes a good stored
+tape can be difficult to read, and need baking.  We're also able
+to do that, we recovered a lot of media at our museum.
+
+ps http://museum.freaknet.org (very old site, sorry)
+
+-- 
+[ ::::::::: 73 de IW9HGS : http://freaknet.org/asbesto ::::::::::: ]
+[ Freaknet Medialab :: Poetry Hacklab : Dyne.Org :: Radio Cybernet ]
+[ NON SCRIVERMI USANDO LETTERE ACCENTATE  -  NON MANDARMI ALLEGATI ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC and SPAM ]
+
+
+
+From cowan at ccil.org  Fri May 22 01:09:45 2015
+From: cowan at ccil.org (cowan at ccil.org)
+Date: Thu, 21 May 2015 11:09:45 -0400
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <555DC689.3050906@aueb.gr>
+References: <555A4699.5060107@aueb.gr> <555D37FD.5010507@doomd.net>
+ <555DC689.3050906@aueb.gr>
+Message-ID: <b0201a671a073e2c210556ffeaf7582c.squirrel@www.ccil.org>
+
+Diomidis Spinellis scripsit:
+
+> This leaves a long dark period between 32V and 2005.  It'd therefore
+> prefer to wait, until we can get System V and early versions of SunOS
+> available under some type of open source license.
+
+It might be possible to get the vanilla-from-AT&T System V Releases 1-3
+freely licensed, though Novell is presumably still making money from AIX,
+which descends from SVR3.  SVR4 has proprietary Microsoft (Xenix) and
+SunOS (Oracle) code in it, plus being the ancestor of still-current HP/UX.
+Scrubbing proprietary third-party code to make an open-source release
+of any of these ancient versions, as had to be done for Solaris (and Java),
+is almost certainly too much work for anyone to want to undertake today.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+Do I contradict myself?
+Very well then, I contradict myself.
+I am large, I contain multitudes.
+        --Walt Whitman, Leaves of Grass
+
+
+
+
+From clemc at ccc.com  Fri May 22 01:49:01 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Thu, 21 May 2015 11:49:01 -0400
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <b0201a671a073e2c210556ffeaf7582c.squirrel@www.ccil.org>
+References: <555A4699.5060107@aueb.gr> <555D37FD.5010507@doomd.net>
+ <555DC689.3050906@aueb.gr>
+ <b0201a671a073e2c210556ffeaf7582c.squirrel@www.ccil.org>
+Message-ID: <CAC20D2PaT_724Z3z+7HWwMmJ3ud7GYyj2JRMJdMe3uicskfv1Q@mail.gmail.com>
+
+​below.​
+
+On Thu, May 21, 2015 at 11:09 AM, <cowan at ccil.org> wrote:
+
+> It might be possible to get the vanilla-from-AT&T System V Releases 1-3
+> freely licensed, though Novell is presumably still making money from AIX,
+> which descends from SVR3.
+>
+Hmm ..I thought all of the majors >>except<< for DEC​ bought out their
+licenses at some point.   I admit I've forgotten the specifics, but  that
+is my recollection.
+
+
+
+
+> SVR4 has proprietary Microsoft (Xenix) and
+> SunOS (Oracle) code in it, plus being the ancestor of still-current HP/UX.
+>
+​HP/UX is an SVR3 & OSF/1 ancester.   Solaris is SVR4.  In fact it was the
+SVR4 license and deal between Sun and AT&T)​ that forced the whole OSF
+creation.  One of the "principles" of the OSF was "Fair and Stable" license
+terms.
+
+Which begs a question - since Solaris was SVR4 based and was made freely
+available via OpenSolaris et al, does that not make SVR4 open?   I'm not a
+lawyer (nor play one on TV), but it does seem like that sets some sort of
+precedent.
+
+
+
+> Scrubbing proprietary third-party code to make an open-source release
+> of any of these ancient versions, as had to be done for Solaris (and Java),
+>
+​Interesting - how did they "scrub" SVR4 from it?   The whole idea was to
+take SVR4 and "enhance it" using the SVR4 API's.  ​
+
+
+
+> is almost certainly too much work for anyone to want to undertake today.
+>
+​Agreed, unless there is a clear statement from the owners, it's going to
+be hard; which is a shame from a historical stand point, but I agree.
+C
+​lem​
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150521/59f51b7e/attachment.html>
+
+From jacob.ritorto at gmail.com  Fri May 22 03:03:06 2015
+From: jacob.ritorto at gmail.com (Jacob Ritorto)
+Date: Thu, 21 May 2015 13:03:06 -0400
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <CAC20D2PaT_724Z3z+7HWwMmJ3ud7GYyj2JRMJdMe3uicskfv1Q@mail.gmail.com>
+References: <555A4699.5060107@aueb.gr> <555D37FD.5010507@doomd.net>
+ <555DC689.3050906@aueb.gr>
+ <b0201a671a073e2c210556ffeaf7582c.squirrel@www.ccil.org>
+ <CAC20D2PaT_724Z3z+7HWwMmJ3ud7GYyj2JRMJdMe3uicskfv1Q@mail.gmail.com>
+Message-ID: <CAHYQbfDo936vY-FNjByX1zC-ayhts1JdK2WwMQnnKSagTEwRhg@mail.gmail.com>
+
+On Thu, May 21, 2015 at 11:49 AM, Clem Cole <clemc at ccc.com> wrote:
+>
+> ​HP/UX is an SVR3 & OSF/1 ancester.   Solaris is SVR4.  In fact it was the
+> SVR4 license and deal between Sun and AT&T)​ that forced the whole OSF
+> creation.  One of the "principles" of the OSF was "Fair and Stable" license
+> terms.
+>
+> Which begs a question - since Solaris was SVR4 based and was made freely
+> available via OpenSolaris et al, does that not make SVR4 open?   I'm not a
+> lawyer (nor play one on TV), but it does seem like that sets some sort of
+> precedent.
+>
+>
+I hope not to hijack the thread, but those are interesting tidbits of info,
+there, Clem.  Are these strategic license moves chronicled anywhere at the
+moment?  It'd be interesting to read exactly who sued whom, who asked for
+permission vs. who begged for forgiveness, etc.
+
+thx
+jake
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150521/b6a01e25/attachment.html>
+
+From clemc at ccc.com  Fri May 22 04:04:44 2015
+From: clemc at ccc.com (Clem Cole)
+Date: Thu, 21 May 2015 14:04:44 -0400
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <CAHYQbfDo936vY-FNjByX1zC-ayhts1JdK2WwMQnnKSagTEwRhg@mail.gmail.com>
+References: <555A4699.5060107@aueb.gr> <555D37FD.5010507@doomd.net>
+ <555DC689.3050906@aueb.gr>
+ <b0201a671a073e2c210556ffeaf7582c.squirrel@www.ccil.org>
+ <CAC20D2PaT_724Z3z+7HWwMmJ3ud7GYyj2JRMJdMe3uicskfv1Q@mail.gmail.com>
+ <CAHYQbfDo936vY-FNjByX1zC-ayhts1JdK2WwMQnnKSagTEwRhg@mail.gmail.com>
+Message-ID: <CAC20D2P8g8ifXUtVOgTrba1UZy=hwL_yPJiYkYU3OckaZ4WdYw@mail.gmail.com>
+
+I never took those kinds of notes.  We certainly talked about it and we
+used to have know who had what at Locus since all of the majors were our
+customers and we had to be very, very careful to not cross pollinate.
+Sometimes we would do specific work in different offices, just to make the
+firewall easier to manage.  For instance the Ultrix and Tru64 work we did
+for DEC, as well as the HP work was done in Boston.  Most of the IBM work
+was done in the LA office, and Intel work was led in San Diego.
+
+There was a time when I had the release schedules of DEC, IBM, HP and Sun
+taped the wall behind my desk, because we had teams delivering things to
+all 4 of them.
+
+That said, if you talked to one of the UNIX press of the old days, like the
+old "UNIXgram/X" folks, you could put together the chronology. However, I
+don't know that any of that is on line anywhere to search.   But that would
+be the documentation I would look if I was a lawyer trying to demonstrate
+who did what in what order.   Some of those folks are still around and
+writing, I saw something from Timothy Pickering Morgan just yesterday
+talking about Linux and I see some of the other names pop up in the blogs
+and journals at different times.
+
+On Thu, May 21, 2015 at 1:03 PM, Jacob Ritorto <jacob.ritorto at gmail.com>
+wrote:
+
+>
+> On Thu, May 21, 2015 at 11:49 AM, Clem Cole <clemc at ccc.com> wrote:
+>>
+>> ​HP/UX is an SVR3 & OSF/1 ancester.   Solaris is SVR4.  In fact it was
+>> the SVR4 license and deal between Sun and AT&T)​ that forced the whole OSF
+>> creation.  One of the "principles" of the OSF was "Fair and Stable" license
+>> terms.
+>>
+>> Which begs a question - since Solaris was SVR4 based and was made freely
+>> available via OpenSolaris et al, does that not make SVR4 open?   I'm not a
+>> lawyer (nor play one on TV), but it does seem like that sets some sort of
+>> precedent.
+>>
+>>
+> I hope not to hijack the thread, but those are interesting tidbits of
+> info, there, Clem.  Are these strategic license moves chronicled anywhere
+> at the moment?  It'd be interesting to read exactly who sued whom, who
+> asked for permission vs. who begged for forgiveness, etc.
+>
+> thx
+> jake
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150521/358b2a74/attachment.html>
+
+From scj at yaccman.com  Fri May 22 05:41:05 2015
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Thu, 21 May 2015 12:41:05 -0700
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <201505191729.t4JHTHWo024117@coolidge.cs.dartmouth.edu>
+References: <201505191540.t4JFeHCb022903@coolidge.cs.dartmouth.edu>
+ <730de02d297f103beb8c006bc74bd7d5.squirrel@www.ccil.org>
+ <201505191729.t4JHTHWo024117@coolidge.cs.dartmouth.edu>
+Message-ID: <36e59ab511afb44b11f784829c7d4cb1.squirrel@webmail.yaccman.com>
+
+There was a story, perhaps apocryphal, that Sam Morgan once told a caller
+"Hold on.  I'll transfer you to the Unix room.  One of the boys up there
+can help you..."
+
+
+>> > an honorary Unixian.
+>
+>> Did that term actually have currency in the Elder Days, or did you
+>> make it up just now?  I note the comparable term "Multician"
+>
+> A nonce imitation of "Multician". The Unix room was universally
+> known as such, but there was no distinctive moniker for its
+> inhabitants.
+>
+> Doug
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+
+
+From scj at yaccman.com  Fri May 22 05:54:06 2015
+From: scj at yaccman.com (scj at yaccman.com)
+Date: Thu, 21 May 2015 12:54:06 -0700
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <555A4699.5060107@aueb.gr>
+References: <555A4699.5060107@aueb.gr>
+Message-ID: <f0b9d6259465611cc4b3a0e6730da45b.squirrel@webmail.yaccman.com>
+
+My contribution to the author attribution is to point out that, at least
+in the Research Bell Labs days, there was a unique but very effective
+rule--if you touch it, you own it!  People were encouraged to hack the
+code rather than complain to the previous authors.  But when they did,
+they owned the result, bugs and all.
+
+For example, I invented the first "at" command.  My contribution was
+primarily the name and some of the syntax.  My implementation was as a
+shell script, which absolutely revolted Dennis.  Within a couple of days
+he had replaced it with a jewel that not only ran the command at the
+correct time, but from the correct directory and with the correct
+permissions.  I never touched it again...
+
+I've never again worked with a group that took such an approach to
+ownership, and I have frequently missed it...
+
+Steve
+
+> The most useful
+> community contribution would be to increase the coverage of imported
+> snapshot files that are attributed to a specific author. Currently,
+> about 90 thousand files (out of a total of 160 thousand) are getting
+> assigned an author through a default rule. Similarly, there are about
+> 250 authors (primarily early FreeBSD ones) for which only the identifier
+> is known. Both are listed in the build repository's unmatched directory
+> [6], and contributions are welcomed (start with early editions; I can
+> propagate from there). Most importantly, more branches of open source
+> systems can be added, such as NetBSD OpenBSD, DragonFlyBSD, and illumos.
+> Ideally, current right holders of other important historical Unix
+> releases, such as System III, System V, NeXTSTEP, and SunOS, will
+> release their systems under a license that would allow their
+> incorporation into this repository.  If you know people who can help in
+> this, please nudge them.
+>
+> --Diomidis
+>
+
+
+
+
+From cowan at mercury.ccil.org  Fri May 22 10:17:20 2015
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Thu, 21 May 2015 20:17:20 -0400
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <CAC20D2PaT_724Z3z+7HWwMmJ3ud7GYyj2JRMJdMe3uicskfv1Q@mail.gmail.com>
+References: <555A4699.5060107@aueb.gr> <555D37FD.5010507@doomd.net>
+ <555DC689.3050906@aueb.gr>
+ <b0201a671a073e2c210556ffeaf7582c.squirrel@www.ccil.org>
+ <CAC20D2PaT_724Z3z+7HWwMmJ3ud7GYyj2JRMJdMe3uicskfv1Q@mail.gmail.com>
+Message-ID: <20150522001720.GA23248@mercury.ccil.org>
+
+Clem Cole scripsit:
+
+> Which begs a question - since Solaris was SVR4 based and was made freely
+> available via OpenSolaris et al, does that not make SVR4 open?   I'm not a
+> lawyer (nor play one on TV), but it does seem like that sets some sort of
+> precedent.
+
+The fact that a specific copy bears a specific license may affect the
+license on later copies by a means such as the GPL, but can't possibly
+affect earlier copies, which are still bound by the earlier grave and
+perilous license.  So you can use any SVR4 bits that are still part of
+OpenSolaris freely within the terms of the CDDL, but not so any other
+SVR4 bits.
+
+> > Scrubbing proprietary third-party code to make an open-source release
+> > of any of these ancient versions, as had to be done for Solaris (and Java),
+> 
+> ​Interesting - how did they "scrub" SVR4 from it?   The whole idea was to
+> take SVR4 and "enhance it" using the SVR4 API's.  ​
+
+I wasn't speaking of SVR4, but other non-Sun cruft that accumulated
+between SVR4 and Solaris 10.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+What has four pairs of pants, lives in Philadelphia,
+and it never rains but it pours?
+        --Rufus T. Firefly
+
+
+From dave at horsfall.org  Fri May 22 23:25:52 2015
+From: dave at horsfall.org (Dave Horsfall)
+Date: Fri, 22 May 2015 23:25:52 +1000 (EST)
+Subject: [TUHS] reading 9 track tapes?
+In-Reply-To: <20150521124803.GB1221@freaknet.org>
+References: <201505110820.t4B8Kec5013263@skeeve.com>
+ <20150521124803.GB1221@freaknet.org>
+Message-ID: <alpine.BSF.2.11.1505222317440.71629@aneurin.horsfall.org>
+
+On Thu, 21 May 2015, asbesto wrote:
+
+> we have a working setup for data recovery :)
+> we're in Sicilia, Italy!
+
+Ahh, the home of the Cosa Nostra :-)
+
+"Let us do a deal with you."
+
+-- 
+Dave Horsfall DTM (VK2KFU)   "Those who don't understand security will suffer."
+http://www.horsfall.org/spam.html (and check the home page whilst you're there)
+
+
+From mah at mhorton.net  Tue May 26 02:46:54 2015
+From: mah at mhorton.net (Mary Ann Horton)
+Date: Mon, 25 May 2015 09:46:54 -0700
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <CAC20D2P8g8ifXUtVOgTrba1UZy=hwL_yPJiYkYU3OckaZ4WdYw@mail.gmail.com>
+References: <555A4699.5060107@aueb.gr> <555D37FD.5010507@doomd.net>
+ <555DC689.3050906@aueb.gr>
+ <b0201a671a073e2c210556ffeaf7582c.squirrel@www.ccil.org>
+ <CAC20D2PaT_724Z3z+7HWwMmJ3ud7GYyj2JRMJdMe3uicskfv1Q@mail.gmail.com>
+ <CAHYQbfDo936vY-FNjByX1zC-ayhts1JdK2WwMQnnKSagTEwRhg@mail.gmail.com>
+ <CAC20D2P8g8ifXUtVOgTrba1UZy=hwL_yPJiYkYU3OckaZ4WdYw@mail.gmail.com>
+Message-ID: <556351FE.70300@mhorton.net>
+
+Is the original SVR4 around somewhere (even if still considered trade 
+secret or copyrighted?)
+
+I'm getting ready to have my collection of 9 track magtapes recovered, 
+(Sydex sounds very reasonable) and I find I have 5 AT&T SVR4 tapes among 
+them (all different, I think, but I won't know until I read them.)  They 
+are labeled Proprietary and Copyright, and I claim no special rights to 
+them other than as an ex AT&T employee.
+
+Is it worth recovering them?
+
+     Mary Ann
+
+On 05/21/2015 11:04 AM, Clem Cole wrote:
+> I never took those kinds of notes.  We certainly talked about it and 
+> we used to have know who had what at Locus since all of the majors 
+> were our customers and we had to be very, very careful to not cross 
+> pollinate.   Sometimes we would do specific work in different offices, 
+> just to make the firewall easier to manage.  For instance the Ultrix 
+> and Tru64 work we did for DEC, as well as the HP work was done in 
+> Boston.  Most of the IBM work was done in the LA office, and Intel 
+> work was led in San Diego.
+>
+> There was a time when I had the release schedules of DEC, IBM, HP and 
+> Sun taped the wall behind my desk, because we had teams delivering 
+> things to all 4 of them.
+>
+> That said, if you talked to one of the UNIX press of the old days, 
+> like the old "UNIXgram/X" folks, you could put together the 
+> chronology. However, I don't know that any of that is on line anywhere 
+> to search.   But that would be the documentation I would look if I was 
+> a lawyer trying to demonstrate who did what in what order.   Some of 
+> those folks are still around and writing, I saw something from Timothy 
+> Pickering Morgan just yesterday talking about Linux and I see some of 
+> the other names pop up in the blogs and journals at different times.
+>
+> On Thu, May 21, 2015 at 1:03 PM, Jacob Ritorto 
+> <jacob.ritorto at gmail.com <mailto:jacob.ritorto at gmail.com>> wrote:
+>
+>
+>     On Thu, May 21, 2015 at 11:49 AM, Clem Cole <clemc at ccc.com
+>     <mailto:clemc at ccc.com>> wrote:
+>
+>         ​ HP/UX is an SVR3 & OSF/1 ancester. Solaris is SVR4.  In fact
+>         it was the SVR4 license and deal between Sun and AT&T)​ that
+>         forced the whole OSF creation.  One of the "principles" of the
+>         OSF was "Fair and Stable" license terms.
+>
+>         Which begs a question - since Solaris was SVR4 based and was
+>         made freely available via OpenSolaris et al, does that not
+>         make SVR4 open?   I'm not a lawyer (nor play one on TV), but
+>         it does seem like that sets some sort of precedent.
+>
+>
+>     I hope not to hijack the thread, but those are interesting tidbits
+>     of info, there, Clem.  Are these strategic license moves
+>     chronicled anywhere at the moment?  It'd be interesting to read
+>     exactly who sued whom, who asked for permission vs. who begged for
+>     forgiveness, etc.
+>
+>     thx
+>     jake
+>
+>
+>
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150525/d3f9b470/attachment.html>
+
+From cowan at mercury.ccil.org  Tue May 26 03:21:16 2015
+From: cowan at mercury.ccil.org (John Cowan)
+Date: Mon, 25 May 2015 13:21:16 -0400
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <556351FE.70300@mhorton.net>
+References: <555A4699.5060107@aueb.gr> <555D37FD.5010507@doomd.net>
+ <555DC689.3050906@aueb.gr>
+ <b0201a671a073e2c210556ffeaf7582c.squirrel@www.ccil.org>
+ <CAC20D2PaT_724Z3z+7HWwMmJ3ud7GYyj2JRMJdMe3uicskfv1Q@mail.gmail.com>
+ <CAHYQbfDo936vY-FNjByX1zC-ayhts1JdK2WwMQnnKSagTEwRhg@mail.gmail.com>
+ <CAC20D2P8g8ifXUtVOgTrba1UZy=hwL_yPJiYkYU3OckaZ4WdYw@mail.gmail.com>
+ <556351FE.70300@mhorton.net>
+Message-ID: <20150525172115.GC13469@mercury.ccil.org>
+
+Mary Ann Horton scripsit:
+
+> Is it worth recovering them?
+
+Only you can judge whether the price (whatever that may be) is worth it
+to you.  I think they're historically very important, and I doubt anyone
+would sue you if you posted them somewhere.
+
+-- 
+John Cowan          http://www.ccil.org/~cowan        cowan at ccil.org
+To say that Bilbo's breath was taken away is no description at all.  There are
+no words left to express his staggerment, since Men changed the language that
+they learned of elves in the days when all the world was wonderful. --The Hobbit
+
+
+From b4 at gewt.net  Tue May 26 07:15:32 2015
+From: b4 at gewt.net (Cory Smelosky)
+Date: Mon, 25 May 2015 17:15:32 -0400 (EDT)
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <556351FE.70300@mhorton.net>
+References: <555A4699.5060107@aueb.gr> <555D37FD.5010507@doomd.net>
+ <555DC689.3050906@aueb.gr>
+ <b0201a671a073e2c210556ffeaf7582c.squirrel@www.ccil.org>
+ <CAC20D2PaT_724Z3z+7HWwMmJ3ud7GYyj2JRMJdMe3uicskfv1Q@mail.gmail.com>
+ <CAHYQbfDo936vY-FNjByX1zC-ayhts1JdK2WwMQnnKSagTEwRhg@mail.gmail.com>
+ <CAC20D2P8g8ifXUtVOgTrba1UZy=hwL_yPJiYkYU3OckaZ4WdYw@mail.gmail.com>
+ <556351FE.70300@mhorton.net>
+Message-ID: <alpine.BSF.2.20.1505251708210.669@meaghan.gimme-sympathy.org>
+
+On Mon, 25 May 2015, Mary Ann Horton wrote:
+
+> Is the original SVR4 around somewhere (even if still considered trade secret 
+> or copyrighted?)
+>
+
+I don't believe so, but possibly in some obscure SCADA systems?  Counting 
+hobbyists running it on 3B2s or excluding that? ;)
+
+I think only derived systems remain.
+
+> I'm getting ready to have my collection of 9 track magtapes recovered, (Sydex 
+> sounds very reasonable) and I find I have 5 AT&T SVR4 tapes among them (all 
+> different, I think, but I won't know until I read them.)  They are labeled 
+> Proprietary and Copyright, and I claim no special rights to them other than 
+> as an ex AT&T employee.
+>
+
+All different?  I am very interested.
+
+> Is it worth recovering them?
+
+I believe it is, but I'd recover and archive most anything UNIX.
+
+Any bits of CB Unix on there?
+
+>
+>    Mary Ann
+>
+
+-- 
+Cory Smelosky
+http://gewt.net Personal stuff
+http://gimme-sympathy.org Projects
+
+
+From jnc at mercury.lcs.mit.edu  Tue May 26 05:05:44 2015
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon, 25 May 2015 15:05:44 -0400 (EDT)
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+	MSR '15 Best Data Showcase Award
+Message-ID: <20150525190544.785B618C0B5@mercury.lcs.mit.edu>
+
+    > From: Mary Ann Horton
+
+    > I have 5 AT&T SVR4 tapes among them .. Is it worth recovering them?
+
+I would say that unless they are _known_ to be in a repository somewhere, yes
+(unless it's going to cost a fortune - SVR4 isn't _that_ key a step in the
+evolution, I don't think [but I stand to be corrected :-]).
+
+	Noel
+
+
+From berny at berwynlodge.com  Tue May 26 20:07:08 2015
+From: berny at berwynlodge.com (Berny Goodheart)
+Date: Tue, 26 May 2015 11:07:08 +0100
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+	MSR '15 Best Data Showcase Award
+Message-ID: <392B6275-3383-4AD8-A305-B99ED87254B1@berwynlodge.com>
+
+
+> 
+>    On Thu, May 21, 2015 at 11:49 AM, Clem Cole <clemc at ccc.com <mailto:clemc at ccc.com>
+>    <mailto:clemc at ccc.com <mailto:clemc at ccc.com>>> wrote:
+> 
+>        ? HP/UX is an SVR3 & OSF/1 ancester. Solaris is SVR4.  In fact
+>        it was the SVR4 license and deal between Sun and AT&T)? that
+>        forced the whole OSF creation.  One of the "principles" of the
+>        OSF was "Fair and Stable" license terms.
+> 
+>        Which begs a question - since Solaris was SVR4 based and was
+>        made freely available via OpenSolaris et al, does that not
+>        make SVR4 open?   I'm not a lawyer (nor play one on TV), but
+>        it does seem like that sets some sort of precedent.
+
+This is indeed an interesting question. During the IBM vs SCO debacle,
+IBM requested the use of TMGE to be used as an example for proof of
+how the SVR4 kernel algorithms were already out in the public domain
+and thus set the precedent. And this was also (eventually) approved by
+AT&T for publication.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20150526/0204de7e/attachment.html>
+
+From sj at sdf.org  Wed May 27 03:55:11 2015
+From: sj at sdf.org (Scot Jenkins)
+Date: Tue, 26 May 2015 13:55:11 -0400
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <556351FE.70300@mhorton.net>
+References: <555A4699.5060107@aueb.gr> <555D37FD.5010507@doomd.net>
+ <555DC689.3050906@aueb.gr>
+ <b0201a671a073e2c210556ffeaf7582c.squirrel@www.ccil.org>
+ <CAC20D2PaT_724Z3z+7HWwMmJ3ud7GYyj2JRMJdMe3uicskfv1Q@mail.gmail.com>
+ <CAHYQbfDo936vY-FNjByX1zC-ayhts1JdK2WwMQnnKSagTEwRhg@mail.gmail.com>
+ <CAC20D2P8g8ifXUtVOgTrba1UZy=hwL_yPJiYkYU3OckaZ4WdYw@mail.gmail.com>
+ <556351FE.70300@mhorton.net>
+Message-ID: <201505261755.t4QHtBpt012154@sdf.org>
+
+Mary Ann Horton <mah at mhorton.net> wrote:
+
+> Is the original SVR4 around somewhere (even if still considered trade 
+> secret or copyrighted?)
+
+
+I found this several years ago.  Not sure who posted it.
+
+https://archive.org/details/ATTUNIXSystemVRelease4Version2
+
+scot
+
+
+From merlyn at geeks.org  Wed May 27 05:12:48 2015
+From: merlyn at geeks.org (Doug McIntyre)
+Date: Tue, 26 May 2015 14:12:48 -0500
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <555D37FD.5010507@doomd.net>
+References: <555A4699.5060107@aueb.gr>
+ <555D37FD.5010507@doomd.net>
+Message-ID: <20150526191248.GB86411@geeks.org>
+
+On Wed, May 20, 2015 at 09:42:21PM -0400, Derrik Walker v2.0 wrote:
+> I was wondering if you were planning on adding any of the Solaris stuff 
+> ( I managed to get one source release of open Solaris before Oracle 
+> bought out sun ) or Darwin? Unfortunately, I don't seem to have the 
+> Darwin source anymore..
+
+Darwin has quite a lot of material available at http://opensource.apple.com/
+(ie. the xnu- packages are the kernel source code).
+
+Sun released Solaris 8 source code, but I don't remember what license. At
+the time it wasn't quite like today with license terms fully spelled out.
+And of course OpenSolaris for some period.
+
+
+
+From wkt at tuhs.org  Thu May 28 13:19:45 2015
+From: wkt at tuhs.org (Warren Toomey)
+Date: Thu, 28 May 2015 13:19:45 +1000
+Subject: [TUHS] unix-jun72 now on Github
+Message-ID: <20150528031945.GA393@www.oztivo.net>
+
+All, I finally remembered to export the unix-jun72 project over to Github:
+
+	https://github.com/DoctorWkt/unix-jun72
+
+This was our effort to bring the 1st Edition Unix kernel back to life
+along with the early C compilers and the 2nd Edition userland binaries.
+
+Cheers, Warren
+
+
+From mah at mhorton.net  Sat May 30 00:14:45 2015
+From: mah at mhorton.net (Mary Ann Horton)
+Date: Fri, 29 May 2015 07:14:45 -0700
+Subject: [TUHS] A repository with 44 years of Unix evolution gets the
+ MSR '15 Best Data Showcase Award
+In-Reply-To: <201505261755.t4QHtBpt012154@sdf.org>
+References: <555A4699.5060107@aueb.gr> <555D37FD.5010507@doomd.net>
+ <555DC689.3050906@aueb.gr>
+ <b0201a671a073e2c210556ffeaf7582c.squirrel@www.ccil.org>
+ <CAC20D2PaT_724Z3z+7HWwMmJ3ud7GYyj2JRMJdMe3uicskfv1Q@mail.gmail.com>
+ <CAHYQbfDo936vY-FNjByX1zC-ayhts1JdK2WwMQnnKSagTEwRhg@mail.gmail.com>
+ <CAC20D2P8g8ifXUtVOgTrba1UZy=hwL_yPJiYkYU3OckaZ4WdYw@mail.gmail.com>
+ <556351FE.70300@mhorton.net> <201505261755.t4QHtBpt012154@sdf.org>
+Message-ID: <55687455.4050104@mhorton.net>
+
+Thanks for this link.  There is some good stuff there!  Every piece of 
+source I looked for is there.  The ex/vi "ex.news" was certainly a trip 
+down memory lane.  But it's amazing how compact this distribution is.
+
+I'll go ahead and have the tapes read.  Who knows, I might find some new 
+goodies.
+
+     Mary Ann
+
+On 05/26/2015 10:55 AM, Scot Jenkins wrote:
+> Mary Ann Horton <mah at mhorton.net> wrote:
+>
+>> Is the original SVR4 around somewhere (even if still considered trade
+>> secret or copyrighted?)
+>
+> I found this several years ago.  Not sure who posted it.
+>
+> https://archive.org/details/ATTUNIXSystemVRelease4Version2
+>
+> scot
+
+
+

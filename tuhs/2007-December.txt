@@ -1,0 +1,657 @@
+From grog at lemis.com  Wed Dec  5 09:25:15 2007
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Wed, 5 Dec 2007 10:25:15 +1100
+Subject: [TUHS] test / [
+In-Reply-To: <20071121135104.GB14401@anteil.com>
+References: <A9225B25-82F7-4C03-99B6-D3BED413355E@tfeb.org>
+	<20071121135104.GB14401@anteil.com>
+Message-ID: <20071204232515.GZ67217@dereel.lemis.com>
+
+On Wednesday, 21 November 2007 at  8:51:04 -0500, Jim Capp wrote:
+> On Wed, Nov 21, 2007 at 01:35:53PM +0000, Tim Bradshaw wrote:
+>> Does anyone know (remember) which Unices had .../bin/[ be a link
+>> to .../bin/test.  I remember this being the case, but it is not so on
+>> any recent Solaris. It is the case on my Mac, so in at least one BSD
+>> derivative.  I looked through a 7th edition tarball from the archive
+>> and it's not the case there. So my guess is that it is a BSDism, and
+>> it probably was the case in SunOS 4 and before, and I guess on at
+>> least 4.2BSD & later.
+>
+> I remember using /bin/[ in SCO Xenix and SCO Unix, and AT&T SYS III &
+> SYS V
+
+FreeBSD and NetBSD still have this link:
+
+$ ls -li /bin/[ /bin/test
+683091 -r-xr-xr-x  2 root  wheel  7460 Aug 19  2006 /bin/[
+683091 -r-xr-xr-x  2 root  wheel  7460 Aug 19  2006 /bin/test
+
+I suppose OpenBSD does too, but I don't have a machine to check.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20071205/dc8a3bd0/attachment.sig>
+
+From cjsvance at gmail.com  Wed Dec  5 10:20:38 2007
+From: cjsvance at gmail.com (Christopher Vance)
+Date: Wed, 5 Dec 2007 11:20:38 +1100
+Subject: [TUHS] test / [
+In-Reply-To: <20071204232515.GZ67217@dereel.lemis.com>
+References: <A9225B25-82F7-4C03-99B6-D3BED413355E@tfeb.org>
+	<20071121135104.GB14401@anteil.com>
+	<20071204232515.GZ67217@dereel.lemis.com>
+Message-ID: <ace45c0a0712041620u75009acmc2f82b7755cd39e2@mail.gmail.com>
+
+On Dec 5, 2007 10:25 AM, Greg 'groggy' Lehey <grog at lemis.com> wrote:
+> FreeBSD and NetBSD still have this link:
+>
+> $ ls -li /bin/[ /bin/test
+> 683091 -r-xr-xr-x  2 root  wheel  7460 Aug 19  2006 /bin/[
+> 683091 -r-xr-xr-x  2 root  wheel  7460 Aug 19  2006 /bin/test
+>
+> I suppose OpenBSD does too, but I don't have a machine to check.
+
+Still there as of the latest release.
+
+-- 
+Christopher Vance
+
+
+From jrvalverde at cnb.uam.es  Thu Dec  6 02:00:09 2007
+From: jrvalverde at cnb.uam.es (Jose R. Valverde)
+Date: Wed, 5 Dec 2007 17:00:09 +0100
+Subject: [TUHS] test / [
+In-Reply-To: <ace45c0a0712041620u75009acmc2f82b7755cd39e2@mail.gmail.com>
+References: <A9225B25-82F7-4C03-99B6-D3BED413355E@tfeb.org>
+	<20071121135104.GB14401@anteil.com>
+	<20071204232515.GZ67217@dereel.lemis.com>
+	<ace45c0a0712041620u75009acmc2f82b7755cd39e2@mail.gmail.com>
+Message-ID: <20071205170009.3e807bec@veda.cnb.uam.es>
+
+What I seem to remember is that it was a trick used in BSD to achieve 
+compatibility with SystemV shell scripts (the shell on System-V would
+understand [ .. ] but the one on BSD wouldn't and making [ a symlink
+to test would fix the problem).
+
+My copy of Portable C and UNIX system programming only mentions that
+the [ .. ] construct may be missing on some shell versions and this
+can usually be fixed by symlinking [ to test.
+
+A hardlink from /bin/[ to /bin/test was present on Ultrix since at 
+least 3.1, which would also attest to the BSDism or workaround for
+non-System-V systems. Sorry, this is too far back in time for my 
+feeble memory.
+
+				j
+
+On Wed, 5 Dec 2007 11:20:38 +1100
+"Christopher Vance" <cjsvance at gmail.com> wrote:
+> On Dec 5, 2007 10:25 AM, Greg 'groggy' Lehey <grog at lemis.com> wrote:
+> > FreeBSD and NetBSD still have this link:
+> >
+> > $ ls -li /bin/[ /bin/test
+> > 683091 -r-xr-xr-x  2 root  wheel  7460 Aug 19  2006 /bin/[
+> > 683091 -r-xr-xr-x  2 root  wheel  7460 Aug 19  2006 /bin/test
+> >
+> > I suppose OpenBSD does too, but I don't have a machine to check.
+> 
+> Still there as of the latest release.
+> 
+> -- 
+> Christopher Vance
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20071205/a685ed4b/attachment.sig>
+
+From arnold at skeeve.com  Fri Dec 21 19:35:19 2007
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Fri, 21 Dec 2007 11:35:19 +0200
+Subject: [TUHS] Anyone have a copy of the TUHS archive available for rsync?
+Message-ID: <200712210935.lBL9ZJUK004685@skeeve.com>
+
+Hi. Warren and I seem to be on opposite ends of the world network wise,
+such that I am unable to rsync to minnie to keep my copy of the TUHS
+archive up to date.
+
+Does anyone out there in TUHS land have a copy they're willing to make
+available for syncing?
+
+Thanks!
+
+Arnold Robbins
+
+
+From asbesto at freaknet.org  Fri Dec 21 20:09:13 2007
+From: asbesto at freaknet.org (asbesto)
+Date: Fri, 21 Dec 2007 11:09:13 +0100
+Subject: [TUHS] HP Apollo Series 400 and DOMAIN/OS...
+Message-ID: <20071221100913.GA26408@freaknet.org>
+
+
+Hi! 
+
+We just recovered an HP APOLLO Series 400 in our computer museum, 
+and we got the installation tapes of DOMAIN/OS. It seem a very
+particular flavour of BSD 5.3. We also made a dump of the
+tapes, to preserve it. :D
+
+Does someone know more about it? What about licensing? Is
+it covered by some sort of hobbyist license? 
+
+Kisses to everybody! :)
+
+asbesto/freaknet computer museum 
+http://museum.freaknet.org 
+
+-- 
+[ 73 de IW9HGS : freaknet medialab : radiocybernet : poetry hacklab]
+[ http://freaknet.org/asbesto -  http://papuasia.org/radiocybernet ]
+[ NON SCRIVERMI USANDO LETTERE ACCENTATE!  - NON MANDARMI ALLEGATI ]
+[ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC and SPAM ]
+
+
+
+From wb at freebie.xs4all.nl  Fri Dec 21 20:38:58 2007
+From: wb at freebie.xs4all.nl (Wilko Bulte)
+Date: Fri, 21 Dec 2007 11:38:58 +0100
+Subject: [TUHS] HP Apollo Series 400 and DOMAIN/OS...
+In-Reply-To: <20071221100913.GA26408@freaknet.org>
+References: <20071221100913.GA26408@freaknet.org>
+Message-ID: <20071221103857.GA79085@freebie.xs4all.nl>
+
+Quoting asbesto, who wrote on Fri, Dec 21, 2007 at 11:09:13AM +0100 ..
+> 
+> Hi! 
+> 
+> We just recovered an HP APOLLO Series 400 in our computer museum, 
+> and we got the installation tapes of DOMAIN/OS. It seem a very
+> particular flavour of BSD 5.3. We also made a dump of the
+> tapes, to preserve it. :D
+
+Ah... fond memories.  Our CAD/CAM systems at Philips information systems
+were these Domain OS boxes.
+
+> 
+> Does someone know more about it? What about licensing? Is
+> it covered by some sort of hobbyist license? 
+
+No clue.
+
+> Kisses to everybody! :)
+
+Hm, can you send a picture first? ;-)
+
+> asbesto/freaknet computer museum 
+> http://museum.freaknet.org 
+> 
+> -- 
+> [ 73 de IW9HGS : freaknet medialab : radiocybernet : poetry hacklab]
+> [ http://freaknet.org/asbesto -  http://papuasia.org/radiocybernet ]
+> [ NON SCRIVERMI USANDO LETTERE ACCENTATE!  - NON MANDARMI ALLEGATI ]
+> [ *I DELETE* EMAIL > 100K, ATTACHMENTS, HTML, M$-WORD DOC and SPAM ]
+> 
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+--- end of quoted text ---
+
+-- 
+Wilko
+
+
+From tfb at tfeb.org  Fri Dec 21 21:15:19 2007
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Fri, 21 Dec 2007 11:15:19 +0000
+Subject: [TUHS] HP Apollo Series 400 and DOMAIN/OS...
+In-Reply-To: <20071221100913.GA26408@freaknet.org>
+References: <20071221100913.GA26408@freaknet.org>
+Message-ID: <8E64A249-6E64-41F2-BCBF-E5A365D62905@tfeb.org>
+
+On 21 Dec 2007, at 10:09, asbesto wrote:
+>
+>
+> We just recovered an HP APOLLO Series 400 in our computer museum,
+> and we got the installation tapes of DOMAIN/OS. It seem a very
+> particular flavour of BSD 5.3. We also made a dump of the
+> tapes, to preserve it. :D
+>
+
+My memory, which is fading, is that DOMAIN/OS was previously Aegis,  
+and was not actually a Unix at all, although it had (or later had,  
+perhaps) a lot of compatibility.  It has all sorts of cool features.
+
+
+From wb at freebie.xs4all.nl  Fri Dec 21 22:31:13 2007
+From: wb at freebie.xs4all.nl (Wilko Bulte)
+Date: Fri, 21 Dec 2007 13:31:13 +0100
+Subject: [TUHS] HP Apollo Series 400 and DOMAIN/OS...
+In-Reply-To: <8E64A249-6E64-41F2-BCBF-E5A365D62905@tfeb.org>
+References: <20071221100913.GA26408@freaknet.org>
+	<8E64A249-6E64-41F2-BCBF-E5A365D62905@tfeb.org>
+Message-ID: <20071221123113.GB79553@freebie.xs4all.nl>
+
+Quoting Tim Bradshaw, who wrote on Fri, Dec 21, 2007 at 11:15:19AM +0000 ..
+> On 21 Dec 2007, at 10:09, asbesto wrote:
+> >
+> >
+> > We just recovered an HP APOLLO Series 400 in our computer museum,
+> > and we got the installation tapes of DOMAIN/OS. It seem a very
+> > particular flavour of BSD 5.3. We also made a dump of the
+> > tapes, to preserve it. :D
+> >
+> 
+> My memory, which is fading, is that DOMAIN/OS was previously Aegis,  
+> and was not actually a Unix at all, although it had (or later had,  
+> perhaps) a lot of compatibility.  It has all sorts of cool features.
+
+You could have DomainOS take a BSD or a SysV personality.  Very interesting.
+
+There was also some fileserver functionality that allows
+//fileserver/some/path/somefile style access to everything we had hanging
+off the tokenring network.
+
+Rather neat.
+
+Wilko
+
+
+From tfb at tfeb.org  Fri Dec 21 22:58:40 2007
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Fri, 21 Dec 2007 12:58:40 +0000
+Subject: [TUHS] HP Apollo Series 400 and DOMAIN/OS...
+In-Reply-To: <20071221123113.GB79553@freebie.xs4all.nl>
+References: <20071221100913.GA26408@freaknet.org>
+	<8E64A249-6E64-41F2-BCBF-E5A365D62905@tfeb.org>
+	<20071221123113.GB79553@freebie.xs4all.nl>
+Message-ID: <CAC4A7E7-B4E5-41FA-BA05-7707366B6215@tfeb.org>
+
+On 21 Dec 2007, at 12:31, Wilko Bulte wrote:
+>
+> You could have DomainOS take a BSD or a SysV personality.  Very  
+> interesting.
+
+Very tangentially, Masscomp's RTU (real time Unix) could do this  
+too.  Other than that I think it is definitely something best  
+forgotten, as it was pretty horrid (although my memory may be biassed  
+by the awfulness of the HW)
+
+
+From lm at bitmover.com  Sat Dec 22 12:18:33 2007
+From: lm at bitmover.com (Larry McVoy)
+Date: Fri, 21 Dec 2007 18:18:33 -0800
+Subject: [TUHS] TUHS Digest, Vol 44, Issue 3
+In-Reply-To: <mailman.3.1198288801.19979.tuhs@minnie.tuhs.org>
+References: <mailman.3.1198288801.19979.tuhs@minnie.tuhs.org>
+Message-ID: <20071222021832.GA27487@bitmover.com>
+
+> Date: Fri, 21 Dec 2007 12:58:40 +0000
+> From: Tim Bradshaw <tfb at tfeb.org>
+> Subject: Re: [TUHS] HP Apollo Series 400 and DOMAIN/OS...
+> To: Wilko Bulte <wb at freebie.xs4all.nl>
+> Cc: tuhs at tuhs.org, asbesto <asbesto at freaknet.org>
+> Message-ID: <CAC4A7E7-B4E5-41FA-BA05-7707366B6215 at tfeb.org>
+> Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
+> 
+> On 21 Dec 2007, at 12:31, Wilko Bulte wrote:
+> >
+> > You could have DomainOS take a BSD or a SysV personality.  Very  
+> > interesting.
+> 
+> Very tangentially, Masscomp's RTU (real time Unix) could do this  
+> too.  Other than that I think it is definitely something best  
+> forgotten, as it was pretty horrid (although my memory may be biassed  
+> by the awfulness of the HW)
+
+Oh, I have fond memories of the Masscomp.  That's where I learned how to
+do sys admin (recovered from an rm -rf /) as well as networking (based
+on 4.1c BSD as I recall, plus hacks).  Masscomp had a really nicely redone
+version of the socket programming docs that was most helpful at the time.
+
+I was ..!uwvax!geowhiz!geophys!lm as I recall and all the geo* were 
+Masscomps.
+
+Ah, the joys of 20 users on a 40MB disk.  That's why I wrote something
+that turned Honeyman's time optimal but space worst case pathalias
+db into O(time optimal) as well as O(space best case).  Only dynamic
+programming alg I've ever done and written up.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From wb at freebie.xs4all.nl  Sat Dec 22 20:06:24 2007
+From: wb at freebie.xs4all.nl (Wilko Bulte)
+Date: Sat, 22 Dec 2007 11:06:24 +0100
+Subject: [TUHS] TUHS Digest, Vol 44, Issue 3
+In-Reply-To: <20071222021832.GA27487@bitmover.com>
+References: <mailman.3.1198288801.19979.tuhs@minnie.tuhs.org>
+	<20071222021832.GA27487@bitmover.com>
+Message-ID: <20071222100624.GA86816@freebie.xs4all.nl>
+
+Quoting Larry McVoy, who wrote on Fri, Dec 21, 2007 at 06:18:33PM -0800 ..
+> > Date: Fri, 21 Dec 2007 12:58:40 +0000
+> > From: Tim Bradshaw <tfb at tfeb.org>
+> > Subject: Re: [TUHS] HP Apollo Series 400 and DOMAIN/OS...
+> > To: Wilko Bulte <wb at freebie.xs4all.nl>
+> > Cc: tuhs at tuhs.org, asbesto <asbesto at freaknet.org>
+> > Message-ID: <CAC4A7E7-B4E5-41FA-BA05-7707366B6215 at tfeb.org>
+> > Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
+> > 
+> > On 21 Dec 2007, at 12:31, Wilko Bulte wrote:
+> > >
+> > > You could have DomainOS take a BSD or a SysV personality.  Very  
+> > > interesting.
+> > 
+> > Very tangentially, Masscomp's RTU (real time Unix) could do this  
+> > too.  Other than that I think it is definitely something best  
+> > forgotten, as it was pretty horrid (although my memory may be biassed  
+> > by the awfulness of the HW)
+> 
+> Oh, I have fond memories of the Masscomp.  That's where I learned how to
+> do sys admin (recovered from an rm -rf /) as well as networking (based
+> on 4.1c BSD as I recall, plus hacks).  Masscomp had a really nicely redone
+> version of the socket programming docs that was most helpful at the time.
+> 
+> I was ..!uwvax!geowhiz!geophys!lm as I recall and all the geo* were 
+> Masscomps.
+
+Hm, yes, in the Apollo Domain days it was ..!mcvax!philapd!wilko
+
+Wilko
+
+
+From jrvalverde at cnb.uam.es  Wed Dec 26 22:57:47 2007
+From: jrvalverde at cnb.uam.es (Jose R. Valverde)
+Date: Wed, 26 Dec 2007 13:57:47 +0100
+Subject: [TUHS] TUHS archives and rsync
+Message-ID: <20071226135747.57741969@veda.cnb.uam.es>
+
+On the TUHS site there is a list of other available sites.
+
+If you want you can try mine (ftp.es.embnet.org/pub/misc/TUHS) but be
+advised that I try to keep copies of more things than the original site 
+and it may be bigger.
+
+I can't remember offhand now if rsync was set up or not and I'm now on
+holidays abroad so it's difficult to check (mainly due to the strange
+french keyboard).
+
+Anyway, you're welcome and I will make sure rsync works (when I'm back on
+January) at my site.
+
+				j
+
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+
+
+From lm at bitmover.com  Thu Dec 27 12:08:00 2007
+From: lm at bitmover.com (Larry McVoy)
+Date: Wed, 26 Dec 2007 18:08:00 -0800
+Subject: [TUHS] TUHS Digest, Vol 44, Issue 5
+In-Reply-To: <mailman.3.1198720801.60061.tuhs@minnie.tuhs.org>
+References: <mailman.3.1198720801.60061.tuhs@minnie.tuhs.org>
+Message-ID: <20071227020800.GH6651@bitmover.com>
+
+I'm pinging my contacts to see if I can find a place to host a mirror.
+I think that Oregon State Open Source Lab has a fat link to the net
+and I used to know Scott K but he's moved on.  If I get anywhere I'll
+get back to the list.
+
+BTW, whoever is the listmom, can you change me from digest to regular?
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From jcapp at anteil.com  Thu Dec 27 13:17:55 2007
+From: jcapp at anteil.com (Jim Capp)
+Date: Wed, 26 Dec 2007 22:17:55 -0500
+Subject: [TUHS] TUHS Digest, Vol 44, Issue 5
+In-Reply-To: <20071227020800.GH6651@bitmover.com>
+References: <mailman.3.1198720801.60061.tuhs@minnie.tuhs.org>
+	<20071227020800.GH6651@bitmover.com>
+Message-ID: <20071227031755.GA9570@anteil.com>
+
+Larry,
+
+     How fat of a pipe do you need?
+
+Jim
+
+
+On Wed, Dec 26, 2007 at 06:08:00PM -0800, Larry McVoy wrote:
+> I'm pinging my contacts to see if I can find a place to host a mirror.
+> I think that Oregon State Open Source Lab has a fat link to the net
+> and I used to know Scott K but he's moved on.  If I get anywhere I'll
+> get back to the list.
+> 
+> BTW, whoever is the listmom, can you change me from digest to regular?
+> -- 
+> ---
+> Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+> 
+
+
+From sethm at loomcom.com  Thu Dec 27 12:17:09 2007
+From: sethm at loomcom.com (Seth Morabito)
+Date: Wed, 26 Dec 2007 18:17:09 -0800
+Subject: [TUHS] TUHS Digest, Vol 44, Issue 5
+In-Reply-To: <20071227020800.GH6651@bitmover.com>
+References: <mailman.3.1198720801.60061.tuhs@minnie.tuhs.org>
+	<20071227020800.GH6651@bitmover.com>
+Message-ID: <F7F3CEB1-F4BE-4DB0-A614-57747DF63510@loomcom.com>
+
+
+On Dec 26, 2007, at 6:08 PM, Larry McVoy wrote:
+
+> I'm pinging my contacts to see if I can find a place to host a mirror.
+> I think that Oregon State Open Source Lab has a fat link to the net
+> and I used to know Scott K but he's moved on.  If I get anywhere I'll
+> get back to the list.
+>
+
+What is the total size and estimated monthly bandwidth of the  
+archive?  I may be able to host a mirror on my managed server.
+
+-Seth
+
+
+From lm at bitmover.com  Thu Dec 27 13:39:22 2007
+From: lm at bitmover.com (Larry McVoy)
+Date: Wed, 26 Dec 2007 19:39:22 -0800
+Subject: [TUHS] TUHS Digest, Vol 44, Issue 5
+In-Reply-To: <20071227031755.GA9570@anteil.com>
+References: <mailman.3.1198720801.60061.tuhs@minnie.tuhs.org>
+	<20071227020800.GH6651@bitmover.com>
+	<20071227031755.GA9570@anteil.com>
+Message-ID: <20071227033921.GA7053@bitmover.com>
+
+It's not me, it's all of you.  OSL has a gigabit link to the net if I
+recall correctly.  But I don't think TUHS needs that.  There are only
+so many of us old farts.  But fast is nice.
+
+I do think that there is a _huge_ amount of value in the TUHS archive.
+I think that anyone I hire who has not wandered through there, should.
+
+Anyhoo, I'm pinging the OSL guys, I suspect that they will be cool about
+hosting a mirror, they have been way cool in the past.  For that matter,
+they'd host www.tuhs.org but I suspect Warren may not be cool with that.
+Dunno.  I can arrange introductions, they are a cool group, this is a
+cool group, who knows?
+
+I'm off to put the chickens to bed (yeah, I live in that sort of place.
+My net connection is a 100KB/sec but http://bitmover.com/lm/house makes
+it worth it, great to live in the country with the bobcats, coyotes,
+boar, mountain lions, and still commute to silicon valley).
+
+I'll report back as soon as I know more.  Happy holidays to everyone and
+for the record, I'm one of those guys that have learned a huge amount
+from the old school unix and apply it to this day.  One of my machines
+is named slovax because that was the 11/750 at Wisconsin that held the
+BSD source and I had an account.  Still remember the day I read popen()
+source and realized you code fork in libc - that was an eye-opener.
+I think it still has a lot of value and appreciate Warren and all of
+you for caring and passing on the knowledge.
+
+Cheers all,
+
+--lm
+
+On Wed, Dec 26, 2007 at 10:17:55PM -0500, Jim Capp wrote:
+> Larry,
+> 
+>      How fat of a pipe do you need?
+> 
+> Jim
+> 
+> 
+> On Wed, Dec 26, 2007 at 06:08:00PM -0800, Larry McVoy wrote:
+> > I'm pinging my contacts to see if I can find a place to host a mirror.
+> > I think that Oregon State Open Source Lab has a fat link to the net
+> > and I used to know Scott K but he's moved on.  If I get anywhere I'll
+> > get back to the list.
+> > 
+> > BTW, whoever is the listmom, can you change me from digest to regular?
+> > -- 
+> > ---
+> > Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+> > _______________________________________________
+> > TUHS mailing list
+> > TUHS at minnie.tuhs.org
+> > https://minnie.tuhs.org/mailman/listinfo/tuhs
+> > 
+
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+
+From wb at freebie.xs4all.nl  Thu Dec 27 20:14:42 2007
+From: wb at freebie.xs4all.nl (Wilko Bulte)
+Date: Thu, 27 Dec 2007 11:14:42 +0100
+Subject: [TUHS] TUHS Digest, Vol 44, Issue 5
+In-Reply-To: <20071227033921.GA7053@bitmover.com>
+References: <mailman.3.1198720801.60061.tuhs@minnie.tuhs.org>
+	<20071227020800.GH6651@bitmover.com>
+	<20071227031755.GA9570@anteil.com>
+	<20071227033921.GA7053@bitmover.com>
+Message-ID: <20071227101441.GA28854@freebie.xs4all.nl>
+
+Quoting Larry McVoy, who wrote on Wed, Dec 26, 2007 at 07:39:22PM -0800 ..
+> It's not me, it's all of you.  OSL has a gigabit link to the net if I
+> recall correctly.  But I don't think TUHS needs that.  There are only
+> so many of us old farts.  But fast is nice.
+> 
+> I do think that there is a _huge_ amount of value in the TUHS archive.
+> I think that anyone I hire who has not wandered through there, should.
+> 
+> Anyhoo, I'm pinging the OSL guys, I suspect that they will be cool about
+> hosting a mirror, they have been way cool in the past.  For that matter,
+> they'd host www.tuhs.org but I suspect Warren may not be cool with that.
+> Dunno.  I can arrange introductions, they are a cool group, this is a
+> cool group, who knows?
+
+Hm..  if all else fails we could check if ftp.freebsd.org would be available
+to mirror.  Grog, Warner, what do you think?
+
+Wilko
+
+
+From jrvalverde at cnb.uam.es  Sun Dec 30 07:07:50 2007
+From: jrvalverde at cnb.uam.es (Jose R. Valverde)
+Date: Sat, 29 Dec 2007 22:07:50 +0100
+Subject: [TUHS] TUHS Digest, Vol 44, Issue 5
+In-Reply-To: <20071227101441.GA28854@freebie.xs4all.nl>
+References: <mailman.3.1198720801.60061.tuhs@minnie.tuhs.org>
+	<20071227020800.GH6651@bitmover.com>
+	<20071227031755.GA9570@anteil.com>
+	<20071227033921.GA7053@bitmover.com>
+	<20071227101441.GA28854@freebie.xs4all.nl>
+Message-ID: <20071229220750.5a1d85c9@veda.cnb.uam.es>
+
+As for archive stats, my copy is some 11GB (but I have expanded a number
+of subtrees and added a few things). It changes very little if any at all
+usually, meaning that monthly traffic for syncing is negligible.
+
+BTW, I'm supposed to be hooked on a 2Gbps pipe, but since we mirror many
+huge biological databases (in the order of TB) and they may change by day
+significantly, and other sites use us as a hub to mirror their copy of
+said dbs in turn, out bandwidth may vary depending on day and time of
+day (if you hit us during the mirroring phase of the day it may be quite
+slow). We're also on the Grid running large jobs with large data moves...
+
+Oh well. Just give it a try. BTW, on our site you'll also find an 'os'
+directory with a large collection of additional UNIX/UNIX-like/other
+systems and sources (ftp://ftp.es.embnet.org/pub/misc/os/ or
+rsync://ftp.es.embnet.org/tuhs/ ).
+
+				j
+
+On Thu, 27 Dec 2007 11:14:42 +0100
+Wilko Bulte <wb at freebie.xs4all.nl> wrote:
+> Quoting Larry McVoy, who wrote on Wed, Dec 26, 2007 at 07:39:22PM -0800 ..
+> > It's not me, it's all of you.  OSL has a gigabit link to the net if I
+> > recall correctly.  But I don't think TUHS needs that.  There are only
+> > so many of us old farts.  But fast is nice.
+> > 
+> > I do think that there is a _huge_ amount of value in the TUHS archive.
+> > I think that anyone I hire who has not wandered through there, should.
+> > 
+> > Anyhoo, I'm pinging the OSL guys, I suspect that they will be cool about
+> > hosting a mirror, they have been way cool in the past.  For that matter,
+> > they'd host www.tuhs.org but I suspect Warren may not be cool with that.
+> > Dunno.  I can arrange introductions, they are a cool group, this is a
+> > cool group, who knows?
+> 
+> Hm..  if all else fails we could check if ftp.freebsd.org would be available
+> to mirror.  Grog, Warner, what do you think?
+> 
+> Wilko
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+
+

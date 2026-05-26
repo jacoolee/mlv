@@ -1,0 +1,1269 @@
+From hansolofalcon at worldnet.att.net  Wed May 12 12:11:03 2004
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Tue, 11 May 2004 22:11:03 -0400
+Subject: [pups] E11 and versions and I/O devices
+Message-ID: <000601c437c6$611f25a0$6401a8c0@who5>
+
+Hello from Gregg C Levine
+I've got a bundle of questions regarding E11, and its range of I/O
+devices. Here goes:
+1) Is anyone running the DOS/Windows version with the Display Register
+device attached to a LPT port? Where did they obtain the LED devices
+for it?
+
+2) How did they configure its interpretation of the PDP-11 serial
+devices? 
+
+3) Or the network connections? Favorite Ethernet cards as well.
+
+And last but not least:
+4)Which printer arrangement was used? Serial? Even a parallel
+solution?
+
+To be honest I haven't seen any action on both lists with in the past
+number of days, so I thought I'd post something new to the PUPS list,
+and give it something to chew on.
+ -------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+
+
+From albert at users.sf.net  Wed May  5 07:27:11 2004
+From: albert at users.sf.net (Albert Cahalan)
+Date: 04 May 2004 17:27:11 -0400
+Subject: [TUHS] SVR4-MP "ps -z" and "ps -Z"
+Message-ID: <1083706031.951.182.camel@cube>
+
+I'm seeking info about the SVR4-MP ps options
+-z and -Z, as used for mandatory access control.
+This is so that they can be implemented for Linux.
+
+Alternately, are there more-common ways to handle
+this security data or more-common usage of the
+-z and -Z options?
+
+I could use some example output.
+
+All "trusted" high-security systems are of interest.
+
+
+
+From kstailey at yahoo.com  Sun May  9 03:10:33 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Sat, 8 May 2004 10:10:33 -0700 (PDT)
+Subject: [TUHS] cvsweb for BSD
+Message-ID: <20040508171033.7962.qmail@web50605.mail.yahoo.com>
+
+Hi,
+
+I just thought of a neat idea.  Put old versions of BSD source code into a CVS
+archive using "cvs import" and then run a CVSWEB site with that.
+
+Possibly converting SCCS to RCS to CVS.  I don't know how far back my BSD SCCS
+goes.
+
+Maybe a smaller project to CVS 4.3BSD-tahoe to Quasijarus first.
+
+One of the big problems is that they move files all over the place as BSD
+developed and CVS doen't work too elegantly with those kind of changes.
+
+Maybe subversion not CVS but I've yet to do anything with subversion.
+
+Does anything like this already exist?
+
+Thanks,
+Ken
+
+
+
+	
+		
+__________________________________
+Do you Yahoo!?
+Win a $20,000 Career Makeover at Yahoo! HotJobs  
+http://hotjobs.sweepstakes.yahoo.com/careermakeover 
+
+From albert at users.sf.net  Sun May  9 02:15:20 2004
+From: albert at users.sf.net (Albert Cahalan)
+Date: 08 May 2004 12:15:20 -0400
+Subject: [TUHS] cvsweb for BSD
+In-Reply-To: <20040508171033.7962.qmail@web50605.mail.yahoo.com>
+References: <20040508171033.7962.qmail@web50605.mail.yahoo.com>
+Message-ID: <1084032920.952.272.camel@cube>
+
+On Sat, 2004-05-08 at 13:10, Kenneth Stailey wrote:
+
+> Possibly converting SCCS to RCS to CVS.  I don't know how far back my BSD SCCS
+> goes.
+> 
+> Maybe a smaller project to CVS 4.3BSD-tahoe to Quasijarus first.
+> 
+> One of the big problems is that they move files all over the place as BSD
+> developed and CVS doen't work too elegantly with those kind of changes.
+
+Bitkeeper handles this well. I suspect that Larry McVoy would
+at least be mildly interested in giving advice for such
+a project. Bitkeeper is SCCS-based.
+
+Bitkeeper also has a superior web interface. You can't beat
+standard unified diff format with a tiny bit of color added.
+
+
+
+From imp at bsdimp.com  Sun May  9 05:19:29 2004
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Sat, 08 May 2004 13:19:29 -0600 (MDT)
+Subject: [TUHS] cvsweb for BSD
+In-Reply-To: <1084032920.952.272.camel@cube>
+References: <20040508171033.7962.qmail@web50605.mail.yahoo.com>
+	<1084032920.952.272.camel@cube>
+Message-ID: <20040508.131929.11824761.imp@bsdimp.com>
+
+In message: <1084032920.952.272.camel at cube>
+            Albert Cahalan <albert at users.sourceforge.net> writes:
+: On Sat, 2004-05-08 at 13:10, Kenneth Stailey wrote:
+: 
+: > Possibly converting SCCS to RCS to CVS.  I don't know how far back my BSD SCCS
+: > goes.
+: > 
+: > Maybe a smaller project to CVS 4.3BSD-tahoe to Quasijarus first.
+: > 
+: > One of the big problems is that they move files all over the place as BSD
+: > developed and CVS doen't work too elegantly with those kind of changes.
+: 
+: Bitkeeper handles this well. I suspect that Larry McVoy would
+: at least be mildly interested in giving advice for such
+: a project. Bitkeeper is SCCS-based.
+: 
+: Bitkeeper also has a superior web interface. You can't beat
+: standard unified diff format with a tiny bit of color added.
+
+If you are going to use a proprietary system, you might as well use
+perforce, which has better branching and file movement support than
+bitkeeper.  But I guess I'm a little biased because I like p4 better
+than bk.
+
+Warner
+
+From kstailey at yahoo.com  Sun May  9 08:07:44 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Sat, 8 May 2004 15:07:44 -0700 (PDT)
+Subject: [TUHS] cvsweb for BSD
+In-Reply-To: <20040508171033.7962.qmail@web50605.mail.yahoo.com>
+Message-ID: <20040508220744.12670.qmail@web50604.mail.yahoo.com>
+
+
+--- Kenneth Stailey <kstailey at yahoo.com> wrote:
+> Hi,
+> 
+ 
+> Maybe a smaller project to [use] CVS [to track changes from] 4.3BSD-tahoe
+> to Quasijarus first.
+
+done.
+
+http://hermes.tubas.net/cgi-bin/cvsweb.cgi/4.3BSD/src/
+
+
+	
+		
+__________________________________
+Do you Yahoo!?
+Win a $20,000 Career Makeover at Yahoo! HotJobs  
+http://hotjobs.sweepstakes.yahoo.com/careermakeover 
+
+From kstailey at yahoo.com  Sat May 15 09:41:10 2004
+From: kstailey at yahoo.com (Kenneth Stailey)
+Date: Fri, 14 May 2004 16:41:10 -0700 (PDT)
+Subject: [TUHS] Quasijarus 0c now listed on SIMH Software Kits page
+Message-ID: <20040514234110.49176.qmail@web50603.mail.yahoo.com>
+
+http://simh.trailing-edge.com/software.html
+
+
+	
+		
+__________________________________
+Do you Yahoo!?
+SBC Yahoo! - Internet access at a great low price.
+http://promo.yahoo.com/sbc/
+
+From msokolov at ivan.Harhan.ORG  Sun May  9 03:19:17 2004
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Sat, 08 May 2004 17:19:17 -0000
+Subject: [TUHS] cvsweb for BSD
+Message-ID: <0405081719.AA04443@ivan.Harhan.ORG>
+
+Kenneth Stailey <kstailey at yahoo.com> wrote:
+
+> One of the big problems is that they move files all over the place as BSD
+> developed and CVS doen't work too elegantly with those kind of changes.
+
+Yes, neither SCCS nor RCS nor CVS tracks file moves, and for this single reason
+an SCCS/RCS/CVS tree is not sufficient by itself to act as a complete BSD
+history tree.  See this page for an idea of what I had to go through:
+
+http://ifctfvax.Harhan.ORG/Quasijarus/sccs.html
+
+MS
+
+From riebling at verizon.net  Fri May 21 03:15:49 2004
+From: riebling at verizon.net (Eric Riebling)
+Date: Thu, 20 May 2004 13:15:49 -0400
+Subject: [TUHS]  	m68k SVR2 on Perq (was: web site detailing Apple's
+  mc68k UNIX, A/UX)
+Message-ID: <5.2.0.9.1.20040520131318.0295ec50@incoming.verizon.net>
+
+
+>
+>Incidentally, the Unisoft m68k port of SVR2 at the core of A/UX was also
+>ported to the Perq-5 in 1986/1987, to create the Crosfield Studio 9500.
+>
+>Perq had just folded, but a core group of ex-Perq employees worked with a
+>team from the UK company Crosfield Electronics to take the machine (which at
+>that time existed only as a wire-wrap prototype) through to production.
+>
+>I was a member of that team and I have fond memories of sitting in a
+>basement office in Pittsburgh surrounded by kernel listings (with a very
+>puzzled look on my face).
+>
+>Just a small footnote in Unix history...
+>
+>--
+>Roger
+
+That's strange, I have those very same memories.  In fact I was looking
+for someone who would appreciate this:
+
+        #ifdef PYTHON
+
+
+
+Cheers,
+
+Eric 
+
+
+From jrvalverde at cnb.uam.es  Tue May 25 18:40:52 2004
+From: jrvalverde at cnb.uam.es (=?ISO-8859-15?Q?Jos=E9?= R. Valverde)
+Date: Tue, 25 May 2004 10:40:52 +0200
+Subject: [TUHS] Sprite
+Message-ID: <20040525104052.08ee2441.jrvalverde@cnb.uam.es>
+
+Would it make sense to add Sprite to the Unix Archives? To me, yes, it was
+enough UNIX like although it wasn't ATT or BSD derived and it had many
+advanced features.
+
+I had the (small) pleasure to run it on a small number of DECstations back in
+1994-1995 out of the freshly published WalnuCreek CD and I still long for some
+of it features.
+
+The distribution is still available at
+
+	http://www.cs.berkeley.edu/projects/sprite/
+
+				j
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+
+From chris at noncombatant.org  Wed May 26 10:31:53 2004
+From: chris at noncombatant.org (Chris Palmer)
+Date: Tue, 25 May 2004 17:31:53 -0700
+Subject: [TUHS] Grokline: Tracing the history of Unix IP
+Message-ID: <20040526003153.GL5703@nodewarrior.org>
+
+Maybe everyone here already knows about this, but I haven't seen
+anything, so I'm posting it.
+
+http://www.groklaw.net/article.php?story=20040524130757328
+
+"We hope with this Grokline project to be able to identify any
+conceivable legal issues that those wishing to block, slow, hobble or
+tax GNU/Linux may try to use in future legal assaults on the community. 
+If there are litigation risks, even just from nuisance lawsuits,
+particularly with respect to patents, we want to find those risks,
+hopefully before they do, and mitigate or resolve them now. I am
+personally convinced, as you no doubt are too, that the next wave of
+attacks on GNU/Linux and the GPL will involve patents."
+
+
+-- 
+http://chris.nodewarrior.org/
+
+
+From hansolofalcon at worldnet.att.net  Wed May 26 15:26:21 2004
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Wed, 26 May 2004 01:26:21 -0400
+Subject: [TUHS] Sprite
+In-Reply-To: <20040525104052.08ee2441.jrvalverde@cnb.uam.es>
+Message-ID: <003501c442e1$fb9f1c40$6401a8c0@who5>
+
+Hello from Gregg C Levine
+I don't know about everyone else, but you've got my vote. I have a
+copy of the same CD here, I haven't been able to boot it, because I
+don't have either machine, but still.... And I was able to get my copy
+from the same CD maker. (There's a story attached to that as a matter
+of fact.)
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+
+> -----Original Message-----
+> From: tuhs-bounces at minnie.tuhs.org
+[mailto:tuhs-bounces at minnie.tuhs.org] On
+> Behalf Of José R. Valverde
+> Sent: Tuesday, May 25, 2004 4:41 AM
+> To: tuhs at minnie.tuhs.org
+> Subject: [TUHS] Sprite
+> 
+> Would it make sense to add Sprite to the Unix Archives? To me, yes,
+it was
+> enough UNIX like although it wasn't ATT or BSD derived and it had
+many
+> advanced features.
+> 
+> I had the (small) pleasure to run it on a small number of
+DECstations back in
+> 1994-1995 out of the freshly published WalnuCreek CD and I still
+long for some
+> of it features.
+> 
+> The distribution is still available at
+> 
+> 	http://www.cs.berkeley.edu/projects/sprite/
+> 
+> 				j
+> --
+> 	These opinions are mine and only mine. Hey man, I saw them
+first!
+> 
+> 			    José R. Valverde
+> 
+> 	De nada sirve la Inteligencia Artificial cuando falta la
+Natural
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From rbelk at onlybsd.com  Wed May 26 14:29:57 2004
+From: rbelk at onlybsd.com (Randy Belk)
+Date: Tue, 25 May 2004 23:29:57 -0500 (CDT)
+Subject: [TUHS] Sprite
+In-Reply-To: <20040525104052.08ee2441.jrvalverde@cnb.uam.es>
+References: <20040525104052.08ee2441.jrvalverde@cnb.uam.es>
+Message-ID: <51429.24.164.202.240.1085545797.squirrel@24.164.202.240>
+
+I have looked everywhere for the cdrom of sprite. I saw a book about it a 
+long time ago at a bookstore and almost bought it. Some very good theory
+and code was in the book if I remember right.  I don't guess any one would
+have the Walnut Creek cdrom of sprite that they would convert to an ISO
+and make available?
+
+> Would it make sense to add Sprite to the Unix Archives? To me, yes, it was
+> enough UNIX like although it wasn't ATT or BSD derived and it had many
+> advanced features.
+>
+> I had the (small) pleasure to run it on a small number of DECstations back
+> in
+> 1994-1995 out of the freshly published WalnuCreek CD and I still long for
+> some
+> of it features.
+>
+> The distribution is still available at
+>
+> 	http://www.cs.berkeley.edu/projects/sprite/
+>
+> 				j
+> --
+> 	These opinions are mine and only mine. Hey man, I saw them first!
+>
+> 			    José R. Valverde
+>
+> 	De nada sirve la Inteligencia Artificial cuando falta la Natural
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+
+
+---------------------------------[ http://www.onlybsd.com/~rbelk/ ]--
+
+
+From grog at lemis.com  Wed May 26 18:05:06 2004
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Wed, 26 May 2004 17:35:06 +0930
+Subject: [TUHS] Sprite
+In-Reply-To: <51429.24.164.202.240.1085545797.squirrel@24.164.202.240>
+References: <20040525104052.08ee2441.jrvalverde@cnb.uam.es>
+	<51429.24.164.202.240.1085545797.squirrel@24.164.202.240>
+Message-ID: <20040526080506.GE44763@wantadilla.lemis.com>
+
+On Tuesday, 25 May 2004 at 23:29:57 -0500, Randy Belk wrote:
+>> Would it make sense to add Sprite to the Unix Archives? To me, yes, it was
+>> enough UNIX like although it wasn't ATT or BSD derived and it had many
+>> advanced features.
+>>
+>> I had the (small) pleasure to run it on a small number of
+>> DECstations back in 1994-1995 out of the freshly published
+>> WalnuCreek CD and I still long for some of it features.
+>>
+>> The distribution is still available at
+>>
+>>       http://www.cs.berkeley.edu/projects/sprite/
+>
+> I have looked everywhere for the cdrom of sprite. I saw a book about
+> it a long time ago at a bookstore and almost bought it. Some very
+> good theory and code was in the book if I remember right.  I don't
+> guess any one would have the Walnut Creek cdrom of sprite that they
+> would convert to an ISO and make available?
+
+Well, a CD-ROM *is* an ISO, so it doesn't need conversion beyond
+dd'ing to some other format (note: CD-ROMs have a 2 kB block size, so
+you'll need a bs=4b or larger for it to work at all).
+
+Anyway, I think I have what you're looking for: "Sprite 1984-1993",
+published by Walnut Creek CDROM.  I can make a copy for you (I'm
+pretty sure there's no copyright issue, but I'll check what's on the
+CD before making the copy).  But wouldn't it be easier just to
+download the stuff off the net?
+
+Greg
+--
+Note: I discard all HTML mail unseen.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 187 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20040526/4e2dbdbe/attachment.sig>
+
+From jrvalverde at cnb.uam.es  Wed May 26 18:08:27 2004
+From: jrvalverde at cnb.uam.es (=?ISO-8859-15?Q?Jos=E9?= R. Valverde)
+Date: Wed, 26 May 2004 10:08:27 +0200
+Subject: [TUHS] Grokline: Tracing the history of Unix IP
+In-Reply-To: <20040526003153.GL5703@nodewarrior.org>
+References: <20040526003153.GL5703@nodewarrior.org>
+Message-ID: <20040526100827.23bf764b.jrvalverde@cnb.uam.es>
+
+On Tue, 25 May 2004 17:31:53 -0700
+Chris Palmer <chris at noncombatant.org> wrote:
+> Maybe everyone here already knows about this, but I haven't seen
+> anything, so I'm posting it.
+> 
+> http://www.groklaw.net/article.php?story=20040524130757328
+> 
+Indeed, I posted a message to their BB yesterday pointing them to TUHS ;-)
+
+				    j
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+
+From cornelius at mail.keck.cx  Wed May 26 22:19:19 2004
+From: cornelius at mail.keck.cx (Cornelius Keck)
+Date: Wed, 26 May 2004 07:19:19 -0500
+Subject: [TUHS] Sprite
+References: <20040525104052.08ee2441.jrvalverde@cnb.uam.es>
+	<51429.24.164.202.240.1085545797.squirrel@24.164.202.240>
+Message-ID: <40B48B47.19301B98@mail.keck.cx>
+
+I looked at the Berkeley repository last night, and did not
+see some files required to run Sprite directly from disk --
+for instance, the Sparc bootimage (sun4.bt or so) seems to
+be missing, or I'm overlooking it, in my coffein-deprived
+state of mind.
+
+Anyway, googling "sprite cdrom" returns pointers to
+www.rdg.mirror.ac.uk/sites/ftp.cdrom.com/pub/cdrom/cdroms/sprite/...
+Conveniently, www.rdg... does not resolve. www.mirror.ac.uk, on
+the other hand, does, and Sprite seems to be at that very location.
+The stuff underneath contains 4.8M of tar'd stuff. I don't have
+the CD (would *love* to get a copy, or the ISO), so I can't
+check if the contents are identical to the CD (somehow it does
+not sound like it), but the stuff on mirror... only contains
+a listing of the files on the CD, not the actual CD contents :(
+
+Come to think of it.. I do have a few Sparc 2 machines, with
+a few improvements (like 128MB RAM, Weitek PowerUp), and would
+like to give Sprite a spin. I'm all for adding the Sprite ISO
+to the archive!
+
+- Cornelius
+
+
+
+Randy Belk wrote:
+> 
+> I have looked everywhere for the cdrom of sprite. I saw a book about it a
+> long time ago at a bookstore and almost bought it. Some very good theory
+> and code was in the book if I remember right.  I don't guess any one would
+> have the Walnut Creek cdrom of sprite that they would convert to an ISO
+> and make available?
+> 
+> > Would it make sense to add Sprite to the Unix Archives? To me, yes, it was
+> > enough UNIX like although it wasn't ATT or BSD derived and it had many
+> > advanced features.
+> >
+> > I had the (small) pleasure to run it on a small number of DECstations back
+> > in
+> > 1994-1995 out of the freshly published WalnuCreek CD and I still long for
+> > some
+> > of it features.
+> >
+> > The distribution is still available at
+> >
+> >       http://www.cs.berkeley.edu/projects/sprite/
+> >
+> >                               j
+> > --
+> >       These opinions are mine and only mine. Hey man, I saw them first!
+> >
+> >                           José R. Valverde
+> >
+> >       De nada sirve la Inteligencia Artificial cuando falta la Natural
+> > _______________________________________________
+> > TUHS mailing list
+> > TUHS at minnie.tuhs.org
+> > http://minnie.tuhs.org/mailman/listinfo/tuhs
+> >
+> 
+> ---------------------------------[ http://www.onlybsd.com/~rbelk/ ]--
+> 
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+From lm at bitmover.com  Wed May 26 23:52:46 2004
+From: lm at bitmover.com (Larry McVoy)
+Date: Wed, 26 May 2004 06:52:46 -0700
+Subject: [TUHS] Re: TUHS Digest, Vol 12, Issue 2
+In-Reply-To: <20040526084346.25B791E4B@minnie.tuhs.org>
+References: <20040526084346.25B791E4B@minnie.tuhs.org>
+Message-ID: <20040526135246.GD30315@work.bitmover.com>
+
+> From: Albert Cahalan <albert at users.sf.net>
+> Subject: Re: [TUHS] cvsweb for BSD
+
+> > One of the big problems is that they move files all over the place as BSD
+> > developed and CVS doen't work too elegantly with those kind of changes.
+> 
+> Bitkeeper handles this well. I suspect that Larry McVoy would
+> at least be mildly interested in giving advice for such
+> a project. Bitkeeper is SCCS-based.
+
+Yes, I'd be interested.  Other than the renames I think we can automate
+most of this.
+
+> Bitkeeper also has a superior web interface. You can't beat
+> standard unified diff format with a tiny bit of color added.
+
+Thanks.  One day we'll get around to adding sub line highlighting - that 
+would be an improvement.
+
+> From: "M. Warner Losh" <imp at bsdimp.com>
+> Subject: Re: [TUHS] cvsweb for BSD
+> 
+> If you are going to use a proprietary system, you might as well use
+> perforce, which has better branching and file movement support than
+> bitkeeper.  But I guess I'm a little biased because I like p4 better
+> than bk.
+
+Both biased and incorrect.  There are over 10,000 branches of the linux
+kernel floating around in BitKeeper (we know, we counted them) and we 
+handle file movement much more nicely than perforce does (we have our
+own concept of an inode, a pathname is a attribute of an inode just
+like contents are an attribute of the inode - so you can move A to B,
+I modify A, you pull from me and the changes apply to B in your tree.)
+
+You can be as biased as you want, I don't want to turn this into a 
+SCM discussion, but try and be accurate.  About the only thing that 
+p4 does that we don't do is centralized locking; we don't need to
+do that in a distributed/replicated system but people sometimes want it.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+
+From tuhs at keck.us  Thu May 27 07:36:41 2004
+From: tuhs at keck.us (Cornelius Keck)
+Date: Wed, 26 May 2004 16:36:41 -0500 (CDT)
+Subject: [TUHS] Sprite
+Message-ID: <Pine.BSF.4.58.0405261626510.14090@mail.keck.cx>
+
+
+Jose,
+
+TNX for parking Sprite on ftp.es.embnet.org!
+I just ran into a little problem.. looks as if
+the node is either down, or not reachable (at
+least from here (== Plano, Texas):
+
+$ ping ftp.es.embnet.org
+PING bakalao.cnb.uam.es (150.244.80.6): 56 data bytes
+^C
+--- bakalao.cnb.uam.es ping statistics ---
+9 packets transmitted, 0 packets received, 100% packet loss
+$ ftp ftp.es.embnet.org
+[2 minutes later]
+^C$
+
+> generated an ISO from the raw CD and am copying now the CD
+> contents to disk, which are being made available as
+>
+>         ftp://ftp.es.embnet.org/pub/misc/TUHS/sprite
+> and
+>         ftp://ftp.es.embnet.org/pub/misc/TUHS/sprite.iso
+>
+> as the copying is done. Beware, it is ~530MB.
+
+This goes for both my machine at home, and here at work.
+Now, www.es.embnet.org responds fairly fast, so I don't
+think that it's the wire across the big pond. Any
+ideas?
+
+TNX!
+
+Regards,
+
+Cornelius
+
+From kwall at kurtwerks.com  Thu May 27 09:06:56 2004
+From: kwall at kurtwerks.com (Kurt Wall)
+Date: Wed, 26 May 2004 19:06:56 -0400
+Subject: [TUHS] Sprite
+In-Reply-To: <Pine.BSF.4.58.0405261626510.14090@mail.keck.cx>
+References: <Pine.BSF.4.58.0405261626510.14090@mail.keck.cx>
+Message-ID: <20040526230656.GD12907@kurtwerks.com>
+
+In a 1.0K blaze of typing glory, Cornelius Keck wrote:
+> 
+> Jose,
+> 
+> TNX for parking Sprite on ftp.es.embnet.org!
+> I just ran into a little problem.. looks as if
+> the node is either down, or not reachable (at
+> least from here (== Plano, Texas):
+> 
+> $ ping ftp.es.embnet.org
+> PING bakalao.cnb.uam.es (150.244.80.6): 56 data bytes
+> ^C
+> --- bakalao.cnb.uam.es ping statistics ---
+> 9 packets transmitted, 0 packets received, 100% packet loss
+> $ ftp ftp.es.embnet.org
+> [2 minutes later]
+> ^C$
+
+Alas. Same results here:
+
+[kwall]$ ping ftp.es.embnet.org -c 4
+PING bakalao.cnb.uam.es (150.244.80.6) 56(84) bytes of data.
+
+--- bakalao.cnb.uam.es ping statistics ---
+4 packets transmitted, 0 received, 100% packet loss, time 3014ms
+
+Kurt
+-- 
+Darth Vader sleeps with a Teddywookie.
+
+From jrvalverde at cnb.uam.es  Wed May 26 20:01:51 2004
+From: jrvalverde at cnb.uam.es (=?ISO-8859-15?Q?Jos=E9?= R. Valverde)
+Date: Wed, 26 May 2004 12:01:51 +0200
+Subject: [TUHS] Sprite
+In-Reply-To: <20040526080506.GE44763@wantadilla.lemis.com>
+References: <20040525104052.08ee2441.jrvalverde@cnb.uam.es>
+	<51429.24.164.202.240.1085545797.squirrel@24.164.202.240>
+	<20040526080506.GE44763@wantadilla.lemis.com>
+Message-ID: <20040526120151.05068f2f.jrvalverde@cnb.uam.es>
+
+On Wed, 26 May 2004 17:35:06 +0930
+"Greg 'groggy' Lehey" <grog at lemis.com> wrote:
+ >>
+> >> The distribution is still available at
+> >>
+> >>       http://www.cs.berkeley.edu/projects/sprite/
+> >
+> > I have looked everywhere for the cdrom of sprite. I saw a book about
+> > it a long time ago at a bookstore and almost bought it. Some very
+> > good theory and code was in the book if I remember right.  I don't
+> > guess any one would have the Walnut Creek cdrom of sprite that they
+> > would convert to an ISO and make available?
+>
+Ditto.
+
+The distribution is still at the above URL. What you will find there
+is the contents of the CD.
+
+I got the CD from walnut Creek. Later on, after a position move I looked
+back in the web for any updates and came to this URL which after comparison
+with the CD turned out to have the same contents.
+
+If you want the CD, you can download the URL tree and burn one yourself, 
+or I may convert the CD to an image and put it somewhere if that's too
+onerous.
+
+BTW, under Linux I don't care about DD'ing with block sizes CDs. I just
+	cp /dev/cdrom image.iso
+Oh well, maybe blocking is lost, but the stream of bytes remains, and
+blocking is restored when cdrecord burns the image back. I seem to 
+remember having done the same in other Unices as well... and even on
+VMS.
+				j
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+
+From jrvalverde at cnb.uam.es  Thu May 27 00:15:32 2004
+From: jrvalverde at cnb.uam.es (=?ISO-8859-15?Q?Jos=E9?= R. Valverde)
+Date: Wed, 26 May 2004 16:15:32 +0200
+Subject: [TUHS] Sprite
+In-Reply-To: <40B48B47.19301B98@mail.keck.cx>
+References: <20040525104052.08ee2441.jrvalverde@cnb.uam.es>
+	<51429.24.164.202.240.1085545797.squirrel@24.164.202.240>
+	<40B48B47.19301B98@mail.keck.cx>
+Message-ID: <20040526161532.15593bc6.jrvalverde@cnb.uam.es>
+
+On Wed, 26 May 2004 07:19:19 -0500
+Cornelius Keck <cornelius at mail.keck.cx> wrote:
+> I looked at the Berkeley repository last night, and did not
+> see some files required to run Sprite directly from disk --
+> for instance, the Sparc bootimage (sun4.bt or so) seems to
+> be missing, or I'm overlooking it, in my coffein-deprived
+> state of mind.
+> 
+Right you are. I fished the URL from my bookmarks and had a cursory
+look before posting my e-mail yesterday.
+
+I just had a look at my CD (which casually happened to be on my
+bag today at work), and it certainly didn't match the URL contents
+as I remembered.
+
+Indeed, something looks weird to me in the contents of the URL,
+which is yet another reason to consider having a copy somewhere.
+Since I started all this fuss in the first place, I have just 
+generated an ISO from the raw CD and am copying now the CD
+contents to disk, which are being made available as
+
+	ftp://ftp.es.embnet.org/pub/misc/TUHS/sprite
+and
+	ftp://ftp.es.embnet.org/pub/misc/TUHS/sprite.iso
+
+as the copying is done. Beware, it is ~530MB.
+
+Sorry for my previous posting suggesting the URL was akin to the CD
+contents. It's obvious I was completely wrong and my memory has failed
+me (yet once again). I hope posting the CD will make up for the 
+mistake.
+				j
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+
+From tuhs at keck.us  Thu May 27 10:57:27 2004
+From: tuhs at keck.us (Cornelius Keck)
+Date: Wed, 26 May 2004 19:57:27 -0500 (CDT)
+Subject: [TUHS] Sprite
+In-Reply-To: <Pine.BSF.4.58.0405261626510.14090@mail.keck.cx>
+References: <Pine.BSF.4.58.0405261626510.14090@mail.keck.cx>
+Message-ID: <Pine.BSF.4.58.0405261954480.15728@mail.keck.cx>
+
+Cool -- embnet's web server allows ftp access:
+
+ckeck at mail$ ftp -a www.es.embnet.org
+Connected to bossa-nova.cnb.uam.es.
+220-                    Welcome to EMBnet/CNB
+220-                    =====================
+220-
+220-This is the FTP server of the Spanish EMBnet node (EMBnet/CNB).
+220-
+[...]
+230-
+230 Guest login ok, access restrictions apply.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> cd pub/misc/TUHS
+250 CWD command successful.
+ftp> ls
+200 PORT command successful.
+150 Opening ASCII mode data connection for /bin/ls.
+total 1067705
+drwxr-xr-x    5 root         512 May 26 16:09 sprite
+-rw-r--r--    1 root     546664448 May 26 15:44 sprite.iso
+226 Transfer complete.
+ftp>
+
+I like it. Time to busy out my DSL line ;)
+
+TNX for parking the .iso out there!
+
+Regards,
+
+Cornelius
+
+On Wed, 26 May 2004, Cornelius Keck wrote:
+
+>
+> Jose,
+>
+> TNX for parking Sprite on ftp.es.embnet.org!
+> I just ran into a little problem.. looks as if
+> the node is either down, or not reachable (at
+> least from here (== Plano, Texas):
+>
+> $ ping ftp.es.embnet.org
+> PING bakalao.cnb.uam.es (150.244.80.6): 56 data bytes
+> ^C
+> --- bakalao.cnb.uam.es ping statistics ---
+> 9 packets transmitted, 0 packets received, 100% packet loss
+> $ ftp ftp.es.embnet.org
+> [2 minutes later]
+> ^C$
+>
+> > generated an ISO from the raw CD and am copying now the CD
+> > contents to disk, which are being made available as
+> >
+> >         ftp://ftp.es.embnet.org/pub/misc/TUHS/sprite
+> > and
+> >         ftp://ftp.es.embnet.org/pub/misc/TUHS/sprite.iso
+> >
+> > as the copying is done. Beware, it is ~530MB.
+>
+> This goes for both my machine at home, and here at work.
+> Now, www.es.embnet.org responds fairly fast, so I don't
+> think that it's the wire across the big pond. Any
+> ideas?
+>
+> TNX!
+>
+> Regards,
+>
+> Cornelius
+>
+
+From jkunz at unixag-kl.fh-kl.de  Thu May 27 17:05:02 2004
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Thu, 27 May 2004 09:05:02 +0200
+Subject: [TUHS] Sprite
+In-Reply-To: <20040526161532.15593bc6.jrvalverde@cnb.uam.es>
+References: <20040525104052.08ee2441.jrvalverde@cnb.uam.es>
+	<51429.24.164.202.240.1085545797.squirrel@24.164.202.240>
+	<40B48B47.19301B98@mail.keck.cx>
+	<20040526161532.15593bc6.jrvalverde@cnb.uam.es>
+Message-ID: <20040527090502.0209a88c.jkunz@unixag-kl.fh-kl.de>
+
+On Wed, 26 May 2004 16:15:32 +0200
+"José R. Valverde" <jrvalverde at cnb.uam.es> wrote:
+
+> 	ftp://ftp.es.embnet.org/pub/misc/TUHS/sprite.iso
+> 
+> as the copying is done. Beware, it is ~530MB.
+Sugestion: Gzip the ISO image and make a MD5 checksum of it.
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+From jrvalverde at cnb.uam.es  Thu May 27 18:16:02 2004
+From: jrvalverde at cnb.uam.es (=?ISO-8859-15?Q?Jos=E9?= R. Valverde)
+Date: Thu, 27 May 2004 10:16:02 +0200
+Subject: [TUHS] Sprite
+In-Reply-To: <20040526230656.GD12907@kurtwerks.com>
+References: <Pine.BSF.4.58.0405261626510.14090@mail.keck.cx>
+	<20040526230656.GD12907@kurtwerks.com>
+Message-ID: <20040527101602.49237f50.jrvalverde@cnb.uam.es>
+
+On Wed, 26 May 2004 19:06:56 -0400
+Kurt Wall <kwall at kurtwerks.com> wrote:
+> > TNX for parking Sprite on ftp.es.embnet.org!
+> > I just ran into a little problem.. looks as if
+> > the node is either down, or not reachable (at
+> > least from here (== Plano, Texas):
+> > 
+>
+Should answer. It's up and running... unless someone's made a mess around
+here with the firewall. I'll ask our network manager when she arrives this
+morning.
+
+Meanwhile, as someone else noticed, www.es.embnet.org should work as well
+(it's a different computer but both share disks). Indeed both of them are
+waiting to be phased out as soon as the upper level DNS admin approves the
+changes.
+
+Sorry for the delay in answering, on this side of the pond it was already
+after hours, and this being the last day of Holidays of my brother at my 
+home (he's flying now back to America) I didn't look up my e-mail from
+home.
+
+				j
+-- 
+	These opinions are mine and only mine. Hey man, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+
+From cdl at mpl.ucsd.edu  Fri May 28 04:17:10 2004
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Thu, 27 May 2004 11:17:10 -0700 (PDT)
+Subject: [TUHS] Sprite
+Message-ID: <200405271817.i4RIHAs00870@opihi.ucsd.edu>
+
+> Date: Wed, 26 May 2004 07:19:19 -0500
+> From: Cornelius Keck <cornelius at mail.keck.cx>
+> To: Randy Belk <rbelk at onlybsd.com>
+> Subject: Re: [TUHS] Sprite
+> Cc: tuhs at minnie.tuhs.org
+> 
+> I looked at the Berkeley repository last night, and did not
+> see some files required to run Sprite directly from disk --
+> for instance, the Sparc bootimage (sun4.bt or so) seems to
+> be missing, or I'm overlooking it, in my coffein-deprived
+> state of mind.
+> 
+> Come to think of it.. I do have a few Sparc 2 machines, with
+> a few improvements (like 128MB RAM, Weitek PowerUp), and would
+> like to give Sprite a spin. I'm all for adding the Sprite ISO
+> to the archive!
+> 
+> - Cornelius
+
+Jose' R Valverde wrote:
+
+> > >
+> > > I had the (small) pleasure to run it on a small number of
+> > > DECstations back in 1994-1995 out of the freshly published
+> > > WalnuCreek CD and I still long for some of it features.
+
+Let me be confused, and note that a DECstation is not a SPARCstation.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+
+From jkunz at unixag-kl.fh-kl.de  Fri May 28 05:47:17 2004
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Thu, 27 May 2004 21:47:17 +0200
+Subject: [TUHS] Sprite
+In-Reply-To: <200405271817.i4RIHAs00870@opihi.ucsd.edu>
+References: <200405271817.i4RIHAs00870@opihi.ucsd.edu>
+Message-ID: <20040527214717.003c033c.jkunz@unixag-kl.fh-kl.de>
+
+On Thu, 27 May 2004 11:17:10 -0700 (PDT)
+Carl Lowenstein <cdl at mpl.ucsd.edu> wrote:
+
+> > > > I had the (small) pleasure to run it on a small number of
+> > > > DECstations back in 1994-1995 out of the freshly published
+> > > > WalnuCreek CD and I still long for some of it features.
+> Let me be confused, and note that a DECstation is not a SPARCstation.
+There where several ports: Sun3, Sun4 / SPARC, DECstation, SPUR, Sequent
+Symmetry at least. Even mixed architecture clusters where supported. See
+http://www.cs.berkeley.edu/projects/sprite/retrospective.html
+
+Hmm. I have some DECstation 3100, a 5000/240 and some SPARC 1+, 2, IPX
+machines around... ;-)
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+From tuhs at keck.us  Fri May 28 14:06:41 2004
+From: tuhs at keck.us (Cornelius Keck)
+Date: Thu, 27 May 2004 23:06:41 -0500 (CDT)
+Subject: [TUHS] Sprite
+In-Reply-To: <20040527214717.003c033c.jkunz@unixag-kl.fh-kl.de>
+References: <200405271817.i4RIHAs00870@opihi.ucsd.edu>
+ <20040527214717.003c033c.jkunz@unixag-kl.fh-kl.de>
+Message-ID: <Pine.BSF.4.58.0405272303440.28482@mail.keck.cx>
+
+Now that you mention that...
+
+I have two or three Britelite IPCs stashed away (that's more
+or less a Sparc 2, or IPC, in a "luggable" formfactor, fold-up
+LCD display with a whooping 640*480, even takes SBUS cards.
+It's kinda portable, which means that the way to/from work becomes
+your work-out. I wonder if Sprite runs on those as well. Gotta
+fire that CDBurner up. That will take a bit. There is some bad
+weather out there, and I think I heard the notorious phrase
+"tornado warning" again :(
+
+On Thu, 27 May 2004, Jochen Kunz wrote:
+
+> On Thu, 27 May 2004 11:17:10 -0700 (PDT)
+> Carl Lowenstein <cdl at mpl.ucsd.edu> wrote:
+>
+> > > > > I had the (small) pleasure to run it on a small number of
+> > > > > DECstations back in 1994-1995 out of the freshly published
+> > > > > WalnuCreek CD and I still long for some of it features.
+> > Let me be confused, and note that a DECstation is not a SPARCstation.
+> There where several ports: Sun3, Sun4 / SPARC, DECstation, SPUR, Sequent
+> Symmetry at least. Even mixed architecture clusters where supported. See
+> http://www.cs.berkeley.edu/projects/sprite/retrospective.html
+>
+> Hmm. I have some DECstation 3100, a 5000/240 and some SPARC 1+, 2, IPX
+> machines around... ;-)
+>
+
+From arnold at skeeve.com  Sun May 30 23:19:39 2004
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Sun, 30 May 2004 09:19:39 -0400
+Subject: [TUHS] Sprite
+Message-ID: <200405301319.i4UDJdOf004920@skeeve.com>
+
+> There where several ports: Sun3, Sun4 / SPARC, DECstation, SPUR, Sequent
+> Symmetry at least. Even mixed architecture clusters where supported. See
+> http://www.cs.berkeley.edu/projects/sprite/retrospective.html
+
+Wasn't the Symmetry a 386 based system?  Could Sprite be "revived" for the
+modern PC?  Just wondering ...
+
+Arnold
+
+From jkunz at unixag-kl.fh-kl.de  Mon May 31 01:46:21 2004
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Sun, 30 May 2004 17:46:21 +0200
+Subject: [TUHS] Sprite
+In-Reply-To: <200405301319.i4UDJdOf004920@skeeve.com>
+References: <200405301319.i4UDJdOf004920@skeeve.com>
+Message-ID: <20040530174621.3fea7782.jkunz@unixag-kl.fh-kl.de>
+
+On Sun, 30 May 2004 09:19:39 -0400
+Aharon Robbins <arnold at skeeve.com> wrote:
+
+> > There where several ports: Sun3, Sun4 / SPARC, DECstation, SPUR,
+> > Sequent Symmetry at least. Even mixed architecture clusters where
+> > supported. See
+> > http://www.cs.berkeley.edu/projects/sprite/retrospective.html
+> Wasn't the Symmetry a 386 based system? 
+Yes.
+
+> Could Sprite be "revived" for the modern PC?  Just wondering ...
+Most likely no. The Sequent Symmetry machines had only one thing in
+common with a PeeCee: The Intel 80386DX chip. Everything else was custom
+Sequent architecture. 
+
+And by the way: I have hands on experience with a 8 CPU Sequent Symmetry
+S27. It cost over 900000 DM (today about 500000 US$) in 1989 and had a
+much slower disk and network interface as the Sun 3/260. It was an
+overpriced snail.
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+From hansolofalcon at worldnet.att.net  Mon May 31 08:16:33 2004
+From: hansolofalcon at worldnet.att.net (Gregg C Levine)
+Date: Sun, 30 May 2004 18:16:33 -0400
+Subject: [TUHS] Sprite
+In-Reply-To: <20040530174621.3fea7782.jkunz@unixag-kl.fh-kl.de>
+Message-ID: <001301c44693$c5961260$6401a8c0@who5>
+
+Hello from Gregg C Levine
+Okay, now this begs the question: Can the VAX Station boot code which
+is targeted to that specific system, be rewritten to accommodate the
+VAX processor that SIMH emulates? I am not a good C programmer, just a
+whatever comes before that. I can only offer these suggestions, and
+ask these questions. 
+
+For that matter, do any of us have any of the SUN hardware that I do
+know Sprite ran on? Or that VAX Station? For me, its no to all three.
+-------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+
+> -----Original Message-----
+> From: tuhs-bounces at minnie.tuhs.org
+[mailto:tuhs-bounces at minnie.tuhs.org] On
+> Behalf Of Jochen Kunz
+> Sent: Sunday, May 30, 2004 11:46 AM
+> To: tuhs at minnie.tuhs.org
+> Subject: Re: [TUHS] Sprite
+> 
+> On Sun, 30 May 2004 09:19:39 -0400
+> Aharon Robbins <arnold at skeeve.com> wrote:
+> 
+> > > There where several ports: Sun3, Sun4 / SPARC, DECstation, SPUR,
+> > > Sequent Symmetry at least. Even mixed architecture clusters
+where
+> > > supported. See
+> > > http://www.cs.berkeley.edu/projects/sprite/retrospective.html
+> > Wasn't the Symmetry a 386 based system?
+> Yes.
+> 
+> > Could Sprite be "revived" for the modern PC?  Just wondering ...
+> Most likely no. The Sequent Symmetry machines had only one thing in
+> common with a PeeCee: The Intel 80386DX chip. Everything else was
+custom
+> Sequent architecture.
+> 
+> And by the way: I have hands on experience with a 8 CPU Sequent
+Symmetry
+> S27. It cost over 900000 DM (today about 500000 US$) in 1989 and had
+a
+> much slower disk and network interface as the Sun 3/260. It was an
+> overpriced snail.
+> --
+> 
+> 
+> tschüß,
+>        Jochen
+> 
+> Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+> 
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From jrvalverde at cnb.uam.es  Mon May 31 17:16:03 2004
+From: jrvalverde at cnb.uam.es (=?ISO-8859-15?Q?Jos=E9?= R. Valverde)
+Date: Mon, 31 May 2004 09:16:03 +0200
+Subject: [TUHS] Sprite
+In-Reply-To: <200405301319.i4UDJdOf004920@skeeve.com>
+References: <200405301319.i4UDJdOf004920@skeeve.com>
+Message-ID: <20040531091603.4d730f68.jrvalverde@cnb.uam.es>
+
+On Sun, 30 May 2004 09:19:39 -0400
+Aharon Robbins <arnold at skeeve.com> wrote:
+ 
+> Wasn't the Symmetry a 386 based system?  Could Sprite be "revived" for the
+> modern PC?  Just wondering ...
+> 
+Would it make sense? Other than for historic reasons I mean.
+
+Nowadays we have Linux, well supported, widely spread, with logging file
+systems and with at least three free process migration extensions (Mosix, 
+OpenMosix and OpenSSI) plus Bproc. It would make more sense to pursue a
+merge of these extensions in the main kernel.
+
+Truly, Sprite would be totally unencumbered (i.e. possibly free of SCO-like
+attacks) but that wouldn't preclude any deep-pocket to attempt spurious or
+unfunded attacks to spread FUD if they felt they could capitalize on them.
+
+It's true too that Sprite code (to me) is more elegant, but I have concerns
+how would it look after ten years of community development and without
+Ousterhout's leadership.
+
+Not less true, having a microkernel based implementation is tempting, but
+I doubt people is ready for uKernels with so much marketing pressure to make 
+them believe that they need to squeeze every single cycle and buy new CPUs 
+every so. It takes time and experience with several *different* systems, 
+algorithms and architectures to realize that a 10% linear speedup is most
+often a meaningless achievement.
+
+And to finish, the multi-architecture single-system image is still far
+from most clusters, and noteworthy in itself, but I'm sure it would come if
+more people could land their hands on more than cheap PCs for playing.
+
+I certainly long for Sprite and would have loved to continue using it. Had
+it been distributed two years earlier it might have become 'the' open system
+instead of Linux. But so might have BSD had it not been for the ATT lawsuit.
+Opening it might have produced the extensions and maintenance that the
+original research team couldn't provide, but at the time few could imagine 
+what the Internet community was able to achieve.
+
+That said, I have also pondered that same question many times, but lack the
+time or resources to give it a try (sigh).
+
+				    j
+-- 
+	These opinions are mine and only mine. Hey, I saw them first!
+
+			    José R. Valverde
+
+	De nada sirve la Inteligencia Artificial cuando falta la Natural
+
+From jkunz at unixag-kl.fh-kl.de  Mon May 31 20:26:24 2004
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Mon, 31 May 2004 12:26:24 +0200
+Subject: [TUHS] Sprite
+In-Reply-To: <001301c44693$c5961260$6401a8c0@who5>
+References: <20040530174621.3fea7782.jkunz@unixag-kl.fh-kl.de>
+	<001301c44693$c5961260$6401a8c0@who5>
+Message-ID: <20040531122624.0cc5046d.jkunz@unixag-kl.fh-kl.de>
+
+On Sun, 30 May 2004 18:16:33 -0400
+"Gregg C Levine" <hansolofalcon at worldnet.att.net> wrote:
+
+> Okay, now this begs the question: Can the VAX Station boot code which
+> is targeted to that specific system, be rewritten to accommodate the
+> VAX processor that SIMH emulates? 
+??? VAXstation? Sprite runs on DECstations. DECstations are not VAXen.
+They are MIPS based Unix workstations. An entirely different
+architecture.
+-- 
+
+
+tschüß,
+       Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+From arnold at skeeve.com  Mon May 31 20:45:11 2004
+From: arnold at skeeve.com (Aharon Robbins)
+Date: Mon, 31 May 2004 06:45:11 -0400
+Subject: [TUHS] Sprite
+Message-ID: <200405311045.i4VAjBIb011017@skeeve.com>
+
+I think you're confused.  The DECstation was made by DEC, but used a MIPS
+processor, not a VAX.  SIMH won't be able to do anything with it, although
+there are likely other MIPS simulators out there to be found.
+
+Arnold
+
+> From: "Gregg C Levine" <hansolofalcon at worldnet.att.net>
+> To: <tuhs at minnie.tuhs.org>
+> Subject: RE: [TUHS] Sprite
+> Date: Sun, 30 May 2004 18:16:33 -0400
+>
+> Hello from Gregg C Levine
+> Okay, now this begs the question: Can the VAX Station boot code which
+> is targeted to that specific system, be rewritten to accommodate the
+> VAX processor that SIMH emulates? I am not a good C programmer, just a
+> whatever comes before that. I can only offer these suggestions, and
+> ask these questions.
+>
+> For that matter, do any of us have any of the SUN hardware that I do
+> know Sprite ran on? Or that VAX Station? For me, its no to all three.
+> -------------------
+> Gregg C Levine hansolofalcon at worldnet.att.net
+

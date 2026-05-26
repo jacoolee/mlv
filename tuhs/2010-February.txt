@@ -1,0 +1,307 @@
+From tfb at tfeb.org  Sat Feb 13 03:03:14 2010
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Fri, 12 Feb 2010 17:03:14 +0000
+Subject: [TUHS] Backup software (was:  Irwin 285)
+In-Reply-To: <201001282027.o0SKRBIs001465@anduin.eldar.org>
+References: <20100121203655.GH25687@freebie.xs4all.nl>
+	<20100121204449.92D7640E8@lod.com>
+	<20100122003610.GB3623@dereel.lemis.com>
+	<201001282027.o0SKRBIs001465@anduin.eldar.org>
+Message-ID: <F0E76D31-9AC7-47EF-BD17-3829360D8A69@tfeb.org>
+
+On 28 Jan 2010, at 20:27, Brad Spencer wrote:
+
+> I don't know how far this goes, if it is just NetBSD, or something
+> inherent to all 4.4BSD derived systems.
+
+Sun's ufsdump (which is dump really) seems to be x86/SPARC portable at  
+least. I'm not sure it always was though.
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From grog at lemis.com  Mon Feb 15 11:19:14 2010
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Mon, 15 Feb 2010 12:19:14 +1100
+Subject: [TUHS] dump(8) compatibility (was: Backup software (was: Irwin 285))
+In-Reply-To: <201001282027.o0SKRBIs001465@anduin.eldar.org>
+References: <20100121203655.GH25687@freebie.xs4all.nl>
+	<20100121204449.92D7640E8@lod.com>
+	<20100122003610.GB3623@dereel.lemis.com>
+	<201001282027.o0SKRBIs001465@anduin.eldar.org>
+Message-ID: <20100215011914.GZ62998@dereel.lemis.com>
+
+On Thursday, 28 January 2010 at 15:27:11 -0500, Brad Spencer wrote:
+>
+>    On Thursday, 21 January 2010 at 12:44:49 -0800, Corey Lindsly wrote:
+>>
+>>> Sure. I know.  Big SATA drives are cheap over here as well, like
+>>> 1.5T for 110 EURO or somesuch. I just happen to own a LTO3 and
+>>> enough tapes already, so the economics are not the issue. Just need
+>>> to have a proper piece of open source backup software that runs on
+>>> FreeBSD.
+>>
+>> And what, precisely, is the problem with using dump?
+>> It will span multiple tapes.
+>
+>    dump is non-portable.  In general, you can only restore to the same
+>    kind of system as you write to.
+>
+> Not entirely true...  dump and restore in NetBSD seems to be portable
+> among NetBSD systems at least.
+>
+> I don't know how far this goes, if it is just NetBSD, or something
+> inherent to all 4.4BSD derived systems.
+
+I've just tried to list a FreeBSD 7.2 dump on NetBSD 5.0.1:
+
+  Extract directories from tape
+  Mangled directory: reclen less than DIRSIZ (12 < 16)
+  (many repetitions)
+  Mangled directory: reclen less than DIRSIZ (12 < 16)
+  . is not on the tape
+  Root directory is not on tape
+  abort? [yn] y
+
+Interestingly, FreeBSD restore can understand the NetBSD dump.  But
+it's not even backwards compatible between major releases of FreeBSD
+even, so this might be the same issue as with FreeBSD.  Either way, I
+don't think it's a good idea to count on it for NetBSD in the future.
+
+Greg
+--
+Finger grog at FreeBSD.org for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft MUA reports
+problems, please read http://tinyurl.com/broken-mua
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 195 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100215/283a28ec/attachment.sig>
+-------------- next part --------------
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+From neozeed at gmail.com  Mon Feb 15 11:24:16 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Sun, 14 Feb 2010 20:24:16 -0500
+Subject: [TUHS] dump(8) compatibility (was: Backup software (was: Irwin
+	285))
+In-Reply-To: <20100215011914.GZ62998@dereel.lemis.com>
+References: <20100121203655.GH25687@freebie.xs4all.nl>
+	<20100121204449.92D7640E8@lod.com>
+	<20100122003610.GB3623@dereel.lemis.com>
+	<201001282027.o0SKRBIs001465@anduin.eldar.org>
+	<20100215011914.GZ62998@dereel.lemis.com>
+Message-ID: <46b366131002141724h6df51264rafed91134b60a26e@mail.gmail.com>
+
+I'll never understand why software vendors think its a great idea to break
+stuff like backup/restore programs....
+
+It's going to be more & more of a PITA with that sarbanes oxley compliance
+in the states... Hell we had NT 3.5 machines & a VAX in 2003... I'd dread
+for anyone needing anything from those with any legal ramifications...
+
+The VAX fried, and the old NT tapes were lost in a hurricane.....
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100214/16df4f3e/attachment.html>
+-------------- next part --------------
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+From imp at bsdimp.com  Mon Feb 15 11:30:08 2010
+From: imp at bsdimp.com (M. Warner Losh)
+Date: Sun, 14 Feb 2010 18:30:08 -0700 (MST)
+Subject: [TUHS] dump(8) compatibility
+In-Reply-To: <20100215011914.GZ62998@dereel.lemis.com>
+References: <20100122003610.GB3623@dereel.lemis.com>
+	<201001282027.o0SKRBIs001465@anduin.eldar.org>
+	<20100215011914.GZ62998@dereel.lemis.com>
+Message-ID: <20100214.183008.635519104763620496.imp@bsdimp.com>
+
+In message: <20100215011914.GZ62998 at dereel.lemis.com>
+            "Greg 'groggy' Lehey" <grog at lemis.com> writes:
+: On Thursday, 28 January 2010 at 15:27:11 -0500, Brad Spencer wrote:
+: >
+: >    On Thursday, 21 January 2010 at 12:44:49 -0800, Corey Lindsly wrote:
+: >>
+: >>> Sure. I know.  Big SATA drives are cheap over here as well, like
+: >>> 1.5T for 110 EURO or somesuch. I just happen to own a LTO3 and
+: >>> enough tapes already, so the economics are not the issue. Just need
+: >>> to have a proper piece of open source backup software that runs on
+: >>> FreeBSD.
+: >>
+: >> And what, precisely, is the problem with using dump?
+: >> It will span multiple tapes.
+: >
+: >    dump is non-portable.  In general, you can only restore to the same
+: >    kind of system as you write to.
+: >
+: > Not entirely true...  dump and restore in NetBSD seems to be portable
+: > among NetBSD systems at least.
+: >
+: > I don't know how far this goes, if it is just NetBSD, or something
+: > inherent to all 4.4BSD derived systems.
+: 
+: I've just tried to list a FreeBSD 7.2 dump on NetBSD 5.0.1:
+: 
+:   Extract directories from tape
+:   Mangled directory: reclen less than DIRSIZ (12 < 16)
+:   (many repetitions)
+:   Mangled directory: reclen less than DIRSIZ (12 < 16)
+:   . is not on the tape
+:   Root directory is not on tape
+:   abort? [yn] y
+: 
+: Interestingly, FreeBSD restore can understand the NetBSD dump.  But
+: it's not even backwards compatible between major releases of FreeBSD
+: even, so this might be the same issue as with FreeBSD.  Either way, I
+: don't think it's a good idea to count on it for NetBSD in the future.
+
+Actually, dump *IS* compatible between major releases of FreeBSD.  The
+problem is that dump tapes from FreeBSD 1.x and 2.x (and 4.3BSD,
+4.4BSD and early SunOS) are no longer restoreable because the code
+that restored the old-style ufs1 layout was removed somewhere around
+FreeBSD 4.x or 5.x.
+
+It used to be the case that dump was completely interchangeable
+between the different BSDs, but software drift has rendered that not
+the case anymore.
+
+Warner
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From lm at bitmover.com  Mon Feb 15 12:27:42 2010
+From: lm at bitmover.com (Larry McVoy)
+Date: Sun, 14 Feb 2010 18:27:42 -0800
+Subject: [TUHS] dump(8) compatibility
+In-Reply-To: <20100214.183008.635519104763620496.imp@bsdimp.com>
+References: <20100122003610.GB3623@dereel.lemis.com>
+	<201001282027.o0SKRBIs001465@anduin.eldar.org>
+	<20100215011914.GZ62998@dereel.lemis.com>
+	<20100214.183008.635519104763620496.imp@bsdimp.com>
+Message-ID: <20100215022742.GA29101@bitmover.com>
+
+> It used to be the case that dump was completely interchangeable
+> between the different BSDs, but software drift has rendered that not
+> the case anymore.
+
+Which is why we (BitKeeper guys) don't even trust cpio/tar/etc.  Wrote our
+own, works everywhere including windows.
+-- 
+---
+Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From imp at bsdimp.com  Mon Feb 15 15:05:12 2010
+From: imp at bsdimp.com (Warner Losh)
+Date: Sun, 14 Feb 2010 22:05:12 -0700
+Subject: [TUHS] dump(8) compatibility
+In-Reply-To: <20100215022742.GA29101@bitmover.com>
+References: <20100122003610.GB3623@dereel.lemis.com>
+	<201001282027.o0SKRBIs001465@anduin.eldar.org>
+	<20100215011914.GZ62998@dereel.lemis.com>
+	<20100214.183008.635519104763620496.imp@bsdimp.com>
+	<20100215022742.GA29101@bitmover.com>
+Message-ID: <A2F25A9A-A2F6-438F-AB2F-F060C8B600CF@bsdimp.com>
+
+Tar and cpio at least have a standard, well understood format. Dump  
+was always only defined by the source.
+
+Warner
+
+
+On Feb 14, 2010, at 7:27 PM, Larry McVoy <lm at bitmover.com> wrote:
+
+>> It used to be the case that dump was completely interchangeable
+>> between the different BSDs, but software drift has rendered that not
+>> the case anymore.
+>
+> Which is why we (BitKeeper guys) don't even trust cpio/tar/etc.   
+> Wrote our
+> own, works everywhere including windows.
+> -- 
+> ---
+> Larry McVoy                lm at bitmover.com           http://www.bitkeeper.com
+>
+>
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+From neozeed at gmail.com  Mon Feb 15 15:18:12 2010
+From: neozeed at gmail.com (Jason Stevens)
+Date: Mon, 15 Feb 2010 00:18:12 -0500
+Subject: [TUHS] dump(8) compatibility
+In-Reply-To: <A2F25A9A-A2F6-438F-AB2F-F060C8B600CF@bsdimp.com>
+References: <20100122003610.GB3623@dereel.lemis.com>
+	<201001282027.o0SKRBIs001465@anduin.eldar.org>
+	<20100215011914.GZ62998@dereel.lemis.com>
+	<20100214.183008.635519104763620496.imp@bsdimp.com>
+	<20100215022742.GA29101@bitmover.com>
+	<A2F25A9A-A2F6-438F-AB2F-F060C8B600CF@bsdimp.com>
+Message-ID: <46b366131002142118p4157cd7m6bc5e171692aae3@mail.gmail.com>
+
+reminds me of the tar changes with the advent of gnutar... boy have I had a
+lot of fun transporting files to find out when extracting it creates the
+directories as files.....
+
+
+On Mon, Feb 15, 2010 at 12:05 AM, Warner Losh <imp at bsdimp.com> wrote:
+
+> Tar and cpio at least have a standard, well understood format. Dump was
+> always only defined by the source.
+>
+> Warner
+>
+>
+>
+> On Feb 14, 2010, at 7:27 PM, Larry McVoy <lm at bitmover.com> wrote:
+>
+>  It used to be the case that dump was completely interchangeable
+>>> between the different BSDs, but software drift has rendered that not
+>>> the case anymore.
+>>>
+>>
+>> Which is why we (BitKeeper guys) don't even trust cpio/tar/etc.  Wrote our
+>> own, works everywhere including windows.
+>> --
+>> ---
+>> Larry McVoy                lm at bitmover.com
+>> http://www.bitkeeper.com
+>>
+>>
+>>  _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20100215/6e6ab2b4/attachment.html>
+-------------- next part --------------
+_______________________________________________
+TUHS mailing list
+TUHS at minnie.tuhs.org
+https://minnie.tuhs.org/mailman/listinfo/tuhs
+

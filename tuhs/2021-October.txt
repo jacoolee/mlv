@@ -1,0 +1,2833 @@
+From sauer at technologists.com  Fri Oct  1 00:12:00 2021
+From: sauer at technologists.com (Charles H Sauer)
+Date: Thu, 30 Sep 2021 09:12:00 -0500
+Subject: [TUHS] Early shared library implementations
+In-Reply-To: <202109301039.18UAdT0F026748@freefriends.org>
+References: <EDEDF06A-C3A2-4E17-8F78-14DF63C8C5AD@planet.nl>
+ <202109301039.18UAdT0F026748@freefriends.org>
+Message-ID: <3b9abb98-6265-fa2d-8956-3ce6a70a0979@technologists.com>
+
+On 9/30/2021 5:39 AM, arnold at skeeve.com wrote:
+> Paul Ruizendaal via TUHS <tuhs at minnie.tuhs.org> wrote:
+> 
+>> So far, I have not come across any shared library implementations or
+>> precursors in early Unix prior to SunOS 4.
+> 
+> In more or less the same time frame, the AT&T UnixPC / 3B1, which was
+> OEM'ed from Convergent, had shared libraries.  This was ~ 1986.
+> 
+> I don't know the details of how it worked and how one built the shared
+> libraries; I am sure that it was an independent implementation from Sun's.
+> 
+> This was done on top of a System V Release 2 kernel.  Later versions
+> of the OS had some bits of the SVR3 user land, but the kernel remained
+> SVR2 based.
+> 
+> There is a 3B1 emulator and disk images for it available for anyone
+> who really wants to go back to a system with short filenames and no
+> job control. :-)
+
+I'm very hazy on the details, because I wasn't directly involved, but we 
+had shared libraries in AIX for the RT starting with the initial release 
+in 1986 (based on SVR1). Larry Loucks did most of the design, with help 
+from ISC folks and maybe Rick Simpson. Larry mentions this work in our 
+AIX 2 paper 
+(https://technologists.com/sauer/Advanced%20Interactive%20Executive%20(AIX)%20Operating%20System%20Overview.pdf) 
+but I don't see any useful description, nor do I see anything useful 
+skimming http://www.bitsavers.org/pdf/ibm/pc/rt/ docs. A more 
+sophisticated shared library design was one of the additions in AIX 3.
+
+Charlie
+
+P.S. That paper and 
+https://technologists.com/sauer/SA23-1057_IBM_RT_Personal_Computer_Technology_1986.pdf 
+do include a bit more discussion of our memory mapped files since 
+support for those was a primary goal of the 801 virtual memory design 
+(summarized in the "Rosetta" paragraph of 
+https://notes.technologists.com/notes/2017/03/08/lets-start-at-the-very-beginning-801-romp-rtpc-aix-versions/). 
+
+
+-- 
+voice: +1.512.784.7526       e-mail: sauer at technologists.com
+fax: +1.512.346.5240         Web: https://technologists.com/sauer/
+Facebook/Google/Twitter: CharlesHSauer
+
+From woods at robohack.ca  Fri Oct  1 03:31:20 2021
+From: woods at robohack.ca (Greg A. Woods)
+Date: Thu, 30 Sep 2021 10:31:20 -0700
+Subject: [TUHS] Systematic approach to command-line interfaces
+In-Reply-To: <20210929165715.GN18305@mcvoy.com>
+References: <20210731142533.69caf929@moon>
+ <CABH=_VR-tfenCLE=DeNcb2ahPjG80v6Ma+W0sRt2jAfy2OX4hg@mail.gmail.com>
+ <CAEoi9W4jmzZB-thocbMrZ+B-bnU5bE-q0BsJ6bimw1V6mpUkeA@mail.gmail.com>
+ <40763c2d-52ad-eb01-8bf8-85acf6fee700@case.edu>
+ <CAEoi9W5Us72G_rxGogEd2FUh1cJdcf0GzR--omC4RFP-hzuQ_w@mail.gmail.com>
+ <CAD2gp_TGGWhKu-uUYN77Y-AnBnY8tTxgcOpfPv-4PNRjgL=idw@mail.gmail.com>
+ <CAD-qYGqWynaEDFZKSeuAApn9H9jJL36ombAzxrSV=VGVU46Gdg@mail.gmail.com>
+ <m1mVHBR-0036wTC@more.local> <20210928181016.GN18305@mcvoy.com>
+ <m1mVcd5-0036x9C@more.local> <20210929165715.GN18305@mcvoy.com>
+Message-ID: <m1mVztw-0036wTC@more.local>
+
+At Wed, 29 Sep 2021 09:57:15 -0700, Larry McVoy <lm at mcvoy.com> wrote:
+Subject: Re: [TUHS] Systematic approach to command-line interfaces
+>
+> On Wed, Sep 29, 2021 at 09:40:23AM -0700, Greg A. Woods wrote:
+> > I think perhaps the problem was that mmap() came too soon in a narrow
+> > sub-set of the Unix implementations that were around at the time, when
+> > many couldn't support it well (especially on 32-bit systems -- it really
+> > only becomes universally useful with either segments or 64-bit and
+> > larger address spaces).  The fracturing of "unix" standards at the time
+> > didn't help either.
+>
+> I think you didn't use SunOS 4.x.  mmap() was implemented correctly
+> there, the 4.x VM system mostly got rid of the buffer cache (the
+> buffer cache was used only for reading directories and inodes, there
+> was no regular file data there).  If you read(2) a page and mmap()ed
+> it and then did a write(2) to the page, the mapped page is the same
+> physical memory as the write()ed page.  Zero coherency issues.
+
+Implementation isn't really what I meant to talk directly about -- I
+meant "integration", and especially integration outside the kernel.
+
+> This was not true in other systems, they copied the page from the
+> buffer cache and had all sorts of coherency problems.  It took
+> about a decade for other Unix implementations to catch up and I
+> think that's what you are hung up on.
+
+Such implementation issues are just a smaller part of the problem,
+though obviously they delayed the wider use of mmap() in such broken
+implementations.
+
+The fact wasn't even available at all on many kernel implementations at
+the time (the way open(2), read(2), write(2), et al were/are), is
+equally important too of course -- 3rd party software developers
+effectively wouldn't use it because of this.
+
+So, the main part of the problem to me is that mmap() wasn't designed
+into any unix deprived or unix-like system coherently (i.e. including at
+user level) (that I'm aware of).  It wasn't integrated into languages or
+system libraries (stdio f*() functions could probably even have used it,
+since I think that's how stdio was (or could have been) emulated on
+Multics for the C compiler and libc).
+
+It all reminds me of how horrible the socket(2)/send(2)/sendmsg(2) hack
+is -- i.e. socket descriptors should have just been file descriptors,
+opened with open(2).  I guess pipe(2) kind of started this mess, and
+even Plan 9 didn't seem to do anything remarkable to address pipe
+creation as being subtly different from just using open(2).  Maybe I'm
+going to far with thinking pipe() could/should have just been a library
+call that used open(2) internally, perhaps connecting the descriptors by
+opening some kind of "cloning" device in the filesystem.
+
+--
+					Greg A. Woods <gwoods at acm.org>
+
+Kelowna, BC     +1 250 762-7675           RoboHack <woods at robohack.ca>
+Planix, Inc. <woods at planix.com>     Avoncote Farms <woods at avoncote.ca>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 195 bytes
+Desc: OpenPGP Digital Signature
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20210930/df2f5bd3/attachment.sig>
+
+From pnr at planet.nl  Fri Oct  1 21:36:27 2021
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Fri, 1 Oct 2021 13:36:27 +0200
+Subject: [TUHS] mmap origin (was Systematic approach to command-line
+ interfaces)
+Message-ID: <D6AFFB70-A58A-43EB-9CF8-C51CDD4F5982@planet.nl>
+
+Dan wrote:
+
+> 3BSD and I think 4.1BSD had vread() and vwrite(), which looked like 
+> regular read() and write() but accessed pages only on demand. I was a 
+> grad student at Berkeley at the time and remember their genesis. Bill 
+> and I were eating lunch from Top Dog on the Etcheverry Hall plaza, and 
+> were talking about memory-mapped I/O. I remember suggesting the actual 
+> names, perhaps as a parallel to vfork(). I had used both TENEX and 
+> Multics, which both had page mapping. Multics' memory-mapped segments 
+> were quite fundamental, of course. I think we were looking for something 
+> vaguely upward compatible from the existing system calls. We did not 
+> leap to an mmap() right away just because it would have been a more 
+> radical shift than continuing the stream orientation of UNIX. I did not 
+> implement any of this: it was just a brainstorming session.
+
+Thank you for reminding me of these. 
+
+On a substrate with a unified buffer cache and copy-on-write, vread/vwrite would have been very close to regular read/write and maybe could have been subsumed into them, using flags to open() as the differentiator. The user discernible effect would have been the alignment requirement on the buffer argument.
+
+John Reiser wrote that he "fretted” over adding a 6 argument system call. Perhaps he was considering something like the above as the alternative, I never asked.
+
+I looked at the archives and vread/vwrite were introduced with 3BSD, present in 4BSD but marked deprecated, and absent from 4.1BSD. This short lifetime suggests that using vread and vwrite wasn’t entirely satisfactory in 1980/81 practice. Maybe the issue was that there was no good way to deallocate the buffer after use.
+
+
+
+From pnr at planet.nl  Fri Oct  1 22:11:14 2021
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Fri, 1 Oct 2021 14:11:14 +0200
+Subject: [TUHS] Systematic approach to command-line interfaces
+Message-ID: <FA7E6363-3A6B-437D-8AC6-37F7E94F741F@planet.nl>
+
+Greg wrote:
+
+> I guess pipe(2) kind of started this mess, [...]  Maybe I'm
+> going to far with thinking pipe() could/should have just been a library
+> call that used open(2) internally, perhaps connecting the descriptors by
+> opening some kind of "cloning" device in the filesystem.
+
+At times I’ve been pondering this as well. All of creat/open/pipe could have been rolled into just open(). It is not clear to me why this synthesis did not happen around the time of 7th edition; although it seems the creat/open merger happened in BSD around that time.
+
+As to pipe(), the very first implementation returned just a single fd where writes echoed to reads. It was backed by a single disk buffer, so could only hold ~500 bytes, which was probably not enough in practice. Then it was reimplemented using an anonymous file as backing store and got the modern two fd system call. The latter probably arose as a convenient hack to store the two file pointers needed.
+
+It would have been possible to implement the anonymous file solution still using a single fd, and storing the second file pointer in the inode. Maybe this felt as a worse hack at the time (the conceptual split in vnode / inode was still a decade into the future.)
+
+With a single fd, it would also have been possible to have a cloning device for pipe’s as you suggest (e.g. /dev/pipe, somewhat analogous to the implementation of /dev/stdin in 10th edition). Arguably, in total code/data size this would not have been much different from pipe().
+
+My guess is that from a 1975 perspective, creat/open/pipe was not perceived as something that needed fixing.
+
+
+From will.senn at gmail.com  Mon Oct  4 07:54:01 2021
+From: will.senn at gmail.com (Will Senn)
+Date: Sun, 3 Oct 2021 16:54:01 -0500
+Subject: [TUHS] Groups origins
+Message-ID: <DC7CDF60-D803-471B-B921-D97A5FA1B096@gmail.com>
+
+Hi all,
+
+I was reading a recent thread, over on the FreeBSD forums about groups that quickly devolved into a discussion on the origin of the operator group:
+https://forums.freebsd.org/threads/groups-overview.82303/
+
+I thought y’all would be the best place to ask the questions that arose in me during my read of the thread. 
+
+Here they are in no special order:
+
+1. Where did operator come from and what was it intended to solve?
+2. How has it evolved.
+3. What’s a good place to look/ref to read about groups, generally?
+
+I liked one respondent’s answer about using find, heir, and the files themselves to learn about groups being used in a running system, paying attention to the owner, Audi, etc along the way and this is how I do it now, but this approach doesn’t account for the history and evolution.
+
+Thanks!
+
+Willu
+
+
+
+Sent from my iPhone
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211003/8fd60a10/attachment.htm>
+
+From norman at oclsc.org  Mon Oct  4 08:10:17 2021
+From: norman at oclsc.org (Norman Wilson)
+Date: Sun,  3 Oct 2021 18:10:17 -0400 (EDT)
+Subject: [TUHS] Groups origins
+Message-ID: <20211003221017.2B799640CC6@lignose.oclsc.org>
+
+I can't speak to the evolution and use of specific
+groups; I suspect it was all ad-hoc early on.
+
+Groups appeared surprisingly late (given how familiar
+they seem now): they don't show up in the manual
+until the Sixth Edition.  Before that, chown took
+only two arguments (filename and owner), and
+permission modes had three bits fewer.
+
+I forget how it came up, but the late Lee McMahon
+once told me an amusing story about their origin:
+
+Ken announced that he was adding groups.
+
+Lee asked what they were for.
+
+Ken replied with a shrug and `I dunno.'
+
+Norman Wilson
+Toronto ON
+
+From imp at bsdimp.com  Mon Oct  4 09:22:48 2021
+From: imp at bsdimp.com (Warner Losh)
+Date: Sun, 3 Oct 2021 17:22:48 -0600
+Subject: [TUHS] Groups origins
+In-Reply-To: <DC7CDF60-D803-471B-B921-D97A5FA1B096@gmail.com>
+References: <DC7CDF60-D803-471B-B921-D97A5FA1B096@gmail.com>
+Message-ID: <CANCZdfoHjGanx5W0hBnvZitNAtmQU5nxnJP0GconNxC5qT1hCw@mail.gmail.com>
+
+On Sun, Oct 3, 2021 at 3:55 PM Will Senn <will.senn at gmail.com> wrote:
+
+> Hi all,
+>
+> I was reading a recent thread, over on the FreeBSD forums about groups
+> that quickly devolved into a discussion on the origin of the operator group:
+> https://forums.freebsd.org/threads/groups-overview.82303/
+>
+> I thought y’all would be the best place to ask the questions that arose in
+> me during my read of the thread.
+>
+> Here they are in no special order:
+>
+> 1. Where did operator come from and what was it intended to solve?
+>
+
+Operator was for people that 'operated' the computers. The name came from a
+group on TOPS-20. The operator could do things normal users couldn't, like
+restart stalled print jobs, run backups to mag tape and a few other normal
+'house keeping' duties that these old machines needed.
+
+In BSD, it serves much the same purpose. It's a way to grant a little bit
+of privilege to an otherwise normal account that falls short of root.
+
+This grew out of the days before the personal computer revolution where the
+machine was massive (in terms of size), served a lot of people (via dumb
+terminals), and needed constant care and feeding that you'd delegate to
+undergrad technitians who needed work study money...
+
+
+> 2. How has it evolved.
+>
+
+In general, using groups to control permissions has fallen out of style.
+There's a few around still like operator and wheel that control some
+things, or have elevated privs due to being able to open files others can't.
+
+
+> 3. What’s a good place to look/ref to read about groups, generally?
+>
+
+At one point, it was well documented in the FreeBSD handbook, but I'm not
+seeing it right away in a quick search.
+
+
+> I liked one respondent’s answer about using find, heir, and the files
+> themselves to learn about groups being used in a running system, paying
+> attention to the owner, Audi, etc along the way and this is how I do it
+> now, but this approach doesn’t account for the history and evolution.
+>
+> Thanks!
+>
+> Willu
+>
+>
+>
+> Sent from my iPhone
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211003/fc6b82de/attachment.htm>
+
+From norman at oclsc.org  Mon Oct  4 11:22:20 2021
+From: norman at oclsc.org (Norman Wilson)
+Date: Sun,  3 Oct 2021 21:22:20 -0400 (EDT)
+Subject: [TUHS] Groups origins
+Message-ID: <20211004012220.C3404640CC6@lignose.oclsc.org>
+
+  Groups appeared surprisingly late (given how familiar
+  they seem now): they don't show up in the manual
+  until the Sixth Edition.
+
+Mea culpa; read too hastily.  The change actually
+came with the Fourth Edition, at the same time as
+several other landmark system changes:
+-- Time changing from a 32-bit count of 60Hz clock
+ticks (which ran out so quickly that its epoch kept
+moving) to the modern 32 bits of whole seconds, based
+at 1970-01-01T00:00:00 GMT (which takes much longer
+to run out, though the horizon is now visible).
+-- The modern super-block.  In 4/e, the super-block
+began at block 0, not 1 (so bootstrapping was rather
+more complicated); the free list was a bitmap rather
+than the later list of blocks containing lists of
+free block numbers.
+-- The super-block contained a bitmap of free
+i-numbers too.  All told, the free block and free
+i-node map made up a 1024-byte super-block.
+-- I-numbers 1-40 were device files; the root
+directory was i-number 41.  The only file-type
+indication in the mode word was a single bit to
+denote directory.
+
+It was already clear that the lifetime of the
+bitmaps was running out: the BUGS section says
+two blocks isn't enough for the bitmaps for a
+20-megabyte RP02.
+
+Norman Wilson
+Toronto ON
+
+From jpl.jpl at gmail.com  Mon Oct  4 23:39:52 2021
+From: jpl.jpl at gmail.com (John P. Linderman)
+Date: Mon, 4 Oct 2021 09:39:52 -0400
+Subject: [TUHS] Groups origins
+In-Reply-To: <20211003221017.2B799640CC6@lignose.oclsc.org>
+References: <20211003221017.2B799640CC6@lignose.oclsc.org>
+Message-ID: <CAC0cEp_xCRboRoXPgzLuCEawN-2pGY5nd4b63BxwajQKNbuPzQ@mail.gmail.com>
+
+Having roots in the more "businessy" areas of the Labs, groups made sense
+for a collection of people working on the same project. You wanted everyone
+in the group to be able to create files and directories, but not people
+outside the group, less because you didn't trust most of the people sharing
+a machine than because you didn't want accidental destruction from outside.
+But the newgroup command for acting as a member of the group was clunky.
+Use of groups for this purpose didn't become practical until 1) you could
+be members of multiple groups simultaneously and 2) the group ownership of
+newly created files and directories would be that of the directory in which
+they were created, if you were a member of that group. Of course, this
+meant your umask should confer group write permission by default, which
+didn't work well if your primary group was widely shared. So we adopted the
+policy of everyone having a primary group with the same id as your user id.
+"Private" files and directories were not group-modifiable by anyone other
+than yourself, but "project" files were modifiable by anyone in the project
+group. This made groups work seamlessly. Just do a chgrp on a directory
+where group sharing was to be done, and everything just worked thereafter.
+
+On Sun, Oct 3, 2021 at 6:12 PM Norman Wilson <norman at oclsc.org> wrote:
+
+> I can't speak to the evolution and use of specific
+> groups; I suspect it was all ad-hoc early on.
+>
+> Groups appeared surprisingly late (given how familiar
+> they seem now): they don't show up in the manual
+> until the Sixth Edition.  Before that, chown took
+> only two arguments (filename and owner), and
+> permission modes had three bits fewer.
+>
+> I forget how it came up, but the late Lee McMahon
+> once told me an amusing story about their origin:
+>
+> Ken announced that he was adding groups.
+>
+> Lee asked what they were for.
+>
+> Ken replied with a shrug and `I dunno.'
+>
+> Norman Wilson
+> Toronto ON
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211004/35ca25bf/attachment.htm>
+
+From henry.r.bent at gmail.com  Tue Oct  5 03:22:37 2021
+From: henry.r.bent at gmail.com (Henry Bent)
+Date: Mon, 4 Oct 2021 13:22:37 -0400
+Subject: [TUHS] 4.3BSD-Tahoe Restoration
+Message-ID: <CAEdTPBf19-iFQPFgh3zNdJz86qaLxR4BfeG2A8_sNwnA=BKzKg@mail.gmail.com>
+
+Hello All,
+
+I am attempting to restore 4.3BSD-Tahoe to a usable state on the VAX.  It
+appears, based on the work that I have done already, that this is
+possible.  Starting with stock 4.3BSD I got a source tree into /usr/tahoe
+and using it I replaced all of /usr/include and /sys, recompiled and
+replaced /bin, /lib, and /etc, recompiled a GENERIC kernel, and from there
+I was able to successfully reboot using the new kernel.  As far as I can
+tell (fingers crossed!) the hardest part is over and I'm in the process of
+working on /usr.
+
+My question is: how was this sort of thing done in the real world?  If I
+was a site running stock 4.3BSD, would I have received (or been able to
+request) updated tapes at regular intervals?  The replacement process that
+I have been using is fairly labor intensive and on a real VAX would have
+been very time intensive too.  Fortunately two to three years' worth of
+changes were not so drastic that I ever found myself in a position where
+the existing tools were not able to compile pieces of Tahoe that I needed
+to proceed, but I could easily imagine finding myself in such a place.
+(This was, by the way, what I ran into when attempting to upgrade from
+2.9BSD to 2.10BSD, despite a fully documented contemporary upgrade
+procedure).
+
+-Henry
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211004/bc0bb4dc/attachment.htm>
+
+From will.senn at gmail.com  Tue Oct  5 03:41:54 2021
+From: will.senn at gmail.com (Will Senn)
+Date: Mon, 4 Oct 2021 12:41:54 -0500
+Subject: [TUHS] 4.3BSD-Tahoe Restoration
+In-Reply-To: <CAEdTPBf19-iFQPFgh3zNdJz86qaLxR4BfeG2A8_sNwnA=BKzKg@mail.gmail.com>
+References: <CAEdTPBf19-iFQPFgh3zNdJz86qaLxR4BfeG2A8_sNwnA=BKzKg@mail.gmail.com>
+Message-ID: <4fbe7200-a619-9523-4edc-612b5dd73bcc@gmail.com>
+
+On 10/4/21 12:22 PM, Henry Bent wrote:
+> My question is: how was this sort of thing done in the real world?  If 
+> I was a site running stock 4.3BSD, would I have received (or been able 
+> to request) updated tapes at regular intervals?  The replacement 
+> process that I have been using is fairly labor intensive and on a real 
+> VAX would have been very time intensive too.  Fortunately two to three 
+> years' worth of changes were not so drastic that I ever found myself 
+> in a position where the existing tools were not able to compile pieces 
+> of Tahoe that I needed to proceed, but I could easily imagine finding 
+> myself in such a place.  (This was, by the way, what I ran into when 
+> attempting to upgrade from 2.9BSD to 2.10BSD, despite a fully 
+> documented contemporary upgrade procedure).
+
+Hi Henry,
+
+I expect folks who actually ran this can weigh in with the 'real world' 
+perspective. What I can offer is that the document entitled, "Installing 
+and Operating 4.3BSD-tahoe UNIX* on the VAX" by the folks doing the 
+release (CSRG) is probably canonical:
+
+http://blog.livedoor.jp/suzanhud/BSD/4.3BSD_Tahoe_VAX.pdf
+
+There's a section on migrating 4.2/4.3 to tahoe and the like. After it's 
+up and running, it looks a little shy on details, but getting there 
+seems well enough documented. If it's anything like 1bsd+, it seems like 
+it was usually unpack and copy to the right locations, with the 
+occasional compile with the right options thrown in.
+
+Will
+
+From henry.r.bent at gmail.com  Tue Oct  5 03:51:20 2021
+From: henry.r.bent at gmail.com (Henry Bent)
+Date: Mon, 4 Oct 2021 13:51:20 -0400
+Subject: [TUHS] 4.3BSD-Tahoe Restoration
+In-Reply-To: <4fbe7200-a619-9523-4edc-612b5dd73bcc@gmail.com>
+References: <CAEdTPBf19-iFQPFgh3zNdJz86qaLxR4BfeG2A8_sNwnA=BKzKg@mail.gmail.com>
+ <4fbe7200-a619-9523-4edc-612b5dd73bcc@gmail.com>
+Message-ID: <CAEdTPBebgWTf+RwApSd0Oc71SPp14m54J5Qijk=RDHY-PMW4Hw@mail.gmail.com>
+
+On Mon, 4 Oct 2021 at 13:42, Will Senn <will.senn at gmail.com> wrote:
+
+> On 10/4/21 12:22 PM, Henry Bent wrote:
+> > My question is: how was this sort of thing done in the real world?  If
+> > I was a site running stock 4.3BSD, would I have received (or been able
+> > to request) updated tapes at regular intervals?  The replacement
+> > process that I have been using is fairly labor intensive and on a real
+> > VAX would have been very time intensive too.  Fortunately two to three
+> > years' worth of changes were not so drastic that I ever found myself
+> > in a position where the existing tools were not able to compile pieces
+> > of Tahoe that I needed to proceed, but I could easily imagine finding
+> > myself in such a place.  (This was, by the way, what I ran into when
+> > attempting to upgrade from 2.9BSD to 2.10BSD, despite a fully
+> > documented contemporary upgrade procedure).
+>
+> Hi Henry,
+>
+> I expect folks who actually ran this can weigh in with the 'real world'
+> perspective. What I can offer is that the document entitled, "Installing
+> and Operating 4.3BSD-tahoe UNIX* on the VAX" by the folks doing the
+> release (CSRG) is probably canonical:
+>
+> http://blog.livedoor.jp/suzanhud/BSD/4.3BSD_Tahoe_VAX.pdf
+>
+>
+Well now I feel a little silly.  I did look in the source tree for a
+document like this but couldn't find one.  It does appear, however, in the
+installed (for Tahoe) tree in /usr/doc/smm/01.setup.
+
+-Henry
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211004/8233e1a2/attachment.htm>
+
+From david at kdbarto.org  Tue Oct  5 05:22:24 2021
+From: david at kdbarto.org (David Barto)
+Date: Mon, 4 Oct 2021 12:22:24 -0700
+Subject: [TUHS] 4.3BSD-Tahoe Restoration
+In-Reply-To: <CAEdTPBebgWTf+RwApSd0Oc71SPp14m54J5Qijk=RDHY-PMW4Hw@mail.gmail.com>
+References: <CAEdTPBf19-iFQPFgh3zNdJz86qaLxR4BfeG2A8_sNwnA=BKzKg@mail.gmail.com>
+ <4fbe7200-a619-9523-4edc-612b5dd73bcc@gmail.com>
+ <CAEdTPBebgWTf+RwApSd0Oc71SPp14m54J5Qijk=RDHY-PMW4Hw@mail.gmail.com>
+Message-ID: <DC0E6CEE-18BA-4D8E-B847-4D4AACB52420@kdbarto.org>
+
+
+
+> On Oct 4, 2021, at 10:51 AM, Henry Bent <henry.r.bent at gmail.com> wrote:
+> 
+> On Mon, 4 Oct 2021 at 13:42, Will Senn <will.senn at gmail.com <mailto:will.senn at gmail.com>> wrote:
+> On 10/4/21 12:22 PM, Henry Bent wrote:
+> > My question is: how was this sort of thing done in the real world?  If 
+> > I was a site running stock 4.3BSD, would I have received (or been able 
+> > to request) updated tapes at regular intervals?  The replacement 
+> > process that I have been using is fairly labor intensive and on a real 
+> > VAX would have been very time intensive too.  Fortunately two to three 
+> > years' worth of changes were not so drastic that I ever found myself 
+> > in a position where the existing tools were not able to compile pieces 
+> > of Tahoe that I needed to proceed, but I could easily imagine finding 
+> > myself in such a place.  (This was, by the way, what I ran into when 
+> > attempting to upgrade from 2.9BSD to 2.10BSD, despite a fully 
+> > documented contemporary upgrade procedure).
+> 
+> Hi Henry,
+> 
+> I expect folks who actually ran this can weigh in with the 'real world' 
+> perspective. What I can offer is that the document entitled, "Installing 
+> and Operating 4.3BSD-tahoe UNIX* on the VAX" by the folks doing the 
+> release (CSRG) is probably canonical:
+> 
+> http://blog.livedoor.jp/suzanhud/BSD/4.3BSD_Tahoe_VAX.pdf <http://blog.livedoor.jp/suzanhud/BSD/4.3BSD_Tahoe_VAX.pdf>
+> 
+> 
+> Well now I feel a little silly.  I did look in the source tree for a document like this but couldn't find one.  It does appear, however, in the installed (for Tahoe) tree in /usr/doc/smm/01.setup.
+> 
+> -Henry
+
+It is kind of funny that the following never got checked:
+
+If your hardware configuration does not provide at least 75 XXX checkme XXX Megabytes of disk space ...
+
+
+	David
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211004/223713f5/attachment.htm>
+
+From douglas.mcilroy at dartmouth.edu  Thu Oct  7 23:50:42 2021
+From: douglas.mcilroy at dartmouth.edu (Douglas McIlroy)
+Date: Thu, 7 Oct 2021 09:50:42 -0400
+Subject: [TUHS] [Haskell-cafe] Terminator syntax style (Was: Nested (=>)
+ (Was: On finding the right exposition...))
+Message-ID: <CAKH6PiVCCo2P09cto4x4iCuw3oA+XYyGtKvrMiyV+XeG1xL_hA@mail.gmail.com>
+
+Apropos of  "finding the right  exposition"!, consider the cited wiki article:
+
+       Separator: There is a symbol between each element.
+
+The more carefully you read this the more it becomes nonsense.
+
+1, "Each element" is an individual. You can't put something between an
+individual.
+
+2 The defining sentence states a property of a representation of a
+sequence. It fails to indicate that "separator" is the symbol's role.
+
+In fact what's being defined is "separator notation", not the bare
+word "separator". This usage appears only later in the article. It
+should be employed throughout--most importantly in the title and the
+definition. The same goes for "terminator".
+
+Doug
+
+From ches at cheswick.com  Thu Oct  7 23:54:28 2021
+From: ches at cheswick.com (William Cheswick)
+Date: Thu, 7 Oct 2021 09:54:28 -0400
+Subject: [TUHS] [Haskell-cafe] Terminator syntax style (Was: Nested (=>)
+ (Was: On finding the right exposition...))
+In-Reply-To: <CAKH6PiVCCo2P09cto4x4iCuw3oA+XYyGtKvrMiyV+XeG1xL_hA@mail.gmail.com>
+References: <CAKH6PiVCCo2P09cto4x4iCuw3oA+XYyGtKvrMiyV+XeG1xL_hA@mail.gmail.com>
+Message-ID: <C05A5003-7DFE-4275-81E3-3F4042B2332A@cheswick.com>
+
+Doug, if you insist on applying your superb editing skills on wiki material, we will never hear from you again!
+
+> On Oct 7, 2021, at 9:50 AM, Douglas McIlroy <douglas.mcilroy at dartmouth.edu> wrote:
+> 
+> Apropos of  "finding the right  exposition"!, consider the cited wiki article:
+> 
+>       Separator: There is a symbol between each element.
+> 
+> The more carefully you read this the more it becomes nonsense.
+> 
+> 1, "Each element" is an individual. You can't put something between an
+> individual.
+> 
+> 2 The defining sentence states a property of a representation of a
+> sequence. It fails to indicate that "separator" is the symbol's role.
+> 
+> In fact what's being defined is "separator notation", not the bare
+> word "separator". This usage appears only later in the article. It
+> should be employed throughout--most importantly in the title and the
+> definition. The same goes for "terminator".
+> 
+> Doug
+
+
+From douglas.mcilroy at dartmouth.edu  Fri Oct  8 00:37:58 2021
+From: douglas.mcilroy at dartmouth.edu (Douglas McIlroy)
+Date: Thu, 7 Oct 2021 10:37:58 -0400
+Subject: [TUHS] retraction
+Message-ID: <CAKH6PiW6S2kwRNxVGPuiAah_W5Z5G+GjfYg53xP+uF4gBbF85g@mail.gmail.com>
+
+> Doug, if you insist on applying your superb editing skills on wiki material, we will never hear from you again!
+
+Thanks, Bill, for the wise advice. If I'm putting out stuff like this
+you shouldn't hear from me again.
+
+Apologies for again(!) posting to the wrong mailing list.
+
+Doug
+
+From jpl.jpl at gmail.com  Fri Oct  8 00:51:31 2021
+From: jpl.jpl at gmail.com (John P. Linderman)
+Date: Thu, 7 Oct 2021 10:51:31 -0400
+Subject: [TUHS] retraction
+In-Reply-To: <CAKH6PiW6S2kwRNxVGPuiAah_W5Z5G+GjfYg53xP+uF4gBbF85g@mail.gmail.com>
+References: <CAKH6PiW6S2kwRNxVGPuiAah_W5Z5G+GjfYg53xP+uF4gBbF85g@mail.gmail.com>
+Message-ID: <CAC0cEp-MoDa+BB0z5xKVdk3Jg+D+zASCxF=uwJCPAjVK2di1uQ@mail.gmail.com>
+
+Always interesting to hear from you, please don't stop. -- jpl
+
+On Thu, Oct 7, 2021 at 10:39 AM Douglas McIlroy <
+douglas.mcilroy at dartmouth.edu> wrote:
+
+> > Doug, if you insist on applying your superb editing skills on wiki
+> material, we will never hear from you again!
+>
+> Thanks, Bill, for the wise advice. If I'm putting out stuff like this
+> you shouldn't hear from me again.
+>
+> Apologies for again(!) posting to the wrong mailing list.
+>
+> Doug
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211007/00b6f5fb/attachment.htm>
+
+From cowan at ccil.org  Fri Oct  8 05:28:35 2021
+From: cowan at ccil.org (John Cowan)
+Date: Thu, 7 Oct 2021 15:28:35 -0400
+Subject: [TUHS] [Haskell-cafe] Terminator syntax style (Was: Nested (=>)
+ (Was: On finding the right exposition...))
+In-Reply-To: <CAKH6PiVCCo2P09cto4x4iCuw3oA+XYyGtKvrMiyV+XeG1xL_hA@mail.gmail.com>
+References: <CAKH6PiVCCo2P09cto4x4iCuw3oA+XYyGtKvrMiyV+XeG1xL_hA@mail.gmail.com>
+Message-ID: <CAD2gp_THXAO+HV553jo-9ZGa9uvcFAJnoyOU8aqHOhFyRHz+8Q@mail.gmail.com>
+
+On Thu, Oct 7, 2021 at 9:51 AM Douglas McIlroy <
+douglas.mcilroy at dartmouth.edu> wrote:
+
+
+> The more carefully you read this the more it becomes nonsense.
+>
+> 1, "Each element" is an individual. You can't put something between an
+> individual.
+>
+
+"Between each" has been part of Standard English for a thousand years, and
+still is today.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211007/5557619d/attachment.htm>
+
+From norman at oclsc.org  Fri Oct  8 05:52:01 2021
+From: norman at oclsc.org (Norman Wilson)
+Date: Thu, 07 Oct 2021 15:52:01 -0400
+Subject: [TUHS] [Haskell-cafe] Terminator syntax style (Was: Nested (=>)
+ (Was: On finding the right exposition...))
+Message-ID: <1633636325.19522.for-standards-violators@oclsc.org>
+
+John Cowan:
+
+  "Between each" has been part of Standard English for a thousand years, and
+  still is today.
+
+====
+
+As in between each pair of elements, or between each element?
+
+The latter strikes me rather like the currently-in-vogue phrase
+`one of the only': it may have a defined meaning, but it sure
+sounds distractingly stupid.  (If it's one of the group at all,
+it's by definition one of the only members; if what is meant is
+one of the few, then say so, dammit.)
+
+It's rather like obfuscated C, or nearly any use of Perl: sure,
+you can write it to require extra mental effort to make sense of
+it, but there are simpler ways to be rude.
+
+Norman Wilson
+Toronto ON
+
+Please, sir, I'd like to join The Few.
+I'm sorry, there are far too many.
+
+From gingell at computer.org  Mon Oct 11 16:43:45 2021
+From: gingell at computer.org (Rob Gingell)
+Date: Sun, 10 Oct 2021 23:43:45 -0700
+Subject: [TUHS] Early shared library implementations
+In-Reply-To: <202109301039.18UAdT0F026748@freefriends.org>
+References: <EDEDF06A-C3A2-4E17-8F78-14DF63C8C5AD@planet.nl>
+ <202109301039.18UAdT0F026748@freefriends.org>
+Message-ID: <c4537dd3-dd91-e48a-aa7b-70967e2943f5@computer.org>
+
+On 9/30/2021 2:01 AM, Paul Ruizendaal via TUHS wrote:
+> So far, I have not come across any shared library implementations or
+> precursors in early Unix prior to SunOS 4.
+
+On 9/30/2021 3:39 AM, arnold at skeeve.com wrote:
+> In more or less the same time frame, the AT&T UnixPC / 3B1, which was
+> OEM'ed from Convergent, had shared libraries.  This was ~ 1986.
+
+On 9/30/2021 7:12 AM, Charles H Sauer wrote:
+> ... A more > sophisticated shared library design was one of the additions in AIX 3.
+
+There was also SVR3 (which I believe was the basis for the referenced 
+AIX 3 shared library work). SVR3 shipped in 1987, SunOS 4 in May 1988.
+
+There was a swarm of UNIX shared library projects during the 1980s. Some 
+of those preceded or were occurring contemporaneously with SunOS 4. Many 
+reached at least a running prototype stage, perhaps deployed as specials 
+for customers, and some reached product status.
+
+Some of the projects had papers published and there are a few old 
+manuals available through bitsavers.org.
+
+To fill out the history a bit, here are three (including SVR3) that had 
+papers published. They also serve to illustrate the different approaches 
+being taken. I can not find on-line copies of the papers, but others may 
+have better luck or will have access to paper copies of the conference 
+proceedings. SVR3 has extensive documentation on bitsavers.org, as does 
+some older editions of UTek.
+
+The three projects are:
+
+1. a 68000-based 7th Edition port;
+2. UTek: Tektronix's version of 4BSD for their workstations; and
+3. System V Release 3.
+
+The first project had a paper published as part of the USEnix track of a 
+UniForum Conference in January 1984 and was titled "Transparent 
+Implementation of Shared Libraries" and authored by C.B. Downing and F. 
+Farance.
+
+The other two had papers published in the 1986 Atlanta Summer USEnix 
+proceedings and were: "A New Virtual-Memory Implementation for UNIX" by 
+E. W. Sznyter, P. Clancy, and J. Crossland (UTek); and "Shared Libraries 
+on UNIX System V" by J. Q. Arnold.
+
+A very thorough description of the SVR3 shared library mechanism is 
+available at:
+
+http://bitsavers.org/pdf/att/unix/System_V_Release_3/308-139_UNIX_System_V_Release_3_Programmers_Guide_1987.pdf
+
+Some UTek documentation, including their mmap specification but 
+appearing to pre-date their shared libraries work, is available at:
+
+http://bitsavers.org/pdf/tektronix/6130_4132/
+
+For the "Transparent Implementation..." paper, the "transparent" 
+referred to a goal that an application's source code not be modified to 
+link with shared libraries. That, and sharing, were about the only goals 
+common to all the projects of the era. Nearly every other design choice 
+varied across the projects as determined by the approach taken or the 
+constraints under which the project operated.
+
+On the subject of mmap's origins: UTek used mmap, but specified mmap to 
+take a pid instead of a file descriptor for the source of the mapping. 
+It appears they contemplated an fmap to map from a file. So for sharing 
+to occur, there was to be a daemon that scooped up and relocated in its 
+address space all the libraries to be shared and then advertise what it 
+had. Client processes would rendezvous with the daemon at runtime and 
+map the portions of that process they required to accomplish the sharing.
+
+A common characteristic of these 3 projects was that symbols were 
+resolved at ld-time, necessitating some external coordination about how 
+address spaces were to be laid out but minimizing run-time overheads. 
+The referenced SVR3 documentation provides a good description of the 
+considerations involved.
+
+From ggm at algebras.org  Mon Oct 11 17:08:08 2021
+From: ggm at algebras.org (George Michaelson)
+Date: Mon, 11 Oct 2021 17:08:08 +1000
+Subject: [TUHS] Early shared library implementations
+In-Reply-To: <c4537dd3-dd91-e48a-aa7b-70967e2943f5@computer.org>
+References: <EDEDF06A-C3A2-4E17-8F78-14DF63C8C5AD@planet.nl>
+ <202109301039.18UAdT0F026748@freefriends.org>
+ <c4537dd3-dd91-e48a-aa7b-70967e2943f5@computer.org>
+Message-ID: <CAKr6gn1_Q=uYt=WGorCeghKpj3ESekQF=-xjg8Fgst35sWOinA@mail.gmail.com>
+
+My memory is, that at least one model (OSF/1) required reboot, because
+it did some intermediate call optimisation to remove/elide indirect
+refs. Possibly a mis-remember.
+
+From fuz at fuz.su  Mon Oct 11 21:44:47 2021
+From: fuz at fuz.su (Robert Clausecker)
+Date: Mon, 11 Oct 2021 13:44:47 +0200
+Subject: [TUHS] =?iso-8859-1?q?RIP_J=F6rg_Schilling?=
+Message-ID: <YWQjr9QoVGKmE5+Y@fuz.su>
+
+I have received message from his family that Jörg Schilling has
+passed away from complications related to kidney cancer this sunday
+around noon (CEST).
+
+He will be remembered for his open source projects including
+
+ - cdrtools, the first portable CD burning program
+ - star, a powerful and fast tar implementation, the first to
+   use two processes with a shared ring buffer for better
+   performance.
+ - smake, a make implementation with autoconf features
+ - sformat, a versatile SCSI disk formatting program
+ - SING, an autoconf fork with a comprehensive set of libc
+   shims, providing a uniform API across operating systems
+ - ved, an early visual editor for the UNOS operating system (I believe)
+ - bosh, a carefully maintained fork of the Bourne shell
+ - sccs, a carefully maintained fork of SCCS.  His attempts
+   to teach it projects and networking will remain unfinished.
+ - libfind, an implementation of find(1) as a library for
+   integration into other software.
+ - libxtermcap, an extended termcap library
+ - libscg, an early portable SCSI driver and library
+
+He is also remembered for his commitment to open source, portability,
+and his work on POSIX.  He was working on adapting his software to
+Z/OS and introducing message catalogues just weeks before his death.
+
+Jörg worked for the Bethold typesetting company, one of the first
+European customers of SUN microsystems.  It is there that his love
+for UNIX and SUN OS in particular was kindled. [1]
+
+His interest in SUN OS culminated in Schillix, one of the first
+open source Solaris distributions.
+
+We will of course also remember him for his flames.
+
+[1]: https://web.archive.org/web/20061201103910/http://www.opensolaris.org/os/article/2005-05-06_profile__j_rg_schilling/
+
+May his software immortalise him.
+
+Robert Clausecker
+
+-- 
+()  ascii ribbon campaign - for an 8-bit clean world 
+/\  - against html email  - against proprietary attachments
+
+From clemc at ccc.com  Tue Oct 12 00:22:27 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Mon, 11 Oct 2021 10:22:27 -0400
+Subject: [TUHS] Early shared library implementations
+In-Reply-To: <CAKr6gn1_Q=uYt=WGorCeghKpj3ESekQF=-xjg8Fgst35sWOinA@mail.gmail.com>
+References: <EDEDF06A-C3A2-4E17-8F78-14DF63C8C5AD@planet.nl>
+ <202109301039.18UAdT0F026748@freefriends.org>
+ <c4537dd3-dd91-e48a-aa7b-70967e2943f5@computer.org>
+ <CAKr6gn1_Q=uYt=WGorCeghKpj3ESekQF=-xjg8Fgst35sWOinA@mail.gmail.com>
+Message-ID: <CAC20D2PJZC-Lwkimvgt9dO9RQAkLi0c+yrRTu=Ne1qJbF_S_6w@mail.gmail.com>
+
+On Mon, Oct 11, 2021 at 3:09 AM George Michaelson <ggm at algebras.org> wrote:
+
+> My memory is, that at least one model (OSF/1) required reboot, because
+> it did some intermediate call optimisation to remove/elide indirect refs.
+
+Hmm, as far as I know,/my experience was that with OSF/1 was fine with
+shared libs, no reboot needed (at least on the 386 reference -- I never
+tried it on the PMAX].
+I suspect you might be thinking about drivers and kernel modules, which
+were not nearly as clean - particularly in the pure (Mach 3.0 based) OSF/1
+microkernel implementation [which was hardly 'micro' in size].   IIRC Rob's
+new memory system code for SunOS was one of the first UNIX implementations
+that supported loadable kernel modules.
+
+Anyway, for the original OSF/1, I really don't think shared libs caused a
+reboot using the original CMU Mach 2.5 memory code, but adding things to
+the kernel did. I know that was changed with the MMU rewrite for Tru64, but
+I think it was also done in later versions of the OSF RI kernel (but I've
+forgotten).
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211011/ccd5524f/attachment.htm>
+
+From steffen at sdaoden.eu  Tue Oct 12 01:46:47 2021
+From: steffen at sdaoden.eu (Steffen Nurpmeso)
+Date: Mon, 11 Oct 2021 17:46:47 +0200
+Subject: [TUHS] =?iso-8859-1?q?RIP_J=F6rg_Schilling?=
+In-Reply-To: <YWQjr9QoVGKmE5+Y@fuz.su>
+References: <YWQjr9QoVGKmE5+Y@fuz.su>
+Message-ID: <20211011154647.0Ms0w%steffen@sdaoden.eu>
+
+Robert Clausecker wrote in
+ <YWQjr9QoVGKmE5+Y at fuz.su>:
+ |I have received message from his family that Jörg Schilling has
+ |passed away from complications related to kidney cancer this sunday
+ |around noon (CEST).
+
+This is very sad and saddening news.
+Sixteen days ago he mailed me last, pretty soon after a many hour
+long surgery, too soon in my eyes, and stated to be back among the
+living, that it was much more complicated than thought.
+He went private at the turn of the year.
+
+ |He will be remembered for his open source projects including
+ ...
+ |Jörg worked for the Bethold typesetting company, one of the first
+ |European customers of SUN microsystems.  It is there that his love
+ |for UNIX and SUN OS in particular was kindled. [1]
+ |
+ |His interest in SUN OS culminated in Schillix, one of the first
+ |open source Solaris distributions.
+
+Not to forget that his dissertation also (among a filesystem
+design) included a translation of the entire SunOS system manual
+i think, and it is plain it was, in fact, not a translation, but
+proof of translucency of the underlaying concepts.
+
+ |We will of course also remember him for his flames.
+
+Berlin Love is sometimes a bit rough.  If you want it smooth you
+could buy a robot from Boston Dynamics instead.  Will ya.
+
+Rest in peace dear Jörg.
+
+--steffen
+|
+|Der Kragenbaer,                The moon bear,
+|der holt sich munter           he cheerfully and one by one
+|einen nach dem anderen runter  wa.ks himself off
+|(By Robert Gernhardt)
+
+From thomas.paulsen at firemail.de  Tue Oct 12 05:05:31 2021
+From: thomas.paulsen at firemail.de (Thomas Paulsen)
+Date: Mon, 11 Oct 2021 21:05:31 +0200
+Subject: [TUHS] =?utf-8?q?RIP_J=C3=B6rg_Schilling?=
+In-Reply-To: <20211011154647.0Ms0w%steffen@sdaoden.eu>
+References: <YWQjr9QoVGKmE5+Y@fuz.su> <20211011154647.0Ms0w%steffen@sdaoden.eu>
+Message-ID: <71fa4d6050416ffd4a025450edada8fe@firemail.de>
+
+Hi,
+
+I'm really shocked! RIP Joerg!
+
+It's strange that yesterday suddenly I re-read all my documents and visited all w3 links related to Joerg. 
+I really enjoyed his 'Die Geschichte von UNIX 1969 bis OpenSolaris'. I don't know why, but I did so yesterday.
+
+Robert Clausecker wrote in
+ <YWQjr9QoVGKmE5+Y at fuz.su>:
+ |I have received message from his family that Jörg Schilling has
+ |passed away from complications related to kidney cancer this sunday
+ |around noon (CEST).
+
+This is very sad and saddening news.
+Sixteen days ago he mailed me last, pretty soon after a many hour
+long surgery, too soon in my eyes, and stated to be back among the
+living, that it was much more complicated than thought.
+He went private at the turn of the year.
+
+ |He will be remembered for his open source projects including
+ ...
+ |Jörg worked for the Bethold typesetting company, one of the first
+ |European customers of SUN microsystems.  It is there that his love
+ |for UNIX and SUN OS in particular was kindled. [1]
+ |
+ |His interest in SUN OS culminated in Schillix, one of the first
+ |open source Solaris distributions.
+
+Not to forget that his dissertation also (among a filesystem
+design) included a translation of the entire SunOS system manual
+i think, and it is plain it was, in fact, not a translation, but
+proof of translucency of the underlaying concepts.
+
+ |We will of course also remember him for his flames.
+
+Berlin Love is sometimes a bit rough.  If you want it smooth you
+could buy a robot from Boston Dynamics instead.  Will ya.
+
+Rest in peace dear Jörg.
+
+--steffen
+|
+|Der Kragenbaer,                The moon bear,
+|der holt sich munter           he cheerfully and one by one
+|einen nach dem anderen runter  wa.ks himself off
+|(By Robert Gernhardt)
+
+
+
+
+From phil at ultimate.com  Thu Oct 14 06:53:07 2021
+From: phil at ultimate.com (Phil Budne)
+Date: Wed, 13 Oct 2021 16:53:07 -0400
+Subject: [TUHS] Recreation of the PDP-7 UNIX TMG compiler compiler
+Message-ID: <202110132053.19DKr7pF030263@ultimate.com>
+
+I was a member of the team that typed in scans of PDP-7 UNIX (the
+first batch of scans done didn't include the shell, so I cobbled one
+together in March of 2016).
+
+Scans of a second batch of listings turned up and were entered two
+years ago (October 2019), including the original shell, and appeared
+to be part of Doug McIlroy's implementation of TMG (TransMoGrifier),
+the compiler compiler first used to implement B.
+
+In January 2020 we got confirmation that the files t1.s thru t8.s
+were, in fact, for TMG, but that we were missing the compiler for the
+TMGL language, written in TMGL and the generated code.
+
+In what is perhaps best described as a crazed act, over the past two
+months I've worked to recreate a working TMG environment on PDP-7
+UNIX, including a B compiler in TMGL, currently available at:
+
+https://github.com/philbudne/pdp7-unix/tree/tmg
+
+A good starting place is
+https://github.com/philbudne/pdp7-unix/blob/tmg/misc/tmg-notes.txt
+which started as my collected notes, questions and findings, and I've
+expanded it with prose, observations and thoughts that could, at least
+conceivably, be of interest to those not as oriented towards
+self-punishment as I am.
+
+(and on that topic, if you're looking for someone to expand, contract,
+or otherwise deal with some seemingly intractable legacy code, let me
+know: http://www.regressive.org/phil/resume.html)
+
+From lars at nocrew.org  Fri Oct 15 01:38:53 2021
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: Thu, 14 Oct 2021 15:38:53 +0000
+Subject: [TUHS] Recreation of the PDP-7 UNIX TMG compiler compiler
+In-Reply-To: <202110132053.19DKr7pF030263@ultimate.com> (Phil Budne's message
+ of "Wed, 13 Oct 2021 16:53:07 -0400")
+References: <202110132053.19DKr7pF030263@ultimate.com>
+Message-ID: <7wy26vpqeq.fsf@junk.nocrew.org>
+
+Phil Budne wrote:
+> In what is perhaps best described as a crazed act, over the past two
+> months I've worked to recreate a working TMG environment on PDP-7
+> UNIX, including a B compiler in TMGL, currently available at:
+
+Very impressive!
+
+From douglas.mcilroy at dartmouth.edu  Fri Oct 15 02:53:22 2021
+From: douglas.mcilroy at dartmouth.edu (Douglas McIlroy)
+Date: Thu, 14 Oct 2021 12:53:22 -0400
+Subject: [TUHS] Recreation of the PDP-7 UNIX TMG compiler compiler
+In-Reply-To: <7wy26vpqeq.fsf@junk.nocrew.org>
+References: <202110132053.19DKr7pF030263@ultimate.com>
+ <7wy26vpqeq.fsf@junk.nocrew.org>
+Message-ID: <CAKH6PiWZCVZaA6v0YYuWA5mYqKV3TY4kDWR+1aSGAFgPnHky_g@mail.gmail.com>
+
+Impressive indeed. And I imagine the feat will impress its brilliant
+grandparent, Bob McClure (cc'd), too.
+
+Even though I wrote that TMG way back when, I'd never have dared to
+try resuscitating it. Thank you, Phil.
+
+Doug
+
+On Thu, Oct 14, 2021 at 11:56 AM Lars Brinkhoff <lars at nocrew.org> wrote:
+>
+> Phil Budne wrote:
+> > In what is perhaps best described as a crazed act, over the past two
+> > months I've worked to recreate a working TMG environment on PDP-7
+> > UNIX, including a B compiler in TMGL, currently available at:
+>
+> Very impressive!
+
+From will.senn at gmail.com  Fri Oct 15 03:06:14 2021
+From: will.senn at gmail.com (Will Senn)
+Date: Thu, 14 Oct 2021 12:06:14 -0500
+Subject: [TUHS] Recreation of the PDP-7 UNIX TMG compiler compiler
+In-Reply-To: <CAKH6PiWZCVZaA6v0YYuWA5mYqKV3TY4kDWR+1aSGAFgPnHky_g@mail.gmail.com>
+References: <202110132053.19DKr7pF030263@ultimate.com>
+ <7wy26vpqeq.fsf@junk.nocrew.org>
+ <CAKH6PiWZCVZaA6v0YYuWA5mYqKV3TY4kDWR+1aSGAFgPnHky_g@mail.gmail.com>
+Message-ID: <B1AFEB59-B09E-4EBD-AF0A-5D4EB2D85F6D@gmail.com>
+
+Original goes back to 1965, the year I was born. Crazy what they were capable of back then. Way to go Phil. 
+
+Sent from my iPhone
+
+> On Oct 14, 2021, at 11:53 AM, Douglas McIlroy <douglas.mcilroy at dartmouth.edu> wrote:
+> 
+> Impressive indeed. And I imagine the feat will impress its brilliant
+> grandparent, Bob McClure (cc'd), too.
+> 
+> Even though I wrote that TMG way back when, I'd never have dared to
+> try resuscitating it. Thank you, Phil.
+> 
+> Doug
+> 
+>> On Thu, Oct 14, 2021 at 11:56 AM Lars Brinkhoff <lars at nocrew.org> wrote:
+>> 
+>> Phil Budne wrote:
+>>> In what is perhaps best described as a crazed act, over the past two
+>>> months I've worked to recreate a working TMG environment on PDP-7
+>>> UNIX, including a B compiler in TMGL, currently available at:
+>> 
+>> Very impressive!
+
+From rmswierczek at gmail.com  Fri Oct 15 08:42:01 2021
+From: rmswierczek at gmail.com (Robert Swierczek)
+Date: Thu, 14 Oct 2021 18:42:01 -0400
+Subject: [TUHS] Recreation of the PDP-7 UNIX TMG compiler compiler
+In-Reply-To: <202110132053.19DKr7pF030263@ultimate.com>
+References: <202110132053.19DKr7pF030263@ultimate.com>
+Message-ID: <CAAFR5pZX3KQXTGxXDay+Rcx4YjHRn38W-0ZQerrYS6TpseBsHQ@mail.gmail.com>
+
+> In what is perhaps best described as a crazed act, over the past two
+> months I've worked to recreate a working TMG environment on PDP-7
+> UNIX, including a B compiler in TMGL
+
+Awesome!  That is quite the feat!
+
+Rob
+
+From kenbob at gmail.com  Fri Oct 15 11:21:22 2021
+From: kenbob at gmail.com (Ken Thompson)
+Date: Thu, 14 Oct 2021 18:21:22 -0700
+Subject: [TUHS] Recreation of the PDP-7 UNIX TMG compiler compiler
+In-Reply-To: <CAAFR5pZX3KQXTGxXDay+Rcx4YjHRn38W-0ZQerrYS6TpseBsHQ@mail.gmail.com>
+References: <202110132053.19DKr7pF030263@ultimate.com>
+ <CAAFR5pZX3KQXTGxXDay+Rcx4YjHRn38W-0ZQerrYS6TpseBsHQ@mail.gmail.com>
+Message-ID: <CAMP=X_mMng+rJ_4boT0sL=4wyuxZL7A6n8NhPKVeLpwT_t_wXg@mail.gmail.com>
+
+wow!
+
+
+On Thu, Oct 14, 2021 at 3:43 PM Robert Swierczek <rmswierczek at gmail.com>
+wrote:
+
+> > In what is perhaps best described as a crazed act, over the past two
+> > months I've worked to recreate a working TMG environment on PDP-7
+> > UNIX, including a B compiler in TMGL
+>
+> Awesome!  That is quite the feat!
+>
+> Rob
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211014/3bdb146d/attachment.htm>
+
+From dds at aueb.gr  Fri Oct 15 15:52:47 2021
+From: dds at aueb.gr (Diomidis Spinellis)
+Date: Fri, 15 Oct 2021 08:52:47 +0300
+Subject: [TUHS] IEEE Annals on the History of Computing seeks Editor in Chief
+Message-ID: <f4c820d1-f48c-a760-7b65-db524ba97879@aueb.gr>
+
+Dear TUHS members,
+
+The IEEE Annals on the History of Computing magazine, the primary 
+publication for recording, analyzing, and debating the history of 
+computing, is seeking a new Editor in Chief [2].  The EiC term begins on 
+January 1st 2022 and is for three years, renewable for two years.  The 
+application deadline is October 31st 2021.
+
+It would be valuable for us interested in our discipline's history to to 
+serve in the publication's leadership.  You can contact Carrie Clark at 
+c.clark at computer.org to submit an application.  Alternatively, if you 
+have connections in the community and some time to spare to head the EiC 
+selection committee, please drop me a note.
+
+[1] https://www.computer.org/csdl/magazine/an
+[2] 
+https://www.computer.org/press-room/2021-news/ieee-cs-publications-seek-applications-for-2022-2024-editors-in-chief
+
+Kind regards,
+
+Diomidis Spinellis
+
+From cmhanson at eschatologist.net  Mon Oct 18 07:55:06 2021
+From: cmhanson at eschatologist.net (Chris Hanson)
+Date: Sun, 17 Oct 2021 14:55:06 -0700
+Subject: [TUHS] Minix 1.5 updates/patches?
+Message-ID: <7B72B4DE-19CD-49CA-AB95-3B30BA615EC6@eschatologist.net>
+
+I’ve gotten Minix 1.5 up and running on Hatari, the Atari ST emulator, and I’d like to update it to the latest in the 1.5 series (1.5.10.7).
+
+The patch sets used to be quite readily available, but the only patch sets I’ve been able to find have been the 1.5.10.3 to 1.5.10.4 patches posted to Usenet (via minnie, thanks!) which won’t apply cleanly to my sources because I’m only running 1.5.
+
+(I know about the 1.6.25-on-Atari efforts, I’m trying to do something different and also fill in some git history…)
+
+  — Chris
+
+
+From cmhanson at eschatologist.net  Mon Oct 18 08:15:28 2021
+From: cmhanson at eschatologist.net (Chris Hanson)
+Date: Sun, 17 Oct 2021 15:15:28 -0700
+Subject: [TUHS] Early shared library implementations
+In-Reply-To: <202109301039.18UAdT0F026748@freefriends.org>
+References: <EDEDF06A-C3A2-4E17-8F78-14DF63C8C5AD@planet.nl>
+ <202109301039.18UAdT0F026748@freefriends.org>
+Message-ID: <7F332D05-2781-4856-B6B9-D05AE3FA9169@eschatologist.net>
+
+On Sep 30, 2021, at 3:39 AM, arnold at skeeve.com wrote:
+> 
+> In more or less the same time frame, the AT&T UnixPC / 3B1, which was
+> OEM'ed from Convergent, had shared libraries.  This was ~ 1986.
+> 
+> I don't know the details of how it worked and how one built the shared
+> libraries; I am sure that it was an independent implementation from Sun's.
+> 
+> This was done on top of a System V Release 2 kernel.  Later versions
+> of the OS had some bits of the SVR3 user land, but the kernel remained
+> SVR2 based.
+
+Apple A/UX was also SVR2-based and had shared libraries. I wonder if it was a similar implementation. (The porting work for A/UX was initially done by UniSoft, from what I recall.)
+
+  — Chris
+ 
+
+From cmhanson at eschatologist.net  Mon Oct 18 08:19:19 2021
+From: cmhanson at eschatologist.net (Chris Hanson)
+Date: Sun, 17 Oct 2021 15:19:19 -0700
+Subject: [TUHS] Early shared library implementations
+In-Reply-To: <c4537dd3-dd91-e48a-aa7b-70967e2943f5@computer.org>
+References: <EDEDF06A-C3A2-4E17-8F78-14DF63C8C5AD@planet.nl>
+ <202109301039.18UAdT0F026748@freefriends.org>
+ <c4537dd3-dd91-e48a-aa7b-70967e2943f5@computer.org>
+Message-ID: <7229A3F9-71B9-4968-9358-1FDC01342794@eschatologist.net>
+
+On Oct 10, 2021, at 11:43 PM, Rob Gingell via TUHS <tuhs at minnie.tuhs.org> wrote:
+> 
+> There was also SVR3 (which I believe was the basis for the referenced AIX 3 shared library work). SVR3 shipped in 1987, SunOS 4 in May 1988.
+> 
+> There was a swarm of UNIX shared library projects during the 1980s. Some of those preceded or were occurring contemporaneously with SunOS 4. Many reached at least a running prototype stage, perhaps deployed as specials for customers, and some reached product status.
+
+I believe NEXTSTEP 1.0 supported shared libraries out of the box too, probably from work on Mach or the Andrew system at CMU.
+
+  — Chris
+
+
+From cmhanson at eschatologist.net  Wed Oct 20 13:09:51 2021
+From: cmhanson at eschatologist.net (Chris Hanson)
+Date: Tue, 19 Oct 2021 20:09:51 -0700
+Subject: [TUHS] Minix 1.5 updates/patches?
+In-Reply-To: <7B72B4DE-19CD-49CA-AB95-3B30BA615EC6@eschatologist.net>
+References: <7B72B4DE-19CD-49CA-AB95-3B30BA615EC6@eschatologist.net>
+Message-ID: <97DF5C3E-9D11-4166-BAA3-C163AF9AA17D@eschatologist.net>
+
+I was able to extract the 1.5.10.1 to 1.5.10.7 patches for MacMinix from the Compact Pro archive (as well as the file systems, to try loopback-mounting with Linux) so I can share those at least, if they aren’t in the GitHub tree yet.
+
+I wonder whether anyone has a more complete comp.os.minix Usenet archive these days than the one on Minnie.
+
+  — Chris
+
+From italian.pepe.32 at gmail.com  Thu Oct 21 08:50:25 2021
+From: italian.pepe.32 at gmail.com (joseph turco)
+Date: Wed, 20 Oct 2021 18:50:25 -0400
+Subject: [TUHS] having issues with simh and setting up dci for unixV7
+Message-ID: <CADhp54Q3Az8XyCs_=WuzGGP8kb01Ge5ppsaghJ18KkzSCW9ytw@mail.gmail.com>
+
+hello all,
+
+i am a new unix user, so please excuse my ignorance.
+
+I am trying to setup using unixV7 with simh pdp11 emulator. The guide i am
+following is by Will Senn (in PDF form). I have been able to successfully
+get the machine to boot with unix, and login as root. what i am having
+problems with, is trying to get telnet access via dci to work. when i
+follow the guide and do the following:
+
+# cd /usr/sys/conf
+# rm l.o c.o
+# cp hptmconf myconfnf
+# echo 4dc >> myconf
+# mkconf < myconf
+# make
+as - -o l.o l.s
+cc -c c.c
+ld -o unix -X -i l.o mch.o c.o ../sys/LIB1 ../dev/LIB2
+# sum unix
+10314
+ 106
+# ls -l unix
+-rwxrwxr-x 1 root
+ 54122 Dec 31 19:09 unix
+etc...
+
+when i issue the mkconf < myconf command, i get a bunch of text printed
+out, but with a 'root device not found'. the sum unix value is different,
+as well as the size of the ls -l unix file size.. now when i try booting it
+with the newly created mboot.ini file (as per the guide), i go to start up
+the system with 'hp(0,0)munix' and it starts but hangs with the text 'fault
+devtab'
+
+what am I doing wrong?
+
+regards,
+
+Joseph Turco
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211020/6fe476c1/attachment.htm>
+
+From will.senn at gmail.com  Thu Oct 21 09:14:46 2021
+From: will.senn at gmail.com (Will Senn)
+Date: Wed, 20 Oct 2021 18:14:46 -0500
+Subject: [TUHS] having issues with simh and setting up dci for unixV7
+In-Reply-To: <CADhp54Q3Az8XyCs_=WuzGGP8kb01Ge5ppsaghJ18KkzSCW9ytw@mail.gmail.com>
+References: <CADhp54Q3Az8XyCs_=WuzGGP8kb01Ge5ppsaghJ18KkzSCW9ytw@mail.gmail.com>
+Message-ID: <de29f351-e861-daf2-a893-82e18bd728b6@gmail.com>
+
+Hi Joseph,
+
+# cp hptmconf myconfnf
+# echo 4dc >> myconf
+
+looks like a typo. If you actually typed this, all that would be in 
+myconf would be 4dc. You need the contents of hptmconf plus 4dc. 
+Otherwise you'd be missing some important devices.
+
+Will
+
+On 10/20/21 5:50 PM, joseph turco wrote:
+> hello all,
+>
+> i am a new unix user, so please excuse my ignorance.
+>
+> I am trying to setup using unixV7 with simh pdp11 emulator. The guide 
+> i am following is by Will Senn (in PDF form). I have been able to 
+> successfully get the machine to boot with unix, and login as root. 
+> what i am having problems with, is trying to get telnet access via dci 
+> to work. when i follow the guide and do the following:
+>
+> # cd /usr/sys/conf
+> # rm l.o c.o
+> # cp hptmconf myconfnf
+> # echo 4dc >> myconf
+> # mkconf < myconf
+> # make
+> as - -o l.o l.s
+> cc -c c.c
+> ld -o unix -X -i l.o mch.o c.o ../sys/LIB1 ../dev/LIB2
+> # sum unix
+> 10314
+>  106
+> # ls -l unix
+> -rwxrwxr-x 1 root
+>  54122 Dec 31 19:09 unix
+> etc...
+>
+> when i issue the mkconf < myconf command, i get a bunch of text 
+> printed out, but with a 'root device not found'. the sum unix value is 
+> different, as well as the size of the ls -l unix file size.. now when 
+> i try booting it with the newly created mboot.ini file (as per the 
+> guide), i go to start up the system with 'hp(0,0)munix' and it starts 
+> but hangs with the text 'fault devtab'
+>
+> what am I doing wrong?
+>
+> regards,
+>
+> Joseph Turco
+
+
+From lm at mcvoy.com  Thu Oct 21 09:37:39 2021
+From: lm at mcvoy.com (Larry McVoy)
+Date: Wed, 20 Oct 2021 16:37:39 -0700
+Subject: [TUHS] having issues with simh and setting up dci for unixV7
+In-Reply-To: <de29f351-e861-daf2-a893-82e18bd728b6@gmail.com>
+References: <CADhp54Q3Az8XyCs_=WuzGGP8kb01Ge5ppsaghJ18KkzSCW9ytw@mail.gmail.com>
+ <de29f351-e861-daf2-a893-82e18bd728b6@gmail.com>
+Message-ID: <20211020233739.GI20432@mcvoy.com>
+
+# cp hptmconf myconf
+# echo 4dc >> myconf
+
+is my guess.
+
+On Wed, Oct 20, 2021 at 06:14:46PM -0500, Will Senn wrote:
+> Hi Joseph,
+> 
+> # cp hptmconf myconfnf
+> # echo 4dc >> myconf
+> 
+> looks like a typo. If you actually typed this, all that would be in myconf
+> would be 4dc. You need the contents of hptmconf plus 4dc. Otherwise you'd be
+> missing some important devices.
+> 
+> Will
+> 
+> On 10/20/21 5:50 PM, joseph turco wrote:
+> >hello all,
+> >
+> >i am a new unix user, so please excuse my ignorance.
+> >
+> >I am trying to setup using unixV7 with simh pdp11 emulator. The guide i am
+> >following is by Will Senn (in PDF form). I have been able to successfully
+> >get the machine to boot with unix, and login as root. what i am having
+> >problems with, is trying to get telnet access via dci to work. when i
+> >follow the guide and do the following:
+> >
+> ># cd /usr/sys/conf
+> ># rm l.o c.o
+> ># cp hptmconf myconfnf
+> ># echo 4dc >> myconf
+> ># mkconf < myconf
+> ># make
+> >as - -o l.o l.s
+> >cc -c c.c
+> >ld -o unix -X -i l.o mch.o c.o ../sys/LIB1 ../dev/LIB2
+> ># sum unix
+> >10314
+> >??106
+> ># ls -l unix
+> >-rwxrwxr-x 1 root
+> >??54122 Dec 31 19:09 unix
+> >etc...
+> >
+> >when i issue the mkconf < myconf command, i get a bunch of text printed
+> >out, but with a 'root device not found'. the sum unix value is different,
+> >as well as the size of the ls -l unix file size.. now when i try booting
+> >it with the newly created mboot.ini file (as per the guide), i go to start
+> >up the system with 'hp(0,0)munix' and it starts but hangs with the text
+> >'fault devtab'
+> >
+> >what am I doing wrong?
+> >
+> >regards,
+> >
+> >Joseph Turco
+
+-- 
+---
+Larry McVoy            	     lm at mcvoy.com             http://www.mcvoy.com/lm 
+
+From clemc at ccc.com  Thu Oct 21 11:58:03 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Wed, 20 Oct 2021 21:58:03 -0400
+Subject: [TUHS] having issues with simh and setting up dci for unixV7
+In-Reply-To: <CADhp54Q3Az8XyCs_=WuzGGP8kb01Ge5ppsaghJ18KkzSCW9ytw@mail.gmail.com>
+References: <CADhp54Q3Az8XyCs_=WuzGGP8kb01Ge5ppsaghJ18KkzSCW9ytw@mail.gmail.com>
+Message-ID: <CAC20D2NCeSx8msMzDNHLp9gPgozNOM7WzEmeE3+Dh3AucZ+oWQ@mail.gmail.com>
+
+FWI:  You'll probably have better luck with the KL/DL interface.   And it's
+already in the system, since the console is on the first one.
+# cp hptmconf myconfnf
+# echo 3kl >> myconf
+
+If you are really adventurous with simh, then configure the DH11 and it's
+associated DM11 interface, which from a performance standpoint work a lot
+better and have all the RS-232 signals supported [which is something one of
+the PiDP folks was recently trying to get going].
+# echo 2dh >> myconf
+# echo dhdm >> myconf
+
+ᐧ
+
+On Wed, Oct 20, 2021 at 6:51 PM joseph turco <italian.pepe.32 at gmail.com>
+wrote:
+
+> hello all,
+>
+> i am a new unix user, so please excuse my ignorance.
+>
+> I am trying to setup using unixV7 with simh pdp11 emulator. The guide i am
+> following is by Will Senn (in PDF form). I have been able to successfully
+> get the machine to boot with unix, and login as root. what i am having
+> problems with, is trying to get telnet access via dci to work. when i
+> follow the guide and do the following:
+>
+> # cd /usr/sys/conf
+> # rm l.o c.o
+> # cp hptmconf myconfnf
+> # echo 4dc >> myconf
+> # mkconf < myconf
+> # make
+> as - -o l.o l.s
+> cc -c c.c
+> ld -o unix -X -i l.o mch.o c.o ../sys/LIB1 ../dev/LIB2
+> # sum unix
+> 10314
+>  106
+> # ls -l unix
+> -rwxrwxr-x 1 root
+>  54122 Dec 31 19:09 unix
+> etc...
+>
+> when i issue the mkconf < myconf command, i get a bunch of text printed
+> out, but with a 'root device not found'. the sum unix value is different,
+> as well as the size of the ls -l unix file size.. now when i try booting it
+> with the newly created mboot.ini file (as per the guide), i go to start up
+> the system with 'hp(0,0)munix' and it starts but hangs with the text 'fault
+> devtab'
+>
+> what am I doing wrong?
+>
+> regards,
+>
+> Joseph Turco
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211020/f397ac2f/attachment.htm>
+
+From italian.pepe.32 at gmail.com  Fri Oct 22 23:42:14 2021
+From: italian.pepe.32 at gmail.com (joseph turco)
+Date: Fri, 22 Oct 2021 09:42:14 -0400
+Subject: [TUHS] having issues with simh and setting up dci for unixV7
+In-Reply-To: <CAC20D2NCeSx8msMzDNHLp9gPgozNOM7WzEmeE3+Dh3AucZ+oWQ@mail.gmail.com>
+References: <CADhp54Q3Az8XyCs_=WuzGGP8kb01Ge5ppsaghJ18KkzSCW9ytw@mail.gmail.com>
+ <CAC20D2NCeSx8msMzDNHLp9gPgozNOM7WzEmeE3+Dh3AucZ+oWQ@mail.gmail.com>
+Message-ID: <CADhp54QtxJr13aUiD+aqMuCp=SDu-qR9_pAw971YeQBpp6wdDQ@mail.gmail.com>
+
+I got it working now ignoring the typo. Many thanks for the help! Now I
+have a Unix timesharing "pdp-11" box.
+
+On Wed, Oct 20, 2021, 9:58 PM Clem Cole <clemc at ccc.com> wrote:
+
+> FWI:  You'll probably have better luck with the KL/DL interface.   And
+> it's already in the system, since the console is on the first one.
+> # cp hptmconf myconfnf
+> # echo 3kl >> myconf
+>
+> If you are really adventurous with simh, then configure the DH11 and it's
+> associated DM11 interface, which from a performance standpoint work a lot
+> better and have all the RS-232 signals supported [which is something one of
+> the PiDP folks was recently trying to get going].
+> # echo 2dh >> myconf
+> # echo dhdm >> myconf
+>
+> ᐧ
+>
+> On Wed, Oct 20, 2021 at 6:51 PM joseph turco <italian.pepe.32 at gmail.com>
+> wrote:
+>
+>> hello all,
+>>
+>> i am a new unix user, so please excuse my ignorance.
+>>
+>> I am trying to setup using unixV7 with simh pdp11 emulator. The guide i
+>> am following is by Will Senn (in PDF form). I have been able to
+>> successfully get the machine to boot with unix, and login as root. what i
+>> am having problems with, is trying to get telnet access via dci to work.
+>> when i follow the guide and do the following:
+>>
+>> # cd /usr/sys/conf
+>> # rm l.o c.o
+>> # cp hptmconf myconfnf
+>> # echo 4dc >> myconf
+>> # mkconf < myconf
+>> # make
+>> as - -o l.o l.s
+>> cc -c c.c
+>> ld -o unix -X -i l.o mch.o c.o ../sys/LIB1 ../dev/LIB2
+>> # sum unix
+>> 10314
+>>  106
+>> # ls -l unix
+>> -rwxrwxr-x 1 root
+>>  54122 Dec 31 19:09 unix
+>> etc...
+>>
+>> when i issue the mkconf < myconf command, i get a bunch of text printed
+>> out, but with a 'root device not found'. the sum unix value is different,
+>> as well as the size of the ls -l unix file size.. now when i try booting it
+>> with the newly created mboot.ini file (as per the guide), i go to start up
+>> the system with 'hp(0,0)munix' and it starts but hangs with the text 'fault
+>> devtab'
+>>
+>> what am I doing wrong?
+>>
+>> regards,
+>>
+>> Joseph Turco
+>>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211022/68e4abef/attachment.htm>
+
+From john at jfloren.net  Sun Oct 24 09:43:30 2021
+From: john at jfloren.net (John Floren)
+Date: Sat, 23 Oct 2021 23:43:30 +0000
+Subject: [TUHS] Anyone have a modem wired up?
+Message-ID: <xlncc_gJguY-hxJJnx5UiAMbgc0UdibpoYuemEXvwsuiQR8_--ASArVqWULPV9jy6QNJd-x1m5mY9o2IKmpKBKE_4_CtI6tcEmPhHBZ4y0c=@jfloren.net>
+
+I'm experimenting with my PiDP-11; I think I may have my modem set up properly to accept incoming calls, but with only one phone line I'm unable to test it. If anyone with a modem is willing to help me test, send me a message off-list and I'll give you my phone number & some login details.
+
+john
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211023/d4a87992/attachment.htm>
+
+From imp at bsdimp.com  Sun Oct 24 10:56:28 2021
+From: imp at bsdimp.com (Warner Losh)
+Date: Sat, 23 Oct 2021 18:56:28 -0600
+Subject: [TUHS] Anyone have a modem wired up?
+In-Reply-To: <xlncc_gJguY-hxJJnx5UiAMbgc0UdibpoYuemEXvwsuiQR8_--ASArVqWULPV9jy6QNJd-x1m5mY9o2IKmpKBKE_4_CtI6tcEmPhHBZ4y0c=@jfloren.net>
+References: <xlncc_gJguY-hxJJnx5UiAMbgc0UdibpoYuemEXvwsuiQR8_--ASArVqWULPV9jy6QNJd-x1m5mY9o2IKmpKBKE_4_CtI6tcEmPhHBZ4y0c=@jfloren.net>
+Message-ID: <CANCZdfpirLW7JWR6OEybtBWD3co3VKeeZYN9d=aA=LqDvVmyoA@mail.gmail.com>
+
+I have a couple of modems in the basement.... and I was just thinking it
+would be nice to find a new home for them, so if anybody is looking for a
+couple of external modems, let me know and I'll figure out which flavor of
+US Robotics modems I have.
+
+On Sat, Oct 23, 2021 at 5:49 PM John Floren <john at jfloren.net> wrote:
+
+> I'm experimenting with my PiDP-11; I think I may have my modem set up
+> properly to accept incoming calls, but with only one phone line I'm unable
+> to test it. If anyone with a modem is willing to help me test, send me a
+> message off-list and I'll give you my phone number & some login details.
+>
+> john
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211023/397c9d54/attachment.htm>
+
+From kennethgoodwin56 at gmail.com  Sun Oct 24 11:29:12 2021
+From: kennethgoodwin56 at gmail.com (Kenneth Goodwin)
+Date: Sat, 23 Oct 2021 21:29:12 -0400
+Subject: [TUHS] Anyone have a modem wired up?
+In-Reply-To: <xlncc_gJguY-hxJJnx5UiAMbgc0UdibpoYuemEXvwsuiQR8_--ASArVqWULPV9jy6QNJd-x1m5mY9o2IKmpKBKE_4_CtI6tcEmPhHBZ4y0c=@jfloren.net>
+References: <xlncc_gJguY-hxJJnx5UiAMbgc0UdibpoYuemEXvwsuiQR8_--ASArVqWULPV9jy6QNJd-x1m5mY9o2IKmpKBKE_4_CtI6tcEmPhHBZ4y0c=@jfloren.net>
+Message-ID: <CAMQbRb0F6tNbAZ62fr28CjdeLV6JZZZSHU3nM9h+Nvaky9oPFw@mail.gmail.com>
+
+If you have two models connected to two computers. You might be able to
+test your setup by connecting a null modem phone cable between the phone
+line ports of both modem.
+Basically crossing transmit pairs from one side to the receive pairs of the
+other modem and vice-versa.  Not sure if it will work without dial tone
+from the phone line present. But there might setting in your modems
+configuration that would activate what is needed for such a modem to.modem
+direct link.
+
+On Sat, Oct 23, 2021, 7:50 PM John Floren <john at jfloren.net> wrote:
+
+> I'm experimenting with my PiDP-11; I think I may have my modem set up
+> properly to accept incoming calls, but with only one phone line I'm unable
+> to test it. If anyone with a modem is willing to help me test, send me a
+> message off-list and I'll give you my phone number & some login details.
+>
+> john
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211023/9c678ad4/attachment.htm>
+
+From crossd at gmail.com  Mon Oct 25 01:36:04 2021
+From: crossd at gmail.com (Dan Cross)
+Date: Sun, 24 Oct 2021 11:36:04 -0400
+Subject: [TUHS] Anyone have a modem wired up?
+In-Reply-To: <xlncc_gJguY-hxJJnx5UiAMbgc0UdibpoYuemEXvwsuiQR8_--ASArVqWULPV9jy6QNJd-x1m5mY9o2IKmpKBKE_4_CtI6tcEmPhHBZ4y0c=@jfloren.net>
+References: <xlncc_gJguY-hxJJnx5UiAMbgc0UdibpoYuemEXvwsuiQR8_--ASArVqWULPV9jy6QNJd-x1m5mY9o2IKmpKBKE_4_CtI6tcEmPhHBZ4y0c=@jfloren.net>
+Message-ID: <CAEoi9W5TkNqbGX6t_XyXL65NTzD4-MLrO_FTGL-X+k=fZPcBGQ@mail.gmail.com>
+
+On Sat, Oct 23, 2021, 7:50 PM John Floren <john at jfloren.net> wrote:
+
+> I'm experimenting with my PiDP-11; I think I may have my modem set up
+> properly to accept incoming calls, but with only one phone line I'm unable
+> to test it. If anyone with a modem is willing to help me test, send me a
+> message off-list and I'll give you my phone number & some login details.
+>
+
+I'd be less surprised by folks having modems (which seem like the kind of
+thing that gets tossed into a box and forgotten about for a few decades
+until eventually uncovered by a bout of decluttering) and more surprised by
+people having suitable phone lines to use them.
+
+        - Dan C.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211024/c56ef54e/attachment.htm>
+
+From stewart at serissa.com  Mon Oct 25 02:37:30 2021
+From: stewart at serissa.com (Larry Stewart)
+Date: Sun, 24 Oct 2021 12:37:30 -0400
+Subject: [TUHS] Anyone have a modem wired up?
+In-Reply-To: <CAEoi9W5TkNqbGX6t_XyXL65NTzD4-MLrO_FTGL-X+k=fZPcBGQ@mail.gmail.com>
+References: <CAEoi9W5TkNqbGX6t_XyXL65NTzD4-MLrO_FTGL-X+k=fZPcBGQ@mail.gmail.com>
+Message-ID: <4542D899-AB63-426F-8BC4-1B2EC904DD83@serissa.com>
+
+
+
+> On Oct 24, 2021, at 11:37 AM, Dan Cross <crossd at gmail.com> wrote:
+> 
+> ﻿
+>> On Sat, Oct 23, 2021, 7:50 PM John Floren <john at jfloren.net> wrote:
+>> I'm experimenting with my PiDP-11; I think I may have my modem set up properly to accept incoming calls, but with only one phone line I'm unable to test it. If anyone with a modem is willing to help me test, send me a message off-list and I'll give you my phone number & some login details.
+> 
+> 
+> I'd be less surprised by folks having modems (which seem like the kind of thing that gets tossed into a box and forgotten about for a few decades until eventually uncovered by a bout of decluttering) and more surprised by people having suitable phone lines to use them.
+> 
+>         - Dan C.
+> 
+
+With a second modem, an Analog telephone adapter, and a free Google Voice account you could do it.  Might have to set the ATA to G.711 to properly pass modem signals.
+Or you could set up an Asterix server and run your own private phone network.
+
+I am surprised there doesn't seem to be an open source soft-modem that directly speaks SIP protocols, but there is a commercial one at https://www.vocal.com/voip/sip-software-modem/
+> -L
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211024/72e5d125/attachment.htm>
+
+From lars at nocrew.org  Mon Oct 25 02:16:33 2021
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: Sun, 24 Oct 2021 16:16:33 +0000
+Subject: [TUHS] Unix NCP protocol stack for ARPANET
+Message-ID: <7wtuh6e6u6.fsf@junk.nocrew.org>
+
+Hello,
+
+I'm working on setting up an emulated ARPANET using the original IMP
+software recovered some years ago.  It turns out, the greatest challenge
+is finding the NCP software on the host side that implements the ARPANET
+protocols.  I have searched the TUHS archive and elsewhere, but all I
+find for Unix is a copy of the PDP-11 Unix V6 NCP from Illinois.
+
+Has any other NCP implementation for Unix survived?  From old host
+tables I think there may have been some VAXen online before the switch
+to TCP/IP.
+
+Best regards,
+Lars Brinkhoff
+
+From jon at fourwinds.com  Mon Oct 25 02:14:57 2021
+From: jon at fourwinds.com (Jon Steinhart)
+Date: Sun, 24 Oct 2021 09:14:57 -0700
+Subject: [TUHS] Anyone have a modem wired up?
+In-Reply-To: <CAEoi9W5TkNqbGX6t_XyXL65NTzD4-MLrO_FTGL-X+k=fZPcBGQ@mail.gmail.com>
+References: <xlncc_gJguY-hxJJnx5UiAMbgc0UdibpoYuemEXvwsuiQR8_--ASArVqWULPV9jy6QNJd-x1m5mY9o2IKmpKBKE_4_CtI6tcEmPhHBZ4y0c=@jfloren.net>
+ <CAEoi9W5TkNqbGX6t_XyXL65NTzD4-MLrO_FTGL-X+k=fZPcBGQ@mail.gmail.com>
+Message-ID: <202110241614.19OGEvPM266434@darkstar.fourwinds.com>
+
+On Sat, Oct 23, 2021, 7:50 PM John Floren <john at jfloren.net> wrote:
+
+> I'm experimenting with my PiDP-11; I think I may have my modem set up
+> properly to accept incoming calls, but with only one phone line I'm unable
+> to test it. If anyone with a modem is willing to help me test, send me a
+> message off-list and I'll give you my phone number & some login details.
+
+Don't have on wired up, but if anybody wants 'em I have a random stack
+of them sitting in a box in the basement.
+
+From clemc at ccc.com  Mon Oct 25 03:24:34 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 24 Oct 2021 13:24:34 -0400
+Subject: [TUHS] Unix NCP protocol stack for ARPANET
+In-Reply-To: <7wtuh6e6u6.fsf@junk.nocrew.org>
+References: <7wtuh6e6u6.fsf@junk.nocrew.org>
+Message-ID: <CAC20D2P5vtw2FPiWNLz9TjD1k4aooJS=BkPW4Ke7rC_Oj3HatA@mail.gmail.com>
+
+On Sun, Oct 24, 2021 at 12:57 PM Lars Brinkhoff <lars at nocrew.org> wrote:
+
+> Has any other NCP implementation for Unix survived?  From old host
+> tables I think there may have been some VAXen online before the switch
+> to TCP/IP.
+>
+Hmmm... I find that interesting because  Stan Smith and I wrote the
+original IP/TCP for the VAX in 1979/1980 when we were at Tektronix(in
+BLISS-32, BTW -- which I gave back to CMU, and CMU added mailer and
+eventual DNS support, and then distributed it as the Tek-CMU TCP/IP - DEC
+eventually used it to start their in-house effort - I have that code on
+9-track and may have it on a CD somewhere).   When Stan and I started that
+work, I had looked everywhere I could think to find an NCP implementation,
+and never found one.   Our Vax was connected to the Teklabs 11/70 running
+V7 and the 3Com UNET stack that Bruce Bordan and crew wrote.
+
+The reason was that IMP's ports were a rare commodity and free ones almost
+non-existent.  So when Vaxen started to roll out, the IMPs were
+usually filed with PDP-10s at the research sites.   Vaxen also tended to
+have Xerox 3M Ethernet boards.  I also don't know of anyone connecting a
+DR-11B to an 1822 for a Vax - could have been done, but I don't know of
+one.   At both CMU and UCB, we used Xerox boards until the real ones from
+3Com, Interlan and DEC showed up and that was not until 1981-82 and the IP
+transition has already begun.
+
+You tell me, but I was under the impression, that you folks at MIT did a
+ChaosNet interface, IIRC, so there may have been some sort of conversion on
+your LAN, but I really doubt there was a real NCP running.
+
+FYI: CMU had Vax serial #1, and it was never on the ARPAnet.  It was in the
+same machine room as the IBM 360s, PDP-20s, and Univac 1108, not the CS
+PDP-10s where the IMP was.
+
+My guess is that people had Vaxen assigned in the host tables, but never
+connected for lack of an NCP implementation.  And until the Tek stack for
+VMS and the BBN stack for 4.1 BSD, I don't think there were any Vaxen yet
+on either the NCP based ARPAnet much less the later IP-based one.
+
+Clem
+ᐧ
+ᐧ
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211024/76f4bd12/attachment.htm>
+
+From iain at csp-partnership.co.uk  Mon Oct 25 02:51:09 2021
+From: iain at csp-partnership.co.uk (Dr Iain Maoileoin)
+Date: Sun, 24 Oct 2021 17:51:09 +0100
+Subject: [TUHS] Anyone have a modem wired up?
+In-Reply-To: <CAEoi9W5TkNqbGX6t_XyXL65NTzD4-MLrO_FTGL-X+k=fZPcBGQ@mail.gmail.com>
+References: <xlncc_gJguY-hxJJnx5UiAMbgc0UdibpoYuemEXvwsuiQR8_--ASArVqWULPV9jy6QNJd-x1m5mY9o2IKmpKBKE_4_CtI6tcEmPhHBZ4y0c=@jfloren.net>
+ <CAEoi9W5TkNqbGX6t_XyXL65NTzD4-MLrO_FTGL-X+k=fZPcBGQ@mail.gmail.com>
+Message-ID: <a246828a-de4e-c602-3f9a-5f7d5441bf66@csp-partnership.co.uk>
+
+On 10/24/21 4:36 PM, Dan Cross wrote:
+> On Sat, Oct 23, 2021, 7:50 PM John Floren <john at jfloren.net 
+> <mailto:john at jfloren.net>> wrote:
+>
+>     I'm experimenting with my PiDP-11; I think I may have my modem set
+>     up properly to accept incoming calls, but with only one phone line
+>     I'm unable to test it. If anyone with a modem is willing to help
+>     me test, send me a message off-list and I'll give you my phone
+>     number & some login details.
+>
+>
+> I'd be less surprised by folks having modems (which seem like the kind 
+> of thing that gets tossed into a box and forgotten about for a few 
+> decades until eventually uncovered by a bout of decluttering) and more 
+> surprised by people having suitable phone lines to use them.
+>
+>         - Dan C.
+>
+>
+You should live in rural Scotland Sir.
+
+Broadband is NEX in places - for example where I live.  512K download 
+(max) more normally 380K!  Forget FTTC or FTTP - I have CTTM - tandard 
+old-fashioned Copper to the Modem.
+
+I still need to use a 19.2K modem when the going gets tough.
+
+If you want to try an AA modem number I can send you it - but it is 
+Scottish (UK) based.
+
+If you contact me off-list I can try tomorrow.
+
+Iain
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211024/b02dfb62/attachment.htm>
+
+From ron at ronnatalie.com  Mon Oct 25 04:32:00 2021
+From: ron at ronnatalie.com (Ron Natalie)
+Date: Sun, 24 Oct 2021 18:32:00 +0000
+Subject: [TUHS] Unix NCP protocol stack for ARPANET
+In-Reply-To: <CAC20D2P5vtw2FPiWNLz9TjD1k4aooJS=BkPW4Ke7rC_Oj3HatA@mail.gmail.com>
+References: <7wtuh6e6u6.fsf@junk.nocrew.org>
+ <CAC20D2P5vtw2FPiWNLz9TjD1k4aooJS=BkPW4Ke7rC_Oj3HatA@mail.gmail.com>
+Message-ID: <em8d652e31-7445-4d63-a1bc-2ca236bbcc79@alien>
+
+There were definitely as many PDP-11's (most running UNIX) as there were 
+DEC 10s in the glory days of the Arpanet.   VAXes only rolled out toward 
+the end of the NCP era.
+
+However, the last NCP host table shows this statistic for DEC machines 
+on the NCP Arpanet
+
+VAX (UNIX):  58
+VAX (VMS):  19
+
+PDP11 (UNIX):  59
+PDP11 (RSX): 6
+PDP11 (MOS):  11
+PDP11 (MINITS); 10
+
+PDP10 (TOPS-20):  40
+PDP10 (TOPS-10): 7
+PDP10 (TENEX):   22
+PDP10 (ITS):  4
+PDP10 (WAITS): 3
+
+I had all but forgotten about Local Host / Distant Host / Very Distant 
+Host 1822 protocols.    I remember that BRL had a PDP-11/40 running ANTS 
+(ArpaNet Terminal Server out of University of Illinois).   It got 
+replaced by an 11/34 running UNIX when the Arpanet went to long leaders 
+New Years 1981.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211024/058e1ff6/attachment.htm>
+
+From clemc at ccc.com  Mon Oct 25 05:28:34 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 24 Oct 2021 15:28:34 -0400
+Subject: [TUHS] Unix NCP protocol stack for ARPANET
+In-Reply-To: <em8d652e31-7445-4d63-a1bc-2ca236bbcc79@alien>
+References: <7wtuh6e6u6.fsf@junk.nocrew.org>
+ <CAC20D2P5vtw2FPiWNLz9TjD1k4aooJS=BkPW4Ke7rC_Oj3HatA@mail.gmail.com>
+ <em8d652e31-7445-4d63-a1bc-2ca236bbcc79@alien>
+Message-ID: <CAC20D2MdBOceMwzRQMTcjb76NYPVBn3wP+NcRtMYqoCVZuy=1w@mail.gmail.com>
+
+Ron. Where did the back ncp come from?as I said I never saw it and we tried
+to find one.  Same for an IP implementation.  That's why we wrote one.  We
+were 3coms first customer and I somewhere have the mailing evenlope marked
+the 32 of December because they had a VC payment dependent on delivering
+before end of year.
+
+As for 11s. Yes that is true.  A lot of them front ended large systems as
+Bob pointed out but many were self supporting as you note.
+
+On Sun, Oct 24, 2021 at 2:41 PM Ron Natalie <ron at ronnatalie.com> wrote:
+
+> There were definitely as many PDP-11's (most running UNIX) as there were
+> DEC 10s in the glory days of the Arpanet.   VAXes only rolled out toward
+> the end of the NCP era.
+>
+> However, the last NCP host table shows this statistic for DEC machines on
+> the NCP Arpanet
+>
+> VAX (UNIX):  58
+> VAX (VMS):  19
+>
+> PDP11 (UNIX):  59
+> PDP11 (RSX): 6
+> PDP11 (MOS):  11
+> PDP11 (MINITS); 10
+>
+> PDP10 (TOPS-20):  40
+> PDP10 (TOPS-10): 7
+> PDP10 (TENEX):   22
+> PDP10 (ITS):  4
+> PDP10 (WAITS): 3
+>
+> I had all but forgotten about Local Host / Distant Host / Very Distant
+> Host 1822 protocols.    I remember that BRL had a PDP-11/40 running ANTS
+> (ArpaNet Terminal Server out of University of Illinois).   It got replaced
+> by an 11/34 running UNIX when the Arpanet went to long leaders New Years
+> 1981.
+>
+-- 
+Sent from a handheld expect more typos than usual
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211024/57ade2c4/attachment.htm>
+
+From imp at bsdimp.com  Mon Oct 25 05:28:50 2021
+From: imp at bsdimp.com (Warner Losh)
+Date: Sun, 24 Oct 2021 13:28:50 -0600
+Subject: [TUHS] Unix NCP protocol stack for ARPANET
+In-Reply-To: <em8d652e31-7445-4d63-a1bc-2ca236bbcc79@alien>
+References: <7wtuh6e6u6.fsf@junk.nocrew.org>
+ <CAC20D2P5vtw2FPiWNLz9TjD1k4aooJS=BkPW4Ke7rC_Oj3HatA@mail.gmail.com>
+ <em8d652e31-7445-4d63-a1bc-2ca236bbcc79@alien>
+Message-ID: <CANCZdfpNF6XZMihx=0aG=HgCSnxeWzXZfkq3S6tudwMx_825oQ@mail.gmail.com>
+
+On Sun, Oct 24, 2021 at 12:41 PM Ron Natalie <ron at ronnatalie.com> wrote:
+
+> There were definitely as many PDP-11's (most running UNIX) as there were
+> DEC 10s in the glory days of the Arpanet.   VAXes only rolled out toward
+> the end of the NCP era.
+>
+> However, the last NCP host table shows this statistic for DEC machines on
+> the NCP Arpanet
+>
+> VAX (UNIX):  58
+> PDP11(UNIX): 59
+>
+
+So as of 1980-12-31, you had 7th Edition and 32V in the wild. 3BSD was late
+1979 or early 1980. 4BSD was late 1980.
+The Columbus Unix was also running on VAXen, but I don't have great dates
+for that and most (all?) of those machines
+were confined to internal AT&T.
+
+I recall reading, but don't recall where I read it, that the Urbana
+networking was ported to 7th Edition. I tried to find
+such source, but couldn't 18 months ago. 32V is basically the same as 7th
+Edition, so would make a good candidate
+for such a port, though 3BSD isn't so radically different, except in buffer
+mapping, that it couldn't run there w/o much
+effort.  The VAX never had a V6 port that I've read about anywhere, though
+I'll defer to others with better sources.
+
+I'd bet some $$$ that BBN did the port, but I have no good source for that
+either.
+
+Warner
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211024/30f02c3c/attachment.htm>
+
+From clemc at ccc.com  Mon Oct 25 06:25:26 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Sun, 24 Oct 2021 16:25:26 -0400
+Subject: [TUHS] Unix NCP protocol stack for ARPANET
+In-Reply-To: <CANCZdfpNF6XZMihx=0aG=HgCSnxeWzXZfkq3S6tudwMx_825oQ@mail.gmail.com>
+References: <7wtuh6e6u6.fsf@junk.nocrew.org>
+ <CAC20D2P5vtw2FPiWNLz9TjD1k4aooJS=BkPW4Ke7rC_Oj3HatA@mail.gmail.com>
+ <em8d652e31-7445-4d63-a1bc-2ca236bbcc79@alien>
+ <CANCZdfpNF6XZMihx=0aG=HgCSnxeWzXZfkq3S6tudwMx_825oQ@mail.gmail.com>
+Message-ID: <CAC20D2NmrsgEKDWavooJuGLSuq+U_0u0VGn=sFCp1z3d5Zrj5g@mail.gmail.com>
+
+Sorry for typo and top posting on my iPhone for a few days as I'm traveling
+W/O a computer.
+
+Some thoughts.
+
+There a number of pdp11 stacks for ip and I assume we the ncp but they were
+not all sourced by bbn.  A number were in assembler
+
+As Noel pointed out the first widely distributed Unix implementation for
+the ncp was the uici version.  But there was a Rand stack around the same
+time and III ty hink Holmgren ended up at UCSB after his time at UICI.  Im
+fairly sure there was cross polinartion but I don't know how much.
+
+In the IP space the 11 assembler version was the first u knew about.  The
+first C version was the Haverty stack that became what knew of as the
+portable IP stack originally for the Nova.   Rob Gurwitz (working) for Jack
+did the 4.1 code and was the original official Vax stack for DARPA.  Joy's
+reimplementation for 4.1a was sort of unsanctioned and caused a bit of a
+rift as it was not a complete rewrite and officially BBN was doing the
+network support for the VAX for DARPA. CSRG was just supposed to being
+doing base OS.
+
+But the joy version is derrived from the Gurwitz/Havert work - For instance
+the famous mbuf code came from the DG Nova implementation a few years
+earlier.  [I was once told mbufs came from Brown, but Jack said on the IH
+mailing list in the last year or so, he worked on them before Rob started
+his work].
+
+Stan and I only had assembler and BLISS and Fortran on the Vax under VMS so
+I started at the DG version when we did something similar in the Tek
+version [it was not as elegant or as complicated and probably not as good].
+
+As for other NCPs, PARC had MAXC on the net, but I thought it had
+originally a DG Nova front end that was replaced with an Alto.  But the NCP
+ran as Nova code in BCPL in both.
+
+On Sun, Oct 24, 2021 at 3:30 PM Warner Losh <imp at bsdimp.com> wrote:
+
+>
+>
+> On Sun, Oct 24, 2021 at 12:41 PM Ron Natalie <ron at ronnatalie.com> wrote:
+>
+>> There were definitely as many PDP-11's (most running UNIX) as there were
+>> DEC 10s in the glory days of the Arpanet.   VAXes only rolled out toward
+>> the end of the NCP era.
+>>
+>> However, the last NCP host table shows this statistic for DEC machines on
+>> the NCP Arpanet
+>>
+>> VAX (UNIX):  58
+>> PDP11(UNIX): 59
+>>
+>
+> So as of 1980-12-31, you had 7th Edition and 32V in the wild. 3BSD was
+> late 1979 or early 1980. 4BSD was late 1980.
+> The Columbus Unix was also running on VAXen, but I don't have great dates
+> for that and most (all?) of those machines
+> were confined to internal AT&T.
+>
+> I recall reading, but don't recall where I read it, that the Urbana
+> networking was ported to 7th Edition. I tried to find
+> such source, but couldn't 18 months ago. 32V is basically the same as 7th
+> Edition, so would make a good candidate
+> for such a port, though 3BSD isn't so radically different, except in
+> buffer mapping, that it couldn't run there w/o much
+> effort.  The VAX never had a V6 port that I've read about anywhere, though
+> I'll defer to others with better sources.
+>
+> I'd bet some $$$ that BBN did the port, but I have no good source for that
+> either.
+>
+> Warner
+>
+> --
+Sent from a handheld expect more typos than usual
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211024/b3347194/attachment.htm>
+
+From lars at nocrew.org  Mon Oct 25 19:26:05 2021
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: Mon, 25 Oct 2021 09:26:05 +0000
+Subject: [TUHS] Unix NCP protocol stack for ARPANET
+In-Reply-To: <CAC20D2P5vtw2FPiWNLz9TjD1k4aooJS=BkPW4Ke7rC_Oj3HatA@mail.gmail.com>
+ (Clem Cole's message of "Sun, 24 Oct 2021 13:24:34 -0400")
+References: <7wtuh6e6u6.fsf@junk.nocrew.org>
+ <CAC20D2P5vtw2FPiWNLz9TjD1k4aooJS=BkPW4Ke7rC_Oj3HatA@mail.gmail.com>
+Message-ID: <7w8ryhe9qq.fsf@junk.nocrew.org>
+
+Clem Cole wrote:
+> > Has any other NCP implementation for Unix survived?  From old host
+> > tables I think there may have been some VAXen online before the
+> > switch to TCP/IP.
+>
+> Hmmm... I find that interesting because Stan Smith and I wrote the
+> original IP/TCP for the VAX in 1979/1980 when we were at Tektronix
+> [...].  When Stan and I started that work, I had looked everywhere I
+> could think to find an NCP implementation, and never found one.
+
+That seems consistent with host tables I see.  According to those, there
+were no VAXen on the ARPANET in 1980.  However, there were a a dozen or
+so in mid 1981; mostly VMS.  (I'd also like to ask about NCP for VMS,
+but this is TUHS.)
+
+In early 1982 the number of VAXen has doubled, and out of those 10 are
+running Unix including prominent sites like BBN, CCA, PURDUE, RAND, UCB.
+Here's the rub.  Some hosts may have jumped the TCP/IP gun ahead of the
+1/1 1983 flag day.  The host tables don't say.  Could it be that all
+those VAXen were running experimental TCP/IP in January 1982?
+
+> You tell me, but I was under the impression, that you folks at MIT did
+> a ChaosNet interface, IIRC, so there may have been some sort of
+> conversion on your LAN, but I really doubt there was a real NCP
+> running.
+
+The MIT host tables do show the Chaos networks, but I don't include
+those in the count.
+
+From pnr at planet.nl  Tue Oct 26 02:50:26 2021
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Mon, 25 Oct 2021 18:50:26 +0200
+Subject: [TUHS] Unix NCP protocol stack for ARPANET
+Message-ID: <773CD17C-9ACC-461E-BDE3-DBB5AB00E20F@planet.nl>
+
+> I have searched the TUHS archive and elsewhere, but all I
+> find for Unix is a copy of the PDP-11 Unix V6 NCP from Illinois.
+> 
+> Has any other NCP implementation for Unix survived?  From old host
+> tables I think there may have been some VAXen online before the switch
+> to TCP/IP.
+
+Lars,
+
+You may want to look at the 4 surviving BBN tapes on Kirk McKusick’s DVD software collection. A small part of that is on the TUHS Unix tree page - see the 4.1BSD entry.
+
+1. A history of NCP on the VAX at BBN can be found in the change log:
+https://www.tuhs.org/cgi-bin/utree.pl?file=BBN-Vax-TCP/history
+
+In short they started with 32V in the Fall of 1979, and ported UIUC’s NCP code to it in May 1980. They then moved to 4.1BSD in August and ported yet again. It would seem that the ports were fairly straightforward. Coding for TCP begins in January 1981.
+
+2. Note that the BBN TCP worked over NCP as its primary transport. The driver is still there if you look through the surviving BBN tapes. Part of that code is on TUHS:
+https://www.tuhs.org/cgi-bin/utree.pl?file=BBN-Vax-TCP/dev/acc.c
+https://www.tuhs.org/cgi-bin/utree.pl?file=BBN-Vax-TCP/bbnnet-oct82/imp_io.c
+
+It will take some effort, but probably the NCP VAX code can be reconstructed from the surviving PDP11 UIUC code and these BBN tapes (the file names in the change log match).
+
+3. The BBN tapes also have some user level software: telnet, ftp, mtp. This code consists of straight NCP to TCP conversions and the source code has #ifdef’s for NCP and TCP. An example is here:
+https://www.tuhs.org/cgi-bin/utree.pl?file=BBN-Vax-TCP/src/telnet/netser.c
+
+Hope this helps.
+
+Paul
+
+PS - Info on the DVD is here (bottom of the page):
+https://www.mckusick.com/csrg/
+
+
+From jnc at mercury.lcs.mit.edu  Tue Oct 26 04:50:15 2021
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Mon, 25 Oct 2021 14:50:15 -0400 (EDT)
+Subject: [TUHS] Unix NCP protocol stack for ARPANET
+Message-ID: <20211025185015.C74C918C0B5@mercury.lcs.mit.edu>
+
+    > From: "Ron Natalie"
+
+    > However, the last NCP host table shows this statistic for DEC machines
+    > on the NCP Arpanet
+    > ...
+    > PDP11 (MOS):  11
+    > PDP11 (MINITS); 10
+
+Hi, which host table was this that you're looking at?
+
+I'm pretty sure there was no MINITS NCP ('NCP' in the sense of 'Initial
+Connection Protocol (ICP)' and 'ARPANET Host-to-Host Protocol (AHHP)' - see
+below). There was _certainaly_ no MINITS machine on the ARPANET at MIT (the
+birthplace of MINITS).
+
+To confirm, I looked at a major MINITS source repository, here:
+
+    https://github.com/PDP-10/its/tree/master/src/mits_s
+
+and saw nothing like that. (Not even an 1822 interface driver.)
+
+If you look there, you _will_ see things labelled 'NCP', but this is just a
+terminological affliction among the CHAOS people, to whom 'NCP' apparently
+meant 'protocol implementation' or 'network code'.
+
+Also, implementations of the 'Host-to-IMP Protocol (HIP)' are _not_ NCP
+either; there was an HIP implementation in the C Gateway, but that was
+as IP router, one that could connect to an IMP.
+
+IF IT DOESN'T HAVE AHHP, IT"S NOT NCP.
+
+
+Also, I was intimately familiar with MOS, and neither of the two earliest
+applications that ran on it (the TIU, and the Port Expander, both of which I
+have the source code for) had any NCP. I looked at a lot of the MOS 'NCP"
+listings in a old host table (see here:
+
+  https://gunkies.org/wiki/Talk:Network_Control_Program
+
+for details) and concluded that the MOS 'NCP' entries were all 'confused'.
+
+
+    > From: Clem Cole
+
+    > I was under the impression, that you folks at MIT did a ChaosNet
+    > interface, IIRC, so there may have been some sort of conversion on
+    > your LAN, but I really doubt there was a real NCP running.
+
+The AI Lab did both i) a LAN called CHAOS (4 Mbit/seccond CSMA-CD over CATV
+cable) and ii) a protocol family callled CHAOS (which later ran over XDI
+Ethernet). I'm not sure that any of it has any relvance to what's under
+discussion here.
+
+    > But there was a Rand stack around the same time and III think
+    > Holmgren ended up at UCSB after his time at UICI. Im fairly sure there
+    > was cross polinartion but I don't know how much.
+
+I looked through my V6 Unix NCP, but although there were some RAND #ifdefs, I
+didn't see anything about Rand (except that the MMDF is noted as being based
+on something done at Rand). I retain the distinct impression that all V6 Unix
+NCP machines were running some descendant of the UIUC code. NOSC seems to have
+served as a distro center at one point, see:
+
+  https://minnie.tuhs.org//cgi-bin/utree.pl?file=SRI-NOSC/new/dist.log
+
+but I can't tell who they were sending it too.
+
+(We never tried to get it running at MIT since we were out of IMP ports.
+By the time we got another IMP, we had IP running on the -11 and
+NCP was done anyway.)
+
+As for UCB, there are a bunch of UCBUFMOD #ifdef's, not sure what that
+was about.
+
+
+    > As for other NCPs, PARC had MAXC on the net, but I thought it had
+    > originally a DG Nova front end that was replaced with an Alto. 
+
+No, Maxc1 had a Nova, Maxc2 had an Alto.
+
+
+    > From: Paul Ruizendaal
+
+    > they started with 32V in the Fall of 1979, and ported UIUC's NCP code
+    > to it
+
+Thanks for straightening that out. I had a vague memory that there were a
+few VAXen that ran NCP, but wasn't sure.
+
+    > 2. Note that the BBN TCP worked over NCP as its primary transport.
+
+Your terminology is confused. TCP _never_ ran 'on' NCP; they were
+_alternative_ protocol stacks on top of IHP (on the ARPANET). No
+AHHP, no NCP.
+
+    > The driver is still there if you look
+
+That acc.c is a driver for the ACC 1822 interface; it includes bits of IHP
+("Try to send 3 no-ops to IMP") but I don't think it includes the complete IHP.
+There are other BSD 1822 device drivers, e.g.:
+
+  https://minnie.tuhs.org/cgi-bin/utree.pl?file=2.11BSD/sys/pdpif/if_sri.c
+
+That's the BSD2.11 Stanford/SRI 1822 device driver.
+
+	Noel
+
+From italian.pepe.32 at gmail.com  Tue Oct 26 04:53:20 2021
+From: italian.pepe.32 at gmail.com (joseph turco)
+Date: Mon, 25 Oct 2021 14:53:20 -0400
+Subject: [TUHS] Question about Unix adminstration
+Message-ID: <CADhp54QfU+qBo57N0_sijfdF=s81LPKqJwa45TJ_7Tu8Rizypw@mail.gmail.com>
+
+Hello all,
+
+I was wondering if there exists a book on Unix administration, specifically
+for v7. I have the Unix programmers book already.
+
+Regards
+
+Joseph Turco
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211025/35af8788/attachment.htm>
+
+From lars at nocrew.org  Tue Oct 26 05:04:24 2021
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: Mon, 25 Oct 2021 19:04:24 +0000
+Subject: [TUHS] Unix NCP protocol stack for ARPANET
+In-Reply-To: <773CD17C-9ACC-461E-BDE3-DBB5AB00E20F@planet.nl> (Paul
+ Ruizendaal's message of "Mon, 25 Oct 2021 18:50:26 +0200")
+References: <773CD17C-9ACC-461E-BDE3-DBB5AB00E20F@planet.nl>
+Message-ID: <7wr1c9c4ef.fsf@junk.nocrew.org>
+
+Paul Ruizendaal wrote:
+> You may want to look at the 4 surviving BBN tapes on Kirk McKusick’s
+> DVD software collection. A small part of that is on the TUHS Unix tree
+> page - see the 4.1BSD entry.
+
+That's great information, thanks!
+
+From ron at ronnatalie.com  Tue Oct 26 05:01:43 2021
+From: ron at ronnatalie.com (Ron Natalie)
+Date: Mon, 25 Oct 2021 19:01:43 +0000
+Subject: [TUHS] Question about Unix adminstration
+In-Reply-To: <CADhp54QfU+qBo57N0_sijfdF=s81LPKqJwa45TJ_7Tu8Rizypw@mail.gmail.com>
+References: <CADhp54QfU+qBo57N0_sijfdF=s81LPKqJwa45TJ_7Tu8Rizypw@mail.gmail.com>
+Message-ID: <em6ecf6f26-1996-4a74-be9f-f3d5ba29f478@alien>
+
+Unix System Administration by Evi Nemeth et al was written for earlier 
+UNIX systems but has been revised over the years for later versions.
+
+
+------ Original Message ------
+From: "joseph turco" <italian.pepe.32 at gmail.com>
+To: "TUHS main list" <tuhs at minnie.tuhs.org>
+Sent: 10/25/2021 2:53:20 PM
+Subject: [TUHS] Question about Unix adminstration
+
+>Hello all,
+>
+>I was wondering if there exists a book on Unix administration, 
+>specifically for v7. I have the Unix programmers book already.
+>
+>Regards
+>
+>Joseph Turco
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211025/b91e7406/attachment.htm>
+
+From sj at sdf.org  Tue Oct 26 05:20:30 2021
+From: sj at sdf.org (Scot Jenkins)
+Date: Mon, 25 Oct 2021 15:20:30 -0400
+Subject: [TUHS] Question about Unix adminstration
+In-Reply-To: <CADhp54QfU+qBo57N0_sijfdF=s81LPKqJwa45TJ_7Tu8Rizypw@mail.gmail.com>
+References: <CADhp54QfU+qBo57N0_sijfdF=s81LPKqJwa45TJ_7Tu8Rizypw@mail.gmail.com>
+Message-ID: <202110251920.19PJKU19017262@sdf.org>
+
+joseph turco <italian.pepe.32 at gmail.com> wrote:
+
+> I was wondering if there exists a book on Unix administration, specifically
+> for v7. I have the Unix programmers book already.
+
+Introducing the UNIX System, (c) 1983, ISBN 0-07-045001-3 
+by Henry McGilton and Rachel Morgan
+
+The book covers V7 and is a general intro to UNIX.
+It has one chapter on administration near the end 
+of the book.  It covers very basic stuff:
+
+* setting the date
+* startup/shutdown
+* users and groups, su command
+* file systems (mkfs, mount, umount, fsck, icheck, ncheck)
+* adding devices (mknod)
+* dump, restor, tar
+
+Overall though this is still a great book on UNIX in general,
+even today.  Great tutorials on ed, sed, ex, vi, nroff/troff,
+and ms macros make it worthwhile to own.
+
+scot
+
+From cmhanson at eschatologist.net  Tue Oct 26 09:42:24 2021
+From: cmhanson at eschatologist.net (Chris Hanson)
+Date: Mon, 25 Oct 2021 16:42:24 -0700
+Subject: [TUHS] Motorola System V/68 preservation?
+Message-ID: <7EFC4B51-5B53-4009-B17F-FCFF6EC370BE@eschatologist.net>
+
+Has anyone other than the owner of m88k.com preserved Motorola System V/68? Besides that, there’s the SVR1 (v2.8) for the Motorola VME/10 on Bitsavers and that’s about it.
+
+I’m especially curious as to whether anyone has preserved the SVR2 1.1 binary+sources distribution, since there might be useful information in it—or derivable from it—about much of the early VME hardware.
+
+  — Chris
+
+Sent from my iPad
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211025/1dcfc608/attachment.htm>
+
+From pnr at planet.nl  Tue Oct 26 18:06:30 2021
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Tue, 26 Oct 2021 10:06:30 +0200
+Subject: [TUHS] Unix NCP protocol stack for ARPANET
+Message-ID: <4DB625DE-D35C-4734-9384-5785E54AC856@planet.nl>
+
+Noel wrote:
+
+>> 2. Note that the BBN TCP worked over NCP as its primary transport.
+> 
+> Your terminology is confused. TCP _never_ ran 'on' NCP; they were
+> _alternative_ protocol stacks on top of IHP (on the ARPANET). No
+> AHHP, no NCP.
+
+Yes, of course you are right. I meant BBN TCP used *Arpanet* as its primary transport and hence has drivers for the IMP interface hardware.
+
+
+Lars wrote:
+
+> Here's the rub.  Some hosts may have jumped the TCP/IP gun ahead of the
+> 1/1 1983 flag day.  The host tables don't say.  Could it be that all
+> those VAXen were running experimental TCP/IP in January 1982?
+
+From Mike Muuss’ TCP digest mailing list and a mail conversation with Vint Cerf a few years ago I understood the following. “Flag day” wasn’t as black and white as we remember it now. During 1982 there was a continuous push to move systems to TCP, and over the year more and more systems became dual protocol capable and later even TCP only. Because all TCP traffic used the same, dedicated Arpanet link number, BBN’s network control team could monitor the level of usage. From memory, in the Summer of 1982 traffic was about 50% TCP and by October 70%. Presumably it reached 80-90% by the end of the year.
+
+During 1982 on 3 occasions, network control activated a feature in the IMP’s that refused traffic on link #0, which NCP used to negotiate a connection. This caused NCP applications to stop working. Again from memory, the first outage was a few hours, the second one a day and third one, late in 1982, for two days. This highlighted systems that needed conversion and helped motivate higher ups to approve conversion resources. It seems that making the switch often involved upgrading PDP11 to VAX.
+
+From what I can tell flag day went well, although there were issues with mail gateways that lasted for several weeks.
+
+At the start of 1982 there was no (usable) VAX Unix TCP code that I am aware of. There were several options for the PDP11, but of those I think only the 3COM code worked well. Around March/April there was code from BBN (see TUHS 4.1BSD) and from CSRG (4.1a BSD). A special build of PDP11 2.8BSD with TCP arrived somewhat later. My impression is that this was still the state of play on flag day, with 4.1cBSD only arriving well into 1983.
+
+From miod at online.fr  Wed Oct 27 03:16:58 2021
+From: miod at online.fr (Miod Vallat)
+Date: Tue, 26 Oct 2021 17:16:58 +0000
+Subject: [TUHS] Motorola System V/68 preservation?
+In-Reply-To: <7EFC4B51-5B53-4009-B17F-FCFF6EC370BE@eschatologist.net>
+References: <7EFC4B51-5B53-4009-B17F-FCFF6EC370BE@eschatologist.net>
+Message-ID: <YXg4CpP4tHYjnl4+@tarentaine.gentiane.org>
+
+> Has anyone other than the owner of m88k.com preserved Motorola System
+> V/68? Besides that, there’s the SVR1 (v2.8) for the Motorola VME/10 on
+> Bitsavers and that’s about it.
+
+I have a few SysV/68 and SysV/88 tapes and backups of them as well, but
+this is a subset of what is available on m88k.com.
+
+> I’m especially curious as to whether anyone has preserved the SVR2 1.1
+> binary+sources distribution, since there might be useful information
+> in it—or derivable from it—about much of the early VME hardware.
+
+I'm afraid I only have binary distributions and nothing that old.
+
+Miod
+
+From john at jfloren.net  Thu Oct 28 04:29:59 2021
+From: john at jfloren.net (John Floren)
+Date: Wed, 27 Oct 2021 18:29:59 +0000
+Subject: [TUHS] Anyone have a modem wired up?
+In-Reply-To: <81D078E9-072B-4969-BCA2-A71975D304EE@eschatologist.net>
+References: <xlncc_gJguY-hxJJnx5UiAMbgc0UdibpoYuemEXvwsuiQR8_--ASArVqWULPV9jy6QNJd-x1m5mY9o2IKmpKBKE_4_CtI6tcEmPhHBZ4y0c=@jfloren.net>
+ <81D078E9-072B-4969-BCA2-A71975D304EE@eschatologist.net>
+Message-ID: <hVNrWEDc6WJqGY4EFFCZUmrG0kAG5PzVkSPPmpcNiCid9VMTVKTGqjYbuTgpOkn97bOnQzCQD1LD0wEGBjYvrOSHWE63oqa0PX12DqTtAFQ=@jfloren.net>
+
+On Wednesday, October 27th, 2021 at 11:17 AM, Chris Hanson <cmhanson at eschatologist.net> wrote:
+
+> Obihai makes some decent, cheap-on-eBay, unlockable/hackable analog VoIP boxes that work just fine with not-super-fast modems. You won’t get 56K or even 33.6, but 9600-14.4K should be fine and a Telebit Trailblazer probably would be too if you want to use UUCP over dialup…
+>
+> — Chris
+
+I've got a Grandstream HT801 through my ISP (Sonic.net) which works fine for voice, and it previously did ok with the modem, but now when I try, I start to get garbage soon after the connection establishes (see http://jfloren.net/noise.jpg for an example). It happens regardless of who I connect to, and seemingly without regard for the connection speed--although at 9600, the garbage fills up the screen quite rapidly compared to a rather sedate trickle at 4800.
+
+My modem-fu is rather weak, so if anyone recognizes what's going on, please let me know. I worry that it's just a noisy phone connection, but I was under the impression that modems had some sort of error-correction built in (this is a SupraFaxModem 288).
+
+john
+
+From cmhanson at eschatologist.net  Thu Oct 28 04:17:04 2021
+From: cmhanson at eschatologist.net (Chris Hanson)
+Date: Wed, 27 Oct 2021 11:17:04 -0700
+Subject: [TUHS] Anyone have a modem wired up?
+In-Reply-To: <xlncc_gJguY-hxJJnx5UiAMbgc0UdibpoYuemEXvwsuiQR8_--ASArVqWULPV9jy6QNJd-x1m5mY9o2IKmpKBKE_4_CtI6tcEmPhHBZ4y0c=@jfloren.net>
+References: <xlncc_gJguY-hxJJnx5UiAMbgc0UdibpoYuemEXvwsuiQR8_--ASArVqWULPV9jy6QNJd-x1m5mY9o2IKmpKBKE_4_CtI6tcEmPhHBZ4y0c=@jfloren.net>
+Message-ID: <81D078E9-072B-4969-BCA2-A71975D304EE@eschatologist.net>
+
+Obihai makes some decent, cheap-on-eBay, unlockable/hackable analog VoIP boxes that work just fine with not-super-fast modems. You won’t get 56K or even 33.6, but 9600-14.4K should be fine and a Telebit Trailblazer probably would be too if you want to use UUCP over dialup…
+
+  — Chris
+
+
+
+From crossd at gmail.com  Thu Oct 28 04:51:05 2021
+From: crossd at gmail.com (Dan Cross)
+Date: Wed, 27 Oct 2021 14:51:05 -0400
+Subject: [TUHS] Anyone have a modem wired up?
+In-Reply-To: <hVNrWEDc6WJqGY4EFFCZUmrG0kAG5PzVkSPPmpcNiCid9VMTVKTGqjYbuTgpOkn97bOnQzCQD1LD0wEGBjYvrOSHWE63oqa0PX12DqTtAFQ=@jfloren.net>
+References: <xlncc_gJguY-hxJJnx5UiAMbgc0UdibpoYuemEXvwsuiQR8_--ASArVqWULPV9jy6QNJd-x1m5mY9o2IKmpKBKE_4_CtI6tcEmPhHBZ4y0c=@jfloren.net>
+ <81D078E9-072B-4969-BCA2-A71975D304EE@eschatologist.net>
+ <hVNrWEDc6WJqGY4EFFCZUmrG0kAG5PzVkSPPmpcNiCid9VMTVKTGqjYbuTgpOkn97bOnQzCQD1LD0wEGBjYvrOSHWE63oqa0PX12DqTtAFQ=@jfloren.net>
+Message-ID: <CAEoi9W6+Y9P+D845urKbDunioj+kUDbxLm-U+5SLUFyfV9w_-w@mail.gmail.com>
+
+On Wed, Oct 27, 2021 at 2:31 PM John Floren <john at jfloren.net> wrote:
+
+> On Wednesday, October 27th, 2021 at 11:17 AM, Chris Hanson <
+> cmhanson at eschatologist.net> wrote:
+>
+> > Obihai makes some decent, cheap-on-eBay, unlockable/hackable analog VoIP
+> boxes that work just fine with not-super-fast modems. You won’t get 56K or
+> even 33.6, but 9600-14.4K should be fine and a Telebit Trailblazer probably
+> would be too if you want to use UUCP over dialup…
+> >
+> > — Chris
+>
+> I've got a Grandstream HT801 through my ISP (Sonic.net) which works fine
+> for voice, and it previously did ok with the modem, but now when I try, I
+> start to get garbage soon after the connection establishes (see
+> http://jfloren.net/noise.jpg for an example). It happens regardless of
+> who I connect to, and seemingly without regard for the connection
+> speed--although at 9600, the garbage fills up the screen quite rapidly
+> compared to a rather sedate trickle at 4800.
+>
+
+My guess is that the codec it uses is optimized for human speech and gets
+confused by the range and levels of data modulation.
+
+My modem-fu is rather weak, so if anyone recognizes what's going on, please
+> let me know. I worry that it's just a noisy phone connection, but I was
+> under the impression that modems had some sort of error-correction built in
+> (this is a SupraFaxModem 288).
+>
+
+This depends very much on the modem. It might be painful, but I wonder what
+would happen if you tried it at 1200 or even 300 baud (assuming those are
+simple AFSK using two tones as in Bell 103 and 202 schemes).
+
+        - Dan C.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211027/7ae32e85/attachment.htm>
+
+From lars at nocrew.org  Thu Oct 28 19:41:44 2021
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: Thu, 28 Oct 2021 09:41:44 +0000
+Subject: [TUHS] Unix NCP protocol stack for ARPANET
+In-Reply-To: <20211025185015.C74C918C0B5@mercury.lcs.mit.edu> (Noel Chiappa's
+ message of "Mon, 25 Oct 2021 14:50:15 -0400 (EDT)")
+References: <20211025185015.C74C918C0B5@mercury.lcs.mit.edu>
+Message-ID: <7wh7d1a3l3.fsf@junk.nocrew.org>
+
+Noel Chiappa wrote:
+> this is just a terminological affliction among the CHAOS people, to
+> whom 'NCP' apparently meant 'protocol implementation' or 'network
+> code'.
+
+I always assumed this interpretation of "Network Control Program" was
+"software component that controls the network", and that this would
+apply equally well to many different networks.
+
+From paul at rileyriot.com  Fri Oct 29 08:01:24 2021
+From: paul at rileyriot.com (Paul Riley)
+Date: Fri, 29 Oct 2021 09:01:24 +1100
+Subject: [TUHS] Question about Unix adminstration
+In-Reply-To: <202110251920.19PJKU19017262@sdf.org>
+References: <CADhp54QfU+qBo57N0_sijfdF=s81LPKqJwa45TJ_7Tu8Rizypw@mail.gmail.com>
+ <202110251920.19PJKU19017262@sdf.org>
+Message-ID: <CAD05_j0YGyTBpNzH=GGiiLxkw6YuPwj2_RLMWS9iK5BZMGFpbA@mail.gmail.com>
+
+And, as a matter of interest, is there a book for V6?
+
+Paul
+
+*Paul Riley*
+
+
+
+
+On Tue, 26 Oct 2021 at 06:28, Scot Jenkins <sj at sdf.org> wrote:
+
+> joseph turco <italian.pepe.32 at gmail.com> wrote:
+>
+> > I was wondering if there exists a book on Unix administration,
+> specifically
+> > for v7. I have the Unix programmers book already.
+>
+> Introducing the UNIX System, (c) 1983, ISBN 0-07-045001-3
+> by Henry McGilton and Rachel Morgan
+>
+> The book covers V7 and is a general intro to UNIX.
+> It has one chapter on administration near the end
+> of the book.  It covers very basic stuff:
+>
+> * setting the date
+> * startup/shutdown
+> * users and groups, su command
+> * file systems (mkfs, mount, umount, fsck, icheck, ncheck)
+> * adding devices (mknod)
+> * dump, restor, tar
+>
+> Overall though this is still a great book on UNIX in general,
+> even today.  Great tutorials on ed, sed, ex, vi, nroff/troff,
+> and ms macros make it worthwhile to own.
+>
+> scot
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211029/a13b94b4/attachment.htm>
+
+From paul at rileyriot.com  Fri Oct 29 08:01:55 2021
+From: paul at rileyriot.com (Paul Riley)
+Date: Fri, 29 Oct 2021 09:01:55 +1100
+Subject: [TUHS] Question about Unix adminstration
+In-Reply-To: <CADhp54QfU+qBo57N0_sijfdF=s81LPKqJwa45TJ_7Tu8Rizypw@mail.gmail.com>
+References: <CADhp54QfU+qBo57N0_sijfdF=s81LPKqJwa45TJ_7Tu8Rizypw@mail.gmail.com>
+Message-ID: <CAD05_j3HgJmUTj7_0f7KNZ53LczgH9Bd+fg8ii+3+C9qoCOfvA@mail.gmail.com>
+
+And, as a matter of interest, is there a book for V6?
+
+Paul
+
+*Paul Riley*
+
+
+
+On Tue, 26 Oct 2021 at 05:54, joseph turco <italian.pepe.32 at gmail.com>
+wrote:
+
+> Hello all,
+>
+> I was wondering if there exists a book on Unix administration,
+> specifically for v7. I have the Unix programmers book already.
+>
+> Regards
+>
+> Joseph Turco
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211029/ec7a4ca7/attachment.htm>
+
+From clemc at ccc.com  Fri Oct 29 23:41:22 2021
+From: clemc at ccc.com (Clem Cole)
+Date: Fri, 29 Oct 2021 15:41:22 +0200
+Subject: [TUHS] Question about Unix adminstration
+In-Reply-To: <CAD05_j0YGyTBpNzH=GGiiLxkw6YuPwj2_RLMWS9iK5BZMGFpbA@mail.gmail.com>
+References: <CADhp54QfU+qBo57N0_sijfdF=s81LPKqJwa45TJ_7Tu8Rizypw@mail.gmail.com>
+ <202110251920.19PJKU19017262@sdf.org>
+ <CAD05_j0YGyTBpNzH=GGiiLxkw6YuPwj2_RLMWS9iK5BZMGFpbA@mail.gmail.com>
+Message-ID: <CAC20D2PYQCqFed+0rRERiC3r9qP-jeu2P8b2bo0JQSBfk5eJtA@mail.gmail.com>
+
+much of what Evi says from an administrator standpoint will apply.  That
+said if you are running V6 get a copy of the Lion's text.
+
+
+For real synthesis, maje sure your copy is an nth generation xerographic
+copy😅.  Seriously go to Amazon and get the modern reprint.
+
+On Fri, Oct 29, 2021 at 12:02 AM Paul Riley <paul at rileyriot.com> wrote:
+
+> And, as a matter of interest, is there a book for V6?
+>
+> Paul
+>
+> *Paul Riley*
+>
+>
+>
+>
+> On Tue, 26 Oct 2021 at 06:28, Scot Jenkins <sj at sdf.org> wrote:
+>
+>> joseph turco <italian.pepe.32 at gmail.com> wrote:
+>>
+>> > I was wondering if there exists a book on Unix administration,
+>> specifically
+>> > for v7. I have the Unix programmers book already.
+>>
+>> Introducing the UNIX System, (c) 1983, ISBN 0-07-045001-3
+>> by Henry McGilton and Rachel Morgan
+>>
+>> The book covers V7 and is a general intro to UNIX.
+>> It has one chapter on administration near the end
+>> of the book.  It covers very basic stuff:
+>>
+>> * setting the date
+>> * startup/shutdown
+>> * users and groups, su command
+>> * file systems (mkfs, mount, umount, fsck, icheck, ncheck)
+>> * adding devices (mknod)
+>> * dump, restor, tar
+>>
+>> Overall though this is still a great book on UNIX in general,
+>> even today.  Great tutorials on ed, sed, ex, vi, nroff/troff,
+>> and ms macros make it worthwhile to own.
+>>
+>> scot
+>>
+> --
+Sent from a handheld expect more typos than usual
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211029/026e3a16/attachment.htm>
+
+From will.senn at gmail.com  Sat Oct 30 00:04:17 2021
+From: will.senn at gmail.com (Will Senn)
+Date: Fri, 29 Oct 2021 09:04:17 -0500
+Subject: [TUHS] Question about Unix adminstration
+In-Reply-To: <CAC20D2PYQCqFed+0rRERiC3r9qP-jeu2P8b2bo0JQSBfk5eJtA@mail.gmail.com>
+References: <CADhp54QfU+qBo57N0_sijfdF=s81LPKqJwa45TJ_7Tu8Rizypw@mail.gmail.com>
+ <202110251920.19PJKU19017262@sdf.org>
+ <CAD05_j0YGyTBpNzH=GGiiLxkw6YuPwj2_RLMWS9iK5BZMGFpbA@mail.gmail.com>
+ <CAC20D2PYQCqFed+0rRERiC3r9qP-jeu2P8b2bo0JQSBfk5eJtA@mail.gmail.com>
+Message-ID: <C155AB23-F5B1-4696-BB32-3D4ABDD89FF1@gmail.com>
+
+Evi seems like overkill. By admin, are we really talking about admin, or just standard usage. Ritchie’s install guide and a book like Bourne’s Unix System (my personal favorite) book, or even one of the Kochan books might serve. I know Bourne and Kochan’s books are for later systems, but the bulk of them still apply. The Lion book is a great recommendation.
+
+Will
+
+Sent from my iPhone
+
+> On Oct 29, 2021, at 8:41 AM, Clem Cole <clemc at ccc.com> wrote:
+> 
+> much of what Evi says from an administrator standpoint will apply.  That said if you are running V6 get a copy of the Lion's text.  
+> 
+> 
+> For real synthesis, maje sure your copy is an nth generation xerographic copy😅.  Seriously go to Amazon and get the modern reprint.  
+> 
+>> On Fri, Oct 29, 2021 at 12:02 AM Paul Riley <paul at rileyriot.com> wrote:
+>> And, as a matter of interest, is there a book for V6?
+>> 
+>> Paul
+>> 
+>> Paul Riley
+>> 
+>> 
+>> 
+>> 
+>>> On Tue, 26 Oct 2021 at 06:28, Scot Jenkins <sj at sdf.org> wrote:
+>>> joseph turco <italian.pepe.32 at gmail.com> wrote:
+>>> 
+>>> > I was wondering if there exists a book on Unix administration, specifically
+>>> > for v7. I have the Unix programmers book already.
+>>> 
+>>> Introducing the UNIX System, (c) 1983, ISBN 0-07-045001-3 
+>>> by Henry McGilton and Rachel Morgan
+>>> 
+>>> The book covers V7 and is a general intro to UNIX.
+>>> It has one chapter on administration near the end 
+>>> of the book.  It covers very basic stuff:
+>>> 
+>>> * setting the date
+>>> * startup/shutdown
+>>> * users and groups, su command
+>>> * file systems (mkfs, mount, umount, fsck, icheck, ncheck)
+>>> * adding devices (mknod)
+>>> * dump, restor, tar
+>>> 
+>>> Overall though this is still a great book on UNIX in general,
+>>> even today.  Great tutorials on ed, sed, ex, vi, nroff/troff,
+>>> and ms macros make it worthwhile to own.
+>>> 
+>>> scot
+> -- 
+> Sent from a handheld expect more typos than usual
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211029/c2341a8d/attachment.htm>
+
+From a.phillip.garcia at gmail.com  Sat Oct 30 00:32:31 2021
+From: a.phillip.garcia at gmail.com (A. P. Garcia)
+Date: Fri, 29 Oct 2021 10:32:31 -0400
+Subject: [TUHS] Question about Unix adminstration
+In-Reply-To: <C155AB23-F5B1-4696-BB32-3D4ABDD89FF1@gmail.com>
+References: <CADhp54QfU+qBo57N0_sijfdF=s81LPKqJwa45TJ_7Tu8Rizypw@mail.gmail.com>
+ <202110251920.19PJKU19017262@sdf.org>
+ <CAD05_j0YGyTBpNzH=GGiiLxkw6YuPwj2_RLMWS9iK5BZMGFpbA@mail.gmail.com>
+ <CAC20D2PYQCqFed+0rRERiC3r9qP-jeu2P8b2bo0JQSBfk5eJtA@mail.gmail.com>
+ <C155AB23-F5B1-4696-BB32-3D4ABDD89FF1@gmail.com>
+Message-ID: <CAFCBnZuLdZkb=1y+dOs=Ns_wvkRMPzkJedrsxqjU2saEgsF-SA@mail.gmail.com>
+
+On Fri, Oct 29, 2021 at 10:05 AM Will Senn <will.senn at gmail.com> wrote:
+>
+> Evi seems like overkill. By admin, are we really talking about admin, or just standard usage. Ritchie’s install guide and a book like Bourne’s Unix System (my personal favorite) book, or even one of the Kochan books might serve. I know Bourne and Kochan’s books are for later systems, but the bulk of them still apply. The Lion book is a great recommendation.
+>
+> Will
+
+Kernighan and Pike's The Unix Programming Environment is another classic...
+
+From italian.pepe.32 at gmail.com  Sat Oct 30 08:56:19 2021
+From: italian.pepe.32 at gmail.com (joseph turco)
+Date: Fri, 29 Oct 2021 18:56:19 -0400
+Subject: [TUHS] Question about Unix adminstration
+In-Reply-To: <CAFCBnZuLdZkb=1y+dOs=Ns_wvkRMPzkJedrsxqjU2saEgsF-SA@mail.gmail.com>
+References: <CADhp54QfU+qBo57N0_sijfdF=s81LPKqJwa45TJ_7Tu8Rizypw@mail.gmail.com>
+ <202110251920.19PJKU19017262@sdf.org>
+ <CAD05_j0YGyTBpNzH=GGiiLxkw6YuPwj2_RLMWS9iK5BZMGFpbA@mail.gmail.com>
+ <CAC20D2PYQCqFed+0rRERiC3r9qP-jeu2P8b2bo0JQSBfk5eJtA@mail.gmail.com>
+ <C155AB23-F5B1-4696-BB32-3D4ABDD89FF1@gmail.com>
+ <CAFCBnZuLdZkb=1y+dOs=Ns_wvkRMPzkJedrsxqjU2saEgsF-SA@mail.gmail.com>
+Message-ID: <CADhp54Q5qv3qVqyYBaE1WL7GyFNC2V+247FHAuiOhsTYB_FUWw@mail.gmail.com>
+
+I was reading that book but does it go over administration?
+
+On Fri, Oct 29, 2021, 10:33 AM A. P. Garcia <a.phillip.garcia at gmail.com>
+wrote:
+
+> On Fri, Oct 29, 2021 at 10:05 AM Will Senn <will.senn at gmail.com> wrote:
+> >
+> > Evi seems like overkill. By admin, are we really talking about admin, or
+> just standard usage. Ritchie’s install guide and a book like Bourne’s Unix
+> System (my personal favorite) book, or even one of the Kochan books might
+> serve. I know Bourne and Kochan’s books are for later systems, but the bulk
+> of them still apply. The Lion book is a great recommendation.
+> >
+> > Will
+>
+> Kernighan and Pike's The Unix Programming Environment is another classic...
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20211029/e4938e4d/attachment.htm>
+

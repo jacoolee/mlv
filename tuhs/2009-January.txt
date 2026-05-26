@@ -1,0 +1,1016 @@
+From w.f.j.mueller at gsi.de  Mon Jan  5 03:49:02 2009
+From: w.f.j.mueller at gsi.de (Walter F. Mueller)
+Date: Sun, 04 Jan 2009 18:49:02 +0100
+Subject: [pups] 2.11BSD Patch 446+447;
+	fixes for ulrem,umount,tar,tcsh,ps,vmstat,apropos,pstat,rk
+Message-ID: <4960F68E.1010507@gsi.de>
+
+A note to all 2.11bsd users:
+Over the past 2 years several bug fixes for 2.11BSD accumulated, and over
+xmas break I finally found the time to communicate them to Steven Schultz.
+Steven was so kind to package them into two new patch files
+    446   issued December 27, 2008
+    447   issued December 31, 2008
+
+Together, the patches address the following points
+  - ulrem.s: the unsigned long modulo operator (%) was broken in libkern
+  - umount: returned inverted exit codes (1 for success, 0 for failure)
+  - tar: core dumped when a whole /usr tree was archived
+  - tcsh: the time buildin function printed some erroneous or zero statistics
+  - ps: core dumped when '-t' option was used with no further argument
+  - apropos: core dumped when 2 or more arguments were given
+  - vmstat: wrong normalization for some fields
+  - several issues around the rk disk driver
+    - no rk root attach function
+    - no rk BOOTDEV support
+    - incorrect UCB_METER code (vmstat/iostat never showed any rk activity)
+    - autoconfig left the RK11 controller in an error state
+  - pstat: added additional options to access more kernel data structures
+    - new -c option, dumping the coremap
+    - new -m option, dumping the ub_map (UNIBUS map)
+    - new -b option, dumping the buffer pool table
+    - change -s output, gives now full table dump
+    - adapt the info's displayed by -T
+  - some documentation corrections (vmstat, pstat, tcsh)
+
+Note: In case you wonder, as I did, why 211BSD survived 20 years with a
+       broken unsigned long % operator:
+       - only the non-FPP libkern implementation was affected
+       - the kernel simply doesn't have any unsigned long modulo's :)
+       - apparently only standalone mkfs after patch 434 was compromised
+
+For the full story of all the above consult the header of the patch files.
+
+The patch files are available from moe.2bsd.com and ftp.wx.gd-ais.com.
+Note, that Steven changed the packaging some time ago, the patches are
+now packed in bzip'ed tarballs in groups of ten patches. So you'll have
+to look into
+   ftp://moe.2bsd.com/pub/2.11BSD/440-447.tar.bz2
+   ftp://ftp.wx.gd-ais.com/pub/2.11BSD/440-447.tar.bz2
+
+
+     With best regards,
+         Walter Mueller
+
+
+From w.f.j.mueller at gsi.de  Mon Jan  5 06:06:28 2009
+From: w.f.j.mueller at gsi.de (Walter F. Mueller)
+Date: Sun, 04 Jan 2009 21:06:28 +0100
+Subject: [pups] jove editor under 2.11BSD and cursor keys
+In-Reply-To: <4960F68E.1010507@gsi.de>
+References: <4960F68E.1010507@gsi.de>
+Message-ID: <496116C4.8050101@gsi.de>
+
+Hello,
+
+I'm using the jove editor under 2.11BSD, the jove release is
+from 1988. It works just fine, except for the cursor keys.
+Even though the ansi-codes function is properly bound,
+'ESC x describe-bindings' shows:
+
+     ESC [  ansi-codes
+
+I get whenever I hit one of the cursor keys the message
+
+     [ESC O unbound]
+
+TERM is set to vt100, termcap is ok, and the xterm used is
+started with -ti vt100. vi for example works and accepts the
+cursor keys, a dump of the chars emitted by xterm show that
+the proper \[[A ect sequence indeed arrives.
+
+Any help or hint on how to get this to work is very much
+appreciated.
+
+			With best regards,
+				Walter Mueller
+
+
+From bqt at softjar.se  Mon Jan  5 09:59:42 2009
+From: bqt at softjar.se (Johnny Billquist)
+Date: Mon, 05 Jan 2009 00:59:42 +0100
+Subject: [pups] jove editor under 2.11BSD and cursor keys
+In-Reply-To: <496116C4.8050101@gsi.de>
+References: <4960F68E.1010507@gsi.de> <496116C4.8050101@gsi.de>
+Message-ID: <49614D6E.2090408@softjar.se>
+
+Walter F. Mueller wrote:
+> Hello,
+> 
+> I'm using the jove editor under 2.11BSD, the jove release is
+> from 1988. It works just fine, except for the cursor keys.
+> Even though the ansi-codes function is properly bound,
+> 'ESC x describe-bindings' shows:
+> 
+>      ESC [  ansi-codes
+> 
+> I get whenever I hit one of the cursor keys the message
+> 
+>      [ESC O unbound]
+> 
+> TERM is set to vt100, termcap is ok, and the xterm used is
+> started with -ti vt100. vi for example works and accepts the
+> cursor keys, a dump of the chars emitted by xterm show that
+> the proper \[[A ect sequence indeed arrives.
+> 
+> Any help or hint on how to get this to work is very much
+> appreciated.
+
+Please note the difference between "<ESC>[" and "<ESC>O"... :-)
+
+To give you a little more help: someone or something is changing your 
+terminal to have application cursor keys.
+(And to point out what should be obvious now: your cursor keys can 
+actually send two different kind of codes, depending on a setup parameter.)
+
+	Johnny
+
+
+From W.F.J.Mueller at gsi.de  Tue Jan  6 06:06:51 2009
+From: W.F.J.Mueller at gsi.de (Walter F.J. Mueller)
+Date: Mon, 05 Jan 2009 21:06:51 +0100
+Subject: [pups] jove editor under 2.11BSD and cursor keys
+In-Reply-To: <49614D6E.2090408@softjar.se>
+References: <4960F68E.1010507@gsi.de> <496116C4.8050101@gsi.de>
+	<49614D6E.2090408@softjar.se>
+Message-ID: <4962685B.30005@gsi.de>
+
+Johnny Billquist wrote:
+> Walter F. Mueller wrote:
+>> ....
+>> I get whenever I hit one of the cursor keys the message
+>>
+>>      [ESC O unbound]
+>... 
+> Please note the difference between "<ESC>[" and "<ESC>O"... :-)
+> 
+> To give you a little more help: someone or something is changing your
+> terminal to have application cursor keys.
+> (And to point out what should be obvious now: your cursor keys can
+> actually send two different kind of codes, depending on a setup parameter.)
+> 
+>     Johnny
+
+Thanks Johnny, that was exactly the problem. jove sets the terminal
+(or the emulator) into 'Application Cursor Key' and 'Application Keypad'
+mode. Looking in xterm at the VT Options popup (with CONTROL-MB2) shows
+this nicely. Binding the 'ansi-codes' function of Jove 4.9 (that's what
+comes with 2.11BSD) to \[O resolves the cursor issue.
+
+What I still don't understand is why jove comes with defaults which
+don't work. It puts the cursor and keypad keys into application mode,
+which makes perfect sense especially for the keypad, and than looks
+for \[[ rather \[O. Probably to make retrocomputing more fun :).
+
+
+			Thanks and with best regards,	Walter
+
+
+From bqt at softjar.se  Wed Jan  7 02:54:01 2009
+From: bqt at softjar.se (Johnny Billquist)
+Date: Tue, 06 Jan 2009 17:54:01 +0100
+Subject: [pups] jove editor under 2.11BSD and cursor keys
+In-Reply-To: <E1LKF72-000FKQ-B3@pr-webmail-1.mail.demon.net>
+References: <E1LKF72-000FKQ-B3@pr-webmail-1.mail.demon.net>
+Message-ID: <49638CA9.6010703@softjar.se>
+
+And most proper emacs (and clone) users don't use the arrow keys, but 
+use ^P, ^N, ^F and ^B. So this particular problem don't show. :-)
+
+Jove is actually a pretty nice Emacs clone. I wonder if I should try to 
+port it to RSX...
+
+	Johnny
+
+robinb at ruffnready.co.uk wrote:
+> IIRC the version of Jove that is on 2.11 was put on by me back in the late 80s to replace an even earlier version and I used a VT220 at home as opposed to xterm or whatever on a sim.  As a result I was quite happy with using the defaults for whatever was set up for the then available hardware as I used a real PDP with real DEC terminals :-)
+> 
+> Cheers
+> 
+> Robin
+> 
+> PS:  It may have been updated since then I can't really recall.
+> 
+> W.F.J.Mueller at gsi.de wrote:
+>> Johnny Billquist wrote:
+>>> Walter F. Mueller wrote:
+>>>> ....
+>>>> I get whenever I hit one of the cursor keys the message
+>>>>
+>>>>      [ESC O unbound]
+>>> ... 
+>>> Please note the difference between "<ESC>[" and "<ESC>O"... :-)
+>>>
+>>> To give you a little more help: someone or something is changing your
+>>> terminal to have application cursor keys.
+>>> (And to point out what should be obvious now: your cursor keys can
+>>> actually send two different kind of codes, depending on a setup parameter.)
+>>>
+>>>     Johnny
+>> Thanks Johnny, that was exactly the problem. jove sets the terminal
+>> (or the emulator) into 'Application Cursor Key' and 'Application Keypad'
+>> mode. Looking in xterm at the VT Options popup (with CONTROL-MB2) shows
+>> this nicely. Binding the 'ansi-codes' function of Jove 4.9 (that's what
+>> comes with 2.11BSD) to [O resolves the cursor issue.
+>>
+>> What I still don't understand is why jove comes with defaults which
+>> don't work. It puts the cursor and keypad keys into application mode,
+>> which makes perfect sense especially for the keypad, and than looks
+>> for [[ rather [O. Probably to make retrocomputing more fun :).
+>>
+>>
+>> 			Thanks and with best regards,	Walter
+>> _______________________________________________
+>> PUPS mailing list
+>> PUPS at minnie.tuhs.org
+>> https://minnie.tuhs.org/mailman/listinfo/pups
+>>
+> 
+
+
+
+From robinb at ruffnready.co.uk  Wed Jan  7 02:49:04 2009
+From: robinb at ruffnready.co.uk (robinb at ruffnready.co.uk)
+Date: Tue, 06 Jan 2009 16:49:04 +0000
+Subject: [pups] jove editor under 2.11BSD and cursor keys
+In-Reply-To: <4962685B.30005@gsi.de>
+Message-ID: <E1LKF72-000FKQ-B3@pr-webmail-1.mail.demon.net>
+
+IIRC the version of Jove that is on 2.11 was put on by me back in the late 80s to replace an even earlier version and I used a VT220 at home as opposed to xterm or whatever on a sim.  As a result I was quite happy with using the defaults for whatever was set up for the then available hardware as I used a real PDP with real DEC terminals :-)
+
+Cheers
+
+Robin
+
+PS:  It may have been updated since then I can't really recall.
+
+W.F.J.Mueller at gsi.de wrote:
+> Johnny Billquist wrote:
+> > Walter F. Mueller wrote:
+> >> ....
+> >> I get whenever I hit one of the cursor keys the message
+> >>
+> >>      [ESC O unbound]
+> >... 
+> > Please note the difference between "<ESC>[" and "<ESC>O"... :-)
+> > 
+> > To give you a little more help: someone or something is changing your
+> > terminal to have application cursor keys.
+> > (And to point out what should be obvious now: your cursor keys can
+> > actually send two different kind of codes, depending on a setup parameter.)
+> > 
+> >     Johnny
+> 
+> Thanks Johnny, that was exactly the problem. jove sets the terminal
+> (or the emulator) into 'Application Cursor Key' and 'Application Keypad'
+> mode. Looking in xterm at the VT Options popup (with CONTROL-MB2) shows
+> this nicely. Binding the 'ansi-codes' function of Jove 4.9 (that's what
+> comes with 2.11BSD) to [O resolves the cursor issue.
+> 
+> What I still don't understand is why jove comes with defaults which
+> don't work. It puts the cursor and keypad keys into application mode,
+> which makes perfect sense especially for the keypad, and than looks
+> for [[ rather [O. Probably to make retrocomputing more fun :).
+> 
+> 
+> 			Thanks and with best regards,	Walter
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/pups
+> 
+
+
+
+From vasco at icpnet.pl  Fri Jan  9 20:51:38 2009
+From: vasco at icpnet.pl (Andrzej Popielewicz)
+Date: Fri, 09 Jan 2009 11:51:38 +0100
+Subject: [TUHS] /usr/bin/bs on HPUX?
+In-Reply-To: <20081210180826.GE1746@mercury.ccil.org>
+References: <75D36093-D9D0-48EF-ACAC-DF739E0236B6@mac.com>
+	<20081210180826.GE1746@mercury.ccil.org>
+Message-ID: <49672C3A.5020307@icpnet.pl>
+
+John Cowan pisze:
+> Lord Doomicus scripsit:
+>
+>   
+>> I was poking around an HP UX system at work today, and noticed a  
+>> command I've never noticed before ... /usr/bin/bs.
+>>
+>> I'm sure it's been there for a long time, even though I've been an  
+>> HPUX admin for more than a decade, sometimes I'm just blind ... but  
+>> anyway ....
+>>
+>> I tried to search on google ... it looks like only HPUX, AIX, and  
+>> Maybe AU/X has it.  Seems to be some kind of pseudo BASIC like  
+>> interpreter.
+>>     
+>
+> That's just what it is.  Here are the things I now know about it.
+>
+> 0.  The string "bs" gets an awful lot of false Google hits, no matter
+> how hard you try.
+>
+> 1.  "bs" was written at AT&T, probably at the Labs, at some time between
+> the release of 32V and System III.  It was part of both System III and
+> at least some System V releases.
+>
+> 2.  It was probably meant as a replacement for "bas", which was a more
+> conventional GW-Basic-style interpreter written in PDP-11 assembly
+> language.  (32V still had the PDP-11 source, which of course didn't work.)
+>
+> 3.  At one time System III source code was available on the net,
+> including bs.c and bs.1, but apparently it no longer is.  I downloaded
+> it then but don't have it any more.
+>
+> 4.  I was able to compile it under several Unixes, but it wouldn't run:
+> I think there must have been some kind of dependency on memory layout,
+> but never found out exactly what.
+>
+> 5. I remember from the man page that it had regular expressions, and
+> two commands "compile" and "execute" that switched modes to storing
+> expressions and executing them on the spot, respectively.  That eliminated
+> the need for line numbers.
+>
+> 6. It was apparently never part of Solaris.
+>
+> 7. It was never part of any BSD release, on which "bs" was the battleships
+> game.
+>
+> 8. I can't find the man page on line anywhere either.
+>
+> 9. The man page said it had some Snobol features.  I think that meant
+> the ability to return failure -- I vaguely remember an "freturn" command.
+>
+> 10.  99 Bottles of Beer has a sample bs program at
+> http://www2.99-bottles-of-beer.net/language-bs-103.html .
+>
+> 11. If someone sends me a man page, I'll consider reimplementing it as
+> Open Source.
+>
+>   
+You will find public domain basic interpreter in Coherent archive mwcbbs
+
+at
+
+lynx gopher://rachael.dyndns.org/1
+
+It is for pdp11, vax, coherent , motorola etc.
+
+Andrzej
+
+
+From reed at reedmedia.net  Wed Jan 14 10:59:40 2009
+From: reed at reedmedia.net (Jeremy C. Reed)
+Date: Tue, 13 Jan 2009 18:59:40 -0600 (CST)
+Subject: [TUHS] historical users and groups
+Message-ID: <Pine.NEB.4.64.0901131824440.26223@tx.reedmedia.net>
+
+Trying to understand some users and groups that continue to exist on BSD 
+systems.
+
+Can someone please point me to references or share examples of historical 
+and/or recent uses of the following users and groups?
+
+Also any clarifications of my understandings below would be appreciated.
+
+(My context is BSD. I know some of these may have different old and 
+existing uses on other systems.)
+
+daemon user
+I see /var/msgs on NetBSD is owned by daemon. msgs will abort if doing -c 
+(cleanup) if not root or daemon user. I guess that is historic. I don't 
+see any daemon user usage.
+
+operator user
+I understand that historically, the operator user had logins 
+for those doing disk backups (via its login group privileges).
+I understand the operator group, just wondering if any recent uses of 
+operator user.
+
+bin user
+Don't know what uses it.
+
+daemon group
+I understand that historically, these are for processes needing less 
+privileges than the wheel group. Also historically, programs using 
+/var/spool directories were setgid daemon. Anything common other than 
+LPD/LPR still use the daemon group?
+
+sys group
+I understand that historically, the sys group was used for access to the 
+kernel (/sys?) sources. (I don't know if that was just read or was for 
+writing too.) Anyone still use "sys" group? (I guess this is like wsrc 
+which sometimes I manually setup and use for writing to src directories.)
+
+bin group
+I understand that historically, used as the group for system binaries, but 
+commonly the wheel group is used instead. Some third-party software, like 
+OpenOffice.org, install files owned by the bin group.
+
+staff group
+How would this differ from wheel or operators?
+Any recent systems actually have default use of this?
+
+guest group
+Any recent systems actually have default use of this?
+
+nobody group versus nogroup group
+What is the significance of having both of these groups?
+
+
+Thanks!
+
+
+From harker at harker.com  Wed Jan 14 17:28:02 2009
+From: harker at harker.com (Robert Harker)
+Date: Tue, 13 Jan 2009 23:28:02 -0800
+Subject: [TUHS] historical users and groups
+In-Reply-To: <mailman.1.1231898401.13466.tuhs@minnie.tuhs.org>
+References: <mailman.1.1231898401.13466.tuhs@minnie.tuhs.org>
+Message-ID: <496D9402.3060607@harker.com>
+
+My knowledge comes from my early days at Sun in 84-85 as a rock-n-roll roadie 
+turned into a UNIX sysadmin.  It was passed to me as I was learning how to 
+take care of trade show Sun Workstations.  So take it with a grain of salt.
+
+> daemon user
+
+daemon was for daemon processes that ran in the background but did not want to 
+run as root.  I believe it was used by inetd when it spawned a process but an 
+not sure.  It was also used by sendmail when it gave up its SUID root privileges.
+
+> operator user
+
+operator was a normal user that had privilege to read the raw file systems 
+through group membership.  Sysadmins who did backups would also be a member of 
+this group.  The group I recall in the early days was "kmem" although now 
+there is a separate group "disk".
+
+> bin user
+
+A user to go with group bin.  Typically would be the "proper" owner of all the 
+binaries and libraries on a system.  It has lingered on for far to long 
+because, IMHO, the vendors had no clue as to why everything was owned by bin 
+and just kept it that way since "thats the way it's always been".
+
+> bin group
+
+I was told that group bin came from UCB to allow semi-trusted staff to replace 
+binaries in the file system without giving them the root password.
+
+> staff group
+
+My recollection is that staff was for group read/write permissions for home 
+directories, separate from group wheel which granted extra privileges
+
+> nobody group versus nogroup group
+
+The nobody group was a group to go with the nobody user introduced with NFS.
+nogroup may have been someone's attempt to make the name more obvious, or it 
+may have been for non-privileged account.  But the second case weakens the 
+protection of a non-privileged account
+
+
+From jrvalverde at cnb.csic.es  Wed Jan 14 23:00:34 2009
+From: jrvalverde at cnb.csic.es (Jose R. Valverde)
+Date: Wed, 14 Jan 2009 14:00:34 +0100
+Subject: [TUHS] historical users and groups
+In-Reply-To: <Pine.NEB.4.64.0901131824440.26223@tx.reedmedia.net>
+References: <Pine.NEB.4.64.0901131824440.26223@tx.reedmedia.net>
+Message-ID: <20090114140034.4e20ce6d@cnb.csic.es>
+
+From what I remember this had to do with two old time trends.
+
+First you have a professional trend: an ancient system would not be normally
+run by one sysadmin (or even the user) as it is now. There would be a data
+center with a legion of workers.
+
+You would have the master system manager/administrator (root). In some 
+cases it might have more than one member or even -e. g. BSD2- a special
+group name 'superuser'.
+
+Then a hoard of minions to handle basic tasks (operators) like launching 
+system backups, allocating resources, changing tapes on user request, 
+getting printouts and giving them back to users, handling punched cards 
+on user behalf, running  fsck, restarting the system, putting paper on 
+printers... (users were often not allowed inside the computer room where
+expensive equipment was locked). 
+
+This (root + operators) would deal with the minimal set of the time, but on 
+most places you would also have junior sysadmins (to manage delegated system 
+tasks like rebuilding the kernel), system programmers (to develop system 
+software and automation scripts), etc.. These would belong to the 'sys' group 
+which would allow them wider access than 'oper' but less than 'root'. And 
+then you would have assistants, students, secretaries, etc... all of them 
+also part of the computer center 'staff' so they could share memos, data, etc..
+
+'guest' should be obvious. Most single users do not need it, but we still use
+a 'guest' group for external visitors, short course students, demonstrations,
+etc... to distinguish them from normal users -who can do more (and pay for it).
+Still, even for home systems, notice how the Mac and Windows still provide by
+default a 'guest' account (useful when a relative or friend pays a visit and
+you don't want them to use your account nor setup a one-time account either).
+
+
+Secondly, you have a modularization trend. In principle it might seem sensible
+that all system binaries belong to 'root'. And they do on many modern systems.
+On second thought -and at the time- it makes more sense to have categories:
+
+Critical system files would belong to 'root' and not be modifiable by anyone.
+
+When you have system programmers adding software, or junior sysadmins installing
+user software, you need to give them some privilege. If that is not 'root' which
+should it be? The 'bin' group solves the problem. You can think of 'bin' as 
+'binary installer' (software, manual pages, files...).
+
+Then, you may need a separate group for other, non-public or non-shared files.
+This was originally group 'other', and /var/spool or /usr/spool belonged to it.
+
+But then you can go further ahead: some software is special, so why not make a
+distinction? Daemons are a prominent case: they have no associated terminal, 
+so they need to log their messages to a file. Simplest way is to have a
+'daemon' group. This was the case for 'netdaemon' and its spawned daemons in 
+BSD, later inetd, but also LPR, SENDMAIL, UUCP, etc.. Programs in this group 
+could log messages in a directory owned by 'daemon' and these logs would need 
+not be visible outside the group.
+
+What confuses you is that taking this to the extreme leads you to use separate 
+groups and log directories for each daemon as we do now. And even for separate
+user programs (e. g. if they need direct access to a hardware device). See 
+e.g. X11.
+
+But think of it: which is more informative when you see a directory?
+Seeing it belongs to 'xyz.nlm' as you do now or to 'xyz.daemon'? In a personal
+system where you did yourself or do not care, the first is OK. On a complex
+house with lots of hands the second wins. It is like the later division in SV
+between 'bin' and 'sbin' to separate security sensitive system binaries.
+
+
+As for nobody/nogroup... I'd say it's a dilettante game play. Or a matter of 
+taste. Problem is, once someone users 'nogroup' and expects it, you need to
+have both to avoid breaking the odd tool (sigh).
+
+
+
+On Tue, 13 Jan 2009 18:59:40 -0600 (CST)
+"Jeremy C. Reed" <reed at reedmedia.net> wrote:
+> Trying to understand some users and groups that continue to exist on BSD 
+> systems.
+> 
+> Can someone please point me to references or share examples of historical 
+> and/or recent uses of the following users and groups?
+> 
+> Also any clarifications of my understandings below would be appreciated.
+> 
+> (My context is BSD. I know some of these may have different old and 
+> existing uses on other systems.)
+> 
+> daemon user
+> I see /var/msgs on NetBSD is owned by daemon. msgs will abort if doing -c 
+> (cleanup) if not root or daemon user. I guess that is historic. I don't 
+> see any daemon user usage.
+> 
+> operator user
+> I understand that historically, the operator user had logins 
+> for those doing disk backups (via its login group privileges).
+> I understand the operator group, just wondering if any recent uses of 
+> operator user.
+> 
+> bin user
+> Don't know what uses it.
+> 
+> daemon group
+> I understand that historically, these are for processes needing less 
+> privileges than the wheel group. Also historically, programs using 
+> /var/spool directories were setgid daemon. Anything common other than 
+> LPD/LPR still use the daemon group?
+> 
+> sys group
+> I understand that historically, the sys group was used for access to the 
+> kernel (/sys?) sources. (I don't know if that was just read or was for 
+> writing too.) Anyone still use "sys" group? (I guess this is like wsrc 
+> which sometimes I manually setup and use for writing to src directories.)
+> 
+> bin group
+> I understand that historically, used as the group for system binaries, but 
+> commonly the wheel group is used instead. Some third-party software, like 
+> OpenOffice.org, install files owned by the bin group.
+> 
+> staff group
+> How would this differ from wheel or operators?
+> Any recent systems actually have default use of this?
+> 
+> guest group
+> Any recent systems actually have default use of this?
+> 
+> nobody group versus nogroup group
+> What is the significance of having both of these groups?
+> 
+> 
+> Thanks!
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+
+
+-- 
+			EMBnet/CNB
+		Scientific Computing Service
+	Solving all your computer needs for Scientific
+			Research.
+
+		http://bioportal.cnb.csic.es
+		  http://www.es.embnet.org
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20090114/2903e945/attachment.sig>
+
+From jrvalverde at cnb.csic.es  Wed Jan 14 23:33:02 2009
+From: jrvalverde at cnb.csic.es (Jose R. Valverde)
+Date: Wed, 14 Jan 2009 14:33:02 +0100
+Subject: [TUHS] historical users and groups
+In-Reply-To: <Pine.NEB.4.64.0901131824440.26223@tx.reedmedia.net>
+References: <Pine.NEB.4.64.0901131824440.26223@tx.reedmedia.net>
+Message-ID: <20090114143302.0e0e607b@cnb.csic.es>
+
+A bit of digging brought out the following snippet from 4.3BSD System
+Manager Manual:
+
+     System security  changes  require  adding  several  new
+``well-known''  groups  to  /etc/group.  The groups that are
+needed by the system as distributed are:
+
+...
+
+Only users in the ``wheel'' group are  permitted  to  su  to
+``root''.    Most   programs   that  manage  directories  in
+/usr/spool now run set-group-id to ``daemon'' so that  users
+cannot  directly  access the files in the spool directories.
+The special files that access kernel memory,  /dev/kmem  and
+/dev/mem,  are  made readable only by group ``kmem''.  Stan-
+dard system programs that require this access are made  set-
+group-id  to  that  group.  The group ``sys'' is intended to
+control access to system sources, and other  sources  belong
+to  group ``staff.'' Rather than make user's terminals writ-
+able by all users, they are now placed in group ``tty''  and
+made only group writable.  Programs that should legitimately
+have access to write on user's terminals such  as  talk  and
+write  now  run  set-group-id  to ``tty''.  The ``operator''
+group controls access to disks.  By default, disks are read-
+able  by group ``operator'', so that programs such as df can
+access the file system information without being set-user-id
+to ``root''.
+
+     Several new users have also been added to the group  of
+``well-known'' users in /etc/passwd.  The current list is:
+
+...
+
+The ``daemon'' user is used for daemon processes that do not
+need  root  privileges.  The ``operator'' user-id is used as
+an account for dumpers so that they can log in without  hav-
+ing  the root password.  By placing them in the ``operator''
+group, they can get read access to the disks.  The  ``uucp''
+login has existed long before 4.3BSD, and is noted here just
+to provide a common user-id.  The password entry  ``nobody''
+has been added to specify the user with least privilege.
+ 
+
+
+So my previous recollections were not totally correct. Sorry. I guess as
+one grows older memory starts to fail. As for today's usefulness... if 
+you google each user/group up you'll see they still are meaningful in
+many setups.
+
+				j
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20090114/bf910891/attachment.sig>
+
+From tfb at tfeb.org  Thu Jan 15 03:15:13 2009
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Wed, 14 Jan 2009 17:15:13 +0000
+Subject: [TUHS] historical users and groups
+In-Reply-To: <Pine.NEB.4.64.0901131824440.26223@tx.reedmedia.net>
+References: <Pine.NEB.4.64.0901131824440.26223@tx.reedmedia.net>
+Message-ID: <72C06F9F-BBDB-4473-9091-7131B7FFD073@tfeb.org>
+
+On 14 Jan 2009, at 00:59, Jeremy C. Reed wrote:
+
+> staff group
+> How would this differ from wheel or operators?
+> Any recent systems actually have default use of this?
+
+My memory (from BSD 4.2 / 4/3 systems, I didn't use anything older  
+other than transiently) is that staff was for, well, staff: real  
+permanent staff, as opposed to guests or students.
+
+Wheel was people who could su, and I think that su knew about the  
+wheel group.  Or maybe it just knew about GID 0?  Was wheel always GID  
+0?  I have an unreliable memory that it was wheel because it was  
+round, like 0.
+
+However This was all lore passed down from people who ran the systems  
+before me (other than the su thing, I am pretty sure that I looked at  
+source for (some version of) su and it did indeed know about some  
+special group) and I don't know where they got it from.
+
+--tim
+
+
+
+
+From cowan at ccil.org  Thu Jan 15 03:36:41 2009
+From: cowan at ccil.org (John Cowan)
+Date: Wed, 14 Jan 2009 12:36:41 -0500
+Subject: [TUHS] historical users and groups
+In-Reply-To: <72C06F9F-BBDB-4473-9091-7131B7FFD073@tfeb.org>
+References: <Pine.NEB.4.64.0901131824440.26223@tx.reedmedia.net>
+	<72C06F9F-BBDB-4473-9091-7131B7FFD073@tfeb.org>
+Message-ID: <20090114173641.GC22276@mercury.ccil.org>
+
+Tim Bradshaw scripsit:
+
+> Wheel was people who could su, and I think that su knew about the  
+> wheel group.  Or maybe it just knew about GID 0?  Was wheel always GID  
+> 0?  I have an unreliable memory that it was wheel because it was  
+> round, like 0.
+
+Interesting etymology, but like most such things, false.  Thus spake
+the Jargon File:
+
+wheel: n.
+
+    [from slang "big wheel" for a powerful person] A person who has an
+    active wheel bit. "We need to find a wheel to unwedge the hung tape
+    drives." (See wedged, sense 1.) The traditional name of security
+    group zero in BSD (to which the major system-internal users like root
+    belong) is "wheel". Some vendors have expanded on this usage,
+    modifying Unix so that only members of group "wheel" can go root.
+
+wheel bit: n.
+
+    A privilege bit that allows the possessor to perform some restricted
+    operation on a timesharing system, such as read or write any file
+    on the system regardless of protections, change or look at any
+    address in the running monitor, crash or reload the system, and
+    kill or create jobs and user accounts. The term was invented on
+    the TENEX operating system, and carried over to TOPS-20, XEROX-IFS,
+    and others. The state of being in a privileged logon is sometimes
+    called wheel mode. This term entered the Unix culture from TWENEX
+    in the mid-1980s and has been gaining popularity there (esp. at
+    university sites). See also root.
+
+wheel wars: n.
+
+    [Stanford University] A period in larval stage during which student
+    hackers hassle each other by attempting to log each other out of
+    the system, delete each other's files, and otherwise wreak havoc,
+    usually at the expense of the lesser users.
+
+-- 
+My corporate data's a mess!                     John Cowan
+It's all semi-structured, no less.              http://www.ccil.org/~cowan
+    But I'll be carefree                        cowan at ccil.org
+    Using XSLT
+On an XML DBMS.
+
+
+From neozeed at gmail.com  Fri Jan 16 03:15:46 2009
+From: neozeed at gmail.com (Jason Stevens)
+Date: Thu, 15 Jan 2009 12:15:46 -0500
+Subject: [TUHS] historical users and groups
+In-Reply-To: <20090114140034.4e20ce6d@cnb.csic.es>
+References: <Pine.NEB.4.64.0901131824440.26223@tx.reedmedia.net>
+	<20090114140034.4e20ce6d@cnb.csic.es>
+Message-ID: <46b366130901150915m66e31fccq38c2b0d0ed4f5d2f@mail.gmail.com>
+
+I would recommend the book "The Cuckoo's egg" for a 'feel' of what the old
+multi user BSD boxes were like..
+
+http://en.wikipedia.org/wiki/The_Cuckoo's_Egg_(book)
+
+Clifford does go a bit into the administrative roles, and of course tracking
+back a SYSV influenced hacker...
+It was quite an interesting read when I was a kid, and it still holds up.
+
+Naturally SIMH can run the 4.2BSD that they were running back then... If you
+are on windows I've pre-packaged
+it here:
+http://downloads.sourceforge.net/bsd42/BSD4.2-For-Windows_v0.1a_SIMH-3.7-3.exe?modtime=1189324059&big_mirror=0
+
+
+Some additional links:
+http://www.amazon.com/Cuckoos-Egg-Tracking-Computer-Espionage/dp/0743411463
+
+http://www.ci.ulsa.mx/~elinos/docencia/herseg/cuckoo_egg.pdf
+
+
+
+On Wed, Jan 14, 2009 at 8:00 AM, Jose R. Valverde <jrvalverde at cnb.csic.es>wrote:
+
+> From what I remember this had to do with two old time trends.
+>
+> First you have a professional trend: an ancient system would not be
+> normally
+> run by one sysadmin (or even the user) as it is now. There would be a data
+> center with a legion of workers.
+>
+> You would have the master system manager/administrator (root). In some
+> cases it might have more than one member or even -e. g. BSD2- a special
+> group name 'superuser'.
+>
+> Then a hoard of minions to handle basic tasks (operators) like launching
+> system backups, allocating resources, changing tapes on user request,
+> getting printouts and giving them back to users, handling punched cards
+> on user behalf, running  fsck, restarting the system, putting paper on
+> printers... (users were often not allowed inside the computer room where
+> expensive equipment was locked).
+>
+> This (root + operators) would deal with the minimal set of the time, but on
+> most places you would also have junior sysadmins (to manage delegated
+> system
+> tasks like rebuilding the kernel), system programmers (to develop system
+> software and automation scripts), etc.. These would belong to the 'sys'
+> group
+> which would allow them wider access than 'oper' but less than 'root'. And
+> then you would have assistants, students, secretaries, etc... all of them
+> also part of the computer center 'staff' so they could share memos, data,
+> etc..
+>
+> 'guest' should be obvious. Most single users do not need it, but we still
+> use
+> a 'guest' group for external visitors, short course students,
+> demonstrations,
+> etc... to distinguish them from normal users -who can do more (and pay for
+> it).
+> Still, even for home systems, notice how the Mac and Windows still provide
+> by
+> default a 'guest' account (useful when a relative or friend pays a visit
+> and
+> you don't want them to use your account nor setup a one-time account
+> either).
+>
+>
+> Secondly, you have a modularization trend. In principle it might seem
+> sensible
+> that all system binaries belong to 'root'. And they do on many modern
+> systems.
+> On second thought -and at the time- it makes more sense to have categories:
+>
+> Critical system files would belong to 'root' and not be modifiable by
+> anyone.
+>
+> When you have system programmers adding software, or junior sysadmins
+> installing
+> user software, you need to give them some privilege. If that is not 'root'
+> which
+> should it be? The 'bin' group solves the problem. You can think of 'bin' as
+> 'binary installer' (software, manual pages, files...).
+>
+> Then, you may need a separate group for other, non-public or non-shared
+> files.
+> This was originally group 'other', and /var/spool or /usr/spool belonged to
+> it.
+>
+> But then you can go further ahead: some software is special, so why not
+> make a
+> distinction? Daemons are a prominent case: they have no associated
+> terminal,
+> so they need to log their messages to a file. Simplest way is to have a
+> 'daemon' group. This was the case for 'netdaemon' and its spawned daemons
+> in
+> BSD, later inetd, but also LPR, SENDMAIL, UUCP, etc.. Programs in this
+> group
+> could log messages in a directory owned by 'daemon' and these logs would
+> need
+> not be visible outside the group.
+>
+> What confuses you is that taking this to the extreme leads you to use
+> separate
+> groups and log directories for each daemon as we do now. And even for
+> separate
+> user programs (e. g. if they need direct access to a hardware device). See
+> e.g. X11.
+>
+> But think of it: which is more informative when you see a directory?
+> Seeing it belongs to 'xyz.nlm' as you do now or to 'xyz.daemon'? In a
+> personal
+> system where you did yourself or do not care, the first is OK. On a complex
+> house with lots of hands the second wins. It is like the later division in
+> SV
+> between 'bin' and 'sbin' to separate security sensitive system binaries.
+>
+>
+> As for nobody/nogroup... I'd say it's a dilettante game play. Or a matter
+> of
+> taste. Problem is, once someone users 'nogroup' and expects it, you need to
+> have both to avoid breaking the odd tool (sigh).
+>
+>
+>
+> On Tue, 13 Jan 2009 18:59:40 -0600 (CST)
+> "Jeremy C. Reed" <reed at reedmedia.net> wrote:
+> > Trying to understand some users and groups that continue to exist on BSD
+> > systems.
+> >
+> > Can someone please point me to references or share examples of historical
+> > and/or recent uses of the following users and groups?
+> >
+> > Also any clarifications of my understandings below would be appreciated.
+> >
+> > (My context is BSD. I know some of these may have different old and
+> > existing uses on other systems.)
+> >
+> > daemon user
+> > I see /var/msgs on NetBSD is owned by daemon. msgs will abort if doing -c
+> > (cleanup) if not root or daemon user. I guess that is historic. I don't
+> > see any daemon user usage.
+> >
+> > operator user
+> > I understand that historically, the operator user had logins
+> > for those doing disk backups (via its login group privileges).
+> > I understand the operator group, just wondering if any recent uses of
+> > operator user.
+> >
+> > bin user
+> > Don't know what uses it.
+> >
+> > daemon group
+> > I understand that historically, these are for processes needing less
+> > privileges than the wheel group. Also historically, programs using
+> > /var/spool directories were setgid daemon. Anything common other than
+> > LPD/LPR still use the daemon group?
+> >
+> > sys group
+> > I understand that historically, the sys group was used for access to the
+> > kernel (/sys?) sources. (I don't know if that was just read or was for
+> > writing too.) Anyone still use "sys" group? (I guess this is like wsrc
+> > which sometimes I manually setup and use for writing to src directories.)
+> >
+> > bin group
+> > I understand that historically, used as the group for system binaries,
+> but
+> > commonly the wheel group is used instead. Some third-party software, like
+> > OpenOffice.org, install files owned by the bin group.
+> >
+> > staff group
+> > How would this differ from wheel or operators?
+> > Any recent systems actually have default use of this?
+> >
+> > guest group
+> > Any recent systems actually have default use of this?
+> >
+> > nobody group versus nogroup group
+> > What is the significance of having both of these groups?
+> >
+> >
+> > Thanks!
+> > _______________________________________________
+> > TUHS mailing list
+> > TUHS at minnie.tuhs.org
+> > https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+> --
+>                        EMBnet/CNB
+>                Scientific Computing Service
+>        Solving all your computer needs for Scientific
+>                        Research.
+>
+>                http://bioportal.cnb.csic.es
+>                  http://www.es.embnet.org
+>
+> _______________________________________________
+> TUHS mailing list
+> TUHS at minnie.tuhs.org
+> https://minnie.tuhs.org/mailman/listinfo/tuhs
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20090115/75bf7719/attachment.html>
+
+From angus at fairhaven.za.net  Fri Jan 16 15:52:06 2009
+From: angus at fairhaven.za.net (Angus Robinson)
+Date: Fri, 16 Jan 2009 07:52:06 +0200
+Subject: [TUHS] historical users and groups
+In-Reply-To: <46b366130901150915m66e31fccq38c2b0d0ed4f5d2f@mail.gmail.com>
+References: <Pine.NEB.4.64.0901131824440.26223@tx.reedmedia.net>	<20090114140034.4e20ce6d@cnb.csic.es>
+	<46b366130901150915m66e31fccq38c2b0d0ed4f5d2f@mail.gmail.com>
+Message-ID: <49702086.7080001@fairhaven.za.net>
+
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20090116/b2824e03/attachment.html>
+

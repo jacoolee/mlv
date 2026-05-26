@@ -1,0 +1,2394 @@
+From bqt at update.uu.se  Mon Sep  2 11:38:35 2002
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Mon, 2 Sep 2002 03:38:35 +0200 (CEST)
+Subject: [pups] PDP-9?
+In-Reply-To: <Pine.BSI.4.44.0209021059540.21824-100000@eram.esi.com.au>
+Message-ID: <Pine.LNX.4.21.0209020337280.24528-100000@Tempo.Update.UU.SE>
+
+On Mon, 2 Sep 2002, Dave Horsfall wrote:
+
+> On Sun, 18 Aug 2002, Lars Buitinck wrote:
+> 
+> > we all know that UNIX first ran on the PDP-7 and then on the PDP-11/20,
+> 
+> Just got back from overseas, but this doesn't seem to have been addressed:
+> AFAIK, Unix never ran on the 11/20 (no MM unit); did you mean a DEC-20?
+
+Um? Who said Unix used an MMU in the beginning?
+
+No, Unix never ran on a PDP-10. It was PDP-7 and then the PDP-11, and I
+believe it was a PDP-11/20 at the beginning.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From norman at nose.cs.utoronto.ca  Mon Sep  2 11:54:57 2002
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Sun, 01 Sep 2002 21:54:57 -0400
+Subject: [pups] PDP-9?
+Message-ID: <200209020155.g821tUD64136@minnie.tuhs.org>
+
+Dave Horsfall:
+
+  AFAIK, Unix never ran on the 11/20 (no MM unit); did you mean a DEC-20?
+
+I don't know if it was called an 11/20 at the time (I seem to recall
+some model-number upheaval in the early days of the -11), but the first
+PDP-11 UNIX system was certainly one without memory management:
+
+  By the beginning of 1970, PDP-7 UNIX was a going concern ... In early
+  1970 we proposed acquisition of a PDP-11, which had just been introduced
+  by Digital ... to create a system specifically designed for editing and
+  formatting text, what might today be called a `word-processing system.'
+  ... During the last half of 1971, we supported three typists from the
+  Patent Department, who spent the day busily typing, editing, and formatting
+  patent applications, and meanwhile tried to carry on our own work.  UNIX
+  has a reputation for supplying interesting services on modest hardware,
+  and this period may mark a high point in the benefit/equipment ratio;
+  on a machine with no memory protection and a single 0.5-MB disk, every
+  test of a new program required care and boldness, because it could easily
+  crash the system, and every few hours' work by the typists meant pushing
+  out more information onto DECtape, because of the very small disk.
+
+  The experiment was trying but successful.  Not only did the Patent
+  Department adopt UNIX, and thus become the first of many groups at the
+  Laboratories to ratify our work, but we achieved sufficient credibility
+  to convince our own management to acquire one of the first PDP-11/45
+  systems made.
+
+Dennis M. Ritchie, Evolution of the UNIX Time-Sharing System; AT&T Bell
+Labs Technical Journal, Vol. 63 No. 8 Part 2, October 1984.
+
+Maybe Dennis will chime in with further memories.
+
+Certainly there's nothing odd about UNIX running without memory protection,
+though, especially in that era.  The PDP-7 had none.  The trick was that
+every context switch was also a swap.  The scheme was revived in the late
+1970s for the early, no-memory-map versions of the LSI-11 (called LSX and
+later Mini-UNIX; paper by Lycklama et al in the 1978 all-UNIX BLTJ, I believe).
+
+I suppose next some whippersnapper will express disbelief that UNIX
+could have run on a system with no Ethernet interface.  You mean there
+was life before 10BaseT, spam, and pornographic web sites?
+
+(Not, to be fair, that Dave Horsfall is a whippersnapper.)
+
+Norman Wilson
+Toronto ON
+(Still on the shelf, but crawling toward the edge)
+
+
+From johnh at psych.usyd.edu.au  Mon Sep  2 12:19:13 2002
+From: johnh at psych.usyd.edu.au (John Holden)
+Date: Mon, 2 Sep 2002 12:19:13 +1000 (EST)
+Subject: [pups] Unix and PDP11/20 (was PDP-9?)
+Message-ID: <200209020219.MAA32566@psychwarp.psych.usyd.edu.au>
+
+Early editions of Unix did run on a PDP11/20, written in assembly language.
+There was a memory mapping option KS-11 that sat between the processor and
+Unibus that mapped chunks of memory. It was a DEC special, and only about a
+dozen were built. See http://cm.bell-labs.com/cm/cs/who/dmr/odd.html 
+A hardware story'
+
+
+From wkt at minnie.tuhs.org  Mon Sep  2 13:49:34 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Mon, 2 Sep 2002 13:49:34 +1000 (EST)
+Subject: [pups] Unix and PDP11/20 (was PDP-9?)
+In-Reply-To: <200209020219.MAA32566@psychwarp.psych.usyd.edu.au> from John Holden
+ at "Sep 2, 2002 12:19:13 pm"
+Message-ID: <200209020349.g823nYk65222@minnie.tuhs.org>
+
+In article by John Holden:
+> Early editions of Unix did run on a PDP11/20, written in assembly language.
+
+Also see http://cm.bell-labs.com/cm/cs/who/dmr/picture.html
+
+for a picture of Ken & Dennis sitting in front of their 11/20.
+
+	Warren
+
+
+From Fred.van.Kempen at microwalt.nl  Mon Sep  2 17:13:13 2002
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Mon, 2 Sep 2002 09:13:13 +0200
+Subject: [pups] PDP-9?
+Message-ID: <7AD18F04B62B7440BE22E190A3F772146845@mwsrv04.microwalt.nl>
+
+Unix was _developed_ on the 11/20.  The first versions (up to  the
+fourth or fifth edition or so) didn't require an MMU, and, therfore,
+had no protection whatsoever.
+
+Dennis... tell us the "All out?" story.. please.. :)
+
+--fred
+
+> -----Original Message-----
+> From: Dave Horsfall [mailto:dave at horsfall.org]
+> Sent: Monday, September 02, 2002 3:02 AM
+> To: PDP Unix Preservation Society
+> Subject: Re: [pups] PDP-9?
+> 
+> 
+> On Sun, 18 Aug 2002, Lars Buitinck wrote:
+> 
+> > we all know that UNIX first ran on the PDP-7 and then on 
+> the PDP-11/20,
+> 
+> Just got back from overseas, but this doesn't seem to have 
+> been addressed:
+> AFAIK, Unix never ran on the 11/20 (no MM unit); did you mean 
+> a DEC-20?
+> 
+> -- 
+> Dave Horsfall  DTM  VK2KFU  dave at esi.com.au  Ph: +61 2 
+> 9906-3377 Fx: 9906-3468
+> (Unix Guru) Pacific ESI, Unit 22, 8 Campbell St, Artarmon, 
+> NSW 2065, Australia
+> 
+> _______________________________________________
+> PUPS mailing list
+> PUPS at minnie.tuhs.org
+> http://minnie.tuhs.org/mailman/listinfo/pups
+> 
+
+
+From wkt at minnie.tuhs.org  Mon Sep  2 18:00:35 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Mon, 2 Sep 2002 18:00:35 +1000 (EST)
+Subject: [pups] PDP-9?
+In-Reply-To: <7AD18F04B62B7440BE22E190A3F772146845@mwsrv04.microwalt.nl> from
+ "Fred N. van Kempen" at "Sep 2, 2002 09:13:13 am"
+Message-ID: <200209020800.g8280Zs67585@minnie.tuhs.org>
+
+In article by Fred N. van Kempen:
+> Unix was _developed_ on the 11/20.  The first versions (up to  the
+> fourth or fifth edition or so) didn't require an MMU, and, therfore,
+> had no protection whatsoever.
+> 
+> Dennis... tell us the "All out?" story.. please.. :)
+> --fred
+
+Was it this story (from http://cm.bell-labs.com/cm/cs/who/dmr/odd.html):
+
+Back around 1970-71, Unix on the PDP-11/20 ran on hardware that
+not only did not support virtual memory, but didn't support any
+kind of hardware memory mapping or protection, for example against
+writing over the kernel. This was a pain, because we were using
+the machine for multiple users. When anyone was working on a program,
+it was considered a courtesy to yell "A.OUT?" before trying it, to
+warn others to save whatever they were editing.
+
+[A substory: at some point several were sitting around working
+away. Bob Morris asked, almost conversationally, "what are the
+arguments to ld?" Someone told him. We continued typing for the
+next minute, as a thought began to percolate, not quite to the top
+of the brain - in other words, not quite fast enough. The terminal
+stopped echoing before anyone could stop and say "Hold on Bob, what
+is it you're trying to do?"]
+
+Warren
+
+
+From toby at russellsharpe.com  Mon Sep  2 17:38:26 2002
+From: toby at russellsharpe.com (Tobias Russell)
+Date: Mon, 2 Sep 2002 08:38:26 +0100
+Subject: [pups] PDP11/73, RD53, RX50... What are my options?
+Message-ID: <NGBBLOGBLKMCHGGMCNGNCEKNCKAA.toby@russellsharpe.com>
+
+Hi,
+
+I have a micro PDP11/73 equipped with an RD53, RX50 and a Cipher mag tape
+drive (untested). The machine currently boots into TSX (although I don't
+have usernames/passwords so no shell access).
+
+I'd like to get BSD2.11 onto the machine. What is going to be the best
+route? I assume that my chances of breaking through TSX security (so I can
+use kermit) are small, so is vtserver going to be the easiest method?
+
+Toby
+
+
+
+
+
+Tobias Russell
+Managing Director
+Russell Sharpe Limited
+The Tannery, Tannery Lane, Bramley, Surrey. GU5 0AJ England
+Tel: +44 (1483) 894158
+Fax: +44 (1483) 898932
+Email: toby at russellsharpe.com
+
+
+
+From jkunz at unixag-kl.fh-kl.de  Tue Sep  3 04:03:52 2002
+From: jkunz at unixag-kl.fh-kl.de (Jochen Kunz)
+Date: Mon, 2 Sep 2002 20:03:52 +0200
+Subject: [pups] PDP11/73, RD53, RX50... What are my options?
+In-Reply-To: <NGBBLOGBLKMCHGGMCNGNCEKNCKAA.toby@russellsharpe.com>; from toby@russellsharpe.com on Mon, Sep 02, 2002 at 09:38:26 CEST
+References: <NGBBLOGBLKMCHGGMCNGNCEKNCKAA.toby@russellsharpe.com>
+Message-ID: <20020902200352.C6075@MissSophie>
+
+On 2002.09.02 09:38 Tobias Russell wrote:
+
+> I'd like to get BSD2.11 onto the machine. What is going to be the best
+> route? I assume that my chances of breaking through TSX security (so I
+> can use kermit) are small, so is vtserver going to be the easiest
+method?
+- Break in TSX (don't ask me how) and write a boot tape to the Cipher
+(nine track tape?)
+- Get a MicroVAX II (KA630) or III (KA650 / KA655) CPU and RAM. Replace
+the PDP CPU and RAM with it. Boot NetBSD diskless, write tapes with
+maketape, reinstall the PDP11 CPU / RAM, boot from tape. Ahhh - you have
+a DELQA? 
+- Prepare a RD53 image with a PDP11 emulator on your PeeCee and transfer
+it to the real RD53 using a MicroVAX. 
+- Use vtserver and a loooot of patience. 
+- ???
+-- 
+
+
+
+tschüß,
+         Jochen
+
+Homepage: http://www.unixag-kl.fh-kl.de/~jkunz/
+
+
+From cdl at mpl.ucsd.edu  Tue Sep  3 04:37:03 2002
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Mon, 2 Sep 2002 11:37:03 -0700 (PDT)
+Subject: [pups] PDP11/73, RD53, RX50... What are my options?
+Message-ID: <200209021837.LAA06609@opihi.ucsd.edu>
+
+> From: "Tobias Russell" <toby at russellsharpe.com>
+> To: "PDP Unix Preservation Society" <pups at tuhs.org>
+> Date: Mon, 2 Sep 2002 08:38:26 +0100
+> 
+> Hi,
+> 
+> I have a micro PDP11/73 equipped with an RD53, RX50 and a Cipher mag tape
+> drive (untested). The machine currently boots into TSX (although I don't
+> have usernames/passwords so no shell access).
+> 
+> I'd like to get BSD2.11 onto the machine. What is going to be the best
+> route? I assume that my chances of breaking through TSX security (so I can
+> use kermit) are small, so is vtserver going to be the easiest method?
+
+I haven't done it in many years, but after you get the machine to
+boot into RT11 you can disable the TSX security stuff.  Probably a file
+named "STARTF.COM" is the initial RT11 startup and it contains the
+command to chain to TSX.
+
+I suppose the easiest break-in tool would be a floppy disk with a bootable
+RT11 on it.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+
+From norman at nose.cs.utoronto.ca  Tue Sep  3 05:27:28 2002
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Mon, 02 Sep 2002 15:27:28 -0400
+Subject: [pups] PDP11/73, RD53, RX50... What are my options?
+Message-ID: <200209021928.g82JS6D73031@minnie.tuhs.org>
+
+Carl Lowenstein:
+
+  I suppose the easiest break-in tool would be a floppy disk with a bootable
+  RT11 on it.
+
+Or, if your goal is just to drain the machine's brain entirely
+and start over, which is likely the case if you want to put 2.11
+on it: dig up the standalone disk diagnostic (is XXDP easily
+available somewhere these days?) and reformat the disk.
+
+Norman Wilson
+Toronto ON
+
+
+From dmr at plan9.bell-labs.com  Wed Sep  4 14:21:40 2002
+From: dmr at plan9.bell-labs.com (Dennis Ritchie)
+Date: Wed, 4 Sep 2002 00:21:40 -0400
+Subject: [pups] Unix and PDP11/20 (was PDP9?)
+Message-ID: <73e9d00b78a22185b7b9d6b6c5a183b7@plan9.bell-labs.com>
+
+As Billquist, Wilson and others pointed out, the first
+versions of Unix did run on machines with no memory
+mapping or protection, and indeed context-switching
+was accomplished by swapping.  By 1973 we had the luxurious
+11/45, to considerable relief.
+
+I'm not positive about the logo on our first PDP-11.
+On the earliest handbook I have, the front panel photo
+just shows "PDP11", though inside the handbook
+it does talk about the two models (11/10 and 11/20).
+Both had the same KA11 processor, but the basic
+11/10 sported 1024Kw ROM memory plus a generous
+128 words of RAM, while the 11-20 had
+4096Kw core RAM, and the ASR33 Teletype was included.
+You could add more RAM to the 11/20.
+
+Incidentally, the machine's handbook was a wonder.
+In 104 pages (each 5.25x8 inches), it described the whole
+system: not only the instruction set but the theory
+of the Unibus (including some logic diagrams) together with
+programming specifications for the TTY, the clock,
+and the paper tape reader.
+
+	Dennis
+
+
+
+From pino at dohd.org  Wed Sep  4 23:30:09 2002
+From: pino at dohd.org (Martijn van Buul)
+Date: Wed, 4 Sep 2002 15:30:09 +0200
+Subject: [pups] PDP11/73, RD53, RX50... What are my options?
+In-Reply-To: <NGBBLOGBLKMCHGGMCNGNCEKNCKAA.toby@russellsharpe.com>
+References: <NGBBLOGBLKMCHGGMCNGNCEKNCKAA.toby@russellsharpe.com>
+Message-ID: <20020904133009.GA2765@mud.stack.nl>
+
+Tobias Russell wrote:
+> Hi,
+> 
+> I have a micro PDP11/73 equipped with an RD53, RX50 and a Cipher mag tape
+> drive (untested). The machine currently boots into TSX (although I don't
+> have usernames/passwords so no shell access).
+> 
+> I'd like to get BSD2.11 onto the machine. What is going to be the best
+> route? I assume that my chances of breaking through TSX security (so I can
+> use kermit) are small, so is vtserver going to be the easiest method?
+
+If you have an RD53 and an RX50, I take it you have an RQDX3 disk
+controller. These things will also swallow IBM PC 5.25" HD diskdrives
+(at least some of them), which will be recognized as RX33's.
+
+If you *also* have a PC equipped with a HD 5.25" diskdrive (which may be
+a hard thing..), and access to 5.25" HD diskettes, you could set up 2.11BSD
+using this method. Been there, done that, got the t-shirt.
+
+I should have:
+
+1) an XXDP bootdisk + RQDX3 formatter (if you want to re-format your
+   RD53, which may be a wise idea)
+2) A 2.11BSD boot diskette, containing kernel, part, mkfs and restor
+3) A dump of ROOT, devided over RX33 disks.
+
+Once you have unpacked the root fs, you should be able to sneakernet the
+remaining distribution files over - although I think you might need to
+snip a bit, it's probably not going to fit on your RD53.
+
+It can be done. I've done it twice. It's a slow process, but that also
+applies to vtserver. On the other hand, using vtserver, you can leave
+the whole process unattended. Using floppies, you'll need to be physically
+present :-/
+
+-- 
+    Martijn van Buul -  Pino at dohd.org - http://www.stack.nl/~martijnb/
+	 Geek code: G--  - Visit OuterSpace: mud.stack.nl 3333
+   Kees J. Bot: The sum of CPU power and user brain power is a constant.
+
+
+From bqt at update.uu.se  Thu Sep  5 07:58:43 2002
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Wed, 4 Sep 2002 23:58:43 +0200 (CEST)
+Subject: [pups] Unix and PDP11/20 (was PDP9?)
+In-Reply-To: <73e9d00b78a22185b7b9d6b6c5a183b7@plan9.bell-labs.com>
+Message-ID: <Pine.LNX.4.21.0209042357350.5506-100000@Tempo.Update.UU.SE>
+
+On Wed, 4 Sep 2002, Dennis Ritchie wrote:
+
+> I'm not positive about the logo on our first PDP-11.
+> On the earliest handbook I have, the front panel photo
+> just shows "PDP11", though inside the handbook
+> it does talk about the two models (11/10 and 11/20).
+
+Early PDP-11/20 just said PDP11 on the front, I believe.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From cdl at mpl.ucsd.edu  Thu Sep  5 08:44:18 2002
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Wed, 4 Sep 2002 15:44:18 -0700 (PDT)
+Subject: [pups] Unix and PDP11/20 (was PDP9?)
+Message-ID: <200209042244.PAA08591@opihi.ucsd.edu>
+
+> From: Dennis Ritchie <dmr at plan9.bell-labs.com>
+> Subject: [pups] Unix and PDP11/20 (was PDP9?)
+> Date: Wed, 4 Sep 2002 00:21:40 -0400
+> 
+> I'm not positive about the logo on our first PDP-11.
+
+The text accompanying the picture "Ken and Den" somewhere on your web site
+says that the logo on your first PDP-11 was just "PDP-11" without the /20.
+
+> On the earliest handbook I have, the front panel photo
+> just shows "PDP11", though inside the handbook
+> it does talk about the two models (11/10 and 11/20).
+> Both had the same KA11 processor, but the basic
+> 11/10 sported 1024Kw ROM memory plus a generous
+> 128 words of RAM, while the 11-20 had
+> 4096Kw core RAM, and the ASR33 Teletype was included.
+> You could add more RAM to the 11/20.
+
+I fear that you have suffered a "units slip" saying 1024Kw
+and 4096Kw when you meant 1Kw and 4Kw respectively.
+
+> Incidentally, the machine's handbook was a wonder.
+> In 104 pages (each 5.25x8 inches), it described the whole
+> system: not only the instruction set but the theory
+> of the Unibus (including some logic diagrams) together with
+> programming specifications for the TTY, the clock,
+> and the paper tape reader.
+> 
+> 	Dennis
+
+Agreed, "PDP11 Handbook Second Edition" was a really good book
+Occasionally I wonder if I ever had my hands on a "First Edition"
+and threw it away when the second edition came out.  Not knowing
+that both the computer and the handbook would become classics.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+
+From johnh at psych.usyd.edu.au  Thu Sep  5 09:48:22 2002
+From: johnh at psych.usyd.edu.au (John Holden)
+Date: Thu, 5 Sep 2002 09:48:22 +1000 (EST)
+Subject: [pups] Unix and PDP11/20 (was PDP9?)
+Message-ID: <200209042348.JAA24393@psychwarp.psych.usyd.edu.au>
+
+On Wed, 4 Sep 2002, Dennis Ritchie wrote:-
+
+> I'm not positive about the logo on our first PDP-11.
+
+The picture of Dennis and Ken in front ASR-33's hints at a pdp11/20 logo
+on the console. The 11/20 I have (built 29/1/71, SN 821) has just plain 'pdp11'.
+The lead time on getting the machine was about 6 months. I suspect that the
+/20 was added as other models were in the pipeline (/05,/45).
+
+For a picture, see http://www.psych.usyd.edu.au/pdp-11/11_20.html
+
+> Incidentally, the machine's handbook was a wonder.
+
+Indead it was
+
+The front cover is interesting, in that it shows a table top version of the
+11/20. It was quite possible to run one just with paper tape and an ASR33 with
+the reader/punch option. There was a similar option for the pdp8/e.
+
+The only obvious change between the first and second edition handbooks was that
+the latter changed the last page from a picture of a young lady in front of
+a machine to a table of Unibus pin assignments.
+
+
+
+
+From tfb at tfeb.org  Thu Sep  5 18:06:59 2002
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Thu, 5 Sep 2002 09:06:59 +0100
+Subject: [pups] Bringing up the fist C compiler
+Message-ID: <15735.4259.641449.366341@tfeb.org>
+
+Is there a description anywhere of how C was originally bootstrapped?
+I'm sure it was nothing unconventional, but the question of how you
+bring up compilers for other languages which are implemented in their
+own language seems to mystify some people to the extent that they
+argue that the compiler must be written in C (which is `always
+there'), and I thought it would be good to have the real story about C
+to tell them.
+
+Thanks
+
+--tim
+
+
+
+From wkt at minnie.tuhs.org  Thu Sep  5 18:16:33 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Thu, 5 Sep 2002 18:16:33 +1000 (EST)
+Subject: [pups] Bringing up the fist C compiler
+In-Reply-To: <15735.4259.641449.366341@tfeb.org> from Tim Bradshaw at "Sep 5,
+ 2002 09:06:59 am"
+Message-ID: <200209050816.g858GY499763@minnie.tuhs.org>
+
+In article by Tim Bradshaw:
+> Is there a description anywhere of how C was originally bootstrapped?
+
+Have a look at "The Development of the C Language"
+at http://cm.bell-labs.com/cm/cs/who/dmr/chist.html
+
+	Warren
+
+
+From bqt at update.uu.se  Thu Sep  5 19:38:06 2002
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Thu, 5 Sep 2002 11:38:06 +0200 (CEST)
+Subject: [pups] Bringing up the fist C compiler
+In-Reply-To: <15735.4259.641449.366341@tfeb.org>
+Message-ID: <Pine.LNX.4.21.0209051137100.4341-100000@Tempo.Update.UU.SE>
+
+On Thu, 5 Sep 2002, Tim Bradshaw wrote:
+
+> Is there a description anywhere of how C was originally bootstrapped?
+> I'm sure it was nothing unconventional, but the question of how you
+> bring up compilers for other languages which are implemented in their
+> own language seems to mystify some people to the extent that they
+> argue that the compiler must be written in C (which is `always
+> there'), and I thought it would be good to have the real story about C
+> to tell them.
+
+Well, I have a C compiler written in MACRO-11...
+C wasn't written in C at the start, you know...
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From tfb at tfeb.org  Thu Sep  5 19:41:20 2002
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Thu, 5 Sep 2002 10:41:20 +0100
+Subject: [pups] Bringing up the fist C compiler
+In-Reply-To: <Pine.LNX.4.21.0209051137100.4341-100000@Tempo.Update.UU.SE>
+References: <15735.4259.641449.366341@tfeb.org>
+	<Pine.LNX.4.21.0209051137100.4341-100000@Tempo.Update.UU.SE>
+Message-ID: <15735.9920.662495.927168@tfeb.org>
+
+* Johnny Billquist wrote:
+
+> Well, I have a C compiler written in MACRO-11...
+> C wasn't written in C at the start, you know...
+
+Yes, I realise that! Many people (not readers of this list!) seem to
+assume that C is eternal though.  From the paper that Warren pointed
+me at (thanks) it looks like the only missing link is how TMG
+originally got onto the PDP-7...
+
+--tim
+
+
+
+
+
+From bqt at update.uu.se  Thu Sep  5 20:07:42 2002
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Thu, 5 Sep 2002 12:07:42 +0200 (CEST)
+Subject: [pups] Bringing up the fist C compiler
+In-Reply-To: <15735.9920.662495.927168@tfeb.org>
+Message-ID: <Pine.LNX.4.21.0209051206000.4341-100000@Tempo.Update.UU.SE>
+
+On Thu, 5 Sep 2002, Tim Bradshaw wrote:
+
+> * Johnny Billquist wrote:
+> 
+> > Well, I have a C compiler written in MACRO-11...
+> > C wasn't written in C at the start, you know...
+> 
+> Yes, I realise that! Many people (not readers of this list!) seem to
+> assume that C is eternal though.  From the paper that Warren pointed
+> me at (thanks) it looks like the only missing link is how TMG
+> originally got onto the PDP-7...
+
+How? It was written, of course. In assembler. By that time, you already
+had the assembler, an editor, and other commonly used system programs, so
+it's just a case of the normal development cycle.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From lars at nocrew.org  Thu Sep  5 20:15:24 2002
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: 05 Sep 2002 12:15:24 +0200
+Subject: [pups] Bringing up the fist C compiler
+In-Reply-To: <Pine.LNX.4.21.0209051206000.4341-100000@Tempo.Update.UU.SE>
+References: <Pine.LNX.4.21.0209051206000.4341-100000@Tempo.Update.UU.SE>
+Message-ID: <854rd4pwsj.fsf@junk.nocrew.org>
+
+Johnny Billquist <bqt at update.uu.se> writes:
+> On Thu, 5 Sep 2002, Tim Bradshaw wrote:
+> > * Johnny Billquist wrote:
+> > > Well, I have a C compiler written in MACRO-11...
+> > > C wasn't written in C at the start, you know...
+> > Yes, I realise that! Many people (not readers of this list!) seem to
+> > assume that C is eternal though.  From the paper that Warren pointed
+> > me at (thanks) it looks like the only missing link is how TMG
+> > originally got onto the PDP-7...
+> How? It was written, of course. In assembler. By that time, you already
+> had the assembler, an editor, and other commonly used system programs, so
+> it's just a case of the normal development cycle.
+
+And tracing further backwards, the assembler was pheraps originally
+developed in GECOS?
+
+-- 
+Lars Brinkhoff          http://lars.nocrew.org/     Linux, GCC, PDP-10,
+Brinkhoff Consulting    http://www.brinkhoff.se/    HTTP programming
+
+
+From bqt at update.uu.se  Thu Sep  5 22:05:59 2002
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Thu, 5 Sep 2002 14:05:59 +0200 (CEST)
+Subject: [pups] Bringing up the fist C compiler
+In-Reply-To: <15735.15786.542175.385620@cley.com>
+Message-ID: <Pine.LNX.4.21.0209051350370.4341-100000@Tempo.Update.UU.SE>
+
+On Thu, 5 Sep 2002, Tim Bradshaw wrote:
+
+> * Johnny Billquist wrote:
+> 
+> > How? It was written, of course. In assembler. By that time, you already
+> > had the assembler, an editor, and other commonly used system programs, so
+> > it's just a case of the normal development cycle.
+> 
+> Is this known or is it deduction?
+
+[...]
+
+Ah. Ok, now I understand what you're asking for.
+You want to know what the first C was written in, and what that
+compiler/assembler was written in/on, and so on...
+
+No, I'm just deducting. Since the reference posted said that TMG was the
+first higher level language implemented, it follows that it must have been
+written in a low level language, namely assembler.
+
+Admittedly, the PDP-7 TMG *could* have been written in some high level
+language on some other machine using some tool that made a PDP-7
+executable, so your guess is as good as mine.
+
+But even though I cannot account for all steps, I can guarantee that at
+the end of the chain, you *will* find assembler.
+
+I guess my MACRO-11 implementation of C isn't good enough. :-)
+(Well, it ain't mine, it's the normal DECUS C, but I'm hacked some at it.)
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From iking at microsoft.com  Fri Sep  6 01:36:48 2002
+From: iking at microsoft.com (Ian King)
+Date: Thu, 5 Sep 2002 08:36:48 -0700
+Subject: [pups] Bringing up the fist C compiler
+Message-ID: <8D25F244B8274141B5D313CA4823F39C057A2389@red-msg-06.redmond.corp.microsoft.com>
+
+About a thousand years ago, I recall hand-building programs for 8-bit microprocessors (in what we'd call embedded systems today).  In many cases, I was the "assembler", writing directly in machine code which was then either keyed in through front-panel switches or burned into a PROM....  -- Ian 
+
+	-----Original Message----- 
+	From: Johnny Billquist [mailto:bqt at update.uu.se] 
+	Sent: Thu 9/5/2002 5:05 AM 
+	To: Tim Bradshaw 
+	Cc: pups at minnie.tuhs.org 
+	Subject: Re: [pups] Bringing up the fist C compiler
+	
+	
+
+	On Thu, 5 Sep 2002, Tim Bradshaw wrote:
+	
+	> * Johnny Billquist wrote:
+	>
+	> > How? It was written, of course. In assembler. By that time, you already
+	> > had the assembler, an editor, and other commonly used system programs, so
+	> > it's just a case of the normal development cycle.
+	>
+	> Is this known or is it deduction?
+	
+	[...]
+	
+	Ah. Ok, now I understand what you're asking for.
+	You want to know what the first C was written in, and what that
+	compiler/assembler was written in/on, and so on...
+	
+	No, I'm just deducting. Since the reference posted said that TMG was the
+	first higher level language implemented, it follows that it must have been
+	written in a low level language, namely assembler.
+	
+	Admittedly, the PDP-7 TMG *could* have been written in some high level
+	language on some other machine using some tool that made a PDP-7
+	executable, so your guess is as good as mine.
+	
+	But even though I cannot account for all steps, I can guarantee that at
+	the end of the chain, you *will* find assembler.
+	
+	I guess my MACRO-11 implementation of C isn't good enough. :-)
+	(Well, it ain't mine, it's the normal DECUS C, but I'm hacked some at it.)
+	
+	        Johnny
+	
+	Johnny Billquist                  || "I'm on a bus
+	                                  ||  on a psychedelic trip
+	email: bqt at update.uu.se           ||  Reading murder books
+	pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+	
+	_______________________________________________
+	PUPS mailing list
+	PUPS at minnie.tuhs.org
+	http://minnie.tuhs.org/mailman/listinfo/pups
+	
+
+
+
+From tfb at cley.com  Thu Sep  5 21:19:06 2002
+From: tfb at cley.com (Tim Bradshaw)
+Date: Thu, 5 Sep 2002 12:19:06 +0100
+Subject: [pups] Bringing up the fist C compiler
+In-Reply-To: <Pine.LNX.4.21.0209051206000.4341-100000@Tempo.Update.UU.SE>
+References: <15735.9920.662495.927168@tfeb.org>
+	<Pine.LNX.4.21.0209051206000.4341-100000@Tempo.Update.UU.SE>
+Message-ID: <15735.15786.542175.385620@cley.com>
+
+* Johnny Billquist wrote:
+
+> How? It was written, of course. In assembler. By that time, you already
+> had the assembler, an editor, and other commonly used system programs, so
+> it's just a case of the normal development cycle.
+
+Is this known or is it deduction?
+
+(In case there is any confusion here: I do understand very well how
+compilers can be implemented on naked machines without preexisting
+tools (and indeed I've done more-or-less this with assemblers on
+microcomputers, ending up with a perfectly fine assembler which used
+the wrong opcode names, because we didn't know what the right ones
+were...).  So my question `how was x done' is not `I don't understand
+how you can do this' but `historically, what were the steps in this
+case'. What I'm trying to find out is what the actual course of events
+was for C, so I can give glib answers to people (:-))
+
+--tim
+
+
+
+From MichaelDavidson at pacbell.net  Fri Sep  6 02:11:38 2002
+From: MichaelDavidson at pacbell.net (Michael Davidson)
+Date: Thu, 05 Sep 2002 09:11:38 -0700
+Subject: [pups] Bringing up the fist C compiler
+References: <Pine.LNX.4.21.0209051350370.4341-100000@Tempo.Update.UU.SE>
+Message-ID: <3D77823A.1050504@pacbell.net>
+
+Johnny Billquist wrote:
+
+>
+>But even though I cannot account for all steps, I can guarantee that at
+>the end of the chain, you *will* find assembler.
+>
+
+Or, just possibly, Alan Turing hand punching Mark 1 machine code onto 
+paper tape ;-)
+
+
+
+
+
+From aek at spies.com  Fri Sep  6 03:47:19 2002
+From: aek at spies.com (Al Kossow)
+Date: Thu, 5 Sep 2002 10:47:19 -0700
+Subject: [pups] Bringing up the fist C compiler
+Message-ID: <9012_13188_1031248039_1@spies.com>
+
+A non-text attachment was scrubbed...
+Name: not available
+Type: text/richtext
+Size: 232 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20020905/510f1b0b/attachment.rtx>
+
+From cdl at mpl.ucsd.edu  Fri Sep  6 08:54:06 2002
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Thu, 5 Sep 2002 15:54:06 -0700 (PDT)
+Subject: [pups] Bringing up the fist C compiler
+Message-ID: <200209052254.PAA09685@opihi.ucsd.edu>
+
+> From: Al Kossow <aek at spies.com>
+> To: pups at tuhs.org
+> Subject: Re: [pups] Bringing up the fist C compiler
+> Content-ID: <9012_13188_1031248039_2 at spies.com>
+> Date: Thu, 5 Sep 2002 10:47:19 -0700
+> 
+> <nl>
+> > I guess my MACRO-11 implementation of C isn't good enough.
+> > (Well, it ain't mine, it's the normal DECUS C, but I'm hacked some at i=
+> t.)
+> <nl><nl>
+> 
+> and to bring this full circle, do you know where DECUS C came from?
+> <nl><nl>
+
+It is my understanding that it was a "clean room" reimplementation of
+the 6th Edition Unix "cc" and "as".
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+
+From bqt at update.uu.se  Fri Sep  6 09:21:17 2002
+From: bqt at update.uu.se (Johnny Billquist)
+Date: Fri, 6 Sep 2002 01:21:17 +0200 (CEST)
+Subject: [pups] Bringing up the fist C compiler
+In-Reply-To: <9012_13188_1031248039_1@spies.com>
+Message-ID: <Pine.LNX.4.21.0209060119030.16583-100000@Tempo.Update.UU.SE>
+
+On Thu, 5 Sep 2002, Al Kossow wrote:
+
+>  > I guess my MACRO-11 implementation of C isn't good enough. > (Well, it ain't mine, it's the normal DECUS C, but I'm hacked some at it.) 
+> 
+>   and to bring this full circle, do you know where DECUS C came from? 
+
+I've seen rumours that it's supposed to be derived from a c compiler
+output of a c compiler.
+Might be true, and might not. I've been digging a little in it by now, and
+it has atleast been pretty modified from that possible source anyhow.
+
+I seem to remmeber that there was a discussion on this topic somewhere
+about a year ago, but I don't remember if anyone relly knew.
+
+	Johnny
+
+Johnny Billquist                  || "I'm on a bus
+                                  ||  on a psychedelic trip
+email: bqt at update.uu.se           ||  Reading murder books
+pdp is alive!                     ||  tryin' to stay hip" - B. Idol
+
+
+
+From dmr at plan9.bell-labs.com  Fri Sep  6 15:35:26 2002
+From: dmr at plan9.bell-labs.com (Dennis Ritchie)
+Date: Fri, 6 Sep 2002 01:35:26 -0400
+Subject: [pups] bringing up the fist C compiler
+Message-ID: <dcb7f8efb847f0ed61ba6071070b13f1@plan9.bell-labs.com>
+
+The chist paper on my home page is pretty complete (if telegraphic)
+about bootstrapping B on the PDP-7 and later C (via B) on the -11.
+It does not, indeed, explain TMG.  Doug McIlroy did write TMG
+(on the -7) first in assembly language, then bootstrapped
+that into itself.  Doug had used TMG to write EPL, the early
+Pl/I compiler for Multics.  I don't know whether he needed
+to create a new implementation of TMG for that or whether
+it was already running on the IBM 7094.
+
+The paper also mentions (as does some of the other history stuff)
+that Unix itself was written first in assembler on the GE-645
+(running GECOS, not Multics at that point),
+using a macro package that turned symbolic -7 instructions into
+an object deck that could be rendered onto paper tape.
+
+There is not much about TMG on the web that I can find
+(and some of it is inaccurate).
+
+Incidentally, TMG didn't immediately survive the move
+to the -11. B was already in its own language,
+and nothing else was using TMG besides itself.
+Doug did revive it later just for fun, and it is in the
+6th edition distribution--you can get it nearby!
+
+Both on the -7 and the -11, TMG was implemented as
+an interpreter for an abstract machine.
+
+	Dennis
+
+
+
+From dmr at plan9.bell-labs.com  Fri Sep  6 16:08:02 2002
+From: dmr at plan9.bell-labs.com (Dennis Ritchie)
+Date: Fri, 6 Sep 2002 02:08:02 -0400
+Subject: [pups] Unix and PDP11/20 (was PDP9?)
+Message-ID: <2f8732f3e1dd3dc69ebf38965b6f7904@plan9.bell-labs.com>
+
+Holden's link,
+
+http://www.psych.usyd.edu.au/pdp-11/11_20.html
+
+reinforces my guess that our first -11 probably did
+have just "PDP11" on the bezel.  The one in my photo
+(which has the 20) is doubtless our second -11.
+I've looked at this page before, but it slipped my mind.
+
+Our first -11 was very early, and its disk took several
+months to arrive: it had TTY33 and high-speed paper tape
+as its only peripherals besides the clock.
+
+Early on, for fun, we tried assembling the DEC-supplied
+assembler, which came on at least one (maybe more) long
+fan-folded paper tapes.  I don't think we ever succeeded; it had to
+be fed in twice for the two passes, and enough characters
+were dropped that phase errors occurred.
+
+Incidentally, B programs could be run on this first pre-disk
+-11, using cross-compilation from GECOS.  There was
+a stand-alone predecessor of dc!
+
+BTW, apologies for the units slip in the earlier posting.
+Indeed 128 words of RAM on the 11/10, 4096 words
+standard on the 11/20 (we splurged with 12K).
+
+Also BTW, the young woman on p. 104 of the first
+manual has a just-so-1969 hairdo!  She has her
+index finger on one of the console switches, is
+holding a Unibus jumper in the other hand, and
+the caption is "The PDP-11 provides Direct Device
+Addressing...."  The Unibus address pin assignments
+that replaced herwere probably more useful, but not
+so redolent of history.
+
+	Dennis
+
+
+
+From wkt at minnie.tuhs.org  Fri Sep  6 18:14:51 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Fri, 6 Sep 2002 18:14:51 +1000 (EST)
+Subject: [pups] bringing up the fist C compiler
+In-Reply-To: <dcb7f8efb847f0ed61ba6071070b13f1@plan9.bell-labs.com> from Dennis
+ Ritchie at "Sep 6, 2002 01:35:26 am"
+Message-ID: <200209060814.g868Ep109493@minnie.tuhs.org>
+
+In article by Dennis Ritchie:
+> The chist paper on my home page is pretty complete (if telegraphic)
+> about bootstrapping B on the PDP-7 and later C (via B) on the -11.
+
+The chist paper doesn't mention NB, which was the missing link between
+B and C. I seem to recall a story where there was an NB interpreter
+and also a compiler, and Ken kept adding functionality to one which
+made it slower, and this had a knock-on effect. Sorry, that's all I
+can dredge out of my wetware bit store. Was this in `A Quarter Century
+of UNIX' by Peter Salus? Are there any other paper/web references to NB?
+
+	Warren
+
+
+From lars at nocrew.org  Fri Sep  6 18:28:54 2002
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: 06 Sep 2002 10:28:54 +0200
+Subject: [pups] bringing up the fist C compiler
+In-Reply-To: <dcb7f8efb847f0ed61ba6071070b13f1@plan9.bell-labs.com>
+References: <dcb7f8efb847f0ed61ba6071070b13f1@plan9.bell-labs.com>
+Message-ID: <858z2fmshl.fsf@junk.nocrew.org>
+
+Dennis Ritchie <dmr at plan9.bell-labs.com> writes:
+> There is not much about TMG on the web that I can find
+> (and some of it is inaccurate).
+
+There's some on www.multicians.org, but it doesn't relate to B
+or Unix:
+  http://google.com/search?q=site:multicians.org+tmg
+
+"About TMG" on the McClure Group page is unfortunately not available:
+  http://www.mccluregroup.ca/
+
+FOLDOC entry on TMG:
+  http://wombat.doc.ic.ac.uk/foldoc/foldoc.cgi?TMG
+
+Another page which describes TMG (but the phrase "MULTIX was the name
+of the first-generation UNIX" makes me suspicious):
+  http://www.geocities.com/ResearchTriangle/2363/tmg011.html
+
+-- 
+Lars Brinkhoff          http://lars.nocrew.org/     Linux, GCC, PDP-10,
+Brinkhoff Consulting    http://www.brinkhoff.se/    HTTP programming
+
+
+From lars at nocrew.org  Fri Sep  6 18:56:07 2002
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: 06 Sep 2002 10:56:07 +0200
+Subject: [pups] bringing up the fist C compiler
+In-Reply-To: <200209060814.g868Ep109493@minnie.tuhs.org>
+References: <200209060814.g868Ep109493@minnie.tuhs.org>
+Message-ID: <854rd3mr88.fsf@junk.nocrew.org>
+
+Warren Toomey <wkt at minnie.tuhs.org> writes:
+> The chist paper doesn't mention NB, which was the missing link between
+> B and C.
+
+How about this?
+
+  In 1971 I began to extend the B language by adding a character type
+  and also rewrote its compiler to generate PDP-11 machine instructions
+  instead of threaded code.  Thus the transition from B to C was
+  contemporaneous with the creation of a compiler capable of producing
+  programs fast and small enough to compete with assembly language.  I
+  called the slightly-extended language NB, for `new B.'
+
+  [...]
+
+  After creating the type system, the associated syntax, and the
+  compiler for the new language, I felt that it deserved a new name;
+  NB seemed insufficiently distinctive.  I decided to follow the
+  single-letter style and called it C, leaving open the questing
+  whether the name represented a progression through the alphabet or
+  through the letters in BCPL.
+
+> I seem to recall a story where there was an NB interpreter and also
+> a compiler, and Ken kept adding functionality to one which made it
+> slower, and this had a knock-on effect.
+
+Maybe this?
+
+  After the TMG version of B was working, Thompson rewrote B in itself
+  (a bootstrapping step).  During development, he continually struggled
+  against memory limitations: each language addition inflated the
+  compiler so it could barely fit, but each rewrite taking advantage
+  of the feature reduced it size.
+
+-- 
+Lars Brinkhoff          http://lars.nocrew.org/     Linux, GCC, PDP-10,
+Brinkhoff Consulting    http://www.brinkhoff.se/    HTTP programming
+
+
+From wkt at minnie.tuhs.org  Fri Sep  6 20:28:08 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Fri, 6 Sep 2002 20:28:08 +1000 (EST)
+Subject: [pups] bringing up the fist C compiler
+In-Reply-To: <854rd3mr88.fsf@junk.nocrew.org> from Lars Brinkhoff at "Sep 6,
+ 2002 10:56:07 am"
+Message-ID: <200209061028.g86AS8s10221@minnie.tuhs.org>
+
+In article by Lars Brinkhoff:
+> Warren Toomey <wkt at minnie.tuhs.org> writes:
+> > The chist paper doesn't mention NB, which was the missing link between
+> > B and C.
+> 
+> How about this?
+> 
+>   In 1971 I began to extend the B language by adding a character type
+>   and also rewrote its compiler to generate PDP-11 machine instructions
+>   instead of threaded code.  Thus the transition from B to C was
+>   contemporaneous with the creation of a compiler capable of producing
+>   programs fast and small enough to compete with assembly language.  I
+>   called the slightly-extended language NB, for `new B.'
+> 
+>   [...]
+
+Yes that's it!! Where did you find it?
+
+	Warren
+
+
+From lars at nocrew.org  Fri Sep  6 20:52:22 2002
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: 06 Sep 2002 12:52:22 +0200
+Subject: [pups] bringing up the fist C compiler
+In-Reply-To: <200209061028.g86AS8s10221@minnie.tuhs.org>
+References: <200209061028.g86AS8s10221@minnie.tuhs.org>
+Message-ID: <85r8g7l7a1.fsf@junk.nocrew.org>
+
+Warren Toomey <wkt at minnie.tuhs.org> writes:
+> In article by Lars Brinkhoff:
+> > Warren Toomey <wkt at minnie.tuhs.org> writes:
+> > > The chist paper doesn't mention NB, which was the missing link between
+> > > B and C.
+> > 
+> > How about this?
+> > 
+> >   In 1971 I began to extend the B language by adding a character type
+> >   and also rewrote its compiler to generate PDP-11 machine instructions
+> >   instead of threaded code.  Thus the transition from B to C was
+> >   contemporaneous with the creation of a compiler capable of producing
+> >   programs fast and small enough to compete with assembly language.  I
+> >   called the slightly-extended language NB, for `new B.'
+> > 
+> >   [...]
+> 
+> Yes that's it!! Where did you find it?
+
+In the chist paper.
+
+-- 
+Lars Brinkhoff          http://lars.nocrew.org/     Linux, GCC, PDP-10,
+Brinkhoff Consulting    http://www.brinkhoff.se/    HTTP programming
+
+
+From wkt at minnie.tuhs.org  Fri Sep  6 21:06:00 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Fri, 6 Sep 2002 21:06:00 +1000 (EST)
+Subject: [pups] bringing up the fist C compiler
+In-Reply-To: <85r8g7l7a1.fsf@junk.nocrew.org> from Lars Brinkhoff at "Sep 6,
+ 2002 12:52:22 pm"
+Message-ID: <200209061106.g86B61N10595@minnie.tuhs.org>
+
+> > > Warren Toomey <wkt at minnie.tuhs.org> writes:
+> > > > The chist paper doesn't mention NB
+
+In article by Lars Brinkhoff:
+> > > How about this?
+> > >   In 1971 I began to extend the B language by adding a character type
+> > >   [...]
+
+> > Yes that's it!! Where did you find it?
+> In the chist paper.
+
+<blushes>Oh .... </blushes>
+
+	Warren
+
+
+From cdl at mpl.ucsd.edu  Sat Sep  7 10:36:52 2002
+From: cdl at mpl.ucsd.edu (Carl Lowenstein)
+Date: Fri, 6 Sep 2002 17:36:52 -0700 (PDT)
+Subject: [pups] Unix and PDP11/20 (was PDP9?)
+Message-ID: <200209070036.RAA10988@opihi.ucsd.edu>
+
+> From: Dennis Ritchie <dmr at plan9.bell-labs.com>
+> Subject: [pups] Unix and PDP11/20 (was PDP9?)
+> Date: Fri, 6 Sep 2002 02:08:02 -0400
+> 
+> Holden's link,
+> 
+> http://www.psych.usyd.edu.au/pdp-11/11_20.html
+> 
+> reinforces my guess that our first -11 probably did
+> have just "PDP11" on the bezel.  The one in my photo
+> (which has the 20) is doubtless our second -11.
+> I've looked at this page before, but it slipped my mind.
+> 
+> Our first -11 was very early, and its disk took several
+> months to arrive: it had TTY33 and high-speed paper tape
+> as its only peripherals besides the clock.
+> 
+> Early on, for fun, we tried assembling the DEC-supplied
+> assembler, which came on at least one (maybe more) long
+> fan-folded paper tapes.  I don't think we ever succeeded; it had to
+> be fed in twice for the two passes, and enough characters
+> were dropped that phase errors occurred.
+
+I was there once myself.  The problem was fuzzy holes in the DEC-punched
+fan-fold paper tape.  So I toggled in a small utility program
+"wait, read, wait, punch, loop" to copy from the TTY reader to the
+high-speed punch.  The sensing pins of the TTY had no trouble with the
+fuzzy holes, and I got paper tapes that worked in the high-speed reader.
+
+    carl
+-- 
+    carl lowenstein         marine physical lab     u.c. san diego
+                                                 clowenst at ucsd.edu
+
+
+From grog at lemis.com  Sat Sep  7 11:49:37 2002
+From: grog at lemis.com (Greg Lehey)
+Date: Sat, 7 Sep 2002 11:49:37 +1000
+Subject: [pups] PDP-9?
+In-Reply-To: <200209020155.g821tUD64136@minnie.tuhs.org>
+References: <200209020155.g821tUD64136@minnie.tuhs.org>
+Message-ID: <20020907014937.GH1207@sydney.worldwide.lemis.com>
+
+On Sunday,  1 September 2002 at 21:54:57 -0400, Norman Wilson wrote:
+> Dave Horsfall:
+>
+>   AFAIK, Unix never ran on the 11/20 (no MM unit); did you mean a DEC-20?
+>
+> I don't know if it was called an 11/20 at the time (I seem to recall
+> some model-number upheaval in the early days of the -11),
+
+The 11/20 was definitely called like that in early 1970.  IIRC it was
+also the first PDP-11 model; it was certainly the first I heard of.
+The quote below tends to reinforce this viewpoint.
+
+> but the first PDP-11 UNIX system was certainly one without memory
+> management:
+>
+>   By the beginning of 1970, PDP-7 UNIX was a going concern ... In early
+>   1970 we proposed acquisition of a PDP-11, which had just been introduced
+>   by Digital
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+
+From grog at lemis.com  Sat Sep  7 11:49:37 2002
+From: grog at lemis.com (Greg Lehey)
+Date: Sat, 7 Sep 2002 11:49:37 +1000
+Subject: [pups] PDP-9?
+In-Reply-To: <200209020155.g821tUD64136@minnie.tuhs.org>
+References: <200209020155.g821tUD64136@minnie.tuhs.org>
+Message-ID: <20020907014937.GH1207@sydney.worldwide.lemis.com>
+
+On Sunday,  1 September 2002 at 21:54:57 -0400, Norman Wilson wrote:
+> Dave Horsfall:
+>
+>   AFAIK, Unix never ran on the 11/20 (no MM unit); did you mean a DEC-20?
+>
+> I don't know if it was called an 11/20 at the time (I seem to recall
+> some model-number upheaval in the early days of the -11),
+
+The 11/20 was definitely called like that in early 1970.  IIRC it was
+also the first PDP-11 model; it was certainly the first I heard of.
+The quote below tends to reinforce this viewpoint.
+
+> but the first PDP-11 UNIX system was certainly one without memory
+> management:
+>
+>   By the beginning of 1970, PDP-7 UNIX was a going concern ... In early
+>   1970 we proposed acquisition of a PDP-11, which had just been introduced
+>   by Digital
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+
+From toby at taer.com  Mon Sep  9 00:24:07 2002
+From: toby at taer.com (Tobias Russell)
+Date: Sun, 8 Sep 2002 15:24:07 +0100 (BST)
+Subject: [pups] BSD 2.11 on an 11/73 + RD54
+Message-ID: <43589.62.252.0.4.1031495047.squirrel@mail.taer.com>
+
+Hi,
+
+I've managed to get a BSD 2.11 root filesystem onto my 11/73 via VTserver
+and I am preparing to use vtc to transfer the /usr components.
+
+Currently when I boot, I start off with my terminal set to 19,200 baud
+8-N-1 but once BSD has booted I have to switch to 19,200 7-E-1
+
+Can anyone tell me why this is happening and how I fix it so the setting
+remains on 8-N-1? (stty?)
+
+Also, if I can't fix this, will vtserver/vtc run on 7-E-1 comms?
+
+
+Toby
+
+
+
+
+
+From Fred.van.Kempen at microwalt.nl  Mon Sep  9 01:06:48 2002
+From: Fred.van.Kempen at microwalt.nl (Fred N. van Kempen)
+Date: Sun, 8 Sep 2002 17:06:48 +0200
+Subject: [pups] BSD 2.11 on an 11/73 + RD54
+Message-ID: <7AD18F04B62B7440BE22E190A3F77214689B@mwsrv04.microwalt.nl>
+
+Hi,
+
+> Currently when I boot, I start off with my terminal set to 19,200 baud
+> 8-N-1 but once BSD has booted I have to switch to 19,200 7-E-1
+The hardware runs on 8-bit clean channels.  Most UNIX kernels
+kinda prefer to use 7e1 or 7o1.
+
+
+> Can anyone tell me why this is happening and how I fix it so 
+> the setting remains on 8-N-1? (stty?)
+Once you're logged in to the system, type "stty -parenb bits8" or
+"stty -parenb cs8" or "stty -parenb 8" to go back to 8-bit mode.
+Then reset your terminal program again :)
+
+> Also, if I can't fix this, will vtserver/vtc run on 7-E-1 comms?
+Nope.  VTc requires an 8-bit clean channel (for now).
+
+--fred
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: winmail.dat
+Type: application/ms-tnef
+Size: 2419 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20020908/3ee85e12/attachment.bin>
+
+From tih at Hamartun.Priv.NO  Mon Sep  9 03:35:14 2002
+From: tih at Hamartun.Priv.NO (Tom Ivar Helbekkmo)
+Date: 08 Sep 2002 19:35:14 +0200
+Subject: [pups] BSD 2.11 on an 11/73 + RD54
+In-Reply-To: <43589.62.252.0.4.1031495047.squirrel@mail.taer.com> ("Tobias Russell"'s message of "Sun, 8 Sep 2002 15:24:07 +0100 (BST)")
+References: <43589.62.252.0.4.1031495047.squirrel@mail.taer.com>
+Message-ID: <m21y84bd0t.fsf@barsoom.Hamartun.Priv.NO>
+
+"Tobias Russell" <toby at taer.com> writes:
+
+> Currently when I boot, I start off with my terminal set to 19,200 baud
+> 8-N-1 but once BSD has booted I have to switch to 19,200 7-E-1
+
+The PDP-11s tend to like 8n1, but UNIX used to prefer 7e1.  I got
+tired of 2.11BSD behaving like this, so I changed it thus (note that
+the relative directory names in the patch headers are probably not
+relative to the same place; you'll have to figure it out):
+
+*** getty/main.c.ORIG	Thu Dec 29 17:22:13 1994
+--- getty/main.c	Thu Dec 29 17:21:28 1994
+***************
+*** 383,391 ****
+--- 383,393 ----
+  	char c;
+  
+  	c = cc;
++ #ifdef notdef /* hack to get rid of parity in getty */
+  	c |= partab[c&0177] & 0200;
+  	if (OP)
+  		c ^= 0200;
++ #endif /* parity hack */
+  	if (!UB) {
+  		outbuf[obufcnt++] = c;
+  		if (obufcnt >= OBUFSIZ)
+
+*** pdp/cons.c.ORIG	Sun May 11 11:21:01 1997
+--- pdp/cons.c	Sun May 11 11:26:05 1997
+***************
+*** 62,68 ****
+  	if ((tp->t_state&TS_ISOPEN) == 0) {
+  		ttychars(tp);
+  		tp->t_state = TS_ISOPEN|TS_CARR_ON;
+! 		tp->t_flags = EVENP|ECHO|XTABS|CRMOD;
+  	}
+  	if (tp->t_state&TS_XCLUDE && u.u_uid != 0)
+  		return (EBUSY);
+--- 62,68 ----
+  	if ((tp->t_state&TS_ISOPEN) == 0) {
+  		ttychars(tp);
+  		tp->t_state = TS_ISOPEN|TS_CARR_ON;
+! 		tp->t_flags = ANYP|ECHO|XTABS|CRMOD;
+  	}
+  	if (tp->t_state&TS_XCLUDE && u.u_uid != 0)
+  		return (EBUSY);
+
+*** sys/tty.c.ORIG	Sun May 11 11:21:40 1997
+--- sys/tty.c	Sun May 11 11:27:40 1997
+***************
+*** 48,53 ****
+--- 48,54 ----
+   */
+  
+  char partab[] = {
++ #ifdef notdef /* even parity setup */
+  	0001,0201,0201,0001,0201,0001,0001,0201,
+  	0202,0004,0003,0201,0005,0206,0201,0001,
+  	0201,0001,0001,0201,0001,0201,0201,0001,
+***************
+*** 64,69 ****
+--- 65,88 ----
+  	0200,0000,0000,0200,0000,0200,0200,0000,
+  	0200,0000,0000,0200,0000,0200,0200,0000,
+  	0000,0200,0200,0000,0200,0000,0000,0201,
++ #else /* no parity setup follows */
++ 	0001,0001,0001,0001,0001,0001,0001,0001,
++ 	0002,0004,0003,0001,0005,0006,0001,0001,
++ 	0001,0001,0001,0001,0001,0001,0001,0001,
++ 	0001,0001,0001,0001,0001,0001,0001,0001,
++ 	0000,0000,0000,0000,0000,0000,0000,0000,
++ 	0000,0000,0000,0000,0000,0000,0000,0000,
++ 	0000,0000,0000,0000,0000,0000,0000,0000,
++ 	0000,0000,0000,0000,0000,0000,0000,0000,
++ 	0000,0000,0000,0000,0000,0000,0000,0000,
++ 	0000,0000,0000,0000,0000,0000,0000,0000,
++ 	0000,0000,0000,0000,0000,0000,0000,0000,
++ 	0000,0000,0000,0000,0000,0000,0000,0000,
++ 	0000,0000,0000,0000,0000,0000,0000,0000,
++ 	0000,0000,0000,0000,0000,0000,0000,0000,
++ 	0000,0000,0000,0000,0000,0000,0000,0000,
++ 	0000,0000,0000,0000,0000,0000,0000,0001,
++ #endif /* end of parity selection stuff */
+  
+  	/*
+  	 * 7 bit ascii ends with the last character above,
+
+-tih
+-- 
+Popularity is the hallmark of mediocrity.  --Niles Crane, "Frasier"
+
+
+
+From johnh at psych.usyd.edu.au  Mon Sep  9 07:48:51 2002
+From: johnh at psych.usyd.edu.au (John Holden)
+Date: Mon, 9 Sep 2002 07:48:51 +1000 (EST)
+Subject: [pups] Unix and PDP11/20 (was PDP9?)
+Message-ID: <200209082148.HAA12995@psychwarp.psych.usyd.edu.au>
+
+> Dennis Ritchie wrote:-
+>
+> Early on, for fun, we tried assembling the DEC-supplied
+> assembler, which came on at least one (maybe more) long
+> fan-folded paper tapes.  I don't think we ever succeeded; it had to
+> be fed in twice for the two passes, and enough characters
+> were dropped that phase errors occurred.
+
+The early high speed tape readers used the clock pulse off the stepper motor
+(with suitable delay) to strobe the data from the photo-transistors. It
+was somewhat unreliable. Latter models added a ninth detector under the sprocket
+holes, which being smaller, neatly strobed the data in the middle of the punched
+data.
+
+The 11/20 I first used only had the paper tape software. The pdp-11 instruction
+set (at that point) was nicely orthogonal, so we often hand coded patches rather
+than use the assembler/editor, since it was faster.
+
+
+From toby at russellsharpe.com  Mon Sep  9 16:57:27 2002
+From: toby at russellsharpe.com (Tobias Russell)
+Date: Mon, 9 Sep 2002 07:57:27 +0100
+Subject: [pups] BSD 2.11 on an 11/73 + RD54
+In-Reply-To: <7AD18F04B62B7440BE22E190A3F77214689B@mwsrv04.microwalt.nl>
+Message-ID: <NGBBLOGBLKMCHGGMCNGNOECOCLAA.toby@russellsharpe.com>
+
+Hi,
+
+Hmm, still no joy with stty, I get unknown mode errors back is response to
+the stty commands you suggested. 
+
+I've just been having a look through the stty man page
+(http://www.freebsd.org/cgi/man.cgi?query=stty&apropos=0&sektion=0&manpath=2
+.11+BSD&format=html). Does the pass8 switch solve the byte size problem?
+
+Cheers,
+Toby
+
+-----Original Message-----
+From: Fred N. van Kempen [mailto:pups-admin at minnie.tuhs.org]On Behalf Of
+Fred N. van Kempen
+Sent: 08 September 2002 16:07
+To: Tobias Russell; pups at minnie.tuhs.org
+Subject: RE: [pups] BSD 2.11 on an 11/73 + RD54
+
+
+Hi,
+
+> Currently when I boot, I start off with my terminal set to 19,200 baud
+> 8-N-1 but once BSD has booted I have to switch to 19,200 7-E-1
+The hardware runs on 8-bit clean channels.  Most UNIX kernels
+kinda prefer to use 7e1 or 7o1.
+
+
+> Can anyone tell me why this is happening and how I fix it so 
+> the setting remains on 8-N-1? (stty?)
+Once you're logged in to the system, type "stty -parenb bits8" or
+"stty -parenb cs8" or "stty -parenb 8" to go back to 8-bit mode.
+Then reset your terminal program again :)
+
+> Also, if I can't fix this, will vtserver/vtc run on 7-E-1 comms?
+Nope.  VTc requires an 8-bit clean channel (for now).
+
+--fred
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: winmail.dat
+Type: application/ms-tnef
+Size: 1188 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20020909/43687856/attachment.bin>
+
+From peter.jeremy at alcatel.com.au  Tue Sep 10 07:17:10 2002
+From: peter.jeremy at alcatel.com.au (Peter Jeremy)
+Date: Tue, 10 Sep 2002 07:17:10 +1000
+Subject: [pups] Bringing up the fist C compiler
+In-Reply-To: <3D77823A.1050504@pacbell.net>
+References: <Pine.LNX.4.21.0209051350370.4341-100000@Tempo.Update.UU.SE> <3D77823A.1050504@pacbell.net>
+Message-ID: <20020909211710.GA87874@gsmx07.alcatel.com.au>
+
+On 2002-Sep-05 09:11:38 -0700, Michael Davidson <MichaelDavidson at pacbell.net> wrote:
+>Johnny Billquist wrote:
+>>But even though I cannot account for all steps, I can guarantee that at
+>>the end of the chain, you *will* find assembler.
+>
+>Or, just possibly, Alan Turing hand punching Mark 1 machine code onto
+>paper tape ;-)
+
+Actually, to use one of the other "first stored-program computer"
+candidates, EDSAC provided what I consider to be a very sophisticated
+assembler/loader that read programs off paper tape into memory.  This
+assembler/loader ("initial orders") was 41 instructions long and was
+hard-wired onto uniselectors which were automatically loaded into
+memory when the start switch was pressed.
+
+It supported:
+- single-letter mnemonics for each of the 18 instructions
+- decimal entry of numbers (EDSAC was binary internally)
+- 13 single-letter variables which could be assigned or added to the
+  address in each instruction.
+- program relocation (courtesy of the above)
+
+Overall, the input language looks much closer to assembler language
+than the instruction bit patterns in memory.  (The Mathematical
+Laboratory also developed an extensive collection of reusable
+subroutines intended to simplify program development).
+
+Ref: "The Preparation of Programs for an Electronic Digital Computer",
+   M.V. Wilkes, D.J. Wheeler, S. Gill, Addison-Wesley, 1951.
+
+A rummage around on the WEB will turn up a couple of EDSAC simulators
+and sample programs.
+
+Peter
+
+
+From sms at 2BSD.COM  Tue Sep 10 10:03:49 2002
+From: sms at 2BSD.COM (Steven M. Schultz)
+Date: Mon, 9 Sep 2002 17:03:49 -0700 (PDT)
+Subject: [pups] BSD 2.11 on an 11/73 + RD54
+Message-ID: <200209100003.g8A03nA13896@moe.2bsd.com>
+
+Hi -
+
+	A few days ago the "getty plays parity games" topic came up
+	again.
+
+	I've been thinking about it and looked at the kernel a bit more.
+	7e1 is rather firmly in place and I'm not sure turning the 'console'
+	(kl/dl) driver into a "LITOUT only" one is a 100% correct way to
+	go (the other drivers such as dz, dh, etc remain 7e1 output by
+	default).
+
+	Here's a patch for getty/main.c which I think will do what's 
+	wanted without having to modify the kernel:
+
+------------snip-------------
+*** main.c.dist	Mon Sep  9 16:52:24 2002
+--- main.c	Mon Sep  9 16:56:55 2002
+***************
+*** 384,391 ****
+  
+  	c = cc;
+  	c |= partab[c&0177] & 0200;
+! 	if (OP)
+! 		c ^= 0200;
+  	if (!UB) {
+  		outbuf[obufcnt++] = c;
+  		if (obufcnt >= OBUFSIZ)
+--- 384,401 ----
+  
+  	c = cc;
+  	c |= partab[c&0177] & 0200;
+! /*
+!  * If "any" parity do nothing otherwise set even parity unless OP is
+!  * set.  Since 'ap' is set in the "default" entry of /etc/gettytab this
+!  * has the effect of disabling parity on output without having to change
+!  * the kernel.
+! */
+! 	if (!AP) {
+! 	   c |= partab[c & 0177] & 0200;
+! 	   if (OP)
+! 	      c ^= 0200;
+! 	}
+! 
+  	if (!UB) {
+  		outbuf[obufcnt++] = c;
+  		if (obufcnt >= OBUFSIZ)
+--------------snip---------------
+
+	What this does is check the "AP" (AnyParity) flag from /etc/gettytab
+	and if NOT set then do the 'even' (or 'odd' if OP is set) parity.
+
+	Since 'ap' is present in the default line of /etc/gettytab the above
+	block effectively becomes a no-op unless /etc/gettytab is explicitly
+	set for 'ep' or 'op'.
+
+	If someone could test this and report back I'd appreciate it.
+
+	Thanks.
+
+	Steven Schultz
+	sms at 2bsd.com
+
+
+From lists at subatomix.com  Fri Sep 13 07:27:04 2002
+From: lists at subatomix.com (Jeffrey Sharp)
+Date: Thu, 12 Sep 2002 16:27:04 -0500
+Subject: [pups] Unix and PDP11/20 (was PDP9?)
+In-Reply-To: <Pine.LNX.4.21.0209042357350.5506-100000@Tempo.Update.UU.SE>
+References: <Pine.LNX.4.21.0209042357350.5506-100000@Tempo.Update.UU.SE>
+Message-ID: <13817198910.20020912162704@subatomix.com>
+
+On Wednesday, September 4, 2002, Johnny Billquist wrote:
+
+> On Wed, 4 Sep 2002, Dennis Ritchie wrote:
+>
+> > I'm not positive about the logo on our first PDP-11.
+>
+> Early PDP-11/20 just said PDP11 on the front, I believe.
+
+Definitely. My 11/20 (SN #786) used to have one of the earlier panels
+without the "/20". That panel was damaged and subsequently replaced with the
+newer version that did include the "/20".
+
+-- 
+Jeffrey Sharp
+
+The email address lists at subatomix.com is for mailing list traffic. Please
+send off-list mail to roach jss at wasp subatomix beetle dot com. You may
+need to remove some bugs first.
+
+
+
+From wkt at minnie.tuhs.org  Sat Sep 21 10:17:34 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Sat, 21 Sep 2002 10:17:34 +1000 (EST)
+Subject: [pups] Re: v7 crypt(3)
+In-Reply-To: <200209201731.g8KHVh176034@pop2.nwbl.wi.voyager.net> from "A. P.
+ Garcia" at "Sep 20, 2002 05:39:51 pm"
+Message-ID: <200209210017.g8L0HYu27548@minnie.tuhs.org>
+
+In article by A. P. Garcia:
+> Warren,
+> 
+> I've been looking at the Henry_Spencer_v7 tar, and something
+> is puzzling me.  lines 49-54 of /usr/src/libc/gen/crypt.c are
+> the following:
+> 
+> static	char	PC1_D[] {
+> 	63,55,47,39,31,23,15,
+> 	 7,62,54,46,38,30,22,
+> 	14, 6,61,53,45,37,29,
+> 	21,13, 5,28,20,12, 4,
+> };
+> 
+> That wasn't legal syntax, was it?  There should be an '='
+> between [] and {, as in the rest of the file, no?
+
+I just tried to compile the code with the V7 compiler and it complained.
+Maybe it was legal in V6 and they used the .o file from there and didn't
+recompile it.
+
+I think Dennis is on the list, maybe he can answer the intruiging question!
+ 
+> Btw, it's neat to look at this code alongside the DES standard: 
+> http://csrc.nist.gov/publications/fips/fips46-3/fips46-3.pdf
+> Phil Garcia
+
+Yes, it certainly is.
+
+Thanks Phil.
+	Warren
+
+
+From MichaelDavidson at pacbell.net  Sat Sep 21 11:11:32 2002
+From: MichaelDavidson at pacbell.net (Michael Davidson)
+Date: Fri, 20 Sep 2002 18:11:32 -0700
+Subject: [pups] Re: v7 crypt(3)
+References: <200209210017.g8L0HYu27548@minnie.tuhs.org>
+Message-ID: <3D8BC744.6040305@pacbell.net>
+
+Warren Toomey wrote:
+
+>>
+>>
+>>static	char	PC1_D[] {
+>>	63,55,47,39,31,23,15,
+>>	 7,62,54,46,38,30,22,
+>>	14, 6,61,53,45,37,29,
+>>	21,13, 5,28,20,12, 4,
+>>};
+>>
+>>That wasn't legal syntax, was it?  There should be an '='
+>>between [] and {, as in the rest of the file, no?
+>>
+>
+>I just tried to compile the code with the V7 compiler and it complained.
+>Maybe it was legal in V6 and they used the .o file from there and didn't
+>recompile it.
+>
+Actually I'm surprised that the V7 compiler would complain about this.
+
+I seem to recall that there was still quite a lot of code in V7
+(including the compiler itself) which didn't have an '=' before
+the initialiser.
+
+I don't have a V7 system to hand right now, but looking at the
+compiler source appears to confirm that the '=' was still optional.
+
+In extdef() at around line 69 of c02.c there is:
+
+	if (o!=ASSIGN)
+		peeksym = o;
+
+... at this point in the code we have just processed an external
+definition which is not a function and which is not followed by
+either a comma or a semicolon and are about to attempt to parse
+what follows as an initialiser. If the next symbol is '=' the
+compiler swallows it, otherwise it pushes it back and continues
+with parsing the initialiser.
+
+So it certainly *looks* as if the V7 compiler didn't require the '='.
+
+Perhaps you were using pcc?
+
+
+
+
+From huglhuglhugl at gmx.net  Tue Sep 24 22:22:05 2002
+From: huglhuglhugl at gmx.net (huglhuglhugl at gmx.net)
+Date: Tue, 24 Sep 2002 14:22:05 +0200 (MEST)
+Subject: [pups] Installing BSD on 11/44 without tapedrive ?
+Message-ID: <19978.1032870125@www36.gmx.net>
+
+Hello,
+
+My PDP11/44 is currently running RSX11M but since I lack experience and
+documentation of RSX, I'd like to install a BSD-Unix.
+I suppose I can install  2.11BSD or 2.9BSD on a 11/44. Which one should I
+choose ? I do allready have 2.11 on my 11/93, so I might want to try 2.9BSD if
+this is not asking for trouble.
+I do have 1Mb of ram, two RL02 drives (and some disks, so I can always keep
+RSX), FPU, Ethernet.
+But I don't have a tapedrive!
+I thought I could write the RL02 disks on my 11/93 and then put them in my
+11/44. Will this work ? Is there something special I need to know ?
+
+Regards,
+--lothar
+
+-- 
+Werden Sie mit uns zum "OnlineStar 2002"! Jetzt GMX wählen -
+und tolle Preise absahnen! http://www.onlinestar.de
+
+
+
+From dmr at plan9.bell-labs.com  Sat Sep 28 14:57:18 2002
+From: dmr at plan9.bell-labs.com (Dennis Ritchie)
+Date: Sat, 28 Sep 2002 00:57:18 -0400
+Subject: [pups] Re: v7 crypt(3)
+Message-ID: <b6c42688e4f3dcaa8756e4722a996756@plan9.bell-labs.com>
+
+Following up Toomey's and Davidson's notes
+(didn't see Garcia's):
+
+It does appear that the early-distributed v7 didn't
+require = in initializers.  A slightly later version
+of the original 11 C compiler did; the lines Davidson quoted,
+
+	if (o!=ASSIGN)
+		peeksym = o;
+
+were replaced by
+
+		if (o!=ASSIGN) {
+			error("Declaration syntax");
+			peeksym = o;
+		}
+
+bringing it into conformity with K&R1, which
+did require the =.
+
+Incidentally, if anyone wants to try the v7 crypt(3),
+the 'encrypt' routine has an implicit, and unwarranted,
+assumption that the L and R arrays are adjacent in storage
+and thus that L can be oversubscripted to access R.
+This was fixed at some (surprisingly late) point too.
+
+	Dennis
+
+
+
+From lm at bitmover.com  Sun Sep  1 12:24:43 2002
+From: lm at bitmover.com (Larry McVoy)
+Date: Sat, 31 Aug 2002 19:24:43 -0700
+Subject: [TUHS] Re: TUHS digest, Vol 1 #73 - 1 msg
+In-Reply-To: <200209010215.g812FxD49859@minnie.tuhs.org>; from tuhs-request@minnie.tuhs.org on Sun, Sep 01, 2002 at 12:15:59PM +1000
+References: <200209010215.g812FxD49859@minnie.tuhs.org>
+Message-ID: <20020831192443.N11188@work.bitmover.com>
+
+In response to old hardware... My first machine was an Okidata CPM machine
+which had a color (!) monitor and a built in printer.  If someone had one
+of these, I'd like it just for old time's sake...
+-- 
+---
+Larry McVoy            	 lm at bitmover.com           http://www.bitmover.com/lm 
+
+
+From norman at nose.cs.utoronto.ca  Sun Sep  1 12:51:40 2002
+From: norman at nose.cs.utoronto.ca (Norman Wilson)
+Date: Sat, 31 Aug 2002 22:51:40 -0400
+Subject: [TUHS] Mine's older than yours
+Message-ID: <200209010252.g812qID50234@minnie.tuhs.org>
+
+Larry McVoy:
+
+  In response to old hardware... My first machine was an Okidata CPM machine
+  which had a color (!) monitor and a built in printer.  If someone had one
+  of these, I'd like it just for old time's sake...
+
+Well, my first computer was a Cardiac.  I'm glad to say that I managed
+to grab one from Classic Computing a few years ago, but I don't think
+they have any left.  If anyone knows of a source, I'd be interested to
+hear about it; every now and then I mention Cardiac to someone who hasn't
+heard of it, and they'd like to know where to get one.
+
+I still think Cardiac should be a required tool in freshman programming
+courses.
+
+Norman Wilson
+Toronto ON
+
+
+From jfoust at threedee.com  Mon Sep  2 09:50:34 2002
+From: jfoust at threedee.com (John Foust)
+Date: Sun, 01 Sep 2002 18:50:34 -0500
+Subject: [TUHS] Mine's older than yours
+In-Reply-To: <200209010252.g812qID50234@minnie.tuhs.org>
+Message-ID: <5.0.0.25.0.20020901080339.022f1260@pc>
+
+At 10:51 PM 8/31/2002 -0400, Norman Wilson wrote:
+>Larry McVoy:
+>
+>  In response to old hardware... My first machine was an Okidata CPM machine
+>  which had a color (!) monitor and a built in printer.  If someone had one
+>  of these, I'd like it just for old time's sake...
+>
+>Well, my first computer was a Cardiac. 
+
+The Classic Computer Collector mailing list http://www.classiccmp.org/
+might be a good source.  They rescue a fair number of PDP, too.
+
+- John
+
+
+
+From msokolov at ivan.Harhan.ORG  Thu Sep  5 07:06:01 2002
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Wed, 4 Sep 02 14:06:01 PDT
+Subject: [TUHS] Re: TUHS digest, Vol 1 #71 - 2 msgs
+Message-ID: <0209042106.AA02930@ivan.Harhan.ORG>
+
+Johnny Billquist <bqt at update.uu.se> wrote:
+
+> > It is a problem only if you choose to honor copyright laws. Since that is
+> > your personal voluntary choice, it is your problem.
+>
+> Yes, and it's *that* problem I'm looking for a solution to.
+
+But since you've created that problem for yourself by your own voluntary choice
+to honor copyrights, you shouldn't be asking others for a solution.
+
+> Freed as in "legally freed", or just "made available".
+
+Legally by whose law? It is legal by the Law of Hammurabi, King of Babylon by
+the way of Anu, Enlil, and Marduk. [1]
+
+> harhan.org don't exist from where my dns is looking... :-/
+
+It sure exists:
+
+Registrant:
+Harhan Computer Operation Facility (HARHAN-DOM)
+   786 E MISSION AVE APT F
+   ESCONDIDO, CA 92025-2154
+   US
+
+   Domain Name: HARHAN.ORG
+
+   Administrative Contact, Technical Contact:
+      Sokolov, Michael  (MS35906)		msokolov at IVAN.HARHAN.ORG
+      The Harhan Network
+      786 E MISSION AVE UNIT F
+      ESCONDIDO, CA  92025-2154
+      US
+      +1-760-480-4575 +1-760-747-1493
+
+   Record expires on 17-Feb-2004.
+   Record created on 17-Feb-2000.
+   Database last updated on 4-Sep-2002 16:59:12 EDT.
+
+   Domain servers in listed order:
+
+   IVAN.HARHAN.ORG              208.221.139.1
+   IFCTFVAX.HARHAN.ORG          208.221.139.2
+
+> Another machine I have access to managed to resolve ivan.harhan.org to
+> 208.221.139.1,
+
+Correct.
+
+> but there is no response at that address.
+
+Maybe my outside link was down then, try again.
+
+> However, if it is just the sources, and not some legal notes available,
+> then I don't need to go there.
+
+The new laws I've made for this planet haven't been posted yet, but they soon
+will be.
+
+MS
+
+[1]	Lofty Anu, lord of the gods
+	who from Heaven to Earth came,
+	and Enlil, lord of Heaven and Earth
+	who determines the destinies of the land,
+	Determined for Marduk, the firstborn of Enki,
+	the Enlil-functions over all mankind;
+	Made him great among the gods who watch and see,
+	Called Babylon by name to be exalted,
+	made it supreme in the world;
+	And established for Marduk, in its midst,
+	an everlasting kingship.
+
+
+From iking at microsoft.com  Thu Sep  5 13:15:52 2002
+From: iking at microsoft.com (Ian King)
+Date: Wed, 4 Sep 2002 20:15:52 -0700
+Subject: [TUHS] Ultrix...
+Message-ID: <8D25F244B8274141B5D313CA4823F39C057A2388@red-msg-06.redmond.corp.microsoft.com>
+
+"It is a problem only if you choose to honor copyright laws."  I can only hope that others (dis)regard your property rights, as you (dis)regard the property rights of others.  BTW, where do you live?  I could use a new monitor or two....  
+ 
+-- Ian King, speaking only for himself (the usual disclaimers apply)
+
+	-----Original Message----- 
+	From: Michael Sokolov [mailto:msokolov at ivan.Harhan.ORG] 
+	Sent: Wed 8/28/2002 10:48 AM 
+	To: tuhs at minnie.tuhs.org 
+	Cc: 
+	Subject: Re: [TUHS] Ultrix...
+	
+	
+
+	Johnny Billquist <bqt at update.uu.se> wrote:
+	
+	> I'm trying to figure out a way of getting the MSCP driver from Ultrix
+	> available for porting to NetBSD.
+	
+	I don't support NetBSD, but Ultrix' MSCP/SCA code is available to everyone.
+	
+	> The problem is that it's (c) by Digital, now HP.
+	
+	It is a problem only if you choose to honor copyright laws. Since that is your
+	personal voluntary choice, it is your problem.
+	
+	> Could I be lucky enough that Ultrix actually have been released?
+	> And I'm talking Ultrix-32 here, not Ultrix-11.
+	
+	The International Free Computing Task Force has freed the Ultrix-32 V2.00 and
+	V4.20 sources. They can be found on our FTP site in
+	
+	ivan.Harhan.ORG:/pub/UNIX/thirdparty/Ultrix-32
+	
+	--
+	Michael Sokolov                                 786 E MISSION AVE APT F
+	Programletarian Freedom Fighter                 ESCONDIDO CA 92025-2154 USA
+	International Free Computing Task Force         Phone: +1-760-480-4575
+	                                                msokolov at ivan.Harhan.ORG (ARPA)
+	Let the Source be with you
+	Programletarians of the world, unite!
+	_______________________________________________
+	TUHS mailing list
+	TUHS at minnie.tuhs.org
+	http://minnie.tuhs.org/mailman/listinfo/tuhs
+	
+
+
+
+From pwrangell at bsdmercs.org  Fri Sep  6 00:03:28 2002
+From: pwrangell at bsdmercs.org (Peter Wrangell)
+Date: 05 Sep 2002 07:03:28 -0700
+Subject: [TUHS] Vax 3300 and Ultrix
+Message-ID: <1031234608.12908.36.camel@goblin.bsdmercs.org>
+
+Greetings,
+
+I am looking for a copy of Ultrix 4.5 preferably on TK70 tapes but any
+medium will do. I have a MicroVax 3300 that I would like to breath life
+into again. Unfortunately the version in the Archives is too old to be
+of use and it seems that  there is no DSSI support in NetBSD. I would be
+willing to trade old computer parts in return(I have Old SGI, Dec PDP
+and and Sun Stuff). Any help would be appreciated. Thanks.
+
+-Peter
+pwrangell at bsdmercs.org
+
+
+
+
+
+From msokolov at ivan.Harhan.ORG  Fri Sep  6 03:47:28 2002
+From: msokolov at ivan.Harhan.ORG (Michael Sokolov)
+Date: Thu, 5 Sep 02 10:47:28 PDT
+Subject: [TUHS] Vax 3300 and Ultrix
+Message-ID: <0209051747.AA03833@ivan.Harhan.ORG>
+
+Peter Wrangell <pwrangell at bsdmercs.org> wrote:
+
+> I am looking for a copy of Ultrix 4.5 preferably on TK70 tapes but any
+> medium will do. I have a MicroVax 3300 that I would like to breath life
+> into again.
+
+I can't help you with 4.5, but I have the full V4.00 TK50 distribution and it
+fully supports MV3300 with DSSI. The tape images are on my FTP site in:
+
+ivan.Harhan.ORG:/pub/UNIX/thirdparty/Ultrix-32/ult400vaxdist-tk50
+
+On the same site I also have full sources for V2.00 and V4.20. (I have no
+sources for the version for which I have the dist, and no dists for the
+versions for which I have the sources... I guess I need to bite the bullet and
+compile V4.20 myself. Some day maybe.)
+
+MS
+
+
+From mirian at cosmic.com  Fri Sep  6 09:56:21 2002
+From: mirian at cosmic.com (Mirian Crzig Lennox)
+Date: Thu, 5 Sep 2002 23:56:21 +0000 (UTC)
+Subject: [TUHS] Ultrix...
+References: <8D25F244B8274141B5D313CA4823F39C057A2388@red-msg-06.redmond.corp.microsoft.com>
+Message-ID: <slrnanfrp5.1ei.mirian@trantor.cosmic.com>
+
+On Wed, 4 Sep 2002 20:15:52 -0700, Ian King <iking at microsoft.com> wrote:
+>"It is a problem only if you choose to honor copyright laws."  I can
+> only hope that others (dis)regard your property rights, as you
+> (dis)regard the property rights of others.  BTW, where do you live?  I
+> could use a new monitor or two....
+
+It is possible to respect property rights and yet disagree (to the
+point of disobedience) with how the concept has been lately twisted by
+monied interests in the United States.
+
+The purpose of copyright is not to be a form of property; if it were,
+copyrights would not expire.  The purpose of copyright is to enrich
+the public domain by encouraging authors to publish their works, by
+ensuring them exclusive right to profit from their work for a limited
+time after which time *the work passes into the public domain*.  This
+is plainly stated in the U.S. Constitution as the basis for copyright
+law: "To promote the progress of science and useful arts, by securing
+for limited times to authors and inventors the exclusive right to
+their respective writings and discoveries." [Article I, section 8].
+
+In fact, the concept of "intellectual property" is a fairly recent
+perversion, and the consequence has been a steady depletion of the
+public domain.  When a piece of software (and Ultrix is an excellent
+example) is tied up in copyright long after it is of any value to
+anyone beyond pure academic interest, nothing is added to anyone's
+wealth, and society as a whole loses.
+
+--Mirian
+
+
+From iking at microsoft.com  Fri Sep  6 11:27:06 2002
+From: iking at microsoft.com (Ian King)
+Date: Thu, 5 Sep 2002 18:27:06 -0700
+Subject: [TUHS] Ultrix...
+Message-ID: <8D25F244B8274141B5D313CA4823F39C057A238C@red-msg-06.redmond.corp.microsoft.com>
+
+I agree with your premise that copyright can be detrimental to broader interests, and the case of "obsolete but historically interesting" software is a prime case in point.  However, copyright holders can choose to make things readily available without placing them in the public domain; the 'Ancient UNIX' license is a great example.  If they choose not to do so, the law does allow them recourse.  I doubt they would consume the resources to execute on that against individuals who are running old software for non-commercial purposes; I suspect that those who commit such indiscretions wholesale may not be treated with such latitude.  
+ 
+And, IMHO, those who baldly advertise their general disdain of copyright law are pretty much asking for it.  -- Ian 
+ 
+My opinions are my own, and do not necessarily represent my employer's opinions.  
+
+	-----Original Message----- 
+	From: Mirian Crzig Lennox [mailto:mirian at cosmic.com] 
+	Sent: Thu 9/5/2002 4:56 PM 
+	To: tuhs at minnie.tuhs.org 
+	Cc: 
+	Subject: Re: [TUHS] Ultrix...
+	
+	
+
+	On Wed, 4 Sep 2002 20:15:52 -0700, Ian King <iking at microsoft.com> wrote:
+	>"It is a problem only if you choose to honor copyright laws."  I can
+	> only hope that others (dis)regard your property rights, as you
+	> (dis)regard the property rights of others.  BTW, where do you live?  I
+	> could use a new monitor or two....
+	
+	It is possible to respect property rights and yet disagree (to the
+	point of disobedience) with how the concept has been lately twisted by
+	monied interests in the United States.
+	
+	The purpose of copyright is not to be a form of property; if it were,
+	copyrights would not expire.  The purpose of copyright is to enrich
+	the public domain by encouraging authors to publish their works, by
+	ensuring them exclusive right to profit from their work for a limited
+	time after which time *the work passes into the public domain*.  This
+	is plainly stated in the U.S. Constitution as the basis for copyright
+	law: "To promote the progress of science and useful arts, by securing
+	for limited times to authors and inventors the exclusive right to
+	their respective writings and discoveries." [Article I, section 8].
+	
+	In fact, the concept of "intellectual property" is a fairly recent
+	perversion, and the consequence has been a steady depletion of the
+	public domain.  When a piece of software (and Ultrix is an excellent
+	example) is tied up in copyright long after it is of any value to
+	anyone beyond pure academic interest, nothing is added to anyone's
+	wealth, and society as a whole loses.
+	
+	--Mirian
+	_______________________________________________
+	TUHS mailing list
+	TUHS at minnie.tuhs.org
+	http://minnie.tuhs.org/mailman/listinfo/tuhs
+	
+
+
+
+From tfb at tfeb.org  Fri Sep  6 11:27:39 2002
+From: tfb at tfeb.org (Tim Bradshaw)
+Date: Fri, 6 Sep 2002 02:27:39 +0100
+Subject: [TUHS] Ultrix...
+In-Reply-To: <slrnanfrp5.1ei.mirian@trantor.cosmic.com>
+References: <8D25F244B8274141B5D313CA4823F39C057A2388@red-msg-06.redmond.corp.microsoft.com>
+	<slrnanfrp5.1ei.mirian@trantor.cosmic.com>
+Message-ID: <15736.1163.252006.420197@tfeb.org>
+
+* Mirian Crzig Lennox wrote:
+
+> In fact, the concept of "intellectual property" is a fairly recent
+> perversion, and the consequence has been a steady depletion of the
+> public domain.  When a piece of software (and Ultrix is an excellent
+> example) is tied up in copyright long after it is of any value to
+> anyone beyond pure academic interest, nothing is added to anyone's
+> wealth, and society as a whole loses.
+
+I think this is kind of unfair in many cases.  Firstly copyright has
+lasted for a fairly long time for, well, a fairly long time. It's not
+some sinister new development which is keeping ultrix in copyright.
+Secondly, it's all very well to say that old and valueless bits of
+software should be freed, but if you are the organisation which has
+the copyright on these things it's really less trivial than you might
+think to just give them away.  For a start, there's (almost by
+definition) no money in it, so any kind of work needed is costing
+money.  Secondly there may be just plain trade-secret stuff in there,
+what do you do about that?  There may be all sorts of other awful
+things that you don't want to let the world see.
+
+I'm really in favour of giving things away when they're no longer
+interesting but I don't think there's just some magic trick you can
+do.  Here's a related example: we have a fairly large chunk of
+software which I'm wondering if we could open source.  We have the
+copyright (I wrote it).  There aren't any trade secrets in it.  But
+what there are is some fairly pointed comments about various people
+and companies.  I don't think they are defamatory, but I'd really want
+to excise them before I gave it out.  So now I have to check through
+tens of thousands of lines of code, for no money, just so I can give
+it away.
+
+Hmm, this is off-topic, sorry.  I just wanted to say that it doesn't
+have to be malice, sometimes it's just hard.
+
+--tim
+
+
+
+From mirian at cosmic.com  Fri Sep  6 23:59:44 2002
+From: mirian at cosmic.com (Mirian Crzig Lennox)
+Date: Fri, 6 Sep 2002 13:59:44 +0000 (UTC)
+Subject: [TUHS] Ultrix...
+References: <15736.1163.252006.420197@tfeb.org>
+Message-ID: <slrnanhd6g.7r6.mirian@trantor.cosmic.com>
+
+On Fri, 6 Sep 2002 02:27:39 +0100, Tim Bradshaw <tfb at tfeb.org> wrote:
+>* Mirian Crzig Lennox wrote:
+>
+>> In fact, the concept of "intellectual property" is a fairly recent
+>> perversion, and the consequence has been a steady depletion of the
+>> public domain.  When a piece of software (and Ultrix is an excellent
+>> example) is tied up in copyright long after it is of any value to
+>> anyone beyond pure academic interest, nothing is added to anyone's
+>> wealth, and society as a whole loses.
+>
+>I think this is kind of unfair in many cases.  Firstly copyright has
+>lasted for a fairly long time for, well, a fairly long time. It's not
+>some sinister new development which is keeping ultrix in copyright.
+
+Copyright has existed for roughly 300 years[1].  However, the
+construction of copyright as a form of property is a relatively recent
+development.  The original copyright term in the U.S. was a mere 14
+years[2], and copyrights were adjudicated under tort law, not property
+law.  As framed in law and interpreted by U.S courts, the purpose of
+copyright is foremost the public good (hence the "fair use" doctrine);
+the act of 'publishing' is, as the etymology of the word suggests, a
+contribution by the author to the public domain, in return for which
+he or she is given exclusive right to profit from that work for a
+limited prior time.
+
+However, since 1960 the term of copyright has been extended 11 times,
+so that no copyrighted work published before 1923 has entered the
+public domain (nor will it until 2018, save for future extensions of
+the term).  The depletion of the public domain is real.
+
+>Secondly, it's all very well to say that old and valueless bits of
+>software should be freed, but if you are the organisation which has
+>the copyright on these things it's really less trivial than you might
+>think to just give them away.  For a start, there's (almost by
+>definition) no money in it, so any kind of work needed is costing
+>money.  Secondly there may be just plain trade-secret stuff in there,
+>what do you do about that?  There may be all sorts of other awful
+>things that you don't want to let the world see.
+
+This is all a totally unrelated issue however.  Copyright refers
+necessarily only to published materials, and published materials
+cannot (by definition) be trade secrets.  Furthermore, "public domain"
+refers merely to legal status, not to any obligation to make physical
+materials available.  The presumption is that if a work is published,
+then copies already exist in the hands of the public, and they may now
+be freely redistributed.
+
+--Mirian
+
+[1]  The Statute of Anne (1710, in England) is considered to be the
+     precursor to U.S. copyright law.
+
+[2]  It could however be renewed for a single further period of 14
+     years, provided the initial author was still alive.
+
+
+From iking at microsoft.com  Sat Sep  7 02:58:42 2002
+From: iking at microsoft.com (Ian King)
+Date: Fri, 6 Sep 2002 09:58:42 -0700
+Subject: [TUHS] Ultrix...
+Message-ID: <8D25F244B8274141B5D313CA4823F39C057A2390@red-msg-06.redmond.corp.microsoft.com>
+
+Distribution can be restricted by agreement - for instance, I can share source code with you under an agreement that you will not disclose it to others, and I can seek redress if you do disclose.  That is common with software.  But even absent modifying contract, the "fair use" right you mention is not absolute and unfettered.  If I write a book and it is published, you cannot decide to print your own copies and distribute them; I have not waived my rights under copyright by publishing.  Indeed, the book does NOT "pass into the public domain" until after expiration of my copyright.  This is no different from the case where I invent and create a physical object and distribute it, subject to patent rights that I have acquired; although the physical object is (by logical necessity) out in the public, others may not freely copy it and deny me the benefit of my creativity.  "Publishing" is "making public," but not "placing into the public domain" - you have correctly stated that "public domain" is a legal concept, but incorrectly defined it.  Even distribution for no material gain (e.g. "freeware") is not "public domain."  
+ 
+DEC (and others) wrote some interesting licenses; although I might buy a DEC computer from you, complete with its software, I would not be legally entitled to use the software until I had negotiated my own license with DEC (or now, most commonly, Mentec).  I've always thought that was a bit greedy, but it is lawful to create a non-transferrable license.  Today, once the license fee for a given copy has been paid, that license is usually transferrable to another; I can give (or sell) you a copy of a book I purchased, too.  But that does not change the author's rights to the material, nor those of the party in possession; it is simply not true that "placing the work in the hands of the public" means "they may now be freely redistributed".  
+ 
+Software does make things more complex; the corpus of law around it is still being established.  However, the fundamental principle of a party's right to control of and recompense for his/her/its work product, be it physical or intellectual, still applies.  Anyone who denies that, and acts accordingly, is simply a thief, notwithstanding their erudite rationalizations.  -- Ian 
+ 
+My opinions do not necessarily reflect those of my employer.  
+
+	-----Original Message----- 
+	From: Mirian Crzig Lennox [mailto:mirian at cosmic.com] 
+	Sent: Fri 9/6/2002 6:59 AM 
+	To: tuhs at minnie.tuhs.org 
+	Cc: 
+	Subject: Re: [TUHS] Ultrix...
+	
+	
+
+	On Fri, 6 Sep 2002 02:27:39 +0100, Tim Bradshaw <tfb at tfeb.org> wrote:
+	>* Mirian Crzig Lennox wrote:
+	>
+	>> In fact, the concept of "intellectual property" is a fairly recent
+	>> perversion, and the consequence has been a steady depletion of the
+	>> public domain.  When a piece of software (and Ultrix is an excellent
+	>> example) is tied up in copyright long after it is of any value to
+	>> anyone beyond pure academic interest, nothing is added to anyone's
+	>> wealth, and society as a whole loses.
+	>
+	>I think this is kind of unfair in many cases.  Firstly copyright has
+	>lasted for a fairly long time for, well, a fairly long time. It's not
+	>some sinister new development which is keeping ultrix in copyright.
+	
+	Copyright has existed for roughly 300 years[1].  However, the
+	construction of copyright as a form of property is a relatively recent
+	development.  The original copyright term in the U.S. was a mere 14
+	years[2], and copyrights were adjudicated under tort law, not property
+	law.  As framed in law and interpreted by U.S courts, the purpose of
+	copyright is foremost the public good (hence the "fair use" doctrine);
+	the act of 'publishing' is, as the etymology of the word suggests, a
+	contribution by the author to the public domain, in return for which
+	he or she is given exclusive right to profit from that work for a
+	limited prior time.
+	
+	However, since 1960 the term of copyright has been extended 11 times,
+	so that no copyrighted work published before 1923 has entered the
+	public domain (nor will it until 2018, save for future extensions of
+	the term).  The depletion of the public domain is real.
+	
+	>Secondly, it's all very well to say that old and valueless bits of
+	>software should be freed, but if you are the organisation which has
+	>the copyright on these things it's really less trivial than you might
+	>think to just give them away.  For a start, there's (almost by
+	>definition) no money in it, so any kind of work needed is costing
+	>money.  Secondly there may be just plain trade-secret stuff in there,
+	>what do you do about that?  There may be all sorts of other awful
+	>things that you don't want to let the world see.
+	
+	This is all a totally unrelated issue however.  Copyright refers
+	necessarily only to published materials, and published materials
+	cannot (by definition) be trade secrets.  Furthermore, "public domain"
+	refers merely to legal status, not to any obligation to make physical
+	materials available.  The presumption is that if a work is published,
+	then copies already exist in the hands of the public, and they may now
+	be freely redistributed.
+	
+	--Mirian
+	
+	[1]  The Statute of Anne (1710, in England) is considered to be the
+	     precursor to U.S. copyright law.
+	
+	[2]  It could however be renewed for a single further period of 14
+	     years, provided the initial author was still alive.
+	_______________________________________________
+	TUHS mailing list
+	TUHS at minnie.tuhs.org
+	http://minnie.tuhs.org/mailman/listinfo/tuhs
+	
+
+
+
+From grog at lemis.com  Sun Sep  8 13:20:40 2002
+From: grog at lemis.com (Greg 'groggy' Lehey)
+Date: Sun, 8 Sep 2002 12:50:40 +0930
+Subject: [TUHS] Re: TUHS digest, Vol 1 #71 - 2 msgs
+In-Reply-To: <0209042106.AA02930@ivan.Harhan.ORG>
+References: <0209042106.AA02930@ivan.Harhan.ORG>
+Message-ID: <20020908032040.GU12935@wantadilla.lemis.com>
+
+On Wednesday,  4 September 2002 at 14:06:01 -0700, Michael Sokolov wrote:
+> Johnny Billquist <bqt at update.uu.se> wrote:
+>
+>>> It is a problem only if you choose to honor copyright laws. Since that is
+>>> your personal voluntary choice, it is your problem.
+>>
+>> Yes, and it's *that* problem I'm looking for a solution to.
+>
+> But since you've created that problem for yourself by your own
+> voluntary choice to honor copyrights, you shouldn't be asking others
+> for a solution.
+
+In most countries of the world, including the ones all of us live in,
+you don't have a choice whether to honour copyright law.  If you do
+not honour copyrights, you're breaking the law.  In many countries,
+even encouraging people to break the law is a crime.  If you choose to
+live in such a society, the least you can do is adapt to it, no matter
+how ridiculous you may consider it.  I would certainly be a lot
+happier if you stopped this kind of behaviour in public.
+
+Greg
+--
+Finger grog at lemis.com for PGP public key
+See complete headers for address and phone numbers
+
+
+From wkt at minnie.tuhs.org  Sun Sep  8 15:24:33 2002
+From: wkt at minnie.tuhs.org (Warren Toomey)
+Date: Sun, 8 Sep 2002 15:24:33 +1000 (EST)
+Subject: [TUHS] Re: Copyright, off-topic for TUHS
+In-Reply-To: <20020908032040.GU12935@wantadilla.lemis.com> from "Greg 'groggy'
+ Lehey" at "Sep 8, 2002 12:50:40 pm"
+Message-ID: <200209080524.g885OXe26331@minnie.tuhs.org>
+
+In article by Greg 'groggy' Lehey:
+> In most countries of the world, including the ones all of us live in,
+> you don't have a choice whether to honour copyright law.  If you do
+> not honour copyrights, you're breaking the law.
+
+I think this thread has wandered off topic a bit too much. Let's get
+back to Unix chat!
+
+Cheers,
+	Warren
+
+
