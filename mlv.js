@@ -254,8 +254,8 @@ function renderMsgBody(msgId) {
           ? (parentBlock.fromShort?parentBlock.fromShort.substring(1,parentBlock.fromShort.length-1): parentBlock.from)
           : (inReplyTo || '<None>')
 
-    const mailbodyHeaderElm = document.getElementById('mailbody-header')
-    mailbodyHeaderElm.innerText = `\
+    let e = document.getElementById('mailbody-header')
+    e.innerText = `\
 Subject   : ${subject}\n\
 From      : ${fromShort?fromShort.substring(1,fromShort.length-1):from}\n\
 Reply To  : ${replyTo}\n\
@@ -263,13 +263,19 @@ Date      : ${date}\n\
 Parent Id : ${parentMsgId}\n\
 MessageId : ${messageIdModified||messageId}`
 
-    let body = ''
-    for (var i=beginLidx; i<=bodyEndLidx;i++) {
-        body += gLines[i]+'\n'
+    let t = ''
+    for (var i=beginLidx; i<bodyBeginLidx-1;i++) {
+        t += gLines[i]+'\n'
     }
+    e = document.getElementById('mailbody-header-raw')
+    e.innerText = t
 
-    const mailbodyBodyElm = document.getElementById('mailbody-body')
-    mailbodyBodyElm.innerText = body
+    t = ''
+    for (var i=bodyBeginLidx; i<=bodyEndLidx;i++) {
+        t += gLines[i]+'\n'
+    }
+    e = document.getElementById('mailbody-body--content')
+    e.innerText = t
 }
 
 function _renderReplyRecursively(msgId, level=1) {
