@@ -29,4 +29,5 @@ MARKER
 
 SCREENSHOT
 ```
-![](./screenshot.png)
+![](./tuhs/screenshot.png)
+![](./tuhs/screenshot2.png)
