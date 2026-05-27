@@ -1,8 +1,10 @@
-const MSG_SEPARATOR_REGEXP = /^From [^ ]* at [^ ]* *[A-z]{3} [A-z]{3} [ 0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [0-9]{4}/
+const MSG_SEPARATOR_REGEXP = /^From [^ ]*( at [^ ]*)? *[A-z]{3} [A-z]{3} [ 0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [0-9]{4}/
 
+let gTime = Date.now()
 let gLines = [ /* line, ... */ ]
 let gMsgIds = [ /* MessageId, ... */ ] // ordered by time
 let gMsgMap = { /* MessageId: block */ }
+let gMsgSameMap = { /*MessageId: [ lidx, ... ]*/ }
 let gReplyMap = { /* msgId: [msgId, ...] */ }
 let gIsReplyMap = { /* msgId: true/false */} // msgId is a reply or not
 let gRenderedMap = { /* msgId: true/false */} // whether rendered or not
@@ -26,7 +28,9 @@ function parse(text='') {
         if (l.match(MSG_SEPARATOR_REGEXP)) {
             block.blockIdx = ++blockIdx
             block.separator = l
-            block.startIdx = idx
+            block.beginLidx = idx
+        } else {
+            console.warn('mlv: not match', idx, l)
         }
 
         let pk = null
@@ -53,10 +57,6 @@ function parse(text='') {
                 break
             }
             case 'Message-ID': {
-                if (v in block) {
-                    console.warn('mlv: Message-ID already used', l)
-                }
-
                 block['messageId'] = v
                 break
             }
@@ -101,9 +101,9 @@ function parse(text='') {
         }
 
         if (block.hasOwnProperty('inReplyTo')) {
-            const x = block['inReplyTo'].match(/<[^>]*>/)
+            const x = block.inReplyTo.match(/<[^>]*>/)
             if (x) {
-                block['inReplyToMailAddress'] = x[0]
+                block.inReplyToMailAddress = x[0]
             } else {
                 console.warn(
                     'mlv: inReplyToMailAddress not found in',
@@ -115,17 +115,36 @@ function parse(text='') {
 
         // now, ignore header/body separator and go on
         l = gLines[++idx]
-        block.bodyStartIdx = idx
+        block.bodyBeginLidx = idx
         while (!l.match(MSG_SEPARATOR_REGEXP)) {
             l = gLines[++idx]
             if (l === undefined) { // end
                 break
             }
         }
-        block.bodyEndIdx = idx-2
+        block.bodyEndLidx = idx-2
 
-        gMsgIds.push(block.messageId)
-        gMsgMap[block.messageId] = block
+        // process message bloch which has same message Id
+        if (block.messageId in gMsgMap) {
+            console.warn('mlv: Message-ID same occurs', block.beginLidx, gLines[block.beginLidx])
+            const id = block.messageId
+
+            if (!(id in gMsgSameMap)) {
+                gMsgSameMap[id] = [gMsgMap[id].beginLidx]
+            }
+            gMsgSameMap[id].push(block.beginLidx)
+
+            const mmid = block.messageId + '$' + (gMsgSameMap[id][gMsgSameMap[id].length-1]+1)
+            block.messageIdModified = mmid
+        }
+
+        if (block.messageIdModified) {
+            gMsgMap[block.messageIdModified] = block
+            gMsgIds.push(block.messageIdModified)
+        } else {
+            gMsgMap[block.messageId] = block
+            gMsgIds.push(block.messageId)
+        }
 
         // self-made reply chain, same effect as references
         if (block.hasOwnProperty('inReplyToMailAddress')) {
@@ -146,7 +165,7 @@ function showMsg(msgId) {
     const block = gMsgMap[msgId]
     if (!block) return
 
-    const parentMsgId = block.inReplyTo
+    const parentMsgId = block.inReplyToMailAddress || block.inReplyTo
     let e = null
 
     if (parentMsgId) {
@@ -189,54 +208,63 @@ function isVisibleInContainer(el, container) {
 }
 
 function renderMsgTreeItem(msgId, level=0, marker='') {
+    // NOTE: using @msgId in whole process, do not use block.messageId
     gMsgIdsRendered.push(msgId)
+    gRenderedMap[msgId] = true
     const currMsgIdxRendered = gMsgIdsRendered.length-1
 
     const block = gMsgMap[msgId]
-    const {from, fromShort, subject, date, } = block
+    if (!block) {
+        console.error('mlv: no block found by msgId:', msgId)
+        return
+    }
+
+    const {from, fromShort, subject, date, beginLidx, bodyEndLidx} = block
 
     let div = document.createElement('div')
     div.setAttribute('class', 'msgtree-item')
     div.setAttribute('id', msgId)
-    div.setAttribute('idx', currMsgIdxRendered)
+    div.setAttribute('ridx', currMsgIdxRendered)
 
     let span1 = document.createElement('span')
-    const span1Text = `${marker? marker:' '}${' '.repeat(level)}${level>0?'↳':''}`
-    span1.innerText = span1Text
+    const span1Text = `${marker? marker:''} ${' '.repeat(level)}${level>0?'↳ ':''}`
+    span1.innerText = `${span1Text}`
     span1.setAttribute('class', 'msgtree-item--left')
     div.appendChild(span1)
 
     let span2 = document.createElement('span')
-    const span2Text = `${subject} <${date}> ${fromShort||from} ${msgId} <${currMsgIdxRendered+1}/${gMsgIds.length}>`
+    const span2Text = `${subject} <${date}> ${fromShort||from} ${msgId} <${beginLidx+1},${bodyEndLidx+1} ${currMsgIdxRendered+1}/${gMsgIds.length}>`
     span2.innerText = span2Text
     span2.setAttribute('class', 'msgtree-item--right')
     div.appendChild(span2)
 
     // console.log(span1Text+span2Text)
 
-    div.onclick = function() {
-        showMsg(msgId)
-    }
+    div.onclick = function() { showMsg(msgId) }
     document.getElementById('mailhead').appendChild(div)
 }
 
 function renderMsgBody(msgId) {
     const block = gMsgMap[msgId]
-    const {messageId, from, fromShort, subject, date, inReplyTo, bodyStartIdx, bodyEndIdx} = block
-    const parentMsgId = gMsgMap[msgId].inReplyTo || '<None>'
+    const {messageIdModified, messageId, from, fromShort, subject, date, inReplyToMailAddress, inReplyTo, beginLidx, bodyBeginLidx, bodyEndLidx} = block
+    const parentMsgId = inReplyToMailAddress || inReplyTo || '<None>'
     const parentBlock = gMsgMap[parentMsgId]
+
+    const replyTo = parentBlock
+          ? (parentBlock.fromShort?parentBlock.fromShort.substring(1,parentBlock.fromShort.length-1): parentBlock.from)
+          : (inReplyTo || '<None>')
 
     const mailbodyHeaderElm = document.getElementById('mailbody-header')
     mailbodyHeaderElm.innerText = `\
 Subject   : ${subject}\n\
 From      : ${fromShort?fromShort.substring(1,fromShort.length-1):from}\n\
-Reply To  : ${parentBlock? (parentBlock.fromShort?parentBlock.fromShort.substring(1,parentBlock.fromShort.length-1): parentBlock.from): '<None>'}\n\
+Reply To  : ${replyTo}\n\
 Date      : ${date}\n\
 Parent Id : ${parentMsgId}\n\
-MessageId : ${messageId}`
+MessageId : ${messageIdModified||messageId}`
 
     let body = ''
-    for (var i=bodyStartIdx; i<=bodyEndIdx;i++) {
+    for (var i=beginLidx; i<=bodyEndLidx;i++) {
         body += gLines[i]+'\n'
     }
 
@@ -248,7 +276,6 @@ function _renderReplyRecursively(msgId, level=1) {
     (gReplyMap[msgId] || []).forEach((i,idx) => {
         if (!gRenderedMap[i]) {
             renderMsgTreeItem(i, level)
-            gRenderedMap[i] = true
         }
         _renderReplyRecursively(i, level+1)
     })
@@ -256,32 +283,40 @@ function _renderReplyRecursively(msgId, level=1) {
 
 function render() {
     for(var i of gMsgIds) {
-        // if msg is not a reply, render it,
-        // else it will be rendered in reply chain
-        if (!gIsReplyMap[i]) {
-            if (!gRenderedMap[i]) {
-                renderMsgTreeItem(i, 0, '-')
-                gRenderedMap[i] = true
-            }
-        } else {
-            const replyTo = gMsgMap[i]['inReplyTo']
-            if (!(replyTo in gMsgMap)) {
-                if (!gRenderedMap[i]) {
-                    renderMsgTreeItem(i, 0, '*')
-                    gRenderedMap[i] = true
+
+        if (!gRenderedMap[i]) {
+            renderMsgTreeItem(i, 0, gIsReplyMap[i]? '<': '*')
+        }
+        _renderReplyRecursively(i)
+
+        // render messages with same message-id
+        if (i in gMsgSameMap) {
+            for (var j=1; j<gMsgSameMap[i].length; j++) {
+                const mmid = i + '$' + String(gMsgSameMap[i][j]+1)
+                if (!gRenderedMap[mmid]) {
+                    renderMsgTreeItem(mmid, 0, '$')
                 }
             }
         }
-        _renderReplyRecursively(i)
     }
 }
 
 function check() {
+    const gMsgSameMapKeysCount = Object.keys(gMsgSameMap).length
+    const gMsgSameMapValuesCount = Object.keys(gMsgSameMap).reduce((res, k, idx) => {
+        res += gMsgSameMap[k].length
+        return res
+    }, 0)
     console.log(
-        'mlv:',
-        'gMsgIdsRendered:', gMsgIdsRendered.length,
-        'gMsgIds.length:', gMsgIds.length,
-        'missing:', gMsgIds.length-gMsgIdsRendered.length
+        'timecost:', (Date.now() - gTime)+'ms',
+        '\ngMsgIds:', gMsgIds.length,
+        '\ngMsgIdsRendered:', gMsgIdsRendered.length,
+        '\ngRenderedMap keys count:', Object.keys(gRenderedMap).length,
+        '\ngMsgMap keys count:', Object.keys(gMsgMap).length,
+        '\ngMsgSameMap keys count:', gMsgSameMapKeysCount,
+        '\ngMsgSameMap values count:', gMsgSameMapValuesCount,
+        '\nDuplicated message count:', gMsgSameMapValuesCount - gMsgSameMapKeysCount,
+        '\nNot rendered:', gMsgIds.length - gMsgIdsRendered.length,
     )
 }
 
@@ -292,7 +327,7 @@ function hotkeys() {
         case 'j': {
             e = document.getElementById(gCurHiMsgId)
             if (!e) return
-            const idx = Number(e.getAttribute('idx'))
+            const idx = Number(e.getAttribute('ridx'))
             const nextMsgId = gMsgIdsRendered[idx+1]
             showMsg(nextMsgId)
             break
@@ -300,7 +335,7 @@ function hotkeys() {
         case 'k': {
             e = document.getElementById(gCurHiMsgId)
             if (!e) return
-            const idx = Number(e.getAttribute('idx'))
+            const idx = Number(e.getAttribute('ridx'))
             const prevMsgId = gMsgIdsRendered[idx-1]
             showMsg(prevMsgId)
             break
@@ -351,8 +386,8 @@ function main() {
         if (gMsgIdsRendered.length) {
             showMsg(gMsgIdsRendered[0])
         }
-        check()
         hotkeys()
+        check()
     })
 }
 

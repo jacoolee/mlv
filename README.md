@@ -21,6 +21,12 @@ HOTKEYS
 DIAGNOSE
     Check out ./tuhs/NOTE.txt
 
+MARKER
+    < - is a reply, but parent message is not in thread
+    * - is the first message in thread (star[t])
+    $ - (Same) messageId occurs before
+    ↳ - sub reply
+
 SCREENSHOT
 ```
 ![](./screenshot.png)
