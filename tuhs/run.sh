@@ -40,6 +40,7 @@ done
 mlfile_latest=''
 curyear=$(date '+%Y')
 i=1989
+ss=''
 while [ $i -lt ${curyear} ]; do
     i=$((i+1))                  # starts from 1990
 
@@ -52,6 +53,8 @@ while [ $i -lt ${curyear} ]; do
         mlfile_latest="${mlfile}"
         s="${s} ${mlfile}"
     done
+
+    ss="${ss} ${s}"
 
     if [ "${s}" == '' ]; then
         continue
@@ -73,7 +76,7 @@ echo '<html style="white-space: nowrap;"><style>.y {border-bottom: solid 1px gra
 # all.txt
 mlfileall=all.txt
 if [ ${has_new_mlfile} -eq 1 ] || [ ! -e ${mlfileall} ]; then
-    cat ${s} > ${mlfileall}
+    cat ${ss} > ${mlfileall}
 fi
 echo "<div><a href='../mlv.html?./tuhs/${mlfileall}'>[${mlfileall}]</a></div><br/>" >> "${index_file}"
 
