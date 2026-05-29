@@ -358,6 +358,16 @@ function hotkeys() {
             showMsg(replies[0])
             break
         }
+        case 'c': {
+            e = document.getElementById('c')
+            let s = e.getAttribute('style')
+            if (s) {
+                e.setAttribute('style', '')
+            } else {
+                e.setAttribute('style', 'display: block;')
+            }
+            break
+        }
         case '0': {
             showMsg(gMsgIdsRendered[0])
             break
@@ -383,6 +393,24 @@ function hotkeys() {
     })
 }
 
+function configure() {
+    document.getElementById('c-show-raw-header').onclick=function(e) {
+        document.getElementById('mailbody-header-raw').setAttribute('style', 'display: block;')
+        localStorage.setItem('show-mailbody-header-raw', 1)
+    }
+    document.getElementById('c-hide-raw-header').onclick=function(e) {
+        document.getElementById('mailbody-header-raw').setAttribute('style', 'display: none;')
+        localStorage.setItem('show-mailbody-header-raw', 0)
+    }
+
+    // init
+    if (localStorage.getItem('show-mailbody-header-raw') === '0') {
+        document.getElementById('mailbody-header-raw').setAttribute('style', 'display: none;')
+    } else {
+        document.getElementById('mailbody-header-raw').setAttribute('style', 'display: block;')
+    }
+}
+
 function main() {
     const qmidx = window.location.href.indexOf('?')
     const filePath = window.location.href.substring(qmidx+1)
@@ -393,6 +421,7 @@ function main() {
             showMsg(gMsgIdsRendered[0])
         }
         hotkeys()
+        configure()
         check()
     })
 }

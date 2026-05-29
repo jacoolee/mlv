@@ -3,6 +3,12 @@
 
 wget 'https://www.tuhs.org/Archive/Documentation/TUHS/Mail_list/' -O /tmp/tuhsml.html
 
+mlfile_latest_last=$(head -1 mlfile_latest.txt 2>/dev/null)
+if [ "${mlfile_latest_last}" != '' ]; then
+    echo "clear ${mlfile_latest_last} ..."
+    rm -f "${mlfile_latest_last}" "${mlfile_latest_last}.gz" &>/dev/null
+fi
+
 has_new_mlfile=0
 for l in $(grep -o 'href="[^"]*txt[\.gz]*' /tmp/tuhsml.html | cut -c7-); do
     mlfile=$(basename "${l}")
@@ -27,6 +33,7 @@ for i in *.gz; do
 done
 
 # generate whole year maillist ordered by time
+mlfile_latest=''
 curyear=$(date '+%Y')
 i=1989
 while [ $i -lt ${curyear} ]; do
@@ -38,6 +45,7 @@ while [ $i -lt ${curyear} ]; do
         if [ ! -e "${mlfile}" ]; then
             continue
         fi
+        mlfile_latest="${mlfile}"
         s="${s} ${mlfile}"
     done
 
@@ -50,6 +58,8 @@ while [ $i -lt ${curyear} ]; do
         cat ${s} > "${mlfile_wholeyear}"
     fi
 done
+
+echo "${mlfile_latest}" > mlfile_latest.txt
 
 # generate index.html, always overwrite
 index_file=index.html
