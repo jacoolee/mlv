@@ -18,6 +18,7 @@ HOTKEYS
     9 - view last message
     1-8 - view message at 1..8/10 percent of all messages
     c - toggle configure dialog
+    m - toggle manual dialog
 
 DIAGNOSE
     Check out ./tuhs/NOTE.txt

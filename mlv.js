@@ -361,7 +361,17 @@ function hotkeys() {
         case 'c': {
             e = document.getElementById('c')
             let s = e.getAttribute('style')
-            if (s) {
+            if (s && s.includes('block')) {
+                e.setAttribute('style', '')
+            } else {
+                e.setAttribute('style', 'display: block;')
+            }
+            break
+        }
+        case 'm': {
+            e = document.getElementById('m')
+            let s = e.getAttribute('style')
+            if (s && s.includes('block')) {
                 e.setAttribute('style', '')
             } else {
                 e.setAttribute('style', 'display: block;')
@@ -393,22 +403,70 @@ function hotkeys() {
     })
 }
 
-function configure() {
-    document.getElementById('c-show-raw-header').onclick=function(e) {
-        document.getElementById('mailbody-header-raw').setAttribute('style', 'display: block;')
-        localStorage.setItem('show-mailbody-header-raw', 1)
+function _configure(eid, persist=false) {
+    let ls_id = 'show--'+eid     // localStorage id
+    let show_id = 'c-show--'+eid
+    let hide_id = 'c-hide--'+eid
+
+    const e = document.getElementById(eid)
+
+    document.getElementById(show_id).onclick=function(_) {
+        e.setAttribute('style', 'display: block;')
+        persist && localStorage.setItem(ls_id, 1)
     }
-    document.getElementById('c-hide-raw-header').onclick=function(e) {
-        document.getElementById('mailbody-header-raw').setAttribute('style', 'display: none;')
-        localStorage.setItem('show-mailbody-header-raw', 0)
+    document.getElementById(hide_id).onclick=function(_) {
+        e.setAttribute('style', 'display: none;')
+        persist && localStorage.setItem(ls_id, 0)
     }
 
     // init
-    if (localStorage.getItem('show-mailbody-header-raw') === '0') {
-        document.getElementById('mailbody-header-raw').setAttribute('style', 'display: none;')
-    } else {
-        document.getElementById('mailbody-header-raw').setAttribute('style', 'display: block;')
+    if (persist) {
+        if (localStorage.getItem(ls_id) === '0') {
+            e.setAttribute('style', 'display: none;')
+        } else {
+            e.setAttribute('style', 'display: block;')
+        }
     }
+}
+
+function configure() {
+    _configure('c')
+    _configure('m')
+    _configure('mailbody-header-raw', true)
+}
+
+function manual() {
+    const e = document.getElementById('m')
+    e.innerText = `NAME
+    mlv - maillist viewer
+
+USAGE
+    ./mlv.html?{MAIL_LIST_FILE}
+    If using with local maillist file, ensure web browser's local file access ability is enabled.
+
+EXAMPLE
+    ./mlv.html?./tuhs/2026.txt
+
+HOTKEYS
+    j - view next message
+    k - view previous message
+    p - view parent message
+    n - view child message
+    0 - view first message
+    9 - view last message
+    1-8 - view message at 1..8/10 percent of all messages
+    c - toggle configure dialog
+    m - toggle manual dialog
+
+DIAGNOSE
+    Check out ./tuhs/NOTE.txt
+
+MARKER
+    < - is a reply, but parent message is not in thread
+    * - is the first message in thread (star[t])
+    $ - (Same) messageId occurs before
+    ↳ - sub reply
+`
 }
 
 function main() {
@@ -422,6 +480,7 @@ function main() {
         }
         hotkeys()
         configure()
+        manual()
         check()
     })
 }
