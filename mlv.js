@@ -9,6 +9,7 @@ let gReplyMap = { /* msgId: [msgId, ...] */ }
 let gIsReplyMap = { /* msgId: true/false */} // msgId is a reply or not
 let gRenderedMap = { /* msgId: true/false */} // whether rendered or not
 let gMsgIdsRendered = [ /* msgId, ... */ ]
+let gMsgIdsLevel0 = [ /* msgId, ... */ ]
 let gCurHiParentMsgId = null
 let gCurHiMsgId = null
 
@@ -100,6 +101,11 @@ function parse(text='') {
             }
         }
 
+        // Always ensure messageId exists
+        if (!block.hasOwnProperty('messageId')) {
+            block.messageId = `<#${idx}>`
+        }
+
         if (block.hasOwnProperty('inReplyTo')) {
             const x = block.inReplyTo.match(/<[^>]*>/)
             if (x) {
@@ -169,17 +175,20 @@ function showMsg(msgId) {
     let e = null
 
     if (parentMsgId) {
-        if (gCurHiParentMsgId) {
-            e = document.getElementById(gCurHiParentMsgId)
-            if (e) e.setAttribute('style','')
+        if (parentMsgId !== gCurHiParentMsgId) {
+            if (gCurHiParentMsgId) {
+                e = document.getElementById(gCurHiParentMsgId)
+                if (e) e.setAttribute('style','')
+            }
+            e = document.getElementById(parentMsgId)
+            if (e) e.setAttribute('style', 'background-color: goldenrod;')
+            gCurHiParentMsgId = parentMsgId
         }
-        e = document.getElementById(parentMsgId)
-        if (e) e.setAttribute('style', 'background-color: goldenrod;')
-        gCurHiParentMsgId = parentMsgId
     } else {
         if (gCurHiParentMsgId) {
             e = document.getElementById(gCurHiParentMsgId)
             if (e) e.setAttribute('style','')
+            gCurHiParentMsgId = null
         }
     }
 
@@ -209,6 +218,10 @@ function isVisibleInContainer(el, container) {
 
 function renderMsgTreeItem(msgId, level=0, marker='') {
     // NOTE: using @msgId in whole process, do not use block.messageId
+    if (level === 0) {
+        gMsgIdsLevel0.push(msgId)
+    }
+
     gMsgIdsRendered.push(msgId)
     gRenderedMap[msgId] = true
     const currMsgIdxRendered = gMsgIdsRendered.length-1
@@ -220,6 +233,10 @@ function renderMsgTreeItem(msgId, level=0, marker='') {
     }
 
     const {from, fromShort, subject, date, beginLidx, bodyEndLidx} = block
+    block.level = level
+    if (level === 0) {
+        block.level0Idx = gMsgIdsLevel0.length-1
+    }
 
     let div = document.createElement('div')
     div.setAttribute('class', 'msgtree-item')
@@ -289,7 +306,6 @@ function _renderReplyRecursively(msgId, level=1) {
 
 function render() {
     for(var i of gMsgIds) {
-
         if (!gRenderedMap[i]) {
             renderMsgTreeItem(i, 0, gIsReplyMap[i]? '<': '*')
         }
@@ -358,24 +374,37 @@ function hotkeys() {
             showMsg(replies[0])
             break
         }
-        case 'h': {             // same level, prev message in message chain
-            if (!gCurHiParentMsgId) return
-            if (!gCurHiMsgId) return
-            const replies = gReplyMap[gCurHiParentMsgId]
-            const idx = replies.indexOf(gCurHiMsgId)
-            if (idx === 0) return
-            showMsg(replies[idx-1])
-            break
-        }
+
         case 'l': {             // same level, prev message in message chain
-            if (!gCurHiParentMsgId) return
             if (!gCurHiMsgId) return
-            const replies = gReplyMap[gCurHiParentMsgId]
-            const idx = replies.indexOf(gCurHiMsgId)
-            if (idx === replies.length-1) return
-            showMsg(replies[idx+1])
+            const {level0Idx, level} = gMsgMap[gCurHiMsgId]
+            if (level === 0) {
+                if (level0Idx === 0) return
+                showMsg(gMsgIdsLevel0[level0Idx-1])
+            } else {
+                const replies = gReplyMap[gCurHiParentMsgId]
+                const idx = replies.indexOf(gCurHiMsgId)
+                if (idx === 0) return
+                showMsg(replies[idx-1])
+            }
             break
         }
+
+        case 'h': {             // same level, prev message in message chain
+            if (!gCurHiMsgId) return
+            const {level0Idx, level} = gMsgMap[gCurHiMsgId]
+            if (level === 0) {
+                if (level0Idx === gMsgIdsLevel0.length-1) return
+                showMsg(gMsgIdsLevel0[level0Idx+1])
+            } else {
+                const replies = gReplyMap[gCurHiParentMsgId]
+                const idx = replies.indexOf(gCurHiMsgId)
+                if (idx === replies.length-1) return
+                showMsg(replies[idx+1])
+            }
+            break
+        }
+
         case 'c': {
             e = document.getElementById('c')
             let s = e.getAttribute('style')
@@ -468,10 +497,10 @@ EXAMPLE
 HOTKEYS
     j - view next message
     k - view previous message
+    h - view next sibling message
+    l - view previous sibling message
     p - view parent message
     n - view child message
-    h - view previous sibling message
-    l - view next sibling message
     0 - view first message
     9 - view last message
     1-8 - view message at 1..8/10 percent of all messages

@@ -12,10 +12,10 @@ EXAMPLE
 HOTKEYS
     j - view next message
     k - view previous message
+    h - view next sibling message
+    l - view previous sibling message
     p - view parent message
     n - view child message
-    h - view previous sibling message
-    l - view next sibling message
     0 - view first message
     9 - view last message
     1-8 - view message at 1..8/10 percent of all messages
