@@ -358,6 +358,24 @@ function hotkeys() {
             showMsg(replies[0])
             break
         }
+        case 'h': {             // same level, prev message in message chain
+            if (!gCurHiParentMsgId) return
+            if (!gCurHiMsgId) return
+            const replies = gReplyMap[gCurHiParentMsgId]
+            const idx = replies.indexOf(gCurHiMsgId)
+            if (idx === 0) return
+            showMsg(replies[idx-1])
+            break
+        }
+        case 'l': {             // same level, prev message in message chain
+            if (!gCurHiParentMsgId) return
+            if (!gCurHiMsgId) return
+            const replies = gReplyMap[gCurHiParentMsgId]
+            const idx = replies.indexOf(gCurHiMsgId)
+            if (idx === replies.length-1) return
+            showMsg(replies[idx+1])
+            break
+        }
         case 'c': {
             e = document.getElementById('c')
             let s = e.getAttribute('style')
@@ -452,6 +470,8 @@ HOTKEYS
     k - view previous message
     p - view parent message
     n - view child message
+    h - view previous sibling message
+    l - view next sibling message
     0 - view first message
     9 - view last message
     1-8 - view message at 1..8/10 percent of all messages
