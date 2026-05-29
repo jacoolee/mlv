@@ -96,7 +96,7 @@ while [ $i -gt 1990 ]; do
     for j in January February March April May July June August September October November December; do
         mlfile="${i}-${j}.txt"
         if [ ! -e "${mlfile}" ]; then
-            echo "<span title='${mlfile}'><a style='color: white;' href='../mlv.html?./tuhs/${mlfile}'>${j}</a> </span>" >> "${index_file}"
+            echo "<span title='${mlfile}'><a style='color: transparent;' href='../mlv.html?./tuhs/${mlfile}'>${j}</a> </span>" >> "${index_file}"
         else
             echo "<span title='${mlfile}'><a style='' href='../mlv.html?./tuhs/${mlfile}'>${j}</a></span>" >> "${index_file}"
         fi
