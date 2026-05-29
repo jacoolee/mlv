@@ -65,32 +65,35 @@ echo "${mlfile_latest}" > mlfile_latest.txt
 index_file=index.html
 
 echo '<html style="font-family: menlo, courier, monospace; font-size: 13;"><body>' > "${index_file}"
-i=1989
+
+# all.txt
+mlfileall=all.txt
+if [ ${has_new_mlfile} -eq 1 ] || [ ! -e ${mlfileall} ]; then
+    cat ${s} > ${mlfileall}
+fi
+echo "<div><a href='../mlv.html?./tuhs/${mlfileall}'>[${mlfileall}]</a></div><br/>" >> "${index_file}"
+
+# .txt by year
+i=$((curyear+1))
 s=''
-while [ $i -lt ${curyear} ]; do
-    i=$((i+1))                  # starts from 1990
+while [ $i -gt 1989 ]; do
+    i=$((i-1))                  # starts from 1990
     for j in January February March April May July June August September October November December; do
         mlfile="${i}-${j}.txt"
         if [ ! -e "${mlfile}" ]; then
             continue
         fi
         s="${s} ${mlfile}"
-        echo "<div><a href='../mlv.html?./tuhs/${mlfile}'>${mlfile}</a></div>" >> "${index_file}"
+        echo "<span><a href='../mlv.html?./tuhs/${mlfile}'>${mlfile}</a> </span>" >> "${index_file}"
     done
 
     mlfile_wholeyear="${i}.txt"
     if [ -e "${mlfile_wholeyear}" ]; then
-        echo "<div><a href='../mlv.html?./tuhs/${mlfile_wholeyear}'>${mlfile_wholeyear}</a></div>" >> "${index_file}"
+        echo "<div><a href='../mlv.html?./tuhs/${mlfile_wholeyear}'>[${mlfile_wholeyear}]</a></div>" >> "${index_file}"
         echo '<br/>' >> "${index_file}"
     fi
 
 done
-
-mlfileall=all.txt
-if [ ${has_new_mlfile} -eq 1 ] || [ ! -e ${mlfileall} ]; then
-    cat ${s} > ${mlfileall}
-fi
-echo "<div><a href='../mlv.html?./tuhs/${mlfileall}'>${mlfileall}</a></div>" >> "${index_file}"
 
 echo '</body></html>' >> "${index_file}"
 
