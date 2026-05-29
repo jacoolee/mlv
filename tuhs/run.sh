@@ -108,3 +108,10 @@ done
 echo '</body></html>' >> "${index_file}"
 
 open -a Firefox.app "${index_file}"
+
+if [ ${ENV_RUN_DRY:-0} -eq 1 ]; then
+    :
+else
+    git add .
+    store
+fi
