@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 # set -x
 
-wget 'https://www.tuhs.org/Archive/Documentation/TUHS/Mail_list/' -O /tmp/tuhsml.html
+if [ ${ENV_RUN_DRY:-0} -eq 1 ]; then
+    :
+else
+    wget 'https://www.tuhs.org/Archive/Documentation/TUHS/Mail_list/' -O /tmp/tuhsml.html
 
-mlfile_latest_last=$(head -1 mlfile_latest.txt 2>/dev/null)
-if [ "${mlfile_latest_last}" != '' ]; then
-    echo "clear ${mlfile_latest_last} ..."
-    rm -f "${mlfile_latest_last}" "${mlfile_latest_last}.gz" &>/dev/null
+    mlfile_latest_last=$(head -1 mlfile_latest.txt 2>/dev/null)
+    if [ "${mlfile_latest_last}" != '' ]; then
+        echo "clear ${mlfile_latest_last} ..."
+        rm -f "${mlfile_latest_last}" "${mlfile_latest_last}.gz" &>/dev/null
+    fi
 fi
 
 has_new_mlfile=0
@@ -64,7 +68,7 @@ echo "${mlfile_latest}" > mlfile_latest.txt
 # generate index.html, always overwrite
 index_file=index.html
 
-echo '<html style="font-family: menlo, courier, monospace; font-size: 13;"><body>' > "${index_file}"
+echo '<html style="white-space: nowrap;"><style>.y {border-bottom: solid 1px gray; width: 750px; } a {text-decoration: unset;}</style><body>' > "${index_file}"
 
 # all.txt
 mlfileall=all.txt
@@ -75,23 +79,26 @@ echo "<div><a href='../mlv.html?./tuhs/${mlfileall}'>[${mlfileall}]</a></div><br
 
 # .txt by year
 i=$((curyear+1))
-s=''
-while [ $i -gt 1989 ]; do
-    i=$((i-1))                  # starts from 1990
+while [ $i -gt 1990 ]; do
+    i=$((i-1))
+    mlfile_wholeyear="${i}.txt"
+
+    if [ -e "${mlfile_wholeyear}" ]; then
+        echo '<div class="y">' >> "${index_file}"
+        echo "<span><a href='../mlv.html?./tuhs/${mlfile_wholeyear}'>[${mlfile_wholeyear}]</a> </span>" >> "${index_file}"
+    else
+        continue
+    fi
+
     for j in January February March April May July June August September October November December; do
         mlfile="${i}-${j}.txt"
         if [ ! -e "${mlfile}" ]; then
-            continue
+            echo "<span title='${mlfile}'><a style='color: white;' href='../mlv.html?./tuhs/${mlfile}'>${j}</a> </span>" >> "${index_file}"
+        else
+            echo "<span title='${mlfile}'><a style='' href='../mlv.html?./tuhs/${mlfile}'>${j}</a></span>" >> "${index_file}"
         fi
-        s="${s} ${mlfile}"
-        echo "<span><a href='../mlv.html?./tuhs/${mlfile}'>${mlfile}</a> </span>" >> "${index_file}"
     done
-
-    mlfile_wholeyear="${i}.txt"
-    if [ -e "${mlfile_wholeyear}" ]; then
-        echo "<div><a href='../mlv.html?./tuhs/${mlfile_wholeyear}'>[${mlfile_wholeyear}]</a></div>" >> "${index_file}"
-        echo '<br/>' >> "${index_file}"
-    fi
+    echo '</div>' >> "${index_file}"
 
 done
 
