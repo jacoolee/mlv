@@ -171,36 +171,44 @@ function showMsg(msgId) {
     const block = gMsgMap[msgId]
     if (!block) return
 
-    const parentMsgId = block.inReplyToMailAddress || block.inReplyTo
     let e = null
 
-    if (parentMsgId) {
-        if (parentMsgId !== gCurHiParentMsgId) {
-            if (gCurHiParentMsgId) {
-                e = document.getElementById(gCurHiParentMsgId)
-                if (e) e.setAttribute('style','')
-            }
-            e = document.getElementById(parentMsgId)
-            if (e) e.setAttribute('style', 'background-color: goldenrod;')
-            gCurHiParentMsgId = parentMsgId
-        }
+    // clear old
+    const parentMsgId = block.inReplyToMailAddress || block.inReplyTo
+    if (parentMsgId === gCurHiParentMsgId) {
+        // do nothing, no need to clear
     } else {
-        if (gCurHiParentMsgId) {
-            e = document.getElementById(gCurHiParentMsgId)
-            if (e) e.setAttribute('style','')
+        e = document.getElementById(gCurHiParentMsgId)
+        if (e) {
+            e.classList.remove('hi--parent')
+            gReplyMap[gCurHiParentMsgId].forEach((id) => {
+                document.getElementById(id).classList.remove('hi--sibling')
+            })
+        }
+    }
+
+    // set new
+    if (parentMsgId) {
+        e = document.getElementById(parentMsgId)
+        if (e) {
+            e.classList.add('hi--parent')
+            gReplyMap[parentMsgId].forEach((id) => {
+                document.getElementById(id).classList.add('hi--sibling')
+            })
+            gCurHiParentMsgId = parentMsgId
+        } else {
             gCurHiParentMsgId = null
         }
     }
 
+    // clear old
     if (gCurHiMsgId) {
-        if (gCurHiMsgId !== gCurHiParentMsgId) {
-            e = document.getElementById(gCurHiMsgId)
-            if (e) e.setAttribute('style','')
-        }
+        document.getElementById(gCurHiMsgId).classList.remove('hi--cur')
     }
 
+    // set new
     e = document.getElementById(msgId)
-    e.setAttribute('style', 'background-color: lightgreen;')
+    e.classList.add('hi--cur')
     if (!isVisibleInContainer(e, document.getElementById('mailhead'))) {
         e.scrollIntoView()
     }
