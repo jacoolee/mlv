@@ -23,6 +23,7 @@ HOTKEYS
     b - scroll backward threads view one page
     v - scroll forward threads view one page
     , - center current message in threads view
+    . - focus and view first visualable message in threads view
 
     Space - scroll forward message body view one page
     u - scroll backward message body view one page

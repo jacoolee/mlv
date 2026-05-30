@@ -488,6 +488,18 @@ function hotkeys() {
             break
         }
 
+        case '.': {
+            e = document.getElementById('mailhead')
+            let h = e.scrollTop - 10 /*first child's margin top*/
+            if (h < 0) h = 0
+            let idx = Math.ceil(h / 21) /* 21: total height of a msgtree-item */
+            if (idx > gMsgIdsRendered.length-1) {
+                idx = gMsgIdsRendered.length-1
+            }
+            showMsg(gMsgIdsRendered[idx])
+            break
+        }
+
         case ' ': {
             e = document.getElementById('mailbody')
             e.focus()
@@ -570,6 +582,7 @@ HOTKEYS
     b - scroll backward threads view one page
     v - scroll forward threads view one page
     , - center current message in threads view
+    . - focus and view first visualable message in threads view
 
     Space - scroll forward message body view one page
     u - scroll backward message body view one page
