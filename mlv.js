@@ -423,6 +423,7 @@ function hotkeys() {
             }
             break
         }
+
         case 'm': {
             e = document.getElementById('m')
             let s = e.getAttribute('style')
@@ -433,10 +434,12 @@ function hotkeys() {
             }
             break
         }
+
         case '0': {
             showMsg(gMsgIdsRendered[0])
             break
         }
+
         case '1':
         case '2':
         case '3':
@@ -450,10 +453,61 @@ function hotkeys() {
             showMsg(msgId)
             break
         }
+
         case '9': {
             showMsg(gMsgIdsRendered[gMsgIdsRendered.length-1])
             break
         }
+
+        case 'b': {
+            e = document.getElementById('mailhead')
+            e.scrollBy({
+                top: -(e.clientHeight-20),
+                behavior: 'smooth'
+            })
+            break
+        }
+
+        case 'v': {
+            e = document.getElementById('mailhead')
+            e.scrollBy({
+                top: (e.clientHeight-20),
+                behavior: 'smooth'
+            })
+            break
+        }
+
+        case ',': {
+            e = document.getElementById(gCurHiMsgId)
+            e.scrollIntoView()
+            e = document.getElementById('mailhead')
+            e.scrollBy({
+                top: -e.clientHeight/2,
+                behavior: 'smooth', // or 'auto'
+            })
+            break
+        }
+
+        case ' ': {
+            e = document.getElementById('mailbody')
+            e.focus()
+            e.scrollBy({
+                top: (e.clientHeight-20),
+                behavior: 'smooth'
+            })
+            break
+        }
+
+        case 'u': {
+            e = document.getElementById('mailbody')
+            e.focus()
+            e.scrollBy({
+                top: -(e.clientHeight-20),
+                behavior: 'smooth'
+            })
+            break
+        }
+
         }
     })
 }
@@ -512,6 +566,14 @@ HOTKEYS
     0 - view first message
     9 - view last message
     1-8 - view message at 1..8/10 percent of all messages
+
+    b - scroll backward threads view one page
+    v - scroll forward threads view one page
+    , - center current message in threads view
+
+    Space - scroll forward message body view one page
+    u - scroll backward message body view one page
+
     c - toggle configure dialog
     m - toggle manual dialog
 
