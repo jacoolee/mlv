@@ -1,5 +1,6 @@
 html {
-    --mailhead-height: 400px;
+    --mailhead-height: 50%;
+    --mailhead-width: 50%;
 }
 
 html {
@@ -35,6 +36,18 @@ body {
     overflow: auto;
 }
 
+#mailhead.mailhead--v {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: var(--mailhead-width);
+    height: 100%;
+
+    border-right: solid 1px gray;
+    overflow: auto;
+}
+
 #mailbody {
     position: fixed;
     top: calc(var(--mailhead-height) + 1px);
@@ -44,6 +57,19 @@ body {
 
     width: calc(100% - 2*10px);
     height: calc(100% - var(--mailhead-height) - 1px - 10px);
+
+    overflow: auto;
+}
+
+#mailbody.mailbody--v {
+    position: fixed;
+    top: 0;
+    left: var(--mailhead-width);
+
+    padding: 0 10px 10px 10px;
+
+    width: calc(100% - var(--mailhead-width));
+    height: 100%;
 
     overflow: auto;
 }

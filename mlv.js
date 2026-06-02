@@ -435,6 +435,21 @@ function hotkeys() {
             break
         }
 
+        case '=': {
+            e = document.getElementById('mailhead')
+            let e2 = document.getElementById('mailbody')
+            if (e.classList.contains('mailhead--v')) {
+                e.classList.remove('mailhead--v')
+                e2.classList.remove('mailbody--v')
+                localStorage.setItem('v', 0)
+            } else {
+                e.classList.add('mailhead--v')
+                e2.classList.add('mailbody--v')
+                localStorage.setItem('v', 1)
+            }
+            break
+        }
+
         case '0': {
             showMsg(gMsgIdsRendered[0])
             break
@@ -587,6 +602,7 @@ HOTKEYS
     Space - scroll forward message body view one page
     u - scroll backward message body view one page
 
+    = - toggle thread view and mailbody view vertical or horizontal
     c - toggle configure dialog
     m - toggle manual dialog
 
@@ -601,10 +617,22 @@ MARKER
 `
 }
 
+function init() {
+    const v = localStorage.getItem('v')
+    if (!v) return
+    let e = document.getElementById('mailhead')
+    let e2 = document.getElementById('mailbody')
+    if (v==='1') {
+        e.classList.add('mailhead--v')
+        e2.classList.add('mailbody--v')
+    }
+}
+
 function main() {
     const qmidx = window.location.href.indexOf('?')
     const filePath = window.location.href.substring(qmidx+1)
     loadTextFile(filePath, (text) => {
+        init()
         parse(text, 'From tuhs at tuhs.org')
         render()
         if (gMsgIdsRendered.length) {
