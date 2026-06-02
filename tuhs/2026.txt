@@ -58551,3 +58551,902 @@ On 5/28/26 00:41, Bakul Shah via TUHS wrote:
 >> [2] https://docs.kernel.org/core-api/workqueue.html
 >> [3] https://www.linuxjournal.com/article/36
 
+From tuhs at tuhs.org  Fri May 29 03:59:45 2026
+From: tuhs at tuhs.org (Rik Farrow via TUHS)
+Date: Thu, 28 May 2026 10:59:45 -0700
+Subject: [TUHS] UUNET
+In-Reply-To: <CAK7dMtC+oL+gFBa6CgpWK96RL892tN+4J+05BE7eB5cBGV-rgA@mail.gmail.com>
+References: <CAK7dMtC+oL+gFBa6CgpWK96RL892tN+4J+05BE7eB5cBGV-rgA@mail.gmail.com>
+Message-ID: <CACY3YME5upz14cG5ZyKyx83s5RFGbd3j=jnwqW7K10gxNWsDvw@mail.gmail.com>
+
+I wondered about this, and based on communication with Rick Adams, Peter
+Salus has the best description of the evolution of UUnet:
+
+https://www.usenix.org/system/files/login/articles/login_aug15_09_salus.pdf#:~:text=First%20designed%20to%20operate%20over,to%20a%20need%20for%20improvements
+.
+
+Adams asked for seed money, used to set up a gateway to the ARPAnet so that
+people could send email once they moved on from universities that had
+access. The UUnet portion of this article begins on page 41, column 2.
+
+Rik
+
+
+On Wed, May 27, 2026 at 4:03 PM Kevin Bowling via TUHS <tuhs at tuhs.org>
+wrote:
+
+> https://en.wikipedia.org/wiki/UUNET
+>
+> Does someone (maybe Rich Salz?) know how it transformed from a USENIX
+> infused non-profit to a for-profit?  Controversial at the time?
+>
+
+From tuhs at tuhs.org  Fri May 29 08:24:36 2026
+From: tuhs at tuhs.org (Dan Cross via TUHS)
+Date: Thu, 28 May 2026 18:24:36 -0400
+Subject: [TUHS] the true reason why c++ always wins
+In-Reply-To: <20260528040137.p6ebgcz6nyi7ldpt@illithid>
+References: <6d11f0a3-fd3c-4b19-88c9-44e1efb6d4e0@bitsavers.org>
+ <20260528040137.p6ebgcz6nyi7ldpt@illithid>
+Message-ID: <CAEoi9W6VR7+OdByy8CCVtGY-8b=Fo64Syg+Tk-y4O6CdRrAXpg@mail.gmail.com>
+
+On Thu, May 28, 2026 at 12:01 AM G. Branden Robinson via TUHS
+<tuhs at tuhs.org> wrote:
+> [snip; PCLSRing]
+> The fundamental solution
+> ------------------------
+>
+> ...arises from consideration of this clause of Stevens.
+>
+> 'if a process caught a signal while the process was blocked in a "slow"
+> system call'
+>
+> My thesis: An OS kernel should not _have_ "slow" system calls.
+
+Bakul hit this; "slow" and "fast" system calls are a misnomer. The
+real distinction is "interruptible" and "non-interruptible" operations
+in the kernel initiated by system calls. This is relevant when it
+comes to deciding when you deliver a signal: if you're blocked in an
+interruptible operation and a signal arrives, then the system call is
+effectively aborted and the kernel delivers the signal (approximately)
+immediately. After the signal is handled, presuming the process
+continues running, the system call returns to the user program with an
+error and errno is set to `EINTR`.
+
+On the other hand, if a process is blocked in a non-interruptible
+operation and a signal arrives, then signal delivery is deferred until
+after the after that completes. Often we refer to non-interruptible
+operations as "fast" because the expectation is that they'll complete
+quickly, and trying to interrupt them to deliver a signal (...and
+possibly clean up a bunch of state) is not worth it.
+
+A problem is that many of the same system calls are overloaded for
+both interruptible and non-interruptible operations. So for example,
+reading a disk block is (presumably) pretty quick; if the process is
+waiting for a block to be read from a storage device, don't bother
+interrupting that operation since it'll be unblocked pretty soon
+anyway. By contrast, if the process is blocked waiting on a data read
+a network connection, or a pipe, or a terminal device, go ahead and
+interrupt that, since the read may not by fulfilled any time soon: the
+distant end might have gone down; the program writing to the pipe
+might be waiting for something, or the user might have gone out to
+lunch or left for the day...who knows when someone might wander by and
+type a character? It could be hours or days.
+
+Btw, this touches on an earlier topic
+(https://www.tuhs.org/pipermail/tuhs/2026-May/033745.html); I don't
+know if you saw that, however, as I wrote it right around the time the
+list had a hiccup.
+
+> The modern Linux kernel is festooned with things called "worker threads"
+> in an attempt to solve the same problem.[2]  (I presume successfully.)
+
+Not really. "Worker threads" are a means for structuring
+_concurrency_, that is multiple logical flows of execution in a
+program. They're implemented in Linux, as in a bunch of other systems,
+because they're a convenient programming abstraction, and having a
+schedulable execution context is useful. But they're largely
+orthogonal to the whole fast vs slow thing and how those interact with
+signals (and thus `EINTR`): if every system call was asynchronous,
+having threads in a kernel would still be handy.
+
+But the link you referred to in your footnote is about "workqueues",
+which are built with pool of worker threads, but that's different
+again. Threads might be thought of as synchronous primitives: or at
+least they can be used as a building block for writing synchronous
+programs. They do something, and then the next thing, in program
+order. Sure, something a thread does might block, and that will
+usually result in the thread "yielding" control of execution to a
+scheduler, which may pick some other (runnable) thread and context
+switching to some it, but that's fine: from a logical perspective, the
+thread doesn't really know.
+
+Work queues are different: they're an asynchronous thing. You wrap up
+a little description of some work you want to have done and toss it to
+someone else to run on your behalf, asynchronously. You don't wait for
+it to be done before you move on to the next thing in your synchronous
+thread of execution.
+
+> But because Linux is still monolithic--and has to be, lest its lead
+> author's now largely achieved objective of "world domination"[3] be
+> squandered--it has an ever-growing set of worker threads as its
+> revisions steadily find more things for idle cores to do.
+
+This is conflating parallelism and concurrency; the two are not the
+same. Concurrency is a way to structure the flow of a program;
+threads, flow through state machines, and similar _software_
+constructs are the basic unit of work there. Parallelism is distinct,
+and is about simultaneity: hardware threads, usually cores or CPUs or
+some other _hardware_ computing block are the unit of work there.
+
+The number of threads that exist purely within the Linux kernel
+increases because people keep discovering that there are things that
+that kernel needs to do concurrently, and which are conveniently
+expressed as threads: threads have nice properties, like independent
+scheduling, and the ability to block, and so on, that you _don't_ have
+if (say) you try to do everything directly from an interrupt handler
+like in Unix systems of yore.
+
+> This strategy isn't wrong or stupid, but in my view it quietly concedes
+> an argument that Torvalds and his acolytes declared themselves as having
+> prevailed in over 30 years ago.
+>
+> You _could_ reach the same point, with more easily managed permission/
+> security boundaries (I claim), by employing a microkernel design.
+
+Eh....I don't know about that.  Unix has been "multithreaded" since
+the early- or mid-1970s; we've been overlapping IO with computation
+since '72 or '73 or something. The situation in Linux isn't all that
+different. But I wouldn't call early Unix or Linux "microkernels" as
+that term is generally known; that's more about explicit control flow
+via passing messages, and separation of responsibilities into discrete
+tasks that are mutually ignorant of one another. Is that a "better"
+organization? Maybe, but consider that early versions of Minix didn't
+even use an MMU, so you don't always have an address space boundary
+between those tasks; and of course usually messages are implemented
+using shared memory. ';-}
+
+Put another way, the existence of threads or asynchronous work queues
+in a monolithic kernel isn't really an argument for or against
+microkernels conceptually; they're orthogonal.
+
+> And let us please forever erase, or at least suffix a fat asterisk to,
+> the name "Mach" from association with microkernels.  That was indeed the
+> status its promulgators hoped for, but by starting with the BSD kernel
+> and cutting it down, instead of building one up from nothing, they
+> picked an approach that frustrated their objectives.
+>
+> https://cs.nyu.edu/~mwalfish/classes/15fa/ref/liedtke93improving.pdf
+>
+> Thus my enthusiasm for microkernels.  Yes, context switches are costly,
+> and mode switches are more costly still.  Where these costs are
+> unbearable, you either need more CPU, more memory, or to move away from
+> a general-purpose OS kernel.  Solve your problem in a free-standing, not
+> a hosted, runtime environment.
+>
+> As we've seen, any proper engineering problem requires making tradeoffs
+> somewhere.  (If it doesn't, it's an arithmetic problem.)  An OS kernel,
+> in days of yore a "job monitor", was supposed to be a small, lean thing
+> of minimal footprint that perturbed the availability of CPU cycles and
+> RAM storage to the "real programs"--the _jobs_--as little as possible.
+
+This is a definitional question. I like Roscoe's definition: the
+operating system is, "that body of software that, 1) multiplexes the
+machine's hardware sources, 2) abstracts the hardware pratform, and 3)
+protects software principals from each other (using the hardware)".
+[https://www.usenix.org/conference/osdi21/presentation/fri-keynote]
+
+Nothing in there says that it has to be a priori small, though of
+course it should strive for efficiency. The point is to provide useful
+abstractions for software. I think saying, "if the cost is unbearable
+you need more hardware" is imposing an unreasonable burden on that
+software.
+
+> But if we count lines of code, monolithic (or semi-monolthic, "modular")
+> kernels are some of the biggest software projects in the world, with the
+> ones we've all heard of weighing in at tens of millions of lines.
+>
+> https://interestingengineering.com/lists/whats-the-biggest-software-package-by-lines-of-code
+>
+> Zero-copy operations are not a silver bullet, either.  They can be
+> beautiful but you then have to spend more time considering whose
+> responsibility it is to the validate the data in shared buffers, lest
+> you end up with _no one_ taking responsibility for it...and suffering
+> security pwnage.
+
+It's interesting that you mention L4, then, which made use of
+zero-copy techniques to speed up message passing. This is a
+performance thing, however, and the issues transcend issues of the
+design metaphor for the kernel writ large. Consider DMA; if a program
+wants to cancel an IO operation that is in flight, then you've got to
+be able to reliably cancel it _or_ pin the memory it's using until the
+operation is done. That's the same whether the kernel is a ukernel or
+not.
+
+> While researching this message I happened across the following paper
+> proposing a dedicated memory allocator for I/O operations in the Linux
+> kernel.
+>
+> https://netdevconf.info/0x15/papers/1/maio_netdev0x15.pdf
+>
+> I don't know what has become of that work.  To me, the very existence of
+> {e,}BPF is a concession that monokernels are too complex, and the
+> proposed MAIO (from the foregoing paper) suggests the same.
+
+Well, eBPF et al are attempts to add flexibility to systems by
+dynamically instrumenting or changing their behavior. Again, I suspect
+that's largely orthogonal to microkernel vs monolithic kernel. Perhaps
+you are suggesting that a microkernel could swap in a new task
+something that you want to change the behavior of, but the ukernel
+might not allow you to do that; perhaps the task is compiled in, or
+perhaps it must be specially blessed in some way; instrumenting it as
+one might with eBPF or something similar may be administratively
+banned.
+
+> All right, tell me how I'm wrong!  :)
+
+Wrong? I don't know.  Rather, I think this is jumping around between
+multiple places and drawing conclusions that don't necessarily follow.
+
+        - Dan C.
+
+
+> [1] https://lkml.org/lkml/2012/12/23/75
+>
+>     As is the way of iron rules, people have found ways to game them.
+>
+>     https://lwn.net/Articles/1070072/
+>
+> [2] https://docs.kernel.org/core-api/workqueue.html
+> [3] https://www.linuxjournal.com/article/36
+
+From tuhs at tuhs.org  Fri May 29 09:01:01 2026
+From: tuhs at tuhs.org (Alan Coopersmith via TUHS)
+Date: Thu, 28 May 2026 16:01:01 -0700
+Subject: [TUHS] the true reason why c++ always wins
+In-Reply-To: <20260528040137.p6ebgcz6nyi7ldpt@illithid>
+References: <6d11f0a3-fd3c-4b19-88c9-44e1efb6d4e0@bitsavers.org>
+ <20260528040137.p6ebgcz6nyi7ldpt@illithid>
+Message-ID: <3fcfdcd9-d477-4d13-9414-195379c7025b@oracle.com>
+
+On 5/27/26 21:01, G. Branden Robinson via TUHS wrote:
+> Better libraries.  Period.  Userspace programs generally shouldn't be
+> making system calls directly.  Instead you should have a library that
+> handles interfacing with the system for you.  A library API has more
+> flexibility than the OS kernel, and (paradoxically) can _permit_ more
+> flexibility in the system call interface by advertising "legacy" entry
+> points for system calls that change their signatures or disappear.  (I
+> propose that Unix's historical failure to provide any such thing is what
+> prompted Linux Torvalds to proclaim his Iron Rule about not ever
+> breaking userspace.[1]  With a library layer and a bit more type
+> discipline than early C had, lseek(2) could have remained simply
+> seek(2).  I think I've heard someone on this list observe that this is
+> how Microsoft Windows (NT and its successors?) works.
+
+This is also the Solaris model - both at Sun & Oracle, the binary compatibility
+guarantee only applied at the library level.  Actual system calls are a private
+implementation detail between libc & the kernel, and sometimes changed
+between releases.  For instance, system calls like open, stat, chown, chmod,
+etc. were removed by Roger Faulkner in Solaris 11, and the functions for them
+in libc modified to call the openat, statat, etc. system calls instead:
+https://docs.oracle.com/en/operating-systems/solaris/oracle-solaris/11.4/dtrace-guide/deleted-system-calls.html
+
+Programs linked against a static copy of libc were expected to break
+when moved to a different release, up until the static libc was removed
+completely in Solaris 10 to end that problem.
+
+This of course means that libc is the Solaris ABI and libraries for all
+other languages have to go through libc instead of making system calls
+directly from their implementations, and sometimes causes added work when
+porting those languages to Solaris.
+
+-- 
+         -Alan Coopersmith-                 alan.coopersmith at oracle.com
+          Oracle Solaris Engineering - https://blogs.oracle.com/solaris
+
+From tuhs at tuhs.org  Fri May 29 09:39:21 2026
+From: tuhs at tuhs.org (Bakul Shah via TUHS)
+Date: Thu, 28 May 2026 16:39:21 -0700
+Subject: [TUHS] the true reason why c++ always wins
+In-Reply-To: <CAEoi9W6VR7+OdByy8CCVtGY-8b=Fo64Syg+Tk-y4O6CdRrAXpg@mail.gmail.com>
+References: <6d11f0a3-fd3c-4b19-88c9-44e1efb6d4e0@bitsavers.org>
+ <20260528040137.p6ebgcz6nyi7ldpt@illithid>
+ <CAEoi9W6VR7+OdByy8CCVtGY-8b=Fo64Syg+Tk-y4O6CdRrAXpg@mail.gmail.com>
+Message-ID: <22A0AA1F-3AD1-4E45-BE18-C74EF6516C07@iitbombay.org>
+
+On May 28, 2026, at 3:24 PM, Dan Cross via TUHS <tuhs at tuhs.org> wrote:
+> 
+> Not really. "Worker threads" are a means for structuring
+> _concurrency_, that is multiple logical flows of execution in a
+> program. They're implemented in Linux, as in a bunch of other systems,
+> because they're a convenient programming abstraction, and having a
+> schedulable execution context is useful. But they're largely
+> orthogonal to the whole fast vs slow thing and how those interact with
+> signals (and thus `EINTR`): if every system call was asynchronous,
+> having threads in a kernel would still be handy.
+
+More specifically, or at least the way I used them in the
+past, some background kernel task may need to wait to gain
+some resource or on some event. If you use a thread, you can
+write sequential code (wait for X; do Y; wait for Z; do W
+etc.). Without such a thread you must not make any blocking
+calls, so you have to break up this code in a bunch of
+callbacks (when X happens, callback a fn to do Y and
+associate a callback for "do W" with Z etc.) -- this is the
+usual simulate threads in an event loop scenario.  Multiple
+such threads may be added for increased concurrency.
+
+From tuhs at tuhs.org  Fri May 29 10:53:26 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Thu, 28 May 2026 20:53:26 -0400
+Subject: [TUHS] UUNET
+In-Reply-To: <CACY3YME5upz14cG5ZyKyx83s5RFGbd3j=jnwqW7K10gxNWsDvw@mail.gmail.com>
+References: <CAK7dMtC+oL+gFBa6CgpWK96RL892tN+4J+05BE7eB5cBGV-rgA@mail.gmail.com>
+ <CACY3YME5upz14cG5ZyKyx83s5RFGbd3j=jnwqW7K10gxNWsDvw@mail.gmail.com>
+Message-ID: <CAC20D2OnxX+W3Wawg32Q81MwGLtZTACABXB5R1TprE0KGMSi4g@mail.gmail.com>
+
+Thanks, Rick - much of what I started to write, you have in Peter's
+document.  But let me add a little more to it that he left out, before and
+a bit after the UUNET experiment.
+
+
+   - In the late 1979/early 1980 timeframe at the Winter Usenix in Colorado [we
+   were in a rented movie theatre - that was featuring the new Sci-Fi
+   Thriller: "The Black Hole"].   Steve delivered his first report on the
+   UNC/Duke link.
+   - One of the more amusing things that I remember about that was that we
+   asked him how he was dialing.   Remember the funny Hayes "in band
+   signaling" ( the later industry standard AT cruft) has not been invented.
+    Also, remember that Unix is from TPC (The Telephone Company).  So, to
+   have a computer source a phone call using the Bell System's "Direct
+   Distance Dialing Network", you needed what was called an "Automatic Call
+   Unit" (ACU), which the WE 801 was pretty much the TelCo standard, and DEC
+   made the DN11, which provided the required RS-366 [
+   https://en.wikipedia.org/wiki/RS-366 ] interface to the 801.
+   - So UUCP, of course, assumes each PDP-11 (or later Vax) that wants to
+   dial another system uses a DN11 and an 801 (and compatible WE212
+   modems). Hopefully, this picture from the "DEC-11-HDNAA-B-D DN11 Automatic
+   Calling Unit Interface Manual" - will pass through [if not, search for the
+   PDF and its page 2-1]
+
+[image: ACU-Picture.png]
+
+   - WE212s and 801s were fairly expensive.  An many/most Universities
+   tended to use Vadic VA3467 or VA3480 modems anyway.  But a few places did
+   have Vadic's 801 equivalent, the VA811 installed in that modem rack to
+   dial the phone lines for the modems.
+   - Lacking an ACU, Steve and Tom, like all good phone system hackers of
+   that time (*mei culpa*),  took a DR-11C [DEC's programmed I/O
+16-bit parallel
+   unibus interface] and connected a relay to it.  They then connected the
+   "business side" of the relay across the TIP and RING wires of each phone
+   line, so when the relay closed, it shorted TIP and RING together.   They
+   knew that when you used a dial telephone, the pulses for each digit
+   generated by the "finger wheel" on a traditional handset were a 40 ms
+   "make" (close), followed by a 60 ms "Break" (open), with another
+   "inter-digit pause" of 800 ms between numbers being dialed.
+   - So they replaced the UUCP code to talk to DN11, to talk to their DR-11C
+   dialer hack.
+   - I know both decvax and teklabs 11/70 had Vadic gear with a DN11s and a
+   proper ACU, but I'm not sure how many other sites use the Bellevin hack (it
+   was cute, just lucky the local phone company never found out).
+
+
+
+   - An important point to remember about this time is that those who had
+   experienced ARPANET access, particularly people like myself who no longer
+   had it, knew the power of a widespread mail system.
+   - While Peter does a good job of explaining how *news took off*, the
+   first 50-100 UUCP sites outside of the Bell System were *created just to
+   move e-mail*.   Except for a very small number of places, connecting to
+   the ARPANet was "unobtainium."   Even at UCB, ucbvax was not on the
+   ARPANET; Ing70 was (their connection was a 960-cps serial link called
+   Berknet). While decvax could connect via DECnet to DEC's PDP-20 (which was
+   on the ARPAnet), mail could not flow via that link.
+   - So after hearing Steve's talk, I came back to Oregon, and personally
+   set up the teklabs to ucbvax link, since we had a number of students
+   from the UCB CAD group (which I would later join) working in Teklabs.  I
+   also set up teklabs to decvax, ihnp4, as well as what would become known
+   as the "marx" machines that Brian Redman had in Whippany.  I was hardly
+   unique.  I think many UNIX folks left that USENIX with the same idea.   I
+   know Armando set up a number of uucp connections to different sites
+   after that.
+   - But that was the point; *we just wanted an email connection.*
+
+
+
+   - Another point, if you were coming from the ARPANET world, you had
+   likely experienced mailing lists like scify-lovers or risks-digest.  So
+   when we heard about the Duke/UNC news system, a lot of us thought we could
+   recreate that experience [little did we know what would happen].  So within
+   a year or so after that USENIX talk, those same 50-100 sites started to
+   exchange "news" also - it was only about 25 articles a day, but a few
+   e-mail messages.   120 cps WE212-style modems were more than adequate.
+
+
+
+   - For the first few years, the ARPAnet and USENET basically existed
+   without each other.  But at some point, a couple of places, such as UC
+   Berkeley, started to forward email between the two networks.
+   - I do remember there was pushback from some of the ARPANET sites.  In
+   fact, the 1981 creation of "CSNET" was part of that, and CSNET had its
+   own UUCP-like scheme called PhoneNet.
+   - By 1982, BBN ran a mail router, and CSNET at some sites (particularly
+   those that were not ARPANET-connected) had both PhoneNET and UUCP
+   connections.
+   - Also, MaryAnn and Matt Glickman had released BNEWS, which had become
+   what we all called "net news," and was now using way more bandwidth than
+   E-MAIL did.
+   - Another important thing happened in 1982.  Concord Data Systems and
+   Racal-Vadic introduced the first modems to break the 1200-baud limit of
+   POTS (their solution would become the V.22bis standard).  They did this,
+   actually sending data at 600 baud, but since " baud " does not mean
+   "bits," it means "information", they managed to send 4 bits in each baud
+   and added error correction.   Plus, since these modems, unlike their
+   earlier purely analog devices, had a microprocessor inside, they could do
+   "smart" things.
+
+
+
+   - As Peter tells you, by 1984, the amount of news traffic had started to get
+   bad.  Even with the new Vadic modems that are twice as fast (240 cps),
+   the transmission time was still way too long (I'll come back to modems
+   in a bit).
+   - Peter mentions, but really does not explain, the big ugly truth of the
+   time.  A couple of very large sites (decvax, ihnp4, and seismo)  were
+   handling the long-distance load.
+   - When Lauren Weinstien ran his experiment, Armando had to report to a
+   few of us what was happening at decvax.  It turns out the way DEC
+   handled telephones was like heat, a utility for each site.  So the
+   actual phone bills for decvax, which was the central server for the DEC
+   Telephone Industry Group (which had been created years earlier to serve
+   DEC's #1 customer, the Bell System), were never directly examined.
+   Armando's boss, Bill Munson, told us that he had looked into it at one
+   point and estimated that decvax was running about $500K/yr in phone charges,
+   and at that point, when it was not being directly noticed, he stopped
+   asking, not wanting to draw more attention to it.
+   - I don't remember who it was, it may have been Mary Ann, but it turns
+   out somebody at AT&T did look into the ihnp4 charges, but then
+   calculated that for every phone call it made, they generated between
+   10-20 downstream, so it was actually a good thing for AT&T.
+   - I was running teklabs, and while we had some long-distance UUCP
+   connections to places like ucbvax and decvax, we did not exchange news
+   directly with either, only email.  I don't remember now who we got our
+   primary feed from, but ISTR we sent news downstream only to reasonably
+   local sites, such as Reed College and Portland State.
+   - BTW: By now, UC Berkeley had become an informal gateway between the
+   two networks.  IIRC, they had very few outbound UUCP connections.  But
+   sites like decvax and teklabs called them.
+   - Rick Adams was working within the "Center for Seismic Studies," which
+   was part of a DoD contractor [I believe it was Science Applications
+   International Corporation (SAIC), but I do not know if I have that right].
+   - Their work was global, so his team had already incurred heavy
+   telecommunications charges. But I have no idea how much they were
+   spending.  And it was also through this work that he became familiar
+   with Tymnet and CompuServe
+   - Tymnet was a private, commercial, packet-switched data network that
+   operated as a public utility, connecting remote computer terminals to
+   central mainframe systems [I'm going to ignore a ton of technical details
+   here that aren't pertinent to USENET history].  They set up what they
+   called Tymsats, which were terminal interface processors like the
+   ARPANET TACs around the world.     They supplied what they called Tycoms or
+   host interface processors (think the ARPANET IMP) that interfaced to the
+   major players' equipment (DEC, IBM, Burroughs, and the like).   Someone
+   like SAIC obtained a Tycom and could attach their computers (primarily
+   mainframes).  SAIC's customers, like the ones Rick was working with a
+   seismo, could dial into local numbers and access the remote (SAIC)
+   mainframe without incurring long-distance charges.  I don't know
+the fee structure,
+   as I was never involved with that side of it, but it was significantly
+   cheaper (more in a minute).
+   - Similarly, CompuServer worked like Tymnet; the difference was that,
+   instead of a Tycom, they used X.25 PAD, and instead of Tymsats, they had a
+   custom PDP-11-based system that did the same thing but ran their SW,
+   which they called Nodes and T-Nodes.
+   - UUNET would eventually use both services.
+
+
+
+   - So the USENIX membership is now a little concerned.  We knew that at some
+   point, the gravy train of decvax, ihnp4, *etc.* could not last —
+   particularly at the rate that the amount of data news was creating daily
+   was getting extremely large (megabytes).  At 120 cps, that was almost 2
+   hrs and 30 minutes per megabyte, and that does not include any overhead,
+   so it ended up being closer to 3 hrs.  Even at 240 cps, you were looking
+   at about 90 minutes.
+
+
+
+   - Coming back to USENET itself, by the summer of 1984, news delivery had
+   become a huge issue.  Peter described Lauren's solution.  He came to the
+   USENIX BOD with a proposal, which the BOD eventually backed.   I don't
+   remember why it never really caught on, other than that decoding the
+   transmission required some specialized hardware, which a few people were
+   comfortable with.  Lauren, who worked in LA with broadcasters and other
+   content creators, and a few others were, but I was at Masscomp by then, and
+   when I looked into it, it was not going to be easy.   And the other issue
+   was that Lauren solved the broadcast issue, but we still did not have a way
+   to get replies sent back up the chain.
+   - So the membership is a bit of a buzz, and the board was aware that we
+   were all worried.   The good news for all of us at the time was that
+   because of the "UNIX Wars," USENIX was fairly flush with cash from its
+   conferences.
+   - I don't know if Rick had siesmo on either Tymnet or CompuServe yet,
+   but he did understand the cost structure and had a good idea of how it
+   might work when he mentioned his idea to a few people in the summer of 1985.
+   - It's interesting that the Telebit Trailblazer also came out in 1985.
+   They quickly became the UUCP standard, because they were able to send 1800
+   cps using a radical, proprietary modulation scheme called Packetized
+   Ensemble Protocol (PEP). Rather than relying on a single carrier frequency,
+   as standard modems do, PEP dynamically splits the phone line into up to 512
+   separate micro-channels. The modem constantly analyzed the telephone line,
+   automatically disabling individual micro-channels affected by static or
+   line noise while keeping the clear channels wide open.  But its designers
+   were really smart and embedded Greg Chesson's "g" protocol (the UUCP
+   standard) into the firmware.   Each side of the UUCP link thought it was
+   running the transfer protocol (without any modifications), and then the
+   Trailblazer created an error-free connection over a standard POTS line.
+   - So starting in 1985, if you administered a site serving the USENET via
+   UUCP, you tended to run at least one Trailblazer.
+
+
+
+   - As Peter says, in late May/June "*;login*" the BOD started asking
+   people for proposals, which Rick replied to first in the fall, and by the
+   Spring had put together a reason business plan.  But I should note that
+   between his original October 1986 BOD presentation and the BOD's
+   insistence, one of the things the BOD insisted on was that there had to
+   be a reasonable plan for self-sufficiency.   The Association wanted to
+   find a real solution and was willing to use its resources to help to
+   seed a solution to the UUCP/USENET problem, but it could not be responsible
+   for the solution itself.  The BOD didn't want the Association to be seen as
+   providing any direct service that took away from its mission of creating
+   a place for the community to come together.
+   - I probably should mention that at that time. There was consideration
+   of how it was different by providing a place to come together
+   electronically, like news, different from putting on conferences and
+   publishing proceedings and papers?  Again, this is before things like
+   what we know today as social media. I think the board really felt that the
+   optics of being a place that could support someone/head start things (like
+   the mapping project, helping to fund "FOSS" versions of both pax and
+   terminfo, etc.) were in their charter. But how far out of that
+   could/should it reasonably go?
+   - The idea of backing Rick and cosigning/being a financial guarantor was
+   a bold step.   Remember that Rick needed to negotiate a data transit deal
+   with someone (CompuServe was first), and because the monthly data traffic
+   costs were projected to be incredibly high, CompuServe required a financial
+   safety net.  The Association, which had a few million in assets by then,
+   was that guarantor.   Frankly, that action did worry some folks on the BOD.
+
+
+
+   - What started all this was a question about it being for-profit.  To
+   the Association, it was an experiment to see if this would pan out.   While
+   they were the guarantor, they wanted a legal separation, so UUNET also set
+   up a non-profit as a separate entity.   The hope was that it would pay for
+   itself, but some feared that it might not.     So, in two years, when
+   UUNET was more than self-sufficient, it was time for the Association and
+   UUNET to cut ties.    I think most of us were thrilled that Rick
+had succeeded.
+   The community had a real solution that seemed to have worked.
+
+
+
+   - One thing I slightly disagree with in Peter's piece is his claim that
+   Rick "created a service to fill the need" for anyone to access USENET.  The
+   real driver, certainly as far as the Association was concerned, was how
+   USENET would survive if the few large sites stopped passing data for free.
+
+
+   - Rick is right that by the mid-1980s, finding a cooperative site to give
+   you a news feed started to get harder.
+   - From that standpoint, I had become an independent consultant around
+   that time. I actually had a local news feed, but I still wanted to call
+   into the local Tymnet Tysat with an unlimited access POTS line and my own
+   Telebit to connect to UUNET, so email to me was never more than one hop.
+   My business cards said:  ...uunet!ccc!clemc [which morphed into
+   clemc at ccc.com when we finally combined the two separate namespaces].  My
+   fees to Tymnet and to Rick were small enough that I could handle them —
+   this was exactly the kind of outcome the Association had hoped to
+   obtain.  Any site could be just one away from a major hub; the cost to do
+   so was reasonable, and it was working.
+
+
+
+   - To Rick's credit, he did not stop with UUCP.   He created AlterNet as
+   the first ISP was coming to bear.   The service he offered was the same
+   core idea, just a new protocol.  He turned a number of his original UUCP
+   connections to be AlterNet soon thereafter.
+
+
+
+
+On Thu, May 28, 2026 at 2:00 PM Rik Farrow via TUHS <tuhs at tuhs.org> wrote:
+
+> I wondered about this, and based on communication with Rick Adams, Peter
+> Salus has the best description of the evolution of UUnet:
+>
+>
+> https://www.usenix.org/system/files/login/articles/login_aug15_09_salus.pdf#:~:text=First%20designed%20to%20operate%20over,to%20a%20need%20for%20improvements
+> .
+>
+> Adams asked for seed money, used to set up a gateway to the ARPAnet so that
+> people could send email once they moved on from universities that had
+> access. The UUnet portion of this article begins on page 41, column 2.
+>
+> Rik
+>
+>
+> On Wed, May 27, 2026 at 4:03 PM Kevin Bowling via TUHS <tuhs at tuhs.org>
+> wrote:
+>
+> > https://en.wikipedia.org/wiki/UUNET
+> >
+> > Does someone (maybe Rich Salz?) know how it transformed from a USENIX
+> > infused non-profit to a for-profit?  Controversial at the time?
+> >
+>
+
+From tuhs at tuhs.org  Sat May 30 03:06:58 2026
+From: tuhs at tuhs.org (segaloco via TUHS)
+Date: Fri, 29 May 2026 17:06:58 +0000
+Subject: [TUHS] Acquired 4 Binders of early 80s ESS/SCCS UNIX Manuals
+In-Reply-To: <Xu6dbXnRqOPTm6-Bt_FH2RiQBNhpuecRqcDNZPDnq6LV7IUDobFaM2rJmWmkDzsN2jVoO86PMj7myKGeiUVJvIABzK1Uo25zIcUy6lFnyGg=@protonmail.com>
+References: <Xu6dbXnRqOPTm6-Bt_FH2RiQBNhpuecRqcDNZPDnq6LV7IUDobFaM2rJmWmkDzsN2jVoO86PMj7myKGeiUVJvIABzK1Uo25zIcUy6lFnyGg=@protonmail.com>
+Message-ID: <TsS2OnbwVSi71gt4uoCpsiuMV2hhgNOwWjD_S0HYw9UpD6Ymhd9SnSyPiTfcc67n4VH9437clwE_XzvJSZF7fY4o5sfca-C9nXRkeDvLSsY=@protonmail.com>
+
+On Tuesday, May 19th, 2026 at 10:12, segaloco via TUHS <tuhs at tuhs.org> wrote:
+
+> Another exciting find, in the mail currently but will hit my scanner when it arrives.  Managed to land 4 binders from the early 80s that appear to contain Pidents and various other OSDD documents pertaining to the No. 2 Switching Control Center System and ESS-related UNIX (and possibly ESS-CC sources) listings.
+
+Following up that these have now arrived.  One binder is a number of PR documents, in other words, complete source to the following 1981 Issue of No. 2 SCCS utilities:
+
+occ (Old/PDP-11 cc)
+sacopy
+sed
+sh (Bourne)
+tp
+nroff
+nroff fonts
+
+Another binder, although not labeled a PR binder, has sources to awk, bc, and a few other bits.  Unfortunately between them the whole standard UNIX userspace is not there, but part is at least.
+
+Two more of the binders contain the /usr/sccbin scripts and sources, so the meat of the Switching Control Center System userland.  Among some of the more intriguing scripts are one to lock/unlock doors in one of the facilities and some directory scripts containing personnel lists.
+
+Finally, one more binder was added to the mix which contains, among other things, manual pages and scripts related to the Polaris 4.0 database.  I believe this to be some internal AT&T thing with no relation to other products called Polaris but I haven't done much research yet.
+
+Anywho, some significant findings from some cursory glances:
+
+- There are a mishmash of scripts, some targeting the Bourne shell, others targeting the "SCC Shell" which appears to describe a descendent of the shell most recently preserved in USG PG3.  Given the nomenclature and flow of ideas (for instance these scripts use >% for stderr redirect, similar to the % redirect seen in early USG releases), I now am suspicious of whether this shell variant should be called the USG or SCC shell, whether USG modified it first and tossed it over at SCC or if SCC wrote the mods and USG sampled that.
+
+- A /dev listing is given, listing no tty(xx) files, but plenty of ln(xx) entries.  Additionally, references are made to /etc/lines, so this follows in the init and terminal traditions currently seen earliest in 1977's PG3.  This, I suspect, is an SCC invention that rolled into PG3 and CB-UNIX.  In fact, many Program Generic differences with research appear to be Columbus/SCC influenced.
+
+This is a lot of material, almost all fanfold terminal output, so will take a little while to scan.  What I may do in the meantime, at least for the PRs, is nab some extant sources and just "patch" them to the No. 2 SCC version to document changes.
+
+Hopefully 2026 continues to be the year of cracking open USG and Columbus UNIX activities.
+
+- Matt G.
+
+From tuhs at tuhs.org  Sat May 30 22:16:43 2026
+From: tuhs at tuhs.org (Folkert van Heusden via TUHS)
+Date: Sat, 30 May 2026 14:16:43 +0200
+Subject: [TUHS] maintainer for bsd 2.11?
+Message-ID: <42b8825232611890b1e306401f74232e@vanheusden.com>
+
+Hi,
+
+Does anyone know who currently maintains bsd for the pdp?
+
+I found a memory leak in telnetd and have a patch for that (free(utmp) 
+at line 1285).
+
+Also question: where can I find the bootloader sources? It currently 
+waits for enter (or a device) and I would like to simply go on.
+
+-- 
+www.vanheusden.com [1]
+
+Links:
+------
+[1] http://www.vanheusden.com
+
+From tuhs at tuhs.org  Sat May 30 23:04:04 2026
+From: tuhs at tuhs.org (Lars Brinkhoff via TUHS)
+Date: Sat, 30 May 2026 13:04:04 +0000
+Subject: [TUHS] maintainer for bsd 2.11?
+In-Reply-To: <42b8825232611890b1e306401f74232e@vanheusden.com> (Folkert van
+ Heusden via TUHS's message of "Sat, 30 May 2026 14:16:43 +0200")
+References: <42b8825232611890b1e306401f74232e@vanheusden.com>
+Message-ID: <7wqzmtqcaj.fsf@junk.nocrew.org>
+
+Steven Schultz and Johnny Billquist.
+sms (at) 2bsdcom
+bqt (at) softjar.se
+
+From tuhs at tuhs.org  Sat May 30 23:06:29 2026
+From: tuhs at tuhs.org (Folkert van Heusden via TUHS)
+Date: Sat, 30 May 2026 15:06:29 +0200
+Subject: [TUHS] maintainer for bsd 2.11?
+In-Reply-To: <7wqzmtqcaj.fsf@junk.nocrew.org>
+References: <42b8825232611890b1e306401f74232e@vanheusden.com>
+ <7wqzmtqcaj.fsf@junk.nocrew.org>
+Message-ID: <dc7c073a999804d5cbcbfeffeecec364@vanheusden.com>
+
+On 2026-05-30 15:04, Lars Brinkhoff wrote:
+> Steven Schultz and Johnny Billquist.
+> sms (at) 2bsdcom
+> bqt (at) softjar.se
+
+Thanks!
+
+-- 
+www.vanheusden.com
+
+From tuhs at tuhs.org  Sun May 31 01:35:26 2026
+From: tuhs at tuhs.org (John D. Bruner via TUHS)
+Date: Sat, 30 May 2026 15:35:26 +0000
+Subject: [TUHS] maintainer for bsd 2.11?
+In-Reply-To: <dc7c073a999804d5cbcbfeffeecec364@vanheusden.com>
+References: <42b8825232611890b1e306401f74232e@vanheusden.com>
+ <7wqzmtqcaj.fsf@junk.nocrew.org>
+ <dc7c073a999804d5cbcbfeffeecec364@vanheusden.com>
+Message-ID: <dcM8ca1DmwjWDdJckrQ_cfvHOyINDk8GvDnfL_i96W_rI6SIlQwWGlIwQxA2Cns0ZK1FtfFxhTDixtaukK4lZQBa-Sf34_PaPTpY15ccqxQ=@brunerhome.net>
+
+For your other question, /usr/src/sys/mdec
+
+--John
+
+On Saturday, May 30th, 2026 at 06:06, Folkert van Heusden via TUHS <tuhs at tuhs.org> wrote:
+
+> On 2026-05-30 15:04, Lars Brinkhoff wrote:
+> > Steven Schultz and Johnny Billquist.
+> > sms (at) 2bsdcom
+> > bqt (at) softjar.se
+> 
+> Thanks!
+> 
+> --
+> www.vanheusden.com
+> 
+
+From tuhs at tuhs.org  Sun May 31 01:43:59 2026
+From: tuhs at tuhs.org (John D. Bruner via TUHS)
+Date: Sat, 30 May 2026 15:43:59 +0000
+Subject: [TUHS] maintainer for bsd 2.11?
+In-Reply-To: <dcM8ca1DmwjWDdJckrQ_cfvHOyINDk8GvDnfL_i96W_rI6SIlQwWGlIwQxA2Cns0ZK1FtfFxhTDixtaukK4lZQBa-Sf34_PaPTpY15ccqxQ=@brunerhome.net>
+References: <42b8825232611890b1e306401f74232e@vanheusden.com>
+ <7wqzmtqcaj.fsf@junk.nocrew.org>
+ <dc7c073a999804d5cbcbfeffeecec364@vanheusden.com>
+ <dcM8ca1DmwjWDdJckrQ_cfvHOyINDk8GvDnfL_i96W_rI6SIlQwWGlIwQxA2Cns0ZK1FtfFxhTDixtaukK4lZQBa-Sf34_PaPTpY15ccqxQ=@brunerhome.net>
+Message-ID: <hPJ1D8QPRggylHHGbixcOGT9u-Dqe9F_4LutFlLJsY51pP2GqIxnBGeK36mPlkvspiWTLWKM-esoryqdfagx2h89Xp0C6Qlz2SJBuH0OdhY=@brunerhome.net>
+
+Hit enter too soon...
+
+That's the primary bootstrap. The source for /boot is in /usr/src/sys/pdpstand
+
+--John
+
+On Saturday, May 30th, 2026 at 08:35, John D. Bruner via TUHS <tuhs at tuhs.org> wrote:
+
+> For your other question, /usr/src/sys/mdec
+> 
+> --John
+> 
+> On Saturday, May 30th, 2026 at 06:06, Folkert van Heusden via TUHS <tuhs at tuhs.org> wrote:
+> 
+> > On 2026-05-30 15:04, Lars Brinkhoff wrote:
+> > > Steven Schultz and Johnny Billquist.
+> > > sms (at) 2bsdcom
+> > > bqt (at) softjar.se
+> >
+> > Thanks!
+> >
+> > --
+> > www.vanheusden.com
+> >
+> 
+
+From tuhs at tuhs.org  Sun May 31 15:52:49 2026
+From: tuhs at tuhs.org (Lars Brinkhoff via TUHS)
+Date: Sun, 31 May 2026 05:52:49 +0000
+Subject: [TUHS] Harvard's PPL, Polymorphic Programming Language
+Message-ID: <7w4ijoqg5q.fsf@junk.nocrew.org>
+
+Hello,
+
+I recently discovered a copy of the PPL "Polymorphic Programming Langauge".
+https://github.com/PDP-10/harvard-ppl
+
+Even though it seems to have enjoyed over a decade as an educational
+tool, it seems to have dissapeared almost without a trace.  The
+Wikipedia page is very sparse.
+
+On topic for TUHS, PPL was ported to Unix and used at "several
+universities".  Has anyone seen this programming language in the
+archives?
+
+From tuhs at tuhs.org  Sun May 31 16:50:57 2026
+From: tuhs at tuhs.org (Jonathan Gray via TUHS)
+Date: Sun, 31 May 2026 16:50:57 +1000
+Subject: [TUHS] Harvard's PPL, Polymorphic Programming Language
+In-Reply-To: <7w4ijoqg5q.fsf@junk.nocrew.org>
+References: <7w4ijoqg5q.fsf@junk.nocrew.org>
+Message-ID: <ahvaUUfVloz8l_Q4@largo.jsg.id.au>
+
+On Sun, May 31, 2026 at 05:52:49AM +0000, Lars Brinkhoff via TUHS wrote:
+> Hello,
+> 
+> I recently discovered a copy of the PPL "Polymorphic Programming Langauge".
+> https://github.com/PDP-10/harvard-ppl
+> 
+> Even though it seems to have enjoyed over a decade as an educational
+> tool, it seems to have dissapeared almost without a trace.  The
+> Wikipedia page is very sparse.
+> 
+> On topic for TUHS, PPL was ported to Unix and used at "several
+> universities".  Has anyone seen this programming language in the
+> archives?
+
+tuhs Applications/Usenix_77/ug091377.tar.gz
+h/ppl/ has 66 files, so I won't list them all
+
+'PPL Version 7(30)'
+h/ppl/read_me
+
+'news for version v.6(13) of ppl'
+h/help/ppl
+
+From tuhs at tuhs.org  Sun May 31 17:03:00 2026
+From: tuhs at tuhs.org (Jonathan Gray via TUHS)
+Date: Sun, 31 May 2026 17:03:00 +1000
+Subject: [TUHS] Harvard's PPL, Polymorphic Programming Language
+In-Reply-To: <ahvaUUfVloz8l_Q4@largo.jsg.id.au>
+References: <7w4ijoqg5q.fsf@junk.nocrew.org> <ahvaUUfVloz8l_Q4@largo.jsg.id.au>
+Message-ID: <ahvdJMgo94cA--UW@largo.jsg.id.au>
+
+On Sun, May 31, 2026 at 04:50:57PM +1000, Jonathan Gray via TUHS wrote:
+> On Sun, May 31, 2026 at 05:52:49AM +0000, Lars Brinkhoff via TUHS wrote:
+> > Hello,
+> > 
+> > I recently discovered a copy of the PPL "Polymorphic Programming Langauge".
+> > https://github.com/PDP-10/harvard-ppl
+> > 
+> > Even though it seems to have enjoyed over a decade as an educational
+> > tool, it seems to have dissapeared almost without a trace.  The
+> > Wikipedia page is very sparse.
+> > 
+> > On topic for TUHS, PPL was ported to Unix and used at "several
+> > universities".  Has anyone seen this programming language in the
+> > archives?
+> 
+> tuhs Applications/Usenix_77/ug091377.tar.gz
+> h/ppl/ has 66 files, so I won't list them all
+> 
+> 'PPL Version 7(30)'
+> h/ppl/read_me
+> 
+> 'news for version v.6(13) of ppl'
+> h/help/ppl
+
+distrib.note also mentions a terminal mode for it:
+
+'We have rewritten the teletype input routine to allow 3 additional
+"modes" of operation, "teco," "ppl," and "ddt."'
+
+tty code is also included
+
+From tuhs at tuhs.org  Sun May 31 17:54:57 2026
+From: tuhs at tuhs.org (Lars Brinkhoff via TUHS)
+Date: Sun, 31 May 2026 07:54:57 +0000
+Subject: [TUHS] Harvard's PPL, Polymorphic Programming Language
+In-Reply-To: <ahvaUUfVloz8l_Q4@largo.jsg.id.au> (Jonathan Gray's message of
+ "Sun, 31 May 2026 16:50:57 +1000")
+References: <7w4ijoqg5q.fsf@junk.nocrew.org> <ahvaUUfVloz8l_Q4@largo.jsg.id.au>
+Message-ID: <7wzf1govxq.fsf@junk.nocrew.org>
+
+Jonathan Gray wrote:
+> tuhs Applications/Usenix_77/ug091377.tar.gz
+> h/ppl/ has 66 files, so I won't list them all
+
+Yes, that's it.  Thanks!
+
