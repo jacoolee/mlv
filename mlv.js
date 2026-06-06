@@ -46,8 +46,9 @@ function parse(text='') {
             case 'From': {
                 block['from'] = v
                 let m = v.match(/\(.* via TUHS\)/)
-                // at most 2 words
-                block['fromShort'] = m&&m.length? m[0].match(/[A-z0-9]+ ?[A-z0-9]*/)[0]: ''
+                block['fromShort'] = m
+                    ? m[0].match(/[A-z0-9]+ ?([A-z0-9]*)?/)[0].replace(' via','')
+                    : v.replace(/ at .*/, '')
                 break
             }
             case 'Date': {
