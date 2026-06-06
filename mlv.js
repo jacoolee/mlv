@@ -46,11 +46,17 @@ function parse(text='') {
             case 'From': {
                 block['from'] = v
                 let m = v.match(/\(.* via TUHS\)/)
-                block['fromShort'] = m&&m.length? m[0]: ''
+                // at most 2 words
+                block['fromShort'] = m&&m.length? m[0].match(/[A-z0-9]+ ?[A-z0-9]*/)[0]: ''
                 break
             }
             case 'Date': {
                 block['date'] = v
+                let x = v.match(/[0-9]{1,2} [A-z]{3} [0-9]{2,4} *[0-9]{1,2}:[0-9]{1,2}(:[0-9]{1,2})?/)
+                block['dateShort'] = x? x[0]: v
+                if (!x) {
+                    console.debug('mlv: date v:', v)
+                }
                 break
             }
             case 'Subject': {
@@ -88,7 +94,7 @@ function parse(text='') {
                 }
 
                 default: {
-                    console.warn('mlv: unsupported pk:', pk, v, idx)
+                    console.debug('mlv: unsupported pk:', pk, v, idx)
                     break
                 }
                 }
@@ -111,7 +117,7 @@ function parse(text='') {
             if (x) {
                 block.inReplyToMailAddress = x[0]
             } else {
-                console.warn(
+                console.debug(
                     'mlv: inReplyToMailAddress not found in',
                     'block.inReplyTo:', block.inReplyTo,
                     'block:', block
@@ -132,7 +138,7 @@ function parse(text='') {
 
         // process message bloch which has same message Id
         if (block.messageId in gMsgMap) {
-            console.warn('mlv: Message-ID same occurs', block.beginLidx, gLines[block.beginLidx])
+            console.debug('mlv: Message-ID same occurs', block.beginLidx, gLines[block.beginLidx])
             const id = block.messageId
 
             if (!(id in gMsgSameMap)) {
@@ -240,7 +246,7 @@ function renderMsgTreeItem(msgId, level=0, marker='') {
         return
     }
 
-    const {from, fromShort, subject, date, beginLidx, bodyEndLidx} = block
+    const {from, fromShort, subject, date, dateShort, beginLidx, bodyEndLidx} = block
     block.level = level
     if (level === 0) {
         block.level0Idx = gMsgIdsLevel0.length-1
@@ -258,7 +264,10 @@ function renderMsgTreeItem(msgId, level=0, marker='') {
     div.appendChild(span1)
 
     let span2 = document.createElement('span')
-    const span2Text = `${subject} <${date}> ${fromShort||from} ${msgId} <${beginLidx+1},${bodyEndLidx+1} ${currMsgIdxRendered+1}/${gMsgIds.length}>`
+    // const span2Text = `${fromShort||from}: ${subject} <${date}> ${msgId} <${beginLidx+1},${bodyEndLidx+1} ${currMsgIdxRendered+1}/${gMsgIds.length}>`
+
+    const span2Text = `${fromShort||from}: ${subject}  -  ${dateShort}  -  ${currMsgIdxRendered+1}/${gMsgIds.length}`
+
     span2.innerText = span2Text
     span2.setAttribute('class', 'msgtree-item--right')
     div.appendChild(span2)
@@ -602,7 +611,7 @@ HOTKEYS
     . - focus and view first visualable message in threads view
 
     Space - scroll forward message body view one page
-    u - scroll backward message body view one page
+    i/o/u - scroll backward message body view one page
 
     = - toggle thread view and mailbody view vertical or horizontal
     c - toggle configure dialog
@@ -619,13 +628,15 @@ MARKER
 `
 }
 
-function init() {
+function preinit() {
     const theme = window.matchMedia('(prefers-color-scheme: dark)').matches
           ? 'dark'
           : 'light'
     const html = document.getElementsByTagName('html')[0]
     html.classList.add(theme)
+}
 
+function init() {
     const v = localStorage.getItem('v')
     if (!v) return
     let e = document.getElementById('mailhead')
@@ -637,11 +648,13 @@ function init() {
 }
 
 function main() {
+    preinit()
+
     const qmidx = window.location.href.indexOf('?')
     const filePath = window.location.href.substring(qmidx+1)
     loadTextFile(filePath, (text) => {
         init()
-        parse(text, 'From tuhs at tuhs.org')
+        parse(text)
         render()
         if (gMsgIdsRendered.length) {
             showMsg(gMsgIdsRendered[0])

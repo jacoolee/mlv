@@ -26,7 +26,7 @@ HOTKEYS
     . - focus and view first visualable message in threads view
 
     Space - scroll forward message body view one page
-    u - scroll backward message body view one page
+    i/o/u - scroll backward message body view one page
 
     = - toggle thread view and mailbody view vertical or horizontal
     c - toggle configure dialog
