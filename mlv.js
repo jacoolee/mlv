@@ -286,13 +286,13 @@ function renderMsgBody(msgId) {
     const parentBlock = gMsgMap[parentMsgId]
 
     const replyTo = parentBlock
-          ? (parentBlock.fromShort?parentBlock.fromShort.substring(1,parentBlock.fromShort.length-1): parentBlock.from)
+          ? (parentBlock.fromShort||parentBlock.from)
           : (inReplyTo || '<None>')
 
     let e = document.getElementById('mailbody-header')
     e.innerText = `\
 Subject   : ${subject}\n\
-From      : ${fromShort?fromShort.substring(1,fromShort.length-1):from}\n\
+From      : ${fromShort||from}\n\
 Reply To  : ${replyTo}\n\
 Date      : ${date}\n\
 Parent Id : ${parentMsgId}\n\
