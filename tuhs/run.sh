@@ -45,7 +45,7 @@ while [ $i -lt ${curyear} ]; do
     i=$((i+1))                  # starts from 1990
 
     s=''
-    for j in January February March April May July June August September October November December; do
+    for j in January February March April May June July August September October November December; do
         mlfile="${i}-${j}.txt"
         if [ ! -e "${mlfile}" ]; then
             continue
@@ -93,7 +93,7 @@ while [ $i -gt 1990 ]; do
         continue
     fi
 
-    for j in January February March April May July June August September October November December; do
+    for j in January February March April May June July August September October November December; do
         mlfile="${i}-${j}.txt"
         if [ ! -e "${mlfile}" ]; then
             echo "<span title='${mlfile}'><a style='color: transparent;' href='../mlv.html?./tuhs/${mlfile}'>${j}</a> </span>" >> "${index_file}"
