@@ -525,7 +525,9 @@ function hotkeys() {
             break
         }
 
-        case 'u': {
+        case 'u':
+        case 'i':
+        case 'o': {
             e = document.getElementById('mailbody')
             e.focus()
             e.scrollBy({
@@ -618,6 +620,12 @@ MARKER
 }
 
 function init() {
+    const theme = window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light'
+    const html = document.getElementsByTagName('html')[0]
+    html.classList.add(theme)
+
     const v = localStorage.getItem('v')
     if (!v) return
     let e = document.getElementById('mailhead')
