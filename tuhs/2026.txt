@@ -60111,3 +60111,201 @@ Size: 195 bytes
 Desc: not available
 URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20260607/835be960/attachment.sig>
 
+From tuhs at tuhs.org  Wed Jun 10 08:51:12 2026
+From: tuhs at tuhs.org (Warren Toomey via TUHS)
+Date: Wed, 10 Jun 2026 08:51:12 +1000
+Subject: [TUHS] C News on 2.11BSD: help!
+Message-ID: <aiiY4IpfKeJ7bLb-@minnie.tuhs.org>
+
+Hi all, I'm trying to bring C News up on 2.11BSD and I'm stuck!
+
+The symptom: I can post a news article on one machine and I see it
+transfer via UUCP over TCP to a second machine. I see it arrive in the
+X. uucp spool folder. Then it disappears before being put in the news
+spool area.
+
+I'm leaving what I've done here: https://minnie.tuhs.org/211BSD_Cnews/
+with a bunch of notes. If anybody has some ideas, I'd love to hear them!
+
+Thanks :-)
+
+	Warren
+
+From tuhs at tuhs.org  Wed Jun 10 15:41:22 2026
+From: tuhs at tuhs.org (Hauke Fath via TUHS)
+Date: Wed, 10 Jun 2026 07:41:22 +0200
+Subject: [TUHS] C News on 2.11BSD: help!
+In-Reply-To: <aiiY4IpfKeJ7bLb-@minnie.tuhs.org>
+References: <aiiY4IpfKeJ7bLb-@minnie.tuhs.org>
+Message-ID: <20260610074122817860.fca6c04e@Espresso.Rhein-Neckar.DE>
+
+On Wed, 10 Jun 2026 08:51:12 +1000, Warren Toomey via TUHS wrote:
+> I'm trying to bring C News up on 2.11BSD and I'm stuck!
+> 
+> The symptom: I can post a news article on one machine and I see it
+> transfer via UUCP over TCP to a second machine. I see it arrive in the
+> X. uucp spool folder. Then it disappears before being put in the news
+> spool area.
+
+That's unfriendly.
+
+Can you post an article locally, i.e. is this a general C News issue, 
+or related to spool mechanics?
+
+I used to run C News on NetBSD until the time_t change to 64 bit which 
+broke it. Fixing the package 
+<https://github.com/NetBSD/pkgsrc-wip/tree/master/c-news> is still on 
+the list, but halfway down...
+
+Good luck,
+Hauke
+
+-- 
+Hauke Fath                        <hauke at Espresso.Rhein-Neckar.DE>
+Linnéweg 7
+64342 Seeheim-Jugenheim
+Germany
+
+From tuhs at tuhs.org  Wed Jun 10 16:43:31 2026
+From: tuhs at tuhs.org (Kevin Bowling via TUHS)
+Date: Tue, 9 Jun 2026 23:43:31 -0700
+Subject: [TUHS] VAX System V
+Message-ID: <CAK7dMtAz18DoEt0RJiaRkoaO04KzC65eu=t4=30hp+JBdyQhxA@mail.gmail.com>
+
+I got a manual set for Digital VAX System V 3.2.1.  It appears to be a
+descendent of AT&T's VAX port, but it was thoroughly extended with
+large system hardware support (including CI bus) and even sundries
+like X11R4.  Compared to i.e. 3B2 System V which IMHO is pretty bare
+bones and even a little half baked.  The manuals are actually pretty
+great.
+
+I'm not overly familiar with DEC but perusing history it seemed to be
+that Ultrix was always playing second fiddle to VMS.  VAX System V
+seems like a "more serious" UNIX, it targets the large machines:  VAX
+11/780, 6000, 8000, 9000.  Only in the 3.2.1 release did a MVII pop
+in.
+
+I don't think I've ever seen anything on this in the wild, the main
+customer appeared to be AT&T itself and the RBOCs.  Information online
+is scare.
+
+Regards,
+Kevin
+
+From tuhs at tuhs.org  Wed Jun 10 17:04:50 2026
+From: tuhs at tuhs.org (Warren Toomey via TUHS)
+Date: Wed, 10 Jun 2026 17:04:50 +1000
+Subject: [TUHS] C News on 2.11BSD: help!
+In-Reply-To: <aiiY4IpfKeJ7bLb-@minnie.tuhs.org>
+References: <aiiY4IpfKeJ7bLb-@minnie.tuhs.org>
+Message-ID: <aikMkqZp1lDh4Jpa@minnie.tuhs.org>
+
+On Wed, Jun 10, 2026 at 08:51:12AM +1000, Warren Toomey via TUHS wrote:
+> Hi all, I'm trying to bring C News up on 2.11BSD and I'm stuck!
+
+My friend Steve Jenkin pointed me at https://github.com/jwbrase/CNews-PiDP-11
+which is probably where I should have started, if I'd only known!!
+
+Thanks Steve :-)
+
+	Warren
+
+From tuhs at tuhs.org  Wed Jun 10 18:04:49 2026
+From: tuhs at tuhs.org (Jonathan Gray via TUHS)
+Date: Wed, 10 Jun 2026 18:04:49 +1000
+Subject: [TUHS] VAX System V
+In-Reply-To: <CAK7dMtAz18DoEt0RJiaRkoaO04KzC65eu=t4=30hp+JBdyQhxA@mail.gmail.com>
+References: <CAK7dMtAz18DoEt0RJiaRkoaO04KzC65eu=t4=30hp+JBdyQhxA@mail.gmail.com>
+Message-ID: <aikaoUHZmFif-78P@largo.jsg.id.au>
+
+On Tue, Jun 09, 2026 at 11:43:31PM -0700, Kevin Bowling via TUHS wrote:
+> I got a manual set for Digital VAX System V 3.2.1.  It appears to be a
+> descendent of AT&T's VAX port, but it was thoroughly extended with
+> large system hardware support (including CI bus) and even sundries
+> like X11R4.  Compared to i.e. 3B2 System V which IMHO is pretty bare
+> bones and even a little half baked.  The manuals are actually pretty
+> great.
+> 
+> I'm not overly familiar with DEC but perusing history it seemed to be
+> that Ultrix was always playing second fiddle to VMS.  VAX System V
+> seems like a "more serious" UNIX, it targets the large machines:  VAX
+> 11/780, 6000, 8000, 9000.  Only in the 3.2.1 release did a MVII pop
+> in.
+> 
+> I don't think I've ever seen anything on this in the wild, the main
+> customer appeared to be AT&T itself and the RBOCs.  Information online
+> is scare.
+
+Discussions tend to mention Manalapan, New Jersey.
+
+https://www.tuhs.org/pipermail/tuhs/2004-October/004252.html
+https://groups.io/g/simh/message/1963
+
+From tuhs at tuhs.org  Wed Jun 10 20:43:08 2026
+From: tuhs at tuhs.org (Brad Spencer via TUHS)
+Date: Wed, 10 Jun 2026 06:43:08 -0400
+Subject: [TUHS] VAX System V
+In-Reply-To: <CAK7dMtAz18DoEt0RJiaRkoaO04KzC65eu=t4=30hp+JBdyQhxA@mail.gmail.com>
+ (message from Kevin Bowling via TUHS on Tue, 9 Jun 2026 23:43:31 -0700)
+Message-ID: <xon7bo64qwz.fsf@anduin.eldar.org>
+
+Kevin Bowling via TUHS <tuhs at tuhs.org> writes:
+
+> I got a manual set for Digital VAX System V 3.2.1.  It appears to be a
+> descendent of AT&T's VAX port, but it was thoroughly extended with
+> large system hardware support (including CI bus) and even sundries
+> like X11R4.  Compared to i.e. 3B2 System V which IMHO is pretty bare
+> bones and even a little half baked.  The manuals are actually pretty
+> great.
+>
+> I'm not overly familiar with DEC but perusing history it seemed to be
+> that Ultrix was always playing second fiddle to VMS.  VAX System V
+> seems like a "more serious" UNIX, it targets the large machines:  VAX
+> 11/780, 6000, 8000, 9000.  Only in the 3.2.1 release did a MVII pop
+> in.
+>
+> I don't think I've ever seen anything on this in the wild, the main
+> customer appeared to be AT&T itself and the RBOCs.  Information online
+> is scare.
+>
+> Regards,
+> Kevin
+
+When I was at AT&T / Lucent the product I worked on started out on the
+Vax running a port of System V from DEC.  The department, if I remember
+correctly, had a number of the systems mentioned above.  If I remember
+the story correctly, AT&T pushed for this with DEC because of the "Thou
+Shalt Run System V" command that came down inside of AT&T.  I do know
+that when DEC proposed that the Alpha replace the Vax and that the Alpha
+would not officially run System V (it apparently ran System V
+unofficially inside of DEC), only OSF/1 (or was it Ultrix...  don't
+remember), the department moved to drop DEC as a vendor.  Of course,
+later in the Lucent days, that directive was more or less ignored.
+
+I also remember something someone said to me at the time about the Vax
+and operating systems, VMS was first with support inside of DEC,
+followed by Ultrix and then System V at a more distant third place.  The
+department at AT&T I was in fixed a number of kernel and userland bugs
+for DEC.  There was full access to the source code and there existed a
+kernel and userland build system that could pretty much recreate the
+system from source code.
+
+The product that I was working on ate an entire Vax.  We actually
+created our own set of system tapes that contained the OS as we wanted
+it configured (the department forced, or at least tried to force, a
+specific and exact hardware configuration on the customer base) along
+with the product we were selling.  The customers, be them RBOCs or
+someone outside of the US, would boot the tapes we sent (well, our
+installer would do that) and this would load the OS and the product in
+one pass.  Much faster then the method used by DEC.
+
+
+
+
+
+
+-- 
+Brad Spencer - brad at anduin.eldar.org
+
+
+
