@@ -1,4 +1,5 @@
 const MSG_SEPARATOR_REGEXP = /^From [^ ]*( at [^ ]*)? *[A-z]{3} [A-z]{3} [ 0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [0-9]{4}/
+const UNAME_LEN = 14
 
 let gTime = Date.now()
 let gLines = [ /* line, ... */ ]
@@ -54,6 +55,15 @@ function parse(text='') {
             case 'Date': {
                 block['date'] = v
                 let x = v.match(/[0-9]{1,2} [A-z]{3} [0-9]{2,4} *[0-9]{1,2}:[0-9]{1,2}(:[0-9]{1,2})?/)
+                if (x) {
+                    let day = v.match(/[0-9]{1,2}/)[0]
+                    let _x = v.match(/[A-z]{3} [0-9]{2,4}/)[0]
+                    let mon = _x.match(/[A-z]{3}/)[0]
+                    let year = _x.match(/[0-9]{2,4}/)[0]
+                    block['day'] = day? (String(day).length<2 ?'0'+day: day): ''
+                    block['mon'] = mon || ''
+                    block['year'] = year? year<100?'  '+year: (year <1000? ' '+year: year): ''
+                }
                 block['dateShort'] = x? x[0]: v
                 if (!x) {
                     console.debug('mlv: date v:', v)
@@ -231,7 +241,7 @@ function isVisibleInContainer(el, container) {
         && elRect.bottom > containerRect.top + 30
 }
 
-function renderMsgTreeItem(msgId, level=0, marker='') {
+function renderMsgTreeItem(msgId, level=0, isLastSibling=false, siblingBarIdxs=[], marker='') {
     // NOTE: using @msgId in whole process, do not use block.messageId
     if (level === 0) {
         gMsgIdsLevel0.push(msgId)
@@ -247,7 +257,7 @@ function renderMsgTreeItem(msgId, level=0, marker='') {
         return
     }
 
-    const {from, fromShort, subject, date, dateShort, beginLidx, bodyEndLidx} = block
+    const {from, fromShort, subject, date, day, mon, year, dateShort, beginLidx, bodyEndLidx} = block
     block.level = level
     if (level === 0) {
         block.level0Idx = gMsgIdsLevel0.length-1
@@ -259,15 +269,86 @@ function renderMsgTreeItem(msgId, level=0, marker='') {
     div.setAttribute('ridx', currMsgIdxRendered)
 
     let span1 = document.createElement('span')
-    const span1Text = `${marker? marker:''} ${' '.repeat(level)}${level>0?'↳ ':''}`
-    span1.innerText = `${span1Text}`
+    let s = '', sl = []
+
+    const isRoot = level === 0
+    const replies = gReplyMap[msgId]
+    const hasChildren = !!replies
+
+    if (isRoot) {               // tree root/thread head
+        if (hasChildren) {
+            s = '┬'
+        } else {
+            s = '─'
+        }
+    } else {                    // branch/reply
+        if (hasChildren) {
+            if (level === 1) {
+                if (isLastSibling) {
+                    s = '╰┬'
+                } else {
+                    s = '├┬'
+                }
+            } else {
+                if (isLastSibling) {
+                    sl = `${' '.repeat(level-1)}╰┬`.split('')
+                    siblingBarIdxs.forEach((item, idx) => {
+                        sl[item] = idx===siblingBarIdxs.length-1? (item===level-1?'╰':'│'): '│'
+                    })
+                    s = sl.join('')
+                } else {
+                    sl = `${' '.repeat(level-1)}├┬`.split('')
+                    siblingBarIdxs.forEach((item, idx) => {
+                        sl[item] = idx===siblingBarIdxs.length-1? '├': '│'
+                    })
+                    s = sl.join('')
+                }
+            }
+        } else {
+            if (level === 1) {
+                if (isLastSibling) {
+                    s = '╰─'
+                } else {
+                    s = '├─'
+                }
+            } else {
+                if (isLastSibling) {
+                    sl = `${' '.repeat(level-1)}╰─`.split('')
+                    siblingBarIdxs.forEach((item, idx) => {
+                        sl[item] = idx===siblingBarIdxs.length-1? (item===level-1?'╰':'│'): '│'
+                    })
+                    s = sl.join('')
+                } else {
+                    sl = `${' '.repeat(level-1)}├─`.split('')
+                    siblingBarIdxs.forEach((item, idx) => {
+                        sl[item] = idx===siblingBarIdxs.length-1? '├': '│'
+                    })
+                    s = sl.join('')
+                }
+            }
+        }
+    }
+
+    const span1Text = s + '► '
+
+    let poster = (fromShort||from||'').substring(0, UNAME_LEN)
+    if (poster.length < UNAME_LEN) {
+        poster += ' '.repeat(UNAME_LEN-poster.length)
+    }
+    let _year = year? (Number(year) < 2026? year: ''): ''
+    if (_year.length < 4) {
+        _year = ' '.repeat(4-_year.length)
+    }
+    let time = `${_year} ${mon||''} ${day||''}`
+
+    span1.innerText = `${marker||' '}  ${time}  ${poster}  ${span1Text}`
     span1.setAttribute('class', 'msgtree-item--left')
     div.appendChild(span1)
 
     let span2 = document.createElement('span')
     // const span2Text = `${fromShort||from}: ${subject} <${date}> ${msgId} <${beginLidx+1},${bodyEndLidx+1} ${currMsgIdxRendered+1}/${gMsgIds.length}>`
 
-    const span2Text = `${fromShort||from}: ${subject}  -  ${dateShort}  -  ${currMsgIdxRendered+1}/${gMsgIds.length}`
+    const span2Text = `${subject}  -  ${currMsgIdxRendered+1}/${gMsgIds.length}`
 
     span2.innerText = span2Text
     span2.setAttribute('class', 'msgtree-item--right')
@@ -313,28 +394,36 @@ MessageId : ${messageIdModified||messageId}`
     e.innerText = t
 }
 
-function _renderReplyRecursively(msgId, level=1) {
-    (gReplyMap[msgId] || []).forEach((i,idx) => {
-        if (!gRenderedMap[i]) {
-            renderMsgTreeItem(i, level)
+function _renderReplyRecursively(msgId, level=1, siblingBarIdxs=[]) {
+    const replies = (gReplyMap[msgId] || [])
+    const hasMultipleChildren = replies.length > 1
+    replies.forEach((i,idx) => {
+        let ss = [...siblingBarIdxs].concat([level])
+        let isLastSibling = idx === replies.length-1
+        if (isLastSibling) {
+            ss.pop()
         }
-        _renderReplyRecursively(i, level+1)
+        if (!gRenderedMap[i]) {
+            renderMsgTreeItem(i, level+1, idx===replies.length-1, ss, '')
+        }
+        _renderReplyRecursively(i, level+1, ss)
     })
 }
 
 function render() {
     for(var i of gMsgIds) {
+        let siblingBarIdxs = []
         if (!gRenderedMap[i]) {
-            renderMsgTreeItem(i, 0, gIsReplyMap[i]? '<': '*')
+            renderMsgTreeItem(i, 0, false, siblingBarIdxs, gIsReplyMap[i]? '<': '*')
         }
-        _renderReplyRecursively(i)
+        _renderReplyRecursively(i, 0, siblingBarIdxs)
 
         // render messages with same message-id
         if (i in gMsgSameMap) {
             for (var j=1; j<gMsgSameMap[i].length; j++) {
                 const mmid = i + '$' + String(gMsgSameMap[i][j]+1)
                 if (!gRenderedMap[mmid]) {
-                    renderMsgTreeItem(mmid, 0, '$')
+                    renderMsgTreeItem(mmid, 0, false, siblingBarIdxs, '$')
                 }
             }
         }
