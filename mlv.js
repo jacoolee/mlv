@@ -1,6 +1,6 @@
 const MSG_SEPARATOR_REGEXP = /^From [^ ]*( at [^ ]*)? *[A-z]{3} [A-z]{3} [ 0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [0-9]{4}/
 const MSGTREE_ITEM_HEIGHT = 17 /* 17: total height of a msgtree-item, keep same as that in css */
-const UNAME_LEN = 14
+const UNAME_LEN = 20
 
 let gTime = Date.now()
 let gLines = [ /* line, ... */ ]
@@ -60,7 +60,7 @@ function parse(text='') {
                 block['from'] = v
                 let m = v.match(/\(.* via TUHS\)/)
                 block['fromShort'] = m
-                    ? m[0].match(/[A-z0-9]+ ?([A-z0-9]*)?/)[0].replace(' via','')
+                    ? m[0].match(/[\.A-z0-9]+ ?([A-z0-9]*)? ?([A-z0-9]*)?/)[0].replace(' via','')
                     : v.replace(/ at .*/, '')
                 break
             }
