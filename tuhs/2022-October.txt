@@ -1,0 +1,3622 @@
+From tuhs at tuhs.org  Tue Oct  4 07:04:46 2022
+From: tuhs at tuhs.org (segaloco via TUHS)
+Date: Mon, 03 Oct 2022 21:04:46 +0000
+Subject: [TUHS] Documentation Call Numbers and Meanings?
+Message-ID: <Cp7urzn3WulqSHjMgbv2uj1Rru827v4q1EgdEP0Pzr3sNZCtoBP-XgjmUPfF_P9_I12A_SxMRxBwoanEy36FRNGUbKTnNxn5_hqVTu7XdUA=@protonmail.com>
+
+Good afternoon folks, linked is a list of all of the call numbers of UNIX-relevant documentation that I've been able to catalogue lately: https://pastebin.com/DbDAhX3W
+
+This isn't exhaustive, I skipped many documents under dept (assuming dept) 305, 306, and 308, focusing mainly on 700, 301, 307, and 320.
+
+I was wondering if anyone that has some knowledge of the numbering system used for these documents in Bell might be able to comment on this in any way. What I've been able to make some determination on is:
+
+700-prefixed call numbers appear to be general Western Electric stuff, most of these manuals being related to switching, power, hardware, etc. However, the UNIX 3.0 manual and 4.0 reference guide are both under this series too. I imagine this was simply because the computer systems group hadn't been formally spun off or otherwise received directive to manage UNIX documentation at this point? In any case, I'd be curious what all else may have gotten 700-series call numbers before the 300-series took over UNIX docs.
+
+As for the 300 series, as far as I can tell 300 is the umbrella for AT&T Computer Systems, with several sub departments handling slightly different (although overlapping in circumstances) concerns. What I have managed to determine is that 301 series encompasses the original System V version documentation, a few "Level II COBOL" documents, as well as some M68000 and Z8000-specific versions of docs (I didn't know UNIX System V ever hit the Z8000, that's cool).
+
+After System V gold, the wealth of UNIX documentation appears to come from code 307-X instead, I'm assuming 307 is whatever permutation of USG/USL happened to exist at the time. However, there are a few other codes that seem to sporadically be involved in UNIX docs as well as other computing docs:
+
+302 - Just a smattering of Writers Workbench docs, very high call number suffixes (950-958).
+
+303 - Bunch of 3B20D (Real-Time-Reliable) docs as well as other 3B20 stuff, mainly hardware manuals but a few SVR2.1-related docs as well for 3B20A, S, and D
+
+304 - Another smattering of 3B20 docs, this time mostly A and S, mix of hardware and UNIX docs
+
+305 - This one is hard to pin down, they've got the basic 3B2 docs, some other guidance docs for non-20 3B computers, and a mishmash of language tools like assemblers, a BASIC interpreter, compilers, and a few odd technical bulletins for products covered in other groups
+
+306 - There wasn't much direct UNIX documentation here, just stuff about 3BNet (3B computer networking?) and the 5620 DOT Mapped terminal
+
+308 - Documentation on a whole mess of software utilities with some odd Sys V manuals sprinkled in. You've got stuff like the "Office Telesystem", Instructional Workbench, more docs on BASIC, Pascal, and COBOL, some Fortran stuff as well, and a few other reference documents
+
+310 - Seems to be entirely related to Documenter's and Writer's Workbenches. Whats odd is there is also a pretty even split of DWB and WWB documents in the 302 and 307 groups, so hard to say why the split, maybe a secondary department producing supplementary literature? Very low call number suffixes, so possibly 302 transitioned into 310 for DWB/WWB support
+
+311 - Might be a "trade book" publishing arm, seems to only contain a few books, including "The C Programming Language"
+
+320 - Might be the "standard systems" trade books arm as opposed to the version/system specific documentation gotten from USL directly. This list contains books like the SVID, Bach's Design of the UNIX Operating System book, some programming guidance books, and the UNIX Programmer's Manual 5 volume series with the metallic alphabet blocks on the cover (echoing the V7 trade release). What's interesting is call number 320-X comes back around with SVR4 as the call code that a number of 386-specific manuals were published under.
+
+341 - This one is very odd, a higher call number than any of the others, but the only docs I could find under this are the System V gold Document, Graphics, Programming, and Support Tools guides, which curiously weren't published under 301 like the rest of the documentation for that version.
+
+Finally, some digestion from this research:
+This gives some compelling version-support information in early SysV I wasn't aware of previously:
+
+- System V Gold:
+
+- PDP-11
+- VAX-11
+- 3B
+- M68000
+- Z8000
+- System V R2:
+
+- VAX-11
+- 3B
+- M68000
+- NS32000
+- iAPX 286
+
+It appears Bell also opted to have different documentation sets for different processors in SVR2. We kinda see this later on with i386 variants of the SVR3 and SVR4 documents, but I don't think we ever quite see this wide of a spread of docs straight from AT&T after this.
+
+Also, among the many documents (one I didn't add to the list yet) is one referring specifically to UNIX Release 5.3, not System V R3 or anything like that, but a Release 5.3. I know I've seen "Release 5.2" listed in a few places, which had me curious, is there a well established record of what happened with internal (non research) UNIX after System V was branched? Whether the development stream simply became System V development, or if there was still a totally separate UNIX 5.x branch for a while that, while borrowed into System V at necessary times, did still constitute a distinct branch of development after the initial System V release. I know there is at least evidence of aspects of System V being put into CB UNIX 2.3, meaning CB 2.3 was post-System V, that would make a compelling argument for there being some more development work between CB and USG folks before they put the final bow on the UNIX/TS project and formally routed all efforts to System V.
+
+I'm sure there are other little nuggets of information hiding in there, but that's my digest from this thus far. If anyone knows of any other such efforts to produce a listing of all known UNIX documentation call numbers from AT&T, I'll happily contribute this to their efforts.
+
+- Matt G.
+
+P.S. SysV Gold scans are still inbound, just likely will be a winter project once the rains start and I can't go play outside.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221003/0908605e/attachment.htm>
+
+From kevin.bowling at kev009.com  Fri Oct  7 14:34:15 2022
+From: kevin.bowling at kev009.com (Kevin Bowling)
+Date: Thu, 6 Oct 2022 21:34:15 -0700
+Subject: [TUHS] Documentation Call Numbers and Meanings?
+In-Reply-To: <Cp7urzn3WulqSHjMgbv2uj1Rru827v4q1EgdEP0Pzr3sNZCtoBP-XgjmUPfF_P9_I12A_SxMRxBwoanEy36FRNGUbKTnNxn5_hqVTu7XdUA=@protonmail.com>
+References: <Cp7urzn3WulqSHjMgbv2uj1Rru827v4q1EgdEP0Pzr3sNZCtoBP-XgjmUPfF_P9_I12A_SxMRxBwoanEy36FRNGUbKTnNxn5_hqVTu7XdUA=@protonmail.com>
+Message-ID: <CAK7dMtDUd-xPo5p_Lj3x3zGc+zLit3vU9j6uy6YJZM3=u7fBWA@mail.gmail.com>
+
+On Mon, Oct 3, 2022 at 2:05 PM segaloco via TUHS <tuhs at tuhs.org> wrote:
+
+> Good afternoon folks, linked is a list of all of the call numbers of
+> UNIX-relevant documentation that I've been able to catalogue lately:
+> https://pastebin.com/DbDAhX3W
+>
+> This isn't exhaustive, I skipped many documents under dept (assuming dept)
+> 305, 306, and 308, focusing mainly on 700, 301, 307, and 320.
+>
+> I was wondering if anyone that has some knowledge of the numbering system
+> used for these documents in Bell might be able to comment on this in any
+> way. What I've been able to make some determination on is:
+>
+
+The numbering system seems vaguely similar to BSPs (
+https://en.wikipedia.org/wiki/Bell_System_Practices).
+
+There are top level BSP sections for the 3B2 and 3B20 among other
+interesting history to this community.  For some reason the telephone
+community hasn’t done a good job of digitizing the complete BSPs nor a
+modern index (I physically browsed an index from the early 90s but someone
+disappeared it from where I did so).  I’ve heard are private collectors
+with complete collections of some vintage.
+
+
+> 700-prefixed call numbers appear to be general Western Electric stuff,
+> most of these manuals being related to switching, power, hardware, etc.
+> However, the UNIX 3.0 manual and 4.0 reference guide are both under this
+> series too. I imagine this was simply because the computer systems group
+> hadn't been formally spun off or otherwise received directive to manage
+> UNIX documentation at this point? In any case, I'd be curious what all else
+> may have gotten 700-series call numbers before the 300-series took over
+> UNIX docs.
+>
+> As for the 300 series, as far as I can tell 300 is the umbrella for AT&T
+> Computer Systems, with several sub departments handling slightly different
+> (although overlapping in circumstances) concerns. What I have managed to
+> determine is that 301 series encompasses the original System V version
+> documentation, a few "Level II COBOL" documents, as well as some M68000 and
+> Z8000-specific versions of docs (I didn't know UNIX System V ever hit the
+> Z8000, that's cool).
+>
+> After System V gold, the wealth of UNIX documentation appears to come from
+> code 307-X instead, I'm assuming 307 is whatever permutation of USG/USL
+> happened to exist at the time. However, there are a few other codes that
+> seem to sporadically be involved in UNIX docs as well as other computing
+> docs:
+>
+> 302 - Just a smattering of Writers Workbench docs, very high call number
+> suffixes (950-958).
+>
+> 303 - Bunch of 3B20D (Real-Time-Reliable) docs as well as other 3B20
+> stuff, mainly hardware manuals but a few SVR2.1-related docs as well for
+> 3B20A, S, and D
+>
+> 304 - Another smattering of 3B20 docs, this time mostly A and S, mix of
+> hardware and UNIX docs
+>
+> 305 - This one is hard to pin down, they've got the basic 3B2 docs, some
+> other guidance docs for non-20 3B computers, and a mishmash of language
+> tools like assemblers, a BASIC interpreter, compilers, and a few odd
+> technical bulletins for products covered in other groups
+>
+> 306 - There wasn't much direct UNIX documentation here, just stuff about
+> 3BNet (3B computer networking?) and the 5620 DOT Mapped terminal
+>
+> 308 - Documentation on a whole mess of software utilities with some odd
+> Sys V manuals sprinkled in. You've got stuff like the "Office Telesystem",
+> Instructional Workbench, more docs on BASIC, Pascal, and COBOL, some
+> Fortran stuff as well, and a few other reference documents
+>
+> 310 - Seems to be entirely related to Documenter's and Writer's
+> Workbenches. Whats odd is there is also a pretty even split of DWB and WWB
+> documents in the 302 and 307 groups, so hard to say why the split, maybe a
+> secondary department producing supplementary literature? Very low call
+> number suffixes, so possibly 302 transitioned into 310 for DWB/WWB support
+>
+> 311 - Might be a "trade book" publishing arm, seems to only contain a few
+> books, including "The C Programming Language"
+>
+> 320 - Might be the "standard systems" trade books arm as opposed to the
+> version/system specific documentation gotten from USL directly. This list
+> contains books like the SVID, Bach's Design of the UNIX Operating System
+> book, some programming guidance books, and the UNIX Programmer's Manual 5
+> volume series with the metallic alphabet blocks on the cover (echoing the
+> V7 trade release). What's interesting is call number 320-X comes back
+> around with SVR4 as the call code that a number of 386-specific manuals
+> were published under.
+>
+> 341 - This one is very odd, a higher call number than any of the others,
+> but the only docs I could find under this are the System V gold Document,
+> Graphics, Programming, and Support Tools guides, which curiously weren't
+> published under 301 like the rest of the documentation for that version.
+>
+> Finally, some digestion from this research:
+> This gives some compelling version-support information in early SysV I
+> wasn't aware of previously:
+>
+>
+>    - System V Gold:
+>       - PDP-11
+>       - VAX-11
+>       - 3B
+>       - M68000
+>       - Z8000
+>    - System V R2:
+>       - VAX-11
+>       - 3B
+>       - M68000
+>       - NS32000
+>       - iAPX 286
+>
+>
+> It appears Bell also opted to have different documentation sets for
+> different processors in SVR2. We kinda see this later on with i386 variants
+> of the SVR3 and SVR4 documents, but I don't think we ever quite see this
+> wide of a spread of docs straight from AT&T after this.
+>
+> Also, among the many documents (one I didn't add to the list yet) is one
+> referring specifically to UNIX Release 5.3, not System V R3 or anything
+> like that, but a Release 5.3. I know I've seen "Release 5.2" listed in a
+> few places, which had me curious, is there a well established record of
+> what happened with internal (non research) UNIX after System V was
+> branched? Whether the development stream simply became System V
+> development, or if there was still a totally separate UNIX 5.x branch for a
+> while that, while borrowed into System V at necessary times, did still
+> constitute a distinct branch of development after the initial System V
+> release. I know there is at least evidence of aspects of System V being put
+> into CB UNIX 2.3, meaning CB 2.3 was post-System V, that would make a
+> compelling argument for there being some more development work between CB
+> and USG folks before they put the final bow on the UNIX/TS project and
+> formally routed all efforts to System V.
+>
+> I'm sure there are other little nuggets of information hiding in there,
+> but that's my digest from this thus far. If anyone knows of any other such
+> efforts to produce a listing of all known UNIX documentation call numbers
+> from AT&T, I'll happily contribute this to their efforts.
+>
+> - Matt G.
+>
+> P.S. SysV Gold scans are still inbound, just likely will be a winter
+> project once the rains start and I can't go play outside.
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221006/8d071540/attachment.htm>
+
+From kevin.bowling at kev009.com  Fri Oct  7 15:01:57 2022
+From: kevin.bowling at kev009.com (Kevin Bowling)
+Date: Thu, 6 Oct 2022 22:01:57 -0700
+Subject: [TUHS] Documentation Call Numbers and Meanings?
+In-Reply-To: <CAK7dMtDUd-xPo5p_Lj3x3zGc+zLit3vU9j6uy6YJZM3=u7fBWA@mail.gmail.com>
+References: <Cp7urzn3WulqSHjMgbv2uj1Rru827v4q1EgdEP0Pzr3sNZCtoBP-XgjmUPfF_P9_I12A_SxMRxBwoanEy36FRNGUbKTnNxn5_hqVTu7XdUA=@protonmail.com>
+ <CAK7dMtDUd-xPo5p_Lj3x3zGc+zLit3vU9j6uy6YJZM3=u7fBWA@mail.gmail.com>
+Message-ID: <CAK7dMtBxjx2D+fSHJsHhDzNjR-Z+gUc8CbXTpbwjuH1JAOx0Og@mail.gmail.com>
+
+On Thu, Oct 6, 2022 at 9:34 PM Kevin Bowling <kevin.bowling at kev009.com> wrote:
+>
+> On Mon, Oct 3, 2022 at 2:05 PM segaloco via TUHS <tuhs at tuhs.org> wrote:
+>>
+>> Good afternoon folks, linked is a list of all of the call numbers of UNIX-relevant documentation that I've been able to catalogue lately: https://pastebin.com/DbDAhX3W
+>>
+>> This isn't exhaustive, I skipped many documents under dept (assuming dept) 305, 306, and 308, focusing mainly on 700, 301, 307, and 320.
+>>
+>> I was wondering if anyone that has some knowledge of the numbering system used for these documents in Bell might be able to comment on this in any way. What I've been able to make some determination on is:
+>
+>
+> The numbering system seems vaguely similar to BSPs (
+> https://en.wikipedia.org/wiki/Bell_System_Practices).
+>
+> There are top level BSP sections for the 3B2 and 3B20 among other interesting history to this community.  For some reason the telephone community hasn’t done a good job of digitizing the complete BSPs nor a modern index (I physically browsed an index from the early 90s but someone disappeared it from where I did so).  I’ve heard are private collectors with complete collections of some vintage.
+
+Checked my notes, for the BSPs in case someone comes across them:
+254- 3B20D
+555- 3B2
+585- 3B5
+
+>>
+>> 700-prefixed call numbers appear to be general Western Electric stuff, most of these manuals being related to switching, power, hardware, etc. However, the UNIX 3.0 manual and 4.0 reference guide are both under this series too. I imagine this was simply because the computer systems group hadn't been formally spun off or otherwise received directive to manage UNIX documentation at this point? In any case, I'd be curious what all else may have gotten 700-series call numbers before the 300-series took over UNIX docs.
+>>
+>> As for the 300 series, as far as I can tell 300 is the umbrella for AT&T Computer Systems, with several sub departments handling slightly different (although overlapping in circumstances) concerns. What I have managed to determine is that 301 series encompasses the original System V version documentation, a few "Level II COBOL" documents, as well as some M68000 and Z8000-specific versions of docs (I didn't know UNIX System V ever hit the Z8000, that's cool).
+>>
+>> After System V gold, the wealth of UNIX documentation appears to come from code 307-X instead, I'm assuming 307 is whatever permutation of USG/USL happened to exist at the time. However, there are a few other codes that seem to sporadically be involved in UNIX docs as well as other computing docs:
+>>
+>> 302 - Just a smattering of Writers Workbench docs, very high call number suffixes (950-958).
+>>
+>> 303 - Bunch of 3B20D (Real-Time-Reliable) docs as well as other 3B20 stuff, mainly hardware manuals but a few SVR2.1-related docs as well for 3B20A, S, and D
+>>
+>> 304 - Another smattering of 3B20 docs, this time mostly A and S, mix of hardware and UNIX docs
+>>
+>> 305 - This one is hard to pin down, they've got the basic 3B2 docs, some other guidance docs for non-20 3B computers, and a mishmash of language tools like assemblers, a BASIC interpreter, compilers, and a few odd technical bulletins for products covered in other groups
+>>
+>> 306 - There wasn't much direct UNIX documentation here, just stuff about 3BNet (3B computer networking?) and the 5620 DOT Mapped terminal
+>>
+>> 308 - Documentation on a whole mess of software utilities with some odd Sys V manuals sprinkled in. You've got stuff like the "Office Telesystem", Instructional Workbench, more docs on BASIC, Pascal, and COBOL, some Fortran stuff as well, and a few other reference documents
+>>
+>> 310 - Seems to be entirely related to Documenter's and Writer's Workbenches. Whats odd is there is also a pretty even split of DWB and WWB documents in the 302 and 307 groups, so hard to say why the split, maybe a secondary department producing supplementary literature? Very low call number suffixes, so possibly 302 transitioned into 310 for DWB/WWB support
+>>
+>> 311 - Might be a "trade book" publishing arm, seems to only contain a few books, including "The C Programming Language"
+>>
+>> 320 - Might be the "standard systems" trade books arm as opposed to the version/system specific documentation gotten from USL directly. This list contains books like the SVID, Bach's Design of the UNIX Operating System book, some programming guidance books, and the UNIX Programmer's Manual 5 volume series with the metallic alphabet blocks on the cover (echoing the V7 trade release). What's interesting is call number 320-X comes back around with SVR4 as the call code that a number of 386-specific manuals were published under.
+>>
+>> 341 - This one is very odd, a higher call number than any of the others, but the only docs I could find under this are the System V gold Document, Graphics, Programming, and Support Tools guides, which curiously weren't published under 301 like the rest of the documentation for that version.
+>>
+>> Finally, some digestion from this research:
+>> This gives some compelling version-support information in early SysV I wasn't aware of previously:
+>>
+>> System V Gold:
+>>
+>> PDP-11
+>> VAX-11
+>> 3B
+>> M68000
+>> Z8000
+>>
+>> System V R2:
+>>
+>> VAX-11
+>> 3B
+>> M68000
+>> NS32000
+>> iAPX 286
+>>
+>>
+>> It appears Bell also opted to have different documentation sets for different processors in SVR2. We kinda see this later on with i386 variants of the SVR3 and SVR4 documents, but I don't think we ever quite see this wide of a spread of docs straight from AT&T after this.
+>>
+>> Also, among the many documents (one I didn't add to the list yet) is one referring specifically to UNIX Release 5.3, not System V R3 or anything like that, but a Release 5.3. I know I've seen "Release 5.2" listed in a few places, which had me curious, is there a well established record of what happened with internal (non research) UNIX after System V was branched? Whether the development stream simply became System V development, or if there was still a totally separate UNIX 5.x branch for a while that, while borrowed into System V at necessary times, did still constitute a distinct branch of development after the initial System V release. I know there is at least evidence of aspects of System V being put into CB UNIX 2.3, meaning CB 2.3 was post-System V, that would make a compelling argument for there being some more development work between CB and USG folks before they put the final bow on the UNIX/TS project and formally routed all efforts to System V.
+>>
+>> I'm sure there are other little nuggets of information hiding in there, but that's my digest from this thus far. If anyone knows of any other such efforts to produce a listing of all known UNIX documentation call numbers from AT&T, I'll happily contribute this to their efforts.
+>>
+>> - Matt G.
+>>
+>> P.S. SysV Gold scans are still inbound, just likely will be a winter project once the rains start and I can't go play outside.
+>>
+
+From sjenkin at canb.auug.org.au  Fri Oct  7 18:30:55 2022
+From: sjenkin at canb.auug.org.au (steve jenkin)
+Date: Fri, 7 Oct 2022 19:30:55 +1100
+Subject: [TUHS] Princeton's "Unix: An Oral History": who was in the team in
+ "The Attic"?
+Message-ID: <67DB5BA3-2E62-49DB-A0B2-389FDA1F0D00@canb.auug.org.au>
+
+Has this been covered before? I’ve searched but not found an obvious answer, which would be a timeline, not a table.
+
+Has anyone roughly calculated “man years” spent developing Unix to 1973 or 1974?
+Under 25 "man-years”? (person years now)
+
+It compares favourably to the quoted “5,000 man years over 4 years” invested by IBM for the 1st million lines of OS/360 - which by 1978 was estimated a 10M LOC.
+
+In my reading on Multics, I’d not noticed a ‘man years’ estimate, thought the project ran from 1965 to 1985 when Honeywell ‘capped’ development and span off a commercial entity [ Bell Labs leaving April 1969 ].
+There were many releases of Multics beginning with "MR 1.0” in 1974 to “MR 11.0” in 1984, with some others later. 
+	<https://www.multicians.org/chrono.html>
+
+Cobato in 1977 wrote that by 1969, when it moved out of ‘development only’, 150 man-years were spent on software.
+	<https://rcs.uwaterloo.ca/~ali/cs854-f17/papers/multics.pdf>
+
+
+The original Unix group working with the PDP-11 on the 6th floor should be well known, but I can’t recall seeing a list.
+Would the first 1973 conferenceor 1974 CACM paper be the natural cut-off date for an ‘original' group?
+
+There’s a list of "Former members of 1127” maintained on-line.
+As an outsider who doesn’t know ppl & dates, can’t extract what I was interested in.
+	<https://www.spinroot.com/gerard/1127_alumni.html>
+
+There was a constraint on active users / concurrent logins in the “Attic": the number of connected terminals & desks there.
+Assuming it took time to get terminals installed elsewhere, then later dedicated phone lines and 300 baud modems outside.
+
+The typesetter used by the patent dept isn’t mentioned.
+I’ve a recollection it was fed by mag tape, but unsure of that source.
+
+Infer at least the people named in the piece, which looks very sparse:
+
+	Ken & Dennis :)
+	Morris
+	Cherry
+	Kernighan
+
+	Plus Joe Osanna working on roff / troff? [ do I have that wrong ]
+
+The 1971 “1st Edition” Manual Intro lists 4 names. No others appear in Sections 1, 3, 6, 7 [ commands & libraries ]
+	<https://www.tuhs.org/Archive/Distributions/Research/Dennis_v1/1stEdman.html>
+
+	ken K. Thompson
+	dmr D. M. Ritchie
+	jfo J. F. Ossanna
+	rhm R. Morris
+
+In June 1974, Dennis wrote in the preface to the Version 5 manual, with he and Ken named as authors.
+	<https://www.tuhs.org/Archive/Distributions/Research/Dennis_v5/v5man.pdf>
+
+	The authors are grateful to 
+		L. L. Cherry, 
+		L. A. Dimino, 
+		R. C. Haight, 
+		S. C. Johnson, 
+		B. W. Kernighan, 
+		M. E. Lesk, and 
+		E. N. Pinson 
+	for their contributions to the system software, 
+
+	and to 
+		L. E. McMahon for software and for his contributions to this manual. 
+
+	We are particularly appreciative of the invaluable technical, editorial, and administrative efforts of 
+		J. F. Ossanna, 
+		M. D. Mcllroy, and 
+		R. Morris
+
+========
+
+An Oral History of Unix
+	<https://www.tuhs.org/Archive/Documentation/OralHistory/>
+
+Assembling the History of Unix [ Report of FRS121 course ]
+	<https://www.tuhs.org/Archive/Documentation/OralHistory/finalhis.htm#attic>
+
+	The center of Unix activity was a sixth-floor room at Murray Hill which contained the PDP-11 that ran Unix.
+		"Don't think of a fancy laboratory, but it was a room up in the attic," as Morris describes it. 
+
+	In addition to the programmers, four secretaries from the patent department worked in the attic, 
+		performing the text-processing tasks for which Unix was ostensibly developed. 
+
+Robert Morris:
+	We all worked in the same room. 
+	We worked all up in an attic room on the sixth floor, in Murray Hill. 
+	In space that maybe was one and a half times the size of this hotel room. 
+	We were sitting at adjacent terminals, and adjacent, and we knew each other and we always in fact ate lunch together. 
+	Shared a coffeepot. 
+	So, it was a very close relationship and most of us were both users and contributors and there was a significant initiative for research contribution at all points.
+
+========
+
+--
+Steve Jenkin, IT Systems and Design 
+0412 786 915 (+61 412 786 915)
+PO Box 38, Kippax ACT 2615, AUSTRALIA
+
+mailto:sjenkin at canb.auug.org.au http://members.tip.net.au/~sjenkin
+
+
+From michael at casadevall.pro  Tue Oct 11 04:33:25 2022
+From: michael at casadevall.pro (Michael Casadevall)
+Date: Mon, 10 Oct 2022 14:33:25 -0400
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+Message-ID: <CAEMRDeG90fL81OWfFyNZNqVaC1ZHJGcNUTgvEDqcuR8yiLqrsQ@mail.gmail.com>
+
+Hey all,
+I've been recently working on researching ARPANET and the like for use in
+an upcoming video. As a starting point, I've been looking at the early UNIX
+networking code in archives, specifically, the NOSC tarball, and I've spent
+quite a few hours trying to get building on livestreams.
+
+What I've found is that there's corruption issues in code; which is noted
+in JOHNS-NOTE, although it's more severe than I realized. For example
+sys4.c is entirely corrupted, and part of impio.c is cut off. However, this
+isn’t quite as bad as it sounds. For example, by kitbashing both the
+original v6 source code, and the later BBN TCP code, I was able to create a
+sys4.c that builds and links which should be close to the original.
+Furthermore, it is possible to use the “vdh” target instead of the imp
+target to at least try and get the code building. I did successfully get a
+kernel to build, and it even prints out a mem message before deadlocking.
+
+My guess is it's either deadlocked waiting for the IMP, or there’s
+something wrong with the build. There’s some indication that it might need
+a split kernel, although I’ve not had any success with that thus far. I
+have uploaded my current build tree to git, as well as tarball with simh
+images if anyone wants to try and figure out what has gone wrong. I admit,
+my knowledge of PDP-11 assembly and debugging platforms is a bit wanting :)
+
+There’s some indication that this, and the later BBN TCP (which is from
+around the same time period) code were built on top of the Programmer’s
+Workbench vs. stock v6; especially because some code patches were needed to
+get it to build. I did look at the TUHS PWB archives, I see a bunch of
+binaries, but absolutely no idea how to install them. I’ve heard that none
+of these archives are actually complete, but I'm hoping someone might have
+some idea of how to go forward, since, if nothing else, I’d like to end
+this with a success story, although I’m happy with as far as I got.
+
+Furthermore, I do know that I can run some of the ARPA level utilities in
+MIT ITS on CHAOSNET, which will be an upcoming project, although that is
+going to be a dive in and of itself.
+
+In short, I’m hoping someone might be able to provide some insight into
+where things have gone wrong:
+  * Is the netunix kernel I built hanging because of corrupted code, or is
+it waiting for non-existent hardware.
+* NOTE: The DC-11 driver was not included, but I don’t think I need that
+for a single console?
+  * Is there any versions of PWB that is “easily” installable, since its
+very clear the later BBN code requires it (it refers to ncc explicitly)?
+  * I know IMPs have been emulated, and even have successfully routed
+packets, so I’m also trying to figure out how much would still be necessary
+to actually recreate a minimal ARPA network?
+
+I did try to build some of the NCP applications regardless; it does appear
+that some parts are simply missing. Mailer.cc seems to want a hnconv.o but
+no source file exists. The FTP daemon on the other hand wants a library
+simply called “j”.
+
+My guess is that even if the NCP code was buildable, the applications might
+not be. However, this did make me take a closer look at the BBN code, and
+it does have an ifdef for NCP, suggesting that it was still
+usable/supported? It makes sense, it seems to have been written before the
+TCP/IP flag day. I’m just not sure where to approach compiling it.
+
+I’ve uploaded the code with patches to build with the v6 compiler to github
+here: https://github.com/NCommander/network-unix-v6/tree/attempted-repair
+
+NOTE: v6's cc needs a seperate patch to increase the symbol table size;
+that's done in the disk image.
+
+Files, with SIMH configuration available here:
+https://drive.google.com/file/d/1QS0B3RU_mwXSGtl2En-d0WI3PJ1-udEs/view?usp=sharing
+
+My livestreams (12 hours or so) are on my YouTube channel:
+https://youtube.com/c/NCommander
+
+Feel free to forward this to other lists that may have PDP-11 or ARPANET
+experts!
+~ NCommander
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221010/e8e4c478/attachment-0001.htm>
+
+From lars at nocrew.org  Tue Oct 11 05:48:14 2022
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: Mon, 10 Oct 2022 19:48:14 +0000
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+In-Reply-To: <CAEMRDeG90fL81OWfFyNZNqVaC1ZHJGcNUTgvEDqcuR8yiLqrsQ@mail.gmail.com>
+ (Michael Casadevall's message of "Mon, 10 Oct 2022 14:33:25 -0400")
+References: <CAEMRDeG90fL81OWfFyNZNqVaC1ZHJGcNUTgvEDqcuR8yiLqrsQ@mail.gmail.com>
+Message-ID: <7wbkqjmpdt.fsf@junk.nocrew.org>
+
+Michael Casadevall wrote:
+> part of impio.c is cut off. However, this isn’t quite as bad as it
+> sounds. For example, by kitbashing both the original v6 source code,
+> and the later BBN TCP code, I was able to create a sys4.c that builds
+> and links which should be close to the original. Furthermore, it is
+> possible to use the “vdh” target instead of the imp target to at least
+> try and get the code building.
+
+Too bad about impio.c!  Maybe something can be extracted from the
+unix.greg binary?  I see there's also the ACC interface, another
+alternative to IMP11A.
+
+> My guess is it's either deadlocked waiting for the IMP, or there’s
+> something wrong with the build.
+
+Since you don't have anything backing the hardware registers for the IMP
+interface, it seems likely something will be upset.
+
+> Furthermore, I do know that I can run some of the ARPA level utilities
+> in MIT ITS on CHAOSNET, which will be an upcoming project, although
+> that is going to be a dive in and of itself.
+
+It's complicated.  Many of the utilities have parallels between the two,
+and some work on both.  And there's a server to provide a gateway from
+Chaosnet to Arpanet.  Give me a ping when you're looking into ITS.
+
+> I know IMPs have been emulated, and even have successfully routed
+> packets, so I’m also trying to figure out how much would still be
+> necessary to actually recreate a minimal ARPA network?
+
+Reviving the host software, like you are are doing, is one vital part of
+it.  Another it adding emulators for various IMP interfaces.  I.e. you
+will not get anywhere without adding one of IMP11A, ACC, or VDH to SIMH.
+
+For adding other nodes to the network, PDP-10 hosts are your best bet.
+There isn't much else left.
+
+From michael at casadevall.pro  Tue Oct 11 06:31:04 2022
+From: michael at casadevall.pro (Michael Casadevall)
+Date: Mon, 10 Oct 2022 16:31:04 -0400
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+In-Reply-To: <7wbkqjmpdt.fsf@junk.nocrew.org>
+References: <CAEMRDeG90fL81OWfFyNZNqVaC1ZHJGcNUTgvEDqcuR8yiLqrsQ@mail.gmail.com>
+ <7wbkqjmpdt.fsf@junk.nocrew.org>
+Message-ID: <CAEMRDeH5y3zs+Wo4VbJfTjGUY_4z8GJszr-3Ls1=Ry+YPw7R_A@mail.gmail.com>
+
+Replies inline
+
+On Mon, Oct 10, 2022 at 3:48 PM Lars Brinkhoff <lars at nocrew.org> wrote:
+
+> Michael Casadevall wrote:
+> > part of impio.c is cut off. However, this isn’t quite as bad as it
+> > sounds. For example, by kitbashing both the original v6 source code,
+> > and the later BBN TCP code, I was able to create a sys4.c that builds
+> > and links which should be close to the original. Furthermore, it is
+> > possible to use the “vdh” target instead of the imp target to at least
+> > try and get the code building.
+>
+> Too bad about impio.c!  Maybe something can be extracted from the
+> unix.greg binary?  I see there's also the ACC interface, another
+> alternative to IMP11A.
+>
+>
+Well, there is an impio.c in the BBN TCP code which has #define NCPs, which
+I used to rebuild the original impio.c; although this is very much a devil
+in the
+details situation.
+
+I do need to do a readthrough for the VDH driver, which says its for "very
+distant hosts".
+I think that might be for the radio links to Hawaii and the UK? I vaguely
+remember coming
+across that term in my reading, but I'm drawing a blank ATM.
+
+I did try to run the unix binaries in green and green47, but they seem to
+be configured
+for a RL0x drive of some sort; the driver is in the NOSC source, so it
+might be possible
+to get running, but without the host binaries, you'r enot going to get far.
+
+> My guess is it's either deadlocked waiting for the IMP, or there’s
+> > something wrong with the build.
+>
+> Since you don't have anything backing the hardware registers for the IMP
+> interface, it seems likely something will be upset.
+>
+>
+Well, I'm not sure if its trying to initialize the IMP on startup; there's
+a userspace daemon,
+ncpd which talks to the /dev nodes to do stuff; with network nodes showing
+up as /dev/net/*host.
+
+I did determine I at least seem to make it to sched() with my home cooked
+kernel, but I can't even
+start in single user mode.
+
+Honestly, it reminds me of Plan 9 more than anything.
+
+
+> > Furthermore, I do know that I can run some of the ARPA level utilities
+> > in MIT ITS on CHAOSNET, which will be an upcoming project, although
+> > that is going to be a dive in and of itself.
+>
+> It's complicated.  Many of the utilities have parallels between the two,
+> and some work on both.  And there's a server to provide a gateway from
+> Chaosnet to Arpanet.  Give me a ping when you're looking into ITS.
+>
+>
+Will do. ITS feels like an extremely deep (if interesting) rabbithole :)
+
+
+> > I know IMPs have been emulated, and even have successfully routed
+> > packets, so I’m also trying to figure out how much would still be
+> > necessary to actually recreate a minimal ARPA network?
+>
+> Reviving the host software, like you are are doing, is one vital part of
+> it.  Another it adding emulators for various IMP interfaces.  I.e. you
+> will not get anywhere without adding one of IMP11A, ACC, or VDH to SIMH.
+>
+>
+Yup, that's what I figured. I've been trying to evaluate how much survives
+here, but
+my general feeling is one of the UNIX stacks might be recoverable, plus the
+ARPA
+stuff in ITS. I don't know if a runnable build of TENEX has been archived,
+or if ARPA
+stuff for TOPS-10/20 survived.
+
+I also want to look into System/360 and 370, but I get the sense none of
+the mainframe stuff survived.
+
+The other problem is of the surviving stacks, they all seem to be for the
+later 96-bit leader,
+I'm not certain if any of the IMP software that has been archived is new
+enough to work with that.
+
+That said, that isn't an insurmountable problem.
+~ NCommander
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221010/02f006bd/attachment.htm>
+
+From clemc at ccc.com  Tue Oct 11 06:31:09 2022
+From: clemc at ccc.com (Clem Cole)
+Date: Mon, 10 Oct 2022 16:31:09 -0400
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+In-Reply-To: <CAEMRDeG90fL81OWfFyNZNqVaC1ZHJGcNUTgvEDqcuR8yiLqrsQ@mail.gmail.com>
+References: <CAEMRDeG90fL81OWfFyNZNqVaC1ZHJGcNUTgvEDqcuR8yiLqrsQ@mail.gmail.com>
+Message-ID: <CAC20D2NjHjjizq8xixSGhcxPpA01Gs3V6C0qWDgXzE-Md4w6ag@mail.gmail.com>
+
+below...
+
+
+On Mon, Oct 10, 2022 at 2:33 PM Michael Casadevall <michael at casadevall.pro>
+wrote:
+
+>  For example sys4.c is entirely corrupted, and part of impio.c is cut off.
+>
+Hmmm
+
+ % sha256sum impio.c sys4.c
+1f3d10a7e6989996dae8a07992684881fa8bc05ddc5d512c86efdaf34b4437d2  impio.c
+7bd82c560d7bd74f64b03dac10550620b70d88340f02e31b56c6002f2ae6c88d  sys4.c
+
+This is from my system - check to see if what you have are different
+
+
+
+
+>
+> There’s some indication that this, and the later BBN TCP (which is from
+> around the same time period) code were built on top of the Programmer’s
+> Workbench vs. stock v6;
+>
+Where did you see that?  Possible of course, but less likely.   PWB 1.0 was
+not released outside of BTL.  Parts leaked to some of the Universities and
+the MIT systems were famously PWBish, so it's possible it leaked from MIT
+to BBN.  AGN is the comments -- Al Nemeth who is a friend of mine and Al
+told me in those days, BBN was pretty spooked about where UNIX stuff came
+from at BBN.
+
+I think it's more likely if something is not stock V6, is using the
+typesetter C compiler - which is the compiler described in K&R1 and would
+later be part of V7 and PWB 2.0.  That was released independently a lot of
+places had it and if you upgraded your V6 system to it, it was hard to go
+backward.
+
+
+
+>
+> In short, I’m hoping someone might be able to provide some insight into
+> where things have gone wrong:
+>   * Is the netunix kernel I built hanging because of corrupted code, or is
+> it waiting for non-existent hardware.
+>
+Could not a ton of things - where is stopping -- use simh to get an address
+and then check then look UNIX symbol table and see what routine you are in
+and see if you can egt a hint.
+
+> * NOTE: The DC-11 driver was not included, but I don’t think I need that
+> for a single console?
+>
+Should not need it - you can make sure /dev entry is nuked for it.   check
+c.c and see what entry it was -- it should be commented it.   The look in
+/dev and rm the entry so you don's accidentially try to open
+
+
+>   * Is there any versions of PWB that is “easily” installable, since its
+> very clear the later BBN code requires it (it refers to ncc explicitly)?
+>
+See comments -- I'm thinking this might not be PWB -- but if it is then go
+to gunkies and get Noel's MIT system maybe.
+
+
+
+>  NOTE: v6's cc needs a seperate patch to increase the symbol table size;
+> that's done in the disk image.
+>
+Yep - done many times - also if you use a 45 or 70, make the compiler image
+split I/D that helps too.   Although we ran them on 40s all the time - even
+before Fred's overlay code.
+ᐧ
+ᐧ
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221010/a0f4ef13/attachment.htm>
+
+From michael at casadevall.pro  Tue Oct 11 06:48:56 2022
+From: michael at casadevall.pro (Michael Casadevall)
+Date: Mon, 10 Oct 2022 16:48:56 -0400
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+In-Reply-To: <CAC20D2NjHjjizq8xixSGhcxPpA01Gs3V6C0qWDgXzE-Md4w6ag@mail.gmail.com>
+References: <CAEMRDeG90fL81OWfFyNZNqVaC1ZHJGcNUTgvEDqcuR8yiLqrsQ@mail.gmail.com>
+ <CAC20D2NjHjjizq8xixSGhcxPpA01Gs3V6C0qWDgXzE-Md4w6ag@mail.gmail.com>
+Message-ID: <CAEMRDeEFgu5P1f49Q6h9vR3cM62yH7XEjYn1ujOLR4E1Yfmbnw@mail.gmail.com>
+
+Replies inline
+
+On Mon, Oct 10, 2022 at 4:31 PM Clem Cole <clemc at ccc.com> wrote:
+
+> below...
+>
+>
+> On Mon, Oct 10, 2022 at 2:33 PM Michael Casadevall <michael at casadevall.pro>
+> wrote:
+>
+>>  For example sys4.c is entirely corrupted, and part of impio.c is cut
+>> off.
+>>
+> Hmmm
+>
+>  % sha256sum impio.c sys4.c
+> 1f3d10a7e6989996dae8a07992684881fa8bc05ddc5d512c86efdaf34b4437d2  impio.c
+> 7bd82c560d7bd74f64b03dac10550620b70d88340f02e31b56c6002f2ae6c88d  sys4.c
+>
+> This is from my system - check to see if what you have are different
+>
+>
+>From the NOSC tarball from THUS:
+
+ % sha256sum ncpk/drivers/impio.c ken/sys4.c
+ace2b7dae48bacf86b3bf1260a7715b66264308d67eb3232d963794481910c6a
+ ncpk/drivers/impio.c
+e5e727139e10b476c4dfa534155ddc07c0b3d32f132c98939c58d24f9a5efc41  ken/sys4.c
+
+sys4.c is just garbage characters, impio.c stops in the middle of a
+function.
+
+There's also some corruption (mostly single bytes stuff) in other files,
+i.e., I had to edit some non ASCII characters out because cc was unhappy,
+so if a redump is possible, it would be good.
+
+
+>
+>>
+>> There’s some indication that this, and the later BBN TCP (which is from
+>> around the same time period) code were built on top of the Programmer’s
+>> Workbench vs. stock v6;
+>>
+> Where did you see that?  Possible of course, but less likely.   PWB 1.0
+> was not released outside of BTL.  Parts leaked to some of the Universities
+> and the MIT systems were famously PWBish, so it's possible it leaked from
+> MIT to BBN.  AGN is the comments -- Al Nemeth who is a friend of mine and
+> Al told me in those days, BBN was pretty spooked about where UNIX stuff
+> came from at BBN.
+>
+> I think it's more likely if something is not stock V6, is using the
+> typesetter C compiler - which is the compiler described in K&R1 and would
+> later be part of V7 and PWB 2.0.  That was released independently a lot of
+> places had it and if you upgraded your V6 system to it, it was hard to go
+> backward.
+>
+>
+There are SCCS references in the code from 78/79, references to the V7 CC
+compiler and updates. SCCS was introduced publicly with PWB, which is why I
+suspect it might have been used. The code also uses some C syntax the stock
+compiler dislikes (specifically, it was unhappy register in the function
+declaration). The documentation discusses updating the C supervisor, and
+also using the Yale shell included in the source before trying to build.
+
+I know there's an updated cc that was on some of the disk dumps of later v6
+systems, which might also be where things like "libg", and such are.
+There's a few .a bundles that there are binaries but no sources in the
+archive, but I didn't make a comprehensive list on it.
+
+>
+>
+>>
+>> In short, I’m hoping someone might be able to provide some insight into
+>> where things have gone wrong:
+>>   * Is the netunix kernel I built hanging because of corrupted code, or
+>> is it waiting for non-existent hardware.
+>>
+> Could not a ton of things - where is stopping -- use simh to get an
+> address and then check then look UNIX symbol table and see what routine you
+> are in and see if you can egt a hint.
+>
+
+I'll check this next time I get the system out. I did follow the code a
+fair bit, and it looks like I do at least get as far as sched() since mem =
+is posted, and *then* it falls over.
+
+* NOTE: The DC-11 driver was not included, but I don’t think I need that
+>> for a single console?
+>>
+> Should not need it - you can make sure /dev entry is nuked for it.   check
+> c.c and see what entry it was -- it should be commented it.   The look in
+> /dev and rm the entry so you don's accidentially try to open
+>
+
+Awesome, thanks. That's what I suspected, but that's what I thought.
+
+
+>
+>
+>>  NOTE: v6's cc needs a seperate patch to increase the symbol table size;
+>> that's done in the disk image.
+>>
+> Yep - done many times - also if you use a 45 or 70, make the compiler
+> image split I/D that helps too.   Although we ran them on 40s all the
+> time - even before Fred's overlay code.
+> ᐧ
+>
+
+Beside the startup code (which is in mch.c and uses a preprocessor macro),
+is there anything specific gotchas in regards to models? I tried building
+CPU40 and CPU70, and configuring simh, just to eliminate that gotcha, but
+the only difference seems to be early initialization code ...
+
+Michael
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221010/3b5a35b7/attachment.htm>
+
+From clemc at ccc.com  Tue Oct 11 07:37:00 2022
+From: clemc at ccc.com (Clem Cole)
+Date: Mon, 10 Oct 2022 17:37:00 -0400
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+In-Reply-To: <CAEMRDeEFgu5P1f49Q6h9vR3cM62yH7XEjYn1ujOLR4E1Yfmbnw@mail.gmail.com>
+References: <CAEMRDeG90fL81OWfFyNZNqVaC1ZHJGcNUTgvEDqcuR8yiLqrsQ@mail.gmail.com>
+ <CAC20D2NjHjjizq8xixSGhcxPpA01Gs3V6C0qWDgXzE-Md4w6ag@mail.gmail.com>
+ <CAEMRDeEFgu5P1f49Q6h9vR3cM62yH7XEjYn1ujOLR4E1Yfmbnw@mail.gmail.com>
+Message-ID: <CAC20D2OUwYEBMDBk80Ngnojmb=on_ArHHF78m3tHe8tSd0XsAw@mail.gmail.com>
+
+On Mon, Oct 10, 2022 at 4:49 PM Michael Casadevall <michael at casadevall.pro>
+wrote:
+
+>
+> There are SCCS references in the code from 78/79, references to the V7 CC
+> compiler and updates.
+>
+The 'V7 compiler' is 'Typesetter C' - it was released two compiler DWB on
+V6.
+
+SCCS had a interesting life.
+
+
+> SCCS was introduced publicly with PWB,
+>
+Indeed.
+
+
+
+> which is why I suspect it might have been used.
+>
+It might have been at MIT (it was a UCB and CMU BTW) - but I believe Al
+Nemeth  - while it might have been a person disk, -- I'm pretty sure BBN
+would have tried to kept those bits out of the building. - certainly out of
+the mainstream of any project -- you see in the directories foo.c and
+foo.c~ files -- this was typical of the day.  If you were using SCCS less
+you would see a lot more evidence in the trees (again look at the UCB trees
+- you can see once Ken brought it to UCB, wnj started to use it).
+
+
+
+
+> The code also uses some C syntax the stock compiler dislikes
+> (specifically, it was unhappy register in the function declaration).
+>
+As I said -- I suspect the typesetter compiler by then.  If userspace code
+is using <stdio.h> and linking libS.a not Mike Lesk's portable I/O
+library that's a huge clue also BTW.  But Dennis did a lot of work to the
+compiler in the DWB timeframe.  A number of language features were added,
+he changed the syntax of things like =+ to += and the like.   This is why
+code that targets the Typesetter C compiler has a very difficult time going
+back to the V6 (or basic PWB 1.0) compilers.   As I said in the other
+message, this was the compiler he and Brian describe in the book - also
+note a couple of us here reviewed different editions of it.
+
+I suspect what you need is the original DWB 1.0 release that includes the
+'typesetter' compiler -- that will bootstrap on a V6 system and will create
+a v6 compiler.  I'm not sure we have that in the archives.  I think we have
+the later PWB 2.0 release - that comes without the compiler.
+
+Beside the startup code (which is in mch.c and uses a preprocessor macro),
+> is there anything specific gotchas in regards to models? I tried building
+> CPU40 and CPU70, and configuring simh, just to eliminate that gotcha, but
+> the only difference seems to be early initialization code ...
+>
+Quick glance is that BBN was running a 45 - so I'd build for that to
+start.   45s and 70s's are more similar but not exactly the same.  Don't
+build for a 40. They are quite different.
+Set simh up as a 45 and see if that just works.
+
+If not .... then I would drop back and pull everything out to as simple a
+UNIX as possible...  since it's a v6 system without any of the networking
+-- as much line Ken and Dennis as you can.  Configure that a 40 and follow
+Dennis's and Ken's instructions (which for v6 is a a 40) -- get that to
+boot and a simh based 40.    Then reconfigure as a simh based 45 and make
+that work.  Then and only then turn on the BBN stuff.
+
+Feel free to send me email off line and I can try to help a little.  Note:
+I have not played with a 45 in years. But I ran V5, V6. and V7 on 40s, 45
+and 70s back in the day.  I have a PiDP 11/70 behind me so modulo being way
+to busy, I can try to help a little.
+ᐧ
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221010/23eeb01c/attachment.htm>
+
+From lars at nocrew.org  Tue Oct 11 15:31:23 2022
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: Tue, 11 Oct 2022 05:31:23 +0000
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+In-Reply-To: <CAEMRDeH5y3zs+Wo4VbJfTjGUY_4z8GJszr-3Ls1=Ry+YPw7R_A@mail.gmail.com>
+ (Michael Casadevall's message of "Mon, 10 Oct 2022 16:31:04 -0400")
+References: <CAEMRDeG90fL81OWfFyNZNqVaC1ZHJGcNUTgvEDqcuR8yiLqrsQ@mail.gmail.com>
+ <7wbkqjmpdt.fsf@junk.nocrew.org>
+ <CAEMRDeH5y3zs+Wo4VbJfTjGUY_4z8GJszr-3Ls1=Ry+YPw7R_A@mail.gmail.com>
+Message-ID: <7w35bvlydw.fsf@junk.nocrew.org>
+
+TUHS Disclaimer: I will claim this is primarily about getting Unix onto
+the Arpanet, but it does also contain trace amounts of off-topic
+information.  Reader discretion is adviced.
+
+Michael Casadevall wrote:
+> I do need to do a readthrough for the VDH driver, which says its for
+> "very distant hosts".  I think that might be for the radio links
+
+The hardware interfaces between a host and an IMP came in three flavors:
+local host, distant host, and very distant host.  The first two are more
+or less directly connected and I forget what the difference is.  But a
+very distant host is basically connected over a phone line with a modem
+at each end, so it's a different beast.  The VHD driver would be for
+this, whilst IMP11A and ACC are local or distant.
+
+> Hawaii
+
+Side note: apparently tapes from the unique Hawaii BCC 500 have been
+saved.  So maybe that's one more possible re-Arpanet host.
+
+> Yup, that's what I figured. I've been trying to evaluate how much
+> survives
+
+Here's my take:
+https://gunkies.org/wiki/Network_Control_Program_(ARPANET)#Implementations
+
+So there are like four PDP-10 systems and two PDP-11.  The ELF system
+will be a major challenge, RATS haven't been scanned off the printer
+listing, and the BCC 500... oh boy, let's not go there now.
+
+> I don't know if a runnable build of TENEX has been archived,
+
+I think so.  I "almost" got one running but there was some problem...
+
+> or if ARPA stuff for TOPS-10/20 survived.
+
+TOPS-20AN seems to be there.  TOPS-10, nothing so far.
+
+> I also want to look into System/360 and 370, but I get the sense none
+> of the mainframe stuff survived.
+
+I asked around; found nothing.  CDC, same.
+
+> The other problem is of the surviving stacks, they all seem to be for
+> the later 96-bit leader, I'm not certain if any of the IMP software
+> that has been archived is new enough to work with that.
+
+Nothing for the 316/516 IMP, as far as I know.  Pluribus IMP emulator,
+anyone?
+
+From tuhs at tuhs.org  Tue Oct 11 21:15:38 2022
+From: tuhs at tuhs.org (Paul Ruizendaal via TUHS)
+Date: Tue, 11 Oct 2022 13:15:38 +0200
+Subject: [TUHS] Re.: Princeton's "Unix: An Oral History": who was in the
+ team in "The Attic"?
+Message-ID: <992562BA-E21F-4542-A50B-6CFE8F7ACE86@planet.nl>
+
+
+> Has anyone roughly calculated “man years” spent developing Unix to 1973 or 1974?
+> Under 25 "man-years”? (person years now)
+
+I cannot find the message at the moment (TUHS mail archive search is not working anymore?), but I recall that Doug McIlroy mentioned on this list that 1973 was a miracle year, where Ken & Dennis wrote and debugged over 100,000 lines of code between them. In software, “man year” is an elastic yardstick...
+
+There is also this anecdote by Andy Herzfeld:
+
+===
+Quickdraw, the amazing graphics package written entirely by Bill Atkinson, was at the heart of both Lisa and Macintosh. "How many man-years did it take to write QuickDraw?", the Byte magazine reporter asked Steve [Jobs].
+
+Steve turned to look at Bill. "Bill, how long did you spend writing Quickdraw?"
+
+"Well, I worked on it on and off for four years", Bill replied.
+
+Steve paused for a beat and then turned back to the Byte reporter. "Twenty-four man-years. We invested twenty-four man-years in QuickDraw."
+
+Obviously, Steve figured that one Atkinson year equaled six man years, which may have been a modest estimate.
+===
+
+There is also another anecdote involving Atkinson. At some point all Apple programmers had to file a weekly report with how many lines of code they wrote that week. After a productive week of refactoring and optimising, he filed a report saying “minus 2,000 lines”.
+
+
+
+From michael at casadevall.pro  Tue Oct 11 22:57:29 2022
+From: michael at casadevall.pro (Michael Casadevall)
+Date: Tue, 11 Oct 2022 08:57:29 -0400
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+In-Reply-To: <7w35bvlydw.fsf@junk.nocrew.org>
+References: <CAEMRDeG90fL81OWfFyNZNqVaC1ZHJGcNUTgvEDqcuR8yiLqrsQ@mail.gmail.com>
+ <7wbkqjmpdt.fsf@junk.nocrew.org>
+ <CAEMRDeH5y3zs+Wo4VbJfTjGUY_4z8GJszr-3Ls1=Ry+YPw7R_A@mail.gmail.com>
+ <7w35bvlydw.fsf@junk.nocrew.org>
+Message-ID: <CAEMRDeF_P9LeyvvQ8Vs2r9R1QetFQ1BM=+T-dNgLAwNmfjX2eA@mail.gmail.com>
+
+>
+>
+> Replies inline:
+>
+> On Tue, Oct 11, 2022 at 1:31 AM Lars Brinkhoff <lars at nocrew.org> wrote:
+>
+>> TUHS Disclaimer: I will claim this is primarily about getting Unix onto
+>> the Arpanet, but it does also contain trace amounts of off-topic
+>> information.  Reader discretion is adviced.
+>>
+>> Michael Casadevall wrote:
+>> > I do need to do a readthrough for the VDH driver, which says its for
+>> > "very distant hosts".  I think that might be for the radio links
+>>
+>> The hardware interfaces between a host and an IMP came in three flavors:
+>> local host, distant host, and very distant host.  The first two are more
+>> or less directly connected and I forget what the difference is.  But a
+>> very distant host is basically connected over a phone line with a modem
+>> at each end, so it's a different beast.  The VHD driver would be for
+>> this, whilst IMP11A and ACC are local or distant.
+>>
+>>
+> That makes sense; most of the time, the documentation that survives implies
+> the IMP is always local; knowing this is important. From what I got the
+> impression
+> From the docs, very early ARPA, you had systems directly on the network,
+> but most
+> users had to dial into a specific terminal machine, which, based on the
+> comments
+> on the RFCs, was less than ideal, although I haven't quite figured out how
+> things like
+> netmail worked.
+>
+> VHD I guess was more to get more hosts online?
+>
+> > Hawaii
+>>
+>> Side note: apparently tapes from the unique Hawaii BCC 500 have been
+>> saved.  So maybe that's one more possible re-Arpanet host.
+>>
+>>
+> Oh very nice. Depending on how that works, it might be possible to make a
+> radio link
+> over ham. I haven't seen anything about these links aside from them being
+> marked
+> the logicial maps.
+>
+>
+>> > Yup, that's what I figured. I've been trying to evaluate how much
+>> > survives
+>>
+>> Here's my take:
+>> https://gunkies.org/wiki/Network_Control_Program_(ARPANET)#Implementations
+>>
+>> So there are like four PDP-10 systems and two PDP-11.  The ELF system
+>> will be a major challenge, RATS haven't been scanned off the printer
+>> listing, and the BCC 500... oh boy, let's not go there now.
+>>
+>>
+>  Well, there's multiple UNIX v6 stacks. There's the NOSC one which I tried
+> to build,
+> and I think is the oldest. The BBN  with TCP stack is a bit mislabeled: it
+> still appears
+> to support NCP, but none of the client apps are there, but its directly
+> built off the NOSC
+> stack. it's probably a fork from earlier in development. 79-80 timespawn
+> would have been
+> *very* early in TCP's life
+>
+> > I don't know if a runnable build of TENEX has been archived,
+>>
+>> I think so.  I "almost" got one running but there was some problem...
+>
+>
+>>
+> > or if ARPA stuff for TOPS-10/20 survived.
+>>
+>> TOPS-20AN seems to be there.  TOPS-10, nothing so far.
+>>
+>> > I also want to look into System/360 and 370, but I get the sense none
+>> > of the mainframe stuff survived.
+>>
+>> I asked around; found nothing.  CDC, same.
+>>
+>>
+> Oof, although par the corse for mainframe preservation :(
+>
+>
+>> > The other problem is of the surviving stacks, they all seem to be for
+>> > the later 96-bit leader, I'm not certain if any of the IMP software
+>> > that has been archived is new enough to work with that.
+>>
+>> Nothing for the 316/516 IMP, as far as I know.  Pluribus IMP emulator,
+>> anyone?
+>>
+>
+> I do actually wonder how hard that would be. The NCP kernel code seems to
+> suggest
+> it would be straightforward all things considered. It honestly reminds me
+> Hayes modem
+> commands of all things ...
+> Michael
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221011/30607e2b/attachment.htm>
+
+From lm at mcvoy.com  Tue Oct 11 23:48:42 2022
+From: lm at mcvoy.com (Larry McVoy)
+Date: Tue, 11 Oct 2022 06:48:42 -0700
+Subject: [TUHS] Re.: Princeton's "Unix: An Oral History": who was in the
+ team in "The Attic"?
+In-Reply-To: <992562BA-E21F-4542-A50B-6CFE8F7ACE86@planet.nl>
+References: <992562BA-E21F-4542-A50B-6CFE8F7ACE86@planet.nl>
+Message-ID: <20221011134842.GA11780@mcvoy.com>
+
+On Tue, Oct 11, 2022 at 01:15:38PM +0200, Paul Ruizendaal via TUHS wrote:
+> There is also another anecdote involving Atkinson. At some point all Apple programmers had to file a weekly report with how many lines of code they wrote that week. After a productive week of refactoring and optimising, he filed a report saying "minus 2,000 lines".
+
+We bonused people for that.
+
+-- 
+---
+Larry McVoy           Retired to fishing          http://www.mcvoy.com/lm/boat
+
+From lars at nocrew.org  Tue Oct 11 23:57:07 2022
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: Tue, 11 Oct 2022 13:57:07 +0000
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+In-Reply-To: <CAEMRDeF_P9LeyvvQ8Vs2r9R1QetFQ1BM=+T-dNgLAwNmfjX2eA@mail.gmail.com>
+ (Michael Casadevall's message of "Tue, 11 Oct 2022 08:57:29 -0400")
+References: <CAEMRDeG90fL81OWfFyNZNqVaC1ZHJGcNUTgvEDqcuR8yiLqrsQ@mail.gmail.com>
+ <7wbkqjmpdt.fsf@junk.nocrew.org>
+ <CAEMRDeH5y3zs+Wo4VbJfTjGUY_4z8GJszr-3Ls1=Ry+YPw7R_A@mail.gmail.com>
+ <7w35bvlydw.fsf@junk.nocrew.org>
+ <CAEMRDeF_P9LeyvvQ8Vs2r9R1QetFQ1BM=+T-dNgLAwNmfjX2eA@mail.gmail.com>
+Message-ID: <7wczaylaz0.fsf@junk.nocrew.org>
+
+Michael Casadevall wrote:
+> From what I got the impression From the docs, very early ARPA, you had
+> systems directly on the network, but most users had to dial into a
+> specific terminal machine, which, based on the comments on the RFCs,
+> was less than ideal
+
+Sounds like a TIP, "Terminal IMP".  It was an IMP with double the amount
+of memory.  In the upper half there was software to talk to a modem pool
+for dial-in access to the network.  "Less than ideal", sure.  Modem
+speeds were often 10-30 characters per second.  Much more fun to sit at
+a video terminal next to the host.
+
+> VHD I guess was more to get more hosts online?
+
+In some cases there was an IMP which hooked up to some local hosts, but
+they also wanted to connect a computer that not in the same building but
+in the area.  That's when a VDH type interface was used.
+
+> The BBN with TCP stack is a bit mislabeled: it still appears to
+> support NCP, but none of the client apps are there, but its directly
+> built off the NOSC stack.
+
+That's very good.  I hope the NCP support there is in good shape.
+
+> it's probably a fork from earlier in development. 79-80 timespawn
+> would have been *very* early in TCP's life
+
+TCP had been underway since 1973.  Experiments called "TCP bakeoffs"
+started around 1979.
+
+> > Pluribus IMP emulator,  anyone?
+>
+> I do actually wonder how hard that would be.
+
+I'm not sure.  I have the impression the Pluribus computer isn't well
+documented.
+
+It might not be too hard to write an IMP replacement from scratch.
+
+From imp at bsdimp.com  Tue Oct 11 23:59:31 2022
+From: imp at bsdimp.com (Warner Losh)
+Date: Tue, 11 Oct 2022 07:59:31 -0600
+Subject: [TUHS] Re.: Princeton's "Unix: An Oral History": who was in the
+ team in "The Attic"?
+In-Reply-To: <20221011134842.GA11780@mcvoy.com>
+References: <992562BA-E21F-4542-A50B-6CFE8F7ACE86@planet.nl>
+ <20221011134842.GA11780@mcvoy.com>
+Message-ID: <CANCZdfrY0DHVC+VNcJGKcyYNfHN0uM=OP8z3wm-2dEsDVd8RqA@mail.gmail.com>
+
+On Tue, Oct 11, 2022 at 7:49 AM Larry McVoy <lm at mcvoy.com> wrote:
+
+> On Tue, Oct 11, 2022 at 01:15:38PM +0200, Paul Ruizendaal via TUHS wrote:
+> > There is also another anecdote involving Atkinson. At some point all
+> Apple programmers had to file a weekly report with how many lines of code
+> they wrote that week. After a productive week of refactoring and
+> optimising, he filed a report saying "minus 2,000 lines".
+>
+> We bonused people for that.
+>
+
+I love commits like this, thought it wasn't refactoring so much as deleting
+obsolete code...
+
+commit c09981f1422ef0d44042dacc5d1265392fba39f1
+Author: Warner Losh <imp at FreeBSD.org>
+Date:   Thu Dec 30 20:56:09 2021 -0700
+
+    mips: Remove sys/mips
+
+    Remove sys/mips as the next step of decomissioning mips from the tree.
+    Remove mips special cases from the kernel make files. Remove the mips
+    specific linker scripts.
+
+    Sponsored by:           Netflix
+...
+ 594 files changed, 4 insertions(+), 134,562 deletions(-)
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221011/a3db24f2/attachment.htm>
+
+From pnr at planet.nl  Wed Oct 12 01:08:15 2022
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Tue, 11 Oct 2022 17:08:15 +0200
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET 	code
+Message-ID: <06C37F71-3B9D-444B-938A-D8E026BBDE0B@planet.nl>
+
+>> The BBN with TCP stack is a bit mislabeled: it still appears to
+>> support NCP, but none of the client apps are there, but its directly
+>> built off the NOSC stack.
+> 
+> That's very good.  I hope the NCP support there is in good shape.
+> 
+>> it's probably a fork from earlier in development. 79-80 timespawn
+>> would have been *very* early in TCP's life
+> 
+> TCP had been underway since 1973.  Experiments called "TCP bakeoffs"
+> started around 1979.
+
+That is what the “V6 with TCP” on TUHS is:
+
+Following the success of NCP Unix, it became a base for various TCP experiments in the ’77-’79 era. The first was an implementation by Jack Haverty, that wrapped an existing TCPv2 stack that was written in PDP-11 assembler into a Unix application. It ran in user mode and depended on Rand ports and several extensions that Jack added to the kernel (await/capac and a user mode timing variable, where the clock routine incremented a variable in user space). He used a PDP-11 with little core and the pipes (ports) did not stay in the file buffers, but flushed onto disk. This killed performance: Jack recalls that a bad run would average a few characters per second.
+
+Next Mike Wingfield wrote a TCPv4 stack in C, more or less using the architecture of the above. It was the “winner" of the December 1979 bake-off. I think it is the first TCPv4 implementation for Unix and maybe the oldest surviving source for TCPv4 overall. I wanted to try if it would still interoperate with modern TCP/IP, but I never got around to that. An actual printout survives in the SRI archives and I painstakingly retyped that source, just weeks before Noel found the right tapes :^). Later still, Craig Partridge found a full report and listing in the BBN archives (report no. 3724). This NCP Unix with the Wingfield library is the version that is labeled “BBN V6 with TCP” on TUHS.
+
+Some of the code in the Wingfield stack is to test the protocol. Arpanet essentially offers circuit switching, and some of the code is there to simulate dropped packets, out-of-order packets, etc. It also tested security features that were under consideration, but subsequently dropped as interest shifted to end-to-end encryption.
+
+Again, user mode TCP was not found to be practical, the 16-bit era was ending and that is when Rob Gurwitz was assigned to write a new stack for the VAX (1980). By that time Jack Haverty was his boss. Some parts of the BBN VAX-TCP design still echo the user space origins and experiences of the BBN team in the immediate years before. This stack I got working and it still interoperates with modern TCP/IP (at least it did some 5 years ago).
+
+Jack Haverty can easily be reached via the internet-history mailing list.
+
+I’ve summarised the history here: http://chiselapp.com/user/pnr/repository/TUHS_wiki/wiki?name=early_networking
+I should transfer it to the TUHS wiki or to Gunkies one of these days.
+
+===
+
+I am not sure I understood which files are missing or corrupted and in which NCP Unix trees. Noel retrieved the files from old (mouldy even) tapes so some corruption is quite possible. Pulling together material from various sources can hopefully lead to a working source tree. Glad to help.
+
+Further note that NCP Unix was initially developed on 5th Edition, but soon migrated to 6th edition. I am sure that the various installations tracked new developments and installed extra bits and pieces. The surviving images are from 1979 and for sure would have picked up bits from newer releases and other sources (such as the Uni of Calgary buffer extensions).
+
+Paul
+
+
+From marc.donner at gmail.com  Wed Oct 12 05:43:19 2022
+From: marc.donner at gmail.com (Marc Donner)
+Date: Tue, 11 Oct 2022 15:43:19 -0400
+Subject: [TUHS] Re.: Princeton's "Unix: An Oral History": who was in the
+ team in "The Attic"?
+In-Reply-To: <CANCZdfrY0DHVC+VNcJGKcyYNfHN0uM=OP8z3wm-2dEsDVd8RqA@mail.gmail.com>
+References: <992562BA-E21F-4542-A50B-6CFE8F7ACE86@planet.nl>
+ <20221011134842.GA11780@mcvoy.com>
+ <CANCZdfrY0DHVC+VNcJGKcyYNfHN0uM=OP8z3wm-2dEsDVd8RqA@mail.gmail.com>
+Message-ID: <CALQ0xCA8djfEVxvxkmtwg0uE+YCEYNh1n7etbuJS=9+3=qPq7A@mail.gmail.com>
+
+A friend of mine at IBM Research told me the following experience from his
+early career.
+
+He was hired to join the MVS development team in Poughkeepsie (or
+Endicott?) right out of school.
+
+He got the "new kid" assignment - maintaining the JCL interpreter.  500K
+lines of H Assembler (might have been G Assembler ... disremember).
+
+The job was to take bug tickets, analyze them, and respond with either a
+fix or a rejection.
+
+After a bit of this he thinks to himself, "Self, this is a programming
+language, but badly implemented in assembler with lots of copy-paste
+crap."  He had studied computer science in college, so he knew something
+about compiler implementation.
+
+So he builds a set of parser tables using what he learned from the Dragon
+Book and implements a new JCL interpreter in PL/1 (or PL/S?).  About 20K
+LOC.
+
+The new JCL interpreter is faster, though that doesn't really matter.  More
+importantly, it also closes hundreds of bugs that arose from the fact that
+many of subcommands had suboptions with variant implementations, even
+though they were *supposed* to be the same suboption.
+
+So, come annual review time he gets the most negative possible score.
+Why?  Because he produced -480K lines of code.
+
+So he transferred to the Research Division where his skills were more
+valued and where I met him.
+=====
+nygeek.net
+mindthegapdialogs.com/home <https://www.mindthegapdialogs.com/home>
+
+
+On Tue, Oct 11, 2022 at 10:00 AM Warner Losh <imp at bsdimp.com> wrote:
+
+>
+>
+> On Tue, Oct 11, 2022 at 7:49 AM Larry McVoy <lm at mcvoy.com> wrote:
+>
+>> On Tue, Oct 11, 2022 at 01:15:38PM +0200, Paul Ruizendaal via TUHS wrote:
+>> > There is also another anecdote involving Atkinson. At some point all
+>> Apple programmers had to file a weekly report with how many lines of code
+>> they wrote that week. After a productive week of refactoring and
+>> optimising, he filed a report saying "minus 2,000 lines".
+>>
+>> We bonused people for that.
+>>
+>
+> I love commits like this, thought it wasn't refactoring so much as
+> deleting obsolete code...
+>
+> commit c09981f1422ef0d44042dacc5d1265392fba39f1
+> Author: Warner Losh <imp at FreeBSD.org>
+> Date:   Thu Dec 30 20:56:09 2021 -0700
+>
+>     mips: Remove sys/mips
+>
+>     Remove sys/mips as the next step of decomissioning mips from the tree.
+>     Remove mips special cases from the kernel make files. Remove the mips
+>     specific linker scripts.
+>
+>     Sponsored by:           Netflix
+> ...
+>  594 files changed, 4 insertions(+), 134,562 deletions(-)
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221011/ec4fc4be/attachment.htm>
+
+From lm at mcvoy.com  Wed Oct 12 05:54:47 2022
+From: lm at mcvoy.com (Larry McVoy)
+Date: Tue, 11 Oct 2022 12:54:47 -0700
+Subject: [TUHS] Re.: Princeton's "Unix: An Oral History": who was in the
+ team in "The Attic"?
+In-Reply-To: <CALQ0xCA8djfEVxvxkmtwg0uE+YCEYNh1n7etbuJS=9+3=qPq7A@mail.gmail.com>
+References: <992562BA-E21F-4542-A50B-6CFE8F7ACE86@planet.nl>
+ <20221011134842.GA11780@mcvoy.com>
+ <CANCZdfrY0DHVC+VNcJGKcyYNfHN0uM=OP8z3wm-2dEsDVd8RqA@mail.gmail.com>
+ <CALQ0xCA8djfEVxvxkmtwg0uE+YCEYNh1n7etbuJS=9+3=qPq7A@mail.gmail.com>
+Message-ID: <20221011195447.GI11780@mcvoy.com>
+
+On Tue, Oct 11, 2022 at 03:43:19PM -0400, Marc Donner wrote:
+> So, come annual review time he gets the most negative possible score.
+> Why?  Because he produced -480K lines of code.
+> 
+> So he transferred to the Research Division where his skills were more
+> valued and where I met him.
+
+Whoever wrote that review should have been fired.  Absolutely no clue.
+Actually, he should have been demoted and had to report to, and learn
+from, the guy who wrote the compiler.
+
+
+From lars at nocrew.org  Wed Oct 12 05:58:41 2022
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: Tue, 11 Oct 2022 19:58:41 +0000
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+In-Reply-To: <CAJq=PCV7o_kMvRLXXK9prddmyvf0hAodX+NuqqVF=49iCYt63w@mail.gmail.com>
+ (Tom Perrine's message of "Tue, 11 Oct 2022 10:43:38 -0700")
+References: <CAEMRDeG90fL81OWfFyNZNqVaC1ZHJGcNUTgvEDqcuR8yiLqrsQ@mail.gmail.com>
+ <7wbkqjmpdt.fsf@junk.nocrew.org>
+ <CAEMRDeH5y3zs+Wo4VbJfTjGUY_4z8GJszr-3Ls1=Ry+YPw7R_A@mail.gmail.com>
+ <7w35bvlydw.fsf@junk.nocrew.org>
+ <CAEMRDeF_P9LeyvvQ8Vs2r9R1QetFQ1BM=+T-dNgLAwNmfjX2eA@mail.gmail.com>
+ <7wczaylaz0.fsf@junk.nocrew.org>
+ <CAJq=PCV7o_kMvRLXXK9prddmyvf0hAodX+NuqqVF=49iCYt63w@mail.gmail.com>
+Message-ID: <7wwn96jfny.fsf@junk.nocrew.org>
+
+Tom Perrine wrote:
+> A specific example of the VDH interface was the IMP at NOSC.
+>
+> IIRC it had 4 ports?
+
+Normally yes (depending on the hardware configuration).
+
+> One was a local connection to the machine at NOSC in the same room/building.
+> One was a VDH to UCSD
+> One was a VDH to LOGICON - the connection at the LOGICON end was a "56K
+> wideband modem", which was a little larger than a 2-drawer file cabinet. I
+> also seem to recall that the power supply had tubes.
+> Not sure where the 4th port went - I only saw the UCSD and LOGICON ends in
+> person.
+
+Maybe this information for IMP 3 and 35 from 1979 can jog your memory.
+
+HOST NOSC-SECURE2,      0/35,USER,TENEX,PDP10,[USC-ISIR1,ISIR1]
+HOST LOGICON,           1/35,USER,UNIX,PDP11
+HOST ACCAT-TIP,         2/35,USER,TIP,H316,[NELC-TIP]
+HOST NOSC-SECURE3,      3/35,USER,UNIX,PDP11
+HOST NOSC-CC,           0/3,SERVER,,UNIVAC-1110,[NUC-CC,NOSC-ELF]
+HOST NOSC-SECURE1,      1/3,SERVER,UNIX,PDP11,[NUC-SECURE]
+HOST NOSC-SDL,          2/3,SERVER,UNIX,PDP11,[NELC-ELF,NELC]
+HOST NWC,               3/3,SERVER,EXEC-8,UNIVAC-1110
+HOST NPRDC-11,          4/3,SERVER,UNIX,PDP11
+
+From e5655f30a07f at ewoof.net  Wed Oct 12 06:02:41 2022
+From: e5655f30a07f at ewoof.net (Michael =?utf-8?B?S2rDtnJsaW5n?=)
+Date: Tue, 11 Oct 2022 20:02:41 +0000
+Subject: [TUHS] Re.: Princeton's "Unix: An Oral History": who was in the
+ team in "The Attic"?
+In-Reply-To: <20221011195447.GI11780@mcvoy.com>
+References: <992562BA-E21F-4542-A50B-6CFE8F7ACE86@planet.nl>
+ <20221011134842.GA11780@mcvoy.com>
+ <CANCZdfrY0DHVC+VNcJGKcyYNfHN0uM=OP8z3wm-2dEsDVd8RqA@mail.gmail.com>
+ <CALQ0xCA8djfEVxvxkmtwg0uE+YCEYNh1n7etbuJS=9+3=qPq7A@mail.gmail.com>
+ <20221011195447.GI11780@mcvoy.com>
+Message-ID: <8583490b-c7cc-4633-b506-2f16335fd3e2@home.arpa>
+
+On 11 Oct 2022 12:54 -0700, from lm at mcvoy.com (Larry McVoy):
+> On Tue, Oct 11, 2022 at 03:43:19PM -0400, Marc Donner wrote:
+>> So, come annual review time he gets the most negative possible score.
+>> Why?  Because he produced -480K lines of code.
+> 
+> Whoever wrote that review should have been fired.  Absolutely no clue.
+
+Isn't it relatively well established, though, that IBM culture at
+least for a very long time put heavy emphasis on counting lines of
+source code, and that more SLOC was considered to be better?
+
+I definitely recall it being mentioned in _Triumph of the nerds_ as a
+major issue between IBM and Microsoft during development of OS/2.
+
+-- 
+Michael Kjörling
+ https://michael.kjorling.se
+  “Remember when, on the Internet, nobody cared that you were a dog?”
+
+
+From robpike at gmail.com  Wed Oct 12 06:08:35 2022
+From: robpike at gmail.com (Rob Pike)
+Date: Wed, 12 Oct 2022 07:08:35 +1100
+Subject: [TUHS] Re.: Princeton's "Unix: An Oral History": who was in the
+ team in "The Attic"?
+In-Reply-To: <8583490b-c7cc-4633-b506-2f16335fd3e2@home.arpa>
+References: <992562BA-E21F-4542-A50B-6CFE8F7ACE86@planet.nl>
+ <20221011134842.GA11780@mcvoy.com>
+ <CANCZdfrY0DHVC+VNcJGKcyYNfHN0uM=OP8z3wm-2dEsDVd8RqA@mail.gmail.com>
+ <CALQ0xCA8djfEVxvxkmtwg0uE+YCEYNh1n7etbuJS=9+3=qPq7A@mail.gmail.com>
+ <20221011195447.GI11780@mcvoy.com>
+ <8583490b-c7cc-4633-b506-2f16335fd3e2@home.arpa>
+Message-ID: <CAKzdPgwNUjTLMu5xfDJ6WEawy73+aBA=qgoq19MQKzzYQ0o15A@mail.gmail.com>
+
+I think it is (used to be?) a common pattern.
+
+Tom Cargill took a year off from Bell Labs Research to work in development.
+He joined a group where every subsystem's code was printed in a separate
+binder and stored on a shelf in each office. Tom discovered that one of
+those subsystems was almost completely redundant, as most its services were
+implemented elsewhere. So he spent a few months making it completely
+redundant. He deleted 15,000 lines of code. When he was done, he removed an
+entire binder from everybody's shelf. His coworkers loved it.
+
+During his performance review, he learned that management had a metric for
+productivity: lines of code. Tom had negative productivity. In fact,
+because he was so successful, his entire group had negative productivity.
+He returned to Research with his tail between his legs.
+
+-rob
+
+
+On Wed, Oct 12, 2022 at 7:03 AM Michael Kjörling <e5655f30a07f at ewoof.net>
+wrote:
+
+> On 11 Oct 2022 12:54 -0700, from lm at mcvoy.com (Larry McVoy):
+> > On Tue, Oct 11, 2022 at 03:43:19PM -0400, Marc Donner wrote:
+> >> So, come annual review time he gets the most negative possible score.
+> >> Why?  Because he produced -480K lines of code.
+> >
+> > Whoever wrote that review should have been fired.  Absolutely no clue.
+>
+> Isn't it relatively well established, though, that IBM culture at
+> least for a very long time put heavy emphasis on counting lines of
+> source code, and that more SLOC was considered to be better?
+>
+> I definitely recall it being mentioned in _Triumph of the nerds_ as a
+> major issue between IBM and Microsoft during development of OS/2.
+>
+> --
+> Michael Kjörling
+>  https://michael.kjorling.se
+>   “Remember when, on the Internet, nobody cared that you were a dog?”
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221012/618e831c/attachment.htm>
+
+From lm at mcvoy.com  Wed Oct 12 06:10:25 2022
+From: lm at mcvoy.com (Larry McVoy)
+Date: Tue, 11 Oct 2022 13:10:25 -0700
+Subject: [TUHS] Re.: Princeton's "Unix: An Oral History": who was in the
+ team in "The Attic"?
+In-Reply-To: <8583490b-c7cc-4633-b506-2f16335fd3e2@home.arpa>
+References: <992562BA-E21F-4542-A50B-6CFE8F7ACE86@planet.nl>
+ <20221011134842.GA11780@mcvoy.com>
+ <CANCZdfrY0DHVC+VNcJGKcyYNfHN0uM=OP8z3wm-2dEsDVd8RqA@mail.gmail.com>
+ <CALQ0xCA8djfEVxvxkmtwg0uE+YCEYNh1n7etbuJS=9+3=qPq7A@mail.gmail.com>
+ <20221011195447.GI11780@mcvoy.com>
+ <8583490b-c7cc-4633-b506-2f16335fd3e2@home.arpa>
+Message-ID: <20221011201025.GJ11780@mcvoy.com>
+
+On Tue, Oct 11, 2022 at 08:02:41PM +0000, Michael Kj??rling wrote:
+> On 11 Oct 2022 12:54 -0700, from lm at mcvoy.com (Larry McVoy):
+> > On Tue, Oct 11, 2022 at 03:43:19PM -0400, Marc Donner wrote:
+> >> So, come annual review time he gets the most negative possible score.
+> >> Why?  Because he produced -480K lines of code.
+> > 
+> > Whoever wrote that review should have been fired.  Absolutely no clue.
+> 
+> Isn't it relatively well established, though, that IBM culture at
+> least for a very long time put heavy emphasis on counting lines of
+> source code, and that more SLOC was considered to be better?
+
+That's just stupid.  I rewarded more functionality in less or the same
+lines of code.  Want to add 5K LOC?  Great, find 5K LOC of dead code.
+
+My team worked on on the same project for 18 years, the main source
+base grew to about 125K LOC and stayed there even though we added
+more and more functionality.  It is possible.
+
+
+From e5655f30a07f at ewoof.net  Wed Oct 12 06:14:19 2022
+From: e5655f30a07f at ewoof.net (Michael =?utf-8?B?S2rDtnJsaW5n?=)
+Date: Tue, 11 Oct 2022 20:14:19 +0000
+Subject: [TUHS] Re.: Princeton's "Unix: An Oral History": who was in the
+ team in "The Attic"?
+In-Reply-To: <20221011201025.GJ11780@mcvoy.com>
+References: <992562BA-E21F-4542-A50B-6CFE8F7ACE86@planet.nl>
+ <20221011134842.GA11780@mcvoy.com>
+ <CANCZdfrY0DHVC+VNcJGKcyYNfHN0uM=OP8z3wm-2dEsDVd8RqA@mail.gmail.com>
+ <CALQ0xCA8djfEVxvxkmtwg0uE+YCEYNh1n7etbuJS=9+3=qPq7A@mail.gmail.com>
+ <20221011195447.GI11780@mcvoy.com>
+ <8583490b-c7cc-4633-b506-2f16335fd3e2@home.arpa>
+ <20221011201025.GJ11780@mcvoy.com>
+Message-ID: <513e8a46-bd31-420a-bfdf-b59451f89c8d@home.arpa>
+
+On 11 Oct 2022 13:10 -0700, from lm at mcvoy.com (Larry McVoy):
+>> Isn't it relatively well established, though, that IBM culture at
+>> least for a very long time put heavy emphasis on counting lines of
+>> source code, and that more SLOC was considered to be better?
+> 
+> That's just stupid.
+
+You're getting no argument from me there.
+
+-- 
+Michael Kjörling
+ https://michael.kjorling.se
+  “Remember when, on the Internet, nobody cared that you were a dog?”
+
+
+From sauer at technologists.com  Wed Oct 12 06:33:24 2022
+From: sauer at technologists.com (Charles H Sauer (he/him))
+Date: Tue, 11 Oct 2022 15:33:24 -0500
+Subject: [TUHS] LOC [was Re: Re: Re.: Princeton's "Unix: An Oral History":
+ who was in the team in "The Attic"?
+In-Reply-To: <513e8a46-bd31-420a-bfdf-b59451f89c8d@home.arpa>
+References: <992562BA-E21F-4542-A50B-6CFE8F7ACE86@planet.nl>
+ <20221011134842.GA11780@mcvoy.com>
+ <CANCZdfrY0DHVC+VNcJGKcyYNfHN0uM=OP8z3wm-2dEsDVd8RqA@mail.gmail.com>
+ <CALQ0xCA8djfEVxvxkmtwg0uE+YCEYNh1n7etbuJS=9+3=qPq7A@mail.gmail.com>
+ <20221011195447.GI11780@mcvoy.com>
+ <8583490b-c7cc-4633-b506-2f16335fd3e2@home.arpa>
+ <20221011201025.GJ11780@mcvoy.com>
+ <513e8a46-bd31-420a-bfdf-b59451f89c8d@home.arpa>
+Message-ID: <0db171e4-7efe-8c00-bb30-a6f914cf9911@technologists.com>
+
+On 10/11/2022 3:14 PM, Michael Kjörling wrote:
+> On 11 Oct 2022 13:10 -0700, from lm at mcvoy.com (Larry McVoy):
+>>> Isn't it relatively well established, though, that IBM culture at
+>>> least for a very long time put heavy emphasis on counting lines of
+>>> source code, and that more SLOC was considered to be better?
+>>
+>> That's just stupid.
+> 
+> You're getting no argument from me there.
+> 
+
+It was likely true that some parts of IBM put heavy emphasis on LOC, but 
+as Marc points out, that wasn't true in Research. I don't remember heavy 
+LOC emphasis in AIX groups, and I suspect even in Boca (OS/2) there was 
+not "heavy" emphasis.
+
+-- 
+voice: +1.512.784.7526       e-mail: sauer at technologists.com
+fax: +1.512.346.5240         Web: https://technologists.com/sauer/
+Facebook/Google/Twitter: CharlesHSauer
+
+From crossd at gmail.com  Wed Oct 12 07:07:24 2022
+From: crossd at gmail.com (Dan Cross)
+Date: Tue, 11 Oct 2022 17:07:24 -0400
+Subject: [TUHS] Re.: Princeton's "Unix: An Oral History": who was in the
+ team in "The Attic"?
+In-Reply-To: <CAKzdPgwNUjTLMu5xfDJ6WEawy73+aBA=qgoq19MQKzzYQ0o15A@mail.gmail.com>
+References: <992562BA-E21F-4542-A50B-6CFE8F7ACE86@planet.nl>
+ <20221011134842.GA11780@mcvoy.com>
+ <CANCZdfrY0DHVC+VNcJGKcyYNfHN0uM=OP8z3wm-2dEsDVd8RqA@mail.gmail.com>
+ <CALQ0xCA8djfEVxvxkmtwg0uE+YCEYNh1n7etbuJS=9+3=qPq7A@mail.gmail.com>
+ <20221011195447.GI11780@mcvoy.com>
+ <8583490b-c7cc-4633-b506-2f16335fd3e2@home.arpa>
+ <CAKzdPgwNUjTLMu5xfDJ6WEawy73+aBA=qgoq19MQKzzYQ0o15A@mail.gmail.com>
+Message-ID: <CAEoi9W5mkZAj0X+A=_JAKg7TsAcC1y9uE_aj7YfrR7=UYGP6HA@mail.gmail.com>
+
+On Tue, Oct 11, 2022 at 4:09 PM Rob Pike <robpike at gmail.com> wrote:
+
+> I think it is (used to be?) a common pattern.
+>
+> Tom Cargill took a year off from Bell Labs Research to work in
+> development. He joined a group where every subsystem's code was printed in
+> a separate binder and stored on a shelf in each office. Tom discovered that
+> one of those subsystems was almost completely redundant, as most its
+> services were implemented elsewhere. So he spent a few months making it
+> completely redundant. He deleted 15,000 lines of code. When he was done, he
+> removed an entire binder from everybody's shelf. His coworkers loved it.
+>
+> During his performance review, he learned that management had a metric for
+> productivity: lines of code. Tom had negative productivity. In fact,
+> because he was so successful, his entire group had negative productivity.
+> He returned to Research with his tail between his legs.
+>
+
+Was this vignette in, "The Practice of Programming"? I know I've read it
+somewhere before, either there, or in the first edition of "Programming
+Pearls."
+
+In the latter, Bentley makes a quip about incentives and lives of code.
+Basically, if one incentivizes repetitive code, that's one what gets; "if
+you pay by the line of code, how do you think an array with 500 elements
+gets initialized?"
+
+        - Dan C.
+
+On Wed, Oct 12, 2022 at 7:03 AM Michael Kjörling <e5655f30a07f at ewoof.net>
+> wrote:
+>
+>> On 11 Oct 2022 12:54 -0700, from lm at mcvoy.com (Larry McVoy):
+>> > On Tue, Oct 11, 2022 at 03:43:19PM -0400, Marc Donner wrote:
+>> >> So, come annual review time he gets the most negative possible score.
+>> >> Why?  Because he produced -480K lines of code.
+>> >
+>> > Whoever wrote that review should have been fired.  Absolutely no clue.
+>>
+>> Isn't it relatively well established, though, that IBM culture at
+>> least for a very long time put heavy emphasis on counting lines of
+>> source code, and that more SLOC was considered to be better?
+>>
+>> I definitely recall it being mentioned in _Triumph of the nerds_ as a
+>> major issue between IBM and Microsoft during development of OS/2.
+>>
+>> --
+>> Michael Kjörling
+>>  https://michael.kjorling.se
+>>   “Remember when, on the Internet, nobody cared that you were a dog?”
+>>
+>>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221011/adcafd4a/attachment.htm>
+
+From robpike at gmail.com  Wed Oct 12 07:41:11 2022
+From: robpike at gmail.com (Rob Pike)
+Date: Wed, 12 Oct 2022 08:41:11 +1100
+Subject: [TUHS] Re.: Princeton's "Unix: An Oral History": who was in the
+ team in "The Attic"?
+In-Reply-To: <CAEoi9W5mkZAj0X+A=_JAKg7TsAcC1y9uE_aj7YfrR7=UYGP6HA@mail.gmail.com>
+References: <992562BA-E21F-4542-A50B-6CFE8F7ACE86@planet.nl>
+ <20221011134842.GA11780@mcvoy.com>
+ <CANCZdfrY0DHVC+VNcJGKcyYNfHN0uM=OP8z3wm-2dEsDVd8RqA@mail.gmail.com>
+ <CALQ0xCA8djfEVxvxkmtwg0uE+YCEYNh1n7etbuJS=9+3=qPq7A@mail.gmail.com>
+ <20221011195447.GI11780@mcvoy.com>
+ <8583490b-c7cc-4633-b506-2f16335fd3e2@home.arpa>
+ <CAKzdPgwNUjTLMu5xfDJ6WEawy73+aBA=qgoq19MQKzzYQ0o15A@mail.gmail.com>
+ <CAEoi9W5mkZAj0X+A=_JAKg7TsAcC1y9uE_aj7YfrR7=UYGP6HA@mail.gmail.com>
+Message-ID: <CAKzdPgxq7VT_Bd=ym4j5RqnqUznt-kE2EOC=O-TJE7WQbbztgQ@mail.gmail.com>
+
+I told this anecdote in an internal talk at Google. You might have seen it
+then.
+
+-rob
+
+On Wed, Oct 12, 2022 at 8:08 AM Dan Cross <crossd at gmail.com> wrote:
+
+> On Tue, Oct 11, 2022 at 4:09 PM Rob Pike <robpike at gmail.com> wrote:
+>
+>> I think it is (used to be?) a common pattern.
+>>
+>> Tom Cargill took a year off from Bell Labs Research to work in
+>> development. He joined a group where every subsystem's code was printed in
+>> a separate binder and stored on a shelf in each office. Tom discovered that
+>> one of those subsystems was almost completely redundant, as most its
+>> services were implemented elsewhere. So he spent a few months making it
+>> completely redundant. He deleted 15,000 lines of code. When he was done, he
+>> removed an entire binder from everybody's shelf. His coworkers loved it.
+>>
+>> During his performance review, he learned that management had a metric
+>> for productivity: lines of code. Tom had negative productivity. In fact,
+>> because he was so successful, his entire group had negative productivity.
+>> He returned to Research with his tail between his legs.
+>>
+>
+> Was this vignette in, "The Practice of Programming"? I know I've read it
+> somewhere before, either there, or in the first edition of "Programming
+> Pearls."
+>
+> In the latter, Bentley makes a quip about incentives and lives of code.
+> Basically, if one incentivizes repetitive code, that's one what gets; "if
+> you pay by the line of code, how do you think an array with 500 elements
+> gets initialized?"
+>
+>         - Dan C.
+>
+> On Wed, Oct 12, 2022 at 7:03 AM Michael Kjörling <e5655f30a07f at ewoof.net>
+>> wrote:
+>>
+>>> On 11 Oct 2022 12:54 -0700, from lm at mcvoy.com (Larry McVoy):
+>>> > On Tue, Oct 11, 2022 at 03:43:19PM -0400, Marc Donner wrote:
+>>> >> So, come annual review time he gets the most negative possible score.
+>>> >> Why?  Because he produced -480K lines of code.
+>>> >
+>>> > Whoever wrote that review should have been fired.  Absolutely no clue.
+>>>
+>>> Isn't it relatively well established, though, that IBM culture at
+>>> least for a very long time put heavy emphasis on counting lines of
+>>> source code, and that more SLOC was considered to be better?
+>>>
+>>> I definitely recall it being mentioned in _Triumph of the nerds_ as a
+>>> major issue between IBM and Microsoft during development of OS/2.
+>>>
+>>> --
+>>> Michael Kjörling
+>>>  https://michael.kjorling.se
+>>>   “Remember when, on the Internet, nobody cared that you were a dog?”
+>>>
+>>>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221012/a245c17c/attachment.htm>
+
+From arnold at skeeve.com  Wed Oct 12 16:59:13 2022
+From: arnold at skeeve.com (arnold at skeeve.com)
+Date: Wed, 12 Oct 2022 00:59:13 -0600
+Subject: [TUHS] Re.: Princeton's "Unix: An Oral History": who was in the
+ team in "The Attic"?
+In-Reply-To: <CAKzdPgwNUjTLMu5xfDJ6WEawy73+aBA=qgoq19MQKzzYQ0o15A@mail.gmail.com>
+References: <992562BA-E21F-4542-A50B-6CFE8F7ACE86@planet.nl>
+ <20221011134842.GA11780@mcvoy.com>
+ <CANCZdfrY0DHVC+VNcJGKcyYNfHN0uM=OP8z3wm-2dEsDVd8RqA@mail.gmail.com>
+ <CALQ0xCA8djfEVxvxkmtwg0uE+YCEYNh1n7etbuJS=9+3=qPq7A@mail.gmail.com>
+ <20221011195447.GI11780@mcvoy.com>
+ <8583490b-c7cc-4633-b506-2f16335fd3e2@home.arpa>
+ <CAKzdPgwNUjTLMu5xfDJ6WEawy73+aBA=qgoq19MQKzzYQ0o15A@mail.gmail.com>
+Message-ID: <202210120659.29C6xDvY007440@freefriends.org>
+
+Rob Pike <robpike at gmail.com> wrote:
+
+> I think it is (used to be?) a common pattern.
+
+Clearly, the metric in both cases should have been the absolute
+value of the number of lines of code changed...
+
+Both stories are rather sad; one hopes that today's world is
+a better place.
+
+Arnold
+
+From e5655f30a07f at ewoof.net  Wed Oct 12 17:03:18 2022
+From: e5655f30a07f at ewoof.net (Michael =?utf-8?B?S2rDtnJsaW5n?=)
+Date: Wed, 12 Oct 2022 07:03:18 +0000
+Subject: [TUHS] Re.: Princeton's "Unix: An Oral History": who was in the
+ team in "The Attic"?
+In-Reply-To: <202210120659.29C6xDvY007440@freefriends.org>
+References: <992562BA-E21F-4542-A50B-6CFE8F7ACE86@planet.nl>
+ <20221011134842.GA11780@mcvoy.com>
+ <CANCZdfrY0DHVC+VNcJGKcyYNfHN0uM=OP8z3wm-2dEsDVd8RqA@mail.gmail.com>
+ <CALQ0xCA8djfEVxvxkmtwg0uE+YCEYNh1n7etbuJS=9+3=qPq7A@mail.gmail.com>
+ <20221011195447.GI11780@mcvoy.com>
+ <8583490b-c7cc-4633-b506-2f16335fd3e2@home.arpa>
+ <CAKzdPgwNUjTLMu5xfDJ6WEawy73+aBA=qgoq19MQKzzYQ0o15A@mail.gmail.com>
+ <202210120659.29C6xDvY007440@freefriends.org>
+Message-ID: <1e7be6ed-5b2f-41b8-944f-05d1f98e6125@home.arpa>
+
+On 12 Oct 2022 00:59 -0600, from arnold at skeeve.com:
+> Clearly, the metric in both cases should have been the absolute
+> value of the number of lines of code changed...
+
+Oh, that one is easy. Just make a copy of all the code for
+safekeeping, and replace all of it with something absolutely trivial.
+Then the next day, restore the old code.
+
+That way, if the code base was, say, 100K lines, your productivity is
+slightly in excess of 200K LOC in those two days.
+
+-- 
+Michael Kjörling
+ https://michael.kjorling.se
+  “Remember when, on the Internet, nobody cared that you were a dog?”
+
+
+From rdm at cfcl.com  Wed Oct 12 17:18:44 2022
+From: rdm at cfcl.com (Rich Morin)
+Date: Wed, 12 Oct 2022 00:18:44 -0700
+Subject: [TUHS] Re.: Princeton's "Unix: An Oral History": who was in the
+ team in "The Attic"?
+In-Reply-To: <1e7be6ed-5b2f-41b8-944f-05d1f98e6125@home.arpa>
+References: <992562BA-E21F-4542-A50B-6CFE8F7ACE86@planet.nl>
+ <20221011134842.GA11780@mcvoy.com>
+ <CANCZdfrY0DHVC+VNcJGKcyYNfHN0uM=OP8z3wm-2dEsDVd8RqA@mail.gmail.com>
+ <CALQ0xCA8djfEVxvxkmtwg0uE+YCEYNh1n7etbuJS=9+3=qPq7A@mail.gmail.com>
+ <20221011195447.GI11780@mcvoy.com>
+ <8583490b-c7cc-4633-b506-2f16335fd3e2@home.arpa>
+ <CAKzdPgwNUjTLMu5xfDJ6WEawy73+aBA=qgoq19MQKzzYQ0o15A@mail.gmail.com>
+ <202210120659.29C6xDvY007440@freefriends.org>
+ <1e7be6ed-5b2f-41b8-944f-05d1f98e6125@home.arpa>
+Message-ID: <62BF9FE1-F664-4CFE-B307-8FA987A14742@cfcl.com>
+
+I recall hearing about a new hire at IBM who was tasked with working on the JCL processing code.  After looking it over, he decided to rewrite it using compiler-compiler technology.  The result worked, was about 250 KLOC smaller than the original, and was accepted.
+
+However, at review time the employee received an absolutely terrible review.  Seems he had generated a really substantial negative amount of code.  Story I heard was that he was soon picked up by IBM Labs...
+
+-r
+
+
+From jnc at mercury.lcs.mit.edu  Thu Oct 13 05:38:56 2022
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Wed, 12 Oct 2022 15:38:56 -0400 (EDT)
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+Message-ID: <20221012193856.7FE9618C077@mercury.lcs.mit.edu>
+
+    > From: Michael Casadevall
+
+    > sys4.c is entirely corrupted, and part of impio.c is cut off
+
+The copy on MIT-CSR (the origin of the copy at TUHS) has the same issues. I
+doubt it's possible to recover them from that system; you'll have to find
+some other way to recover them (perhaps through a dump of the BBN system), or
+re-code them (as you did with sys4.c).
+
+    > I do need to do a readthrough for the VDH driver ... I think that might
+    > be for the radio links to Hawaii and the UK? 
+
+No. Read BBN 1822.
+
+The LH and DH bit-serial physical interfaces only work up to about 1000 feet
+or so. (Less for LH; DH is logically idential to LH, but uses differential
+pairs - the LH is single-sided). VDH is, in the bottom layer, simply a
+synchronous serial link, allowing the host to be up to hunreds of miles from
+the IMP.
+
+
+    > From: Lars Brinkhoff
+
+    > Another it adding emulators for various IMP interfaces. I.e. you will
+    > not get anywhere without adding one of IMP11A, ACC, or VDH to SIMH.
+
+Did VDH PDP-11's have a special VDH interface, or did they simply use an
+off-the-rack DEC synchronous serial interface like a DU11? (More of them
+here:
+
+  http://gunkies.org/wiki/Category:DEC_Synchronous_Serial_Interfaces
+
+if anyone wants.) Looking at net_vdh.h, it seems to be a "VDH-11C"
+
+Looking online, the VDH-11 seems to be an ACC prodict, but I wasn't able to
+find anything out about it at all. (I have some hardcopy manuals for other
+ACC IMP interface products, and I was going to look in them to see if any of
+them listed its manual in a 'see also', but I can't find them.)
+
+I'm not sure why people did just use an off-the-rack DEC synchronous serial
+interface; maybe the VDH11 did a BBN specific CRC, or something (in addition
+to using DMA; mostr DEC sync interfaces didn't, IIRC)?
+
+Anyway, you don't want to use VDH.
+
+	Noel
+
+From sjenkin at canb.auug.org.au  Thu Oct 13 07:03:57 2022
+From: sjenkin at canb.auug.org.au (steve jenkin)
+Date: Thu, 13 Oct 2022 08:03:57 +1100
+Subject: [TUHS] John Lions: 3 sabbaticals at Bell Labs. 1978 and which other
+ years? 1989?
+Message-ID: <2715F698-65D3-4EBC-A31C-3787E91953DC@canb.auug.org.au>
+
+Berkeley Tague says he invited John to work with the USG in 1978 
+	[ AUUG, below. Also by Ronda Hauben in multiple places ]
+
+	[ In two ‘recollections’ / history docs sourced from UNSW, ]
+	[ the first visit was misremembered as 1976 or 1977. ]
+
+I was wondering when John's two other sabbaticals to Bells Labs were.
+
+The Peter Ivanov interview with John in “Unix Review”, 1985, notes two sabbaticals by then.
+
+	After writing the celebrated Commentary on the UNIX Operating System in 1976, 
+	Lions was asked to spend two sabbaticals at the Labs.
+
+This comment in 2000 on “9fans” from Rob Pike
+says John also visited in 1989, 
+but sadly his work by then had been affected.
+
+	<https://marc.info/?l=9fans&m=144372955601968&w=2>
+
+Anyone know when the other visit was?
+
+Presumably 1983 or 1984 if John took a semester off every 5 years.
+
+========
+
+In AUUGN Oct 1995, V16 #5, there’s a collection of emails, an ‘interview’ with John
+
+	PDF pages 17 & 24
+	<https://www.tuhs.org/Archive/Documentation/AUUGN/AUUGN-V16.5.pdf> 
+
+Berkeley Tague says in 1978 he invited John to work with the USG.
+
+then
+	He wanted to come to Murray Hill for his sabbatical so it was a win/win situation. 
+	He spent two or three summers at Bell Labs over the years 
+	and supplied us with many of his graduate students 
+	for sabbaticals and permanent employment.
+
+Later:
+
+AUUGN:
+	What have been the professional highlights of your career?
+
+JL:
+	For myself, three sabbaticals at Bell Laboratories have been highlights. 
+	For my students, opportunities arose for employment at the Laboratories.
+
+========
+
+--
+Steve Jenkin, IT Systems and Design 
+0412 786 915 (+61 412 786 915)
+PO Box 38, Kippax ACT 2615, AUSTRALIA
+
+mailto:sjenkin at canb.auug.org.au http://members.tip.net.au/~sjenkin
+
+
+From lars at nocrew.org  Thu Oct 13 15:50:30 2022
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: Thu, 13 Oct 2022 05:50:30 +0000
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+In-Reply-To: <20221012193856.7FE9618C077@mercury.lcs.mit.edu> (Noel Chiappa's
+ message of "Wed, 12 Oct 2022 15:38:56 -0400 (EDT)")
+References: <20221012193856.7FE9618C077@mercury.lcs.mit.edu>
+Message-ID: <7wczawi861.fsf@junk.nocrew.org>
+
+Noel Chiappa wrote:
+> Did VDH PDP-11's have a special VDH interface, or did they simply use
+> an off-the-rack DEC synchronous serial interface like a DU11?
+
+Sorry, no idea.  I have only studied PDP-10 interfaces.
+
+> Anyway, you don't want to use VDH.
+
+If imp11a.c is beoynd repair, I'd say go with the ACC interface.  There
+is documentation and a working emulator already exists, albeit for a
+PDP-10.
+
+From jpl.jpl at gmail.com  Thu Oct 13 23:08:45 2022
+From: jpl.jpl at gmail.com (John P. Linderman)
+Date: Thu, 13 Oct 2022 09:08:45 -0400
+Subject: [TUHS] John Lions: 3 sabbaticals at Bell Labs. 1978 and which
+ other years? 1989?
+In-Reply-To: <2715F698-65D3-4EBC-A31C-3787E91953DC@canb.auug.org.au>
+References: <2715F698-65D3-4EBC-A31C-3787E91953DC@canb.auug.org.au>
+Message-ID: <CAC0cEp-LysFqhf9cgfuSX5JxFvF_MSkMrDuUMx=CP+mnVzvyxQ@mail.gmail.com>
+
+I can put a bound on John's early 80's sabbatical. John stayed at my house
+in Berkeley Heights (an easy walk to Murray Hill) while he was looking for
+a place to rent when Marianne joined him. I bought the house in 1980, so it
+had to be later than that. And John put us up when we visited Australia in
+1983, so it was before that. I'm guessing 1982, but that's just a guess.
+
+On Wed, Oct 12, 2022 at 5:05 PM steve jenkin <sjenkin at canb.auug.org.au>
+wrote:
+
+> Berkeley Tague says he invited John to work with the USG in 1978
+>         [ AUUG, below. Also by Ronda Hauben in multiple places ]
+>
+>         [ In two ‘recollections’ / history docs sourced from UNSW, ]
+>         [ the first visit was misremembered as 1976 or 1977. ]
+>
+> I was wondering when John's two other sabbaticals to Bells Labs were.
+>
+> The Peter Ivanov interview with John in “Unix Review”, 1985, notes two
+> sabbaticals by then.
+>
+>         After writing the celebrated Commentary on the UNIX Operating
+> System in 1976,
+>         Lions was asked to spend two sabbaticals at the Labs.
+>
+> This comment in 2000 on “9fans” from Rob Pike
+> says John also visited in 1989,
+> but sadly his work by then had been affected.
+>
+>         <https://marc.info/?l=9fans&m=144372955601968&w=2>
+>
+> Anyone know when the other visit was?
+>
+> Presumably 1983 or 1984 if John took a semester off every 5 years.
+>
+> ========
+>
+> In AUUGN Oct 1995, V16 #5, there’s a collection of emails, an ‘interview’
+> with John
+>
+>         PDF pages 17 & 24
+>         <https://www.tuhs.org/Archive/Documentation/AUUGN/AUUGN-V16.5.pdf>
+>
+>
+> Berkeley Tague says in 1978 he invited John to work with the USG.
+>
+> then
+>         He wanted to come to Murray Hill for his sabbatical so it was a
+> win/win situation.
+>         He spent two or three summers at Bell Labs over the years
+>         and supplied us with many of his graduate students
+>         for sabbaticals and permanent employment.
+>
+> Later:
+>
+> AUUGN:
+>         What have been the professional highlights of your career?
+>
+> JL:
+>         For myself, three sabbaticals at Bell Laboratories have been
+> highlights.
+>         For my students, opportunities arose for employment at the
+> Laboratories.
+>
+> ========
+>
+> --
+> Steve Jenkin, IT Systems and Design
+> 0412 786 915 (+61 412 786 915)
+> PO Box 38, Kippax ACT 2615, AUSTRALIA
+>
+> mailto:sjenkin at canb.auug.org.au http://members.tip.net.au/~sjenkin
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221013/2aab8cd2/attachment.htm>
+
+From luther at makerlisp.com  Thu Oct 13 23:20:39 2022
+From: luther at makerlisp.com (Luther Johnson)
+Date: Thu, 13 Oct 2022 06:20:39 -0700
+Subject: [TUHS] John Lions: 3 sabbaticals at Bell Labs. 1978 and which
+ other years? 1989?
+In-Reply-To: <CAC0cEp-LysFqhf9cgfuSX5JxFvF_MSkMrDuUMx=CP+mnVzvyxQ@mail.gmail.com>
+References: <2715F698-65D3-4EBC-A31C-3787E91953DC@canb.auug.org.au>
+ <CAC0cEp-LysFqhf9cgfuSX5JxFvF_MSkMrDuUMx=CP+mnVzvyxQ@mail.gmail.com>
+Message-ID: <5d2daa73-bdc6-dc56-76bd-5f1d0ffc4273@makerlisp.com>
+
+One clue is that "The Second Pass of the Portable C Compiler" is dated 
+June 1979 and says on the title page, "John Lions, Bell Laboratories, 
+Murray Hill, New Jersey", so he must have been there then.
+
+On 10/13/2022 06:08 AM, John P. Linderman wrote:
+> I can put a bound on John's early 80's sabbatical. John stayed at my 
+> house in Berkeley Heights (an easy walk to Murray Hill) while he was 
+> looking for a place to rent when Marianne joined him. I bought the 
+> house in 1980, so it had to be later than that. And John put us up 
+> when we visited Australia in 1983, so it was before that. I'm guessing 
+> 1982, but that's just a guess.
+>
+> On Wed, Oct 12, 2022 at 5:05 PM steve jenkin <sjenkin at canb.auug.org.au 
+> <mailto:sjenkin at canb.auug.org.au>> wrote:
+>
+>     Berkeley Tague says he invited John to work with the USG in 1978
+>             [ AUUG, below. Also by Ronda Hauben in multiple places ]
+>
+>             [ In two ‘recollections’ / history docs sourced from UNSW, ]
+>             [ the first visit was misremembered as 1976 or 1977. ]
+>
+>     I was wondering when John's two other sabbaticals to Bells Labs were.
+>
+>     The Peter Ivanov interview with John in “Unix Review”, 1985, notes
+>     two sabbaticals by then.
+>
+>             After writing the celebrated Commentary on the UNIX
+>     Operating System in 1976,
+>             Lions was asked to spend two sabbaticals at the Labs.
+>
+>     This comment in 2000 on “9fans” from Rob Pike
+>     says John also visited in 1989,
+>     but sadly his work by then had been affected.
+>
+>             <https://marc.info/?l=9fans&m=144372955601968&w=2>
+>
+>     Anyone know when the other visit was?
+>
+>     Presumably 1983 or 1984 if John took a semester off every 5 years.
+>
+>     ========
+>
+>     In AUUGN Oct 1995, V16 #5, there’s a collection of emails, an
+>     ‘interview’ with John
+>
+>             PDF pages 17 & 24
+>            
+>     <https://www.tuhs.org/Archive/Documentation/AUUGN/AUUGN-V16.5.pdf>
+>
+>     Berkeley Tague says in 1978 he invited John to work with the USG.
+>
+>     then
+>             He wanted to come to Murray Hill for his sabbatical so it
+>     was a win/win situation.
+>             He spent two or three summers at Bell Labs over the years
+>             and supplied us with many of his graduate students
+>             for sabbaticals and permanent employment.
+>
+>     Later:
+>
+>     AUUGN:
+>             What have been the professional highlights of your career?
+>
+>     JL:
+>             For myself, three sabbaticals at Bell Laboratories have
+>     been highlights.
+>             For my students, opportunities arose for employment at the
+>     Laboratories.
+>
+>     ========
+>
+>     --
+>     Steve Jenkin, IT Systems and Design
+>     0412 786 915 (+61 412 786 915)
+>     PO Box 38, Kippax ACT 2615, AUSTRALIA
+>
+>     mailto:sjenkin at canb.auug.org.au <mailto:sjenkin at canb.auug.org.au>
+>     http://members.tip.net.au/~sjenkin
+>     <http://members.tip.net.au/%7Esjenkin>
+>
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221013/1a2bf173/attachment-0001.htm>
+
+From sjenkin at canb.auug.org.au  Fri Oct 14 06:06:36 2022
+From: sjenkin at canb.auug.org.au (Steve Jenkin)
+Date: Fri, 14 Oct 2022 07:06:36 +1100
+Subject: [TUHS] John Lions: 3 sabbaticals at Bell Labs. 1978 and which
+ other years? 1989?
+In-Reply-To: <CAC0cEp-LysFqhf9cgfuSX5JxFvF_MSkMrDuUMx=CP+mnVzvyxQ@mail.gmail.com>
+References: <2715F698-65D3-4EBC-A31C-3787E91953DC@canb.auug.org.au>
+ <CAC0cEp-LysFqhf9cgfuSX5JxFvF_MSkMrDuUMx=CP+mnVzvyxQ@mail.gmail.com>
+Message-ID: <7892975F-78AF-4E68-A8E1-0234E6554BE6@canb.auug.org.au>
+
+John,
+
+1982 fits with John starting at UNSW in August 1972 and being eligible for 26-weeks Sabbatical every 5 years.
+
+The Unix Review article in 1985 was quite clear Dr Lions had been at Bell Labs twice on Sabbatical.
+
+Leaving the June 1979 paper mentioned by Luther Johnson to be explained. Perhaps Recreation leave, not Sabbatical.
+
+best regards
+steve j
+
+> On 14 Oct 2022, at 00:08, John P. Linderman <jpl.jpl at gmail.com> wrote:
+> 
+> I can put a bound on John's early 80's sabbatical. John stayed at my house in Berkeley Heights (an easy walk to Murray Hill) while he was looking for a place to rent when Marianne joined him.
+> I bought the house in 1980, so it had to be later than that.
+> And John put us up when we visited Australia in 1983, so it was before that.
+> I'm guessing 1982, but that's just a guess.
+
+--
+Steve Jenkin, IT Systems and Design 
+0412 786 915 (+61 412 786 915)
+PO Box 38, Kippax ACT 2615, AUSTRALIA
+
+mailto:sjenkin at canb.auug.org.au http://members.tip.net.au/~sjenkin
+
+
+From pnr at planet.nl  Fri Oct 14 21:55:54 2022
+From: pnr at planet.nl (Paul Ruizendaal)
+Date: Fri, 14 Oct 2022 13:55:54 +0200
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+Message-ID: <9AA075C9-995F-47F7-9758-2492407DC9FF@planet.nl>
+
+Maybe I’m dim, but I’ve lost track in this discussion of what is missing / corrupted.
+
+sys4.c: I think this is available in BBN V6:
+https://minnie.tuhs.org/cgi-bin/utree.pl?file=BBN-V6/ken <https://minnie.tuhs.org/cgi-bin/utree.pl?file=BBN-V6/ken>
+In this file the only real network addition is Jack Haverty’s user timer variable, I think. What else is missing?
+
+imp11a.c: available in two versions here:
+https://minnie.tuhs.org/cgi-bin/utree.pl?file=BBN-V6/dmr <https://minnie.tuhs.org/cgi-bin/utree.pl?file=BBN-V6/dmr>
+
+impio.c: available here:
+https://minnie.tuhs.org/cgi-bin/utree.pl?file=BBN-V6/ncpkernel/impio.c <https://minnie.tuhs.org/cgi-bin/utree.pl?file=BBN-V6/ncpkernel/impio.c>
+
+Maybe the compiler has a different opinion, but they don’t look obviously corrupted [??]
+
+Also, the BBN-VAX files may be a solution. BBN sent four tapes with snap shots to CSRG in 1981. The TUHS website has the newest version, but there are 3 older ones (all 4 come from Kirk McKusick’s DVD set). They all have a slightly different set of files. These tapes also have IMP and ACC drivers in them, along with a token ring driver that was apparently based on Noel’s work back in the day. These files may also help filling in blank spots in PDP11 files.
+
+Paul
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221014/ceb979ff/attachment.htm>
+
+From phil at ultimate.com  Sat Oct 15 02:08:18 2022
+From: phil at ultimate.com (Phil Budne)
+Date: Fri, 14 Oct 2022 12:08:18 -0400
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+In-Reply-To: <9AA075C9-995F-47F7-9758-2492407DC9FF@planet.nl>
+References: <9AA075C9-995F-47F7-9758-2492407DC9FF@planet.nl>
+Message-ID: <202210141608.29EG8I2j086740@ultimate.com>
+
+Paul Ruizendaal <pnr at planet.nl> wrote:
+> sys4.c: I think this is available in BBN V6:
+> https://minnie.tuhs.org/cgi-bin/utree.pl?file=BBN-V6/ken <https://minnie.tuhs.org/cgi-bin/utree.pl?file=BBN-V6/ken>
+> In this file the only real network addition is Jack Haverty’s user timer variable, I think. What else is missing?
+
+Side question: What/when is the origin of the pty driver?
+
+https://minnie.tuhs.org/cgi-bin/utree.pl?file=BBN-V6/dmr/pty.c
+
+Has a revision history, but no date/author for its origin.
+
+And
+https://minnie.tuhs.org/cgi-bin/utree.pl?file=SRI-NOSC/dmr/pty.c
+
+is simpler, and lacks the changes and history.
+
+https://en.wikipedia.org/wiki/Pseudoterminal#History
+claims:
+	"Unix pseudoterminals originated in 1983 during the
+	development of Eighth Edition Unix and were based on a similar
+	feature in TENEX."
+
+But the above pty.c clearly predates that.
+
+Wikipedia continues with further bogosity:
+
+	They were part of the 4.2 release of BSD, with a rather
+	cumbersome openpty() interface defined for use.
+
+with a link to https://www.freebsd.org/cgi/man.cgi?query=openpty&sektion=3
+which says
+"The openpty() and forkpty() functions first appeared in 4.3BSD Reno."
+
+ISTR in 4.2 days there wasn't any library code to open a ptyXX/ttyXX pair,
+which was CERTAINLY cumbersome.  forkpty is downright handy, and portable.
+
+phil
+
+From clemc at ccc.com  Sat Oct 15 02:37:45 2022
+From: clemc at ccc.com (Clem Cole)
+Date: Fri, 14 Oct 2022 12:37:45 -0400
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+In-Reply-To: <202210141608.29EG8I2j086740@ultimate.com>
+References: <9AA075C9-995F-47F7-9758-2492407DC9FF@planet.nl>
+ <202210141608.29EG8I2j086740@ultimate.com>
+Message-ID: <CAC20D2PgG3c7E-Z3EPEy1nQcq=CJo7bz0GXW0NqFYYCSNQJKWg@mail.gmail.com>
+
+On Fri, Oct 14, 2022 at 12:09 PM Phil Budne <phil at ultimate.com> wrote:
+
+> Paul Ruizendaal <pnr at planet.nl> wrote:
+> > sys4.c: I think this is available in BBN V6:
+> > https://minnie.tuhs.org/cgi-bin/utree.pl?file=BBN-V6/ken <
+> https://minnie.tuhs.org/cgi-bin/utree.pl?file=BBN-V6/ken>
+> > In this file the only real network addition is Jack Haverty’s user timer
+> variable, I think. What else is missing?
+>
+> Side question: What/when is the origin of the pty driver?
+>
+IIRC Rand - there were around for the V6
+ᐧ
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221014/d2fb77ef/attachment.htm>
+
+From lars at nocrew.org  Sat Oct 15 04:47:58 2022
+From: lars at nocrew.org (Lars Brinkhoff)
+Date: Fri, 14 Oct 2022 18:47:58 +0000
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+In-Reply-To: <9AA075C9-995F-47F7-9758-2492407DC9FF@planet.nl> (Paul
+ Ruizendaal's message of "Fri, 14 Oct 2022 13:55:54 +0200")
+References: <9AA075C9-995F-47F7-9758-2492407DC9FF@planet.nl>
+Message-ID: <7wk052gs2p.fsf@junk.nocrew.org>
+
+Paul Ruizendaal wrote:
+> Maybe I’m dim, but I’ve lost track in this discussion of what is
+> missing / corrupted.
+
+In the tarball called nosc.tar, the files sys4.c and impio.c are
+damaged.  For sys4.c it seems identical copies can be found elsewhere.
+For impio.c there are variants that are similar but not identical.  So,
+no a big deal; workaround were found.
+
+From imp at bsdimp.com  Sat Oct 15 05:06:54 2022
+From: imp at bsdimp.com (Warner Losh)
+Date: Fri, 14 Oct 2022 13:06:54 -0600
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+In-Reply-To: <CAC20D2PgG3c7E-Z3EPEy1nQcq=CJo7bz0GXW0NqFYYCSNQJKWg@mail.gmail.com>
+References: <9AA075C9-995F-47F7-9758-2492407DC9FF@planet.nl>
+ <202210141608.29EG8I2j086740@ultimate.com>
+ <CAC20D2PgG3c7E-Z3EPEy1nQcq=CJo7bz0GXW0NqFYYCSNQJKWg@mail.gmail.com>
+Message-ID: <CANCZdfoqtogy2WZtBrhbnMF8++44HvLeGMAToWuMZs3ZsTmh2Q@mail.gmail.com>
+
+On Fri, Oct 14, 2022, 10:39 AM Clem Cole <clemc at ccc.com> wrote:
+
+>
+>
+> On Fri, Oct 14, 2022 at 12:09 PM Phil Budne <phil at ultimate.com> wrote:
+>
+>> Paul Ruizendaal <pnr at planet.nl> wrote:
+>> > sys4.c: I think this is available in BBN V6:
+>> > https://minnie.tuhs.org/cgi-bin/utree.pl?file=BBN-V6/ken <
+>> https://minnie.tuhs.org/cgi-bin/utree.pl?file=BBN-V6/ken>
+>> > In this file the only real network addition is Jack Haverty’s user
+>> timer variable, I think. What else is missing?
+>>
+>> Side question: What/when is the origin of the pty driver?
+>>
+> IIRC Rand - there were around for the V6
+>
+
+
+Yea, pseudo terminalsquite common common and clearly RAND implemented them
+too. It's quite possible the bell lab folks learned of the RAND additions,
+maybe via Berkeley where several bell Labs folks spent time and who had
+these RAND tapes...
+
+Warner
+
+> ᐧ
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221014/221b53ce/attachment.htm>
+
+From jnc at mercury.lcs.mit.edu  Sat Oct 15 06:30:29 2022
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Fri, 14 Oct 2022 16:30:29 -0400 (EDT)
+Subject: [TUHS] Attempting To Build NOSC and BBN UNIXs + ARPANET code
+Message-ID: <20221014203029.54A4618C075@mercury.lcs.mit.edu>
+
+    >> Looking at net_vdh.h, it seems to be a "VDH-11C"
+    >> ...
+    >> I wasn't able to find anything out about it at all. (I have some
+    >> hardcopy manuals for other ACC IMP interface products, and I was going
+    >> to look in them to see if any of them listed its manual in a 'see
+    >> also', but I can't find them.)
+
+    > From: Lars Brinkhoff
+
+    > Noel Chiappa wrote:
+
+    >> Did VDH PDP-11's have a special VDH interface
+
+    > Sorry, no idea.
+
+That was a semi-rhetorical question; after I typed it, I did some looking,
+and came up with the answer above, the ACC VDH-11.
+
+I did eventually find the hardcopy manuals for other ACC IMP interface
+products, but none of them mention the VDH11.
+
+On a hunch, I looked to see if there was a VDH11 driver for ELF, and
+sure enough, there was:
+
+  https://github.com/pdp11/elf-operating-system/blob/master/files/kdvdh.m11%5Blep%2Cjrl%5D168
+
+(If anyone wants to look at it, ktbl.sml hold the register definitions.)
+
+With no manual for the device, and no museum catalog hits to show that
+someone has one which hasn't been scanned in yet, that's probably a dead end,
+although with the two drivers, one could probably mock up a rudimentary
+programmming manual.
+
+I'm not sure there's any point, though; using an LH/DH interface is going to
+work as well, and those device are already supported.
+
+
+    > From: Paul Ruizendaal
+
+    > impio.c: available here:
+
+Thanks for chasing those all down; I knew the BBN system was based on the NCP
+Unix (called in this discussion the 'NOSC' system), so I figured it would
+have the missing files, in some form.
+
+Looking at a diff between the damaged impio.c in the NOSC tree, and the
+impio.c in the BBN tree, there are some changes (in the section where we have
+both versions) between the NOSC one and the BBN one, but it will probably be
+possible to take the missing piece off the bank end of the BBN one and tack
+it on to the NOSC one.
+
+
+Somewhere in the document scans available online from DOD, there used to
+be a long thing from the UIUC people who did the original NCP Unix. I don't
+know if it included source; it might have.
+
+	Noel
+
+From will.senn at gmail.com  Fri Oct 21 06:32:15 2022
+From: will.senn at gmail.com (Will Senn)
+Date: Thu, 20 Oct 2022 15:32:15 -0500
+Subject: [TUHS] Revised v6 Instructions Posted
+Message-ID: <CAAdQtx_tKdBPF-7A4uf3TUzPLBJp4csfo=ex6JRk4iT4ZuB0Bg@mail.gmail.com>
+
+All,
+
+I have revised my Research Unix Version 6 instructions for 2022, in part to
+support the change to OpenSSH and also to bring it along into the modern
+era (I did it on my Monterey instance). I updated the links, cleaned up
+some lingering issues, and confirmed it working.
+
+Please take a look and let me know if you find any issues,
+misrepresentations, missing pieces, etc. I haven't touch v6 in a while, but
+it was fun to reminisce.
+
+http://decuser.blogspot.com/2022/10/installing-and-using-research-unix.html
+
+Regards,
+
+Will
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221020/283387c1/attachment.htm>
+
+From rminnich at gmail.com  Thu Oct 13 05:01:45 2022
+From: rminnich at gmail.com (ron minnich)
+Date: Wed, 12 Oct 2022 12:01:45 -0700
+Subject: [TUHS] who invented the link register
+Message-ID: <CAP6exY+sG_kb2mMfhJvkbUzGk47U4T0n7Odh=EPxKwN-DSOdHw@mail.gmail.com>
+
+I know branch and link was in the 360; was it earlier? And ... anybody know
+who invented it?
+
+This came up in a risc-v meeting just now :-) My claim is that if anybody
+knows, they will  be in this group.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221012/08af0770/attachment.htm>
+
+From aap at papnet.eu  Tue Oct 25 09:46:43 2022
+From: aap at papnet.eu (Angelo Papenhoff)
+Date: Tue, 25 Oct 2022 01:46:43 +0200
+Subject: [TUHS] who invented the link register
+In-Reply-To: <CAP6exY+sG_kb2mMfhJvkbUzGk47U4T0n7Odh=EPxKwN-DSOdHw@mail.gmail.com>
+References: <CAP6exY+sG_kb2mMfhJvkbUzGk47U4T0n7Odh=EPxKwN-DSOdHw@mail.gmail.com>
+Message-ID: <Y1cj48eAYbZSFZNx@indra.papnet.eu>
+
+On 12/10/22, ron minnich wrote:
+> I know branch and link was in the 360; was it earlier? And ... anybody know
+> who invented it?
+> 
+> This came up in a risc-v meeting just now :-) My claim is that if anybody
+> knows, they will  be in this group.
+
+The Whirlwind used the A register for this purpose. The jump (sp =
+sub-program) and conditional jump (cp = conditional sub-program)
+instructions set A to the return address. The first instruction at the
+target can then use ta (transfer A to storage) to write to the address
+part of the return-sp instruction. It would look like this:
+
+	sp foo		; call foo
+ret,	...		; come back here
+
+foo,	ta foo1		; store return address
+	...
+foo1,	sp .		; will return to ret
+
+Might be earlier than this, I just happen to know the Whirlwind somewhat
+well. It's late 40s machine, so you probably won't find anything *much*
+older.
+
+Cheers,
+aap
+
+From aap at papnet.eu  Tue Oct 25 18:35:32 2022
+From: aap at papnet.eu (Angelo Papenhoff)
+Date: Tue, 25 Oct 2022 10:35:32 +0200
+Subject: [TUHS] who invented the link register
+In-Reply-To: <Y1cj48eAYbZSFZNx@indra.papnet.eu>
+References: <CAP6exY+sG_kb2mMfhJvkbUzGk47U4T0n7Odh=EPxKwN-DSOdHw@mail.gmail.com>
+ <Y1cj48eAYbZSFZNx@indra.papnet.eu>
+Message-ID: <Y1ef1KWMgmX/NXZh@indra.papnet.eu>
+
+On 25/10/22, Angelo Papenhoff wrote:
+> Might be earlier than this, I just happen to know the Whirlwind somewhat
+> well. It's late 40s machine, so you probably won't find anything *much*
+> older.
+
+Addendum: the original report from 1947 does not describe this behaviour
+yet. The change came in oct. 1948. M-668 mentions it and refers to M-647,
+which however is not available online.
+So the concept of saving the resturn address in another register is at
+least as old as oct. 1948, but again I wouldn't be surprised if some
+even slightly earlier computer had it too.
+
+aap
+
+From stewart at serissa.com  Wed Oct 26 03:00:39 2022
+From: stewart at serissa.com (Lawrence Stewart)
+Date: Tue, 25 Oct 2022 13:00:39 -0400
+Subject: [TUHS] who invented the link register
+In-Reply-To: <Y1ef1KWMgmX/NXZh@indra.papnet.eu>
+References: <CAP6exY+sG_kb2mMfhJvkbUzGk47U4T0n7Odh=EPxKwN-DSOdHw@mail.gmail.com>
+ <Y1cj48eAYbZSFZNx@indra.papnet.eu> <Y1ef1KWMgmX/NXZh@indra.papnet.eu>
+Message-ID: <EBEBFB0A-7360-4C3E-B26F-71977200639C@serissa.com>
+
+I’ve just spent a fun hour looking at the old Whirlwind documents.  I think I agree with Angelo.
+
+The 1947 block diagrams and time-pulse charts show that the original “SP” (subprogram) instruction transferred the low 11 bits of the instruction directly to the program counter.  They do not show the old program counter being saved in the AR register, nor is there yet the “TA” (transfer address) instruction to save the AR register to memory.
+
+Evidently both these new features, which together provide a branch and link function were likely described in memo M-647, which is not scanned anywhere I can find.  It is called “Some new orders for WWI"
+
+There was already logic for the program counter to drive the bus, and logic to capture the bus into the AR register, so the modification to SP to save the old program counter was likely pretty easy: drive the bus from the program counter, and capture it in AR, just by adding some new diodes to the sequencer.
+
+Adding the Transfer Address instruction was likely also pretty easy, since there was a way for the AR register to drive the bus. 
+
+With the new SP and TA, one would use SP to call a subroutine, and the first instruction of any subroutine would be TA to save the return address into the final location of the subroutine.  (TA only modified the low 11 bits of the 16 bit location)
+
+Before these instructions, a subroutine call would require one additional memory location, to hold the return address for each point of call, and one additional instruction, one to load the return address into the accumulator and one to store it into the code at the end of the subroutine. (The latter could be the first instruction of the subroutine.)
+
+Originally I thought that maybe David Wheeler invented the Link register, since he’s often credited with inventing the subroutine, but it looks like the particular thing he did was the idea of the “Wheeler Jump” where code explicitly stores the return address into the instruction at the end of the subroutine.  That idea was used in Whirlwind as well.  EDSAC I did not have link, but it was proposed for EDSAC II.  Whirlwind was likely first to implement.
+
+> On 2022, Oct 25, at 4:35 AM, Angelo Papenhoff <aap at papnet.eu> wrote:
+> 
+> On 25/10/22, Angelo Papenhoff wrote:
+>> Might be earlier than this, I just happen to know the Whirlwind somewhat
+>> well. It's late 40s machine, so you probably won't find anything *much*
+>> older.
+> 
+> Addendum: the original report from 1947 does not describe this behaviour
+> yet. The change came in oct. 1948. M-668 mentions it and refers to M-647,
+> which however is not available online.
+> So the concept of saving the resturn address in another register is at
+> least as old as oct. 1948, but again I wouldn't be surprised if some
+> even slightly earlier computer had it too.
+> 
+> aap
+
+
+From clemc at ccc.com  Wed Oct 26 04:26:21 2022
+From: clemc at ccc.com (Clem Cole)
+Date: Tue, 25 Oct 2022 14:26:21 -0400
+Subject: [TUHS] who invented the link register
+In-Reply-To: <EBEBFB0A-7360-4C3E-B26F-71977200639C@serissa.com>
+References: <CAP6exY+sG_kb2mMfhJvkbUzGk47U4T0n7Odh=EPxKwN-DSOdHw@mail.gmail.com>
+ <Y1cj48eAYbZSFZNx@indra.papnet.eu> <Y1ef1KWMgmX/NXZh@indra.papnet.eu>
+ <EBEBFB0A-7360-4C3E-B26F-71977200639C@serissa.com>
+Message-ID: <CAC20D2OQavK4C5FXxJeMkyFdp8XwXUWacJL-JVXMCsA=ZP1JGg@mail.gmail.com>
+
+I agree that sounds pretty conclusive. I knew Wheeler had used his JUMP
+with EDSAC, I had been wondering if Wilkes had something in his machine
+(EDSAC II) - sounds like it was proposed. But I would not be surprised if
+the idea was Wilkes, but Whirlwind implemented it.   They all talked to
+each other.
+
+With apologies to Tom Lehrer ...
+
+*"And then I write*
+*By morning, night,*
+*And afternoon,*
+*And pretty soon*
+*My name in Dnepropetrovsk is cursed, When he finds out I publish first."*
+
+ᐧ
+
+On Tue, Oct 25, 2022 at 1:01 PM Lawrence Stewart <stewart at serissa.com>
+wrote:
+
+> I’ve just spent a fun hour looking at the old Whirlwind documents.  I
+> think I agree with Angelo.
+>
+> The 1947 block diagrams and time-pulse charts show that the original “SP”
+> (subprogram) instruction transferred the low 11 bits of the instruction
+> directly to the program counter.  They do not show the old program counter
+> being saved in the AR register, nor is there yet the “TA” (transfer
+> address) instruction to save the AR register to memory.
+>
+> Evidently both these new features, which together provide a branch and
+> link function were likely described in memo M-647, which is not scanned
+> anywhere I can find.  It is called “Some new orders for WWI"
+>
+> There was already logic for the program counter to drive the bus, and
+> logic to capture the bus into the AR register, so the modification to SP to
+> save the old program counter was likely pretty easy: drive the bus from the
+> program counter, and capture it in AR, just by adding some new diodes to
+> the sequencer.
+>
+> Adding the Transfer Address instruction was likely also pretty easy, since
+> there was a way for the AR register to drive the bus.
+>
+> With the new SP and TA, one would use SP to call a subroutine, and the
+> first instruction of any subroutine would be TA to save the return address
+> into the final location of the subroutine.  (TA only modified the low 11
+> bits of the 16 bit location)
+>
+> Before these instructions, a subroutine call would require one additional
+> memory location, to hold the return address for each point of call, and one
+> additional instruction, one to load the return address into the accumulator
+> and one to store it into the code at the end of the subroutine. (The latter
+> could be the first instruction of the subroutine.)
+>
+> Originally I thought that maybe David Wheeler invented the Link register,
+> since he’s often credited with inventing the subroutine, but it looks like
+> the particular thing he did was the idea of the “Wheeler Jump” where code
+> explicitly stores the return address into the instruction at the end of the
+> subroutine.  That idea was used in Whirlwind as well.  EDSAC I did not have
+> link, but it was proposed for EDSAC II.  Whirlwind was likely first to
+> implement.
+>
+> > On 2022, Oct 25, at 4:35 AM, Angelo Papenhoff <aap at papnet.eu> wrote:
+> >
+> > On 25/10/22, Angelo Papenhoff wrote:
+> >> Might be earlier than this, I just happen to know the Whirlwind somewhat
+> >> well. It's late 40s machine, so you probably won't find anything *much*
+> >> older.
+> >
+> > Addendum: the original report from 1947 does not describe this behaviour
+> > yet. The change came in oct. 1948. M-668 mentions it and refers to M-647,
+> > which however is not available online.
+> > So the concept of saving the resturn address in another register is at
+> > least as old as oct. 1948, but again I wouldn't be surprised if some
+> > even slightly earlier computer had it too.
+> >
+> > aap
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221025/b9c236ee/attachment.htm>
+
+From marc.donner at gmail.com  Wed Oct 26 06:05:41 2022
+From: marc.donner at gmail.com (Marc Donner)
+Date: Tue, 25 Oct 2022 16:05:41 -0400
+Subject: [TUHS] who invented the link register
+In-Reply-To: <CAC20D2OQavK4C5FXxJeMkyFdp8XwXUWacJL-JVXMCsA=ZP1JGg@mail.gmail.com>
+References: <CAP6exY+sG_kb2mMfhJvkbUzGk47U4T0n7Odh=EPxKwN-DSOdHw@mail.gmail.com>
+ <Y1cj48eAYbZSFZNx@indra.papnet.eu> <Y1ef1KWMgmX/NXZh@indra.papnet.eu>
+ <EBEBFB0A-7360-4C3E-B26F-71977200639C@serissa.com>
+ <CAC20D2OQavK4C5FXxJeMkyFdp8XwXUWacJL-JVXMCsA=ZP1JGg@mail.gmail.com>
+Message-ID: <CALQ0xCDfGNXr=nSF_K9w1Th3VzzUihqjUQXNu=rPzZW1dRbDrQ@mail.gmail.com>
+
+There was a guy at IBM research who had a patent framed on his wall that he
+claimed was for indirect addressing.  Sadly, I don't remember his name.
+I'll ask Peter Capek if he remembers who it was.
+
+On the other hand, I'm now reading a book called "Turing's Cathedral" that
+goes into considerable length talking about what is essentially indirect
+addressing in the context of the evolution of the Von Neumann model and its
+limitations.
+=====
+nygeek.net
+mindthegapdialogs.com/home <https://www.mindthegapdialogs.com/home>
+
+
+On Tue, Oct 25, 2022 at 2:27 PM Clem Cole <clemc at ccc.com> wrote:
+
+> I agree that sounds pretty conclusive. I knew Wheeler had used his JUMP
+> with EDSAC, I had been wondering if Wilkes had something in his machine
+> (EDSAC II) - sounds like it was proposed. But I would not be surprised if
+> the idea was Wilkes, but Whirlwind implemented it.   They all talked to
+> each other.
+>
+> With apologies to Tom Lehrer ...
+>
+> *"And then I write*
+> *By morning, night,*
+> *And afternoon,*
+> *And pretty soon*
+> *My name in Dnepropetrovsk is cursed, When he finds out I publish first."*
+>
+> ᐧ
+>
+> On Tue, Oct 25, 2022 at 1:01 PM Lawrence Stewart <stewart at serissa.com>
+> wrote:
+>
+>> I’ve just spent a fun hour looking at the old Whirlwind documents.  I
+>> think I agree with Angelo.
+>>
+>> The 1947 block diagrams and time-pulse charts show that the original “SP”
+>> (subprogram) instruction transferred the low 11 bits of the instruction
+>> directly to the program counter.  They do not show the old program counter
+>> being saved in the AR register, nor is there yet the “TA” (transfer
+>> address) instruction to save the AR register to memory.
+>>
+>> Evidently both these new features, which together provide a branch and
+>> link function were likely described in memo M-647, which is not scanned
+>> anywhere I can find.  It is called “Some new orders for WWI"
+>>
+>> There was already logic for the program counter to drive the bus, and
+>> logic to capture the bus into the AR register, so the modification to SP to
+>> save the old program counter was likely pretty easy: drive the bus from the
+>> program counter, and capture it in AR, just by adding some new diodes to
+>> the sequencer.
+>>
+>> Adding the Transfer Address instruction was likely also pretty easy,
+>> since there was a way for the AR register to drive the bus.
+>>
+>> With the new SP and TA, one would use SP to call a subroutine, and the
+>> first instruction of any subroutine would be TA to save the return address
+>> into the final location of the subroutine.  (TA only modified the low 11
+>> bits of the 16 bit location)
+>>
+>> Before these instructions, a subroutine call would require one additional
+>> memory location, to hold the return address for each point of call, and one
+>> additional instruction, one to load the return address into the accumulator
+>> and one to store it into the code at the end of the subroutine. (The latter
+>> could be the first instruction of the subroutine.)
+>>
+>> Originally I thought that maybe David Wheeler invented the Link register,
+>> since he’s often credited with inventing the subroutine, but it looks like
+>> the particular thing he did was the idea of the “Wheeler Jump” where code
+>> explicitly stores the return address into the instruction at the end of the
+>> subroutine.  That idea was used in Whirlwind as well.  EDSAC I did not have
+>> link, but it was proposed for EDSAC II.  Whirlwind was likely first to
+>> implement.
+>>
+>> > On 2022, Oct 25, at 4:35 AM, Angelo Papenhoff <aap at papnet.eu> wrote:
+>> >
+>> > On 25/10/22, Angelo Papenhoff wrote:
+>> >> Might be earlier than this, I just happen to know the Whirlwind
+>> somewhat
+>> >> well. It's late 40s machine, so you probably won't find anything *much*
+>> >> older.
+>> >
+>> > Addendum: the original report from 1947 does not describe this behaviour
+>> > yet. The change came in oct. 1948. M-668 mentions it and refers to
+>> M-647,
+>> > which however is not available online.
+>> > So the concept of saving the resturn address in another register is at
+>> > least as old as oct. 1948, but again I wouldn't be surprised if some
+>> > even slightly earlier computer had it too.
+>> >
+>> > aap
+>>
+>>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221025/517e98b9/attachment.htm>
+
+From stewart at serissa.com  Wed Oct 26 07:03:15 2022
+From: stewart at serissa.com (Lawrence Stewart)
+Date: Tue, 25 Oct 2022 17:03:15 -0400
+Subject: [TUHS] who invented the link register
+In-Reply-To: <CALQ0xCDfGNXr=nSF_K9w1Th3VzzUihqjUQXNu=rPzZW1dRbDrQ@mail.gmail.com>
+References: <CAP6exY+sG_kb2mMfhJvkbUzGk47U4T0n7Odh=EPxKwN-DSOdHw@mail.gmail.com>
+ <Y1cj48eAYbZSFZNx@indra.papnet.eu> <Y1ef1KWMgmX/NXZh@indra.papnet.eu>
+ <EBEBFB0A-7360-4C3E-B26F-71977200639C@serissa.com>
+ <CAC20D2OQavK4C5FXxJeMkyFdp8XwXUWacJL-JVXMCsA=ZP1JGg@mail.gmail.com>
+ <CALQ0xCDfGNXr=nSF_K9w1Th3VzzUihqjUQXNu=rPzZW1dRbDrQ@mail.gmail.com>
+Message-ID: <ABFD430D-8566-4783-A0DF-94190760E44A@serissa.com>
+
+While we are chasing threads of the past, before our esteemed leader stomps on us for not being Unixy here…
+
+The missing memo was M-649, which is listed in http://bitsavers.org/pdf/mit/mitre/MITRE_Archive/AC006_WHIRLWIND_I_Computer_Collection_at_Smithsonian.pdf <http://bitsavers.org/pdf/mit/mitre/MITRE_Archive/AC006_WHIRLWIND_I_Computer_Collection_at_Smithsonian.pdf> as being titled “Some New Orders for WWI” by C. W. Adams and R. P. Mayer.
+
+M-668, the biweekly report from October 29. 1948 says  (see scan at end) the order SP (subprogram) is an old order but has been modified to place the contents of PC in the AR.  Uses of these orders are suggested in the Memo.
+
+According to the description of it in M-669 (Biweekly report part III), the memo was 2 pages.
+
+
+C. W. Adams is Prof Charles W. Adams, who wrote a couple of non-technical articles
+
+https://dl.acm.org/doi/pdf/10.1145/609784.609795 <https://dl.acm.org/doi/pdf/10.1145/609784.609795>  “Small Problems on Large Computers"
+
+https://dl.acm.org/doi/pdf/10.1145/1455270.1455271 <https://dl.acm.org/doi/pdf/10.1145/1455270.1455271>  “Small Computers in a Large World”
+
+It was interesting to encounter references to J W Salzer and Alan Perlis in the various documents.
+
+-Larry
+
+E. P. Mayer was evidently an engineer on the Whirlwind probject. He’s mentioned all over in the context of circuit and block diagrams.
+
+> On 2022, Oct 25, at 4:05 PM, Marc Donner <marc.donner at gmail.com> wrote:
+> 
+> There was a guy at IBM research who had a patent framed on his wall that he claimed was for indirect addressing.  Sadly, I don't remember his name.  I'll ask Peter Capek if he remembers who it was.
+> 
+> On the other hand, I'm now reading a book called "Turing's Cathedral" that goes into considerable length talking about what is essentially indirect addressing in the context of the evolution of the Von Neumann model and its limitations.
+> =====
+> nygeek.net <http://nygeek.net/>
+> mindthegapdialogs.com/home <https://www.mindthegapdialogs.com/home>
+> 
+> 
+> On Tue, Oct 25, 2022 at 2:27 PM Clem Cole <clemc at ccc.com <mailto:clemc at ccc.com>> wrote:
+> I agree that sounds pretty conclusive. I knew Wheeler had used his JUMP with EDSAC, I had been wondering if Wilkes had something in his machine (EDSAC II) - sounds like it was proposed. But I would not be surprised if the idea was Wilkes, but Whirlwind implemented it.   They all talked to each other.
+> 
+> With apologies to Tom Lehrer ...
+> "And then I write
+> By morning, night,
+> And afternoon,
+> And pretty soon
+> My name in Dnepropetrovsk is cursed, When he finds out I publish first."
+> 
+> ᐧ
+> 
+> On Tue, Oct 25, 2022 at 1:01 PM Lawrence Stewart <stewart at serissa.com <mailto:stewart at serissa.com>> wrote:
+> I’ve just spent a fun hour looking at the old Whirlwind documents.  I think I agree with Angelo.
+> 
+> The 1947 block diagrams and time-pulse charts show that the original “SP” (subprogram) instruction transferred the low 11 bits of the instruction directly to the program counter.  They do not show the old program counter being saved in the AR register, nor is there yet the “TA” (transfer address) instruction to save the AR register to memory.
+> 
+> Evidently both these new features, which together provide a branch and link function were likely described in memo M-647, which is not scanned anywhere I can find.  It is called “Some new orders for WWI"
+> 
+> There was already logic for the program counter to drive the bus, and logic to capture the bus into the AR register, so the modification to SP to save the old program counter was likely pretty easy: drive the bus from the program counter, and capture it in AR, just by adding some new diodes to the sequencer.
+> 
+> Adding the Transfer Address instruction was likely also pretty easy, since there was a way for the AR register to drive the bus. 
+> 
+> With the new SP and TA, one would use SP to call a subroutine, and the first instruction of any subroutine would be TA to save the return address into the final location of the subroutine.  (TA only modified the low 11 bits of the 16 bit location)
+> 
+> Before these instructions, a subroutine call would require one additional memory location, to hold the return address for each point of call, and one additional instruction, one to load the return address into the accumulator and one to store it into the code at the end of the subroutine. (The latter could be the first instruction of the subroutine.)
+> 
+> Originally I thought that maybe David Wheeler invented the Link register, since he’s often credited with inventing the subroutine, but it looks like the particular thing he did was the idea of the “Wheeler Jump” where code explicitly stores the return address into the instruction at the end of the subroutine.  That idea was used in Whirlwind as well.  EDSAC I did not have link, but it was proposed for EDSAC II.  Whirlwind was likely first to implement.
+> 
+> > On 2022, Oct 25, at 4:35 AM, Angelo Papenhoff <aap at papnet.eu <mailto:aap at papnet.eu>> wrote:
+> > 
+> > On 25/10/22, Angelo Papenhoff wrote:
+> >> Might be earlier than this, I just happen to know the Whirlwind somewhat
+> >> well. It's late 40s machine, so you probably won't find anything *much*
+> >> older.
+> > 
+> > Addendum: the original report from 1947 does not describe this behaviour
+> > yet. The change came in oct. 1948. M-668 mentions it and refers to M-647,
+> > which however is not available online.
+> > So the concept of saving the resturn address in another register is at
+> > least as old as oct. 1948, but again I wouldn't be surprised if some
+> > even slightly earlier computer had it too.
+> > 
+> > aap
+> 
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221025/0295b1db/attachment-0001.htm>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: Image.png
+Type: image/png
+Size: 133413 bytes
+Desc: not available
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221025/0295b1db/attachment-0001.png>
+
+From bakul at iitbombay.org  Wed Oct 26 08:24:01 2022
+From: bakul at iitbombay.org (Bakul Shah)
+Date: Tue, 25 Oct 2022 15:24:01 -0700
+Subject: [TUHS] who invented the link register
+In-Reply-To: <CAP6exY+sG_kb2mMfhJvkbUzGk47U4T0n7Odh=EPxKwN-DSOdHw@mail.gmail.com>
+References: <CAP6exY+sG_kb2mMfhJvkbUzGk47U4T0n7Odh=EPxKwN-DSOdHw@mail.gmail.com>
+Message-ID: <6848E086-1F60-4476-A228-AB3A158EC8CB@iitbombay.org>
+
+On Oct 12, 2022, at 12:01 PM, ron minnich <rminnich at gmail.com> wrote:
+> 
+> I know branch and link was in the 360; was it earlier? And ... anybody know who invented it?
+> 
+> This came up in a risc-v meeting just now :-) My claim is that if anybody knows, they will  be in this group.
+
+Zuse Z4 had instructions to jump to a subprogram and back. Unclear if they were in the original Z4 (1945) or were added later. Or how it was done.
+
+https://cacm.acm.org/blogs/blog-cacm/247521-discovery-user-manual-of-the-oldest-surviving-computer-in-the-world/fulltext
+
+Turing's ACE (1946) computer had BURY and UNBURY that push and pop a subroutine's return address from a ptr held in TS31. TS1..TS32 were "temporary storage" registers each in a recirculating memory (mercury delay line?) with a cycle time of 32µs. The paper referenced below says BURY and UNBURY were subroutines but I wonder if they were macros.
+
+From the "Turing and ACE, Lessons from a 1946 Computer Design" <https://cds.cern.ch/record/263304/files/p230.pdf> paper, "Inventing this concept in late 1945 was a truly amazing achievement, perhaps inspired by the recursive function theory which Turing had learnt from the work of Church, and by a slight knowledge of the nineteenth century work of Babbage."
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221025/fdd31bd3/attachment.htm>
+
+From skogtun at gmail.com  Wed Oct 26 08:41:05 2022
+From: skogtun at gmail.com (Harald Arnesen)
+Date: Wed, 26 Oct 2022 00:41:05 +0200
+Subject: [TUHS] who invented the link register
+In-Reply-To: <6848E086-1F60-4476-A228-AB3A158EC8CB@iitbombay.org>
+References: <CAP6exY+sG_kb2mMfhJvkbUzGk47U4T0n7Odh=EPxKwN-DSOdHw@mail.gmail.com>
+ <6848E086-1F60-4476-A228-AB3A158EC8CB@iitbombay.org>
+Message-ID: <eae1d7b2-3ca6-51d5-ed5d-3d5eb2a82412@gmail.com>
+
+Bakul Shah [26/10/2022 00.24]:
+
+> Turing's ACE (1946) computer had BURY and UNBURY that push and pop a 
+> subroutine's return address from a ptr held in TS31. TS1..TS32 were 
+> "temporary storage" registers each in a recirculating memory (mercury 
+> delay line?) with a cycle time of 32µs. The paper referenced below says 
+> BURY and UNBURY were subroutines but I wonder if they were macros.
+
+Or a gin and tonic delay line, as he (jokingly) suggested as an alternative.
+-- 
+Hilsen Harald
+
+From fuz at fuz.su  Wed Oct 26 08:47:20 2022
+From: fuz at fuz.su (Robert Clausecker)
+Date: Wed, 26 Oct 2022 00:47:20 +0200
+Subject: [TUHS] who invented the link register
+In-Reply-To: <6848E086-1F60-4476-A228-AB3A158EC8CB@iitbombay.org>
+References: <CAP6exY+sG_kb2mMfhJvkbUzGk47U4T0n7Odh=EPxKwN-DSOdHw@mail.gmail.com>
+ <6848E086-1F60-4476-A228-AB3A158EC8CB@iitbombay.org>
+Message-ID: <Y1hneHAZG002D0D4@fuz.su>
+
+
+
+Am Tue, Oct 25, 2022 at 03:24:01PM -0700 schrieb Bakul Shah:
+> On Oct 12, 2022, at 12:01 PM, ron minnich <rminnich at gmail.com> wrote:
+> > 
+> > I know branch and link was in the 360; was it earlier? And ... anybody
+> > know who invented it?
+> > 
+> > This came up in a risc-v meeting just now :-) My claim is that if anybody
+> > knows, they will  be in this group.
+> 
+> Zuse Z4 had instructions to jump to a subprogram and back. Unclear if
+> they were in the original Z4 (1945) or were added later. Or how it was done.
+
+The Z4's programs were stored on a number of tapes.  Initially, there
+was only one tape reader and no branch instructions.  Later, the design
+was modified by adding additional tape readers and instructions to
+switch to a different tape reader.  Thus, sub programs can be realised
+by storing the subprogram on a different, possibly looped, tape and then
+switching to the other tape reader when the sub program is called.  The
+subprogram's final instruction would switch back to the main tape
+reader.  So not quite a link register.
+
+An instruction set reference for a later (1950) model can be found in the
+ETH Zurich library:
+
+https://www.e-manuscripta.ch/zut/doi/10.7891/e-manuscripta-98601
+
+Yours,
+Robert Clausecker
+
+-- 
+()  ascii ribbon campaign - for an 8-bit clean world 
+/\  - against html email  - against proprietary attachments
+
+From jnc at mercury.lcs.mit.edu  Wed Oct 26 08:52:51 2022
+From: jnc at mercury.lcs.mit.edu (Noel Chiappa)
+Date: Tue, 25 Oct 2022 18:52:51 -0400 (EDT)
+Subject: [TUHS] who invented the link register
+Message-ID: <20221025225251.6FC1818C073@mercury.lcs.mit.edu>
+
+    > From: ron minnich
+
+    > I know branch and link was in the 360; was it earlier?
+
+Well, as I understand it, branch and link (BAL and BALR) did a couple of
+different things (if I have this wrong, I hope someone will correct me). It
+was a subroutine call, but it also loaded a base register.
+
+(Those were used to deal with the /360's bizarro memory management, which was
+not 'base and bounds, with a user's virtual address space starting at zero',
+like a lot of contemporary machines. Rather, a process saw its actual physical
+memory location, so depending on where in memoty a process was loaded, it
+would be executing at different addresses visible to it; the base registers
+were used to deal with that. This made swapping complicated, since it had to
+be swapped back in to the same location.)
+
+Which function of BALR are you enquiring about? The subroutine call part?
+
+
+    > From: Angelo Papenhoff
+
+    > The Whirlwind used the A register for this purpose. ...
+    > Might be earlier than this, I just happen to know the Whirlwind
+    > somewhat well. It's late 40s machine, so you probably won't find
+    > anything *much* older.
+
+The only machines older than Whirlwind I know of are the ACE (design;
+not implemented until later) and EDVAC.
+
+I have ACE stuff, but i) the documentation is really wierd, and hard to read,
+and ii) it's really bizarre (it didn't have opcodes; different registers did
+different things). There were subroutines written for it, but it's not clear
+how they were called.
+
+The EDVAC, the only thing I have on it is von Neumann's draft, and it's
+even harder to read than Turing's ACE Report!
+
+	Noel
+
+From ralph at inputplus.co.uk  Wed Oct 26 14:45:30 2022
+From: ralph at inputplus.co.uk (Ralph Corderoy)
+Date: Wed, 26 Oct 2022 05:45:30 +0100
+Subject: [TUHS] who invented the link register
+In-Reply-To: <EBEBFB0A-7360-4C3E-B26F-71977200639C@serissa.com>
+References: <CAP6exY+sG_kb2mMfhJvkbUzGk47U4T0n7Odh=EPxKwN-DSOdHw@mail.gmail.com>
+ <Y1cj48eAYbZSFZNx@indra.papnet.eu> <Y1ef1KWMgmX/NXZh@indra.papnet.eu>
+ <EBEBFB0A-7360-4C3E-B26F-71977200639C@serissa.com>
+Message-ID: <20221026044530.1DAC22033C@orac.inputplus.co.uk>
+
+Hi Lawrence,
+
+> With the new SP and TA, one would use SP to call a subroutine, and the
+> first instruction of any subroutine would be TA to save the return
+> address into the final location of the subroutine.  (TA only modified
+> the low 11 bits of the 16 bit location)
+>
+> Before these instructions, a subroutine call would require one
+> additional memory location, to hold the return address for each point
+> of call, and one additional instruction, one to load the return
+> address into the accumulator and one to store it into the code at the
+> end of the subroutine.  (The latter could be the first instruction of
+> the subroutine.)
+
+So before SP and TA, would the ‘latter’ instruction at the start of the
+subroutine, which stores the accumulator holding the return address, be
+modifying all sixteen bits of the location unlike TA which only modifies
+the bottom eleven?
+
+If so, did the accumulator's top bits hold the ‘return’ op-code or was
+there another instruction near the subroutine's end which loaded the
+11-bit address before a second instruction jumped to it?
+
+-- 
+Cheers, Ralph.
+
+From aap at papnet.eu  Wed Oct 26 15:29:28 2022
+From: aap at papnet.eu (Angelo Papenhoff)
+Date: Wed, 26 Oct 2022 07:29:28 +0200
+Subject: [TUHS] who invented the link register
+In-Reply-To: <20221026044530.1DAC22033C@orac.inputplus.co.uk>
+References: <CAP6exY+sG_kb2mMfhJvkbUzGk47U4T0n7Odh=EPxKwN-DSOdHw@mail.gmail.com>
+ <Y1cj48eAYbZSFZNx@indra.papnet.eu>
+ <Y1ef1KWMgmX/NXZh@indra.papnet.eu>
+ <EBEBFB0A-7360-4C3E-B26F-71977200639C@serissa.com>
+ <20221026044530.1DAC22033C@orac.inputplus.co.uk>
+Message-ID: <Y1jFuA+0xXwPVQce@indra.papnet.eu>
+
+On 26/10/22, Ralph Corderoy wrote:
+> > Before these instructions, a subroutine call would require one
+> > additional memory location, to hold the return address for each point
+> > of call, and one additional instruction, one to load the return
+> > address into the accumulator and one to store it into the code at the
+> > end of the subroutine.  (The latter could be the first instruction of
+> > the subroutine.)
+> 
+> So before SP and TA, would the ‘latter’ instruction at the start of the
+> subroutine, which stores the accumulator holding the return address, be
+> modifying all sixteen bits of the location unlike TA which only modifies
+> the bottom eleven?
+
+"Before" sounds a bit misleading. The Whirlwind ran its first actual program
+(from test storage, i.e. 27 switch and 5 flip-flop registers) in late 1949,
+so the change we're talking about here was early enough that the old way
+of doing jumps was only ever theoretical.
+Still, there was from the start a td (transfer digits) instruction,
+which stores the address bits from AC into the addressed location. ta is
+much the same except it stores A. 
+
+> If so, did the accumulator's top bits hold the ‘return’ op-code or was
+> there another instruction near the subroutine's end which loaded the
+> 11-bit address before a second instruction jumped to it?
+
+Without ta, a subroutine jump could be done like this:
+
+	ca reta		; load return address
+	sp foo		; jump to foo
+ret,	...		; return here
+
+foo,	td foo1		; store return address
+	...		; do stuff
+foo1,	sp .		; return from here
+
+reta,	ret
+
+Of course then you lose the possibility of passing some argument in AC.
+
+Cheers,
+aap
+
+From marc.donner at gmail.com  Wed Oct 26 17:52:48 2022
+From: marc.donner at gmail.com (Marc Donner)
+Date: Wed, 26 Oct 2022 03:52:48 -0400
+Subject: [TUHS] who invented the link register
+In-Reply-To: <Y1jFuA+0xXwPVQce@indra.papnet.eu>
+References: <CAP6exY+sG_kb2mMfhJvkbUzGk47U4T0n7Odh=EPxKwN-DSOdHw@mail.gmail.com>
+ <Y1cj48eAYbZSFZNx@indra.papnet.eu> <Y1ef1KWMgmX/NXZh@indra.papnet.eu>
+ <EBEBFB0A-7360-4C3E-B26F-71977200639C@serissa.com>
+ <20221026044530.1DAC22033C@orac.inputplus.co.uk>
+ <Y1jFuA+0xXwPVQce@indra.papnet.eu>
+Message-ID: <CALQ0xCDVq+3oNoxApn8dwj3Wcyuf2f3bQ2YhLFWHfKocUPO0XA@mail.gmail.com>
+
+Peter Capek found this obit of John Griffith.  Indirect addressing patent,
+for whatever it’s worth.
+
+https://www.legacy.com/us/obituaries/bradenton/name/john-griffith-obituary?id=34037343
+
+On Wed, Oct 26, 2022 at 1:29 AM Angelo Papenhoff <aap at papnet.eu> wrote:
+
+> On 26/10/22, Ralph Corderoy wrote:
+> > > Before these instructions, a subroutine call would require one
+> > > additional memory location, to hold the return address for each point
+> > > of call, and one additional instruction, one to load the return
+> > > address into the accumulator and one to store it into the code at the
+> > > end of the subroutine.  (The latter could be the first instruction of
+> > > the subroutine.)
+> >
+> > So before SP and TA, would the ‘latter’ instruction at the start of the
+> > subroutine, which stores the accumulator holding the return address, be
+> > modifying all sixteen bits of the location unlike TA which only modifies
+> > the bottom eleven?
+>
+> "Before" sounds a bit misleading. The Whirlwind ran its first actual
+> program
+> (from test storage, i.e. 27 switch and 5 flip-flop registers) in late 1949,
+> so the change we're talking about here was early enough that the old way
+> of doing jumps was only ever theoretical.
+> Still, there was from the start a td (transfer digits) instruction,
+> which stores the address bits from AC into the addressed location. ta is
+> much the same except it stores A.
+>
+> > If so, did the accumulator's top bits hold the ‘return’ op-code or was
+> > there another instruction near the subroutine's end which loaded the
+> > 11-bit address before a second instruction jumped to it?
+>
+> Without ta, a subroutine jump could be done like this:
+>
+>         ca reta         ; load return address
+>         sp foo          ; jump to foo
+> ret,    ...             ; return here
+>
+> foo,    td foo1         ; store return address
+>         ...             ; do stuff
+> foo1,   sp .            ; return from here
+>
+> reta,   ret
+>
+> Of course then you lose the possibility of passing some argument in AC.
+>
+> Cheers,
+> aap
+>
+-- 
+=====
+nygeek.net
+mindthegapdialogs.com/home <https://www.mindthegapdialogs.com/home>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221026/6222f9be/attachment.htm>
+
+From stewart at serissa.com  Wed Oct 26 21:12:40 2022
+From: stewart at serissa.com (Larry Stewart)
+Date: Wed, 26 Oct 2022 07:12:40 -0400
+Subject: [TUHS] who invented the link register
+In-Reply-To: <20221026044530.1DAC22033C@orac.inputplus.co.uk>
+References: <20221026044530.1DAC22033C@orac.inputplus.co.uk>
+Message-ID: <03E1CE6B-6112-4EAB-BFE1-E5AFC0A2075B@serissa.com>
+
+Whirlwind I had a TD (transfer digits) instruction that stored only the low 11 bits from the accumulator to storage
+
+> On Oct 26, 2022, at 12:45 AM, Ralph Corderoy <ralph at inputplus.co.uk> wrote:
+> 
+> ﻿Hi Lawrence,
+> 
+>> With the new SP and TA, one would use SP to call a subroutine, and the
+>> first instruction of any subroutine would be TA to save the return
+>> address into the final location of the subroutine.  (TA only modified
+>> the low 11 bits of the 16 bit location)
+>> 
+>> Before these instructions, a subroutine call would require one
+>> additional memory location, to hold the return address for each point
+>> of call, and one additional instruction, one to load the return
+>> address into the accumulator and one to store it into the code at the
+>> end of the subroutine.  (The latter could be the first instruction of
+>> the subroutine.)
+> 
+> So before SP and TA, would the ‘latter’ instruction at the start of the
+> subroutine, which stores the accumulator holding the return address, be
+> modifying all sixteen bits of the location unlike TA which only modifies
+> the bottom eleven?
+> 
+> If so, did the accumulator's top bits hold the ‘return’ op-code or was
+> there another instruction near the subroutine's end which loaded the
+> 11-bit address before a second instruction jumped to it?
+> 
+> -- 
+> Cheers, Ralph.
+
+
+From will.senn at gmail.com  Sun Oct 30 01:25:42 2022
+From: will.senn at gmail.com (Will Senn)
+Date: Sat, 29 Oct 2022 10:25:42 -0500
+Subject: [TUHS] Version 3.1 of Installing and Using Research Unix Version 7
+ note is up the blog
+Message-ID: <8296515c-ce86-2ed2-0212-e8c42eac683a@gmail.com>
+
+Following up on my v6 udpate a couple of weeks ago, I've updated my v7 
+note to use OpenSIMH and bring it up to date. In addition, I've switched 
+the multi-session notes over to DZ-11 from DC-11 cuz it supports 9600 
+over telnet.
+
+Here's the link:
+
+http://decuser.blogspot.com/2022/10/installing-and-using-research-unix_29.html
+
+Changes since revision 2.1 (2/3/2022)
+
+Revision 3.1 (10/29/2022) - minor revision:
+
+     Changed over to DZ-11 vs DC-11 for serial connections which allows 
+for 9600 baud connections.
+
+Revision 3.0 (10/28/2022) - major revision:
+
+     Started using OpenSIMH
+     Restored the learn notes which went missing between 2.0 and 2.1
+     Updated host notes for Macos Monterey
+     Cleaned up a number of lingering issues
+
+This note covers building a working v7 instance from tape files that 
+will run in the OpenSImH emulator. First, the reader is led through the 
+restoration of a pristine v7 instance from tape to disk. Next, the 
+reader is led through adding a regular user and making the system 
+multi-user capable. Then, the reader is shown how to make the system 
+multi-session cable to allow multiple simultaneous sessions. Finally, 
+the system is put to use with hello world, DMR style, and the learn 
+system is enabled.
+
+The note explains each step of the process in detail.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221029/d2b1c089/attachment.htm>
+
+From rich.salz at gmail.com  Sun Oct 30 03:41:39 2022
+From: rich.salz at gmail.com (Rich Salz)
+Date: Sat, 29 Oct 2022 13:41:39 -0400
+Subject: [TUHS] SunOS4.1.3, etc., on GitHub
+Message-ID: <CAFH29tocJZ9tX9opbBhmGRpRFogz1hazzEc+qDp1-s8ECPw8Gw@mail.gmail.com>
+
+Sorry if this is a repost. No idea of the legality, and therefore no idea
+how long it will stay:
+https://twitter.com/nixcraft/status/1586276475614818305 is the tweet and
+https://github.com/Arquivotheca/SunOS-4.1.3 is the repository with this
+README, below. Many other OS's there too.
+
+README <https://github.com/Arquivotheca/SunOS-4.1.3#readme>
+
+This is the SunOS 4.1.3 SUNSRC CD-ROM.  It contains the source in 3 forms.
+
+1. plain text source, as a ufs tree, rooted at the top level of
+   this filesystem.  Symlinks to the SCCS hierarchy are in place.
+
+2. SCCS hierarchy, rooted at SCCS_DIRECTORIES.
+
+3. a tar image of the SCCS hierarchy, in a file named 4.1.3_SUNSRC.tar.
+   This is rooted at ./SCCS_DIRECTORIES.
+
+Please see the SunOS 4.1.3 Source Installation Guide for further details.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221029/27de2e0b/attachment.htm>
+
+From tuhs at tuhs.org  Sun Oct 30 05:38:29 2022
+From: tuhs at tuhs.org (segaloco via TUHS)
+Date: Sat, 29 Oct 2022 19:38:29 +0000
+Subject: [TUHS] SunOS4.1.3, etc., on GitHub
+In-Reply-To: <CAFH29tocJZ9tX9opbBhmGRpRFogz1hazzEc+qDp1-s8ECPw8Gw@mail.gmail.com>
+References: <CAFH29tocJZ9tX9opbBhmGRpRFogz1hazzEc+qDp1-s8ECPw8Gw@mail.gmail.com>
+Message-ID: <SKcg7oMG8Pxj07emjA63Rq7VJXcfRwudajD692Rh98GzV2Qj5QRwQLAdIWYVGrvZLojMBYuZDc_a_FUwn22IV0iQCDDDTLYp32xxSO1wV4w=@protonmail.com>
+
+Funny enough the only repo I clicked on that didn't work (didn't try all...) was the Unixware 7 because of course of all actors, whatever excrement is left of SCO *still* has a 40 foot pole up their unmentionables.
+
+- Matt G.
+------- Original Message -------
+On Saturday, October 29th, 2022 at 10:41 AM, Rich Salz <rich.salz at gmail.com> wrote:
+
+> Sorry if this is a repost. No idea of the legality, and therefore no idea how long it will stay: https://twitter.com/nixcraft/status/1586276475614818305 is the tweet and https://github.com/Arquivotheca/SunOS-4.1.3 is the repository with this README, below. Many other OS's there too.
+>
+> [README](https://github.com/Arquivotheca/SunOS-4.1.3#readme)
+>
+> This is the SunOS 4.1.3 SUNSRC CD-ROM.  It contains the source in 3 forms.
+>
+> 1. plain text source, as a ufs tree, rooted at the top level of
+>    this filesystem.  Symlinks to the SCCS hierarchy are in place.
+>
+> 2. SCCS hierarchy, rooted at SCCS_DIRECTORIES.
+>
+> 3. a tar image of the SCCS hierarchy, in a file named 4.1.3_SUNSRC.tar.
+>    This is rooted at ./SCCS_DIRECTORIES.
+>
+> Please see the SunOS 4.1.3 Source Installation Guide for further details.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221029/8e4031dc/attachment.htm>
+
+From tuhs at tuhs.org  Sun Oct 30 05:54:02 2022
+From: tuhs at tuhs.org (Grant Taylor via TUHS)
+Date: Sat, 29 Oct 2022 13:54:02 -0600
+Subject: [TUHS] SunOS4.1.3, etc., on GitHub
+In-Reply-To: <SKcg7oMG8Pxj07emjA63Rq7VJXcfRwudajD692Rh98GzV2Qj5QRwQLAdIWYVGrvZLojMBYuZDc_a_FUwn22IV0iQCDDDTLYp32xxSO1wV4w=@protonmail.com>
+References: <CAFH29tocJZ9tX9opbBhmGRpRFogz1hazzEc+qDp1-s8ECPw8Gw@mail.gmail.com>
+ <SKcg7oMG8Pxj07emjA63Rq7VJXcfRwudajD692Rh98GzV2Qj5QRwQLAdIWYVGrvZLojMBYuZDc_a_FUwn22IV0iQCDDDTLYp32xxSO1wV4w=@protonmail.com>
+Message-ID: <34879faa-53a1-fbc0-9845-2e149582a042@spamtrap.tnetconsulting.net>
+
+On 10/29/22 1:38 PM, segaloco via TUHS wrote:
+> Funny enough the only repo I clicked on that didn't work (didn't try 
+> all...) was the Unixware 7 because of course of all actors, whatever 
+> excrement is left of SCO *still* has a 40 foot pole up their unmentionables.
+
+I checked many, if not most, of the repos and UnixWare 7 is the only one 
+that I saw a DMCA take-down notice about.
+
+
+
+-- 
+Grant. . . .
+unix || die
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 4017 bytes
+Desc: S/MIME Cryptographic Signature
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221029/46138d35/attachment.p7s>
+
+From imp at bsdimp.com  Sun Oct 30 06:37:28 2022
+From: imp at bsdimp.com (Warner Losh)
+Date: Sat, 29 Oct 2022 14:37:28 -0600
+Subject: [TUHS] SunOS4.1.3, etc., on GitHub
+In-Reply-To: <CAFH29tocJZ9tX9opbBhmGRpRFogz1hazzEc+qDp1-s8ECPw8Gw@mail.gmail.com>
+References: <CAFH29tocJZ9tX9opbBhmGRpRFogz1hazzEc+qDp1-s8ECPw8Gw@mail.gmail.com>
+Message-ID: <CANCZdfq194XcV4+XTvtgLFLSxXixMS8KBm1UhDfCjxUg9jSiEQ@mail.gmail.com>
+
+On Sat, Oct 29, 2022 at 11:43 AM Rich Salz <rich.salz at gmail.com> wrote:
+
+> 3. a tar image of the SCCS hierarchy, in a file named 4.1.3_SUNSRC.tar.
+>    This is rooted at ./SCCS_DIRECTORIES.
+>
+> Sadly, this doesn't appear to be the case. There's no SCCS files that I
+can find. Am I blind?
+
+Warner
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221029/45679af5/attachment.htm>
+
+From rich.salz at gmail.com  Sun Oct 30 06:55:54 2022
+From: rich.salz at gmail.com (Rich Salz)
+Date: Sat, 29 Oct 2022 16:55:54 -0400
+Subject: [TUHS] SunOS4.1.3, etc., on GitHub
+In-Reply-To: <CANCZdfq194XcV4+XTvtgLFLSxXixMS8KBm1UhDfCjxUg9jSiEQ@mail.gmail.com>
+References: <CAFH29tocJZ9tX9opbBhmGRpRFogz1hazzEc+qDp1-s8ECPw8Gw@mail.gmail.com>
+ <CANCZdfq194XcV4+XTvtgLFLSxXixMS8KBm1UhDfCjxUg9jSiEQ@mail.gmail.com>
+Message-ID: <CAFH29tpTGfMGVo0F=O6JWiLp0VGRY3frTumJ0Tiso1aPUKa-=A@mail.gmail.com>
+
+> Sadly, this doesn't appear to be the case. There's no SCCS files that I
+> can find. Am I blind?
+>
+
+I didn't look or verify anything.  Larry also said no SCCS, so you're
+probably right.  Maybe contact the author.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221029/dd976906/attachment.htm>
+
+From imp at bsdimp.com  Sun Oct 30 07:40:23 2022
+From: imp at bsdimp.com (Warner Losh)
+Date: Sat, 29 Oct 2022 15:40:23 -0600
+Subject: [TUHS] SunOS4.1.3, etc., on GitHub
+In-Reply-To: <CAFH29tpTGfMGVo0F=O6JWiLp0VGRY3frTumJ0Tiso1aPUKa-=A@mail.gmail.com>
+References: <CAFH29tocJZ9tX9opbBhmGRpRFogz1hazzEc+qDp1-s8ECPw8Gw@mail.gmail.com>
+ <CANCZdfq194XcV4+XTvtgLFLSxXixMS8KBm1UhDfCjxUg9jSiEQ@mail.gmail.com>
+ <CAFH29tpTGfMGVo0F=O6JWiLp0VGRY3frTumJ0Tiso1aPUKa-=A@mail.gmail.com>
+Message-ID: <CANCZdfrEXWL7XPwBmY7v-bpP0ee455ZcP=6Pmjs3JJ3kJ_Rw7A@mail.gmail.com>
+
+On Sat, Oct 29, 2022, 2:56 PM Rich Salz <rich.salz at gmail.com> wrote:
+
+>
+> Sadly, this doesn't appear to be the case. There's no SCCS files that I
+>> can find. Am I blind?
+>>
+>
+> I didn't look or verify anything.  Larry also said no SCCS, so you're
+> probably right.  Maybe contact the author.
+>
+
+I've seen this same collections in various places on the internet in the
+past, so while disappointing, it doesn't surprise me.
+
+Warner
+
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221029/345f063e/attachment.htm>
+
+From dave at horsfall.org  Sun Oct 30 07:46:36 2022
+From: dave at horsfall.org (Dave Horsfall)
+Date: Sun, 30 Oct 2022 08:46:36 +1100 (EST)
+Subject: [TUHS] SunOS4.1.3, etc., on GitHub
+In-Reply-To: <CANCZdfrEXWL7XPwBmY7v-bpP0ee455ZcP=6Pmjs3JJ3kJ_Rw7A@mail.gmail.com>
+References: <CAFH29tocJZ9tX9opbBhmGRpRFogz1hazzEc+qDp1-s8ECPw8Gw@mail.gmail.com>
+ <CANCZdfq194XcV4+XTvtgLFLSxXixMS8KBm1UhDfCjxUg9jSiEQ@mail.gmail.com>
+ <CAFH29tpTGfMGVo0F=O6JWiLp0VGRY3frTumJ0Tiso1aPUKa-=A@mail.gmail.com>
+ <CANCZdfrEXWL7XPwBmY7v-bpP0ee455ZcP=6Pmjs3JJ3kJ_Rw7A@mail.gmail.com>
+Message-ID: <alpine.BSF.2.21.9999.2210300844490.14657@aneurin.horsfall.org>
+
+On Sat, 29 Oct 2022, Warner Losh wrote:
+
+> I've seen this same collections in various places on the internet in the 
+> past, so while disappointing, it doesn't surprise me. 
+
+Are DMCA takedown orders allowed to be announced by the recipients?
+
+-- Dave
+
+From rich.salz at gmail.com  Sun Oct 30 10:12:24 2022
+From: rich.salz at gmail.com (Rich Salz)
+Date: Sat, 29 Oct 2022 20:12:24 -0400
+Subject: [TUHS] SunOS4.1.3, etc., on GitHub
+In-Reply-To: <alpine.BSF.2.21.9999.2210300844490.14657@aneurin.horsfall.org>
+References: <CAFH29tocJZ9tX9opbBhmGRpRFogz1hazzEc+qDp1-s8ECPw8Gw@mail.gmail.com>
+ <CANCZdfq194XcV4+XTvtgLFLSxXixMS8KBm1UhDfCjxUg9jSiEQ@mail.gmail.com>
+ <CAFH29tpTGfMGVo0F=O6JWiLp0VGRY3frTumJ0Tiso1aPUKa-=A@mail.gmail.com>
+ <CANCZdfrEXWL7XPwBmY7v-bpP0ee455ZcP=6Pmjs3JJ3kJ_Rw7A@mail.gmail.com>
+ <alpine.BSF.2.21.9999.2210300844490.14657@aneurin.horsfall.org>
+Message-ID: <CAFH29tp7f_pSLUrvqeSScZhPA1H2Au7bNNW6-ukzpBiWeK1nVQ@mail.gmail.com>
+
+>
+>
+> Are DMCA takedown orders allowed to be announced by the recipients?
+>
+
+Yes. It's common for providers to say so.
+
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221029/0b421512/attachment.htm>
+
+From mah at mhorton.net  Mon Oct 31 07:40:16 2022
+From: mah at mhorton.net (Mary Ann Horton)
+Date: Sun, 30 Oct 2022 14:40:16 -0700
+Subject: [TUHS] Memoir Marks the 25th Anniversary of First Transgender
+ Employment Policy
+Message-ID: <6b5c36ea-aa7c-e623-2648-ad6d54c4fed0@mhorton.net>
+
+This may be a bit off-topic, so please forgive me. Lucent is central to 
+the book. I want to let you know I had a memoir published today, on the 
+25th anniversary of Lucent's historic policy. Here's the main part of 
+the press release.
+
+> Before 1997, transgender workers were routinely fired when their 
+> employers found out they were changing their sex. That changed on Oct. 
+> 28, 1997, when Lucent Technologies became the first Fortune 500 
+> company to formally commit that it would not discriminate based on 
+> "gender identity, characteristics, or expression". Dr. Mary Ann 
+> Horton, who instigated the change, has written a memoir, Trailblazer: 
+> Lighting the Path for Transgender Inclusion in Corporate America. 
+> "When I led transgender-101 workshops, my personal story was people's 
+> favorite part. They wanted more, and Trailblazer is the result," said 
+> Horton. "It will be released on the 25th anniversary, Oct. 28."
+>
+> Horton was a software technology worker at Lucent in Columbus, Ohio, 
+> when Lucent added the language. It allowed Mary Ann, then known as 
+> Mark, to come out in the workplace without fear of reprisal. When she 
+> didn't need to spend energy hiding part of herself, her productivity 
+> soared, and she was promoted. Three years later, she persuaded Lucent 
+> to cover gender-confirming medical care in their health insurance. She 
+> blazed the trail for Apple, Avaya, Xerox, IBM, Chase, and other 
+> companies to follow.
+Nokia blogged about it today.
+
+https://www.nokia.com/about-us/careers/life-at-nokia/employee-blogs/25th-anniversary-of-transgender-inclusive-language/
+
+You can find the book at 
+https://www.amazon.com/Trailblazer-Lighting-Transgender-Equality-Corporate-ebook/dp/B0B8F2BR9B
+
+If you read it, please post a review to Amazon.
+
+-- 
+Thanks,
+
+/Mary Ann Horton/ (she/her/ma'am)
+maryannhorton.com <https://maryannhorton.com>
+
+"This is a great book" - Monica Helms
+
+"Brave and Important" - Laura L. Engel
+
+       Available on Amazon and bn.com!
+
+	<https://www.amazon.com/Trailblazer-Lighting-Transgender-Equality-Corporate-ebook/dp/B0B8F2BR9B>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221030/76e29502/attachment.htm>
+
+From athornton at gmail.com  Mon Oct 31 07:58:14 2022
+From: athornton at gmail.com (Adam Thornton)
+Date: Sun, 30 Oct 2022 14:58:14 -0700
+Subject: [TUHS] Memoir Marks the 25th Anniversary of First Transgender
+ Employment Policy
+In-Reply-To: <6b5c36ea-aa7c-e623-2648-ad6d54c4fed0@mhorton.net>
+References: <6b5c36ea-aa7c-e623-2648-ad6d54c4fed0@mhorton.net>
+Message-ID: <CAP2nic1tWeFXr6uWX01oNhQimj5XXVu_xs-ozgfxijnMjNwowQ@mail.gmail.com>
+
+Thank you!  I've forwarded the link to my ex, who is also trans and also a
+Horton.  They will get a kick out of it, I hope.
+
+Adam
+
+On Sun, Oct 30, 2022 at 2:42 PM Mary Ann Horton <mah at mhorton.net> wrote:
+
+> This may be a bit off-topic, so please forgive me. Lucent is central to
+> the book. I want to let you know I had a memoir published today, on the
+> 25th anniversary of Lucent's historic policy. Here's the main part of the
+> press release.
+>
+> Before 1997, transgender workers were routinely fired when their employers
+> found out they were changing their sex. That changed on Oct. 28, 1997, when
+> Lucent Technologies became the first Fortune 500 company to formally commit
+> that it would not discriminate based on "gender identity, characteristics,
+> or expression". Dr. Mary Ann Horton, who instigated the change, has written
+> a memoir, Trailblazer: Lighting the Path for Transgender Inclusion in
+> Corporate America. "When I led transgender-101 workshops, my personal story
+> was people's favorite part. They wanted more, and Trailblazer is the
+> result," said Horton. "It will be released on the 25th anniversary, Oct.
+> 28."
+>
+> Horton was a software technology worker at Lucent in Columbus, Ohio, when
+> Lucent added the language. It allowed Mary Ann, then known as Mark, to come
+> out in the workplace without fear of reprisal. When she didn't need to
+> spend energy hiding part of herself, her productivity soared, and she was
+> promoted. Three years later, she persuaded Lucent to cover
+> gender-confirming medical care in their health insurance. She blazed the
+> trail for Apple, Avaya, Xerox, IBM, Chase, and other companies to follow.
+>
+> Nokia blogged about it today.
+>
+>
+> https://www.nokia.com/about-us/careers/life-at-nokia/employee-blogs/25th-anniversary-of-transgender-inclusive-language/
+>
+> You can find the book at
+> https://www.amazon.com/Trailblazer-Lighting-Transgender-Equality-Corporate-ebook/dp/B0B8F2BR9B
+> If you read it, please post a review to Amazon.
+>
+> --
+> Thanks,
+>
+>       *Mary Ann Horton* (she/her/ma'am)
+>       maryannhorton.com
+>
+> "This is a great book" - Monica Helms
+>
+> "Brave and Important" - Laura L. Engel
+>
+>       Available on Amazon and bn.com!
+>
+> <https://www.amazon.com/Trailblazer-Lighting-Transgender-Equality-Corporate-ebook/dp/B0B8F2BR9B>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://minnie.tuhs.org/pipermail/tuhs/attachments/20221030/b159a64c/attachment.htm>
+
