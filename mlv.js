@@ -540,6 +540,8 @@ function hotkeys() {
                 e2.classList.add('mailbody--v')
                 localStorage.setItem('v', 1)
             }
+            // ensure always show mailbody
+            document.getElementsByTagName('html')[0].setAttribute('style', '')
             break
         }
 
@@ -648,6 +650,17 @@ function hotkeys() {
             break
         }
 
+        case 'x': {
+            e = document.getElementsByTagName('html')[0]
+            let s = e.getAttribute('style')
+            if (s) {
+                e.setAttribute('style', '')
+            } else {
+                e.setAttribute('style', '--msgtree-height: 100%; --msgtree-width: 100%;')
+            }
+            break
+        }
+
         case 'Backspace':
         case 'o':
         case 'u': {
@@ -697,7 +710,7 @@ function main() {
         parse(text)
         render()
         if (gMsgIdsRendered.length) {
-            showMsg(gMsgIdsRendered[0])
+            showMsg(gMsgIdsRendered[gMsgIdsRendered.length-1])
         }
         hotkeys()
         check()
