@@ -447,6 +447,10 @@ function check() {
 
 function hotkeys() {
     document.addEventListener('keydown', (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey) {
+            return
+        }
+
         const {key, keyCode} = e
         switch(key) {
         case 'j': {
