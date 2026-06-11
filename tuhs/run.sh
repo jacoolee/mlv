@@ -71,7 +71,7 @@ echo "${mlfile_latest}" > mlfile_latest.txt
 # generate index.html, always overwrite
 index_file=index.html
 
-echo '<html style="white-space: nowrap;"><style>.y {border-bottom: solid 1px gray; width: 750px; } a {text-decoration: unset;}</style><body>' > "${index_file}"
+echo '<html style="white-space: nowrap; font-family: menlo; font-size: 13;"><style>.y {width: 755px; } a {text-decoration: unset;}</style><body>' > "${index_file}"
 
 # all.txt
 mlfileall=all.txt

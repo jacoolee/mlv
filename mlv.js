@@ -1,4 +1,5 @@
 const MSG_SEPARATOR_REGEXP = /^From [^ ]*( at [^ ]*)? *[A-z]{3} [A-z]{3} [ 0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [0-9]{4}/
+const MSGTREE_ITEM_HEIGHT = 17 /* 17: total height of a msgtree-item, keep same as that in css */
 const UNAME_LEN = 14
 
 let gTime = Date.now()
@@ -13,6 +14,17 @@ let gMsgIdsRendered = [ /* msgId, ... */ ]
 let gMsgIdsLevel0 = [ /* msgId, ... */ ]
 let gCurHiParentMsgId = null
 let gCurHiMsgId = null
+
+function fls(text, length, paddingChar=' ', paddingAtHead=false) {    // fixed length string
+    if (text.length > length) return text.substring(0,length)
+    if (text.length === length) return text
+    const padding = paddingChar.repeat(length-text.length)
+    if (paddingAtHead) {
+        return padding + text
+    } else {
+        return text + padding
+    }
+}
 
 function loadTextFile(filePath, onLoaded=(text)=>{}) {
     fetch(filePath).then((response) => {
@@ -226,7 +238,7 @@ function showMsg(msgId) {
     // set new
     e = document.getElementById(msgId)
     e.classList.add('hi--cur')
-    if (!isVisibleInContainer(e, document.getElementById('mailhead'))) {
+    if (!isVisibleInContainer(e, document.getElementById('msgtree'))) {
         e.scrollIntoView()
     }
     gCurHiMsgId = msgId
@@ -257,7 +269,7 @@ function renderMsgTreeItem(msgId, level=0, isLastSibling=false, siblingBarIdxs=[
         return
     }
 
-    const {from, fromShort, subject, date, day, mon, year, dateShort, beginLidx, bodyEndLidx} = block
+    const {from, fromShort, subject, inReplyTo, inReplyToMailAddress, date, day, mon, year, dateShort, beginLidx, bodyEndLidx} = block
     block.level = level
     if (level === 0) {
         block.level0Idx = gMsgIdsLevel0.length-1
@@ -329,35 +341,19 @@ function renderMsgTreeItem(msgId, level=0, isLastSibling=false, siblingBarIdxs=[
         }
     }
 
-    const span1Text = s + '► '
+    const poster = fls(fromShort||from||'', UNAME_LEN)
+    const _year = fls(year? (Number(year) < 2026? year: ''): '', 4, ' ', true)
+    const time = `${_year} ${mon||''} ${day||''}`
 
-    let poster = (fromShort||from||'').substring(0, UNAME_LEN)
-    if (poster.length < UNAME_LEN) {
-        poster += ' '.repeat(UNAME_LEN-poster.length)
-    }
-    let _year = year? (Number(year) < 2026? year: ''): ''
-    if (_year.length < 4) {
-        _year = ' '.repeat(4-_year.length)
-    }
-    let time = `${_year} ${mon||''} ${day||''}`
+    const parentMsgId = inReplyToMailAddress || inReplyTo || '<None>'
+    const parentBlock = gMsgMap[parentMsgId]
+    const _subject = parentBlock? (parentBlock.subject == subject? '...': subject): subject
 
-    span1.innerText = `${marker||' '}  ${time}  ${poster}  ${span1Text}`
-    span1.setAttribute('class', 'msgtree-item--left')
-    div.appendChild(span1)
+    s = `${marker||' '} ${time}  ${poster}  ${s}► ${_subject}`
 
-    let span2 = document.createElement('span')
-    // const span2Text = `${fromShort||from}: ${subject} <${date}> ${msgId} <${beginLidx+1},${bodyEndLidx+1} ${currMsgIdxRendered+1}/${gMsgIds.length}>`
-
-    const span2Text = `${subject}  -  ${currMsgIdxRendered+1}/${gMsgIds.length}`
-
-    span2.innerText = span2Text
-    span2.setAttribute('class', 'msgtree-item--right')
-    div.appendChild(span2)
-
-    // console.log(span1Text+span2Text)
-
+    div.innerText = fls(s, 100)+ `  ${currMsgIdxRendered+1}/${gMsgIds.length}`
     div.onclick = function() { showMsg(msgId) }
-    document.getElementById('mailhead').appendChild(div)
+    document.getElementById('msgtree').appendChild(div)
 }
 
 function renderMsgBody(msgId) {
@@ -512,11 +508,11 @@ function hotkeys() {
             break
         }
 
-        case 'c': {
-            e = document.getElementById('c')
+        case 'r': {
+            e = document.getElementById('mailbody-header-raw')
             let s = e.getAttribute('style')
             if (s && s.includes('block')) {
-                e.setAttribute('style', '')
+                e.setAttribute('style', 'display: none;')
             } else {
                 e.setAttribute('style', 'display: block;')
             }
@@ -524,25 +520,19 @@ function hotkeys() {
         }
 
         case 'm': {
-            e = document.getElementById('m')
-            let s = e.getAttribute('style')
-            if (s && s.includes('block')) {
-                e.setAttribute('style', '')
-            } else {
-                e.setAttribute('style', 'display: block;')
-            }
+            document.getElementById('m').click()
             break
         }
 
         case '=': {
-            e = document.getElementById('mailhead')
+            e = document.getElementById('msgtree')
             let e2 = document.getElementById('mailbody')
-            if (e.classList.contains('mailhead--v')) {
-                e.classList.remove('mailhead--v')
+            if (e.classList.contains('msgtree--v')) {
+                e.classList.remove('msgtree--v')
                 e2.classList.remove('mailbody--v')
                 localStorage.setItem('v', 0)
             } else {
-                e.classList.add('mailhead--v')
+                e.classList.add('msgtree--v')
                 e2.classList.add('mailbody--v')
                 localStorage.setItem('v', 1)
             }
@@ -574,7 +564,7 @@ function hotkeys() {
         }
 
         case 'b': {
-            e = document.getElementById('mailhead')
+            e = document.getElementById('msgtree')
             e.scrollBy({
                 top: -(e.clientHeight-20),
                 behavior: 'smooth'
@@ -582,8 +572,21 @@ function hotkeys() {
             break
         }
 
+        case 'c': {
+            const x = document.getElementsByTagName('html')[0].classList
+            if (x.contains('light')) {
+                x.remove('light')
+                x.add('dark')
+            } else {
+                x.remove('dark')
+                x.add('light')
+            }
+            break
+        }
+
+        case 'Enter':
         case 'v': {
-            e = document.getElementById('mailhead')
+            e = document.getElementById('msgtree')
             e.scrollBy({
                 top: (e.clientHeight-20),
                 behavior: 'smooth'
@@ -594,7 +597,7 @@ function hotkeys() {
         case ',': {
             e = document.getElementById(gCurHiMsgId)
             e.scrollIntoView()
-            e = document.getElementById('mailhead')
+            e = document.getElementById('msgtree')
             e.scrollBy({
                 top: -e.clientHeight/2,
                 behavior: 'smooth', // or 'auto'
@@ -602,11 +605,23 @@ function hotkeys() {
             break
         }
 
-        case '.': {
-            e = document.getElementById('mailhead')
+        case '.': {      // view message located at top of thread view
+            e = document.getElementById('msgtree')
             let h = e.scrollTop - 10 /*first child's margin top*/
             if (h < 0) h = 0
-            let idx = Math.ceil(h / 21) /* 21: total height of a msgtree-item */
+            let idx = Math.ceil(h / MSGTREE_ITEM_HEIGHT)
+            if (idx > gMsgIdsRendered.length-1) {
+                idx = gMsgIdsRendered.length-1
+            }
+            showMsg(gMsgIdsRendered[idx])
+            break
+        }
+
+        case ';': {   // view message located at center of thread view
+            e = document.getElementById('msgtree')
+            let h = e.scrollTop + e.clientHeight/2
+            if (h < 0) h = 0
+            let idx = Math.ceil(h / MSGTREE_ITEM_HEIGHT)
             if (idx > gMsgIdsRendered.length-1) {
                 idx = gMsgIdsRendered.length-1
             }
@@ -624,9 +639,14 @@ function hotkeys() {
             break
         }
 
-        case 'u':
-        case 'i':
-        case 'o': {
+        case 'i': {
+            document.getElementById('i').click()
+            break
+        }
+
+        case 'Backspace':
+        case 'o':
+        case 'u': {
             e = document.getElementById('mailbody')
             e.focus()
             e.scrollBy({
@@ -636,86 +656,12 @@ function hotkeys() {
             break
         }
 
+        default: {
+            console.debug('mlv: unsupported key:', key, keyCode)
+            break
+        }
         }
     })
-}
-
-function _configure(eid, persist=false) {
-    let ls_id = 'show--'+eid     // localStorage id
-    let show_id = 'c-show--'+eid
-    let hide_id = 'c-hide--'+eid
-
-    const e = document.getElementById(eid)
-
-    document.getElementById(show_id).onclick=function(_) {
-        e.setAttribute('style', 'display: block;')
-        persist && localStorage.setItem(ls_id, 1)
-    }
-    document.getElementById(hide_id).onclick=function(_) {
-        e.setAttribute('style', 'display: none;')
-        persist && localStorage.setItem(ls_id, 0)
-    }
-
-    // init
-    if (persist) {
-        if (localStorage.getItem(ls_id) === '0') {
-            e.setAttribute('style', 'display: none;')
-        } else {
-            e.setAttribute('style', 'display: block;')
-        }
-    }
-}
-
-function configure() {
-    _configure('c')
-    _configure('m')
-    _configure('mailbody-header-raw', true)
-}
-
-function manual() {
-    const e = document.getElementById('m')
-    e.innerText = `NAME
-    mlv - maillist viewer
-
-USAGE
-    ./mlv.html?{MAIL_LIST_FILE}
-    If using with local maillist file, ensure web browser's local file access ability is enabled.
-
-EXAMPLE
-    ./mlv.html?./tuhs/2026.txt
-
-HOTKEYS
-    j - view next message
-    k - view previous message
-    h - view next sibling message
-    l - view previous sibling message
-    p - view parent message
-    n - view child message
-    0 - view first message
-    9 - view last message
-    1-8 - view message at 1..8/10 percent of all messages
-
-    b - scroll backward threads view one page
-    v - scroll forward threads view one page
-    , - center current message in threads view
-    . - focus and view first visualable message in threads view
-
-    Space - scroll forward message body view one page
-    i/o/u - scroll backward message body view one page
-
-    = - toggle thread view and mailbody view vertical or horizontal
-    c - toggle configure dialog
-    m - toggle manual dialog
-
-DIAGNOSE
-    Check out ./tuhs/NOTE.txt
-
-MARKER
-    < - is a reply, but parent message is not in thread
-    * - is the first message in thread (star[t])
-    $ - (Same) messageId occurs before
-    ↳ - sub reply
-`
 }
 
 function preinit() {
@@ -729,10 +675,10 @@ function preinit() {
 function init() {
     const v = localStorage.getItem('v')
     if (!v) return
-    let e = document.getElementById('mailhead')
+    let e = document.getElementById('msgtree')
     let e2 = document.getElementById('mailbody')
     if (v==='1') {
-        e.classList.add('mailhead--v')
+        e.classList.add('msgtree--v')
         e2.classList.add('mailbody--v')
     }
 }
@@ -750,11 +696,8 @@ function main() {
             showMsg(gMsgIdsRendered[0])
         }
         hotkeys()
-        configure()
-        manual()
         check()
     })
 }
 
-// ################################################################
 main()

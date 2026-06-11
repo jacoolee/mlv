@@ -1,6 +1,6 @@
 :root {
-    --mailhead-height: 50%;
-    --mailhead-width: 50%;
+    --msgtree-height: 50%;
+    --msgtree-width: 50%;
 }
 
 html {
@@ -34,47 +34,47 @@ body {
     overflow: hidden;
 }
 
-#mailhead {
+#msgtree {
     position: fixed;
     top: 0;
     left: 0;
 
     width: 100%;
-    height: var(--mailhead-height);
+    height: var(--msgtree-height);
 
     border-bottom: solid 1px gray;
     overflow: auto;
 }
 
-.dark #mailhead {
+.dark #msgtree {
     border-bottom: solid 1px #333;
 }
 
-#mailhead.mailhead--v {
+#msgtree.msgtree--v {
     position: fixed;
     top: 0;
     left: 0;
 
-    width: var(--mailhead-width);
+    width: var(--msgtree-width);
     height: 100%;
 
     border-right: solid 1px gray;
     overflow: auto;
 }
 
-.dark #mailhead.mailhead--v {
+.dark #msgtree.msgtree--v {
     border-right: solid 1px #666;
 }
 
 #mailbody {
     position: fixed;
-    top: calc(var(--mailhead-height) + 1px);
+    top: calc(var(--msgtree-height) + 1px);
     left: 0;
 
     padding: 0 10px 10px 10px;
 
     width: calc(100% - 2*10px);
-    height: calc(100% - var(--mailhead-height) - 1px - 10px);
+    height: calc(100% - var(--msgtree-height) - 1px - 10px);
 
     overflow: auto;
 }
@@ -82,11 +82,11 @@ body {
 #mailbody.mailbody--v {
     position: fixed;
     top: 0;
-    left: var(--mailhead-width);
+    left: var(--msgtree-width);
 
     padding: 0 10px 10px 10px;
 
-    width: calc(100% - var(--mailhead-width));
+    width: calc(100% - var(--msgtree-width));
     height: 100%;
 
     overflow: auto;
@@ -106,17 +106,12 @@ body {
 
 .msgtree-item {
     cursor: default;
-
     padding: 0px 10px;
-
     width: 100%;
-    /* height: 18px;               /\*total height: 18 + 2*1 + 1 = 21*\/ */
-    /* line-height: 18px; */
-
+    height: 17px;
+    line-height: 17px;
     word-break: break-all;
     white-space: pre;
-
-    /* border-bottom: solid 1px #e0e0e0; */
 }
 
 .msgtree-item:hover {
@@ -127,34 +122,12 @@ body {
     background-color: #222;
 }
 
-.msgtree-item--left {
-    white-space: pre;
-    // font-family: "courier";
-}
-
 #mailbody-header-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: flex-start;
-
-    margin-bottom: 10px;
-
     width: 100%;
-
-    border-bottom: solid 1px lightgray;
-}
-
-.dark #mailbody-header-container {
-    border-bottom: solid 1px #505050;
 }
 
 #mailbody-header {
-    width: 50%;
-    overflow: auto;
-
     padding-top: 10px;
-    padding-right: 10px;
     padding-bottom: 10px;
 
     font-weight: bold;
@@ -162,66 +135,14 @@ body {
 }
 
 #mailbody-header-raw {
-    width: 50%;
-    overflow: auto;
+    display: none;              /* inited */
 
-    padding-top: 10px;
-    padding-left: 10px;
     padding-bottom: 10px;
-
     white-space: pre-wrap;
 }
 
 #mailbody-body--content {
     white-space: pre-wrap;
-}
-
-#c {
-    display: none;              /* inited */
-
-    cursor: default;
-
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    padding: 10px;
-
-    background-color: #f0f0f0;
-    border: solid 2px gray;
-
-    z-index: 99;
-}
-
-.dark #c {
-    background-color: #111;
-    border-color: darkgray;
-}
-
-.c-button {
-    text-decoration: underline;
-}
-
-#m {
-    display: none;              /* inited */
-
-    cursor: default;
-
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    padding: 10px;
-
-    background-color: #f0f0f0;
-    border: solid 2px gray;
-
-    white-space: pre;
-
-    z-index: 98;
-}
-
-.dark #m {
-    background-color: #111;
-    border-color: darkgray;
 }
 
 .hi--parent:hover,
