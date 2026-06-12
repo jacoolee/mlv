@@ -6,7 +6,7 @@ let gTime = Date.now()
 let gLines = [ /* line, ... */ ]
 let gMsgIds = [ /* MessageId, ... */ ] // ordered by time
 let gMsgMap = { /* MessageId: block */ }
-let gMsgSameMap = { /*MessageId: [ lidx, ... ]*/ }
+let gMsgSameIdMap = { /*MessageId: [ lidx, ... ]*/ }
 let gReplyMap = { /* msgId: [msgId, ...] */ }
 let gIsReplyMap = { /* msgId: true/false */} // msgId is a reply or not
 let gRenderedMap = { /* msgId: true/false */} // whether rendered or not
@@ -164,12 +164,12 @@ function parse(text='') {
             console.debug('mlv: Message-ID same occurs', block.beginLidx, gLines[block.beginLidx])
             const id = block.messageId
 
-            if (!(id in gMsgSameMap)) {
-                gMsgSameMap[id] = [gMsgMap[id].beginLidx]
+            if (!(id in gMsgSameIdMap)) {
+                gMsgSameIdMap[id] = [gMsgMap[id].beginLidx]
             }
-            gMsgSameMap[id].push(block.beginLidx)
+            gMsgSameIdMap[id].push(block.beginLidx)
 
-            const mmid = block.messageId + '$' + (gMsgSameMap[id][gMsgSameMap[id].length-1]+1)
+            const mmid = block.messageId + '$' + (gMsgSameIdMap[id][gMsgSameIdMap[id].length-1]+1)
             block.messageIdModified = mmid
         }
 
@@ -415,9 +415,9 @@ function render() {
         _renderReplyRecursively(i, 0, siblingBarIdxs)
 
         // render messages with same message-id
-        if (i in gMsgSameMap) {
-            for (var j=1; j<gMsgSameMap[i].length; j++) {
-                const mmid = i + '$' + String(gMsgSameMap[i][j]+1)
+        if (i in gMsgSameIdMap) {
+            for (var j=1; j<gMsgSameIdMap[i].length; j++) {
+                const mmid = i + '$' + String(gMsgSameIdMap[i][j]+1)
                 if (!gRenderedMap[mmid]) {
                     renderMsgTreeItem(mmid, 0, false, siblingBarIdxs, '$')
                 }
@@ -427,9 +427,9 @@ function render() {
 }
 
 function check() {
-    const gMsgSameMapKeysCount = Object.keys(gMsgSameMap).length
-    const gMsgSameMapValuesCount = Object.keys(gMsgSameMap).reduce((res, k, idx) => {
-        res += gMsgSameMap[k].length
+    const gMsgSameIdMapKeysCount = Object.keys(gMsgSameIdMap).length
+    const gMsgSameIdMapValuesCount = Object.keys(gMsgSameIdMap).reduce((res, k, idx) => {
+        res += gMsgSameIdMap[k].length
         return res
     }, 0)
     console.log(
@@ -438,9 +438,9 @@ function check() {
         '\ngMsgIdsRendered:', gMsgIdsRendered.length,
         '\ngRenderedMap keys count:', Object.keys(gRenderedMap).length,
         '\ngMsgMap keys count:', Object.keys(gMsgMap).length,
-        '\ngMsgSameMap keys count:', gMsgSameMapKeysCount,
-        '\ngMsgSameMap values count:', gMsgSameMapValuesCount,
-        '\nDuplicated message count:', gMsgSameMapValuesCount - gMsgSameMapKeysCount,
+        '\ngMsgSameIdMap keys count:', gMsgSameIdMapKeysCount,
+        '\ngMsgSameIdMap values count:', gMsgSameIdMapValuesCount,
+        '\nSame Message-ID message count:', gMsgSameIdMapValuesCount - gMsgSameIdMapKeysCount,
         '\nNot rendered:', gMsgIds.length - gMsgIdsRendered.length,
     )
 }
