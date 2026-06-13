@@ -120,5 +120,6 @@ if [ ${ENV_RUN_DRY:-0} -eq 1 ]; then
     :
 else
     git add .
-    store
+    git commit -am "auto stored by run.sh"
+    git push
 fi
