@@ -1003,3 +1003,374 @@ somebody who wants, identically, what System V is from AT&T and none of
 the value added that Digital provides on top of it, we'll make that
 available, if it's approved, to those customers."
 
+From tuhs at tuhs.org  Fri Jun 12 08:29:38 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Thu, 11 Jun 2026 18:29:38 -0400
+Subject: [TUHS] VAX System V
+In-Reply-To: <CAK7dMtAz18DoEt0RJiaRkoaO04KzC65eu=t4=30hp+JBdyQhxA@mail.gmail.com>
+References: <CAK7dMtAz18DoEt0RJiaRkoaO04KzC65eu=t4=30hp+JBdyQhxA@mail.gmail.com>
+Message-ID: <CAC20D2Mn7KiaBU6nagsVourRuoGW0FETuoHB6ndUxMuBOJ7WGw@mail.gmail.com>
+
+Note that I was the project leader for the last few Ultrix releases, as
+well as the architect of TruCluster FS and part of Tru64. [In fact, I had lunch
+yesterday with our old VP from those days].
+
+First, be careful.  The System V Vax systems were different from either
+Ultrix or Tru64.  It was done by a DEC team in NJ with a lot of help from
+the Boston Office of Locus Computing Corp [where I was also the sr
+technologist for a few years before my later DEC time].  IIRC, the VAX
+System V 3.2.1 fully supported VM (early VAX releases did not, but by the
+V3 timeframe, the basic V3 kernel assumed VM hardware, and there would have
+been no reason not to use it on the Vax).
+
+That said, compared to any BSD release or Ultrix, by then *the whole system
+was fairly vanilla*, just as it was with SVR3 for the 3B20 (also vanilla).
+ ISTR that, unlike Ultrix, even the development tool suite was AT&T's PCC3
+at that point. So C and Fortran would not have been much to write about.
+ Frankly, DEC's VAX11/C, VAX Fortran (and Pascal) were all much better
+compilers,
+but after the surgery it took to get them to work for Ultrix, I don't think
+DEC was interested in moving them again (I'm having lunch tomorrow with a
+number of the Technical Languages folks, and if any of the DEC  tool chain
+was moved to System V they would know).
+
+I do remember that for VAX System V, there were some contractual extras,
+such as X11.  But the networking stack was stream-based, not socket-based.
+ I don't remember whether either IP/TCP or NFS was part of the contract,
+but they had been; I suspect they would have been Lachman's. System V was
+just too different from Ultrix (which was mostly BSD-like) to make sense.
+
+The DEC System V for Vax product was a pure System V code base with only
+extensions required by ATT.  I'm not even sure anyone but AT&T or the RBOCs
+could order it. It was created to offload ATT’s Summit team (USG) after
+they wanted to concentrate on their own ISA, while still having many Vaxen
+running throughout the Bell System.  This was really similar to the UNIX
+team that started in MK as part of the DEC Telephone Industries group (TIG)
+to support the PDP-11s and Vaxes that DEC's largest customer was buying.
+ The team in MK was moved to the same building (on a different floor) as
+the VMS when Ultrix became a product.  Note that LCC was the primary Ultrix
+support team towards the end, when the Unix folks started to concentrate on
+Alpha and became the Tru64 team, but DEC had a large installed base of Vaxen
+and MIPS systems (for instance, LCC did the MIP 4400 support and all the
+last Vax and MIPS releases).   Certainly, in the TIG timeframe when they
+were in MK, the UNIX folks were a "redheaded stepchild," compared to VMS
+(or TOPS-20 at the time).
+
+So you are correct that *before **Tru64*, TIG and the original Ultrix teams
+were often pushed aside by VMS.   But that really changed when DEC started to
+see the sales numbers and the complete industry switch off of proprietary
+to what was then called the "open systems" marketplace.  Once UNIX was
+driving so much revenue, the UNIX folks (Ultrix) were able to drive the
+business.  In fact, if you know the history of Windows/NT, it was
+originally called "Mica" and was developed by Cutler and team in Seattle.
+The whole idea was to switch to a single microkernel and then have the
+personalities of VMS or Ultrix layered on top, while allowing greater
+commonality across the layered products.   I'll not comment much more than
+to say, as VMS was starting to be marginalized, Cutler was less than
+pleased.  Eventually, he went to Microsoft†.
+
+By that time, the pecking order was Ultrix (later Tru64), VMS, and then the
+Summit folks.    In fact, Alpha ran Ultrix before it ran anything else, and
+all the debugging was done there or later when OSF/1 was stable.  VMS and
+NT4 were implemented on Alpha only after the core Unix ecosystems had
+stabilized [it probably helped that many of the old 36-bit folks had joined
+the Unix team, and there was definite animosity toward how VAX/VMS had shut
+out the 36-bit products].  There was never a reason to run System V on
+it, as AT&T and the RBOC had moved on to the different members of the 3B
+family or to Intel platforms.  I'm not sure when the DEC Summit NY office
+closed, but at some point DEC tossed a bunch of the residual support
+contracts for AT&/RBOC to folks like Lcc.
+
+Clem
+
+
+
+†  I'll add one more historical note, as a risk of diverting this thread a
+little, NT at Microsoft was originally NT OS/2.  Mica/ney NT was designed
+as a microkernel, which is why Culture could quickly switch to a Windows
+personality when Microsoft and IBM divorced.
+
+
+
+
+On Wed, Jun 10, 2026 at 2:43 AM Kevin Bowling via TUHS <tuhs at tuhs.org>
+wrote:
+
+> I got a manual set for Digital VAX System V 3.2.1.  It appears to be a
+> descendent of AT&T's VAX port, but it was thoroughly extended with
+> large system hardware support (including CI bus) and even sundries
+> like X11R4.  Compared to i.e. 3B2 System V which IMHO is pretty bare
+> bones and even a little half baked.  The manuals are actually pretty
+> great.
+>
+> I'm not overly familiar with DEC but perusing history it seemed to be
+> that Ultrix was always playing second fiddle to VMS.  VAX System V
+> seems like a "more serious" UNIX, it targets the large machines:  VAX
+> 11/780, 6000, 8000, 9000.  Only in the 3.2.1 release did a MVII pop
+> in.
+>
+> I don't think I've ever seen anything on this in the wild, the main
+> customer appeared to be AT&T itself and the RBOCs.  Information online
+> is scare.
+>
+> Regards,
+> Kevin
+>
+
+From tuhs at tuhs.org  Fri Jun 12 10:59:22 2026
+From: tuhs at tuhs.org (James Frew via TUHS)
+Date: Thu, 11 Jun 2026 17:59:22 -0700
+Subject: [TUHS] VAX System V
+In-Reply-To: <em94403269-0008-4cff-8cd6-350c874c4e3b@ronnatalie.com>
+References: <CAK7dMtAz18DoEt0RJiaRkoaO04KzC65eu=t4=30hp+JBdyQhxA@mail.gmail.com>
+ <em94403269-0008-4cff-8cd6-350c874c4e3b@ronnatalie.com>
+Message-ID: <8cda4fae-1a3b-486f-9f27-032d54e4ac21@ucsb.edu>
+
+Still have mine, too.
+
+When he held up the plate, some wag (who? someone on this list, 
+perhaps?) shouted, "Hey Armando, where'd you learn how to make those?"
+
+/Frew
+
+On 2026-06-10 3:55 PM, Ron Natalie via TUHS wrote:
+
+>
+> Armando Stetner from DEC ... announced the first UNIX license from DEC.
+> He held up a license plate.   They gave those plates away (still have 
+> mine).
+
+From tuhs at tuhs.org  Fri Jun 12 13:14:10 2026
+From: tuhs at tuhs.org (Greg 'groggy' Lehey via TUHS)
+Date: Fri, 12 Jun 2026 13:14:10 +1000
+Subject: [TUHS] VAX System V
+In-Reply-To: <8cda4fae-1a3b-486f-9f27-032d54e4ac21@ucsb.edu>
+References: <CAK7dMtAz18DoEt0RJiaRkoaO04KzC65eu=t4=30hp+JBdyQhxA@mail.gmail.com>
+ <em94403269-0008-4cff-8cd6-350c874c4e3b@ronnatalie.com>
+ <8cda4fae-1a3b-486f-9f27-032d54e4ac21@ucsb.edu>
+Message-ID: <ait5gsNOxaDcq0YH@hydra.lemis.com>
+
+On Thursday, 11 June 2026 at 17:59:22 -0700, James Frew via TUHS wrote:
+> On 2026-06-10 3:55 PM, Ron Natalie via TUHS wrote:
+>
+>> Armando Stetner from DEC ... announced the first UNIX license from DEC.
+>> He held up a license plate.   They gave those plates away (still have
+>> mine).
+>
+> Still have mine, too.
+
+I picked up mine very late, at the 2001 USENIX ATC.  It's not quite
+kosher: it's full of references to Tru64 and Compaq.  Image is at
+http://www.lemis.com/grog/photos/Onephoto.php?image=/grog/Photos/20260612/UNIX-Live-free-or-die-2.jpeg&size=2
+
+That seems to have been towards the end of the line for Tru64.  Does
+anybody know how long Compaq continued making these “license” plates?
+
+Greg
+--
+Sent from my desktop computer.
+Finger grog at lemis.com for PGP public key.
+See complete headers for address and phone numbers.
+This message is digitally signed.  If your Microsoft mail program
+reports problems, please read http://lemis.com/broken-MUA.php
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 195 bytes
+Desc: not available
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20260612/27344eaa/attachment.sig>
+
+From tuhs at tuhs.org  Fri Jun 12 23:52:52 2026
+From: tuhs at tuhs.org (Ron Natalie via TUHS)
+Date: Fri, 12 Jun 2026 13:52:52 +0000
+Subject: [TUHS] VAX System V
+In-Reply-To: <ait5gsNOxaDcq0YH@hydra.lemis.com>
+References: <CAK7dMtAz18DoEt0RJiaRkoaO04KzC65eu=t4=30hp+JBdyQhxA@mail.gmail.com>
+ <em94403269-0008-4cff-8cd6-350c874c4e3b@ronnatalie.com>
+ <8cda4fae-1a3b-486f-9f27-032d54e4ac21@ucsb.edu>
+ <ait5gsNOxaDcq0YH@hydra.lemis.com>
+Message-ID: <em68f9bd77-575a-47f5-9062-dddaf1d477ea@ronnatalie.com>
+
+To my knowledge, there were only two issues of licenses.   The original 
+Armando ones that say UNIX with Live Free or Die and Unix is a 
+Trademark,
+and the later ULTRIX ones (I have them both).   If there were others, I 
+somehow missed them.
+
+Armando related a story that he had the actual NH UNIX vanity plate on 
+the rear of his car and a DEC one on the front (complete with the 
+license expiration tabs).
+The front one went missing for a while, and when he inquired, many 
+people wrote to him saying they hadn’t seen it in various parts of the 
+country remote from NH.
+I think he eventually got it back.     Isn’t Armando kicking around 
+here?
+
+
+From tuhs at tuhs.org  Sat Jun 13 00:16:33 2026
+From: tuhs at tuhs.org (Tom Lyon via TUHS)
+Date: Fri, 12 Jun 2026 07:16:33 -0700
+Subject: [TUHS] VAX System V
+In-Reply-To: <em68f9bd77-575a-47f5-9062-dddaf1d477ea@ronnatalie.com>
+References: <CAK7dMtAz18DoEt0RJiaRkoaO04KzC65eu=t4=30hp+JBdyQhxA@mail.gmail.com>
+ <em94403269-0008-4cff-8cd6-350c874c4e3b@ronnatalie.com>
+ <8cda4fae-1a3b-486f-9f27-032d54e4ac21@ucsb.edu>
+ <ait5gsNOxaDcq0YH@hydra.lemis.com>
+ <em68f9bd77-575a-47f5-9062-dddaf1d477ea@ronnatalie.com>
+Message-ID: <CANxB0bQ5t87yAuyNCoo3Ski=vayyy4yTOCazf8PgDFck7q3RRw@mail.gmail.com>
+
+Bill Shannon had the real New Hampshire UNIX plates at the time of moving
+to California/Sun in 1982.  He upgraded to VMUNIX in California.
+Photo: https://photos.app.goo.gl/QSGYnuxhfvBk1ZUc9
+
+But maybe after Armando.  Or did Armando have the Massachusett plate?
+
+On Fri, Jun 12, 2026 at 7:02 AM Ron Natalie via TUHS <tuhs at tuhs.org> wrote:
+
+> To my knowledge, there were only two issues of licenses.   The original
+> Armando ones that say UNIX with Live Free or Die and Unix is a
+> Trademark,
+> and the later ULTRIX ones (I have them both).   If there were others, I
+> somehow missed them.
+>
+> Armando related a story that he had the actual NH UNIX vanity plate on
+> the rear of his car and a DEC one on the front (complete with the
+> license expiration tabs).
+> The front one went missing for a while, and when he inquired, many
+> people wrote to him saying they hadn’t seen it in various parts of the
+> country remote from NH.
+> I think he eventually got it back.     Isn’t Armando kicking around
+> here?
+>
+>
+
+From tuhs at tuhs.org  Sat Jun 13 00:27:07 2026
+From: tuhs at tuhs.org (Kevin Dunlap via TUHS)
+Date: Fri, 12 Jun 2026 07:27:07 -0700
+Subject: [TUHS] VAX System V
+In-Reply-To: <CANxB0bQ5t87yAuyNCoo3Ski=vayyy4yTOCazf8PgDFck7q3RRw@mail.gmail.com>
+References: <CAK7dMtAz18DoEt0RJiaRkoaO04KzC65eu=t4=30hp+JBdyQhxA@mail.gmail.com>
+ <em94403269-0008-4cff-8cd6-350c874c4e3b@ronnatalie.com>
+ <8cda4fae-1a3b-486f-9f27-032d54e4ac21@ucsb.edu>
+ <ait5gsNOxaDcq0YH@hydra.lemis.com>
+ <em68f9bd77-575a-47f5-9062-dddaf1d477ea@ronnatalie.com>
+ <CANxB0bQ5t87yAuyNCoo3Ski=vayyy4yTOCazf8PgDFck7q3RRw@mail.gmail.com>
+Message-ID: <CAF3P8Oift-doM1g0n1GzRUrCzJeY4kDDAgsr0tsceyUyNGN4LA@mail.gmail.com>
+
+Bill Shannon had NH Unix plate first. After Bill moved to CA, Armando got
+it.  I believe Jon "Maddog" Hall now has it.
+
+-Kevin
+
+On Fri, Jun 12, 2026, 7:16 AM Tom Lyon via TUHS <tuhs at tuhs.org> wrote:
+
+> Bill Shannon had the real New Hampshire UNIX plates at the time of moving
+> to California/Sun in 1982.  He upgraded to VMUNIX in California.
+> Photo: https://photos.app.goo.gl/QSGYnuxhfvBk1ZUc9
+>
+> But maybe after Armando.  Or did Armando have the Massachusett plate?
+>
+> On Fri, Jun 12, 2026 at 7:02 AM Ron Natalie via TUHS <tuhs at tuhs.org>
+> wrote:
+>
+> > To my knowledge, there were only two issues of licenses.   The original
+> > Armando ones that say UNIX with Live Free or Die and Unix is a
+> > Trademark,
+> > and the later ULTRIX ones (I have them both).   If there were others, I
+> > somehow missed them.
+> >
+> > Armando related a story that he had the actual NH UNIX vanity plate on
+> > the rear of his car and a DEC one on the front (complete with the
+> > license expiration tabs).
+> > The front one went missing for a while, and when he inquired, many
+> > people wrote to him saying they hadn’t seen it in various parts of the
+> > country remote from NH.
+> > I think he eventually got it back.     Isn’t Armando kicking around
+> > here?
+> >
+> >
+>
+
+From tuhs at tuhs.org  Sat Jun 13 01:00:18 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Fri, 12 Jun 2026 11:00:18 -0400
+Subject: [TUHS] VAX System V
+In-Reply-To: <CANxB0bQ5t87yAuyNCoo3Ski=vayyy4yTOCazf8PgDFck7q3RRw@mail.gmail.com>
+References: <CAK7dMtAz18DoEt0RJiaRkoaO04KzC65eu=t4=30hp+JBdyQhxA@mail.gmail.com>
+ <em94403269-0008-4cff-8cd6-350c874c4e3b@ronnatalie.com>
+ <8cda4fae-1a3b-486f-9f27-032d54e4ac21@ucsb.edu>
+ <ait5gsNOxaDcq0YH@hydra.lemis.com>
+ <em68f9bd77-575a-47f5-9062-dddaf1d477ea@ronnatalie.com>
+ <CANxB0bQ5t87yAuyNCoo3Ski=vayyy4yTOCazf8PgDFck7q3RRw@mail.gmail.com>
+Message-ID: <CAC20D2Oesce88YDjAKGPgz_mPyNG-+33QMQjDuKTPbfSFW3DGQ@mail.gmail.com>
+
+I obtained (and still have) the the Mass plate about a year before Armand’s
+got the NH one.  I I’ve had three. It has been on my Silver Capri, the
+Black Jetta, two different Blue Passats, a Silver Passat, my Blue A4 and
+since 2018, my Blue Model S.  The original MA plate was green letters in
+white (which was similar to the NH plates in those days) and then the red
+and blue on white when the state reissued them sometime in the early 90s.
+When that one started to fade and thus that car not pass inspection, I had
+to get new ones.
+
+When Armando moved to CA, he transferred the NH plate to Jon Hall (who
+still has it along with the Linux plate). IIRC originally Joy had the CA
+plate on his red Ferrari (that ended up on an island in the Sun pond atone
+point).  As Tom points out, Shannon got vmunix  when he moved to CA.  But I
+don’t know what happened to it after he died, just as the late Gobble had
+the Indiana plate and I don’t know what happened to it.
+
+When the Computer Museum was still in Boston, Armando, Shannon, George and
+I had talked to Gwen Bell about displaying them in some manner.  I’m
+actually glad that
+never happened because so much the BCMs collection was lost when they
+closed and the parts weee moved to CA.
+
+WRT to the DEC plates, Armando’s version was the first issue. Over the
+course of a few years,  DEC marketing had a number of reissues of the
+original and I don’t believe that they are distinct in any way from the
+first batch.  After Compaq, they made some others which included things
+like the Tru64  such as Greg’s were. They also made some others plates such
+the Java plate. I used to have the original plate that Armando gave me (and
+I got Dennis to sign) as well as those two all hanging in my Intel office.
+
+I’ll also note that the first USENIX after the original issue where Armando
+announced the plates, Masscomp had “Unix Drivers Licenses” blanks printed
+on cardboard fan fold with printer holes. If you came to booth and enter
+your contact info, the team work print a  customized license for you to
+take home.  I think I still have handful of the blanks some where in a box
+if Masscomp stuff.
+
+
+Sent from a handheld expect more typos than usual
+
+On Fri, Jun 12, 2026 at 10:16 AM Tom Lyon via TUHS <tuhs at tuhs.org> wrote:
+
+> Bill Shannon had the real New Hampshire UNIX plates at the time of moving
+> to California/Sun in 1982.  He upgraded to VMUNIX in California.
+> Photo: https://photos.app.goo.gl/QSGYnuxhfvBk1ZUc9
+>
+> But maybe after Armando.  Or did Armando have the Massachusett plate?
+>
+> On Fri, Jun 12, 2026 at 7:02 AM Ron Natalie via TUHS <tuhs at tuhs.org>
+> wrote:
+>
+> > To my knowledge, there were only two issues of licenses.   The original
+> > Armando ones that say UNIX with Live Free or Die and Unix is a
+> > Trademark,
+> > and the later ULTRIX ones (I have them both).   If there were others, I
+> > somehow missed them.
+> >
+> > Armando related a story that he had the actual NH UNIX vanity plate on
+> > the rear of his car and a DEC one on the front (complete with the
+> > license expiration tabs).
+> > The front one went missing for a while, and when he inquired, many
+> > people wrote to him saying they hadn’t seen it in various parts of the
+> > country remote from NH.
+> > I think he eventually got it back.     Isn’t Armando kicking around
+> > here?
+> >
+> >
+>
+
