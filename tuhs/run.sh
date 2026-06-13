@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 # set -x
 
+script_file=${BASH_SOURCE[0]}
+script_name=$(basename "${script_file}")
+script_root=$(cd $(dirname "${script_file}") && pwd)
+
+# ensure run under script_root
+cd "${script_root}"
+
 if [ ${ENV_RUN_DRY:-0} -eq 1 ]; then
     :
 else
