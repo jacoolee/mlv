@@ -6,15 +6,21 @@ script_name=$(basename "${script_file}")
 script_root=$(cd $(dirname "${script_file}") && pwd)
 
 # ensure run under script_root
+echo '################################################################'
+date
 cd "${script_root}"
 
 if [ ${ENV_RUN_DRY:-0} -eq 1 ]; then
     :
 else
-    wget 'https://www.tuhs.org/Archive/Documentation/TUHS/Mail_list/' -O /tmp/tuhsml.html
+    wget 'https://www.tuhs.org/Archive/Documentation/TUHS/Mail_list/' -O /tmp/tuhsml.html.tmp
 
-    mlfile_latest_last=$(head -1 mlfile_latest.txt 2>/dev/null)
-    if [ "${mlfile_latest_last}" != '' ]; then
+    if [ -e /tmp/tuhsml.html.tmp ]; then
+        mv /tmp/tuhsml.html.tmp /tmp/tuhsml.html
+    fi
+
+    mlfile_latest_last=$(head -1 "${script_root}"/mlfile_latest.txt 2>/dev/null)
+    if [ -e "${mlfile_latest_last}" ]; then
         echo "clear ${mlfile_latest_last} ..."
         rm -f "${mlfile_latest_last}" "${mlfile_latest_last}.gz" &>/dev/null
     fi
@@ -22,7 +28,8 @@ fi
 
 has_new_mlfile=0
 for l in $(grep -o 'href="[^"]*txt[\.gz]*' /tmp/tuhsml.html | cut -c7-); do
-    mlfile=$(basename "${l}")
+    mlfilename=$(basename "${l}")
+    mlfile="${script_root}"/"${mlfilename}"
     if [ -e "${mlfile}" ]; then
         continue
     fi
@@ -35,25 +42,25 @@ for l in $(grep -o 'href="[^"]*txt[\.gz]*' /tmp/tuhsml.html | cut -c7-); do
 done
 
 # extract gz file
-for i in *.gz; do
-    i2=${i//.gz/}
-    if [ -e "${i2}" ]; then
+for gzfile in "${script_root}"/*.gz; do
+    txtfile=${gzfile//.gz/}
+    if [ -e "${txtfile}" ]; then
         continue
     fi
-    gzip -fdk "${i}"
+    gzip -fdk "${gzfile}" > "${txtfile}"
 done
 
 # generate whole year maillist ordered by time
 mlfile_latest=''
 curyear=$(date '+%Y')
-i=1989
+year=1989
 ss=''
-while [ $i -lt ${curyear} ]; do
-    i=$((i+1))                  # starts from 1990
+while [ $year -lt ${curyear} ]; do
+    year=$((year+1))                  # starts from 1990
 
     s=''
-    for j in January February March April May June July August September October November December; do
-        mlfile="${i}-${j}.txt"
+    for mon in January February March April May June July August September October November December; do
+        mlfile="${script_root}"/"${year}-${mon}.txt"
         if [ ! -e "${mlfile}" ]; then
             continue
         fi
@@ -67,8 +74,8 @@ while [ $i -lt ${curyear} ]; do
         continue
     fi
 
-    mlfile_wholeyear="${i}.txt"
-    if [ ${i} -eq ${curyear} ] || [ ! -e "${mlfile_wholeyear}" ]; then
+    mlfile_wholeyear="${script_root}"/"${year}.txt"
+    if [ ${year} -eq ${curyear} ] || [ ! -e "${mlfile_wholeyear}" ]; then
         cat ${s} > "${mlfile_wholeyear}"
     fi
 done
@@ -76,36 +83,40 @@ done
 echo "${mlfile_latest}" > mlfile_latest.txt
 
 # generate index.html, always overwrite
-index_file=index.html
+index_file="${script_root}"/index.html
 
 echo '<html style="white-space: nowrap; font-family: menlo; font-size: 13;"><style>.y {width: 755px; } a {text-decoration: unset;}</style><body>' > "${index_file}"
 
 # all.txt
-mlfileall=all.txt
+mlfilenameall=all.txt
+mlfileall="${script_root}"/"${mlfilenameall}"
 if [ ${has_new_mlfile} -eq 1 ] || [ ! -e ${mlfileall} ]; then
     cat ${ss} > ${mlfileall}
 fi
-echo "<div><a href='../mlv.html?./tuhs/${mlfileall}'>[${mlfileall}]</a></div><br/>" >> "${index_file}"
+echo "<div><a href='../mlv.html?./tuhs/${mlfilenameall}'>[${mlfilenameall}]</a></div><br/>" >> "${index_file}"
 
 # .txt by year
-i=$((curyear+1))
-while [ $i -gt 1990 ]; do
-    i=$((i-1))
-    mlfile_wholeyear="${i}.txt"
+year=$((curyear+1))
+while [ $year -gt 1990 ]; do
+    year=$((year-1))
+
+    mlfilename_wholeyear="${year}.txt"
+    mlfile_wholeyear="${script_root}"/"${mlfilename_wholeyear}"
 
     if [ -e "${mlfile_wholeyear}" ]; then
         echo '<div class="y">' >> "${index_file}"
-        echo "<span><a href='../mlv.html?./tuhs/${mlfile_wholeyear}'>[${mlfile_wholeyear}]</a> </span>" >> "${index_file}"
+        echo "<span><a href='../mlv.html?./tuhs/${mlfilename_wholeyear}'>[${mlfilename_wholeyear}]</a> </span>" >> "${index_file}"
     else
         continue
     fi
 
-    for j in January February March April May June July August September October November December; do
-        mlfile="${i}-${j}.txt"
+    for mon in January February March April May June July August September October November December; do
+        mlfilename="${year}-${mon}.txt"
+        mlfile="${script_root}"/"${mlfilename}"
         if [ ! -e "${mlfile}" ]; then
-            echo "<span title='${mlfile}'><a style='color: transparent;' href='../mlv.html?./tuhs/${mlfile}'>${j}</a> </span>" >> "${index_file}"
+            echo "<span title='${mlfilename}'><a style='color: transparent;' href='../mlv.html?./tuhs/${mlfilename}'>${mon}</a> </span>" >> "${index_file}"
         else
-            echo "<span title='${mlfile}'><a style='' href='../mlv.html?./tuhs/${mlfile}'>${j}</a></span>" >> "${index_file}"
+            echo "<span title='${mlfilename}'><a style='' href='../mlv.html?./tuhs/${mlfilename}'>${mon}</a></span>" >> "${index_file}"
         fi
     done
     echo '</div>' >> "${index_file}"
@@ -116,10 +127,12 @@ echo '</body></html>' >> "${index_file}"
 
 open -a Firefox.app "${index_file}"
 
-if [ ${ENV_RUN_DRY:-0} -eq 1 ]; then
-    :
-else
-    git add .
-    git commit -am "auto stored by run.sh"
-    git push
-fi
+# if [ ${ENV_RUN_DRY:-0} -eq 1 ]; then
+#     :
+# else
+#     cd "${script_root}"/
+#     git add .
+#     git commit -am "auto stored by run.sh"
+#     git push
+#     cd -
+# fi
