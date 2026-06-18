@@ -23,9 +23,11 @@ HOTKEYS
     b - scroll thread view one page backward
     v - scroll thread view one page forward
 
-    , - center current message in thread view
-    . - view message located at top of thread view
-    ; - view message located at center of thread view
+    ; - center current message in thread view's visible area
+
+    , - focus and view message located at top of thread view's visible area
+    . - focus and view message located at center of thread view's visible area
+    / - focus and view message located at bottom of thread view visible area
 
     SPC - scroll message body view one page forward
     o/u - scroll message body view one page backward

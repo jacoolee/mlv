@@ -600,18 +600,21 @@ function hotkeys() {
             break
         }
 
-        case ',': {
+        case ';': {             // center current msg at center of thread view's visible area
             e = document.getElementById(gCurHiMsgId)
-            e.scrollIntoView()
-            e = document.getElementById('msgtree')
-            e.scrollBy({
-                top: -e.clientHeight/2,
-                behavior: 'smooth', // or 'auto'
+            const p = document.getElementById('msgtree')
+            // e.offsetTop: Y of e's top distance distance from msgtree's very top
+            // p.scrollTop: Y of msgtree's visible area's top distance from msgtree's very top
+            // visibleY: current message's distance from top of msgtree's visible area
+            const visibleY = e.offsetTop - p.scrollTop
+            p.scrollBy({
+                top: visibleY - p.clientHeight/2,
+                behavior: 'smooth',
             })
             break
         }
 
-        case '.': {      // view message located at top of thread view
+        case ",": {      // choose and view message located at top of thread view's visible area
             e = document.getElementById('msgtree')
             let h = e.scrollTop - 10 /*first child's margin top*/
             if (h < 0) h = 0
@@ -623,11 +626,23 @@ function hotkeys() {
             break
         }
 
-        case ';': {   // view message located at center of thread view
+        case '.': {   // choose and view message located at center of thread view's visible area
             e = document.getElementById('msgtree')
             let h = e.scrollTop + e.clientHeight/2
             if (h < 0) h = 0
-            let idx = Math.ceil(h / MSGTREE_ITEM_HEIGHT)
+            let idx = Math.floor(h / MSGTREE_ITEM_HEIGHT)
+            if (idx > gMsgIdsRendered.length-1) {
+                idx = gMsgIdsRendered.length-1
+            }
+            showMsg(gMsgIdsRendered[idx])
+            break
+        }
+
+        case '/': {   // choose and view message located at bottom of thread view's visible area
+            e = document.getElementById('msgtree')
+            let h = e.scrollTop + e.clientHeight - MSGTREE_ITEM_HEIGHT * 3
+            if (h < 0) h = 0
+            let idx = Math.floor(h / MSGTREE_ITEM_HEIGHT)
             if (idx > gMsgIdsRendered.length-1) {
                 idx = gMsgIdsRendered.length-1
             }
