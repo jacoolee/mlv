@@ -13,7 +13,7 @@ cd "${script_root}"
 if [ ${ENV_RUN_DRY:-0} -eq 1 ]; then
     :
 else
-    wget 'https://www.tuhs.org/Archive/Documentation/TUHS/Mail_list/' -O /tmp/tuhsml.html.tmp
+    /opt/homebrew/bin/wget 'https://www.tuhs.org/Archive/Documentation/TUHS/Mail_list/' -O /tmp/tuhsml.html.tmp
 
     if [ -e /tmp/tuhsml.html.tmp ]; then
         mv /tmp/tuhsml.html.tmp /tmp/tuhsml.html
@@ -34,7 +34,7 @@ for l in $(grep -o 'href="[^"]*txt[\.gz]*' /tmp/tuhsml.html | cut -c7-); do
         continue
     fi
     url="https://www.tuhs.org/Archive/Documentation/TUHS/Mail_list/${l}"
-    wget "${url}" -O "${mlfile}.tmp"
+    /opt/homebrew/bin/wget "${url}" -O "${mlfile}.tmp"
     if [ -e "${mlfile}.tmp" ] && [[ $(file "${mlfile}.tmp") != *"empty"* ]]; then
         has_new_mlfile=1
         mv "${mlfile}.tmp" "${mlfile}"
