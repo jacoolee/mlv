@@ -61057,3 +61057,842 @@ On 6/12/26 11:00 AM, Clem Cole via TUHS wrote:
 The plate is still on the car, Karen Shannon takes it out now and then.
 
 
+From tuhs at tuhs.org  Tue Jun 23 19:34:00 2026
+From: tuhs at tuhs.org (durtal via TUHS)
+Date: Tue, 23 Jun 2026 19:34:00 +1000 (AEST)
+Subject: [TUHS] Announcing The Unix Heritage Society Inc.
+In-Reply-To: <ah_QZCw3xigmrfHg@hydra.lemis.com>
+References: <ah_QZCw3xigmrfHg@hydra.lemis.com>
+Message-ID: <92013ada-1f8d-c7e9-8ef9-a19418580235@sdf.org>
+
+
+
+Excellent news!
+
+R
+
+
+
+On Wed, 3 Jun 2026, Greg 'groggy' Lehey via TUHS wrote:
+
+> Date: Wed, 3 Jun 2026 16:57:40 +1000
+> From: Greg 'groggy' Lehey via TUHS <tuhs at tuhs.org>
+> Reply-To: Greg 'groggy' Lehey <grog at lemis.com>
+> To: tuhs at tuhs.org
+> Subject: [TUHS] Announcing The Unix Heritage Society Inc.
+> 
+> Announcing The Unix Heritage Society Inc.
+>
+> For over a quarter of a century, Warren Toomey has been running The
+> Unix Heritage Society.  What wasn't clear to everybody was that this
+> was a one-man show, and that Warren paid all expenses out of his own
+> pocket.
+>
+> In mid-April, Warren asked for donations to help run the site.  The
+> response was overwhelmingly positive, and the donation target (AUD
+> 3,728, about USD 2,600) was reached within 24 hours.  Thanks to all
+> for your generosity.
+>
+> Now comes the hard part: who looks after this money?  Behind the
+> scenes, Warren has had a few helpers known as the "TUHS Team".
+> We decided that the best way to protect your donations was to create an
+> Association according to Australian law.  The state of Victoria has
+> the simplest rules, so we created The Unix Heritage Society Inc. in
+> Victoria.
+>
+> TUHSI has purposes which are legally protected: to preserve and maintain
+> historical UNIX artefacts, and to provide a forum for discussion of UNIX
+> and its history. The cost to run the server will keep both the Unix Archive
+> hosted (the artefacts) and the TUHS mailing list running (the forum).
+>
+> As a not-for-profit organisation, TUHSI must ensure that funds collected
+> are spent only on the TUHSI purposes, and TUHSI must make public the
+> details of how any funds are spent.
+>
+> The term ?Inc.? has nothing to do with commercial companies.  It's the
+> form required by the Victorian government.
+>
+> The TUHS team will form the initial members of the association. Many will
+> be well known to you. They are:
+>
+> Thalia Archibald
+> David Arnold
+> Kevin Bowling
+> Clem Cole
+> Dan Cross
+> Matt G. (segaloco)
+> Greg Lehey
+> Warner Losh
+> Larry McVoy
+> Will Senn
+> Warren Toomey
+> Frank Wortrner
+>
+> On 30 May (23:00 UTC) we had our inaugural Annual General Meeting, as
+> required by the Victorian rules.  We elected the following officers:
+>
+>   President:      Warren Toomey
+>   Vice-president: Clem Cole
+>   Secretary:      Greg Lehey
+>   Treasurer:      David Arnold
+>
+> TUHSI is transparent, so we are putting all the relevant documents up
+> at this location: https://www.tuhs.org/Governance/ This includes the
+> association rules and by-laws, list of members, the agendas and
+> minutes of all meetings, the treasurer's reports etc.
+>
+> The minutes of the recent AGM are at
+> http://www.tuhs.org/Governance/Agendas_and_Minutes/20260530-inaugural-agm
+>
+> So now the Unix Heritage Society (i.e. you, the people on the TUHS mailing
+> list) is supported by a legal entity (TUHSI, run by the TUHS team members)
+> to ensure that your donations will go where you want them to go.
+>
+> What happens next?  First, we find our feet.  We're planning to
+> upgrade the server infrastructure under the leadership of Dan Cross.
+> For you, this means one thing will change: minnie.tuhs.org will not go
+> away, but it will be the name of Warren's personal machine.  There is
+> a redirector in place, but if you're used to using this name, please
+> choose to use www.tuhs.org (or just tuhs.org) instead.
+>
+> Every two months, Warren or David will e-mail the TUHS list with an update
+> on what funds have been spent where and the current balance of funds.
+>
+> You can find a FAQ about TUHSI at
+> https://www.tuhs.org/Governance/tuhsi_faq.html. If you have any other
+> questions, please e-mail them to the TUHS mailing list, tuhs at tuhs.org, so
+> we can answer them and/or discuss any arising issues/suggestions.
+>
+
+durtal at sdf.org
+SDF Public Access UNIX System - https://sdf.org
+
+From tuhs at tuhs.org  Fri Jun 26 07:35:17 2026
+From: tuhs at tuhs.org (Warren Toomey via TUHS)
+Date: Fri, 26 Jun 2026 07:35:17 +1000
+Subject: [TUHS] A Network Filesystem for 2.11BSD
+Message-ID: <aj2fFaclphn2G5id@minnie.tuhs.org>
+
+For those of you running a real or simulated 2.11BSD, I decided to go crazy
+this week and write a network filesystem for it. No, it isn't NFS, it is
+much simpler. It is slow at the moment, but it does work.
+
+The repo is here: https://github.com/DoctorWkt/211BSD_Brf/
+
+It is still in the early stages.
+
+Cheers, Warren
+
+From tuhs at tuhs.org  Fri Jun 26 07:38:32 2026
+From: tuhs at tuhs.org (Warren Toomey via TUHS)
+Date: Fri, 26 Jun 2026 07:38:32 +1000
+Subject: [TUHS] Also, relative to absolute pathnames?
+Message-ID: <aj2f2DriRZOQHNGB@minnie.tuhs.org>
+
+On a related note, is there a C function (or do you have source code) to
+convert a relative pathname to an absolute one?
+
+e.g.
+
+// Given the current working directory and
+// a pathname, return an absolute pathname
+// with all '..' removed.
+char *relpath_to_abs(char *cwd, char *path);
+
+Before I try to write one I thought I'd ask around :-)
+
+Thanks, Warren
+
+From tuhs at tuhs.org  Fri Jun 26 07:43:14 2026
+From: tuhs at tuhs.org (Steve Nickolas via TUHS)
+Date: Thu, 25 Jun 2026 17:43:14 -0400 (EDT)
+Subject: [TUHS] Also, relative to absolute pathnames?
+In-Reply-To: <aj2f2DriRZOQHNGB@minnie.tuhs.org>
+References: <aj2f2DriRZOQHNGB@minnie.tuhs.org>
+Message-ID: <alpine.DEB.2.21.2606251742420.10185@sd-159945.dedibox.fr>
+
+On Fri, 26 Jun 2026, Warren Toomey via TUHS wrote:
+
+> On a related note, is there a C function (or do you have source code) to
+> convert a relative pathname to an absolute one?
+>
+> e.g.
+>
+> // Given the current working directory and
+> // a pathname, return an absolute pathname
+> // with all '..' removed.
+> char *relpath_to_abs(char *cwd, char *path);
+>
+> Before I try to write one I thought I'd ask around :-)
+>
+> Thanks, Warren
+>
+
+Maybe realpath(), but outside of Posix or 4.4, it's not standard.
+
+-uso.
+
+From tuhs at tuhs.org  Fri Jun 26 07:51:33 2026
+From: tuhs at tuhs.org (Alan Coopersmith via TUHS)
+Date: Thu, 25 Jun 2026 14:51:33 -0700
+Subject: [TUHS] Also, relative to absolute pathnames?
+In-Reply-To: <aj2f2DriRZOQHNGB@minnie.tuhs.org>
+References: <aj2f2DriRZOQHNGB@minnie.tuhs.org>
+Message-ID: <227fc343-8050-4d7e-aa9b-0c3533507c3f@oracle.com>
+
+On 6/25/26 14:38, Warren Toomey via TUHS wrote:
+> On a related note, is there a C function (or do you have source code) to
+> convert a relative pathname to an absolute one?
+> 
+> e.g.
+> 
+> // Given the current working directory and
+> // a pathname, return an absolute pathname
+> // with all '..' removed.
+> char *relpath_to_abs(char *cwd, char *path);
+> 
+> Before I try to write one I thought I'd ask around :-)
+
+In modern POSIX, including Unix98 & later, realpath():
+https://pubs.opengroup.org/onlinepubs/9799919799/functions/realpath.html
+
+-- 
+         -Alan Coopersmith-                 alan.coopersmith at oracle.com
+          Oracle Solaris Engineering - https://blogs.oracle.com/solaris
+
+From tuhs at tuhs.org  Fri Jun 26 08:49:46 2026
+From: tuhs at tuhs.org (Steffen Nurpmeso via TUHS)
+Date: Fri, 26 Jun 2026 00:49:46 +0200
+Subject: [TUHS] Also, relative to absolute pathnames?
+In-Reply-To: <227fc343-8050-4d7e-aa9b-0c3533507c3f@oracle.com>
+References: <aj2f2DriRZOQHNGB@minnie.tuhs.org>
+ <227fc343-8050-4d7e-aa9b-0c3533507c3f@oracle.com>
+Message-ID: <20260625224946.lvkC8kcr@steffen%sdaoden.eu>
+
+Alan Coopersmith via TUHS wrote in
+ <227fc343-8050-4d7e-aa9b-0c3533507c3f at oracle.com>:
+ |On 6/25/26 14:38, Warren Toomey via TUHS wrote:
+ |> On a related note, is there a C function (or do you have source code) to
+ |> convert a relative pathname to an absolute one?
+ |> 
+ |> e.g.
+ |> 
+ |> // Given the current working directory and
+ |> // a pathname, return an absolute pathname
+ |> // with all '..' removed.
+ |> char *relpath_to_abs(char *cwd, char *path);
+ |> 
+ |> Before I try to write one I thought I'd ask around :-)
+ |
+ |In modern POSIX, including Unix98 & later, realpath():
+ |https://pubs.opengroup.org/onlinepubs/9799919799/functions/realpath.html
+
+But avoid calling it on /dev/null on (certain?) Solaris, they give
+you eg "[/devices/pseudo/]mm at 0:null", and that could be the tip of
+the iceberg only.
+
+--steffen
+|
+|Der Kragenbaer,                The moon bear,
+|der holt sich munter           he cheerfully and one by one
+|einen nach dem anderen runter  wa.ks himself off
+|(By Robert Gernhardt)
+
+From tuhs at tuhs.org  Fri Jun 26 08:51:54 2026
+From: tuhs at tuhs.org (Steffen Nurpmeso via TUHS)
+Date: Fri, 26 Jun 2026 00:51:54 +0200
+Subject: [TUHS] Also, relative to absolute pathnames?
+In-Reply-To: <20260625224946.lvkC8kcr@steffen%sdaoden.eu>
+References: <aj2f2DriRZOQHNGB@minnie.tuhs.org>
+ <227fc343-8050-4d7e-aa9b-0c3533507c3f@oracle.com>
+ <20260625224946.lvkC8kcr@steffen%sdaoden.eu>
+Message-ID: <20260625225154.fpQSgSg6@steffen%sdaoden.eu>
+
+Steffen Nurpmeso via TUHS wrote in
+ <20260625224946.lvkC8kcr at steffen%sdaoden.eu>:
+ |Alan Coopersmith via TUHS wrote in
+ | <227fc343-8050-4d7e-aa9b-0c3533507c3f at oracle.com>:
+ ||On 6/25/26 14:38, Warren Toomey via TUHS wrote:
+ ||> On a related note, is there a C function (or do you have source code) to
+ ||> convert a relative pathname to an absolute one?
+ ||> 
+ ||> e.g.
+ ||> 
+ ||> // Given the current working directory and
+ ||> // a pathname, return an absolute pathname
+ ||> // with all '..' removed.
+ ||> char *relpath_to_abs(char *cwd, char *path);
+ ||> 
+ ||> Before I try to write one I thought I'd ask around :-)
+ ||
+ ||In modern POSIX, including Unix98 & later, realpath():
+ ||https://pubs.opengroup.org/onlinepubs/9799919799/functions/realpath.html
+ |
+ |But avoid calling it on /dev/null on (certain?) Solaris, they give
+ |you eg "[/devices/pseudo/]mm at 0:null", and that could be the tip of
+ |the iceberg only.
+
+(That is to say: unless you do not mind, of course.)
+
+--steffen
+|
+|Der Kragenbaer,                The moon bear,
+|der holt sich munter           he cheerfully and one by one
+|einen nach dem anderen runter  wa.ks himself off
+|(By Robert Gernhardt)
+
+From tuhs at tuhs.org  Fri Jun 26 20:10:25 2026
+From: tuhs at tuhs.org (Arnold Robbins via TUHS)
+Date: Fri, 26 Jun 2026 04:10:25 -0600
+Subject: [TUHS] A Network Filesystem for 2.11BSD
+In-Reply-To: <aj2fFaclphn2G5id@minnie.tuhs.org>
+References: <aj2fFaclphn2G5id@minnie.tuhs.org>
+Message-ID: <202606261010.65QAAPhI199065@freefriends.org>
+
+Warren Toomey via TUHS <tuhs at tuhs.org> wrote:
+
+> For those of you running a real or simulated 2.11BSD, I decided to go crazy
+> this week and write a network filesystem for it. No, it isn't NFS, it is
+> much simpler. It is slow at the moment, but it does work.
+>
+> The repo is here: https://github.com/DoctorWkt/211BSD_Brf/
+>
+> It is still in the early stages.
+>
+> Cheers, Warren
+
+Glad you're enjoying your retirement, Warren!  Sounds like fun! :-) :-)
+
+Arnold
+
+From tuhs at tuhs.org  Fri Jun 26 21:26:36 2026
+From: tuhs at tuhs.org (Folkert van Heusden via TUHS)
+Date: Fri, 26 Jun 2026 13:26:36 +0200
+Subject: [TUHS] FP11-C user or programming manual
+Message-ID: <44f6c9b7171ff3a3ba6db65bbd5cb9e3@vanheusden.com>
+
+Hi,
+
+I'm looking for an FP11-C user- and/or programming manual. My googling 
+did not show up anything. Can I safely assume that the FP11-B works the 
+sam?
+
+regards
+
+-- 
+www.vanheusden.com [1]
+
+Links:
+------
+[1] http://www.vanheusden.com
+
+From tuhs at tuhs.org  Fri Jun 26 21:40:21 2026
+From: tuhs at tuhs.org (Folkert van Heusden via TUHS)
+Date: Fri, 26 Jun 2026 13:40:21 +0200
+Subject: [TUHS] FP11-C user or programming manual
+In-Reply-To: <44f6c9b7171ff3a3ba6db65bbd5cb9e3@vanheusden.com>
+References: <44f6c9b7171ff3a3ba6db65bbd5cb9e3@vanheusden.com>
+Message-ID: <0356aed307d6340e8a81f8b88e670116@vanheusden.com>
+
+https://www.bitsavers.org/pdf/dec/pdp11/1170/PDP-11_70_Handbook_1977-78.pdf 
+chapter 8
+
+On 2026-06-26 13:26, Folkert van Heusden via TUHS wrote:
+> Hi,
+> 
+> I'm looking for an FP11-C user- and/or programming manual. My googling 
+> did not show up anything. Can I safely assume that the FP11-B works the 
+> sam?
+> 
+> regards
+
+-- 
+www.vanheusden.com
+
+From tuhs at tuhs.org  Sat Jun 27 01:36:26 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Fri, 26 Jun 2026 11:36:26 -0400
+Subject: [TUHS] Also, relative to absolute pathnames?
+In-Reply-To: <aj2f2DriRZOQHNGB@minnie.tuhs.org>
+References: <aj2f2DriRZOQHNGB@minnie.tuhs.org>
+Message-ID: <CAC20D2Nt73ugmAgYhSt-UbebFiZ2ioNsHgfHW5utwFfDt=8Bsg@mail.gmail.com>
+
+The POSIX-defined function
+
+char *realpath(const char *restrict *file_name*,
+       char *restrict *resolved_name*);
+
+
+See: https://pubs.opengroup.org/onlinepubs/009696799/functions/realpath.html
+
+The sources and man page for the BSD implementation can be found in Disk3
+of Kirk's CD in the 4.4BSD-Lite1/usr/src/lib/libc/stdlib/ and on Disk4
+in lib/libc/gen/
+which also includes the SCCS file
+
+Although grep(1) reports that only its man page was included in 4.4BSD-Lite2
+
+I will note that on a POSIX-conforming system, it must be included and
+defined in the stdlib.h
+But it should also be remembered that none of the C standards, including
+the current C23 standard, require it.
+
+I believe gcc includes a version in its runtime library, but I'm not sure
+about LLVM's clang, although I would be mildly surprised if it wasn't.
+
+From tuhs at tuhs.org  Sat Jun 27 01:46:49 2026
+From: tuhs at tuhs.org (Warner Losh via TUHS)
+Date: Fri, 26 Jun 2026 09:46:49 -0600
+Subject: [TUHS] Also, relative to absolute pathnames?
+In-Reply-To: <CAC20D2Nt73ugmAgYhSt-UbebFiZ2ioNsHgfHW5utwFfDt=8Bsg@mail.gmail.com>
+References: <aj2f2DriRZOQHNGB@minnie.tuhs.org>
+ <CAC20D2Nt73ugmAgYhSt-UbebFiZ2ioNsHgfHW5utwFfDt=8Bsg@mail.gmail.com>
+Message-ID: <CANCZdfqvy1nZAo4nju0qm2Djx7hd95u6LWs1+vyvsvCSaHgd+w@mail.gmail.com>
+
+On Fri, Jun 26, 2026 at 9:37 AM Clem Cole via TUHS <tuhs at tuhs.org> wrote:
+
+> The POSIX-defined function
+>
+> char *realpath(const char *restrict *file_name*,
+>        char *restrict *resolved_name*);
+>
+>
+> See:
+> https://pubs.opengroup.org/onlinepubs/009696799/functions/realpath.html
+>
+> The sources and man page for the BSD implementation can be found in Disk3
+> of Kirk's CD in the 4.4BSD-Lite1/usr/src/lib/libc/stdlib/ and on Disk4
+> in lib/libc/gen/
+> which also includes the SCCS file
+>
+
+One problem with realpath is that it's not possible to implement in
+userspace
+in POSIX. You can come close for most cases, but there's a number of edge
+cases that require kernel assist. FreeBSD has an undocumented system call
+to do this, for example. But Warren's remote filesystem thing likely can use
+the good enough from userland stuff.
+
+
+> Although grep(1) reports that only its man page was included in
+> 4.4BSD-Lite2
+>
+> I will note that on a POSIX-conforming system, it must be included and
+> defined in the stdlib.h
+> But it should also be remembered that none of the C standards, including
+> the current C23 standard, require it.
+>
+
+Most systems today have this.
+
+
+> I believe gcc includes a version in its runtime library, but I'm not sure
+> about LLVM's clang, although I would be mildly surprised if it wasn't.
+>
+
+gcc does not include this in their runtime library, nor does clang. This
+isnt' a runtime library thing, it's a libc thing. glibc has an
+implementation.
+I know this is a pedantic point, but the detail helps you know where to
+look.
+
+Warner
+
+From tuhs at tuhs.org  Sat Jun 27 02:59:54 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Fri, 26 Jun 2026 12:59:54 -0400
+Subject: [TUHS] Also, relative to absolute pathnames?
+In-Reply-To: <CANCZdfqvy1nZAo4nju0qm2Djx7hd95u6LWs1+vyvsvCSaHgd+w@mail.gmail.com>
+References: <aj2f2DriRZOQHNGB@minnie.tuhs.org>
+ <CAC20D2Nt73ugmAgYhSt-UbebFiZ2ioNsHgfHW5utwFfDt=8Bsg@mail.gmail.com>
+ <CANCZdfqvy1nZAo4nju0qm2Djx7hd95u6LWs1+vyvsvCSaHgd+w@mail.gmail.com>
+Message-ID: <CAC20D2Nyq-=33DrznkVSUW9ipsCAqB6M1ijBq33RD76ddJwzxg@mail.gmail.com>
+
+On Fri, Jun 26, 2026 at 11:47 AM Warner Losh <imp at bsdimp.com> wrote:
+
+>
+> gcc does not include this in their runtime library, nor does clang.
+>
+Note: I have many sources on my mac, and did a "locate -i realpath"
+
+
+gcc13.1.0 's pdp-11 crosscompiler has it for sure - although that is the
+"Libiberty" implementation, which header comment says it is "Based on
+gdb_realpath from GDB." It also seems to have #ifdefs for a number of
+systems, including Windows.   It is also scattered in other places from the
+GNU toolkit (which is in my tree via "brew"), and as I said, I found it in
+a few places on Kirk's CDs, and it seems to be from the 1993-94 timeframe
+[SCCS it was last modified 16-Feb-94].  The 4.4BSD-related version is
+Keith's implementation, and he has a comment in both the header and the man
+page noting that it is based on yet another implementation by Jan-Simon
+Pedry.   His code and man page seem to match, and shows that it depends on
+the system calls: chdir(2), close(2), fchdir(2), lstat(2), open(2), and
+readlink(2), plus the library call getcwd(3).
+
+They are library functions.  The only "systemish" dependency I can see from
+any of the implementations I found on my Mac was that they usually needed
+getwd(3) or getcwd(3), which are library calls.  Then some use the
+equivalent of the opendir() call, which is also userspace/library, but
+some, like Keith's, don't try to parse the directory, but open the file "."
+as an anchor point, and call the OS and "walk" the pathname with calls to
+chdir(2) .  He then used fchdir(2) with the fd from opening "." at the
+beginning to get put back where he started.
+
+The only possibly worrisome requirement for Keith's is the ability to open
+"." and then later use that fd with the fchdir() call, but that is part of
+POSIX.1, so I would expect on a modern system, you will be fine.
+
+That said, I think Warren wants this for 2.11BSD, and I see a section 2 man
+page for it on the 2.11BSD image I'm running on a RPi.  So I would expect
+if you grab Keith's implementation from Kirk's Disk4   lib/libc/gen/*realpath*
+and copy it to 2.11BSD, there is a high possibility of it "just working."
+
+
+
+> This
+> isnt' a runtime library thing, it's a libc thing. glibc has an
+> implementation.
+>
+Rather (as I said originally), it is a POSIX.1 function, part of stdlib:
+https://pubs.opengroup.org/onlinepubs/009696799/functions/realpath.html
+
+The point being, the *sources* are likely with the rest of the stdlib
+functions, and I would expect the binary to be stored in libc or its
+dynamic library, as that is the traditional place, but POSIX does require
+that.
+
+From tuhs at tuhs.org  Sat Jun 27 03:01:13 2026
+From: tuhs at tuhs.org (Noel Chiappa via TUHS)
+Date: Fri, 26 Jun 2026 13:01:13 -0400 (EDT)
+Subject: [TUHS] FP11-C user or programming manual
+Message-ID: <20260626170113.2CEA318C08D@mercury.lcs.mit.edu>
+
+    > From: Folkert van Heusden
+
+    > I'm looking for an FP11-C user- and/or programming manual. My googling
+    > did not show up anything.
+
+Well, I looked at:
+
+  https://gunkies.org/wiki/FP11-C_Floating-Point_Processor
+
+and it lists a user's manual (EK-FP11C-OP-001), but doesn't link to it.
+
+(In general, the CHWiki contains pretty good coverage on PDP-11's - hardware,
+I never had much use for DEC software; it should be the first stop for
+anyone with PDP-11 hardware questions.)
+
+Searching for that turns up an old email message from me:
+
+  https://www.classiccmp.org/pipermail/cctech/2015-September/010265.html
+
+which says that I have a copy, and was planning to scan it. I got sick, and
+never got to doing so, alas. And now my scanning machibe has a dead hard
+drive.
+
+    > Can I safely assume that the FP11-B works the sam?
+
+The FP11-C was program compatible with the FP11-B Floating-Point Processor,
+but there isn't a separate FP11-B user's manual; just use the -11/45 or
+-11/70 processor manual.
+
+	Noel
+
+From tuhs at tuhs.org  Sat Jun 27 03:16:45 2026
+From: tuhs at tuhs.org (Warner Losh via TUHS)
+Date: Fri, 26 Jun 2026 11:16:45 -0600
+Subject: [TUHS] Also, relative to absolute pathnames?
+In-Reply-To: <CAC20D2Nyq-=33DrznkVSUW9ipsCAqB6M1ijBq33RD76ddJwzxg@mail.gmail.com>
+References: <aj2f2DriRZOQHNGB@minnie.tuhs.org>
+ <CAC20D2Nt73ugmAgYhSt-UbebFiZ2ioNsHgfHW5utwFfDt=8Bsg@mail.gmail.com>
+ <CANCZdfqvy1nZAo4nju0qm2Djx7hd95u6LWs1+vyvsvCSaHgd+w@mail.gmail.com>
+ <CAC20D2Nyq-=33DrznkVSUW9ipsCAqB6M1ijBq33RD76ddJwzxg@mail.gmail.com>
+Message-ID: <CANCZdfq0Ux=ujT5r4ZusbmeUv=iPcRbzPsiZ0bZycHSbp7V2MQ@mail.gmail.com>
+
+On Fri, Jun 26, 2026 at 11:00 AM Clem Cole <clemc at ccc.com> wrote:
+
+>
+>
+> On Fri, Jun 26, 2026 at 11:47 AM Warner Losh <imp at bsdimp.com> wrote:
+>
+>>
+>> gcc does not include this in their runtime library, nor does clang.
+>>
+> Note: I have many sources on my mac, and did a "locate -i realpath"
+>
+>
+> gcc13.1.0 's pdp-11 crosscompiler has it for sure - although that is the
+> "Libiberty" implementation, which header comment says it is "Based on
+> gdb_realpath from GDB." It also seems to have #ifdefs for a number of
+> systems, including Windows.   It is also scattered in other places from
+> the GNU toolkit (which is in my tree via "brew"), and as I said, I found
+> it in a few places on Kirk's CDs, and it seems to be from the 1993-94
+> timeframe [SCCS it was last modified 16-Feb-94].  The 4.4BSD-related
+> version is Keith's implementation, and he has a comment in both the header
+> and the man page noting that it is based on yet another implementation by
+> Jan-Simon Pedry.   His code and man page seem to match, and shows that it
+> depends on the system calls: chdir(2), close(2), fchdir(2), lstat(2),
+> open(2), and readlink(2), plus the library call getcwd(3).
+>
+
+Yes. This is the version that gets it almost right, so would be easily
+portable w/o the kernel assist. The dysfunction is around abuse of
+hardlinks...
+
+
+> They are library functions.  The only "systemish" dependency I can see
+> from any of the implementations I found on my Mac was that they usually
+> needed getwd(3) or getcwd(3), which are library calls.  Then some use the
+> equivalent of the opendir() call, which is also userspace/library, but
+> some, like Keith's, don't try to parse the directory, but open the file "."
+> as an anchor point, and call the OS and "walk" the pathname with calls to
+> chdir(2) .  He then used fchdir(2) with the fd from opening "." at the
+> beginning to get put back where he started.
+>
+> The only possibly worrisome requirement for Keith's is the ability to open
+> "." and then later use that fd with the fchdir() call, but that is part
+> of POSIX.1, so I would expect on a modern system, you will be fine.
+>
+
+Yes. Though on Linux you need to add O_DIRECTORY to do that. On FreeBSD you
+can open the directory, but read(2) returns an error.
+
+
+> That said, I think Warren wants this for 2.11BSD, and I see a section 2
+> man page for it on the 2.11BSD image I'm running on a RPi.  So I would
+> expect if you grab Keith's implementation from Kirk's Disk4   lib/libc/gen/*realpath*
+> and copy it to 2.11BSD, there is a high possibility of it "just working."
+>
+
+Yes. Most of 2.11BSD is 4.2 with most of 4.3 and some 4.4 pulled in. I
+agree it should be close to working there.
+
+
+>
+>
+>> This
+>> isnt' a runtime library thing, it's a libc thing. glibc has an
+>> implementation.
+>>
+> Rather (as I said originally), it is a POSIX.1 function, part of stdlib:
+> https://pubs.opengroup.org/onlinepubs/009696799/functions/realpath.html
+>
+The point being, the *sources* are likely with the rest of the stdlib
+> functions, and I would expect the binary to be stored in libc or its
+> dynamic library, as that is the traditional place, but POSIX does require
+> that.
+>
+
+Yea. putting them in libc is the right call.  I've spent too much time
+dealing with the subtle differences between a runtime library for a
+compiler (which has routines and support for code generated by the compiler
+like division on old arm parts) and libc (which has runtime support and
+often system calls), so I can get wrapped around terminology too easily...
+
+Warner
+
+From tuhs at tuhs.org  Sat Jun 27 04:39:51 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Fri, 26 Jun 2026 14:39:51 -0400
+Subject: [TUHS] FP11-C user or programming manual
+In-Reply-To: <44f6c9b7171ff3a3ba6db65bbd5cb9e3@vanheusden.com>
+References: <44f6c9b7171ff3a3ba6db65bbd5cb9e3@vanheusden.com>
+Message-ID: <CAC20D2Mdad_h755MdO_omBz2qaKHLvZerDtgX2xWxE_dc49N_g@mail.gmail.com>
+
+Not what you asked for, but these should be helpful
+
+http://www.bitsavers.org/pdf/dec/pdp11/1170/EK-FP11C-MM-01_FP11C_May76.pdf
+is the maintenance manual
+http://www.bitsavers.org/pdf/dec/pdp11/1170/MP00038_FP11-C_Field_Maintenance_Print_Set_Dec1975.pdf
+- Drawings
+http://www.bitsavers.org/pdf/dec/pdp11/1134/EK-FP11A-UG-001.pdf - FP11-A
+User Manual
+http://www.bitsavers.org//pdf/dec/pdp11/1144/EK-FP11F-TM-002_Nov79.pdf
+
+On Fri, Jun 26, 2026 at 7:26 AM Folkert van Heusden via TUHS <tuhs at tuhs.org>
+wrote:
+
+> Hi,
+>
+> I'm looking for an FP11-C user- and/or programming manual. My googling
+> did not show up anything. Can I safely assume that the FP11-B works the
+> sam?
+>
+> regards
+>
+> --
+> www.vanheusden.com [1]
+>
+> Links:
+> ------
+> [1] http://www.vanheusden.com
+>
+
+From tuhs at tuhs.org  Sat Jun 27 22:15:28 2026
+From: tuhs at tuhs.org (Noel Chiappa via TUHS)
+Date: Sat, 27 Jun 2026 08:15:28 -0400 (EDT)
+Subject: [TUHS] FP11-C user or programming manual
+Message-ID: <20260627121528.9577E18C08A@mercury.lcs.mit.edu>
+
+    > From: Clem Cole
+
+    > Not what you asked for, but these should be helpful
+
+As far as I know, all the FP11 models:
+
+  https://gunkies.org/wiki/FP11_floating_point
+
+are program compatible. They are, of course, internally quite different, and
+do not share an interface to the rest of the CPU (except for the KEF11-A and
+FPF11; but they are of course both used with the KDF11 CPUs).
+
+
+I compared my hard-copy of the "FP11-C floating-point processor user's
+manual" (EK-FP11C-OP-001 - the one being searched for) with the "FP11-C
+floating-point processor maintenance manual" (EK-FP11C-MM-001), which we have:
+
+  https://www.bitsavers.org/pdf/dec/pdp11/1170/EK-FP11C-MM-01_FP11C_May76.pdf
+
+and they appear to be identical up through to the end of Chapter 5 - the end
+of the FP11-C user's manual. So we basically have the 'FP11-C user's manual'.
+
+	Noel
+
+From tuhs at tuhs.org  Sun Jun 28 02:57:12 2026
+From: tuhs at tuhs.org (Steve Simon via TUHS)
+Date: Sat, 27 Jun 2026 17:57:12 +0100
+Subject: [TUHS] Also, relative to absolute pathnames?
+Message-ID: <1B417C95-AF89-418D-A52D-81E54301375C@quintile.net>
+
+alternatively there is Rob’s purely lexical approach.
+prepend the current working directory and pass the complete string to cleanname(1).
+
+-Steve
+
+see in plan9://sys/src/libc/port/cleanname.c
+
+also rob’s paper: “doing dot dot right”
+
+[sorry, i cannot post real links from an iphone as it generates mime messages which are rejected by tuhs]
+
+
+From tuhs at tuhs.org  Sun Jun 28 04:14:24 2026
+From: tuhs at tuhs.org (Folkert van Heusden via TUHS)
+Date: Sat, 27 Jun 2026 20:14:24 +0200
+Subject: [TUHS] FP11-C user or programming manual
+In-Reply-To: <0356aed307d6340e8a81f8b88e670116@vanheusden.com>
+References: <44f6c9b7171ff3a3ba6db65bbd5cb9e3@vanheusden.com>
+ <0356aed307d6340e8a81f8b88e670116@vanheusden.com>
+Message-ID: <60967afc2a0fbeda8d630c3f9d6fddd6@vanheusden.com>
+
+Everybody thanks for the help!
+
+On 2026-06-26 13:40, Folkert van Heusden wrote:
+> https://www.bitsavers.org/pdf/dec/pdp11/1170/PDP-11_70_Handbook_1977-78.pdf 
+> chapter 8
+> 
+> On 2026-06-26 13:26, Folkert van Heusden via TUHS wrote:
+>> Hi,
+>> 
+>> I'm looking for an FP11-C user- and/or programming manual. My googling 
+>> did not show up anything. Can I safely assume that the FP11-B works 
+>> the sam?
+>> 
+>> regards
+
+-- 
+www.vanheusden.com
+
+From tuhs at tuhs.org  Sun Jun 28 09:56:57 2026
+From: tuhs at tuhs.org (Warren Toomey via TUHS)
+Date: Sun, 28 Jun 2026 09:56:57 +1000
+Subject: [TUHS] Another Unix Archive addition: KSOS
+Message-ID: <akBjSfX_uy-8omBr@minnie.tuhs.org>
+
+We have added a new system to the Unix Archive: KSOS
+
+https://www.tuhs.org/Archive/Distributions/Other/KSOS/
+
+KSOS was the U.S. Department of Defense (DoD) Kernelized Secure Operating
+System (KSOS, formerly called Secure UNIX). KSOS is intended to provide
+a provably secure operating system for larger minicomputers.
+
+Thanks to Tom Perrine who had the tarball and sent it to John O Goyo,
+to John O Goyo who sent it in to TUHS and to Thalia Archibald who
+curated it and put it into the Unix Archive.
+
+Cheers, Warren
+
+From tuhs at tuhs.org  Sun Jun 28 15:25:28 2026
+From: tuhs at tuhs.org (durtal via TUHS)
+Date: Sun, 28 Jun 2026 15:25:28 +1000 (AEST)
+Subject: [TUHS] Another Unix Archive addition: KSOS
+In-Reply-To: <akBjSfX_uy-8omBr@minnie.tuhs.org>
+References: <akBjSfX_uy-8omBr@minnie.tuhs.org>
+Message-ID: <172e1463-0e39-6480-2c1f-aaacbfb3be78@sdf.org>
+
+
+Outstanding generousity.
+
+
+R
+
+
+
+
+On Sun, 28 Jun 2026, Warren Toomey via TUHS wrote:
+
+> Date: Sun, 28 Jun 2026 09:56:57 +1000
+> From: Warren Toomey via TUHS <tuhs at tuhs.org>
+> Reply-To: Warren Toomey <wkt at tuhs.org>
+> To: tuhs at tuhs.org
+> Subject: [TUHS] Another Unix Archive addition: KSOS
+> 
+> We have added a new system to the Unix Archive: KSOS
+>
+> https://www.tuhs.org/Archive/Distributions/Other/KSOS/
+>
+> KSOS was the U.S. Department of Defense (DoD) Kernelized Secure Operating
+> System (KSOS, formerly called Secure UNIX). KSOS is intended to provide
+> a provably secure operating system for larger minicomputers.
+>
+> Thanks to Tom Perrine who had the tarball and sent it to John O Goyo,
+> to John O Goyo who sent it in to TUHS and to Thalia Archibald who
+> curated it and put it into the Unix Archive.
+>
+> Cheers, Warren
+>
+
+durtal at sdf.org
+SDF Public Access UNIX System - https://sdf.org
+
+From tuhs at tuhs.org  Mon Jun 29 00:47:34 2026
+From: tuhs at tuhs.org (Andrew Lynch via TUHS)
+Date: Sun, 28 Jun 2026 14:47:34 +0000 (UTC)
+Subject: [TUHS] Another Unix Archive addition: KSOS
+In-Reply-To: <akBjSfX_uy-8omBr@minnie.tuhs.org>
+References: <akBjSfX_uy-8omBr@minnie.tuhs.org>
+Message-ID: <391664681.315548.1782658054340@mail.yahoo.com>
+
+Hi,Since KSOS was developed by the US Government at tax payers expense, is the KSOS source code public domain?
+Released under some open source or free license?
+
+
+
+    On Saturday, June 27, 2026 at 07:57:04 PM EDT, Warren Toomey via TUHS <tuhs at tuhs.org> wrote:  
+ 
+ We have added a new system to the Unix Archive: KSOS
+
+https://www.tuhs.org/Archive/Distributions/Other/KSOS/
+
+KSOS was the U.S. Department of Defense (DoD) Kernelized Secure Operating
+System (KSOS, formerly called Secure UNIX). KSOS is intended to provide
+a provably secure operating system for larger minicomputers.
+
+Thanks to Tom Perrine who had the tarball and sent it to John O Goyo,
+to John O Goyo who sent it in to TUHS and to Thalia Archibald who
+curated it and put it into the Unix Archive.
+
+Cheers, Warren
+  
+
