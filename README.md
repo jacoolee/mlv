@@ -16,8 +16,9 @@ HOTKEYS
     l - view previous sibling message
     p - view parent message
     n - view child message
-    0 - view first message
-    9 - view last message
+    z - view last viewed message
+    0 - view oldest message
+    9 - view newest message
     1-8 - view message at 1..8/10 percent of all messages
 
     b - scroll thread view one page backward
