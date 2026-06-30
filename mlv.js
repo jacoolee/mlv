@@ -14,6 +14,7 @@ let gMsgIdsRendered = [ /* msgId, ... */ ]
 let gMsgIdsLevel0 = [ /* msgId, ... */ ]
 let gCurHiParentMsgId = null
 let gCurHiMsgId = null
+let gViewedMsgIds = []
 
 function fls(text, length, paddingChar=' ', paddingAtHead=false) {    // fixed length string
     if (text.length > length) return text.substring(0,length)
@@ -196,9 +197,13 @@ function parse(text='') {
     }
 }
 
-function showMsg(msgId) {
+function showMsg(msgId, markAsViewed=true) {
     const block = gMsgMap[msgId]
     if (!block) return
+
+    if (markAsViewed) {
+        gViewedMsgIds.push(msgId)
+    }
 
     let e = null
 
@@ -508,6 +513,14 @@ function hotkeys() {
                 const idx = replies.indexOf(gCurHiMsgId)
                 if (idx === replies.length-1) return
                 showMsg(replies[idx+1])
+            }
+            break
+        }
+
+        case 'z': {
+            const lastMsgId = gViewedMsgIds.pop()
+            if (lastMsgId) {
+                showMsg(lastMsgId, false)
             }
             break
         }
