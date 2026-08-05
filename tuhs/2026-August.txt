@@ -1,0 +1,1047 @@
+From tuhs at tuhs.org  Sat Aug  1 00:48:58 2026
+From: tuhs at tuhs.org (Will Senn via TUHS)
+Date: Fri, 31 Jul 2026 09:48:58 -0500
+Subject: [TUHS] What It Takes to Read Lions in 2026
+In-Reply-To: <amwqzZExJP7FBz4c@macmini.intra.drijf.net>
+References: <amwqzZExJP7FBz4c@macmini.intra.drijf.net>
+Message-ID: <CDACC1CD-04EF-4501-99A4-37C3BDAB4A85@gmail.com>
+
+Omg. Ha. I never connected that. Of course that’s what it is :). Still, it is also where he really begins talking about how stuff works. The first five chapters are more background and orientation.
+
+Will
+
+
+Sent from my iPhone
+
+> On Jul 30, 2026, at 11:55 PM, Otto Moerbeek <otto at drijf.net> wrote:
+> 
+> ﻿
+> "Getting Started" talks about the machine, not about the reader :)
+> 
+> -Otto
+> 
+>> On Thu, Jul 30, 2026 at 07:56:10AM -0500, Will Senn via TUHS wrote:
+>> 
+>> Clem,
+>> 
+>> Wow. This makes so much sense. I "randomly" picked page 28 as a starting
+>> point, never mind that the section was called "Getting Started". That was
+>> possibly the worst/best place to begin, because it is where the PDP11 ->
+>> unix transition takes place. When Lions talks about it, it's clear that he's
+>> speaking from the unix side of things with enough PDP to orient a denizen of
+>> the times, but not a techie from the future who is ot familiar with stuff
+>> like core, I/O regions of memory, or severe hardware limitations. Having
+>> struggled to parse every sentence along the way, I've made the journey from
+>> the processor handbook - where I found a typo in the 11/40 version... it
+>> says:
+>> 
+>>     Certain memory locations have been reserved by the system for inter·
+>>     rupt and trap handling, processor stacks, general registers, and
+>> peripheral
+>>     device registers. K.ernel virtual addresses from 0 to 370, are always
+>> re-
+>>     served and those to 777, are reserved on large system configurations for
+>>     traps and interrupt handling. The top 4,096 word addresses (from
+>>     770000, up) have been reserved for general registers and peripheral
+>>     devices.
+>> 
+>> But, after a couple of hours of head scratching it dawned on me that
+>> 770000-777777 was only 2K words and couldn't possibly be right, 760000 is
+>> the correct number. Which is click 7600, which is what's loaded into KIPAR7,
+>> which the m40 assist maps as IO. Which is properly described in the 1976
+>> 11/04/34/45/44 version as:
+>> 
+>>     If the Memory Management option is not used, an octal address be-
+>>     tween 160 000 and 177 777 is interpreted as 760 000 to 777 777. That
+>>     is, if bit 15, 14 and 13 are 1 's, then bits 17 and 16 (the extended ad-
+>>     dress bits) are considered to be 1's, which relocates the last 4K words.
+>>     (8K bytes) to become the highest location accessed by the UNIBUS.
+>> 
+>> Then on into the peripherals book, the memory management options book, and
+>> the v6 manual. In addition, whereas previously, I ignored the source code,
+>> now I find it invaluable. Where it says _end is some linker thing (I
+>> originally read it as a pseudo op, but it's more something the loader adds).
+>> I just pulled up the source, figured out it adds it to the binary if it's
+>> referenced in code and that it refers to the boundary of the image (one past
+>> the last byte) or in the "as" documentation where Dennis say it's a rather
+>> ordinary 2 pass assembler with no macros. I no longer take this as gospel,
+>> it's off to the as source where it turns out it's anything but ordinary, not
+>> really a two pass assembler (two programs, one that builds a very nice
+>> compact representation and the other that takes two passes)  and it trades
+>> an insane amount of language affordance for macros... heck it'll even let
+>> you define your own assembly instructions :).
+>> 
+>> It's the little things :).
+>> 
+>> Will
+>> 
+>>> On 7/28/26 9:07 PM, Clem Cole via TUHS wrote:
+>>> Will/Matt,
+>>> 
+>>> You both make interesting observations, and I tried to go back a little and
+>>> remember what resources I had when I encountered Lions (and made my
+>>> xerographic copy).  At the time (which I think was late 1977 or early 78),
+>>> I had my own copy of the 1974/75 PDP-11 04/34/45/55 Processor Handbook [
+>>> https://bitsavers.trailing-edge.com/pdf/dec/pdp11/handbooks/PDP-11_04-55_Processor_Handbook_1976.pdf]
+>>> and the 1976 PDP-11 Peripherals Handbook†  [
+>>> https://bitsavers.trailing-edge.com/pdf/dec/pdp11/handbooks/PDP-11_PeripheralsHbk_1976.pdf]
+>>>  Note I had the 34 docs, not the 40 docs.   I also had access to the docs
+>>> from Sixth Edition, such as the C Reference manual.
+>>> 
+>>> Also remember that I was not using it as a course text, which is why he
+>>> wrote it.  When I discovered it, the book was just a wonderful resource
+>>> that helped explain in more detail a lot of things I already had an inkling
+>>> of, and as I look back, probably corrected some misunderstandings too.
+>>> 
+>>> That said, before I read Lions, I had already been programming UNIX for a
+>>> year or two on the 11/40E (IUS and SUS) in the CS Dept.  We had converted
+>>> from Fifth Edition to Sixth (I personally had very brief experiences with
+>>> Fifth - it was in my "what is this strange system and language phase,"
+>>> introduction to UNIX having come over from BLISS and both a DEC and IBM
+>>> flavor of how OS's were supposed to present themselves).  But in the summer
+>>> before I saw Lions, we had received our first 11/34 in the EE Dept.  We
+>>> couldn't just use Dennis's distribution tape, since a 34 is a 40-class
+>>> processor (which are similar but different enough; it's not going to "just
+>>> work" — *i.e*., not something the stock Sixth Edition knew about).  So, we
+>>> bootstrapped the EE 34 from IUS, which was tricky because we had to add 34
+>>> support to mch40.s, more importantly, the 34 didn't have the CSV/CRET in
+>>> the writable microcode of the 11/40Es that the C compiler on the CS systems
+>>> expected (I have memories of walking back and forth between the two
+>>> buildings creating yet another RK05 boot image when we found some other
+>>> important program that was expecting CSV/CRET but weren't far/stable enough
+>>> along in the bootstrap to correct it ourselves).
+>>> 
+>>> FWIW: I had had some exposure to RT-11 on an 11/05 [running from DEC
+>>> cassette tapes], as well as programming the PDP-8 running TSS/8 and the 10s
+>>> under TOPS, as well as working for the Computer Center supporting York/APL
+>>> on the IBM 360/67.  But I think most importantly for my UNIX kernel
+>>> experience, I had started to work on the Computer Center's version of the
+>>> CMU Front End, trying to add support for the 11/45 they had running RSTS
+>>> for the School of Humanities and Social Science.   As I have mentioned in
+>>> other emails, the CMU FE was a standalone system (no OS) with a ton of
+>>> serial ports, a card reader and printer, and some sort of interface to
+>>> larger systems (in the CC's case, the 360 for interactive serial ports and
+>>> as an RJE station for the 360 and Univac 1008, and we were adding the then
+>>> new RSTS system).  At that point, it was based on an 11/15 (no MMU, of
+>>> course, and the code was primarily in BLISS-11 with a very small assembler
+>>> assist).  The key is I was already inoculated with the core PDP-11 ISA and
+>>> differences between models, so much of what you are commenting about with
+>>> PDP-11-ism, such as the RESET instruction or the PARS, was already
+>>> something I had learned before. To me, Lions was explaining how Ken uses
+>>> them in the kernel.
+>>> 
+>>> My point is I didn't walk into reading Lions without some core experience
+>>> with the PDP-11 family.  Some of the peripherals, like the KL/DLs and
+>>> clock, I was certainly extremely familiar with, and I already understood
+>>> about MMUs (the 67 running TSS was IBM's first VM system). Across so many
+>>> different CMU systems, we had aftermarket disks on most of them [the DEC
+>>> RP03/04 were made by Univac, but they were actually clones of the IBM
+>>> 2314/2316 (only slightly different)].   IIRC we had CDC flavors of them
+>>> which they called the 84x series, and IIRC we had to modify the rp.c driver
+>>> slightly to make them work properly.  So I had already learned how to hack
+>>> the disk drivers by then.     But I never had access to real manuals for
+>>> any of the DEC peripherals other than the 76 Peripherals Handbook until we
+>>> got one of the first RK07s and the RK611/711 controller.   Danny Klein and
+>>> I wrote the first UNIX driver for it, cribbing from the already hacked
+>>> RP04/5/6 driver and reading Dennis' V6 driver manual.  I had already been
+>>> doing a small amount of the kernel mods by then, and we had started to
+>>> write fsck(8) as well.  But when I saw it (and made my own copy), I thought
+>>> Lions helped me better understand the system than I had before.  It
+>>> certainly gave me more confidence about what subsystems I would attack
+>>> (more in a minute).
+>>> 
+>>> At some point, but it had to have been after I saw Lions, Ted Kowalski had
+>>> a xerographic copy of the proofs for K&R1 in a binder (which I copied), and
+>>> by late 78 I had obtained a xerographic copy of the "Unix program
+>>> description" doc that Matt referred to (I think I got that from Phil Karn,
+>>> but it might have been Ted).
+>>> 
+>>> FWIW: A few years later, my old friend and then colleague at Tektronix,
+>>> Mike Zuhl, made an interesting observation, which I think actually plays
+>>> into your comments about Lions.  Zuhl was one of the Purdue EE UNIX folks
+>>> (like the late George Goble and Ward Cunningham).   Zuhl said: *"Hacking on
+>>> the Unix kernel is a lot like riding a motorcycle.  At first you are scared
+>>> sh*tless that you don't want to screw up.   After a while, you get
+>>> confident in your abilities and are willing to try anything.  Finally, you
+>>> realize it is really just an incredibly beautiful hack that works in a
+>>> manner like no other, and you start to respect it and those that came
+>>> before you*."
+>>> 
+>>> For me, reading Lions was part of my transition in the third phase.  He
+>>> explains things I basically knew before at a more macro level.
+>>> 
+>>> My thoughts/recollections if it is of any help,
+>>> Clem
+>>> 
+>>> †  To this day, I still think the 1976 Peripherals Handbook was the best
+>>> one DEC made, and if you are looking at Sixth or Seventh Editions, it is
+>>> really all you need for most of the peripherals they supported.   Later
+>>> ones include some information about later products such as the RL01/2 and
+>>> RK06/7, but they dropped many of them outright in some cases, and in others
+>>> the core descriptions are not nearly as detailed/useful.
+>>> 
+>>>> On Tue, Jul 28, 2026 at 2:41 PM segaloco via TUHS <tuhs at tuhs.org> wrote:
+>>> 
+>>>> On Tuesday, July 28th, 2026 at 10:14, Will Senn via TUHS <tuhs at tuhs.org>
+>>>> wrote:
+>>>> 
+>>>>> Lions is great, but today's reader needs more of a leg up. I think it
+>>>>> illustrates how much architectural knowledge his original audience could
+>>>>> take for granted. Nearly fifty years later, recovering that context has
+>>>>> become part of reading the book. So, reading through Lions in 2026 is an
+>>>>> archaeological dig, really :). That said, if you're planning to read
+>>>>> Lions with any depth, be sure to minimally have on hand:
+>>>>> 
+>>>>> * Lions Commentary
+>>>>> 
+>>>>> * Lions Source Code
+>>>>> 
+>>>>> * PDP-11/40 Processor Handbook
+>>>>> 
+>>>>> * KT11-D Memory Management Option User Manual
+>>>>> 
+>>>>> * Repeatable notes for setting up a working lab
+>>>>> 
+>>>>> Later,
+>>>>> 
+>>>>> Will
+>>>>> 
+>>>> For the record, the intro does indicate what auxiliary knowledge may be
+>>>> necessary, pointing the reader to the manual, several papers such as C
+>>>> tutorials and UNIX for Beginners, as well as listing knowledge of the
+>>>> following PDP-11 hardware useful:
+>>>> 
+>>>> - PDP11/40
+>>>> - RK05
+>>>> - LP11
+>>>> - PC11
+>>>> - KL11
+>>>> 
+>>>> You also do get a bit of hardware exposition, albeit not too much, in
+>>>> Chapter 2.
+>>>> 
+>>>> This implies having the PDP-11 Peripherals Handbook on hand would also be
+>>>> helpful.  Naturally our biases allow us to overlook this, but having both
+>>>> the UNIX Assember Manual and C Reference Manual on hand would be helpful to
+>>>> the uninitiated as those are the two languages at play in the source
+>>>> volume.  Not sure how necessary this would be in practice but UNIX is an
+>>>> ASCII system, so non-ASCII-ites, however rare these days, would be going in
+>>>> with some unhelpful biases, but I don't know if that would peg the ASCII
+>>>> standard as required context.  I'm a sucker for building complete reference
+>>>> documentation graphs...so I'm going to hold my urge further for now.
+>>>> 
+>>>> Still, it would be an interesting exercise to pursue the full graph of
+>>>> primary references needed to establish a normative reference graph for
+>>>> Lions's Commentary.
+>>>> 
+>>>> Will, I don't know if this would be a comparable follow-on project, but
+>>>> there is the Program Description document published with USG UNIX that
+>>>> serves as another detailed analysis of the UNIX kernel[1] that may be worth
+>>>> inspecting with a similar lens.  By the way, I have a later hardcopy of [1]
+>>>> issued with Program Generic 3.  Unfortunately its just a reprint of the
+>>>> Program Generic 2 version and does not include the kernel changes in PG3,
+>>>> but it is complete, so I plan on scanning it in my next round of documents.
+>>>> 
+>>>> - Matt G.
+>>>> 
+>>>> [1] - unix_program_description_jan_1976.pdf
+>>>> 
+
+From tuhs at tuhs.org  Sat Aug  1 13:44:55 2026
+From: tuhs at tuhs.org (Atindra Chaturvedi via TUHS)
+Date: Sat, 01 Aug 2026 03:44:55 +0000
+Subject: [TUHS] Mt. Xinu Mach Distribution + Coherent distribution
+Message-ID: <daec61c9-02d3-8baf-ce64-19486b854803@mindspring.com>
+
+I finally got around to looking for resting places for much of the software and hardware I have used and enjoyed over the years.
+
+
+I have a full Mt. Xinu MACH distribution + Networking + X 11 + Online docs + Installation guide + MACH book + USENIX MACH volume and ACM MACH volume.
+
+
+Also a Coherent distribution with updates up to V3.02 + COHware #1 + COHWare #2 for device drivers etc.
+
+
+HERMES language (for distributed systems) book + software from IBM Watson Research Center
+
+
+Camelot and Avalon ( distributed system) book
+
+
+My intent is to ask what would be a good place to send these to. My primary wish is that this gets USED, not filed away in a museum.
+
+
+Please give me some ideas/leads.
+
+
+Atindra.
+
+From tuhs at tuhs.org  Sat Aug  1 13:58:50 2026
+From: tuhs at tuhs.org (Clem Cole via TUHS)
+Date: Fri, 31 Jul 2026 23:58:50 -0400
+Subject: [TUHS] Mt. Xinu Mach Distribution + Coherent distribution
+In-Reply-To: <daec61c9-02d3-8baf-ce64-19486b854803@mindspring.com>
+References: <daec61c9-02d3-8baf-ce64-19486b854803@mindspring.com>
+Message-ID: <CAC20D2OwoS1Np9p6ek2FXDO=_M3SRTuovk04qUmuY_ujbeAtug@mail.gmail.com>
+
+TUHS would be a good place to start.    That is exactly the mission we have
+to make things assessable in the future.  If you send me, Warren, or any of
+the others who are part of the org structure behind it [aka the not for
+profit TUHS, inc] offline, we can work with you on how to make all
+available.
+
+We are trying to make this a bit easier. Very recently a request came in
+for how to donate some other materials and we are trying to set something
+up that is a little more automatic and once that is in place we plan to
+announce it on the list as well as provide docs on how to do it ion the
+website.
+
+But in the meantime, we can use the scheme Warren had used for years - send
+a private email and can help make all happen.
+
+Thank you for your offer.
+
+Clem
+
+
+
+
+Sent from a handheld expect more typos than usual
+
+On Fri, Jul 31, 2026 at 11:45 PM Atindra Chaturvedi via TUHS <tuhs at tuhs.org>
+wrote:
+
+> I finally got around to looking for resting places for much of the
+> software and hardware I have used and enjoyed over the years.
+>
+>
+> I have a full Mt. Xinu MACH distribution + Networking + X 11 + Online docs
+> + Installation guide + MACH book + USENIX MACH volume and ACM MACH volume.
+>
+>
+> Also a Coherent distribution with updates up to V3.02 + COHware #1 +
+> COHWare #2 for device drivers etc.
+>
+>
+> HERMES language (for distributed systems) book + software from IBM Watson
+> Research Center
+>
+>
+> Camelot and Avalon ( distributed system) book
+>
+>
+> My intent is to ask what would be a good place to send these to. My
+> primary wish is that this gets USED, not filed away in a museum.
+>
+>
+> Please give me some ideas/leads.
+>
+>
+> Atindra.
+>
+
+From tuhs at tuhs.org  Tue Aug  4 02:25:20 2026
+From: tuhs at tuhs.org (Charles H Sauer (he/him) via TUHS)
+Date: Mon, 3 Aug 2026 11:25:20 -0500
+Subject: [TUHS] =?utf-8?b?SnVuZSA4LCAyMDI2IOKAkyBWaXZpYW4gVm9zcyDigJMg?=
+ =?utf-8?q?Where_Unix_Runs_Today?=
+In-Reply-To: <36d94a88-e21b-46eb-9fa4-5193cd7bd61c@gmail.com>
+References: <36d94a88-e21b-46eb-9fa4-5193cd7bd61c@gmail.com>
+Message-ID: <354fb67f-921e-410c-a824-6d96dea2e6ea@technologists.com>
+
+I discovered https://vivianvoss.net/blog/where-unix-runs-today yesterday 
+and sent the excerpts below to former AIX colleagues and others that 
+might be interested. I forwarded that mail to Clem and Heinz this 
+morning. Clem replied with a detailed commentary. Clem seemed to agree 
+this might be worth posting here to liven things up.
+
+Charlie
+
+''Open the laptop in front of you. If it is a Mac, you are on certified 
+Unix. Hand it to the child next to you, watching cartoons on an iPad — 
+also Darwin underneath, the same family. The phone in your pocket: same. 
+Walk through any data centre serving European video, and a sizeable 
+share of those streams come off appliances running FreeBSD. Pick up a 
+games console at the till in any electronics shop, and odds are very 
+good it boots a fork of FreeBSD before it ever shows you a menu.
+...
+''One footnote worth keeping. Apple is certified on UNIX 03, dating from 
+2002. Only one product on the planet is certified at the next level — 
+UNIX V7 (Single UNIX Specification version 4, POSIX.1-2008): IBM’s AIX 7.
+...
+''The world’s commercial Unix systems are not all in retirement homes.
+
+''IBM AIX is actively developed. New versions track new IBM POWER 
+processors; the public roadmap is clear. AIX 7 is the only operating 
+system in the world certified at UNIX V7 (SUSv4) level. Banks, 
+insurance, large enterprise back-office: AIX still carries this work, 
+and IBM still treats it as core strategy.''
+-- 
+voice: +1.512.784.7526       e-mail: sauer at technologists.com
+fax: +1.512.346.5240         Web: https://technologists.com/sauer/
+Facebook/Google/LinkedIn/mas.to: CharlesHSauer
+
+From tuhs at tuhs.org  Tue Aug  4 03:00:17 2026
+From: tuhs at tuhs.org (Alan Coopersmith via TUHS)
+Date: Mon, 3 Aug 2026 10:00:17 -0700
+Subject: [TUHS] =?utf-8?b?SnVuZSA4LCAyMDI2IOKAkyBWaXZpYW4gVm9zcyDigJMg?=
+ =?utf-8?q?Where_Unix_Runs_Today?=
+In-Reply-To: <354fb67f-921e-410c-a824-6d96dea2e6ea@technologists.com>
+References: <36d94a88-e21b-46eb-9fa4-5193cd7bd61c@gmail.com>
+ <354fb67f-921e-410c-a824-6d96dea2e6ea@technologists.com>
+Message-ID: <d7dfa1d7-048a-4786-bd43-a27cdd41191a@oracle.com>
+
+On 8/3/2026 9:25 AM, Charles H Sauer (he/him) via TUHS wrote:
+> I discovered https://vivianvoss.net/blog/where-unix-runs-today yesterday
+> and sent the excerpts below to former AIX colleagues and others that
+> might be interested. I forwarded that mail to Clem and Heinz this
+> morning. Clem replied with a detailed commentary. Clem seemed to agree
+> this might be worth posting here to liven things up.
+> 
+> Charlie
+> 
+> ''One footnote worth keeping. Apple is certified on UNIX 03, dating from
+> 2002. Only one product on the planet is certified at the next level —
+> UNIX V7 (Single UNIX Specification version 4, POSIX.1-2008): IBM’s AIX 7.
+> ...
+
+While AIX 7 is the only product certified for V7 today, others have been
+certified in the past, but stopped renewing their certifications.
+
+Oracle Solaris 11.4 was the first product to earn UNIX V7 certification:
+https://x.com/TheOpenGroup/status/1034785507610447872
+https://web.archive.org/web/20200114100431/https://www.opengroup.org/openbrand/register/brand3642.htm
+
+The blog also incorrectly states the support level of Solaris - only
+Solaris 9 and earlier, and Solaris 11.0 through 11.2, are in what
+Oracle calls Sustaining Support.  Solaris 10 & 11.3 are in Extended
+Support until January 2027, Solaris 11.4 is in Premier Support until
+November 2037, and continues to get new features in quarterly support
+updates, as I post on the Solaris blog:
+https://www.oracle.com/a/ocom/docs/support/advanced-customer-support/solaris-linux-vm-lsp.pdf
+https://blogs.oracle.com/authors/alan-coopersmith/
+
+As for the blog comments that HP-UX is "genuinely fading", I'm surprised
+it doesn't note that HP actually has ended support for it:
+https://support.hpe.com/hpesc/public/docDisplay?docId=a00143419en_us&docLocale=en_US
+https://www.osnews.com/story/144094/hp-ux-hits-end-of-life-today-and-im-sad/
+https://www.theregister.com/software/2026/01/05/the-last-supported-version-of-hp-ux-is-no-more/2347266
+
+-- 
+         -Alan Coopersmith-                 alan.coopersmith at oracle.com
+          Oracle Solaris Engineering - https://blogs.oracle.com/solaris
+
+
+From tuhs at tuhs.org  Tue Aug  4 08:24:57 2026
+From: tuhs at tuhs.org (Dave Horsfall via TUHS)
+Date: Tue, 4 Aug 2026 08:24:57 +1000
+Subject: [TUHS] Use of "{}" in the Shell?
+Message-ID: <CAJshPiG=QvwvTWYNoCz+Bvh9fKknFsCNZMC=p61t+vY9-9Vf8A@mail.gmail.com>
+
+A long time ago, in a Unix manpage far away, I saw a reference to "{}"
+which acted similar to "()" except that it did not fork e.g. "{exit}" would
+do just that :-)
+
+Does anyone know the provenance of this Shell?  I can't seem to reproduce
+it on the MacBook or the FreeBSD box here (my Penguin box is currently
+dead).
+
+Thanks.
+
+-- Dave
+
+From tuhs at tuhs.org  Tue Aug  4 08:31:56 2026
+From: tuhs at tuhs.org (Warren Toomey via TUHS)
+Date: Tue, 4 Aug 2026 08:31:56 +1000
+Subject: [TUHS] President's Report: August 2026
+Message-ID: <10e3a8ce-6d30-48e0-bf1a-653bdb6e3d49@tuhs.org>
+
+Back in June I brought the news that we had formed an incorporated 
+organisation, TUHS Inc. 
+<https://www.tuhs.org/Governance/tuhsi_faq.html>, to handle the 
+donations that you sent in and also to create a formal structure to keep 
+TUHS going long into the future. At the time I promised monthly updates 
+on our activities; alas, there hasn't been enough news to report 
+monthly. So here is the next update!
+
+We've been struggling to open a bank account for the donations that you 
+sent in April. We would rather not open a "bricks and mortar" bank 
+account as their exchange rates can be high. At the same time, the 
+on-line institutions like Wise and Airwallex have an aversion to 
+business accounts for incorporated organisations that are not charities. 
+Lastly, the Australian Tax Office may want to tax our income as we are 
+not a registered charity.
+
+Having discovered of the above, we have chosen to apply with the 
+Australian Charities and Not-for-profits Commission 
+<https://www.acnc.gov.au/> to register TUHS Inc. as a charity. Our 
+application was filed last week and the ACNC has a six- to eight-week 
+turnaround time on applications. So now we wait for their response. If 
+our application is successful, we will be able to get a Wise/Airwallex 
+account and we will also not have to pay any taxes. Fingers crossed!
+
+While doing the charity application, I came across this definition of a 
+museum from the International Council of Museums 
+<https://icom.museum/en/resources/standards-guidelines/museum-definition/>:
+
+    A museum is a not-for-profit, permanent institution in the service
+    of society that researches, collects, conserves, interprets and
+    exhibits tangible and intangible heritage. Open to the public,
+    accessible and inclusive, museums foster diversity and
+    sustainability. They operate and communicate ethically,
+    professionally and with the participation of communities, offering
+    varied experiences for education, enjoyment, reflection and
+    knowledge sharing.
+
+I think that perfectly sums up what TUHS is all about. We collect, 
+conserve and interpret Unix artifacts, we are open to the public and we 
+have an excellent community (the TUHS mailing list) to share our Unix 
+knowledge.
+
+On the server side of things, we are still working on migrating the TUHS 
+services from our existing Linux server to a new FreeBSD server. We now 
+have our own DNS servers, ns1.tuhs.org and ns2.tuhs.org which hold the 
+tuhs.org domain records.
+
+As you know, I personally have a "hidden" archive of Unix-related 
+material which I haven't been able to release for legal and copyright 
+reasons. If TUHS Inc. gets recognised as a museum, this might open up 
+opportunities to allow some access to this material. We have been 
+researching policies to cover the acquisition and use of material 
+protected by legal ownership rights. What we really need is to get 
+advice from some intellectual property experts, If you have any links, 
+references or contacts w.r.t. IP experts, please let us know.
+
+Finally, we are working on a scalable mechanism to allow people to 
+donate material to us.
+
+That's all the news for now. Hopefully, in a few weeks, I will be able 
+to report on our application for charity status.
+
+Cheers, Warren
+
+
+
+From tuhs at tuhs.org  Tue Aug  4 09:08:38 2026
+From: tuhs at tuhs.org (Alexis via TUHS)
+Date: Tue, 04 Aug 2026 09:08:38 +1000
+Subject: [TUHS] Use of "{}" in the Shell?
+In-Reply-To: <CAJshPiG=QvwvTWYNoCz+Bvh9fKknFsCNZMC=p61t+vY9-9Vf8A@mail.gmail.com>
+ (Dave Horsfall via TUHS's message of "Tue, 4 Aug 2026 08:24:57 +1000")
+References: <CAJshPiG=QvwvTWYNoCz+Bvh9fKknFsCNZMC=p61t+vY9-9Vf8A@mail.gmail.com>
+Message-ID: <87se4uer9l.fsf@gmail.com>
+
+Dave Horsfall via TUHS <tuhs at tuhs.org> writes:
+
+> A long time ago, in a Unix manpage far away, I saw a reference 
+> to "{}"
+> which acted similar to "()" except that it did not fork 
+> e.g. "{exit}" would
+> do just that :-)
+>
+> Does anyone know the provenance of this Shell?  I can't seem to 
+> reproduce
+> it on the MacBook or the FreeBSD box here (my Penguin box is 
+> currently
+> dead).
+
+Well, the dash(1) man page has:
+
+  Grouping Commands Together
+    Commands may be grouped by writing either
+
+        (list)
+
+    or
+
+        { list; }
+
+    The first of these executes the commands in a subshell. 
+    Builtin commands
+    grouped into a (list) will not affect the current shell.  The 
+    second form
+    does not fork another shell so is slightly more efficient.
+
+
+Alexis.
+
+From tuhs at tuhs.org  Tue Aug  4 09:09:22 2026
+From: tuhs at tuhs.org (Peter Pentchev via TUHS)
+Date: Tue, 4 Aug 2026 02:09:22 +0300
+Subject: [TUHS] Use of "{}" in the Shell?
+In-Reply-To: <CAJshPiG=QvwvTWYNoCz+Bvh9fKknFsCNZMC=p61t+vY9-9Vf8A@mail.gmail.com>
+References: <CAJshPiG=QvwvTWYNoCz+Bvh9fKknFsCNZMC=p61t+vY9-9Vf8A@mail.gmail.com>
+Message-ID: <anEfncqgO30dXDQZ@straylight.m.ringlet.net>
+
+On Tue, Aug 04, 2026 at 08:24:57AM +1000, Dave Horsfall via TUHS wrote:
+> A long time ago, in a Unix manpage far away, I saw a reference to "{}"
+> which acted similar to "()" except that it did not fork e.g. "{exit}" would
+> do just that :-)
+> 
+> Does anyone know the provenance of this Shell?  I can't seem to reproduce
+> it on the MacBook or the FreeBSD box here (my Penguin box is currently
+> dead).
+
+It should work on pretty much any Bourne-compatible shell, I think.
+However, there is one crucial point: you *must* place a semicolon between
+the last command and the closing brace, and if you write commands on
+the same line, you also *must* place a semicolon between the closing
+brace and the next command :)
+
+    [roam at straylight ~]$ dash -c 'echo first; { echo second; echo third; }; echo fourth;'
+    first
+    second
+    third
+    fourth
+    [roam at straylight ~]$
+
+However, as usual, semicolons may be replaced with newline characters:
+
+    [roam at straylight ~]$ dash -c $'echo first; { echo second; echo third\n}\necho fourth;'
+    first
+    second
+    third
+    fourth
+    [roam at straylight ~]$
+
+It should be described under a section named something like "grouping" or
+"compound commands" in your shell's manual page.
+
+G'luck,
+Peter
+
+-- 
+Peter Pentchev  roam at ringlet.net roam at debian.org peter at morpheusly.com
+PGP key:        https://www.ringlet.net/roam/roam.key.asc
+Key fingerprint 2EE7 A7A5 17FC 124C F115  C354 651E EFB0 2527 DF13
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 833 bytes
+Desc: not available
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20260804/f2142e84/attachment.sig>
+
+From tuhs at tuhs.org  Tue Aug  4 09:23:54 2026
+From: tuhs at tuhs.org (Peter Pentchev via TUHS)
+Date: Tue, 4 Aug 2026 02:23:54 +0300
+Subject: [TUHS] Use of "{}" in the Shell?
+In-Reply-To: <anEfncqgO30dXDQZ@straylight.m.ringlet.net>
+References: <CAJshPiG=QvwvTWYNoCz+Bvh9fKknFsCNZMC=p61t+vY9-9Vf8A@mail.gmail.com>
+ <anEfncqgO30dXDQZ@straylight.m.ringlet.net>
+Message-ID: <anEjBczCwhd7oRe2@straylight.m.ringlet.net>
+
+On Tue, Aug 04, 2026 at 02:09:22AM +0300, Peter Pentchev wrote:
+> On Tue, Aug 04, 2026 at 08:24:57AM +1000, Dave Horsfall via TUHS wrote:
+> > A long time ago, in a Unix manpage far away, I saw a reference to "{}"
+> > which acted similar to "()" except that it did not fork e.g. "{exit}" would
+> > do just that :-)
+> > 
+> > Does anyone know the provenance of this Shell?  I can't seem to reproduce
+> > it on the MacBook or the FreeBSD box here (my Penguin box is currently
+> > dead).
+> 
+> It should work on pretty much any Bourne-compatible shell, I think.
+> However, there is one crucial point: you *must* place a semicolon between
+> the last command and the closing brace, and if you write commands on
+> the same line, you also *must* place a semicolon between the closing
+> brace and the next command :)
+
+And of course, I forgot to include an actually useful example:
+something that was pretty common back when I wrote Makefiles for fun:
+
+  gzip -cn9 repopush.1 > repopush.1.gz || { rm -f repopush.1.gz; exit 1; }
+
+G'luck,
+Peter
+
+-- 
+Peter Pentchev  roam at ringlet.net roam at debian.org peter at morpheusly.com
+PGP key:        https://www.ringlet.net/roam/roam.key.asc
+Key fingerprint 2EE7 A7A5 17FC 124C F115  C354 651E EFB0 2527 DF13
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 833 bytes
+Desc: not available
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20260804/0cc43a24/attachment.sig>
+
+From tuhs at tuhs.org  Tue Aug  4 09:34:54 2026
+From: tuhs at tuhs.org (Warner Losh via TUHS)
+Date: Mon, 3 Aug 2026 17:34:54 -0600
+Subject: [TUHS] Use of "{}" in the Shell?
+In-Reply-To: <CAJshPiG=QvwvTWYNoCz+Bvh9fKknFsCNZMC=p61t+vY9-9Vf8A@mail.gmail.com>
+References: <CAJshPiG=QvwvTWYNoCz+Bvh9fKknFsCNZMC=p61t+vY9-9Vf8A@mail.gmail.com>
+Message-ID: <CANCZdfoFciAZ7iF=p-uQzSwXYXQ4kRYnWmRMActGfKo3nWowvw@mail.gmail.com>
+
+On Mon, Aug 3, 2026 at 4:25 PM Dave Horsfall via TUHS <tuhs at tuhs.org> wrote:
+
+> A long time ago, in a Unix manpage far away, I saw a reference to "{}"
+> which acted similar to "()" except that it did not fork e.g. "{exit}" would
+> do just that :-)
+>
+> Does anyone know the provenance of this Shell?  I can't seem to reproduce
+> it on the MacBook or the FreeBSD box here (my Penguin box is currently
+> dead).
+>
+
+It dates back to V7. It's in FreeBSD today. I use it all the time.  From
+the 7th edition man page:
+...
+       ( list )
+              Execute list in a subshell.
+
+       { list }
+              list is simply executed.
+...
+A huge number of shell scripts depend on this behavior. Since the 6th
+Edition used the Thompson Shell, it doesn't have this as far as I can tell,
+but does have () grouping. I've not examined the source to Thompson
+shell closely to know if it secretly does this (and that's why Steve Bourne
+implemented it), or if that's something Bourne invented. But there are '('
+and ')' in sh.c, but no '{' or '}', so that leans towards Bourne inventing
+it or borrowing it.
+
+Warner
+
+From tuhs at tuhs.org  Tue Aug  4 09:45:18 2026
+From: tuhs at tuhs.org (=?utf-8?q?Cameron_M=C3=AD=C4=8Be=C3=A1l_Tyre_via_TUHS?=)
+Date: Mon, 03 Aug 2026 23:45:18 +0000
+Subject: [TUHS] Use of "{}" in the Shell?
+In-Reply-To: <anEjBczCwhd7oRe2@straylight.m.ringlet.net>
+References: <CAJshPiG=QvwvTWYNoCz+Bvh9fKknFsCNZMC=p61t+vY9-9Vf8A@mail.gmail.com>
+ <anEfncqgO30dXDQZ@straylight.m.ringlet.net>
+ <anEjBczCwhd7oRe2@straylight.m.ringlet.net>
+Message-ID: <KYt7TAw32aj_uSoToJGTF2sIzDzpXl3vx6b4YJIEBcw53SgqCj58tP5T9b9pO2tqf8S_VVY2c-5IuPp5qJ2YlwpGr1dkzxpU1_P4LWH8fw0=@protonmail.ch>
+
+Using Peter's guidance, I tried the original command discussed, in Bash on my Macbook Air, and it worked.
+
+{ exit 1; }
+
+The result: https://ibb.co/xq20BMvT
+
+Side note: I also tried on Bash on Debian sandboxed on GrapheneOS and the result was the same.
+
+Best wishes,
+
+Cameron
+
+
+
+On Tuesday, 4 August 2026 at 00:24, Peter Pentchev via TUHS <tuhs at tuhs.org> wrote:
+
+> And of course, I forgot to include an actually useful example:
+> something that was pretty common back when I wrote Makefiles for fun:
+>
+>   gzip -cn9 repopush.1 > repopush.1.gz || { rm -f repopush.1.gz; exit 1; }
+
+> > On Tue, Aug 04, 2026 at 08:24:57AM +1000, Dave Horsfall via TUHS wrote, in part:
+
+> > > A long time ago, in a Unix manpage far away, I saw a reference to "{}"
+> > > which acted similar to "()" except that it did not fork e.g. "{exit}" would
+> > > do just that :-)
+
+
+From tuhs at tuhs.org  Tue Aug  4 10:05:27 2026
+From: tuhs at tuhs.org (Cameron Tyre via TUHS)
+Date: Tue, 04 Aug 2026 00:05:27 +0000
+Subject: [TUHS] =?utf-8?b?SnVuZSA4LCAyMDI2IOKAkyBWaXZpYW4gVm9zcyDigJMg?=
+ =?utf-8?q?Where_Unix_Runs_Today?=
+In-Reply-To: <354fb67f-921e-410c-a824-6d96dea2e6ea@technologists.com>
+References: <36d94a88-e21b-46eb-9fa4-5193cd7bd61c@gmail.com>
+ <354fb67f-921e-410c-a824-6d96dea2e6ea@technologists.com>
+Message-ID: <E2-lrYyDq2-3leRpctiJI-zX_L5j6ALPnQXA9Fl3QjkGHZkmizGmCtQbG4BXMP2Bu516zgEoWgxnden2LKoMCWbd2tk9vTlUfB5F1PnvyWU=@protonmail.ch>
+
+Hi Charlie,
+
+My desktop, a Mac mini and my laptop, a secondhand Macbook Air, both run on it and it was the installation of Xcode on the desktop which also installed the command-line tools which then led me down the long and winding rabbit hole leading to the TUHS list for which I am always grateful to have discovered.
+
+I always download a copy of the UNIX 03 certification for the latest macOS major release, from the Open Group website, and pin it on my office wall. It's some kind of completeness thing in my head, I guess. Only last week I got an email from Apple asking me to complete a survey about why I bought an Apple computer and other, scarier, questions like "Do I update it?"...! In one of my replies I said that I like to try and keep life simple and that I can click on Terminal, fire up ed, type out a document and then use lp to print it out and it doesn't get much simpler than that.
+
+My wife has an iPhone and an iPad. I once tried to explain a condensed version of the UNIX story to her and that her phone and tablet were running UNIX underneath the colorful facades of iOS and iPadOS but I can't reproduce her reply on this list, or probably anywhere.
+
+Best wishes,
+
+Cameron
+
+
+
+On Monday, 3 August 2026 at 17:25, Charles H Sauer (he/him) via TUHS <tuhs at tuhs.org> wrote:
+
+> I discovered https://vivianvoss.net/blog/where-unix-runs-today yesterday
+> and sent the excerpts below to former AIX colleagues and others that
+> might be interested. I forwarded that mail to Clem and Heinz this
+> morning. Clem replied with a detailed commentary. Clem seemed to agree
+> this might be worth posting here to liven things up.
+> 
+> Charlie
+> 
+> ''Open the laptop in front of you. If it is a Mac, you are on certified
+> Unix. Hand it to the child next to you, watching cartoons on an iPad —
+> also Darwin underneath, the same family. The phone in your pocket: same.
+> Walk through any data centre serving European video, and a sizeable
+> share of those streams come off appliances running FreeBSD. Pick up a
+> games console at the till in any electronics shop, and odds are very
+> good it boots a fork of FreeBSD before it ever shows you a menu.
+> ...
+> ''One footnote worth keeping. Apple is certified on UNIX 03, dating from
+> 2002. Only one product on the planet is certified at the next level —
+> UNIX V7 (Single UNIX Specification version 4, POSIX.1-2008): IBM’s AIX 7.
+> ...
+> ''The world’s commercial Unix systems are not all in retirement homes.
+> 
+> ''IBM AIX is actively developed. New versions track new IBM POWER
+> processors; the public roadmap is clear. AIX 7 is the only operating
+> system in the world certified at UNIX V7 (SUSv4) level. Banks,
+> insurance, large enterprise back-office: AIX still carries this work,
+> and IBM still treats it as core strategy.''
+
+From tuhs at tuhs.org  Tue Aug  4 16:47:44 2026
+From: tuhs at tuhs.org (Arnold Robbins via TUHS)
+Date: Tue, 04 Aug 2026 00:47:44 -0600
+Subject: [TUHS] Use of "{}" in the Shell?
+In-Reply-To: <CANCZdfoFciAZ7iF=p-uQzSwXYXQ4kRYnWmRMActGfKo3nWowvw@mail.gmail.com>
+References: <CAJshPiG=QvwvTWYNoCz+Bvh9fKknFsCNZMC=p61t+vY9-9Vf8A@mail.gmail.com>
+ <CANCZdfoFciAZ7iF=p-uQzSwXYXQ4kRYnWmRMActGfKo3nWowvw@mail.gmail.com>
+Message-ID: <202608040647.6746liUq010984@freefriends.org>
+
+Warner Losh via TUHS <tuhs at tuhs.org> wrote:
+
+> I've not examined the source to Thompson shell closely to know if it
+> secretly does this (and that's why Steve Bourne implemented it), or if
+> that's something Bourne invented.
+
+Braces are also allowed where "do" and "done" are.
+
+I have always suspected, but never bothered to verify, that this is
+the case so that shell scripts could look more like C if one wanted
+them to. For example, in Bash:
+
+	$ for ((i = 1; i <= 3; i++))
+	> {
+	>     echo $i
+	> }
+	1
+	2
+	3
+
+Arnold
+
+From tuhs at tuhs.org  Tue Aug  4 17:02:12 2026
+From: tuhs at tuhs.org (segaloco via TUHS)
+Date: Tue, 04 Aug 2026 07:02:12 +0000
+Subject: [TUHS] =?utf-8?b?SnVuZSA4LCAyMDI2IOKAkyBWaXZpYW4gVm9zcyDigJMg?=
+ =?utf-8?q?Where_Unix_Runs_Today?=
+In-Reply-To: <354fb67f-921e-410c-a824-6d96dea2e6ea@technologists.com>
+References: <36d94a88-e21b-46eb-9fa4-5193cd7bd61c@gmail.com>
+ <354fb67f-921e-410c-a824-6d96dea2e6ea@technologists.com>
+Message-ID: <17Ded2ywWWAumqVAMclrJ6A5IVTLn9wgyu-4HyXcTEUYHwr-Rt0BIklGvCINVPlbOIakxyWr3OdBCWHKJeVNlo_ufdCAKMGxtb4N4ajfaF8=@protonmail.com>
+
+On Monday, August 3rd, 2026 at 09:25, Charles H Sauer (he/him) via TUHS <tuhs at tuhs.org> wrote:
+
+> I discovered https://vivianvoss.net/blog/where-unix-runs-today yesterday
+> and sent the excerpts below to former AIX colleagues and others that
+> might be interested. I forwarded that mail to Clem and Heinz this
+> morning. Clem replied with a detailed commentary. Clem seemed to agree
+> this might be worth posting here to liven things up.
+> 
+> Charlie
+> 
+
+I appreciate this, as being the nerd I am, I proselytize on UNIX's
+influence and presence in most of our modern computing world to my
+friends every so often.  Usually comes up because they ask about the
+documentation stuff I study (I also host music events at my house so
+plenty of folks have a chance to peruse the shelves.)  The other context
+in which it comes up is when someone's cursing a POS terminal but I'll
+let the technology's name speak for itself :)
+
+Anywho, something I'm a bit tickled by is that there are various UNIX
+and UNIX-like kernels down inside of various analog telephone
+adapter (ATA) devices which then enable, among other things, Bell System
+telephones to still interface with modern digital networks that have
+left the 5ESS behind.  It's a bit poetic how it has all come together
+that UNIX in 2026 continues to excel in telecommunications of all kinds.
+
+Once upon a time, UNIX was a system running on a single PDP-7 at MHCC.
+Today, I pick up the Western Electric 500D telephone at my desk and it
+connects to a Grandstream ATA running some sort of Linux kernel to
+compute which other telephone the various pulses I'm sending down a wire
+mean I should connect to*.  A chunk of the compute has now moved from the
+CO into a small black box on my desk no larger than a hamburger.  And
+that small black hamburger runs something that talks to its client
+software quite similarly to what Ken, Dennis, et. al. knew was the
+type-design for a quality system that would outlast generational shifts
+in implementation.  ANSI C and POSIX are both testaments to that...
+
+- Matt G.
+
+* - As an aside, I have not had a personal telephone in many years,
+cellular or otherwise.  I have an assigned Android mobile for work but
+that stays chained to my desk like the snarling, rabid animal it is.
+
+Needless to say, the telephone I describe is a cool local network called
+Telehamster (https://www.telehamster.net/) here in Bellingham.  The
+network is simply a 10,000 line Grandstream network, with each line
+being a 4-digit extension on the local network.  However, being a VoIP
+thing, anyone globally can join the network.  This isn't an ad pitch by
+the way, I'm just super jazzed on the project and enjoy the crossroads
+it sits at re: unix, telephones, community, etc.  I like to celebrate
+these sorts of projects!
+
+From tuhs at tuhs.org  Tue Aug  4 18:21:24 2026
+From: tuhs at tuhs.org (Peter Pentchev via TUHS)
+Date: Tue, 4 Aug 2026 11:21:24 +0300
+Subject: [TUHS] Use of "{}" in the Shell?
+In-Reply-To: <202608040647.6746liUq010984@freefriends.org>
+References: <CAJshPiG=QvwvTWYNoCz+Bvh9fKknFsCNZMC=p61t+vY9-9Vf8A@mail.gmail.com>
+ <CANCZdfoFciAZ7iF=p-uQzSwXYXQ4kRYnWmRMActGfKo3nWowvw@mail.gmail.com>
+ <202608040647.6746liUq010984@freefriends.org>
+Message-ID: <anGg_0GvGpYRhIyi@straylight.m.ringlet.net>
+
+On Tue, Aug 04, 2026 at 12:47:44AM -0600, Arnold Robbins via TUHS wrote:
+> Warner Losh via TUHS <tuhs at tuhs.org> wrote:
+> 
+> > I've not examined the source to Thompson shell closely to know if it
+> > secretly does this (and that's why Steve Bourne implemented it), or if
+> > that's something Bourne invented.
+> 
+> Braces are also allowed where "do" and "done" are.
+> 
+> I have always suspected, but never bothered to verify, that this is
+> the case so that shell scripts could look more like C if one wanted
+> them to. For example, in Bash:
+> 
+> 	$ for ((i = 1; i <= 3; i++))
+> 	> {
+> 	>     echo $i
+> 	> }
+> 	1
+> 	2
+> 	3
+
+Well, that's several kinds of Bash-specific syntax right there :)
+(nothing wrong with that, just pointing it out)
+
+I think that in the original implementation the main point was indeed to
+be able to put more than one command in a || or && pipeline as in
+my ... || { ...; exit 1; } example, or to redirect their input or
+output: { printf header; command; printf footer; } | processing-command
+(similar to the dash manual page example).
+
+G'luck,
+Peter
+
+-- 
+Peter Pentchev  roam at ringlet.net roam at debian.org peter at morpheusly.com
+PGP key:        https://www.ringlet.net/roam/roam.key.asc
+Key fingerprint 2EE7 A7A5 17FC 124C F115  C354 651E EFB0 2527 DF13
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 833 bytes
+Desc: not available
+URL: <http://www.tuhs.org/pipermail/tuhs/attachments/20260804/959c4e45/attachment.sig>
+
+From tuhs at tuhs.org  Tue Aug  4 19:11:18 2026
+From: tuhs at tuhs.org (steve jenkin via TUHS)
+Date: Tue, 4 Aug 2026 19:11:18 +1000
+Subject: [TUHS] =?utf-8?b?SnVuZSA4LCAyMDI2IOKAkyBWaXZpYW4gVm9zcyDigJMg?=
+ =?utf-8?q?Where_Unix_Runs_Today?=
+In-Reply-To: <17Ded2ywWWAumqVAMclrJ6A5IVTLn9wgyu-4HyXcTEUYHwr-Rt0BIklGvCINVPlbOIakxyWr3OdBCWHKJeVNlo_ufdCAKMGxtb4N4ajfaF8=@protonmail.com>
+References: <36d94a88-e21b-46eb-9fa4-5193cd7bd61c@gmail.com>
+ <354fb67f-921e-410c-a824-6d96dea2e6ea@technologists.com>
+ <17Ded2ywWWAumqVAMclrJ6A5IVTLn9wgyu-4HyXcTEUYHwr-Rt0BIklGvCINVPlbOIakxyWr3OdBCWHKJeVNlo_ufdCAKMGxtb4N4ajfaF8=@protonmail.com>
+Message-ID: <DD7EFD10-2347-47AE-938F-80670C88BEFB@canb.auug.org.au>
+
+I've heard Andy Tanenbaum say on a video-link address:
+
+	"No Unix, No Lions Commentary, No MINIX, No Linux, No Android,"	 [ didn't add "No iOS/MacOS" ]
+
+He was more circumspect & expansive in his CACM article on the topic.
+
+> On 4 Aug 2026, at 17:02, segaloco via TUHS <tuhs at tuhs.org> wrote:
+> 
+> I appreciate this, as being the nerd I am, I proselytize on UNIX's
+> influence and presence in most of our modern computing world to my
+> friends every so often. 
+
+
+Lessons Learned from 30 Years of MINIX, 
+	March 2016, CACM 
+	<https://cacm.acm.org/magazines/2016/3/198874-lessons-learned-from-30-years-of-minix/fulltext>
+
+	I decided to write a book describing the code, like Lions did before me,
+        and have my publisher, Prentice Hall, distribute the system, 
+        including all source code, as an adjunct to the book.
+
+	Thirty years later the consequences of Van Renesse's offhand remark are enormous.
+        If he had not mentioned interrupt 15, I would probably have eventually given up in despair.
+
+        Without MINIX, it is inconceivable there would have been a Linux
+        since Linus Torvalds learned about operating systems by studying the MINIX source code
+        in minute detail and using it as a base to write Linux.
+
+        Without Linux, there would not have been an Android since it is built on top of Linux.
+        Without Android, the relative stock prices of Apple and Samsung might be quite different today.
+
+==============
+
+Related links, including videos in a blog post:
+	<https://stevej-on-it.blogspot.com/2022/04/john-lions-unix-commentary-tanenbaum-on.html>
+
+==============
+--
+Steve Jenkin, IT Systems and Design 
+0412 786 915 (+61 412 786 915)
+PO Box 38, Kippax ACT 2615, AUSTRALIA
+
+mailto:sjenkin at canb.auug.org.au http://members.tip.net.au/~sjenkin
+
+
+From tuhs at tuhs.org  Tue Aug  4 20:04:36 2026
+From: tuhs at tuhs.org (Arnold Robbins via TUHS)
+Date: Tue, 04 Aug 2026 04:04:36 -0600
+Subject: [TUHS] Use of "{}" in the Shell?
+In-Reply-To: <anGg_0GvGpYRhIyi@straylight.m.ringlet.net>
+References: <CAJshPiG=QvwvTWYNoCz+Bvh9fKknFsCNZMC=p61t+vY9-9Vf8A@mail.gmail.com>
+ <CANCZdfoFciAZ7iF=p-uQzSwXYXQ4kRYnWmRMActGfKo3nWowvw@mail.gmail.com>
+ <202608040647.6746liUq010984@freefriends.org>
+ <anGg_0GvGpYRhIyi@straylight.m.ringlet.net>
+Message-ID: <202608041004.674A4a8N033727@freefriends.org>
+
+Peter Pentchev <roam at ringlet.net> wrote:
+
+> On Tue, Aug 04, 2026 at 12:47:44AM -0600, Arnold Robbins via TUHS wrote:
+> > Warner Losh via TUHS <tuhs at tuhs.org> wrote:
+> > 
+> > > I've not examined the source to Thompson shell closely to know if it
+> > > secretly does this (and that's why Steve Bourne implemented it), or if
+> > > that's something Bourne invented.
+> > 
+> > Braces are also allowed where "do" and "done" are.
+> > 
+> > I have always suspected, but never bothered to verify, that this is
+> > the case so that shell scripts could look more like C if one wanted
+> > them to. For example, in Bash:
+> > 
+> > 	$ for ((i = 1; i <= 3; i++))
+> > 	> {
+> > 	>     echo $i
+> > 	> }
+> > 	1
+> > 	2
+> > 	3
+>
+> Well, that's several kinds of Bash-specific syntax right there :)
+> (nothing wrong with that, just pointing it out)
+
+The `for((...))' originated in ksh (ksh 88 I think), but the ability
+to use braces instead of do and done goes back to the V7 Bourne shell.
+
+Just sayin'.
+
+Arnold
+
